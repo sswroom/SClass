@@ -142,12 +142,12 @@ void Data::MacString::ToString(NN<Text::StringBuilderUTF8> sb) const
 		CFIndex len = CFStringGetLength((CFStringRef)this->val);
 		if (len > 0)
 		{
-			UniChar *buff = MemAlloc(UniChar, len + 1);
-			CFStringGetCharacters((CFStringRef)this->val, CFRangeMake(0, len), buff);
+			UnsafeArray<UniChar> buff = MemAllocArr(UniChar, len + 1);
+			CFStringGetCharacters((CFStringRef)this->val, CFRangeMake(0, len), buff.Ptr());
 			sb->AppendUTF8Char('"');
-			sb->AppendUTF16((const UTF16Char*)buff);
+			sb->AppendUTF16(UnsafeArray<const UTF16Char>::ConvertFrom(buff));
 			sb->AppendUTF8Char('"');
-			MemFree(buff);
+			MemFreeArr(buff);
 		}
 		else
 		{
@@ -321,9 +321,9 @@ void Data::MacDictionary::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendUTF8Char('{');
 	if (cnt > 0)
 	{
-		CFTypeRef *keys = MemAlloc(CFTypeRef, cnt);
-		CFTypeRef *vals = MemAlloc(CFTypeRef, cnt);
-		CFDictionaryGetKeysAndValues((CFDictionaryRef)this->val, (const void**)keys, (const void**)vals);
+		UnsafeArray<CFTypeRef> keys = MemAllocArr(CFTypeRef, cnt);
+		UnsafeArray<CFTypeRef> vals = MemAllocArr(CFTypeRef, cnt);
+		CFDictionaryGetKeysAndValues((CFDictionaryRef)this->val, (const void**)keys.Ptr(), (const void**)vals.Ptr());
 		while (i < cnt)
 		{
 			if (i > 0)
@@ -335,8 +335,8 @@ void Data::MacDictionary::ToString(NN<Text::StringBuilderUTF8> sb) const
 			MacType(vals[i]).ToString(sb);
 			i++;
 		}
-		MemFree(keys);
-		MemFree(vals);
+		MemFreeArr(keys);
+		MemFreeArr(vals);
 	}
 	sb->AppendUTF8Char('}');
 }

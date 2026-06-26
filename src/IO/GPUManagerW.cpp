@@ -6,15 +6,15 @@
 
 struct IO::GPUManager::ClassData
 {
-	IO::AMDGPUManager *amdGPUMgr;
-	Data::ArrayListNN<IO::GPUControl> *gpuList;
+	NN<IO::AMDGPUManager> amdGPUMgr;
+	NN<Data::ArrayListNN<IO::GPUControl>> gpuList;
 };
 
 IO::GPUManager::GPUManager()
 {
-	ClassData *clsData = MemAlloc(ClassData, 1);
-	NEW_CLASS(clsData->amdGPUMgr, IO::AMDGPUManager());
-	NEW_CLASS(clsData->gpuList, Data::ArrayListNN<IO::GPUControl>());
+	NN<ClassData> clsData = MemAllocNN(ClassData);
+	NEW_CLASSNN(clsData->amdGPUMgr, IO::AMDGPUManager());
+	NEW_CLASSNN(clsData->gpuList, Data::ArrayListNN<IO::GPUControl>());
 	NN<IO::GPUControl> ctrl;
 	this->clsData = clsData;
 	UIntOS i;
@@ -39,9 +39,9 @@ IO::GPUManager::~GPUManager()
 		gpu = this->clsData->gpuList->GetItemNoCheck(i);
 		gpu.Delete();
 	}
-	DEL_CLASS(this->clsData->gpuList);
-	DEL_CLASS(this->clsData->amdGPUMgr);
-	MemFree(this->clsData);
+	this->clsData->gpuList.Delete();
+	this->clsData->amdGPUMgr.Delete();
+	MemFreeNN(this->clsData);
 }
 
 UIntOS IO::GPUManager::GetGPUCount()

@@ -139,7 +139,7 @@ UIntOS Exporter::CURExporter::CalcBuffSize(NN<Media::ImageList> imgList)
 	return retSize;
 }
 
-UIntOS Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgList, Bool hasHotSpot)
+UIntOS Exporter::CURExporter::BuildBuff(UnsafeArray<UInt8> buff, NN<Media::ImageList> imgList, Bool hasHotSpot)
 {
 	UInt8 *indexPtr;
 	UInt8 *imgPtr;
@@ -737,13 +737,13 @@ Bool Exporter::CURExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UIntOS buffSize = CalcBuffSize(imgList);
 	if (buffSize == 0)
 		return false;
-	UInt8 *buff = MemAlloc(UInt8, buffSize);
+	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, buffSize);
 	if (buffSize != BuildBuff(buff, imgList, true))
 	{
-		MemFree(buff);
+		MemFreeArr(buff);
 		return false;
 	}
 	stm->Write(Data::ByteArrayR(buff, buffSize));
-	MemFree(buff);
+	MemFreeArr(buff);
 	return true;
 }

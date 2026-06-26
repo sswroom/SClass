@@ -25,10 +25,10 @@ Bool Data::Compress::LZODecompressor::Decompress(NN<IO::Stream> destStm, NN<IO::
 	UIntOS destSize = LZODecompressor_CalcDecSize(srcBuff.Arr().Ptr(), (UIntOS)srcSize);
 	if (destSize > 0)
 	{
-		UInt8 *destBuff = MemAlloc(UInt8, destSize);
-		LZODecompressor_Decompress(srcBuff.Arr().Ptr(), (UIntOS)srcSize, destBuff, &destSize);
+		UnsafeArray<UInt8> destBuff = MemAllocArr(UInt8, destSize);
+		LZODecompressor_Decompress(srcBuff.Arr().Ptr(), (UIntOS)srcSize, destBuff.Ptr(), &destSize);
 		destStm->Write(Data::ByteArrayR(destBuff, destSize));
-		MemFree(destBuff);
+		MemFreeArr(destBuff);
 		return true;
 	}
 	else

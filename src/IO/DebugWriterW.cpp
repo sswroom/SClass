@@ -17,24 +17,24 @@ Bool IO::DebugWriter::Write(Text::CStringNN str)
 {
 
 	UIntOS strLen = Text::StrUTF8_WCharCntC(str.v, str.leng);
-	WChar *wstr = MemAlloc(WChar, strLen + 1);
+	UnsafeArray<WChar> wstr = MemAllocArr(WChar, strLen + 1);
 	Text::StrUTF8_WCharC(wstr, str.v, str.leng, 0);
 	wstr[strLen] = 0;
-	OutputDebugStringW(wstr);
-	MemFree(wstr);
+	OutputDebugStringW(wstr.Ptr());
+	MemFreeArr(wstr);
 	return true;
 }
 
 Bool IO::DebugWriter::WriteLine(Text::CStringNN str)
 {
 	UIntOS strLen = Text::StrUTF8_WCharCntC(str.v, str.leng);
-	WChar *wstr = MemAlloc(WChar, strLen + 3);
+	UnsafeArray<WChar> wstr = MemAllocArr(WChar, strLen + 3);
 	Text::StrUTF8_WCharC(wstr, str.v, str.leng, 0);
 	wstr[strLen] = 13;
 	wstr[strLen + 1] = 10;
 	wstr[strLen + 2] = 0;
-	OutputDebugStringW(wstr);
-	MemFree(wstr);
+	OutputDebugStringW(wstr.Ptr());
+	MemFreeArr(wstr);
 	return true;
 }
 

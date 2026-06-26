@@ -31,8 +31,8 @@ typedef struct
 IO::BTController::BTDevice::BTDevice(void *internalData, void *hRadio, void *devInfo)
 {
 	Char name[256];
-	BTDeviceInfo *dev = MemAlloc(BTDeviceInfo, 1);
-	MemCopyNO(dev, devInfo, sizeof(BTDeviceInfo));
+	NN<BTDeviceInfo> dev = MemAllocNN(BTDeviceInfo);
+	MemCopyNO(dev.Ptr(), devInfo, sizeof(BTDeviceInfo));
 	if (hci_read_remote_name(dev->ctrlInfo->dd, (bdaddr_t *)dev->addr, 256, name, 2000) >= 0)
 	{
 		dev->name = Text::String::NewNotNullSlow((const UTF8Char*)name);
@@ -41,25 +41,28 @@ IO::BTController::BTDevice::BTDevice(void *internalData, void *hRadio, void *dev
 	{
 		dev->name = Text::String::NewEmpty();
 	}
-	this->devInfo = (UInt8*)dev;
+	this->devInfo = (UInt8*)dev.Ptr();
 }
 
 IO::BTController::BTDevice::~BTDevice()
 {
-	BTDeviceInfo *dev = (BTDeviceInfo*)this->devInfo;
-	dev->name->Release();
-	MemFree(this->devInfo);
+	NN<BTDeviceInfo> dev;
+	if (dev.Set((BTDeviceInfo*)this->devInfo.Ptr()))
+	{
+		dev->name->Release();
+		MemFreeNN(dev);
+	}
 }
 
 NN<Text::String> IO::BTController::BTDevice::GetName() const
 {
-	BTDeviceInfo *dev = (BTDeviceInfo*)this->devInfo;
+	BTDeviceInfo *dev = (BTDeviceInfo*)this->devInfo.Ptr();
 	return dev->name;
 }
 
 UInt8 *IO::BTController::BTDevice::GetAddress()
 {
-	BTDeviceInfo *dev = (BTDeviceInfo*)this->devInfo;
+	BTDeviceInfo *dev = (BTDeviceInfo*)this->devInfo.Ptr();
 	return dev->addr;
 }
 
@@ -229,14 +232,14 @@ UInt32 __stdcall IO::BTController::LEScanThread(AnyType userObj)
 IO::BTController::BTController(void *internalData, void *hand)
 {
 	char name[256];
-	BTControllerInfo *info;
-	info = MemAlloc(BTControllerInfo, 1);
+	NN<BTControllerInfo> info;
+	info = MemAllocNN(BTControllerInfo);
 	info->devId = (int)(IntOS)hand;
 	info->dd = hci_open_dev(info->devId);
 	info->hciVer = 0;
 	info->hciRev = 0;
 	info->lmpVer = 0;
-	this->hand = info;
+	this->hand = info.Ptr();
 	this->leScanning = false;
 	this->leScanToStop = false;
 	this->leHdlr = 0;
@@ -292,12 +295,15 @@ IO::BTController::~BTController()
 		this->LEScanEnd();
 	}
 
-	BTControllerInfo *info = (BTControllerInfo*)this->hand;
-	if (info->dd)
+	NN<BTControllerInfo> info;
+	if (info.Set((BTControllerInfo*)this->hand))\
 	{
-		hci_close_dev(info->dd);
+		if (info->dd)
+		{
+			hci_close_dev(info->dd);
+		}
+		MemFreeNN(info);
 	}
-	MemFree(info);
 	this->name->Release();
 }
 
@@ -306,14 +312,14 @@ IntOS IO::BTController::CreateDevices(NN<Data::ArrayListNN<BTDevice>> devList, B
 	BTControllerInfo *info = (BTControllerInfo*)this->hand;
 	IntOS ret = 0;
 	IntOS i;
-	inquiry_info *ii;
+	UnsafeArray<inquiry_info> ii;
 	BTDeviceInfo devInfo;
 	NN<BTDevice> dev;
 	if (toSearch)
 	{
 		devInfo.ctrlInfo = info;
-		ii = MemAlloc(inquiry_info, 255);
-		ret = hci_inquiry(info->devId, 8, 255, 0, &ii, 0);
+		ii = MemAllocArr(inquiry_info, 255);
+		ret = hci_inquiry(info->devId, 8, 255, 0, (inquiry_info**)&ii, 0);
 		i = 0;
 		while (i < ret)
 		{
@@ -327,7 +333,7 @@ IntOS IO::BTController::CreateDevices(NN<Data::ArrayListNN<BTDevice>> devList, B
 			devList->Add(dev);
 			i++;
 		}
-		MemFree(ii);
+		MemFreeArr(ii);
 	}
 	return ret;
 }

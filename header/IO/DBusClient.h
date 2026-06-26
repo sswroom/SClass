@@ -10,47 +10,47 @@ namespace IO
 		struct PropInfo;
 		struct ProxyData;
 		typedef void (* ClientFunction) (IO::DBusClient *client, void *user_data);
-		typedef void (* ProxyFunction) (ProxyData *proxy, void *user_data);
-		typedef void (* PropertyFunction) (ProxyData *proxy, const Char *name, void *iter, void *user_data);
+		typedef void (* ProxyFunction) (NN<ProxyData> proxy, void *user_data);
+		typedef void (* PropertyFunction) (NN<ProxyData> proxy, UnsafeArray<const UTF8Char> name, void *iter, void *user_data);
 	private:
 		struct ClassData;
-		ClassData *clsData;
+		Optional<ClassData> clsData;
 
-		static void OnServiceConnect(IO::DBusManager *dbusManager, void *userData);
-		static void OnServiceDisconnect(IO::DBusManager *dbusManager, void *userData);
-		static Bool OnInterfacesAdded(IO::DBusManager *dbusManager, IO::DBusManager::Message *message, void *userData);
-		static Bool OnInterfacesRemoved(IO::DBusManager *dbusManager, IO::DBusManager::Message *message, void *userData);
-		static Bool OnPropertiesChanged(IO::DBusManager *dbusManager, IO::DBusManager::Message *message, void *userData);
+		static void OnServiceConnect(NN<IO::DBusManager> dbusManager, AnyType userData);
+		static void OnServiceDisconnect(NN<IO::DBusManager> dbusManager, AnyType userData);
+		static Bool OnInterfacesAdded(NN<IO::DBusManager> dbusManager, NN<IO::DBusManager::Message> message, AnyType userData);
+		static Bool OnInterfacesRemoved(NN<IO::DBusManager> dbusManager, NN<IO::DBusManager::Message> message, AnyType userData);
+		static Bool OnPropertiesChanged(NN<IO::DBusManager> dbusManager, NN<IO::DBusManager::Message> message, AnyType userData);
 
 		void IterAppendIter(void *baseIt, void *itera);
-		PropInfo *PropEntryNew(const Char *name, void *itera);
-		void PropEntryUpdate(PropInfo *prop, void *itera);
+		Optional<PropInfo> PropEntryNew(UnsafeArray<const Char> name, void *itera);
+		void PropEntryUpdate(NN<PropInfo> prop, void *itera);
 
 		void ParseInterfaces(const Char *path, void *itera);
 		void ParseProperties(const Char *path, const Char *interface, void *itera);
-		void UpdateProperties(ProxyData *proxy, void *itera, Bool sendChanged);
+		void UpdateProperties(NN<ProxyData> proxy, void *itera, Bool sendChanged);
 		void RefreshProperties();
-		void GetAllProperties(ProxyData *proxy);
-		void AddProperty(ProxyData *proxy, const Char *name, void *itera, Bool sendChanged);
+		void GetAllProperties(NN<ProxyData> proxy);
+		void AddProperty(NN<ProxyData> proxy, UnsafeArray<const UTF8Char> name, void *itera, Bool sendChanged);
 		void GetManagedObjects();
 		void ParseManagedObjects(void *mesg);
 
-		ProxyData *ProxyNew(const Char *path, const Char *interface);
-		void ProxyAdded(ProxyData *proxy);
-		void ProxyFree(ProxyData *proxy);
+		Optional<ProxyData> ProxyNew(const Char *path, const Char *interface);
+		void ProxyAdded(NN<ProxyData> proxy);
+		static void __stdcall  ProxyFree(NN<ProxyData> proxy);
 		void ProxyRemove(const Char *path, const Char *interface);
 		ProxyData *ProxyLookup(UIntOS *index, const Char *path, const Char *interface);
-		ProxyData *ProxyRef(ProxyData *proxy);
-		void ProxyUnref(ProxyData *proxy);
+		NN<ProxyData> ProxyRef(NN<ProxyData> proxy);
+		static void __stdcall ProxyUnref(NN<ProxyData> proxy);
 	public:
-		DBusClient(IO::DBusManager *dbusMgr, const Char *service, const Char *path, const Char *rootPath);
+		DBusClient(NN<IO::DBusManager> dbusMgr, UnsafeArray<const UTF8Char> service, UnsafeArrayOpt<const UTF8Char> path, UnsafeArrayOpt<const UTF8Char> rootPath);
 		~DBusClient();
 
 		DBusClient *Ref();
 		void Unref();
 
-		IO::DBusManager::HandlerResult MessageFilter(IO::DBusManager::Message *message);
-		Bool ModifyMatch(const Char *member, const Char *rule);
+		IO::DBusManager::HandlerResult MessageFilter(NN<IO::DBusManager::Message> message);
+		Bool ModifyMatch(UnsafeArray<const UTF8Char> member, UnsafeArray<const UTF8Char> rule);
 
 
 //		void SetConnectWatch(connect_handler, NULL);
@@ -59,7 +59,7 @@ namespace IO
 //		void SetProxyHandlers(proxy_added, proxy_removed, property_changed, NULL);
 //		void SetReadyWatch(client_ready, NULL);
 
-		void GetAllPropertiesReply(void *pending, ProxyData *proxy);
+		void GetAllPropertiesReply(void *pending, NN<ProxyData> proxy);
 		void GetManagedObjectsReply(void *pending);
 		void ModifyMatchReply(void *pending);
 	};

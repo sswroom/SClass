@@ -86,9 +86,9 @@ namespace IO
 
 		typedef struct
 		{
-			UInt8 *b16Codes;
+			UnsafeArray<UInt8> b16Codes;
 			UIntOS b16CodeLen;
-			Manage::DasmX86_16::Registers *b16Regs;
+			NN<Manage::DasmX86_16::Registers> b16Regs;
 			Bool b16HasPSP;
 			UInt16 b16CodeSegm;
 		} ProgramEnvDOS;
@@ -109,7 +109,7 @@ namespace IO
 			ResourceType rt;
 			NN<Text::String> name;
 			UInt32 codePage;
-			const UInt8 *data;
+			UnsafeArray<const UInt8> data;
 			UIntOS dataSize;
 		} ResourceInfo;
 	private:
@@ -119,7 +119,7 @@ namespace IO
 		Data::ArrayListNN<ExportInfo> exportList;
 		Data::ArrayListNN<ResourceInfo> resList;
 
-		ProgramEnvDOS *envDOS;
+		Optional<ProgramEnvDOS> envDOS;
 
 	public:
 		EXEFile(NN<Text::String> fileName);
@@ -145,10 +145,10 @@ namespace IO
 		Optional<Text::String> GetExportName(UIntOS index) const;
 
 		Bool HasDOS() const;
-		void AddDOSEnv(UIntOS b16CodeLen, Manage::DasmX86_16::Registers *b16Regs, UInt16 b16CodeSegm);
-		UInt8 *GetDOSCodePtr(OutParam<UIntOS> codeLen) const;
+		void AddDOSEnv(UIntOS b16CodeLen, NN<Manage::DasmX86_16::Registers> b16Regs, UInt16 b16CodeSegm);
+		UnsafeArrayOpt<UInt8> GetDOSCodePtr(OutParam<UIntOS> codeLen) const;
 		void SetDOSHasPSP(Bool hasPSP);
-		void GetDOSInitRegs(Manage::DasmX86_16::Registers *regs) const;
+		void GetDOSInitRegs(NN<Manage::DasmX86_16::Registers> regs) const;
 		UInt16 GetDOSCodeSegm() const;
 
 		void AddResource(Text::CStringNN name, UnsafeArray<const UInt8> data, UIntOS dataSize, UInt32 codePage, ResourceType rt);

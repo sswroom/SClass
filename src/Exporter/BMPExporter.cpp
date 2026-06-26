@@ -261,7 +261,7 @@ Bool Exporter::BMPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		stm->Write(Data::ByteArrayR(pal, palSize));
 	}
 
-	UInt8 *imgData = MemAlloc(UInt8, lineSize * img->info.dispSize.y);
+	UnsafeArray<UInt8> imgData = MemAllocArr(UInt8, lineSize * img->info.dispSize.y);
 	img->GetRasterData(imgData, 0, 0, img->info.dispSize.x, img->info.dispSize.y, lineSize, true, Media::RotateType::None);
 	stm->Write(Data::ByteArrayR(imgData, lineSize * img->info.dispSize.y));
 
@@ -269,6 +269,6 @@ Bool Exporter::BMPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	{
 		stm->Write(Data::ByteArrayR(rawICC, iccSize));
 	}
-	MemFree(imgData);
+	MemFreeArr(imgData);
 	return true;
 }

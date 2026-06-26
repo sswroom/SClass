@@ -1679,11 +1679,12 @@ NN<Data::VariItem> Data::VariItem::NewBool(Bool val)
 	return item;
 }
 
-NN<Data::VariItem> Data::VariItem::NewByteArr(const UInt8 *arr, UIntOS cnt)
+NN<Data::VariItem> Data::VariItem::NewByteArr(UnsafeArrayOpt<const UInt8> arr, UIntOS cnt)
 {
-	if (arr == 0) return NewNull();
+	UnsafeArray<const UInt8> nnarr;
+	if (!arr.SetTo(nnarr)) return NewNull();
 	ItemValue ival;
-	NEW_CLASS(ival.byteArr, Data::ReadonlyArray<UInt8>(arr, cnt));
+	NEW_CLASS(ival.byteArr, Data::ReadonlyArray<UInt8>(nnarr, cnt));
 	NN<Data::VariItem> item;
 	NEW_CLASSNN(item, Data::VariItem(ItemType::ByteArr, ival));
 	return item;

@@ -122,7 +122,10 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	Data::ArrayListUInt32 *nfuncCalls;
 	NN<Data::ArrayListNN<Data::ArrayListStringNN>> codesList;
 
-	this->exeFile->GetDOSInitRegs(&regs);
+	this->exeFile->GetDOSInitRegs(regs);
+	UnsafeArray<UInt8> codePtr;
+	if (!this->exeFile->GetDOSCodePtr(codeSize).SetTo(codePtr))
+		return;
 	NEW_CLASSNN(parts, Data::ArrayListNN<ExeB16Addr>());
 	NEW_CLASSNN(partInd, Data::ArrayListInt32());
 	NEW_CLASSNN(codesList, Data::ArrayListNN<Data::ArrayListStringNN>());
@@ -140,7 +143,7 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	NEW_CLASSNN(dasm, Manage::DasmX86_16());
 	NEW_CLASS(funcCalls, Data::ArrayListUInt32());
 	NEW_CLASS(nfuncCalls, Data::ArrayListUInt32());
-	sess = dasm->CreateSess(regs, this->exeFile->GetDOSCodePtr(codeSize), this->exeFile->GetDOSCodeSegm());
+	sess = dasm->CreateSess(regs, codePtr, this->exeFile->GetDOSCodeSegm());
 	this->ParseSess16(sess, codes, parts, partInd, eaddr, dasm, codeSize);
 	nfuncCalls->AddAll(sess->callAddrs);
 	nfuncCalls->AddAll(sess->jmpAddrs);
@@ -157,7 +160,7 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 		if (si < 0)
 		{
 			funcCalls->Insert((UIntOS)-si - 1, faddr);
-			sess = dasm->CreateSess(regs, this->exeFile->GetDOSCodePtr(codeSize), this->exeFile->GetDOSCodeSegm());
+			sess = dasm->CreateSess(regs, codePtr, this->exeFile->GetDOSCodeSegm());
 			sess->regs.IP = (::UInt16)faddr;
 			NEW_CLASSNN(codes, Data::ArrayListStringNN());
 			codesList->Add(codes);
@@ -303,7 +306,7 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceDblClk(AnyType userObj)
 		else if (res->rt == IO::EXEFile::RT_FONT)
 		{
 			NN<Media::FontRenderer> font;
-			if (font.Set(Parser::FileParser::FNTParser::ParseFontBuff(me->exeFile->GetSourceNameObj(), res->data, res->dataSize)))
+			if (Parser::FileParser::FNTParser::ParseFontBuff(me->exeFile->GetSourceNameObj(), res->data, res->dataSize).SetTo(font))
 			{
 				me->core->OpenObject(font);
 			}

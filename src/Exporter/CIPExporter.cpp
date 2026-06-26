@@ -164,7 +164,7 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			{
 				NN<Math::Geometry::Polyline> pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
 				UIntOS nPtOfst = pl->GetCount();
-				UInt32 *ptOfstArr = MemAlloc(UInt32, nPtOfst + 1);
+				UnsafeArray<UInt32> ptOfstArr = MemAllocArr(UInt32, nPtOfst + 1);
 				WriteUInt32(&buff[4], (UInt32)nPtOfst);
 				ptOfstArr[0] = 0;
 				UIntOS i = 0;
@@ -178,12 +178,12 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 						ptOfstArr[i] = ptOfstArr[i - 1];
 				}
 				stm->Write(Data::ByteArrayR(buff, 8));
-				stm->Write(Data::ByteArrayR((UInt8*)ptOfstArr, nPtOfst * 4));
+				stm->Write(Data::ByteArrayR(UnsafeArray<UInt8>::ConvertFrom(ptOfstArr), nPtOfst * 4));
 				stmPos += 8 + nPtOfst * 4;
 
 				UIntOS nPoint = ptOfstArr[nPtOfst];
-				MemFree(ptOfstArr);
-				Int32 *ptArr = MemAlloc(Int32, nPoint << 1);
+				MemFreeArr(ptOfstArr);
+				UnsafeArray<Int32> ptArr = MemAllocArr(Int32, nPoint << 1);
 				UIntOS j = 0;
 				UIntOS k;
 				UIntOS l;
@@ -206,7 +206,7 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 					i++;
 				}
 				stm->Write(Data::ByteArrayR((UInt8*)&nPoint, 4));
-				stm->Write(Data::ByteArrayR((UInt8*)ptArr, 8 * nPoint));
+				stm->Write(Data::ByteArrayR(UnsafeArray<UInt8>::ConvertFrom(ptArr), 8 * nPoint));
 				stmPos += 8 * nPoint + 4;
 
 				maxX = minX = ptArr[0];
@@ -228,13 +228,13 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				right = maxX / p->scale;
 				top = minY / p->scale;
 				bottom = maxY / p->scale;
-				MemFree(ptArr);
+				MemFreeArr(ptArr);
 			}
 			else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 			{
 				NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
 				UIntOS nPtOfst = pg->GetCount();
-				UInt32 *ptOfstArr = MemAlloc(UInt32, nPtOfst);
+				UnsafeArray<UInt32> ptOfstArr = MemAllocArr(UInt32, nPtOfst);
 				Data::ArrayListA<Math::Coord2DDbl> pointArr;
 				NN<Math::Geometry::LinearRing> lr;
 				j = 0;
@@ -247,10 +247,10 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				}
 				WriteUInt32(&buff[4], (UInt32)nPtOfst);
 				stm->Write(Data::ByteArrayR(buff, 8));
-				stm->Write(Data::ByteArrayR((UInt8*)ptOfstArr, nPtOfst * 4));
+				stm->Write(Data::ByteArrayR(UnsafeArray<UInt8>::ConvertFrom(ptOfstArr), nPtOfst * 4));
 				stmPos += 8 + nPtOfst * 4;
 
-				Int32 *ptArr = MemAlloc(Int32, pointArr.GetCount() << 1);
+				UnsafeArray<Int32> ptArr = MemAllocArr(Int32, pointArr.GetCount() << 1);
 				j = pointArr.GetCount();
 				while (j-- > 0)
 				{
@@ -260,7 +260,7 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				}
 				UInt32 nPoint = (UInt32)pointArr.GetCount();
 				stm->Write(Data::ByteArrayR((UInt8*)&nPoint, 4));
-				stm->Write(Data::ByteArrayR((UInt8*)ptArr, 8 * nPoint));
+				stm->Write(Data::ByteArrayR(UnsafeArray<UInt8>::ConvertFrom(ptArr), 8 * nPoint));
 				stmPos += 8 * nPoint + 4;
 
 				maxX = minX = ptArr[0];
@@ -282,7 +282,7 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				right = maxX / p->scale;
 				top = minY / p->scale;
 				bottom = maxY / p->scale;
-				MemFree(ptArr);
+				MemFreeArr(ptArr);
 			}
 			else
 			{
@@ -475,8 +475,8 @@ Optional<IO::FileExporter::ParamData> Exporter::CIPExporter::CreateParam(NN<IO::
 {
 	if (this->IsObjectSupported(pobj) == IO::FileExporter::SupportType::MultiFiles)
 	{
-		Exporter::CIPExporter::CIPParam *param;
-		param = MemAlloc(Exporter::CIPExporter::CIPParam, 1);
+		NN<Exporter::CIPExporter::CIPParam> param;
+		param = MemAllocNN(Exporter::CIPExporter::CIPParam);
 		param->layer = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 		param->dispCol = 0;
 
@@ -488,7 +488,7 @@ Optional<IO::FileExporter::ParamData> Exporter::CIPExporter::CreateParam(NN<IO::
 		{
 			param->scale = param->layer->CalBlockSize();
 		}
-		return (ParamData*)param;
+		return NN<ParamData>::ConvertFrom(param);
 	}
 	return nullptr;
 }

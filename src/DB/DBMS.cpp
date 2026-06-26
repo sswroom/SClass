@@ -67,8 +67,8 @@ namespace DB
 	private:
 		UIntOS colCount;
 		IntOS rowChanged;
-		Data::ArrayListArr<Optional<Text::String>> *rows;
-		DB::DBUtil::ColType *colTypes;
+		Optional<Data::ArrayListArr<Optional<Text::String>>> rows;
+		UnsafeArrayOpt<DB::DBUtil::ColType> colTypes;
 		UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>> colNames;
 		IntOS rowIndex;
 	public:
@@ -77,24 +77,25 @@ namespace DB
 			this->colCount = colCount;
 			this->rowChanged = rowChanged;
 			UnsafeArray<UnsafeArrayOpt<const UTF8Char>> nncolNames;
+			UnsafeArray<DB::DBUtil::ColType> nncolTypes;
 			if (this->rowChanged == -1)
 			{
-				NEW_CLASS(this->rows, Data::ArrayListArr<Optional<Text::String>>());
-				this->colTypes = MemAlloc(DB::DBUtil::ColType, this->colCount);
+				NEW_CLASSOPT(this->rows, Data::ArrayListArr<Optional<Text::String>>());
+				this->colTypes = nncolTypes = MemAllocArr(DB::DBUtil::ColType, this->colCount);
 				this->colNames = nncolNames = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, this->colCount);
 				UIntOS i;
 				i = 0;
 				while (i < this->colCount)
 				{
-					this->colTypes[i] = DB::DBUtil::CT_VarUTF8Char;
+					nncolTypes[i] = DB::DBUtil::CT_VarUTF8Char;
 					nncolNames[i] = nullptr;
 					i++;
 				}
 			}
 			else
 			{
-				this->rows = 0;
-				this->colTypes = 0;
+				this->rows = nullptr;
+				this->colTypes = nullptr;
 				this->colNames = nullptr;
 			}
 			this->rowIndex = -1;
@@ -102,14 +103,15 @@ namespace DB
 
 		virtual ~DBMSReader()
 		{
-			if (this->rows)
+			NN<Data::ArrayListArr<Optional<Text::String>>> rows;
+			if (this->rows.SetTo(rows))
 			{
 				UIntOS i;
 				UIntOS j;
-				i = this->rows->GetCount();
+				i = rows->GetCount();
 				while (i-- > 0)
 				{
-					UnsafeArray<Optional<Text::String>> row = this->rows->GetItemNoCheck(i);
+					UnsafeArray<Optional<Text::String>> row = rows->GetItemNoCheck(i);
 					j = this->colCount;
 					while (j-- > 0)
 					{
@@ -128,39 +130,48 @@ namespace DB
 					MemFreeArr(nncolNames);
 					this->colNames = nullptr;
 				}
-				MemFree(this->colTypes);
+				UnsafeArray<DB::DBUtil::ColType> nncolTypes;
+				if (this->colTypes.SetTo(nncolTypes))
+				{
+					MemFreeArr(nncolTypes);
+					this->colTypes = nullptr;
+				}
+				rows.Delete();
 			}
 		}
 
 		void AddRow(UnsafeArray<Optional<Text::String>> row)
 		{
-			if (this->rows == 0)
+			NN<Data::ArrayListArr<Optional<Text::String>>> rows;
+			if (!this->rows.SetTo(rows))
 			{
 				return;
 			}
 			UnsafeArray<Optional<Text::String>> newRow = MemAllocArr(Optional<Text::String>, this->colCount);
 			MemCopyNO(newRow.Ptr(), row.Ptr(), sizeof(Optional<Text::String>) * this->colCount);
-			this->rows->Add(newRow);
+			rows->Add(newRow);
 		}
 
 		void SetColumn(UIntOS colIndex, Text::CStringNN colName, DB::DBUtil::ColType colType)
 		{
 			UnsafeArray<UnsafeArrayOpt<const UTF8Char>> nncolNames;
-			if (this->rows && this->colNames.SetTo(nncolNames) && colIndex < this->colCount)
+			UnsafeArray<DB::DBUtil::ColType> nncolTypes;
+			if (this->rows.NotNull() && this->colNames.SetTo(nncolNames) && this->colTypes.SetTo(nncolTypes) && colIndex < this->colCount)
 			{
 				SDEL_TEXT(nncolNames[colIndex]);
 				nncolNames[colIndex] = Text::StrCopyNewC(colName.v, colName.leng).Ptr();
-				this->colTypes[colIndex] = colType;
+				nncolTypes[colIndex] = colType;
 			}
 		}
 
 		virtual Bool ReadNext()
 		{
-			if (this->rows == 0)
+			NN<Data::ArrayListArr<Optional<Text::String>>> rows;
+			if (!this->rows.SetTo(rows))
 			{
 				return false;
 			}
-			if (this->rowIndex + 1 < (IntOS)this->rows->GetCount())
+			if (this->rowIndex + 1 < (IntOS)rows->GetCount())
 			{
 				this->rowIndex++;
 				return true;
@@ -180,44 +191,48 @@ namespace DB
 
 		virtual Int32 GetInt32(UIntOS colIndex)
 		{
-			if (this->rows == 0 || colIndex >= this->colCount)
+			NN<Data::ArrayListArr<Optional<Text::String>>> rows;
+			if (!this->rows.SetTo(rows) || colIndex >= this->colCount)
 				return 0;
 			UnsafeArray<Optional<Text::String>> row;
 			NN<Text::String> s;
-			if (!this->rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
+			if (!rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
 				return 0;
 			return s->ToInt32();
 		}
 
 		virtual Int64 GetInt64(UIntOS colIndex)
 		{
-			if (this->rows == 0 || colIndex >= this->colCount)
+			NN<Data::ArrayListArr<Optional<Text::String>>> rows;
+			if (!this->rows.SetTo(rows) || colIndex >= this->colCount)
 				return 0;
 			UnsafeArray<Optional<Text::String>> row;
 			NN<Text::String> s;
-			if (!this->rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
+			if (!rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
 				return 0;
 			return s->ToInt64();
 		}
 
 		virtual UnsafeArrayOpt<WChar> GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 		{
-			if (this->rows == 0 || colIndex >= this->colCount)
+			NN<Data::ArrayListArr<Optional<Text::String>>> rows;
+			if (!this->rows.SetTo(rows) || colIndex >= this->colCount)
 				return nullptr;
 			UnsafeArray<Optional<Text::String>> row;
 			NN<Text::String> s;
-			if (!this->rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
+			if (!rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
 				return nullptr;
 			return Text::StrUTF8_WCharC(buff, s->v, s->leng, 0);
 		}
 
 		virtual Bool GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 		{
-			if (this->rows == 0 || colIndex >= this->colCount)
+			NN<Data::ArrayListArr<Optional<Text::String>>> rows;
+			if (!this->rows.SetTo(rows) || colIndex >= this->colCount)
 				return false;
 			UnsafeArray<Optional<Text::String>> row;
 			NN<Text::String> s;
-			if (!this->rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
+			if (!rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
 				return false;
 			sb->Append(s);
 			return true;
@@ -225,33 +240,36 @@ namespace DB
 
 		virtual Optional<Text::String> GetNewStr(UIntOS colIndex)
 		{
-			if (this->rows == 0 || colIndex >= this->colCount)
+			NN<Data::ArrayListArr<Optional<Text::String>>> rows;
+			if (!this->rows.SetTo(rows) || colIndex >= this->colCount)
 				return nullptr;
 			UnsafeArray<Optional<Text::String>> row;
 			NN<Text::String> s;
-			if (!this->rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
+			if (!rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
 				return nullptr;
 			return s->Clone();
 		}
 
 		virtual UnsafeArrayOpt<UTF8Char> GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 		{
-			if (this->rows == 0 || colIndex >= this->colCount)
+			NN<Data::ArrayListArr<Optional<Text::String>>> rows;
+			if (!this->rows.SetTo(rows) || colIndex >= this->colCount)
 				return nullptr;
 			UnsafeArray<Optional<Text::String>> row;
 			NN<Text::String> s;
-			if (!this->rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
+			if (!rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
 				return nullptr;
 			return Text::StrConcatS(buff, s->v, buffSize);
 		}
 
 		virtual Data::Timestamp GetTimestamp(UIntOS colIndex)
 		{
-			if (this->rows == 0 || colIndex >= this->colCount)
+			NN<Data::ArrayListArr<Optional<Text::String>>> rows;
+			if (!this->rows.SetTo(rows) || colIndex >= this->colCount)
 				return Data::Timestamp(nullptr);
 			UnsafeArray<Optional<Text::String>> row;
 			NN<Text::String> s;
-			if (!this->rows->GetItem((UIntOS)this->rowIndex).SetTo(row))
+			if (!rows->GetItem((UIntOS)this->rowIndex).SetTo(row))
 				 return Data::Timestamp(nullptr);
 			if (!row[colIndex].SetTo(s))
 				return Data::Timestamp(nullptr);
@@ -260,44 +278,49 @@ namespace DB
 
 		virtual Double GetDblOrNAN(UIntOS colIndex)
 		{
-			if (this->rows == 0 || colIndex >= this->colCount)
+			NN<Data::ArrayListArr<Optional<Text::String>>> rows;
+			if (!this->rows.SetTo(rows) || colIndex >= this->colCount)
 				return NAN;
 			UnsafeArray<Optional<Text::String>> row;
 			NN<Text::String> s;
-			if (!this->rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
+			if (!rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
 				return NAN;
 			return s->ToDoubleOrNAN();
 		}
 
 		virtual Bool GetBool(UIntOS colIndex)
 		{
-			if (this->rows == 0 || colIndex >= this->colCount)
+			NN<Data::ArrayListArr<Optional<Text::String>>> rows;
+			if (!this->rows.SetTo(rows) || colIndex >= this->colCount)
 				return false;
 			UnsafeArray<Optional<Text::String>> row;
 			NN<Text::String> s;
-			if (!this->rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
+			if (!rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
 				return false;
 			return s->ToInt32() != 0;
 		}
 
 		virtual UIntOS GetBinarySize(UIntOS colIndex)
 		{
-			if (this->rows == 0 || colIndex >= this->colCount)
+			
+			NN<Data::ArrayListArr<Optional<Text::String>>> rows;
+			if (!this->rows.SetTo(rows) || colIndex >= this->colCount)
 				return 0;
 			UnsafeArray<Optional<Text::String>> row;
 			NN<Text::String> s;
-			if (!this->rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
+			if (!rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
 				return 0;
 			return s->leng;
 		}
 
 		virtual UIntOS GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 		{
-			if (this->rows == 0 || colIndex >= this->colCount)
+			NN<Data::ArrayListArr<Optional<Text::String>>> rows;
+			if (!this->rows.SetTo(rows) || colIndex >= this->colCount)
 				return 0;
 			UnsafeArray<Optional<Text::String>> row;
 			NN<Text::String> s;
-			if (!this->rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
+			if (!rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
 				return 0;
 			UIntOS cnt = s->leng;
 			MemCopyNO(buff.Ptr(), s->v.Ptr(), cnt);
@@ -316,11 +339,12 @@ namespace DB
 
 		virtual Bool IsNull(UIntOS colIndex)
 		{
-			if (this->rows == 0 || colIndex >= this->colCount)
+			NN<Data::ArrayListArr<Optional<Text::String>>> rows;
+			if (!this->rows.SetTo(rows) || colIndex >= this->colCount)
 				return true;
 			UnsafeArray<Optional<Text::String>> row;
 			NN<Text::String> s;
-			if (!this->rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
+			if (!rows->GetItem((UIntOS)this->rowIndex).SetTo(row) || !row[colIndex].SetTo(s))
 				return true;
 			return false;
 		}
@@ -346,12 +370,13 @@ namespace DB
 
 		virtual DB::DBUtil::ColType GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 		{
-			if (this->rowChanged != -1)
+			UnsafeArray<DB::DBUtil::ColType> nncolTypes;
+			if (this->rowChanged != -1 || !this->colTypes.SetTo(nncolTypes))
 				return DB::DBUtil::CT_Unknown;
 			if (colIndex >= this->colCount)
 				return DB::DBUtil::CT_Unknown;
 			colSize.Set(256);
-			return this->colTypes[colIndex];
+			return nncolTypes[colIndex];
 		}
 
 		virtual Bool GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
@@ -360,7 +385,8 @@ namespace DB
 			UnsafeArray<UTF8Char> sptr;
 			UnsafeArray<UnsafeArrayOpt<const UTF8Char>> nncolNames;
 			UnsafeArray<const UTF8Char> nns;
-			if (this->rowChanged != -1)
+			UnsafeArray<DB::DBUtil::ColType> nncolTypes;
+			if (this->rowChanged != -1 || !this->colTypes.SetTo(nncolTypes))
 				return false;
 			if (colIndex >= this->colCount)
 				return false;
@@ -373,7 +399,7 @@ namespace DB
 				sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("column")), colIndex + 1);
 				colDef->SetColName(CSTRP(sbuff, sptr));
 			}
-			colDef->SetColType(this->colTypes[colIndex]);
+			colDef->SetColType(nncolTypes[colIndex]);
 			colDef->SetColSize(256);
 			return true;
 		}
@@ -1984,8 +2010,8 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 	if (Text::StrStartsWithICaseC(sptr1, (UIntOS)(sqlEnd - sptr1), UTF8STRC("SELECT")) && Text::CharUtil::IsWS(sptr1 + 6))
 	{
 		sptr1 += 6;
-		Data::ArrayListObj<DB::DBMS::SQLColumn*> cols;
-		DB::DBMS::SQLColumn *col;
+		Data::ArrayListNN<DB::DBMS::SQLColumn> cols;
+		NN<DB::DBMS::SQLColumn> col;
 		Bool hasFrom = false;
 
 		while (true)
@@ -1997,10 +2023,10 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 				i = cols.GetCount();
 				while (i-- > 0)
 				{
-					col = cols.GetItem(i);
+					col = cols.GetItemNoCheck(i);
 					col->name->Release();
 					OPTSTR_DEL(col->asName);
-					MemFree(col);
+					MemFreeNN(col);
 				}
 
 				Text::StringBuilderUTF8 sb;
@@ -2014,7 +2040,7 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 			while (Text::CharUtil::PtrIsWS(sptr1));
 			if (*sptr1 == ',' || *sptr1 == 0)
 			{
-				col = MemAlloc(DB::DBMS::SQLColumn, 1);
+				col = MemAllocNN(DB::DBMS::SQLColumn);
 				col->name = Text::String::NewNotNullSlow(nameBuff);
 				col->asName = nullptr;
 				col->sqlPtr = sptr2;
@@ -2038,10 +2064,10 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 					i = cols.GetCount();
 					while (i-- > 0)
 					{
-						col = cols.GetItem(i);
+						col = cols.GetItemNoCheck(i);
 						col->name->Release();
 						OPTSTR_DEL(col->asName);
-						MemFree(col);
+						MemFreeNN(col);
 					}
 
 					Text::StringBuilderUTF8 sb;
@@ -2055,7 +2081,7 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 				while (Text::CharUtil::PtrIsWS(sptr1));
 				if (*sptr1 == ',' || *sptr1 == 0)
 				{
-					col = MemAlloc(DB::DBMS::SQLColumn, 1);
+					col = MemAllocNN(DB::DBMS::SQLColumn);
 					col->name = Text::String::NewNotNullSlow(nameBuff);
 					col->asName = Text::String::NewNotNullSlow(nameBuff2).Ptr();
 					col->sqlPtr = sptr2;
@@ -2080,10 +2106,10 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 					i = cols.GetCount();
 					while (i-- > 0)
 					{
-						col = cols.GetItem(i);
+						col = cols.GetItemNoCheck(i);
 						col->name->Release();
 						OPTSTR_DEL(col->asName);
-						MemFree(col);
+						MemFreeNN(col);
 					}
 
 					Text::StringBuilderUTF8 sb;
@@ -2109,10 +2135,10 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 					i = cols.GetCount();
 					while (i-- > 0)
 					{
-						col = cols.GetItem(i);
+						col = cols.GetItemNoCheck(i);
 						col->name->Release();
 						OPTSTR_DEL(col->asName);
-						MemFree(col);
+						MemFreeNN(col);
 					}
 
 					Text::StringBuilderUTF8 sb;
@@ -2126,7 +2152,7 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 				while (Text::CharUtil::PtrIsWS(sptr1));
 				if (*sptr1 == ',' || *sptr1 == 0)
 				{
-					col = MemAlloc(DB::DBMS::SQLColumn, 1);
+					col = MemAllocNN(DB::DBMS::SQLColumn);
 					col->name = Text::String::NewNotNullSlow(nameBuff);
 					col->asName = Text::String::NewNotNullSlow(nameBuff2).Ptr();
 					col->sqlPtr = sptr2;
@@ -2151,10 +2177,10 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 					i = cols.GetCount();
 					while (i-- > 0)
 					{
-						col = cols.GetItem(i);
+						col = cols.GetItemNoCheck(i);
 						col->name->Release();
 						OPTSTR_DEL(col->asName);
-						MemFree(col);
+						MemFreeNN(col);
 					}
 
 					Text::StringBuilderUTF8 sb;
@@ -2175,10 +2201,10 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 			i = cols.GetCount();
 			while (i-- > 0)
 			{
-				col = cols.GetItem(i);
+				col = cols.GetItemNoCheck(i);
 				col->name->Release();
 				OPTSTR_DEL(col->asName);
-				MemFree(col);
+				MemFreeNN(col);
 			}
 
 			Text::StringBuilderUTF8 sb;
@@ -2201,7 +2227,7 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 			j = cols.GetCount();
 			while (i < j && valid)
 			{
-				col = cols.GetItem(i);
+				col = cols.GetItemNoCheck(i);
 				val = col->name->v;
 				#if defined(VERBOSE)
 				printf("Column %d is %s\r\n", (int)i, val.Ptr());
@@ -2210,7 +2236,7 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 
 				col->name->Release();
 				OPTSTR_DEL(col->asName);
-				MemFree(col);
+				MemFreeNN(col);
 				i++;
 
 				if (!valid)
@@ -2220,11 +2246,11 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 			}
 			while (i < j)
 			{
-				col = cols.GetItem(i);
+				col = cols.GetItemNoCheck(i);
 				colVals[i] = nullptr;
 				col->name->Release();
 				OPTSTR_DEL(col->asName);
-				MemFree(col);
+				MemFreeNN(col);
 				i++;
 			}
 
@@ -2252,8 +2278,8 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 	{
 		sptr1 += 3;
 
-		Data::ArrayListObj<DB::DBMS::SQLColumn*> cols;
-		DB::DBMS::SQLColumn *col;
+		Data::ArrayListNN<DB::DBMS::SQLColumn> cols;
+		NN<DB::DBMS::SQLColumn> col;
 		UTF8Char c;
 		UnsafeArray<UTF8Char> namePtr;
 
@@ -2286,10 +2312,10 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 							i = cols.GetCount();
 							while (i-- > 0)
 							{
-								col = cols.GetItem(i);
+								col = cols.GetItemNoCheck(i);
 								col->name->Release();
 								OPTSTR_DEL(col->asName);
-								MemFree(col);
+								MemFreeNN(col);
 							}
 
 							Text::StringBuilderUTF8 sb;
@@ -2324,10 +2350,10 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 							i = cols.GetCount();
 							while (i-- > 0)
 							{
-								col = cols.GetItem(i);
+								col = cols.GetItemNoCheck(i);
 								col->name->Release();
 								OPTSTR_DEL(col->asName);
-								MemFree(col);
+								MemFreeNN(col);
 							}
 
 							Text::StringBuilderUTF8 sb;
@@ -2350,17 +2376,17 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 						i = cols.GetCount();
 						while (i-- > 0)
 						{
-							col = cols.GetItem(i);
+							col = cols.GetItemNoCheck(i);
 							col->name->Release();
 							OPTSTR_DEL(col->asName);
-							MemFree(col);
+							MemFreeNN(col);
 						}
 						OPTSTR_DEL(optval);
 						return nullptr;
 					}
 					nameBuff2[0] = isGlobal?'!':'#';
 					Text::StrConcat(&nameBuff2[1], nameBuff);
-					col = MemAlloc(DB::DBMS::SQLColumn, 1);
+					col = MemAllocNN(DB::DBMS::SQLColumn);
 					col->name = Text::String::NewNotNullSlow(nameBuff2);
 					col->asName = val;
 					cols.Add(col);
@@ -2375,7 +2401,7 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 						i = cols.GetCount();
 						while (i-- > 0)
 						{
-							col = cols.GetItem(i);
+							col = cols.GetItemNoCheck(i);
 							if (col->name->v[0] == '!')
 							{
 								this->SysVarSet(sess, true, col->name->ToCString().Substring(1), col->asName);
@@ -2390,7 +2416,7 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 							}
 							col->name->Release();
 							OPTSTR_DEL(col->asName);
-							MemFree(col);
+							MemFreeNN(col);
 						}
 
 						DB::DBMSReader *reader;
@@ -2639,10 +2665,10 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 						i = cols.GetCount();
 						while (i-- > 0)
 						{
-							col = cols.GetItem(i);
+							col = cols.GetItemNoCheck(i);
 							col->name->Release();
 							OPTSTR_DEL(col->asName);
-							MemFree(col);
+							MemFreeNN(col);
 						}
 						OPTSTR_DEL(val);
 
@@ -2655,7 +2681,7 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 						sess->lastError = Text::String::New(sb.ToCString());
 						return nullptr;
 					}
-					col = MemAlloc(DB::DBMS::SQLColumn, 1);
+					col = MemAllocNN(DB::DBMS::SQLColumn);
 					col->name = Text::String::New(sb.ToCString());
 					col->asName = val;
 					cols.Add(col);
@@ -2671,7 +2697,7 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 						i = cols.GetCount();
 						while (i-- > 0)
 						{
-							col = cols.GetItem(i);
+							col = cols.GetItemNoCheck(i);
 							if (col->name->v[0] == '!')
 							{
 								this->SysVarSet(sess, true, col->name->ToCString().Substring(1), col->asName);
@@ -2686,7 +2712,7 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 							}
 							col->name->Release();
 							OPTSTR_DEL(col->asName);
-							MemFree(col);
+							MemFreeNN(col);
 						}
 
 						DB::DBMSReader *reader;
@@ -2699,10 +2725,10 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 					i = cols.GetCount();
 					while (i-- > 0)
 					{
-						col = cols.GetItem(i);
+						col = cols.GetItemNoCheck(i);
 						col->name->Release();
 						OPTSTR_DEL(col->asName);
-						MemFree(col);
+						MemFreeNN(col);
 					}
 					return nullptr;
 				}
@@ -2740,10 +2766,10 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 							i = cols.GetCount();
 							while (i-- > 0)
 							{
-								col = cols.GetItem(i);
+								col = cols.GetItemNoCheck(i);
 								col->name->Release();
 								OPTSTR_DEL(col->asName);
-								MemFree(col);
+								MemFreeNN(col);
 							}
 
 							Text::StringBuilderUTF8 sb;
@@ -2765,16 +2791,16 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 						i = cols.GetCount();
 						while (i-- > 0)
 						{
-							col = cols.GetItem(i);
+							col = cols.GetItemNoCheck(i);
 							col->name->Release();
 							OPTSTR_DEL(col->asName);
-							MemFree(col);
+							MemFreeNN(col);
 						}
 						OPTSTR_DEL(val);
 
 						return nullptr;
 					}
-					col = MemAlloc(DB::DBMS::SQLColumn, 1);
+					col = MemAllocNN(DB::DBMS::SQLColumn);
 					col->name = Text::String::NewP(nameBuff, namePtr);
 					col->asName = val;
 					cols.Add(col);
@@ -2789,7 +2815,7 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 						i = cols.GetCount();
 						while (i-- > 0)
 						{
-							col = cols.GetItem(i);
+							col = cols.GetItemNoCheck(i);
 							if (col->name->v[0] == '!')
 							{
 								this->SysVarSet(sess, true, col->name->ToCString().Substring(1), col->asName);
@@ -2804,11 +2830,11 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 							}
 							col->name->Release();
 							OPTSTR_DEL(col->asName);
-							MemFree(col);
+							MemFreeNN(col);
 						}
 
-						DB::DBMSReader *reader;
-						NEW_CLASS(reader, DB::DBMSReader(0, 0));
+						NN<DB::DBMSReader> reader;
+						NEW_CLASSNN(reader, DB::DBMSReader(0, 0));
 						return reader;
 					}
 				}
@@ -2817,10 +2843,10 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 					i = cols.GetCount();
 					while (i-- > 0)
 					{
-						col = cols.GetItem(i);
+						col = cols.GetItemNoCheck(i);
 						col->name->Release();
 						OPTSTR_DEL(col->asName);
-						MemFree(col);
+						MemFreeNN(col);
 					}
 
 					Text::StringBuilderUTF8 sb;
@@ -2835,10 +2861,10 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 				i = cols.GetCount();
 				while (i-- > 0)
 				{
-					col = cols.GetItem(i);
+					col = cols.GetItemNoCheck(i);
 					col->name->Release();
 					OPTSTR_DEL(col->asName);
-					MemFree(col);
+					MemFreeNN(col);
 				}
 
 				Text::StringBuilderUTF8 sb;

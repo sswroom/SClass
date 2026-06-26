@@ -215,12 +215,12 @@ Bool DB::ODBCConn::Connect(Optional<Text::String> dsn, Optional<Text::String> ui
 			sb.AppendC(UTF8STRC("]"));
 			if (msgSize > 255)
 			{
-				SQLWCHAR *tmpBuff = MemAlloc(SQLWCHAR, (UInt16)(msgSize + 1));
-				ret = SQLGetDiagRecW(SQL_HANDLE_DBC, hConn, 1, state, (SQLINTEGER*)&errCode, tmpBuff, (Int16)(msgSize + 1), &msgSize);
-				s = Text::String::NewNotNull((const UTF16Char*)tmpBuff);
+				UnsafeArray<SQLWCHAR> tmpBuff = MemAllocArr(SQLWCHAR, (UInt16)(msgSize + 1));
+				ret = SQLGetDiagRecW(SQL_HANDLE_DBC, hConn, 1, state, (SQLINTEGER*)&errCode, tmpBuff.Ptr(), (Int16)(msgSize + 1), &msgSize);
+				s = Text::String::NewNotNull(UnsafeArray<const UTF16Char>::ConvertFrom(tmpBuff));
 				sb.AppendC(s->v, s->leng);
 				s->Release();
-				MemFree(tmpBuff);				
+				MemFreeArr(tmpBuff);				
 			}
 			else
 			{
@@ -296,13 +296,13 @@ Bool DB::ODBCConn::Connect(NN<Text::String> connStr)
 //	printf("ODBC Connect: %s\r\n", connStr);
 	SQLSMALLINT outSize;
 	UIntOS outMaxSize = Text::StrUTF8_UTF16CntC(connStr->v, connStr->leng);
-	SQLWCHAR *connBuff = MemAlloc(SQLWCHAR, outMaxSize + 2);
-	SQLWCHAR *connEnd = (SQLWCHAR*)Text::StrUTF8_UTF16C((UTF16Char*)connBuff, connStr->v, connStr->leng, 0).Ptr();
+	UnsafeArray<SQLWCHAR> connBuff = MemAllocArr(SQLWCHAR, outMaxSize + 2);
+	UnsafeArray<SQLWCHAR> connEnd = UnsafeArray<SQLWCHAR>::ConvertFrom(Text::StrUTF8_UTF16C(UnsafeArray<UTF16Char>::ConvertFrom(connBuff), connStr->v, connStr->leng, 0));
 	connEnd[0] = 0;
 	connEnd[1] = 0;
 	outSize = 0;
-	ret = SQLDriverConnectW(hConn, 0, connBuff, (SQLSMALLINT)(connEnd - connBuff), NULL, 0, &outSize, 0);
-	MemFree(connBuff);
+	ret = SQLDriverConnectW(hConn, 0, connBuff.Ptr(), (SQLSMALLINT)(connEnd - connBuff), NULL, 0, &outSize, 0);
+	MemFreeArr(connBuff);
 
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
@@ -322,12 +322,12 @@ Bool DB::ODBCConn::Connect(NN<Text::String> connStr)
 			sb.AppendC(UTF8STRC("]"));
 			if (msgSize > 255)
 			{
-				SQLWCHAR *tmpBuff = MemAlloc(SQLWCHAR, (UInt16)(msgSize + 1));
-				ret = SQLGetDiagRecW(SQL_HANDLE_DBC, hConn, 1, state, (SQLINTEGER*)&errCode, tmpBuff, (Int16)(msgSize + 1), &msgSize);
-				s = Text::String::NewNotNull((const UTF16Char*)tmpBuff);
+				UnsafeArray<SQLWCHAR> tmpBuff = MemAllocArr(SQLWCHAR, (UInt16)(msgSize + 1));
+				ret = SQLGetDiagRecW(SQL_HANDLE_DBC, hConn, 1, state, (SQLINTEGER*)&errCode, tmpBuff.Ptr(), (Int16)(msgSize + 1), &msgSize);
+				s = Text::String::NewNotNull(UnsafeArray<const UTF16Char>::ConvertFrom(tmpBuff));
 				sb.Append(s);
 				s->Release();
-				MemFree(tmpBuff);				
+				MemFreeArr(tmpBuff);				
 			}
 			else
 			{
@@ -782,12 +782,12 @@ void DB::ODBCConn::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 
 			if (msgSize > 255)
 			{
-				SQLWCHAR *tmpMsg = MemAlloc(SQLWCHAR, (UInt16)(msgSize + 1));
-				ret = SQLGetDiagRecW(SQL_HANDLE_STMT, this->lastStmtHand, (SQLSMALLINT)recNumber, state, (SQLINTEGER*)&errCode, tmpMsg, (SQLSMALLINT)(msgSize + 1), &msgSize);
-				s = Text::String::NewNotNull((const UTF16Char*)tmpMsg);
+				UnsafeArray<SQLWCHAR> tmpMsg = MemAllocArr(SQLWCHAR, (UInt16)(msgSize + 1));
+				ret = SQLGetDiagRecW(SQL_HANDLE_STMT, this->lastStmtHand, (SQLSMALLINT)recNumber, state, (SQLINTEGER*)&errCode, tmpMsg.Ptr(), (SQLSMALLINT)(msgSize + 1), &msgSize);
+				s = Text::String::NewNotNull(UnsafeArray<const UTF16Char>::ConvertFrom(tmpMsg));
 				str->Append(s);
 				s->Release();
-				MemFree(tmpMsg);
+				MemFreeArr(tmpMsg);
 			}
 			else
 			{
@@ -1232,7 +1232,7 @@ DB::ODBCReader::ODBCReader(DB::ODBCConn *conn, void *hStmt, Bool enableDebug, In
 	SQLLEN len = -1;
 	ret = SQLRowCount((SQLHSTMT)this->hStmt, (SQLLEN*)&len);
 	this->rowChanged = len;
-	this->colDatas = MemAlloc(DB::ODBCReader::ColumnData, this->colCnt);
+	this->colDatas = MemAllocArr(DB::ODBCReader::ColumnData, this->colCnt);
 
 	i = 0;
 	while (i < this->colCnt)
@@ -1277,7 +1277,7 @@ DB::ODBCReader::ODBCReader(DB::ODBCConn *conn, void *hStmt, Bool enableDebug, In
 		case DB::DBUtil::CT_DateTimeTZ:
 		case DB::DBUtil::CT_DateTime:
 		case DB::DBUtil::CT_Date:
-			this->colDatas[i].colData = MemAlloc(Data::Timestamp, 1);
+			this->colDatas[i].colData = MemAllocArr(Data::Timestamp, 1).Ptr();
 			break;
 		case DB::DBUtil::CT_Vector:
 		case DB::DBUtil::CT_Binary:
@@ -1345,7 +1345,7 @@ DB::ODBCReader::~ODBCReader()
 			break;
 		}
 	}
-	MemFree(this->colDatas);
+	MemFreeArr(this->colDatas);
 }
 
 Bool DB::ODBCReader::ReadNext()
@@ -1367,7 +1367,7 @@ Bool DB::ODBCReader::ReadNext()
 		{
 			Text::StringBuilderUTF8 *sb;
 			Data::Timestamp *dt;
-			UTF16Char *sptr;
+			UnsafeArray<UTF16Char> sptr;
 			SQLLEN len;
 			SQLRETURN ret;
 
@@ -1488,8 +1488,8 @@ Bool DB::ODBCReader::ReadNext()
 								{
 									len = 2048;
 								}
-								sptr = MemAlloc(UTF16Char, (UIntOS)((len >> 1) + 1));
-								ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_WCHAR, sptr, len + 2, &len);
+								sptr = MemAllocArr(UTF16Char, (UIntOS)((len >> 1) + 1));
+								ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_WCHAR, sptr.Ptr(), len + 2, &len);
 								if (ret == SQL_SUCCESS_WITH_INFO || ret == SQL_ERROR)
 								{
 	//								wprintf(L"ODBCReader: Char Error, len = %d, v = %ls\r\n", len, sb->GetEndPtr());
@@ -1499,7 +1499,7 @@ Bool DB::ODBCReader::ReadNext()
 								{
 									if (len == -4) //SQL_NO_TOTAL
 									{
-										len = (SQLLEN)Text::StrCharCnt(sptr) * 2;
+										len = (SQLLEN)Text::StrCharCnt(UnsafeArray<const UTF16Char>(sptr)) * 2;
 									}
 									cnt = Text::StrUTF16_UTF8CntC(sptr, (UIntOS)len >> 1);
 									sb->AllocLeng(cnt);
@@ -1512,7 +1512,7 @@ Bool DB::ODBCReader::ReadNext()
 								{
 									this->colDatas[i].isNull = true;
 								}
-								MemFree(sptr);
+								MemFreeArr(sptr);
 							}
 						}
 						else
@@ -1686,7 +1686,7 @@ Bool DB::ODBCReader::ReadNext()
 						else
 						{
 							this->colDatas[i].dataVal = len;
-							this->colDatas[i].colData = MemAlloc(UInt8, (UIntOS)len);
+							this->colDatas[i].colData = MemAllocArr(UInt8, (UIntOS)len).Ptr();
 							ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_BINARY, this->colDatas[i].colData, len, &len);
 							if (ret == SQL_SUCCESS_WITH_INFO || ret == SQL_SUCCESS)
 							{

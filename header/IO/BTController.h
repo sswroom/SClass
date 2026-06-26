@@ -18,7 +18,7 @@ namespace IO
 		private:
 			void *internalData;
 			void *hRadio;
-			UInt8 *devInfo;
+			UnsafeArray<UInt8> devInfo;
 			void *clsData;
 		public:
 			BTDevice(void *internalData, void *hRadio, void *devInfo);

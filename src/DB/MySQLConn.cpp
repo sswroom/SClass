@@ -475,7 +475,7 @@ DB::MySQLReader::MySQLReader(IntOS rowChanged, void *result, Int8 tzQhr)
 	this->row = 0;
 	this->tzQhr = tzQhr;
 	this->lengs = 0;
-	this->names = MemAlloc(WChar *, this->colCount);
+	this->names = MemAllocArr(UnsafeArray<WChar>, this->colCount);
 	UIntOS i;
 	UIntOS j;
 	i = this->colCount;
@@ -483,7 +483,7 @@ DB::MySQLReader::MySQLReader(IntOS rowChanged, void *result, Int8 tzQhr)
 	{
 		MYSQL_FIELD *field = mysql_fetch_field_direct((MYSQL_RES*)this->result, (UInt32)i);
 		j = Text::StrUTF8_WCharCntC((const UTF8Char*)field->name, field->name_length);
-		this->names[i] = MemAlloc(WChar, j + 1);
+		this->names[i] = MemAllocArr(WChar, j + 1);
 		Text::StrUTF8_WCharC(this->names[i], (const UTF8Char*)field->name, field->name_length, 0);
 	}
 }
@@ -494,9 +494,9 @@ DB::MySQLReader::~MySQLReader()
 	UIntOS i = this->colCount;
 	while (i-- > 0)
 	{
-		MemFree(this->names[i]);
+		MemFreeArr(this->names[i]);
 	}
-	MemFree(this->names);
+	MemFreeArr(this->names);
 
 }
 

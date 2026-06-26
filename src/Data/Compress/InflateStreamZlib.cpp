@@ -12,45 +12,48 @@
 Data::Compress::InflateStream::InflateStream(NN<IO::Stream> outStm, UIntOS headerSize, Bool zlibHeader) : IO::Stream(CSTR("InflateStream"))
 {
 	this->outStm = outStm;
-	this->writeBuff = MemAlloc(UInt8, BUFFSIZE);
+	this->writeBuff = MemAllocArr(UInt8, BUFFSIZE);
 	this->headerSize = headerSize;
-	z_stream *mzstm = MemAlloc(z_stream, 1);
-	this->cmpInfo = mzstm;
-	MemClear(mzstm, sizeof(z_stream));
-	mzstm->next_in = this->writeBuff;
+	NN<z_stream> mzstm = MemAllocNN(z_stream);
+	this->cmpInfo = mzstm.Ptr();
+	MemClear(mzstm.Ptr(), sizeof(z_stream));
+	mzstm->next_in = this->writeBuff.Ptr();
 	mzstm->avail_in = 0;
-	mzstm->next_out = this->writeBuff;
+	mzstm->next_out = this->writeBuff.Ptr();
 	mzstm->avail_out = BUFFSIZE;
 	if (zlibHeader)
-		inflateInit2(mzstm, 15);
+		inflateInit2(mzstm.Ptr(), 15);
 	else
-		inflateInit2(mzstm, -15);
+		inflateInit2(mzstm.Ptr(), -15);
 }
 
 Data::Compress::InflateStream::InflateStream(NN<IO::Stream> outStm, Bool zlibHeader) : IO::Stream(CSTR("InflateStream"))
 {
 	this->outStm = outStm;
-	this->writeBuff = MemAlloc(UInt8, BUFFSIZE);
+	this->writeBuff = MemAllocArr(UInt8, BUFFSIZE);
 	this->headerSize = 0;
-	z_stream *mzstm = MemAlloc(z_stream, 1);
-	this->cmpInfo = mzstm;
-	MemClear(mzstm, sizeof(z_stream));
-	mzstm->next_in = this->writeBuff;
+	NN<z_stream> mzstm = MemAllocNN(z_stream);
+	this->cmpInfo = mzstm.Ptr();
+	MemClear(mzstm.Ptr(), sizeof(z_stream));
+	mzstm->next_in = this->writeBuff.Ptr();
 	mzstm->avail_in = 0;
-	mzstm->next_out = this->writeBuff;
+	mzstm->next_out = this->writeBuff.Ptr();
 	mzstm->avail_out = BUFFSIZE;
 	if (zlibHeader)
-		inflateInit2(mzstm, 15);
+		inflateInit2(mzstm.Ptr(), 15);
 	else
-		inflateInit2(mzstm, -15);
+		inflateInit2(mzstm.Ptr(), -15);
 }
 
 Data::Compress::InflateStream::~InflateStream()
 {
-	z_stream *mzstm = (z_stream *)this->cmpInfo;
-	inflateEnd(mzstm);
-	MemFree(this->writeBuff);
-	MemFree(mzstm);
+	NN<z_stream> mzstm;
+	if (mzstm.Set((z_stream *)this->cmpInfo))
+	{
+		inflateEnd(mzstm.Ptr());
+		MemFreeNN(mzstm);
+	}
+	MemFreeArr(this->writeBuff);
 }
 
 Bool Data::Compress::InflateStream::IsDown() const
@@ -105,7 +108,7 @@ UIntOS Data::Compress::InflateStream::Write(Data::ByteArrayR buff)
 		{
 			this->outStm->Write(Data::ByteArrayR(writeBuff, BUFFSIZE - mzstm->avail_out));
 			mzstm->avail_out = BUFFSIZE;
-			mzstm->next_out = writeBuff;
+			mzstm->next_out = writeBuff.Ptr();
 		}
 	}
 	return buff.GetSize() - mzstm->avail_in;

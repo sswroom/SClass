@@ -1,7 +1,8 @@
 #ifndef _SM_IO_DBUSMANAGER
 #define _SM_IO_DBUSMANAGER
+#include "AnyType.h"
 #include "Data/ArrayListNN.hpp"
-#include "Text/StringBuilderC.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {
@@ -75,16 +76,16 @@ namespace IO
 		struct WatchInfo;
 		struct ArgInfo;
 
-		typedef Bool (*PropertyGetter)(const PropertyTable *property, void *itera, void *data);
+		typedef Bool (*PropertyGetter)(NN<const PropertyTable> property, void *itera, AnyType data);
 		typedef void (*PropertySetter)(const PropertyTable *property, void *value, UInt32 id, void *data);
-		typedef Bool (*PropertyExists)(const PropertyTable *property, void *data);
-		typedef void (CALLBACKFUNC MessageFunction) (DBusManager *dbusManager, Message *message, void *userData);
-		typedef Bool (CALLBACKFUNC SignalFunction) (DBusManager *dbusManager, Message *message, void *userData);
-		typedef void (CALLBACKFUNC WatchFunction) (DBusManager *dbusManager, void *userData);
-		typedef void (CALLBACKFUNC DestroyFunction) (void *userData);
-		typedef void *(CALLBACKFUNC MethodFunction) (DBusManager *dbusManager, Message *message, void *userData);
+		typedef Bool (*PropertyExists)(NN<const PropertyTable> property, AnyType data);
+		typedef void (CALLBACKFUNC MessageFunction) (NN<DBusManager> dbusManager, NN<Message> message, AnyType userData);
+		typedef Bool (CALLBACKFUNC SignalFunction) (NN<DBusManager> dbusManager, NN<Message> message, AnyType userData);
+		typedef void (CALLBACKFUNC WatchFunction) (NN<DBusManager> dbusManager, AnyType userData);
+		typedef void (CALLBACKFUNC DestroyFunction) (AnyType userData);
+		typedef void *(CALLBACKFUNC MethodFunction) (DBusManager *dbusManager, NN<Message> message, AnyType userData);
 		typedef void (CALLBACKFUNC SecurityFunction) (DBusManager *dbusManager, const Char *action, Bool interaction, UInt32 pending);
-		typedef void (CALLBACKFUNC PolkitFunction) (Bool authorized, void *userData);
+		typedef void (CALLBACKFUNC PolkitFunction) (Bool authorized, AnyType userData);
 
 		enum PropertyFlags
 		{
@@ -115,12 +116,12 @@ namespace IO
 
 		typedef struct
 		{
-			IO::DBusManager *me;
+			NN<IO::DBusManager> me;
 			void *call; //DBusPendingCall *call;
-			const Char *name;
-			const Char *owner;
+			UnsafeArray<const UTF8Char> name;
+			UnsafeArrayOpt<const UTF8Char> owner;
 			UInt32 id;
-			ListenerCallbacks *callback;
+			NN<ListenerCallbacks> callback;
 		} ServiceData;
 
 		struct ListenerCallbacks
@@ -129,23 +130,23 @@ namespace IO
 			IO::DBusManager::WatchFunction discFunc;
 			IO::DBusManager::SignalFunction signalFunc;
 			IO::DBusManager::DestroyFunction destroyFunc;
-			ServiceData *data;
-			void *userData;
+			Optional<ServiceData> data;
+			AnyType userData;
 			UIntOS id;
 		};
 
 		typedef struct
 		{
-			IO::DBusManager *me;
+			NN<IO::DBusManager> me;
 			RawMessageFunction handleFunc;
-			const Char *name;
-			const Char *owner;
-			const Char *path;
-			const Char *interface;
-			const Char *member;
-			const Char *argument;
-			Data::ArrayListNN<ListenerCallbacks> *callbacks;
-			Data::ArrayListNN<ListenerCallbacks> *processed;
+			UnsafeArrayOpt<const UTF8Char> name;
+			UnsafeArrayOpt<const UTF8Char> owner;
+			UnsafeArrayOpt<const UTF8Char> path;
+			UnsafeArrayOpt<const UTF8Char> interface;
+			UnsafeArrayOpt<const UTF8Char> member;
+			UnsafeArrayOpt<const UTF8Char> argument;
+			NN<Data::ArrayListNN<ListenerCallbacks>> callbacks;
+			NN<Data::ArrayListNN<ListenerCallbacks>> processed;
 			UIntOS nameWatch;
 			Bool lock;
 			Bool registered;
@@ -154,7 +155,7 @@ namespace IO
 
 	private:
 		struct ClassData;
-		ClassData *clsData;
+		NN<ClassData> clsData;
 		static const struct MethodTable managerMethods[];
 		static const struct SignalTable managerSignals[];
 		static const struct MethodTable introspectMethods[];
@@ -166,7 +167,7 @@ namespace IO
 		~DBusManager();
 
 		Bool IsError();
-		DBusManager *Ref();
+		NN<DBusManager> Ref();
 		void Unref();
 		void *GetHandle();
 		void QueueDispatch(Int32 status);
@@ -174,77 +175,77 @@ namespace IO
 		//Object
 		static void *GetObjects(IO::DBusManager *dbusManager, Message *message, void *userData);
 		static void *Introspect(IO::DBusManager *dbusManager, Message *message, void *userData);
-		void PrintArguments(Text::StringBuilderC *sb, const ArgInfo *args, const Char *direction);
-		void GenerateInterfaceXml(Text::StringBuilderC *sb, InterfaceData *iface);
-		void GenerateIntrospectionXml(GenericData *data, const Char *path);
-		void AppendInterfaces(GenericData *data, void *itera);
-		void AppendObject(GenericData *data, void *itera);
+		void PrintArguments(NN<Text::StringBuilderUTF8> sb, const ArgInfo *args, const Char *direction);
+		void GenerateInterfaceXml(NN<Text::StringBuilderUTF8> sb, NN<InterfaceData> iface);
+		void GenerateIntrospectionXml(NN<GenericData> data, const Char *path);
+		void AppendInterfaces(NN<GenericData> data, void *itera);
+		void AppendObject(NN<GenericData> data, void *itera);
 		void PendingSuccess(UInt32 pending);
 		void *CreateError(void *message, const Char *name, const Char *errMsg);
 		Bool SendError(void *message, const Char *name, const Char *errMsg);
 		void PendingError(UInt32 pending, const Char *name, const Char *errMsg);
 
-		GenericData *ObjectPathRef(const Char *path);
+		Optional<GenericData> ObjectPathRef(UnsafeArray<const UTF8Char> path);
 		Bool AttachObjectManager();
-		void GenericDataFree(GenericData *data);
-		void GenericUnregister(GenericData *data);
-		HandlerResult GenericMessage(GenericData *data, Message *message);
-		HandlerResult ProcessMessage(Message *message, const MethodTable *method, void *ifaceUserData);
-		GenericData *InvalidateParentData(const Char *childPath);
-		void AddPending(GenericData *data);
-		InterfaceData *FindInterface(GenericData *data, const Char *name);
-		Bool AddInterface(GenericData *data, const Char *name, const MethodTable *methods, const SignalTable *signals, const PropertyTable *properties, void *userData, DestroyFunction destroy);
-		Bool ArgsHaveSignature(const ArgInfo *args, Message *message);
+		void GenericDataFree(NN<GenericData> data);
+		void GenericUnregister(NN<GenericData> data);
+		HandlerResult GenericMessage(NN<GenericData> data, NN<Message> message);
+		HandlerResult ProcessMessage(NN<Message> message, const MethodTable *method, AnyType ifaceUserData);
+		Optional<GenericData> InvalidateParentData(UnsafeArray<const UTF8Char> childPath);
+		void AddPending(NN<GenericData> data);
+		Optional<InterfaceData> FindInterface(NN<GenericData> data, UnsafeArray<const UTF8Char> name);
+		Bool AddInterface(NN<GenericData> data, UnsafeArray<const UTF8Char> name, const MethodTable *methods, UnsafeArrayOpt<const SignalTable> signals, UnsafeArrayOpt<const PropertyTable> properties, AnyType userData, DestroyFunction destroy);
+		Bool ArgsHaveSignature(const ArgInfo *args, NN<Message> message);
 
-		static void BuiltinSecurityResult(Bool authorized, void *userData);
+		static void BuiltinSecurityResult(Bool authorized, AnyType userData);
 		void BuiltinSecurityFunction(const Char *action, Bool interaction, UInt32 pending);
-		Bool CheckPrivilege(Message *message, const MethodTable *method, void *ifaceUserData);
+		Bool CheckPrivilege(NN<Message> message, const MethodTable *method, AnyType ifaceUserData);
 
-		Bool CheckSignal(const Char *path, const Char *interface, const Char *name, const ArgInfo **args);
+		Bool CheckSignal(UnsafeArray<const UTF8Char> path, UnsafeArray<const UTF8Char> interface, UnsafeArray<const UTF8Char> name, OutParam<const ArgInfo*> args);
 		Bool CheckExperimental(Int32 flags, Int32 flag);
-		void AppendName(const Char *name, void *itera);
-		void AppendProperty(InterfaceData *iface, const PropertyTable *p, void *itera);
-		void AppendProperties(InterfaceData *iface, void *itera);
-		void AppendInterface(InterfaceData *iface, void *itera);
-		void ProcessPropertyChanges(GenericData *data);
-		void ProcessPropertiesFromInterface(GenericData *data, InterfaceData *iface);
-		void EmitInterfacesAdded(GenericData *data);
-		void EmitInterfacesRemoved(GenericData *data);
+		void AppendName(UnsafeArray<const UTF8Char> name, void *itera);
+		void AppendProperty(NN<InterfaceData> iface, NN<const PropertyTable> p, void *itera);
+		void AppendProperties(NN<InterfaceData> iface, void *itera);
+		void AppendInterface(NN<InterfaceData> iface, void *itera);
+		void ProcessPropertyChanges(NN<GenericData> data);
+		void ProcessPropertiesFromInterface(NN<GenericData> data, NN<InterfaceData> iface);
+		void EmitInterfacesAdded(NN<GenericData> data);
+		void EmitInterfacesRemoved(NN<GenericData> data);
 
 		void Flush();
-		void RemovePending(GenericData *data);
+		void RemovePending(NN<GenericData> data);
 		static Bool ProcessChanges(void *userData);
 		Bool SendMessageWithReply(void *message, void **call, Int32 timeout);
 		Bool SendMessage(void *message);
 
 		//Watch
 	private:
-		void ServiceDataFree(ServiceData *data);
+		void ServiceDataFree(NN<ServiceData> data);
 		static Bool UpdateService(void *userObj);
 		static void ServiceReply(void *pending, void *userObj);
 		static HandlerResult ServiceFilter(void *connection, void *message, void *userData);
 		static HandlerResult SignalFilter(void *connection, void *message, void *userData);
 
 		static Bool ListenerUpdateService(void *userObj);
-		Listener *ListenerFind();
-		void ListenerBuildRule(Listener *listener, Text::StringBuilderC *sb);
-		Bool ListenerAddMatch(Listener *listener, RawMessageFunction hdlr);
-		Bool ListenerRemoveMatch(Listener *listener);
-		Listener *ListenerFindMatch(const Char *name, const Char *owner, const Char *path, const Char *interface, const Char *member, const Char *argument);
-		Listener *ListenerGet(RawMessageFunction filter, const Char *sender, const Char *path, const Char *interface, const Char *member, const Char *argument);
-		ListenerCallbacks *ListenerAddCallback(Listener *listener, WatchFunction connect, WatchFunction disconnect, SignalFunction signal, DestroyFunction destroy, void *userData);
-		ListenerCallbacks *ListenerFindCallback(Listener *listener, UIntOS id);
-		Bool ListenerRemoveCallback(Listener *listener, ListenerCallbacks *cb);
-		void ListenerFree(Listener *listener);
-		void ListenerCheckService(const Char *name, ListenerCallbacks *callback);
-		const Char *ListenerCheckNameCache(const Char *name);
-		void ListenerUpdateNameCache(const Char *name, const Char *owner);
+		Optional<Listener> ListenerFind();
+		void ListenerBuildRule(NN<Listener> listener, NN<Text::StringBuilderUTF8> sb);
+		Bool ListenerAddMatch(NN<Listener> listener, RawMessageFunction hdlr);
+		Bool ListenerRemoveMatch(NN<Listener> listener);
+		Optional<Listener> ListenerFindMatch(UnsafeArrayOpt<const UTF8Char> name, UnsafeArrayOpt<const UTF8Char> owner, UnsafeArrayOpt<const UTF8Char> path, UnsafeArrayOpt<const UTF8Char> interface, UnsafeArrayOpt<const UTF8Char> member, UnsafeArrayOpt<const UTF8Char> argument);
+		Optional<Listener> ListenerGet(RawMessageFunction filter, UnsafeArrayOpt<const UTF8Char> sender, UnsafeArrayOpt<const UTF8Char> path, UnsafeArrayOpt<const UTF8Char> interface, UnsafeArrayOpt<const UTF8Char> member, UnsafeArrayOpt<const UTF8Char> argument);
+		NN<ListenerCallbacks> ListenerAddCallback(NN<Listener> listener, WatchFunction connect, WatchFunction disconnect, SignalFunction signal, DestroyFunction destroy, AnyType userData);
+		Optional<ListenerCallbacks> ListenerFindCallback(NN<Listener> listener, UIntOS id);
+		Bool ListenerRemoveCallback(NN<Listener> listener, NN<ListenerCallbacks> cb);
+		void ListenerFree(NN<Listener> listener);
+		void ListenerCheckService(UnsafeArray<const UTF8Char> name, NN<ListenerCallbacks> callback);
+		UnsafeArrayOpt<const UTF8Char> ListenerCheckNameCache(UnsafeArray<const UTF8Char> name);
+		void ListenerUpdateNameCache(UnsafeArrayOpt<const UTF8Char> name, UnsafeArrayOpt<const UTF8Char> owner);
 		
 	public:
 		HandlerResult WatchMessageFilter(Message *message);
-		UIntOS AddServiceWatch(const Char *name, WatchFunction connect, WatchFunction disconnect, void *userData, DestroyFunction destroy);
-		UIntOS AddSignalWatch(const Char *sender, const Char *path, const Char *interface, const Char *member, SignalFunction function, void *userData, DestroyFunction destroy);
-		UIntOS AddPropertiesWatch(const Char *sender, const Char *path, const Char *interface, SignalFunction function, void *userData, DestroyFunction destroy);
+		UIntOS AddServiceWatch(UnsafeArray<const UTF8Char> name, WatchFunction connect, WatchFunction disconnect, void *userData, DestroyFunction destroy);
+		UIntOS AddSignalWatch(UnsafeArrayOpt<const UTF8Char> sender, UnsafeArrayOpt<const UTF8Char> path, UnsafeArrayOpt<const UTF8Char> interface, UnsafeArrayOpt<const UTF8Char> member, SignalFunction function, void *userData, DestroyFunction destroy);
+		UIntOS AddPropertiesWatch(UnsafeArrayOpt<const UTF8Char> sender, UnsafeArrayOpt<const UTF8Char> path, UnsafeArrayOpt<const UTF8Char> interface, SignalFunction function, void *userData, DestroyFunction destroy);
 		Bool RemoveWatch(UIntOS id);
 		void RemoveAllWatches();
 
@@ -255,7 +256,7 @@ namespace IO
 		void AddArguments(void *itera, const Char *action, UInt32 flags);
 		static Bool PolkitParseResult(void *itera);
 		static void AuthorizationReply(void *call, void *userData);
-		ErrorType PolkitCheckAuthorization(const Char *action, Bool interaction, PolkitFunction function, void *userData, Int32 timeout);
+		ErrorType PolkitCheckAuthorization(const Char *action, Bool interaction, PolkitFunction function, AnyType userData, Int32 timeout);
 	};
 }
 #endif

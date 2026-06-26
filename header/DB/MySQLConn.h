@@ -73,7 +73,7 @@ namespace DB
 		UIntOS colCount;
 		Char **row;
 		UInt32 *lengs;
-		WChar **names;
+		UnsafeArray<UnsafeArray<WChar>> names;
 		Int8 tzQhr;
 
 	public:

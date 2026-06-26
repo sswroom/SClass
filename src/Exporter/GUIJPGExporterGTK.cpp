@@ -104,9 +104,9 @@ UIntOS Exporter::GUIJPGExporter::GetParamCnt()
 
 Optional<IO::FileExporter::ParamData> Exporter::GUIJPGExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
-	Int32 *val = MemAlloc(Int32, 1);
-	*val = 100;
-	return (ParamData*)val;
+	UnsafeArray<Int32> val = MemAllocArr(Int32, 1);
+	val[0] = 100;
+	return (ParamData*)val.Ptr();
 }
 
 void Exporter::GUIJPGExporter::DeleteParam(Optional<ParamData> param)

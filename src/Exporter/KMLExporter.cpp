@@ -723,9 +723,9 @@ UIntOS Exporter::KMLExporter::GetParamCnt()
 
 Optional<IO::FileExporter::ParamData> Exporter::KMLExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
-	Int32 *retParam = MemAlloc(Int32, 1);
+	UnsafeArray<Int32> retParam = MemAllocArr(Int32, 1);
 	*retParam = 0;
-	return (ParamData*)retParam;
+	return (ParamData*)retParam.Ptr();
 }
 
 void Exporter::KMLExporter::DeleteParam(Optional<ParamData> param)

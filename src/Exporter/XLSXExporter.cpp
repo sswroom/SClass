@@ -432,8 +432,8 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			}
 			k++;
 		}
-		Data::ArrayListObj<LinkInfo*> links;
-		LinkInfo *link;
+		Data::ArrayListNN<LinkInfo> links;
+		NN<LinkInfo> link;
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"));
@@ -624,7 +624,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 							
 							if (cell->cellURL.NotNull())
 							{
-								link = MemAlloc(LinkInfo, 1);
+								link = MemAllocNN(LinkInfo);
 								link->row = k;
 								link->col = m;
 								link->cell = cell;
@@ -686,7 +686,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 				n = links.GetCount();
 				while (m < n)
 				{
-					link = links.GetItem(m);
+					link = links.GetItemNoCheck(m);
 					sb.AppendC(UTF8STRC("<hyperlink ref=\""));
 					sptr = Text::SpreadSheet::Workbook::ColCode(sbuff, link->col);
 					sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
@@ -772,7 +772,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			n = links.GetCount();
 			while (m < n)
 			{
-				link = links.GetItem(m);
+				link = links.GetItemNoCheck(m);
 				sb.AppendC(UTF8STRC("<Relationship Id=\"rId"));
 				sb.AppendUIntOS(l + m + 1);
 				sb.AppendC(UTF8STRC("\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink\" Target="));
@@ -780,7 +780,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 				sb.Append(s);
 				s->Release();
 				sb.AppendC(UTF8STRC(" TargetMode=\"External\"/>"));
-				MemFree(link);
+				MemFreeNN(link);
 				m++;
 			}
 			sb.AppendC(UTF8STRC("</Relationships>"));

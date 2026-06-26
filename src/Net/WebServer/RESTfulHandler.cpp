@@ -49,7 +49,7 @@ void Net::WebServer::RESTfulHandler::BuildJSON(NN<Text::JSONBuilder> json, NN<DB
 			}
 			break;
 		case DB::DBRow::DT_VECTOR:
-			if (vec.Set(row->GetValueVector(col->GetColName()->ToCString())))
+			if (row->GetValueVector(col->GetColName()->ToCString()).SetTo(vec))
 				this->AppendVector(json, sb.ToCString(), vec);
 			else
 				json->ObjectAddNull(sb.ToCString());

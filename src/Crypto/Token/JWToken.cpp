@@ -419,11 +419,11 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Parse(Text::CStringNN t
 		return nullptr;
 	}
 	Text::TextBinEnc::Base64Enc b64url(Text::TextBinEnc::Base64Enc::Charset::URL, true);
-	UInt8 *headerBuff = MemAlloc(UInt8, i1 + 1);
+	UnsafeArray<UInt8> headerBuff = MemAllocArr(UInt8, i1 + 1);
 	UIntOS headerSize;
-	UInt8 *payloadBuff = MemAlloc(UInt8, (i2 - i1));
+	UnsafeArray<UInt8> payloadBuff = MemAllocArr(UInt8, (i2 - i1));
 	UIntOS payloadSize;
-	UInt8 *signBuff = MemAlloc(UInt8, (token.leng - i2));
+	UnsafeArray<UInt8> signBuff = MemAllocArr(UInt8, (token.leng - i2));
 	UIntOS signSize;
 	headerSize = b64url.DecodeBin(Text::CStringNN(token.v, i1), headerBuff);
 	payloadSize = b64url.DecodeBin(Text::CStringNN(token.v + i1 + 1, i2 - i1 - 1), payloadBuff);
@@ -435,18 +435,18 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Parse(Text::CStringNN t
 	if (!Text::JSONBase::ParseJSONStr(Text::CStringNN(headerBuff, headerSize)).SetTo(json))
 	{
 		if (sbErr.SetTo(nnsb)) nnsb->AppendC(UTF8STRC("Token format error: header is not JSON"));
-		MemFree(headerBuff);
-		MemFree(payloadBuff);
-		MemFree(signBuff);
+		MemFreeArr(headerBuff);
+		MemFreeArr(payloadBuff);
+		MemFreeArr(signBuff);
 		return nullptr;
 	}
 	else if (json->GetType() != Text::JSONType::Object)
 	{
 		if (sbErr.SetTo(nnsb)) nnsb->AppendC(UTF8STRC("Token format error: header JSON is not object"));
 		json->EndUse();
-		MemFree(headerBuff);
-		MemFree(payloadBuff);
-		MemFree(signBuff);
+		MemFreeArr(headerBuff);
+		MemFreeArr(payloadBuff);
+		MemFreeArr(signBuff);
 		return nullptr;
 	}
 	NN<Text::String> sAlg;
@@ -454,9 +454,9 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Parse(Text::CStringNN t
 	{
 		if (sbErr.SetTo(nnsb)) nnsb->AppendC(UTF8STRC("Token format error: alg is not found"));
 		json->EndUse();
-		MemFree(headerBuff);
-		MemFree(payloadBuff);
-		MemFree(signBuff);
+		MemFreeArr(headerBuff);
+		MemFreeArr(payloadBuff);
+		MemFreeArr(signBuff);
 		return nullptr;
 	}
 	alg = JWSignature::AlgorithmGetByName(sAlg->v);
@@ -464,27 +464,27 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Parse(Text::CStringNN t
 	{
 		if (sbErr.SetTo(nnsb)) nnsb->AppendC(UTF8STRC("Token format error: alg is not supported"));
 		json->EndUse();
-		MemFree(headerBuff);
-		MemFree(payloadBuff);
-		MemFree(signBuff);
+		MemFreeArr(headerBuff);
+		MemFreeArr(payloadBuff);
+		MemFreeArr(signBuff);
 		return nullptr;
 	}
 	json->EndUse();
 	if (!Text::JSONBase::ParseJSONStr(Text::CStringNN(payloadBuff, payloadSize)).SetTo(json))
 	{
 		if (sbErr.SetTo(nnsb)) nnsb->AppendC(UTF8STRC("Token format error: payload is not JSON"));
-		MemFree(headerBuff);
-		MemFree(payloadBuff);
-		MemFree(signBuff);
+		MemFreeArr(headerBuff);
+		MemFreeArr(payloadBuff);
+		MemFreeArr(signBuff);
 		return nullptr;
 	}
 	else if (json->GetType() != Text::JSONType::Object)
 	{
 		if (sbErr.SetTo(nnsb)) nnsb->AppendC(UTF8STRC("Token format error: payload JSON is not object"));
 		json->EndUse();
-		MemFree(headerBuff);
-		MemFree(payloadBuff);
-		MemFree(signBuff);
+		MemFreeArr(headerBuff);
+		MemFreeArr(payloadBuff);
+		MemFreeArr(signBuff);
 		return nullptr;
 	}
 	json->EndUse();
@@ -494,9 +494,9 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Parse(Text::CStringNN t
 	jwt->SetPayload(Text::CStringNN(payloadBuff, payloadSize));
 	jwt->SetSignature(signBuff, signSize);
 
-	MemFree(headerBuff);
-	MemFree(payloadBuff);
-	MemFree(signBuff);
+	MemFreeArr(headerBuff);
+	MemFreeArr(payloadBuff);
+	MemFreeArr(signBuff);
 	return jwt;
 }
 

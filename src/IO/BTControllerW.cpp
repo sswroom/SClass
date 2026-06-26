@@ -43,7 +43,7 @@ IO::BTController::BTDevice::BTDevice(void *internalData, void *hRadio, void *dev
 	Sync::Interlocked::IncrementI32(me->useCnt);
 	this->internalData = internalData;
 	this->hRadio = hRadio;
-	this->devInfo = MemAlloc(UInt8, sizeof(BLUETOOTH_DEVICE_INFO));
+	this->devInfo = MemAllocArr(UInt8, sizeof(BLUETOOTH_DEVICE_INFO));
 	this->clsData = 0;
 	MemCopyNO(this->devInfo, devInfo, sizeof(BLUETOOTH_DEVICE_INFO));
 }
@@ -56,7 +56,7 @@ IO::BTController::BTDevice::~BTDevice()
 		DEL_CLASS(me->lib);
 		MemFree(me);
 	}
-	MemFree(this->devInfo);
+	MemFreeArr(this->devInfo);
 	if (this->clsData)
 	{
 		((Text::String*)this->clsData)->Release();

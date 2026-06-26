@@ -4,7 +4,6 @@
 
 IO::GPUManager::GPUManager()
 {
-	this->clsData = 0;
 }
 
 IO::GPUManager::~GPUManager()

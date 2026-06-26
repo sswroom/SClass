@@ -27,9 +27,9 @@ Bool Data::Compress::Inflate::Decompress(NN<IO::Stream> destStm, NN<IO::StreamDa
 
 UIntOS Data::Compress::Inflate::TestCompress(UnsafeArray<const UInt8> srcBuff, UIntOS srcBuffSize, Bool hasHeader)
 {
-	UInt8 *tmpBuff = MemAlloc(UInt8, srcBuffSize + 11);
+	UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, srcBuffSize + 11);
 	UIntOS outSize = Compress(srcBuff, srcBuffSize, tmpBuff, hasHeader, Deflater::CompLevel::BestCompression);
-	MemFree(tmpBuff);
+	MemFreeArr(tmpBuff);
 	return outSize;
 }
 

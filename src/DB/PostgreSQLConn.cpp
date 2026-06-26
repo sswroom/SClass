@@ -261,19 +261,19 @@ public:
 			{
 				return false;
 			}*/
-			UInt8 *wkb = MemAlloc(UInt8, sb.GetLength() >> 1);
+			UnsafeArray<UInt8> wkb = MemAllocArr(UInt8, sb.GetLength() >> 1);
 			UIntOS wkbLen = sb.Hex2Bytes(wkb);
 			Math::WKBReader reader(0);
 			NN<Math::Geometry::Vector2D> vec;
 			if (reader.ParseWKB(wkb, wkbLen, 0).SetTo(vec))
 			{
-				MemFree(wkb);
+				MemFreeArr(wkb);
 				item->SetVectorDirect(vec);
 				return true;
 			}
 			else
 			{
-				MemFree(wkb);
+				MemFreeArr(wkb);
 				return false;
 			}
 		}
@@ -281,18 +281,18 @@ public:
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
-			UInt8 *wkb = MemAlloc(UInt8, sb.GetLength() >> 1);
+			UnsafeArray<UInt8> wkb = MemAllocArr(UInt8, sb.GetLength() >> 1);
 			UIntOS wkbLen = sb.Hex2Bytes(wkb);
 			NN<Math::Geometry::Vector2D> vec;
 			if (Map::ESRI::FileGDBUtil::ParseSDERecord(Data::ByteArrayR(wkb, wkbLen)).SetTo(vec))
 			{
-				MemFree(wkb);
+				MemFreeArr(wkb);
 				item->SetVectorDirect(vec);
 				return true;
 			}
 			else
 			{
-				MemFree(wkb);
+				MemFreeArr(wkb);
 				return false;
 			}
 		}
@@ -589,10 +589,10 @@ public:
 				if (val[0] == '\\' && val[1] == 'x')
 				{
 					UIntOS len = Text::StrCharCnt(val);
-					UInt8 *buff = MemAlloc(UInt8, (len >> 1) - 1);
+					UnsafeArray<UInt8> buff = MemAllocArr(UInt8, (len >> 1) - 1);
 					len = Text::StrHex2Bytes(val + 2, buff);
 					item->SetByteArr(buff, len);
-					MemFree(buff);
+					MemFreeArr(buff);
 					return true;
 				}
 				else

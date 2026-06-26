@@ -117,7 +117,7 @@ namespace DB
 	private:
 		ODBCConn *conn;
 		UIntOS colCnt;
-		ColumnData *colDatas;
+		UnsafeArray<ColumnData> colDatas;
 		Bool enableDebug;
 		IntOS rowChanged;
 		Int8 tzQhr;

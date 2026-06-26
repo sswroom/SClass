@@ -142,7 +142,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 				else if (chunkType == ReadInt32("IDAT"))
 				{
 					UInt32 iccSize = ReadMUInt32(&iccBuff[0]);
-					UInt8 *chunkBuff = MemAlloc(UInt8, iccSize + 32);
+					UnsafeArray<UInt8> chunkBuff = MemAllocArr(UInt8, iccSize + 32);
 					WriteInt32(&chunkBuff[4], ReadInt32("iCCP"));
 					Text::StrConcatC((UTF8Char*)&chunkBuff[8], UTF8STRC("Photoshop ICC profile"));
 					chunkBuff[30] = 0;
@@ -157,7 +157,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 						WriteMUInt32(&chunkBuff[31 + compSize], ReadMUInt32(crcBuff));
 						stm->Write(Data::ByteArrayR(chunkBuff, 35 + compSize));
 					}
-					MemFree(chunkBuff);
+					MemFreeArr(chunkBuff);
 
 					stm->Write(Data::ByteArrayR(&pngBuff[i], pngSize - i));
 					break;

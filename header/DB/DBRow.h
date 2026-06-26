@@ -28,8 +28,8 @@ namespace DB
 			Data::Timestamp ts;
 			UnsafeArrayOpt<const UTF8Char> str;
 			Double dVal;
-			Math::Geometry::Vector2D *vec;
-			UInt8 *bin;
+			Optional<Math::Geometry::Vector2D> vec;
+			UnsafeArrayOpt<UInt8> bin;
 		};
 
 		struct Field
@@ -54,15 +54,15 @@ namespace DB
 		Bool SetFieldDouble(NN<Field> field, Double dblValue);
 		Bool SetFieldDate(NN<Field> field, const Data::Timestamp &ts);
 		Bool SetFieldVector(NN<Field> field, Optional<Math::Geometry::Vector2D> vec);
-		Bool SetFieldBinary(NN<Field> field, const UInt8 *buff, UIntOS buffSize);
+		Bool SetFieldBinary(NN<Field> field, UnsafeArrayOpt<const UInt8> buff, UIntOS buffSize);
 
 		Bool IsFieldNull(NN<Field> field) const;
 		UnsafeArrayOpt<const UTF8Char> GetFieldStr(NN<Field> field) const;
 		Int64 GetFieldInt64(NN<Field> field) const;
 		Double GetFieldDouble(NN<Field> field) const;
 		Data::Timestamp GetFieldDate(NN<Field> field) const;
-		Math::Geometry::Vector2D *GetFieldVector(NN<Field> field) const;
-		const UInt8 *GetFieldBinary(NN<Field> field, UIntOS *buffSize) const;
+		Optional<Math::Geometry::Vector2D> GetFieldVector(NN<Field> field) const;
+		UnsafeArrayOpt<const UInt8> GetFieldBinary(NN<Field> field, OutParam<UIntOS> buffSize) const;
 
 	public:
 		DBRow(NN<TableDef> table);
@@ -85,8 +85,8 @@ namespace DB
 		Int64 GetValueInt64(Text::CStringNN fieldName) const;
 		Double GetValueDouble(Text::CStringNN fieldName) const;
 		Data::Timestamp GetValueDate(Text::CStringNN fieldName) const;
-		Math::Geometry::Vector2D *GetValueVector(Text::CStringNN fieldName) const;
-		const UInt8 *GetValueBinary(Text::CStringNN fieldName, UIntOS *buffSize) const;
+		Optional<Math::Geometry::Vector2D> GetValueVector(Text::CStringNN fieldName) const;
+		UnsafeArrayOpt<const UInt8> GetValueBinary(Text::CStringNN fieldName, OutParam<UIntOS> buffSize) const;
 
 		void Commit();
 		void Rollback();

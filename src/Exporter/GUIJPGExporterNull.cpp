@@ -35,19 +35,23 @@ UIntOS Exporter::GUIJPGExporter::GetParamCnt()
 	return 1;
 }
 
-void *Exporter::GUIJPGExporter::CreateParam(IO::ParsedObject *pobj)
+Optional<IO::FileExporter::ParamData> Exporter::GUIJPGExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
-	Int32 *val = MemAlloc(Int32, 1);
-	*val = 100;
-	return val;
+	UnsafeArray<Int32> val = MemAllocArr(Int32, 1);
+	val[0] = 100;
+	return (ParamData*)val.Ptr();
 }
 
-void Exporter::GUIJPGExporter::DeleteParam(void *param)
+void Exporter::GUIJPGExporter::DeleteParam(Optional<ParamData> param)
 {
-	MemFree(param);
+	NN<ParamData> para;
+	if (param.SetTo(para))
+	{
+		MemFree(para.Ptr());
+	}
 }
 
-Bool Exporter::GUIJPGExporter::GetParamInfo(UIntOS index, ParamInfo *info)
+Bool Exporter::GUIJPGExporter::GetParamInfo(UIntOS index, NN<ParamInfo> info)
 {
 	if (index == 0)
 	{
@@ -59,13 +63,14 @@ Bool Exporter::GUIJPGExporter::GetParamInfo(UIntOS index, ParamInfo *info)
 	return false;
 }
 
-Bool Exporter::GUIJPGExporter::SetParamInt32(void *param, UIntOS index, Int32 val)
+Bool Exporter::GUIJPGExporter::SetParamInt32(Optional<ParamData> param, UIntOS index, Int32 val)
 {
-	if (index == 0)
+	NN<ParamData> para;
+	if (index == 0 && param.SetTo(para))
 	{
 		if (val >= 0 && val <= 100)
 		{
-			*(Int32*)param = val;
+			*(Int32*)para.Ptr() = val;
 			return true;
 		}
 		return false;
@@ -73,11 +78,12 @@ Bool Exporter::GUIJPGExporter::SetParamInt32(void *param, UIntOS index, Int32 va
 	return false;
 }
 
-Int32 Exporter::GUIJPGExporter::GetParamInt32(void *param, UIntOS index)
+Int32 Exporter::GUIJPGExporter::GetParamInt32(Optional<ParamData> param, UIntOS index)
 {
-	if (index == 0)
+	NN<ParamData> para;
+	if (index == 0 && param.SetTo(para))
 	{
-		return *(Int32*)param;
+		return *(Int32*)para.Ptr();
 	}
 	return 0;
 }

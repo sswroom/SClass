@@ -84,7 +84,7 @@ Optional<IO::FileVersion> IO::FileVersion::Open(UnsafeArrayOpt<const UTF8Char> f
 	dwSize = GetFileVersionInfoSizeW(fileName.Ptr(), 0);
 	if (dwSize > 0)
 	{
-		buff = MemAlloc(UInt8, dwSize);
+		buff = MemAllocArr(UInt8, dwSize);
 		if (GetFileVersionInfoW(fileName.Ptr(), 0, dwSize, buff.Ptr()) != 0)
 		{
 			IO::FileVersion *ver;

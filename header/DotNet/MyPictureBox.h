@@ -1,6 +1,6 @@
 #ifndef _SM_DOTNET_MYPICTUREBOX
 #define _SM_DOTNET_MYPICTUREBOX
-#include "Media/IVideoRenderer.h"
+#include "Media/VideoRenderer.h"
 #include "Media/ImageResizer.h"
 #include "Media/CS/CSConverter.h"
 #include "Media/StaticImage.h"
@@ -15,7 +15,7 @@ namespace DotNet
 		System::EventHandler *sizeChgHdlr;
 
 		Media::Image *currImage;
-		UInt8 *imgBuff;
+		UnsafeArrayOpt<UInt8> imgBuff;
 		Media::CS::CSConverter *csconv;
 		Media::ImageResizer *resizer;
 		DotNet::DNColorManager *dnColorMgr;

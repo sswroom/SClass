@@ -11,25 +11,18 @@
 
 IO::EXEFile::EXEFile(NN<Text::String> fileName) : IO::ParsedObject(fileName)
 {
-	this->envDOS = 0;
+	this->envDOS = nullptr;
 }
 
 IO::EXEFile::~EXEFile()
 {
-	if (this->envDOS)
+	NN<ProgramEnvDOS> envDOS;
+	if (this->envDOS.SetTo(envDOS))
 	{
-		if (this->envDOS->b16Codes)
-		{
-			MemFree(this->envDOS->b16Codes);
-			this->envDOS->b16Codes = 0;
-		}
-		if (this->envDOS->b16Regs)
-		{
-			MemFree(this->envDOS->b16Regs);
-			this->envDOS->b16Regs = 0;
-		}
-		MemFree(this->envDOS);
-		this->envDOS = 0;
+		MemFreeArr(envDOS->b16Codes);
+		MemFreeNN(envDOS->b16Regs);
+		MemFreeNN(envDOS);
+		this->envDOS = nullptr;
 	}
 	UIntOS i;
 	UIntOS j;
@@ -67,7 +60,7 @@ IO::EXEFile::~EXEFile()
 	{
 		NN<ResourceInfo> res = this->resList.GetItemNoCheck(i);
 		res->name->Release();
-		MemFree((void*)res->data);
+		MemFreeArr(res->data);
 		MemFreeNN(res);
 	}
 }
@@ -179,58 +172,64 @@ Optional<Text::String> IO::EXEFile::GetExportName(UIntOS index) const
 
 Bool IO::EXEFile::HasDOS() const
 {
-	return this->envDOS != 0;
+	return this->envDOS.IsNull();
 }
 
-void IO::EXEFile::AddDOSEnv(UIntOS b16CodeLen, Manage::DasmX86_16::Registers *b16Regs, UInt16 b16CodeSegm)
+void IO::EXEFile::AddDOSEnv(UIntOS b16CodeLen, NN<Manage::DasmX86_16::Registers> b16Regs, UInt16 b16CodeSegm)
 {
-	if (this->envDOS == 0)
+	NN<ProgramEnvDOS> envDOS;
+	if (this->envDOS.IsNull())
 	{
-		this->envDOS = MemAlloc(ProgramEnvDOS, 1);
-		this->envDOS->b16HasPSP = false;
-		this->envDOS->b16Codes = MemAlloc(UInt8, b16CodeLen);
-		this->envDOS->b16CodeLen = b16CodeLen;
-		this->envDOS->b16CodeSegm = b16CodeSegm;
-		this->envDOS->b16Regs = MemAlloc(Manage::DasmX86_16::Registers, 1);
-		MemCopyNO(this->envDOS->b16Regs, b16Regs, sizeof(Manage::DasmX86_16::Registers));
+		this->envDOS = envDOS = MemAllocNN(ProgramEnvDOS);
+		envDOS->b16HasPSP = false;
+		envDOS->b16Codes = MemAllocArr(UInt8, b16CodeLen);
+		envDOS->b16CodeLen = b16CodeLen;
+		envDOS->b16CodeSegm = b16CodeSegm;
+		envDOS->b16Regs = MemAllocNN(Manage::DasmX86_16::Registers);
+		envDOS->b16Regs.CopyFrom(b16Regs);
 	}
 }
 
-UInt8 *IO::EXEFile::GetDOSCodePtr(OutParam<UIntOS> codeLen) const
+UnsafeArrayOpt<UInt8> IO::EXEFile::GetDOSCodePtr(OutParam<UIntOS> codeLen) const
 {
-	if (this->envDOS == 0)
-		return 0;
-	codeLen.Set(this->envDOS->b16CodeLen);
-	return this->envDOS->b16Codes;
+	NN<ProgramEnvDOS> envDOS;
+	if (!this->envDOS.SetTo(envDOS))
+		return nullptr;
+	codeLen.Set(envDOS->b16CodeLen);
+	return envDOS->b16Codes;
 }
 
 void IO::EXEFile::SetDOSHasPSP(Bool hasPSP)
 {
-	if (this->envDOS == 0)
+	NN<ProgramEnvDOS> envDOS;
+	if (!this->envDOS.SetTo(envDOS))
 		return;
-	this->envDOS->b16HasPSP = hasPSP;
+	envDOS->b16HasPSP = hasPSP;
 }
 
-void IO::EXEFile::GetDOSInitRegs(Manage::DasmX86_16::Registers *regs) const
+void IO::EXEFile::GetDOSInitRegs(NN<Manage::DasmX86_16::Registers> regs) const
 {
-	if (this->envDOS == 0)
+	NN<ProgramEnvDOS> envDOS;
+	if (!this->envDOS.SetTo(envDOS))
 		return;
-	MemCopyNO(regs, this->envDOS->b16Regs, sizeof(Manage::DasmX86_16::Registers));
+	regs.CopyFrom(envDOS->b16Regs);
 }
 
 UInt16 IO::EXEFile::GetDOSCodeSegm() const
 {
-	if (this->envDOS == 0)
+	NN<ProgramEnvDOS> envDOS;
+	if (!this->envDOS.SetTo(envDOS))
 		return 0;
-	return this->envDOS->b16CodeSegm;
+	return envDOS->b16CodeSegm;
 }
 
 void IO::EXEFile::AddResource(Text::CStringNN name, UnsafeArray<const UInt8> data, UIntOS dataSize, UInt32 codePage, ResourceType rt)
 {
+	UnsafeArray<UInt8> newData;
 	NN<ResourceInfo> res = MemAllocNN(ResourceInfo);
 	res->name = Text::String::New(name);
-	res->data = MemAlloc(UInt8, dataSize);
-	MemCopyNO((UInt8*)res->data, data.Ptr(), dataSize);
+	res->data = newData = MemAllocArr(UInt8, dataSize);
+	MemCopyNO(newData.Ptr(), data.Ptr(), dataSize);
 	res->dataSize = dataSize;
 	res->codePage = codePage;
 	res->rt = rt;

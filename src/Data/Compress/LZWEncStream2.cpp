@@ -133,7 +133,8 @@ UIntOS Data::Compress::LZWEncStream2::Read(const Data::ByteArray &buff)
 
 UIntOS Data::Compress::LZWEncStream2::Write(Data::ByteArrayR buff)
 {
-	UInt8 *relBuff = 0;
+	UnsafeArrayOpt<UInt8> relBuff = nullptr;
+	UnsafeArray<UInt8> nnrelBuff;
 	UIntOS sizeLeft;
 	UInt16 bestCode;
 	UIntOS i;
@@ -146,11 +147,11 @@ UIntOS Data::Compress::LZWEncStream2::Write(Data::ByteArrayR buff)
 	}
 	else
 	{
-		relBuff = MemAlloc(UInt8, buff.GetSize() + this->buffSize);
-		MemCopyNO(relBuff, this->encBuff.Ptr(), this->buffSize);
-		MemCopyNO(&relBuff[this->buffSize], buff.Ptr(), buff.GetSize());
+		relBuff = nnrelBuff = MemAllocArr(UInt8, buff.GetSize() + this->buffSize);
+		MemCopyNO(&nnrelBuff[0], this->encBuff.Ptr(), this->buffSize);
+		MemCopyNO(&nnrelBuff[this->buffSize], buff.Ptr(), buff.GetSize());
 		sizeLeft = buff.GetSize() + this->buffSize;
-		buff = Data::ByteArrayR(relBuff, sizeLeft);
+		buff = Data::ByteArrayR(nnrelBuff, sizeLeft);
 	}
 
 	while (true) //sizeLeft >= 0
@@ -214,9 +215,9 @@ UIntOS Data::Compress::LZWEncStream2::Write(Data::ByteArrayR buff)
 	}
 	MemCopyNO(this->encBuff.Ptr(), buff.Ptr(), sizeLeft);
 	this->buffSize = sizeLeft;
-	if (relBuff)
+	if (relBuff.SetTo(nnrelBuff))
 	{
-		MemFree(relBuff);
+		MemFreeArr(nnrelBuff);
 	}
 	
 	return ret;

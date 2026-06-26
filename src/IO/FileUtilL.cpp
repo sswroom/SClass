@@ -45,10 +45,10 @@ Bool IO::FileUtil::DeleteFile(Text::CStringNN file, Bool deleteRdonlyFile)
 	}
 
 	UIntOS len = Text::StrWChar_UTF8Cnt(file);
-	Char *tmpBuff = MemAlloc(Char, len + 1);
-	Text::StrWChar_UTF8((UTF8Char*)tmpBuff, file);
-	Int32 ret = unlink(tmpBuff);
-	MemFree(tmpBuff);
+	UnsafeArray<Char> tmpBuff = MemAllocArr(Char, len + 1);
+	Text::StrWChar_UTF8(UnsafeArray<UTF8Char>::ConvertFrom(tmpBuff), file);
+	Int32 ret = unlink(tmpBuff.Ptr());
+	MemFreeArr(tmpBuff);
 	if (ret == 0)
 	{
 		return true;
@@ -75,11 +75,11 @@ Bool IO::FileUtil::RenameFile(UnsafeArray<const UTF8Char> srcFile, UnsafeArray<c
 /*Bool IO::FileUtil::RenameFile(const WChar *srcFile, const WChar *destFile)
 {
 	UIntOS len = Text::StrWChar_UTF8Cnt(srcFile) + Text::StrWChar_UTF8Cnt(destFile);
-	Char *tmpBuff = MemAlloc(Char, len + 3);
-	Char *tmpBuff2 = (Char*)Text::StrWChar_UTF8((UTF8Char*)tmpBuff, srcFile) + 1;
-	Text::StrWChar_UTF8((UTF8Char*)tmpBuff2, destFile);
-	Int32 retV = rename(tmpBuff, tmpBuff2);
-	MemFree(tmpBuff);
+	UnsafeArray<Char> tmpBuff = MemAllocArr(Char, len + 3);
+	UnsafeArray<Char> tmpBuff2 = UnsafeArray<Char>::ConvertFrom(Text::StrWChar_UTF8(UnsafeArray<UTF8Char>::ConvertFrom(tmpBuff), srcFile)) + 1;
+	Text::StrWChar_UTF8(UnsafeArray<UTF8Char>::ConvertFrom(tmpBuff2), destFile);
+	Int32 retV = rename(tmpBuff.Ptr(), tmpBuff2.Ptr());
+	MemFreeArr(tmpBuff);
 	if (retV == 0)
 		return true;
 	else
@@ -136,18 +136,18 @@ Bool IO::FileUtil::IsSamePartition(UnsafeArray<const UTF8Char> file1, UnsafeArra
 {
 	Bool ret;
 	UIntOS len = Text::StrWChar_UTF8Cnt(file1) + Text::StrWChar_UTF8Cnt(file2);
-	Char *tmpBuff = MemAlloc(Char, len + 3);
-	Char *tmpBuff2 = (Char*)Text::StrWChar_UTF8((UTF8Char*)tmpBuff, file1) + 1;
-	Text::StrWChar_UTF8((UTF8Char*)tmpBuff2, file2);
+	UnsafeArray<Char> tmpBuff = MemAllocArr(Char, len + 3);
+	UnsafeArray<Char> tmpBuff2 = UnsafeArray<Char>::ConvertFrom(Text::StrWChar_UTF8(UnsafeArray<UTF8Char>::ConvertFrom(tmpBuff), file1)) + 1;
+	Text::StrWChar_UTF8(UnsafeArray<UTF8Char>::ConvertFrom(tmpBuff2), file2);
 
 	struct stat s1;
 	struct stat s2;
 
-	if (stat(tmpBuff, &s1) != 0)
+	if (stat(tmpBuff.Ptr(), &s1) != 0)
 	{
 		ret = false;
 	}
-	else if (stat(tmpBuff2, &s2) != 0)
+	else if (stat(tmpBuff2.Ptr(), &s2) != 0)
 	{
 		ret = false;
 	}
@@ -155,7 +155,7 @@ Bool IO::FileUtil::IsSamePartition(UnsafeArray<const UTF8Char> file1, UnsafeArra
 	{
 		ret = (s1.st_dev == s2.st_dev);
 	}
-	MemFree(tmpBuff);
+	MemFreeArr(tmpBuff);
 	return ret;
 }*/
 
@@ -199,7 +199,7 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN srcFile, Text::CStringNN destFile, F
 	UInt64 writeSize = 0;
 	UInt64 writenSize;
 	Bool samePart = IsSamePartition(srcFile.v, destFile.v);
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	if (fea == FileExistAction::Continue)
 	{
 		UInt64 destPos = fs2->GetPosition();
@@ -230,10 +230,10 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN srcFile, Text::CStringNN destFile, F
 		Data::Timestamp ts1;
 		Data::Timestamp ts2;
 		Data::Timestamp ts3;
-		buff = MemAlloc(UInt8, 1048576);
+		buff = MemAllocArr(UInt8, 1048576);
 		writeSize = fs1.Read(Data::ByteArray(buff, (UIntOS)1048576));
 		writeSize = fs2->Write(Data::ByteArrayR(buff, (UIntOS)writeSize));
-		MemFree(buff);
+		MemFreeArr(buff);
 		fs1.GetFileTimes(ts1, ts2, ts3);
 		fs2->SetFileTimes(ts1, ts2, ts3);
 		if (progHdlr.SetTo(nnprogHdlr))
@@ -250,11 +250,11 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN srcFile, Text::CStringNN destFile, F
 		UIntOS thisSize;
 		if (fileSize < ramSize)
 		{
-			buff = MemAllocA(UInt8, readSize = (UIntOS)fileSize);
+			buff = MemAllocAArr(UInt8, readSize = (UIntOS)fileSize);
 		}
 		else
 		{
-			buff = MemAllocA(UInt8, readSize = (UIntOS)ramSize);
+			buff = MemAllocAArr(UInt8, readSize = (UIntOS)ramSize);
 		}
 		while (writeSize < fileSize)
 		{
@@ -273,7 +273,7 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN srcFile, Text::CStringNN destFile, F
 				break;
 			}
 		}
-		MemFreeA(buff);
+		MemFreeAArr(buff);
 		fs1.GetFileTimes(ts1, ts2, ts3);
 		fs2->SetFileTimes(ts1, ts2, ts3);
 	}

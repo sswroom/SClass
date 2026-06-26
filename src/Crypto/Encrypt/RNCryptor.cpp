@@ -47,7 +47,7 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(NN<IO::SeekableStream> srcStream, NN<IO
 		aes.SetIV(&header[18]);
 		UInt64 sizeLeft = fileLength - 66;
 		UIntOS readSize;
-		UInt8 *destBuff;
+		UnsafeArray<UInt8> destBuff;
 		Bool succ = true;
 		Crypto::Hash::SHA256 sha256;
 		Crypto::Hash::HMAC hmac(sha256, hmacKey, 32);
@@ -55,7 +55,7 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(NN<IO::SeekableStream> srcStream, NN<IO
 		if (sizeLeft > 1048576)
 		{
 			Data::ByteBuffer srcBuff(1048576);
-			destBuff = MemAlloc(UInt8, 1048576);
+			destBuff = MemAllocArr(UInt8, 1048576);
 			while (sizeLeft > 1048576)
 			{
 				readSize = srcStream->Read(srcBuff);
@@ -91,13 +91,13 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(NN<IO::SeekableStream> srcStream, NN<IO
 					}
 				}
 			}
-			MemFree(destBuff);
+			MemFreeArr(destBuff);
 		}
 		else
 		{
 			readSize = (UIntOS)sizeLeft;
 			Data::ByteBuffer srcBuff(readSize);
-			destBuff = MemAlloc(UInt8, readSize);
+			destBuff = MemAllocArr(UInt8, readSize);
 			readSize = srcStream->Read(srcBuff);
 			if (readSize != sizeLeft)
 			{
@@ -113,7 +113,7 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(NN<IO::SeekableStream> srcStream, NN<IO
 					succ = false;
 				}
 			}
-			MemFree(destBuff);
+			MemFreeArr(destBuff);
 		}
 		if (succ)
 		{
@@ -164,7 +164,7 @@ Bool Crypto::Encrypt::RNCryptor::Encrypt(NN<IO::SeekableStream> srcStream, NN<IO
 	UInt8 encKey[32];
 	UInt8 hmacKey[32];
 	UInt8 hmacCalc[32];
-	UInt8 *destBuff = MemAlloc(UInt8, (UIntOS)fileLength);
+	UnsafeArray<UInt8> destBuff = MemAllocArr(UInt8, (UIntOS)fileLength);
 
 	Crypto::Hash::SHA1 sha1;
 	Crypto::Hash::HMAC hmacSHA1(sha1, password.v, password.leng);
@@ -186,6 +186,6 @@ Bool Crypto::Encrypt::RNCryptor::Encrypt(NN<IO::SeekableStream> srcStream, NN<IO
 	{
 		succ = false;
 	}
-	MemFree(destBuff);
+	MemFreeArr(destBuff);
 	return succ;
 }

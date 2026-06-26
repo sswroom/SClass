@@ -861,10 +861,10 @@ Bool DB::DBManager::StoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<DB:
 		md5.Calc(keyBuff, 16);
 		md5.GetValue(&keyBuff[16]);
 		Crypto::Encrypt::AES256 aes(keyBuff);
-		UInt8 *outBuff = MemAlloc(UInt8, sb.GetCharCnt() + aes.GetEncBlockSize());
+		UnsafeArray<UInt8> outBuff = MemAllocArr(UInt8, sb.GetCharCnt() + aes.GetEncBlockSize());
 		outSize = aes.Encrypt(sb.ToString(), sb.GetCharCnt(), outBuff);
 		fs->Write(Data::ByteArrayR(outBuff, outSize));
-		MemFree(outBuff);
+		MemFreeArr(outBuff);
 	}
 
 	DEL_CLASS(fs);
@@ -885,7 +885,7 @@ Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<D
 	if (len > 0 && len < 65536)
 	{
 		Data::ByteBuffer fileBuff((UIntOS)len);
-		UInt8 *decBuff = MemAlloc(UInt8, (UIntOS)len + 1);
+		UnsafeArray<UInt8> decBuff = MemAllocArr(UInt8, (UIntOS)len + 1);
 		Text::PString sarr[2];
 		fs->Read(fileBuff);
 		UInt8 keyBuff[32];
@@ -916,7 +916,7 @@ Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<D
 				break;
 			}
 		}
-		MemFree(decBuff);
+		MemFreeArr(decBuff);
 	}
 	DEL_CLASS(fs);
 	return true;

@@ -624,8 +624,8 @@ extern "C" void ArtificialQuickSort_SortStr(UTF8Char **arr, IntOS firstIndex, In
 	IntOS levi[256];
 	IntOS desni[256];
 #else
-	IntOS *levi = MemAlloc(IntOS, 65536);
-	IntOS *desni = &levi[32768];
+	UnsafeArray<IntOS> levi = MemAllocArr(IntOS, 65536);
+	UnsafeArray<IntOS> desni = &levi[32768];
 #endif
 	IntOS index;
 	IntOS i;
@@ -698,7 +698,7 @@ extern "C" void ArtificialQuickSort_SortStr(UTF8Char **arr, IntOS firstIndex, In
 		}
 	}
 #if _OSINT_SIZE != 16
-	MemFree(levi);
+	MemFreeArr(levi);
 #endif
 }
 
@@ -708,8 +708,8 @@ extern "C" void ArtificialQuickSort_SortStrW(WChar **arr, IntOS firstIndex, IntO
 	IntOS levi[256];
 	IntOS desni[256];
 #else
-	IntOS *levi = MemAlloc(IntOS, 65536);
-	IntOS *desni = &levi[32768];
+	UnsafeArray<IntOS> levi = MemAllocArr(IntOS, 65536);
+	UnsafeArray<IntOS> desni = &levi[32768];
 #endif
 	IntOS index;
 	IntOS i;
@@ -782,7 +782,7 @@ extern "C" void ArtificialQuickSort_SortStrW(WChar **arr, IntOS firstIndex, IntO
 		}
 	}
 #if _OSINT_SIZE != 16
-	MemFree(levi);
+	MemFreeArr(levi);
 #endif
 }
 

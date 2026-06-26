@@ -11,7 +11,7 @@ namespace IO
 	private:
 		Optional<IO::Library> lib;
 		void *funcs;
-		UInt8 *adapterInfos;
+		UnsafeArrayOpt<UInt8> adapterInfos;
 		Optional<Data::ArrayListArr<UInt8>> adapterList;
 
 	public:

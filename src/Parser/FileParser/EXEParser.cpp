@@ -105,26 +105,31 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 	exef->AddProp(CSTR("(DOS)Offset to extended header"), CSTRP(sbuff, sptr));
 
 
-	exef->AddDOSEnv(fileSize - hdrSize + 256, &regs, 0x70);
-	UInt8 *codePtr = exef->GetDOSCodePtr(codeLen);
+	exef->AddDOSEnv(fileSize - hdrSize + 256, regs, 0x70);
+	UnsafeArray<UInt8> codePtr;
+	if (!exef->GetDOSCodePtr(codeLen).SetTo(codePtr))
+	{
+		DEL_CLASS(exef);
+		return nullptr;
+	}
 	exef->SetDOSHasPSP(true);
 	fd->GetRealData(hdrSize, codeLen - 256, Data::ByteArray(&codePtr[256], codeLen - 256));
 
 	if (relocSize > 0)
 	{
-		UInt32 *relocTab;
+		UnsafeArray<UInt32> relocTab;
 		UInt32 i = relocSize;
 		UInt32 j;
 		UInt8 *u16Ptr;
-		relocTab = MemAlloc(UInt32, relocSize);
-		fd->GetRealData(relocOfst, relocSize << 2, Data::ByteArray((UInt8*)relocTab, relocSize * sizeof(UInt32)));
+		relocTab = MemAllocArr(UInt32, relocSize);
+		fd->GetRealData(relocOfst, relocSize << 2, Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(relocTab), relocSize * sizeof(UInt32)));
 		while (i-- > 0)
 		{
 			j = relocTab[i];
 			u16Ptr = &codePtr[256 + (j & 0xffff) + ((j >> 12) & 0xffff0)];
 			WriteUInt16(u16Ptr, (UInt16)(ReadUInt16(u16Ptr) + 0x80));
 		}
-		MemFree(relocTab);
+		MemFreeArr(relocTab);
 	}
 
 	codePtr[0] = 0xcd;				// INT 20 INSTRUCTION (WORD)

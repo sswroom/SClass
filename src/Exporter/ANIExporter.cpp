@@ -677,13 +677,13 @@ Bool Exporter::ANIExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	IntOS buffSize = CalcBuffSize(imgList);
 	if (buffSize == 0)
 		return false;
-	UInt8 *buff = MemAlloc(UInt8, buffSize);
+	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, buffSize);
 	if (buffSize != BuildBuff(buff, imgList, true))
 	{
-		MemFree(buff);
+		MemFreeArr(buff);
 		return false;
 	}
 	stm->Write(Data::ByteArrayR(buff, buffSize));
-	MemFree(buff);
+	MemFreeArr(buff);
 	return true;
 }

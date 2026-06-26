@@ -1153,7 +1153,7 @@ Bool DB::SQLGenerator::GenInsertCmd(NN<DB::SQLBuilder> sql, Text::CString schema
 		else
 		{
 			Optional<Math::Geometry::Vector2D> vec;
-			UInt8 *binBuff;
+			UnsafeArray<UInt8> binBuff;
 			UIntOS colSize;
 			colType = r->GetColType(i, colSize);
 			switch (colType)
@@ -1203,10 +1203,10 @@ Bool DB::SQLGenerator::GenInsertCmd(NN<DB::SQLBuilder> sql, Text::CString schema
 				else
 				{
 					UIntOS sz = r->GetBinarySize(i);
-					binBuff = MemAlloc(UInt8, sz);
+					binBuff = MemAllocArr(UInt8, sz);
 					r->GetBinary(i, binBuff);
-					sql->AppendBinary(binBuff, sz);
-					MemFree(binBuff);
+					sql->AppendBinary(UnsafeArray<const UInt8>(binBuff), sz);
+					MemFreeArr(binBuff);
 				}
 				break;
 			case DB::DBUtil::CT_UUID:

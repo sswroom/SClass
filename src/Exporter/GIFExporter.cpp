@@ -130,7 +130,7 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		buff[12] = (UInt8)(Double2Int32(img->info.CalcPAR() * 64.0) - 15);
 		stm->Write(Data::ByteArrayR(buff, 13));
 
-		UInt8 *palBuff = MemAlloc(UInt8, 768);
+		UnsafeArray<UInt8> palBuff = MemAllocArr(UInt8, 768);
 		i = 0;
 		j = 0;
 		while (j < 1024)
@@ -143,7 +143,7 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		}
 
 		stm->Write(Data::ByteArrayR(palBuff, 768));
-		MemFree(palBuff);
+		MemFreeArr(palBuff);
 
 		if (transparentIndex != INVALID_INDEX)
 		{

@@ -953,8 +953,8 @@ void Data::Sort::ArtificialQuickSort::SortCmpO(UnsafeArray<NN<Data::Comparable>>
 	IntOS levi[256];
 	IntOS desni[256];
 #else
-	IntOS *levi = MemAlloc(IntOS, 65536);
-	IntOS *desni = &levi[32768];
+	UnsafeArray<IntOS> levi = MemAllocArr(IntOS, 65536);
+	UnsafeArray<IntOS> desni = &levi[32768];
 #endif
 	IntOS index;
 	IntOS i;
@@ -1027,6 +1027,6 @@ void Data::Sort::ArtificialQuickSort::SortCmpO(UnsafeArray<NN<Data::Comparable>>
 		}
 	}
 #if _OSINT_SIZE != 16
-	MemFree(levi);
+	MemFreeArr(levi);
 #endif
 }

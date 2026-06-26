@@ -86,10 +86,10 @@ Bool Exporter::DBFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UIntOS nOut;
 
 	UnsafeArray<NN<Text::String>> colNames;
-	UIntOS *colSize;
-	UIntOS *colDP;
-	DB::DBUtil::ColType *colTypes;
-	UIntOS *colMap;
+	UnsafeArray<UIntOS> colSize;
+	UnsafeArray<UIntOS> colDP;
+	UnsafeArray<DB::DBUtil::ColType> colTypes;
+	UnsafeArray<UIntOS> colMap;
 	UIntOS i;
 	UIntOS j;
 	DB::DBFFixWriter *writer;
@@ -97,10 +97,10 @@ Bool Exporter::DBFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 	nCol = r->ColCount();
 	colNames = MemAllocArr(NN<Text::String>, nCol);
-	colSize = MemAlloc(UIntOS, nCol);
-	colDP = MemAlloc(UIntOS, nCol);
-	colTypes = MemAlloc(DB::DBUtil::ColType, nCol);
-	colMap = MemAlloc(UIntOS, nCol);
+	colSize = MemAllocArr(UIntOS, nCol);
+	colDP = MemAllocArr(UIntOS, nCol);
+	colTypes = MemAllocArr(DB::DBUtil::ColType, nCol);
+	colMap = MemAllocArr(UIntOS, nCol);
 
 	{
 		DB::ColDef colDef(Text::String::NewEmpty());
@@ -189,10 +189,10 @@ Bool Exporter::DBFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	{
 		colNames[i]->Release();
 	}
-	MemFree(colMap);
+	MemFreeArr(colMap);
 	MemFreeArr(colNames);
-	MemFree(colSize);
-	MemFree(colDP);
-	MemFree(colTypes);
+	MemFreeArr(colSize);
+	MemFreeArr(colDP);
+	MemFreeArr(colTypes);
 	return true;
 }

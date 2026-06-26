@@ -59,7 +59,7 @@ DB::DBFFixWriter::DBFFixWriter(NN<IO::SeekableStream> stm, UIntOS nCol, UnsafeAr
 	buff[29] = DB::DBFFile::GetLangDriver(codePage);
 	*(Int16*)&buff[30] = 0;
 	stm->Write(Data::ByteArrayR(buff, 32));
-	this->rec = MemAlloc(UInt8, k);
+	this->rec = MemAllocArr(UInt8, k);
 	this->rec[0] = ' ';
 	this->recSize = k;
 

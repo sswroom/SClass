@@ -13,14 +13,14 @@ void Exporter::TIFFExporter::GenSubExifBuff(NN<IO::SeekableStream> stm, UInt64 b
 	Data::ArrayListUInt32 ids;
 	UIntOS i;
 	UIntOS j;
-	UInt8 *ifd;
+	UnsafeArray<UInt8> ifd;
 	UInt32 exifId;
 	NN<Media::EXIFData::EXIFItem> exifItem;
 	exif->GetExifIds(ids);
 	i = 0;
 	j = ids.GetCount();
-	ifd = MemAlloc(UInt8, 12 * j + 6);
-	WriteInt16(ifd, (Int16)j);
+	ifd = MemAllocArr(UInt8, 12 * j + 6);
+	WriteInt16(&ifd[0], (Int16)j);
 	stm->Write(Data::ByteArrayR(ifd, 12 * j + 6));
 	currOfst += 12 * j + 6;
 	while (i < j)
@@ -163,7 +163,7 @@ void Exporter::TIFFExporter::GenSubExifBuff(NN<IO::SeekableStream> stm, UInt64 b
 	WriteInt32(&ifd[2 + j * 12], 0);
 	stm->SeekFromBeginning(0);
 	stm->Write(Data::ByteArrayR(ifd, 6 + j * 12));
-	MemFree(ifd);
+	MemFreeArr(ifd);
 }
 
 Exporter::TIFFExporter::TIFFExporter()
@@ -339,8 +339,8 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			sibuff[0] = 3;
 			newExif->AddUInt16(262, 1, sibuff); //PhotometricInterpretation
 			newExif->Remove(284); //PlanarConfiguration
-			UInt8 *colorTable = MemAlloc(UInt8, 2 * 6);
-			UInt8 *destPtr = colorTable;
+			UnsafeArray<UInt8> colorTable = MemAllocArr(UInt8, 2 * 6);
+			UnsafeArray<UInt8> destPtr = colorTable;
 			UnsafeArray<UInt8> srcPtr;
 			if (img->pal.SetTo(srcPtr))
 			{
@@ -358,8 +358,8 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					destPtr += 2;
 				}
 			}
-			newExif->AddUInt16(320, 2 * 3, (UInt16*)colorTable);
-			MemFree(colorTable);
+			newExif->AddUInt16(320, 2 * 3, UnsafeArray<UInt16>::ConvertFrom(colorTable));
+			MemFreeArr(colorTable);
 			newExif->Remove(338); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
@@ -372,8 +372,8 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			sibuff[0] = 3;
 			newExif->AddUInt16(262, 1, sibuff); //PhotometricInterpretation
 			newExif->Remove(284); //PlanarConfiguration
-			UInt8 *colorTable = MemAlloc(UInt8, 4 * 6);
-			UInt8 *destPtr = colorTable;
+			UnsafeArray<UInt8> colorTable = MemAllocArr(UInt8, 4 * 6);
+			UnsafeArray<UInt8> destPtr = colorTable;
 			UnsafeArray<UInt8> srcPtr;
 			if (img->pal.SetTo(srcPtr))
 			{
@@ -391,8 +391,8 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					destPtr += 2;
 				}
 			}
-			newExif->AddUInt16(320, 4 * 3, (UInt16*)colorTable);
-			MemFree(colorTable);
+			newExif->AddUInt16(320, 4 * 3, UnsafeArray<UInt16>::ConvertFrom(colorTable));
+			MemFreeArr(colorTable);
 			newExif->Remove(338); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
@@ -405,8 +405,8 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			sibuff[0] = 3;
 			newExif->AddUInt16(262, 1, sibuff); //PhotometricInterpretation
 			newExif->Remove(284); //PlanarConfiguration
-			UInt8 *colorTable = MemAlloc(UInt8, 16 * 6);
-			UInt8 *destPtr = colorTable;
+			UnsafeArray<UInt8> colorTable = MemAllocArr(UInt8, 16 * 6);
+			UnsafeArray<UInt8> destPtr = colorTable;
 			UnsafeArray<UInt8> srcPtr;
 			if (img->pal.SetTo(srcPtr))
 			{
@@ -424,8 +424,8 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					destPtr += 2;
 				}
 			}
-			newExif->AddUInt16(320, 16 * 3, (UInt16*)colorTable);
-			MemFree(colorTable);
+			newExif->AddUInt16(320, 16 * 3, UnsafeArray<UInt16>::ConvertFrom(colorTable));
+			MemFreeArr(colorTable);
 			newExif->Remove(338); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
@@ -438,8 +438,8 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			sibuff[0] = 3;
 			newExif->AddUInt16(262, 1, sibuff); //PhotometricInterpretation
 			newExif->Remove(284); //PlanarConfiguration
-			UInt8 *colorTable = MemAlloc(UInt8, 256 * 6);
-			UInt8 *destPtr = colorTable;
+			UnsafeArray<UInt8> colorTable = MemAllocArr(UInt8, 256 * 6);
+			UnsafeArray<UInt8> destPtr = colorTable;
 			UnsafeArray<UInt8> srcPtr;
 			if (img->pal.SetTo(srcPtr))
 			{
@@ -457,8 +457,8 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					destPtr += 2;
 				}
 			}
-			newExif->AddUInt16(320, 256 * 3, (UInt16*)colorTable);
-			MemFree(colorTable);
+			newExif->AddUInt16(320, 256 * 3, UnsafeArray<UInt16>::ConvertFrom(colorTable));
+			MemFreeArr(colorTable);
 			newExif->Remove(338); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
@@ -712,7 +712,7 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		Data::ArrayListUInt32 ids;
 		UIntOS k;
 		UIntOS l;
-		UInt8 *ifd;
+		UnsafeArray<UInt8> ifd;
 		UInt64 stripOfst = 0;
 		UInt64 stripCntOfst = 0;
 		UInt32 exifId;
@@ -721,8 +721,8 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		newExif->GetExifIds(ids);
 		k = 0;
 		l = ids.GetCount();
-		ifd = MemAlloc(UInt8, 12 * l + 6);
-		WriteInt16(ifd, (Int16)l);
+		ifd = MemAllocArr(UInt8, 12 * l + 6);
+		WriteInt16(&ifd[0], (Int16)l);
 		stm->Write(Data::ByteArrayR(ifd, 12 * l + 6));
 		currOfst += 12 * l + 6;
 		while (k < l)
@@ -910,11 +910,11 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			{
 				UInt32 currSOfst = (UInt32)currOfst;
 				UInt32 sofstStep = (UInt32)(img->info.dispSize.x * (img->info.storeBPP >> 3) * 10);
-				UInt32 *stripBuff;
-				UInt32 *stripCntBuff;
+				UnsafeArray<UInt32> stripBuff;
+				UnsafeArray<UInt32> stripCntBuff;
 				UIntOS sizeLeft = img->info.dispSize.x * img->info.dispSize.y * (img->info.storeBPP >> 3);
-				stripBuff = MemAlloc(UInt32, stripCnt);
-				stripCntBuff = MemAlloc(UInt32, stripCnt);
+				stripBuff = MemAllocArr(UInt32, stripCnt);
+				stripCntBuff = MemAllocArr(UInt32, stripCnt);
 				k = 0;
 				while (k < stripCnt)
 				{
@@ -933,17 +933,16 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					k++;
 				}
 				stm->SeekFromBeginning(stripOfst);
-				stm->Write(Data::ByteArrayR((UInt8*)stripBuff, stripCnt * 4));
+				stm->Write(Data::ByteArrayR(UnsafeArray<UInt8>::ConvertFrom(stripBuff), stripCnt * 4));
 				stm->SeekFromBeginning(stripCntOfst);
-				stm->Write(Data::ByteArrayR((UInt8*)stripCntBuff, stripCnt * 4));
-				MemFree(stripBuff);
-				MemFree(stripCntBuff);
+				stm->Write(Data::ByteArrayR(UnsafeArray<UInt8>::ConvertFrom(stripCntBuff), stripCnt * 4));
+				MemFreeArr(stripBuff);
+				MemFreeArr(stripCntBuff);
 			}
 		}
 		stm->SeekFromBeginning(currOfst);
 		UIntOS imgSize = img->info.dispSize.y * ((img->info.dispSize.x * img->info.storeBPP + 7) >> 3);
-		UInt8 *imgData;
-		imgData = MemAlloc(UInt8, imgSize);
+		UnsafeArray<UInt8> imgData = MemAllocArr(UInt8, imgSize);
 		img->GetRasterData(imgData, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (img->info.dispSize.x * img->info.storeBPP + 7) >> 3, false, Media::RotateType::None);
 		switch (img->info.pf)
 		{
@@ -953,10 +952,10 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		case Media::PF_B8G8R8:
 		case Media::PF_LE_B16G16R16:
 		case Media::PF_LE_FB32G32R32:
-			ImageUtil_SwapRGB(imgData, img->info.dispSize.x * img->info.dispSize.y, img->info.storeBPP);
+			ImageUtil_SwapRGB(imgData.Ptr(), img->info.dispSize.x * img->info.dispSize.y, img->info.storeBPP);
 			if (img->info.atype == Media::AT_IGNORE_ALPHA)
 			{
-				UInt8 *tmpPtr = imgData;
+				UnsafeArray<UInt8> tmpPtr = imgData;
 				UIntOS cnt = img->info.dispSize.x * img->info.dispSize.y;
 				if (img->info.pf == Media::PF_B8G8R8A8)
 				{
@@ -1020,7 +1019,7 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		}
 		stm->Write(Data::ByteArrayR(imgData, imgSize));
 		currOfst += imgSize;
-		MemFree(imgData);
+		MemFreeArr(imgData);
 
 		WriteUInt32(&ifd[2 + l * 12], (UInt32)currOfst);
 		stm->SeekFromBeginning(ifdOfst);
@@ -1028,7 +1027,7 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		lastOfst = ifdOfst + l * 12 + 2;
 
 		newExif.Delete();
-		MemFree(ifd);
+		MemFreeArr(ifd);
 	}
 	stm->SeekFromBeginning(lastOfst);
 	WriteInt32(buff, 0);

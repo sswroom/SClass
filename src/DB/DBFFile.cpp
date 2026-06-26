@@ -170,10 +170,10 @@ UnsafeArrayOpt<WChar> DB::DBFFile::GetRecord(UnsafeArray<WChar> buff, UIntOS row
 	if (col >= this->colCnt)
 		return nullptr;
 
-	UInt8 *cbuff = MemAlloc(UInt8, this->cols[col].colSize);
+	UnsafeArray<UInt8> cbuff = MemAllocArr(UInt8, this->cols[col].colSize);
 	this->stmData->GetRealData(this->refPos + this->rowSize * row + this->cols[col].colOfst, this->cols[col].colSize, Data::ByteArray(cbuff, this->cols[col].colSize));
 	UnsafeArray<WChar> ret = this->enc.WFromBytes(buff, cbuff, this->cols[col].colSize, 0);
-	MemFree(cbuff);
+	MemFreeArr(cbuff);
 	return ret;
 }
 
@@ -190,10 +190,10 @@ UnsafeArrayOpt<UTF8Char> DB::DBFFile::GetRecord(UnsafeArray<UTF8Char> buff, UInt
 	}
 	else
 	{
-		UInt8 *cbuff = MemAlloc(UInt8, this->cols[col].colSize);
+		UnsafeArray<UInt8> cbuff = MemAllocArr(UInt8, this->cols[col].colSize);
 		this->stmData->GetRealData(this->refPos + this->rowSize * row + this->cols[col].colOfst, this->cols[col].colSize, Data::ByteArray(cbuff, this->cols[col].colSize));
 		UnsafeArray<UTF8Char> ret = this->enc.UTF8FromBytes(buff, cbuff, this->cols[col].colSize, 0);
-		MemFree(cbuff);
+		MemFreeArr(cbuff);
 		return ret;
 	}
 }
@@ -213,12 +213,12 @@ Bool DB::DBFFile::GetRecord(NN<Text::StringBuilderUTF8> sb, UIntOS row, UIntOS c
 	}
 	else
 	{
-		UInt8 *cbuff = MemAlloc(UInt8, this->cols[col].colSize);
+		UnsafeArray<UInt8> cbuff = MemAllocArr(UInt8, this->cols[col].colSize);
 		this->stmData->GetRealData(this->refPos + this->rowSize * row + this->cols[col].colOfst, this->cols[col].colSize, Data::ByteArray(cbuff, this->cols[col].colSize));
 		UIntOS size = this->enc.CountUTF8Chars(cbuff, this->cols[col].colSize);
 		sb->AllocLeng(size);
 		UnsafeArray<UTF8Char> ret = this->enc.UTF8FromBytes(sb->GetEndPtr(), cbuff, this->cols[col].colSize, 0);
-		MemFree(cbuff);
+		MemFreeArr(cbuff);
 		sb->SetEndPtr(ret);
 		return true;
 	}

@@ -168,9 +168,9 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 				UInt32 k;
 				UInt32 l;
 
-				UInt8 *exifBuff;
+				UnsafeArray<UInt8> exifBuff;
 				exif->GetExifBuffSize(exifSize, endOfst);
-				exifBuff = MemAlloc(UInt8, (UIntOS)exifSize + 18);
+				exifBuff = MemAllocArr(UInt8, (UIntOS)exifSize + 18);
 				exifBuff[0] = 0xff;
 				exifBuff[1] = 0xe1;
 				WriteMInt16(&exifBuff[2], (Int16)exifSize + 16);
@@ -183,7 +183,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 				l = (UInt32)(endOfst + 8);
 				exif->ToExifBuff(&exifBuff[10], k, l);
 				stm->Write(Data::ByteArrayR(exifBuff, exifSize + 18));
-				MemFree(exifBuff);
+				MemFreeArr(exifBuff);
 
 				stm->Write(Data::ByteArrayR(&jpgBuff[i], jpgSize - i));
 				break;
@@ -216,9 +216,9 @@ UIntOS Exporter::GUIJPGExporter::GetParamCnt()
 
 Optional<IO::FileExporter::ParamData> Exporter::GUIJPGExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
-	Int32 *val = MemAlloc(Int32, 1);
+	UnsafeArray<Int32> val = MemAllocArr(Int32, 1);
 	*val = 100;
-	return (ParamData*)val;
+	return (ParamData*)val.Ptr();
 }
 
 void Exporter::GUIJPGExporter::DeleteParam(Optional<ParamData> param)

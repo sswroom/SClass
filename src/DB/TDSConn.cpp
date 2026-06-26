@@ -23,7 +23,7 @@ private:
 	struct ColInfo
 	{
 		Char *name;
-		UInt8 *buff;
+		UnsafeArrayOpt<UInt8> buff;
 		Int32 type;
 		Int32 size;
 		UInt32 buffSize;
@@ -34,13 +34,13 @@ private:
 	Int8 tzQhr;
 	Int32 rowsAffected;
 	UIntOS nCols;
-	ColInfo *cols;
+	UnsafeArrayOpt<ColInfo> cols;
 public:
 	TDSConnReader(DBPROCESS* dbproc, Int8 tzQhr)
 	{
 		this->dbproc = dbproc;
 		this->tzQhr = tzQhr;
-		this->cols = 0;
+		this->cols = nullptr;
 		this->nCols = 0;
 		this->rowsAffected = dbcount(dbproc);
 		this->NextResult();
@@ -59,15 +59,18 @@ public:
 	Bool NextResult()
 	{
 		UIntOS i;
-		if (this->cols)
+		UnsafeArray<ColInfo> cols;
+		UnsafeArray<UInt8> colBuff;
+		if (this->cols.SetTo(cols))
 		{
 			i = this->nCols;
 			while (i-- > 0)
 			{
-				if (this->cols[i].buff)
-					MemFree(this->cols[i].buff);
+				if (cols[i].buff.SetTo(colBuff))
+					MemFreeArr(colBuff);
 			}
-			MemFree(this->cols);
+			MemFreeArr(cols);
+			this->cols = nullptr;
 		}
 		RETCODE ret = dbresults(this->dbproc);
 		if (ret == FAIL)
@@ -78,95 +81,95 @@ public:
 		else if (ret != NO_MORE_RESULTS)
 		{
 			this->nCols = (UIntOS)dbnumcols(this->dbproc);
-			this->cols = MemAlloc(ColInfo, this->nCols);
+			this->cols = cols = MemAllocArr(ColInfo, this->nCols);
 			Int32 c;
 			i = 0;
 			while (i < this->nCols)
 			{
 				c = (Int32)i + 1;
-				this->cols[i].name = dbcolname(this->dbproc, c);
-				this->cols[i].type = dbcoltype(this->dbproc, c);
-				this->cols[i].size = dbcollen(this->dbproc, c);
-				switch (this->cols[i].type)
+				cols[i].name = dbcolname(this->dbproc, c);
+				cols[i].type = dbcoltype(this->dbproc, c);
+				cols[i].size = dbcollen(this->dbproc, c);
+				switch (cols[i].type)
 				{
 				case SYBCHAR:
 				case SYBTEXT:
-					this->cols[i].buffSize = (UInt32)this->cols[i].size;
-					this->cols[i].buff = 0;
-//					if (dbbind(this->dbproc, c, NTBSTRINGBIND, (Int32)this->cols[i].buffSize + 1, this->cols[i].buff) == FAIL)
+					cols[i].buffSize = (UInt32)cols[i].size;
+					cols[i].buff = nullptr;
+//					if (dbbind(this->dbproc, c, NTBSTRINGBIND, (Int32)cols[i].buffSize + 1, cols[i].buff) == FAIL)
 //					{
 //						printf("TDS: Error in binding char of column %d\r\n", (UInt32)i);
 //					}
 					break;
 				case SYBBIT:
-					this->cols[i].buffSize = 1;
-					this->cols[i].buff = MemAlloc(UInt8, this->cols[i].buffSize);
-					if (dbbind(this->dbproc, c, BITBIND, (Int32)this->cols[i].buffSize, this->cols[i].buff) == FAIL)
+					cols[i].buffSize = 1;
+					cols[i].buff = colBuff = MemAllocArr(UInt8, cols[i].buffSize);
+					if (dbbind(this->dbproc, c, BITBIND, (Int32)cols[i].buffSize, colBuff.Ptr()) == FAIL)
 					{
 						printf("TDS: Error in binding bit of column %d\r\n", (UInt32)i);
 					}
 					break;
 				case SYBINT1:
-					this->cols[i].buffSize = 1;
-					this->cols[i].buff = MemAlloc(UInt8, this->cols[i].buffSize);
-					if (dbbind(this->dbproc, c, TINYBIND, (Int32)this->cols[i].buffSize, this->cols[i].buff) == FAIL)
+					cols[i].buffSize = 1;
+					cols[i].buff = colBuff = MemAllocArr(UInt8, cols[i].buffSize);
+					if (dbbind(this->dbproc, c, TINYBIND, (Int32)cols[i].buffSize, colBuff.Ptr()) == FAIL)
 					{
 						printf("TDS: Error in binding int1 of column %d\r\n", (UInt32)i);
 					}
 					break;
 				case SYBINT2:
-					this->cols[i].buffSize = 2;
-					this->cols[i].buff = MemAlloc(UInt8, this->cols[i].buffSize);
-					if (dbbind(this->dbproc, c, SMALLBIND, (Int32)this->cols[i].buffSize, this->cols[i].buff) == FAIL)
+					cols[i].buffSize = 2;
+					cols[i].buff = colBuff = MemAllocArr(UInt8, cols[i].buffSize);
+					if (dbbind(this->dbproc, c, SMALLBIND, (Int32)cols[i].buffSize, colBuff.Ptr()) == FAIL)
 					{
 						printf("TDS: Error in binding int2 of column %d\r\n", (UInt32)i);
 					}
 					break;
 				case SYBINT4:
-					this->cols[i].buffSize = 4;
-					this->cols[i].buff = MemAlloc(UInt8, this->cols[i].buffSize);
-					if (dbbind(this->dbproc, c, INTBIND, (Int32)this->cols[i].buffSize, this->cols[i].buff) == FAIL)
+					cols[i].buffSize = 4;
+					cols[i].buff = colBuff = MemAllocArr(UInt8, cols[i].buffSize);
+					if (dbbind(this->dbproc, c, INTBIND, (Int32)cols[i].buffSize, colBuff.Ptr()) == FAIL)
 					{
 						printf("TDS: Error in binding int4 of column %d\r\n", (UInt32)i);
 					}
 					break;
 				case SYBINT8:
-					this->cols[i].buffSize = 8;
-					this->cols[i].buff = MemAlloc(UInt8, this->cols[i].buffSize);
-					if (dbbind(this->dbproc, c, BIGINTBIND, (Int32)this->cols[i].buffSize, this->cols[i].buff) == FAIL)
+					cols[i].buffSize = 8;
+					cols[i].buff = colBuff = MemAllocArr(UInt8, cols[i].buffSize);
+					if (dbbind(this->dbproc, c, BIGINTBIND, (Int32)cols[i].buffSize, colBuff.Ptr()) == FAIL)
 					{
 						printf("TDS: Error in binding int8 of column %d\r\n", (UInt32)i);
 					}
 					break;
 				case SYBREAL:
-					this->cols[i].buffSize = 4;
-					this->cols[i].buff = MemAlloc(UInt8, this->cols[i].buffSize);
-					if (dbbind(this->dbproc, c, REALBIND, (Int32)this->cols[i].buffSize, this->cols[i].buff) == FAIL)
+					cols[i].buffSize = 4;
+					cols[i].buff = colBuff = MemAllocArr(UInt8, cols[i].buffSize);
+					if (dbbind(this->dbproc, c, REALBIND, (Int32)cols[i].buffSize, colBuff.Ptr()) == FAIL)
 					{
 						printf("TDS: Error in binding real of column %d\r\n", (UInt32)i);
 					}
 					break;
 				case SYBFLT8:
-					this->cols[i].buffSize = 8;
-					this->cols[i].buff = MemAlloc(UInt8, this->cols[i].buffSize);
-					if (dbbind(this->dbproc, c, FLT8BIND, (Int32)this->cols[i].buffSize, this->cols[i].buff) == FAIL)
+					cols[i].buffSize = 8;
+					cols[i].buff = colBuff = MemAllocArr(UInt8, cols[i].buffSize);
+					if (dbbind(this->dbproc, c, FLT8BIND, (Int32)cols[i].buffSize, colBuff.Ptr()) == FAIL)
 					{
 						printf("TDS: Error in binding float8 of column %d\r\n", (UInt32)i);
 					}
 					break;
 				case SYBDECIMAL:
 				case SYBNUMERIC:
-					this->cols[i].buffSize = 8;
-					this->cols[i].buff = MemAlloc(UInt8, this->cols[i].buffSize);
-					if (dbbind(this->dbproc, c, FLT8BIND, (Int32)this->cols[i].buffSize, this->cols[i].buff) == FAIL)
+					cols[i].buffSize = 8;
+					cols[i].buff = colBuff = MemAllocArr(UInt8, cols[i].buffSize);
+					if (dbbind(this->dbproc, c, FLT8BIND, (Int32)cols[i].buffSize, colBuff.Ptr()) == FAIL)
 					{
 						printf("TDS: Error in binding numeric of column %d\r\n", (UInt32)i);
 					}
 					break;
 				case SYBDATETIME:
-					this->cols[i].buffSize = 8;
-					this->cols[i].buff = MemAlloc(UInt8, this->cols[i].buffSize);
-					if (dbbind(this->dbproc, c, DATETIMEBIND, (Int32)this->cols[i].buffSize, this->cols[i].buff) == FAIL)
+					cols[i].buffSize = 8;
+					cols[i].buff = colBuff = MemAllocArr(UInt8, cols[i].buffSize);
+					if (dbbind(this->dbproc, c, DATETIMEBIND, (Int32)cols[i].buffSize, colBuff.Ptr()) == FAIL)
 					{
 						printf("TDS: Error in binding datetime of column %d\r\n", (UInt32)i);
 					}
@@ -175,41 +178,41 @@ public:
 				case SYBMSDATE:
 				case SYBMSTIME:
 				case SYBMSDATETIME2:
-					this->cols[i].buffSize = 16;
-					this->cols[i].buff = MemAlloc(UInt8, this->cols[i].buffSize);
-					if (dbbind(this->dbproc, c, DATETIME2BIND, (Int32)this->cols[i].buffSize, this->cols[i].buff) == FAIL)
+					cols[i].buffSize = 16;
+					cols[i].buff = colBuff = MemAllocArr(UInt8, cols[i].buffSize);
+					if (dbbind(this->dbproc, c, DATETIME2BIND, (Int32)cols[i].buffSize, colBuff.Ptr()) == FAIL)
 					{
 						printf("TDS: Error in binding msdatetime2 of column %d\r\n", (UInt32)i);
 					}
 					break;
 #endif
 				case SYBUUID:
-					this->cols[i].buffSize = 0;
-					this->cols[i].buff = 0;
+					cols[i].buffSize = 0;
+					cols[i].buff = nullptr;
 					break;
 				case SYBGEOMETRY:
-					this->cols[i].buffSize = 0;
-					this->cols[i].buff = 0;
+					cols[i].buffSize = 0;
+					cols[i].buff = nullptr;
 					break;
 				case SYBBINARY:
-					this->cols[i].buffSize = 0;
-					this->cols[i].buff = 0;
+					cols[i].buffSize = 0;
+					cols[i].buff = nullptr;
 					break;
 				default:
 #if defined(DBTDS_7_3)
-					this->cols[i].buffSize = (UInt32)dbprcollen(this->dbproc, c);
+					cols[i].buffSize = (UInt32)dbprcollen(this->dbproc, c);
 #else
-					this->cols[i].buffSize = (UInt32)dbdatlen(this->dbproc, c);
+					cols[i].buffSize = (UInt32)dbdatlen(this->dbproc, c);
 #endif
-					printf("TDS: Unsupported type %d, use print size %d (%d)\r\n", this->cols[i].type, this->cols[i].buffSize, this->cols[i].size);
-					this->cols[i].buff = MemAlloc(UInt8, this->cols[i].buffSize + 1);
-					if (dbbind(this->dbproc, c, NTBSTRINGBIND, (Int32)this->cols[i].buffSize + 1, this->cols[i].buff) == FAIL)
+					printf("TDS: Unsupported type %d, use print size %d (%d)\r\n", cols[i].type, cols[i].buffSize, cols[i].size);
+					cols[i].buff = colBuff = MemAllocArr(UInt8, cols[i].buffSize + 1);
+					if (dbbind(this->dbproc, c, NTBSTRINGBIND, (Int32)cols[i].buffSize + 1, colBuff.Ptr()) == FAIL)
 					{
 						printf("TDS: Error in binding print string of column %d\r\n", (UInt32)i);
 					}
 					break;
 				}
-				if (dbnullbind(this->dbproc, c, &this->cols[i].status) == FAIL)
+				if (dbnullbind(this->dbproc, c, &cols[i].status) == FAIL)
 				{
 					printf("TDS: Error in binding null of column %d\r\n", (UInt32)i);
 				}
@@ -281,11 +284,13 @@ public:
 
 	virtual Bool GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 	{
-		if (colIndex > this->nCols)
+		UnsafeArray<UInt8> colBuff;
+		UnsafeArray<ColInfo> cols;
+		if (colIndex > this->nCols || !this->cols.SetTo(cols))
 			return false;
-		if (this->cols[colIndex].status == -1)
+		if (cols[colIndex].status == -1)
 			return false;
-		switch (this->cols[colIndex].type)
+		switch (cols[colIndex].type)
 		{
 		case SYBTEXT:
 		case SYBCHAR:
@@ -296,27 +301,41 @@ public:
 			return true;
 		}
 		case SYBBIT:
-			sb->AppendU16((this->cols[colIndex].buff[0] != 0)?1:0);
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return false;
+			sb->AppendU16((colBuff[0] != 0)?1:0);
 			return true;
 		case SYBINT1:
-			sb->AppendI16((Int8)this->cols[colIndex].buff[0]);
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return false;
+			sb->AppendI16((Int8)colBuff[0]);
 			return true;
 		case SYBINT2:
-			sb->AppendI16(ReadNInt16(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return false;
+			sb->AppendI16(ReadNInt16(&colBuff[0]));
 			return true;
 		case SYBINT4:
-			sb->AppendI32(ReadNInt32(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return false;
+			sb->AppendI32(ReadNInt32(&colBuff[0]));
 			return true;
 		case SYBINT8:
-			sb->AppendI64(ReadNInt64(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return false;
+			sb->AppendI64(ReadNInt64(&colBuff[0]));
 			return true;
 		case SYBREAL:
-			sb->AppendDouble(ReadFloat(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return false;
+			sb->AppendDouble(ReadFloat(&colBuff[0]));
 			return true;
 		case SYBDECIMAL:
 		case SYBNUMERIC:
 		case SYBFLT8:
-			sb->AppendDouble(ReadDouble(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return false;
+			sb->AppendDouble(ReadDouble(&colBuff[0]));
 			return true;
 #if defined(SYBMSDATE)
 		case SYBMSDATE:
@@ -351,7 +370,7 @@ public:
 		case SYBBINARY:
 			return false;
 		default:
-			printf("TDS: Unsupported type %d to str(sb)\r\n", this->cols[colIndex].type);
+			printf("TDS: Unsupported type %d to str(sb)\r\n", cols[colIndex].type);
 			return false;
 		}
 	}
@@ -360,11 +379,13 @@ public:
 	{
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
-		if (colIndex > this->nCols)
+		UnsafeArray<ColInfo> cols;
+		UnsafeArray<UInt8> colBuff;
+		if (colIndex > this->nCols || !this->cols.SetTo(cols))
 			return nullptr;
-		if (this->cols[colIndex].status == -1)
+		if (cols[colIndex].status == -1)
 			return nullptr;
-		switch (this->cols[colIndex].type)
+		switch (cols[colIndex].type)
 		{
 		case SYBTEXT:
 		case SYBCHAR:
@@ -374,26 +395,40 @@ public:
 			return Text::String::New(data, len);
 		}
 		case SYBBIT:
-			return Text::String::New((this->cols[colIndex].buff[0] != 0)?CSTR("1"):CSTR("0"));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return nullptr;
+			return Text::String::New((colBuff[0] != 0)?CSTR("1"):CSTR("0"));
 		case SYBINT1:
-			sptr = Text::StrInt16(sbuff, (Int8)this->cols[colIndex].buff[0]);
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return nullptr;
+			sptr = Text::StrInt16(sbuff, (Int8)colBuff[0]);
 			return Text::String::NewP(sbuff, sptr);
 		case SYBINT2:
-			sptr = Text::StrInt16(sbuff, ReadNInt16(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return nullptr;
+			sptr = Text::StrInt16(sbuff, ReadNInt16(&colBuff[0]));
 			return Text::String::NewP(sbuff, sptr);
 		case SYBINT4:
-			sptr = Text::StrInt32(sbuff, ReadNInt32(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return nullptr;
+			sptr = Text::StrInt32(sbuff, ReadNInt32(&colBuff[0]));
 			return Text::String::NewP(sbuff, sptr);
 		case SYBINT8:
-			sptr = Text::StrInt64(sbuff, ReadNInt64(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return nullptr;
+			sptr = Text::StrInt64(sbuff, ReadNInt64(&colBuff[0]));
 			return Text::String::NewP(sbuff, sptr);
 		case SYBREAL:
-			sptr = Text::StrDouble(sbuff, ReadFloat(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return nullptr;
+			sptr = Text::StrDouble(sbuff, ReadFloat(&colBuff[0]));
 			return Text::String::NewP(sbuff, sptr);
 		case SYBDECIMAL:
 		case SYBNUMERIC:
 		case SYBFLT8:
-			sptr = Text::StrDouble(sbuff, ReadDouble(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return nullptr;
+			sptr = Text::StrDouble(sbuff, ReadDouble(&colBuff[0]));
 			return Text::String::NewP(sbuff, sptr);
 #if defined(SYBMSDATE)
 		case SYBMSDATE:
@@ -426,18 +461,20 @@ public:
 		case SYBBINARY:
 			return nullptr;
 		default:
-			printf("TDS: Unsupported type %d to new str\r\n", this->cols[colIndex].type);
+			printf("TDS: Unsupported type %d to new str\r\n", cols[colIndex].type);
 			return nullptr;
 		}
 	}
 
 	virtual UnsafeArrayOpt<UTF8Char> GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 	{
-		if (colIndex > this->nCols)
+		UnsafeArray<ColInfo> cols;
+		UnsafeArray<UInt8> colBuff;
+		if (colIndex > this->nCols || !this->cols.SetTo(cols))
 			return nullptr;
-		if (this->cols[colIndex].status == -1)
+		if (cols[colIndex].status == -1)
 			return nullptr;
-		switch (this->cols[colIndex].type)
+		switch (cols[colIndex].type)
 		{
 		case SYBTEXT:
 		case SYBCHAR:
@@ -447,23 +484,37 @@ public:
 			return Text::StrConcatCS(buff, data, len, buffSize);
 		}
 		case SYBBIT:
-			buff[0] = (this->cols[colIndex].buff[0] != 0)?'1':'0';
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return nullptr;
+			buff[0] = (colBuff[0] != 0)?'1':'0';
 			buff[1] = 0;
 			return buff + 1;
 		case SYBINT1:
-			return Text::StrInt16(buff, (Int8)this->cols[colIndex].buff[0]);
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return nullptr;
+			return Text::StrInt16(buff, (Int8)colBuff[0]);
 		case SYBINT2:
-			return Text::StrInt16(buff, ReadNInt16(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return nullptr;
+			return Text::StrInt16(buff, ReadNInt16(&colBuff[0]));
 		case SYBINT4:
-			return Text::StrInt32(buff, ReadNInt32(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return nullptr;
+			return Text::StrInt32(buff, ReadNInt32(&colBuff[0]));
 		case SYBINT8:
-			return Text::StrInt64(buff, ReadNInt64(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return nullptr;
+			return Text::StrInt64(buff, ReadNInt64(&colBuff[0]));
 		case SYBREAL:
-			return Text::StrDouble(buff, ReadFloat(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return nullptr;
+			return Text::StrDouble(buff, ReadFloat(&colBuff[0]));
 		case SYBDECIMAL:
 		case SYBNUMERIC:
 		case SYBFLT8:
-			return Text::StrDouble(buff, ReadDouble(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return nullptr;
+			return Text::StrDouble(buff, ReadDouble(&colBuff[0]));
 #if defined(SYBMSDATE)
 		case SYBMSDATE:
 		case SYBMSTIME:
@@ -483,29 +534,31 @@ public:
 		case SYBBINARY:
 			return nullptr;
 		default:
-			printf("TDS: Unsupported type %d to str(s)\r\n", this->cols[colIndex].type);
+			printf("TDS: Unsupported type %d to str(s)\r\n", cols[colIndex].type);
 			return nullptr;
 		}
 	}
 
 	virtual Data::Timestamp GetTimestamp(UIntOS colIndex)
 	{
-		if (colIndex >= this->nCols)
+		UnsafeArray<ColInfo> cols;
+		UnsafeArray<UInt8> colBuff;
+		if (colIndex >= this->nCols || !this->cols.SetTo(cols) || !cols[colIndex].buff.SetTo(colBuff))
 			return nullptr;
-		if (this->cols[colIndex].status == -1)
+		if (cols[colIndex].status == -1)
 			return nullptr;
-		if (this->cols[colIndex].type == SYBDATETIME)
+		if (cols[colIndex].type == SYBDATETIME)
 		{
-			Int64 secs = (-25567 + ReadInt32(this->cols[colIndex].buff)) * 86400;
-			UInt32 t = ReadUInt32(&this->cols[colIndex].buff[4]);
+			Int64 secs = (-25567 + ReadInt32(&colBuff[0])) * 86400;
+			UInt32 t = ReadUInt32(&colBuff[4]);
 			secs += t / 300;
 			t = (t % 300) * 10000000 / 3;
 			return Data::Timestamp(Data::TimeInstant(secs - this->tzQhr * 900, t), this->tzQhr);
 		}
 #if defined(SYBMSDATE)
-		else if (this->cols[colIndex].type == SYBMSDATETIME2 || this->cols[colIndex].type == SYBMSDATE || this->cols[colIndex].type == SYBMSTIME || this->cols[colIndex].type == SYBMSDATETIMEOFFSET)
+		else if (cols[colIndex].type == SYBMSDATETIME2 || cols[colIndex].type == SYBMSDATE || cols[colIndex].type == SYBMSTIME || cols[colIndex].type == SYBMSDATETIMEOFFSET)
 		{
-			DBDATETIMEALL *t = (DBDATETIMEALL *)this->cols[colIndex].buff;
+			DBDATETIMEALL *t = (DBDATETIMEALL *)colBuff.Ptr();
 			Int64 secs = (-25567 + t->date) * 86400;
 			UInt32 ns = (UInt32)(t->time % 10000000) * 100;
 			secs += (Int64)(t->time / 10000000);
@@ -542,26 +595,28 @@ public:
 
 	virtual UIntOS GetBinarySize(UIntOS colIndex)
 	{
-		if (colIndex >= this->nCols)
+		UnsafeArray<ColInfo> cols;
+		if (colIndex >= this->nCols || !this->cols.SetTo(cols))
 			return 0;
-		if (this->cols[colIndex].status == -1)
+		if (cols[colIndex].status == -1)
 		{
 			return 0;
 		}
-		if (this->cols[colIndex].type != SYBBINARY)
+		if (cols[colIndex].type != SYBBINARY)
 			return 0;
 		return (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 	}
 
 	virtual UIntOS GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 	{
-		if (colIndex >= this->nCols)
+		UnsafeArray<ColInfo> cols;
+		if (colIndex >= this->nCols || !this->cols.SetTo(cols))
 			return 0;
-		if (this->cols[colIndex].status == -1)
+		if (cols[colIndex].status == -1)
 		{
 			return 0;
 		}
-		if (this->cols[colIndex].type != SYBBINARY)
+		if (cols[colIndex].type != SYBBINARY)
 			return 0;
 		UIntOS dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 		UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
@@ -571,13 +626,14 @@ public:
 
 	virtual Optional<Math::Geometry::Vector2D> GetVector(UIntOS colIndex)
 	{
-		if (colIndex >= this->nCols)
+		UnsafeArray<ColInfo> cols;
+		if (colIndex >= this->nCols || !this->cols.SetTo(cols))
 			return nullptr;
-		if (this->cols[colIndex].status == -1)
+		if (cols[colIndex].status == -1)
 		{
 			return nullptr;
 		}
-		if (this->cols[colIndex].type != SYBGEOMETRY)
+		if (cols[colIndex].type != SYBGEOMETRY)
 			return nullptr;
 		UIntOS dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 		UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
@@ -587,13 +643,14 @@ public:
 
 	virtual Bool GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 	{
-		if (colIndex >= this->nCols)
+		UnsafeArray<ColInfo> cols;
+		if (colIndex >= this->nCols || !this->cols.SetTo(cols))
 			return false;
-		if (this->cols[colIndex].status == -1)
+		if (cols[colIndex].status == -1)
 		{
 			return false;
 		}
-		if (this->cols[colIndex].type != SYBUUID)
+		if (cols[colIndex].type != SYBUUID)
 			return false;
 		uuid->SetValue(dbdata(this->dbproc, (int)colIndex + 1));
 		return true;
@@ -601,42 +658,60 @@ public:
 
 	virtual Bool GetVariItem(UIntOS colIndex, NN<Data::VariItem> item)
 	{
-		if (colIndex >= this->nCols)
+		UnsafeArray<ColInfo> cols;
+		UnsafeArray<UInt8> colBuff;
+		if (colIndex >= this->nCols || !this->cols.SetTo(cols))
 			return false;
-		if (this->cols[colIndex].status == -1)
+		if (cols[colIndex].status == -1)
 		{
 			item->SetNull();
 			return true;
 		}
-		switch (this->cols[colIndex].type)
+		switch (cols[colIndex].type)
 		{
 		case SYBBIT:
-			item->SetBool(this->cols[colIndex].buff[0] != 0);
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return false;
+			item->SetBool(colBuff[0] != 0);
 			return true;
 		case SYBINT1:
-			item->SetI8((Int8)this->cols[colIndex].buff[0]);
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return false;
+			item->SetI8((Int8)colBuff[0]);
 			return true;
 		case SYBINT2:
-			item->SetI16(ReadNInt16(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return false;
+			item->SetI16(ReadNInt16(&colBuff[0]));
 			return true;
 		case SYBINT4:
-			item->SetI32(ReadNInt32(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return false;
+			item->SetI32(ReadNInt32(&colBuff[0]));
 			return true;
 		case SYBINT8:
-			item->SetI64(ReadNInt64(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return false;
+			item->SetI64(ReadNInt64(&colBuff[0]));
 			return true;
 		case SYBREAL:
-			item->SetF32(ReadFloat(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return false;
+			item->SetF32(ReadFloat(&colBuff[0]));
 			return true;
 		case SYBDECIMAL:
 		case SYBNUMERIC:
 		case SYBFLT8:
-			item->SetF64(ReadDouble(&this->cols[colIndex].buff[0]));
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return false;
+			item->SetF64(ReadDouble(&colBuff[0]));
 			return true;
 		case SYBDATETIME:
 		{
-			Int64 secs = (-25567 + ReadInt32(this->cols[colIndex].buff)) * 86400;
-			UInt32 t = ReadUInt32(&this->cols[colIndex].buff[4]);
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return false;
+			Int64 secs = (-25567 + ReadInt32(&colBuff[0])) * 86400;
+			UInt32 t = ReadUInt32(&colBuff[4]);
 			secs += t / 300;
 			t = (t % 300) * 10000000 / 3;
 			item->SetDate(Data::Timestamp(Data::TimeInstant(secs - this->tzQhr * 900, t), this->tzQhr));
@@ -647,7 +722,9 @@ public:
 		case SYBMSTIME:
 		case SYBMSDATETIME2:
 		{
-			DBDATETIMEALL *t = (DBDATETIMEALL *)this->cols[colIndex].buff;
+			if (!cols[colIndex].buff.SetTo(colBuff))
+				return false;
+			DBDATETIMEALL *t = (DBDATETIMEALL *)colBuff.Ptr();
 			Int64 secs = (-25567 + t->date) * 86400;
 			UInt32 ns = (UInt32)(t->time % 10000000) * 100;
 			secs += (Int64)(t->time / 10000000);
@@ -703,24 +780,27 @@ public:
 
 	virtual Bool IsNull(UIntOS colIndex)
 	{
-		if (colIndex >= this->nCols)
+		UnsafeArray<ColInfo> cols;
+		if (colIndex >= this->nCols || !this->cols.SetTo(cols))
 			return true;
-		return this->cols[colIndex].status == -1;
+		return cols[colIndex].status == -1;
 	}
 
 	virtual UnsafeArrayOpt<UTF8Char> GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 	{
-		if (colIndex >= this->nCols)
+		UnsafeArray<ColInfo> cols;
+		if (colIndex >= this->nCols || !this->cols.SetTo(cols))
 			return nullptr;
-		return Text::StrConcat(buff, (const UTF8Char*)this->cols[colIndex].name);
+		return Text::StrConcat(buff, (const UTF8Char*)cols[colIndex].name);
 	}
 
 	virtual DB::DBUtil::ColType GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 	{
-		if (colIndex >= this->nCols)
+		UnsafeArray<ColInfo> cols;
+		if (colIndex >= this->nCols || !this->cols.SetTo(cols))
 			return DB::DBUtil::ColType::CT_Unknown;
-		colSize.Set((UInt32)this->cols[colIndex].size);
-		switch (this->cols[colIndex].type)
+		colSize.Set((UInt32)cols[colIndex].size);
+		switch (cols[colIndex].type)
 		{
 		case SYBBIT:
 			return DB::DBUtil::ColType::CT_Bool;
@@ -764,13 +844,14 @@ public:
 
 	virtual Bool GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 	{
-		if (colIndex >= this->nCols)
-			return DB::DBUtil::ColType::CT_Unknown;
+		UnsafeArray<ColInfo> cols;
+		if (colIndex >= this->nCols || !this->cols.SetTo(cols))
+			return false;
 		UnsafeArray<const UTF8Char> colName;
-		if (!colName.Set((const UTF8Char*)this->cols[colIndex].name)) colName.Set((const UTF8Char*)"");
+		if (!colName.Set((const UTF8Char*)cols[colIndex].name)) colName.Set((const UTF8Char*)"");
 		colDef->SetColName(colName);
 		colDef->SetColType(this->GetColType(colIndex, 0));
-		colDef->SetColSize((UInt32)this->cols[colIndex].size);
+		colDef->SetColSize((UInt32)cols[colIndex].size);
 		return true;
 	}
 };

@@ -10,7 +10,7 @@ IO::CryptoStream::CryptoStream(NN<IO::Stream> srcStream, NN<Crypto::Encrypt::Enc
 	this->decBuff = MemAllocArr(UInt8, this->crypto->GetEncBlockSize());
 	this->encBuffSize = 0;
 	this->decBuffSize = 0;
-	this->tmpBuff = 0;
+	this->tmpBuff = nullptr;
 	this->tmpBuffSize = 0;
 }
 
@@ -145,7 +145,7 @@ UIntOS IO::CryptoStream::Write(Data::ByteArrayR buff)
 				if (this->tmpBuff.SetTo(tmpBuff))
 					MemFreeArr(tmpBuff);
 				this->tmpBuffSize = blkCnt * dblkSize;
-				this->tmpBuff = tmpBuff = MemAlloc(UInt8, this->tmpBuffSize);
+				this->tmpBuff = tmpBuff = MemAllocArr(UInt8, this->tmpBuffSize);
 			}
 			i = this->crypto->Encrypt(buffPtr, blkCnt * eblkSize, tmpBuff);
 			nnstm->Write(Data::ByteArrayR(tmpBuff, i));
@@ -188,6 +188,6 @@ void IO::CryptoStream::Close()
 			nnstm->Write(Data::ByteArrayR(tmpBuff, i));
 		}
 		nnstm->Close();
-		this->stm = 0;
+		this->stm = nullptr;
 	}
 }

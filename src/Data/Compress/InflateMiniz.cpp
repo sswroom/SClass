@@ -32,16 +32,16 @@ Bool Data::Compress::Inflate::Decompress(NN<IO::Stream> destStm, NN<IO::StreamDa
 	UInt64 srcOfst = 0;
 	UInt64 srcLen = srcData->GetDataSize();
 	UIntOS srcSize;
-	UInt8 *writeBuff;
+	UnsafeArray<UInt8> writeBuff;
 	Bool error = false;
 	mz_stream stm;
 	Data::ByteBuffer readBuff(1048576);
-	writeBuff = MemAlloc(UInt8, 1048576);
+	writeBuff = MemAllocArr(UInt8, 1048576);
 
 	MemClear(&stm, sizeof(stm));
 	stm.next_in = readBuff.Arr().Ptr();
 	stm.avail_in = 0;
-	stm.next_out = writeBuff;
+	stm.next_out = writeBuff.Ptr();
 	stm.avail_out = 1048576;
 	mz_inflateInit2(&stm, this->hasHeader?MZ_DEFAULT_WINDOW_BITS:-MZ_DEFAULT_WINDOW_BITS);
 	while (!error)
@@ -74,7 +74,7 @@ Bool Data::Compress::Inflate::Decompress(NN<IO::Stream> destStm, NN<IO::StreamDa
 					break;
 				}
 				stm.avail_out = 1048576;
-				stm.next_out = writeBuff;
+				stm.next_out = writeBuff.Ptr();
 			}
 //			if (ret == MZ_STREAM_END)
 //				break;
@@ -95,24 +95,24 @@ Bool Data::Compress::Inflate::Decompress(NN<IO::Stream> destStm, NN<IO::StreamDa
 					break;
 				}
 				stm.avail_out = 1048576;
-				stm.next_out = writeBuff;
+				stm.next_out = writeBuff.Ptr();
 			}
 		}
 	}
 	mz_inflateEnd(&stm);
-	MemFree(writeBuff);
+	MemFreeArr(writeBuff);
 	return !error;
 }
 
 UIntOS Data::Compress::Inflate::TestCompress(UnsafeArray<const UInt8> srcBuff, UIntOS srcBuffSize, Bool hasHeader)
 {
-	UInt8 *tmpBuff = MemAlloc(UInt8, srcBuffSize + 11);
-	UIntOS outSize = Compress(srcBuff, srcBuffSize, tmpBuff, hasHeader, CompressionLevel::BestCompression);
-	MemFree(tmpBuff);
+	UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, srcBuffSize + 11);
+	UIntOS outSize = Compress(srcBuff, srcBuffSize, tmpBuff, hasHeader, Data::Compress::Deflater::CompLevel::BestCompression);
+	MemFreeArr(tmpBuff);
 	return outSize;
 }
 
-UIntOS Data::Compress::Inflate::Compress(UnsafeArray<const UInt8> srcBuff, UIntOS srcBuffSize, UnsafeArray<UInt8> destBuff, Bool hasHeader, CompressionLevel level)
+UIntOS Data::Compress::Inflate::Compress(UnsafeArray<const UInt8> srcBuff, UIntOS srcBuffSize, UnsafeArray<UInt8> destBuff, Bool hasHeader, Data::Compress::Deflater::CompLevel level)
 {
 	int status;
 	mz_stream stream;

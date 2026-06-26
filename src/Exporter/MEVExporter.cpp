@@ -310,7 +310,7 @@ UInt32 Exporter::MEVExporter::AddString(NN<Data::StringMapNN<MEVStrRecord>> strA
 	{
 		NEW_CLASSNN(strRec, MEVStrRecord());
 		strRec->byteSize = (UInt32)nnstrVal->leng;
-		strRec->strBytes = MemAlloc(UInt8, strRec->byteSize + 1);
+		strRec->strBytes = MemAllocArr(UInt8, strRec->byteSize + 1);
 		strRec->strBytes.CopyFromNO(nnstrVal->v, strRec->byteSize + 1);
 		strArr->Put(strVal, strRec);
 	}
@@ -325,7 +325,7 @@ UInt32 Exporter::MEVExporter::AddString(NN<Data::StringMapNN<MEVStrRecord>> strA
 	{
 		NEW_CLASSNN(strRec, MEVStrRecord());
 		strRec->byteSize = (UInt32)strLen;
-		strRec->strBytes = MemAlloc(UInt8, strRec->byteSize + 1);
+		strRec->strBytes = MemAllocArr(UInt8, strRec->byteSize + 1);
 		strRec->strBytes.CopyFromNO(strVal, strRec->byteSize);
 		strArr->PutC({strVal, strLen}, strRec);
 	}

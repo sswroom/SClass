@@ -208,7 +208,7 @@ namespace Data
 		static NN<VariItem> NewI64(Int64 val);
 		static NN<VariItem> NewU64(UInt64 val);
 		static NN<VariItem> NewBool(Bool val);
-		static NN<VariItem> NewByteArr(const UInt8 *arr, UIntOS cnt);
+		static NN<VariItem> NewByteArr(UnsafeArrayOpt<const UInt8> arr, UIntOS cnt);
 		static NN<VariItem> NewByteArr(Data::ReadonlyArray<UInt8> *arr);
 		static NN<VariItem> NewVector(Optional<Math::Geometry::Vector2D> vec);
 		static NN<VariItem> NewUUID(Data::UUID *uuid);

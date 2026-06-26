@@ -13,13 +13,13 @@ void __stdcall DB::DBRow::FreeField(NN<DB::DBRow::Field> field)
 	}
 	else if (dtype == DT_VECTOR)
 	{
-		SDEL_CLASS(field->committedData.vec);
-		SDEL_CLASS(field->currentData.vec);
+		field->committedData.vec.Delete();
+		field->currentData.vec.Delete();
 	}
 	else if (dtype == DT_BINARY)
 	{
-		SMEMFREE(field->committedData.bin);
-		SMEMFREE(field->currentData.bin);
+		MemFreeArrOpt(field->committedData.bin);
+		MemFreeArrOpt(field->currentData.bin);
 	}
 	MemFreeNN(field);
 }
@@ -72,10 +72,10 @@ Bool DB::DBRow::SetFieldNull(NN<DB::DBRow::Field> field)
 		SDEL_TEXT(field->currentData.str);
 		break;
 	case DT_VECTOR:
-		SDEL_CLASS(field->currentData.vec);
+		field->currentData.vec.Delete();
 		break;
 	case DT_BINARY:
-		SMEMFREE(field->currentData.bin);
+		MemFreeArrOpt(field->currentData.bin);
 		break;
 	case DT_DATETIME:
 	case DT_INT64:
@@ -155,7 +155,7 @@ Bool DB::DBRow::SetFieldVector(NN<DB::DBRow::Field> field, Optional<Math::Geomet
 	{
 		return false;
 	}
-	SDEL_CLASS(field->currentData.vec);
+	field->currentData.vec.Delete();
 	field->currentChanged = true;
 	NN<Math::Geometry::Vector2D> nnvec;
 	if (!vec.SetTo(nnvec))
@@ -170,24 +170,26 @@ Bool DB::DBRow::SetFieldVector(NN<DB::DBRow::Field> field, Optional<Math::Geomet
 	return true;
 }
 
-Bool DB::DBRow::SetFieldBinary(NN<DB::DBRow::Field> field, const UInt8 *buff, UIntOS buffSize)
+Bool DB::DBRow::SetFieldBinary(NN<DB::DBRow::Field> field, UnsafeArrayOpt<const UInt8> buff, UIntOS buffSize)
 {
 	DB::DBRow::DataType dtype = this->GetDataType(field);
 	if (dtype != DT_BINARY)
 	{
 		return false;
 	}
-	SMEMFREE(field->currentData.bin);
+	MemFreeArrOpt(field->currentData.bin);
 	field->currentChanged = true;
-	if (buff == 0)
+	UnsafeArray<const UInt8> nnbuff;;
+	if (!buff.SetTo(nnbuff))
 	{
 		field->currentNull = true;
 	}
 	else
 	{
-		field->currentData.bin = MemAlloc(UInt8, buffSize + 4);
-		WriteUInt32(field->currentData.bin, (UInt32)buffSize);
-		MemCopyNO(&field->currentData.bin[4], buff, buffSize);
+		UnsafeArray<UInt8> newBuff;
+		field->currentData.bin = newBuff = MemAllocArr(UInt8, buffSize + 4);
+		WriteUInt32(&newBuff[0], (UInt32)buffSize);
+		MemCopyNO(&newBuff[4], &nnbuff[0], buffSize);
 		field->currentNull = false;
 	}
 	return true;
@@ -273,12 +275,12 @@ Data::Timestamp DB::DBRow::GetFieldDate(NN<DB::DBRow::Field> field) const
 	}
 }
 
-Math::Geometry::Vector2D *DB::DBRow::GetFieldVector(NN<DB::DBRow::Field> field) const
+Optional<Math::Geometry::Vector2D> DB::DBRow::GetFieldVector(NN<DB::DBRow::Field> field) const
 {
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_VECTOR)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (field->currentChanged)
 	{
@@ -290,14 +292,15 @@ Math::Geometry::Vector2D *DB::DBRow::GetFieldVector(NN<DB::DBRow::Field> field) 
 	}	
 }
 
-const UInt8 *DB::DBRow::GetFieldBinary(NN<DB::DBRow::Field> field, UIntOS *buffSize) const
+UnsafeArrayOpt<const UInt8> DB::DBRow::GetFieldBinary(NN<DB::DBRow::Field> field, OutParam<UIntOS> buffSize) const
 {
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_BINARY)
 	{
-		return 0;
+		return nullptr;
 	}
-	const UInt8 *binBuff;
+	UnsafeArrayOpt<const UInt8> binBuff;
+	UnsafeArray<const UInt8> nnbinBuff;
 	if (field->currentChanged)
 	{
 		binBuff = field->currentData.bin;
@@ -307,14 +310,14 @@ const UInt8 *DB::DBRow::GetFieldBinary(NN<DB::DBRow::Field> field, UIntOS *buffS
 		binBuff = field->committedData.bin;
 	}
 	
-	if (binBuff)
+	if (binBuff.SetTo(nnbinBuff))
 	{
-		*buffSize = ReadUInt32(binBuff);
-		return binBuff + 4;
+		buffSize.Set(ReadUInt32(&nnbinBuff[0]));
+		return nnbinBuff + 4;
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -369,10 +372,10 @@ Bool DB::DBRow::SetByReader(NN<DB::DBReader> r, Bool commit)
 			case DT_BINARY:
 				{
 					UIntOS size = r->GetBinarySize(i);
-					UInt8 *buff = MemAlloc(UInt8, size);
+					UnsafeArray<UInt8> buff = MemAllocArr(UInt8, size);
 					r->GetBinary(i, buff);
-					this->SetFieldBinary(field, buff, size);
-					MemFree(buff);
+					this->SetFieldBinary(field, UnsafeArray<const UInt8>(buff), size);
+					MemFreeArr(buff);
 				}
 				break;
 			case DT_VECTOR:
@@ -554,22 +557,22 @@ Data::Timestamp DB::DBRow::GetValueDate(Text::CStringNN fieldName) const
 	return this->GetFieldDate(field);
 }
 
-Math::Geometry::Vector2D *DB::DBRow::GetValueVector(Text::CStringNN fieldName) const
+Optional<Math::Geometry::Vector2D> DB::DBRow::GetValueVector(Text::CStringNN fieldName) const
 {
 	NN<DB::DBRow::Field> field;
 	if (!this->dataMap.GetC(fieldName).SetTo(field))
 	{
-		return 0;
+		return nullptr;
 	}
 	return this->GetFieldVector(field);
 }
 
-const UInt8 *DB::DBRow::GetValueBinary(Text::CStringNN fieldName, UIntOS *buffSize) const
+UnsafeArrayOpt<const UInt8> DB::DBRow::GetValueBinary(Text::CStringNN fieldName, OutParam<UIntOS> buffSize) const
 {
 	NN<DB::DBRow::Field> field;
 	if (!this->dataMap.GetC(fieldName).SetTo(field))
 	{
-		return 0;
+		return nullptr;
 	}
 	return this->GetFieldBinary(field, buffSize);
 }
@@ -592,9 +595,9 @@ void DB::DBRow::Commit()
 				field->currentData.str = nullptr;
 				break;
 			case DT_VECTOR:
-				SDEL_CLASS(field->committedData.vec);
+				field->committedData.vec.Delete();
 				field->committedData.vec = field->currentData.vec;
-				field->currentData.vec = 0;
+				field->currentData.vec = nullptr;
 				break;
 			case DT_DATETIME:
 				field->committedData.ts = field->currentData.ts;
@@ -609,9 +612,9 @@ void DB::DBRow::Commit()
 				field->currentData.dVal = 0;
 				break;
 			case DT_BINARY:
-				SMEMFREE(field->committedData.bin);
+				MemFreeArrOpt(field->committedData.bin);
 				field->committedData.bin = field->currentData.bin;
-				field->currentData.bin = 0;
+				field->currentData.bin = nullptr;
 				break;
 			case DT_UNKNOWN:
 				field->committedData.iVal = field->currentData.iVal;
@@ -642,13 +645,13 @@ void DB::DBRow::Rollback()
 				SDEL_TEXT(field->currentData.str);
 				break;
 			case DT_VECTOR:
-				SDEL_CLASS(field->currentData.vec);
+				field->currentData.vec.Delete();
 				break;
 			case DT_DATETIME:
 				field->currentData.ts.inst = Data::TimeInstant(0, 0);
 				break;
 			case DT_BINARY:
-				SMEMFREE(field->currentData.bin);
+				MemFreeArrOpt(field->currentData.bin);
 				break;
 			case DT_INT64:
 				field->currentData.iVal = 0;
@@ -738,19 +741,25 @@ void DB::DBRow::ToString(NN<Text::StringBuilderUTF8> sb) const
 					break;
 				case DT_BINARY:
 					k = 0;
-					buff = this->GetFieldBinary(field, &k);
-					strLen = DB::DBUtil::SDBBinLeng(buff, k, table->GetSQLType());
-					if (strLen < sizeof(sbuff) - 1)
+					if (this->GetFieldBinary(field, k).SetTo(buff))
 					{
-						sptr = DB::DBUtil::SDBBin(sbuff, buff, k, table->GetSQLType());
-						sb->AppendP(sbuff, sptr);
+						strLen = DB::DBUtil::SDBBinLeng(buff, k, table->GetSQLType());
+						if (strLen < sizeof(sbuff) - 1)
+						{
+							sptr = DB::DBUtil::SDBBin(sbuff, buff, k, table->GetSQLType());
+							sb->AppendP(sbuff, sptr);
+						}
+						else
+						{
+							UnsafeArray<UTF8Char> tmpBuff = MemAllocArr(UTF8Char, strLen + 1);
+							sptr = DB::DBUtil::SDBBin(tmpBuff, buff, k, table->GetSQLType());
+							sb->AppendP(tmpBuff, sptr);
+							MemFreeArr(tmpBuff);
+						}
 					}
 					else
 					{
-						UnsafeArray<UTF8Char> tmpBuff = MemAllocArr(UTF8Char, strLen + 1);
-						sptr = DB::DBUtil::SDBBin(tmpBuff, buff, k, table->GetSQLType());
-						sb->AppendP(tmpBuff, sptr);
-						MemFreeArr(tmpBuff);
+						sb->Append(CSTR("null"));
 					}
 					break;
 				case DT_DOUBLE:
@@ -778,7 +787,7 @@ void DB::DBRow::ToString(NN<Text::StringBuilderUTF8> sb) const
 					}
 					break;
 				case DT_VECTOR:
-					if (vec.Set(this->GetFieldVector(field)))
+					if (this->GetFieldVector(field).SetTo(vec))
 					{
 						wkt.ToText(sb, vec);
 					}

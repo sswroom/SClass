@@ -70,64 +70,64 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	if (rimg->info.pf == Media::PF_B8G8R8)
 	{
 		UIntOS bpl = rimg->GetDataBpl();
-		UInt8 *buff = MemAlloc(UInt8, bpl * rimg->info.dispSize.y);
+		UnsafeArray<UInt8> buff = MemAllocArr(UInt8, bpl * rimg->info.dispSize.y);
 		rimg->GetRasterData(buff, 0, 0, rimg->info.dispSize.x, rimg->info.dispSize.y, bpl, false, rimg->info.rotateType);
 		if (quality < 0)
 		{
-			vp8len = WebPEncodeLosslessBGR(buff, (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)bpl, &vp8);
+			vp8len = WebPEncodeLosslessBGR(buff.Ptr(), (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)bpl, &vp8);
 		}
 		else
 		{
-			vp8len = WebPEncodeBGR(buff, (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)bpl, (float)quality, &vp8);
+			vp8len = WebPEncodeBGR(buff.Ptr(), (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)bpl, (float)quality, &vp8);
 		}
-		MemFree(buff);
+		MemFreeArr(buff);
 	}
 	else if (rimg->info.pf == Media::PF_R8G8B8)
 	{
 		UIntOS bpl = rimg->GetDataBpl();
-		UInt8 *buff = MemAlloc(UInt8, bpl * rimg->info.dispSize.y);
+		UnsafeArray<UInt8> buff = MemAllocArr(UInt8, bpl * rimg->info.dispSize.y);
 		rimg->GetRasterData(buff, 0, 0, rimg->info.dispSize.x, rimg->info.dispSize.y, bpl, false, rimg->info.rotateType);
 		if (quality < 0)
 		{
-			vp8len = WebPEncodeLosslessRGB(buff, (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)bpl, &vp8);
+			vp8len = WebPEncodeLosslessRGB(buff.Ptr(), (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)bpl, &vp8);
 		}
 		else
 		{
-			vp8len = WebPEncodeRGB(buff, (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)bpl, (float)quality, &vp8);
+			vp8len = WebPEncodeRGB(buff.Ptr(), (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)bpl, (float)quality, &vp8);
 		}
-		MemFree(buff);
+		MemFreeArr(buff);
 	}
 	else if (rimg->info.pf == Media::PF_B8G8R8A8)
 	{
 		UIntOS bpl = rimg->GetDataBpl();
-		UInt8 *buff = MemAlloc(UInt8, bpl * rimg->info.dispSize.y);
+		UnsafeArray<UInt8> buff = MemAllocArr(UInt8, bpl * rimg->info.dispSize.y);
 		rimg->GetRasterData(buff, 0, 0, rimg->info.dispSize.x, rimg->info.dispSize.y, bpl, false, rimg->info.rotateType);
 		if (rimg->info.atype == Media::AT_IGNORE_ALPHA)
 		{
-			UInt8 *imgBuff = MemAlloc(UInt8, rimg->info.dispSize.CalcArea() * 3);
-			ImageUtil_ConvB8G8R8A8_B8G8R8(buff, imgBuff, rimg->info.dispSize.x, rimg->info.dispSize.y, (IntOS)bpl, (IntOS)rimg->info.dispSize.x * 3);
+			UnsafeArray<UInt8> imgBuff = MemAllocArr(UInt8, rimg->info.dispSize.CalcArea() * 3);
+			ImageUtil_ConvB8G8R8A8_B8G8R8(buff.Ptr(), imgBuff.Ptr(), rimg->info.dispSize.x, rimg->info.dispSize.y, (IntOS)bpl, (IntOS)rimg->info.dispSize.x * 3);
 			if (quality < 0)
 			{
-				vp8len = WebPEncodeLosslessBGR(imgBuff, (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)rimg->info.dispSize.x * 3, &vp8);
+				vp8len = WebPEncodeLosslessBGR(imgBuff.Ptr(), (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)rimg->info.dispSize.x * 3, &vp8);
 			}
 			else
 			{
-				vp8len = WebPEncodeBGR(imgBuff, (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)rimg->info.dispSize.x * 3, (float)quality, &vp8);
+				vp8len = WebPEncodeBGR(imgBuff.Ptr(), (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)rimg->info.dispSize.x * 3, (float)quality, &vp8);
 			}
-			MemFree(imgBuff);
+			MemFreeArr(imgBuff);
 		}
 		else
 		{
 			if (quality < 0)
 			{
-				vp8len = WebPEncodeLosslessBGRA(buff, (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)bpl, &vp8);
+				vp8len = WebPEncodeLosslessBGRA(buff.Ptr(), (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)bpl, &vp8);
 			}
 			else
 			{
-				vp8len = WebPEncodeBGRA(buff, (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)bpl, (float)quality, &vp8);
+				vp8len = WebPEncodeBGRA(buff.Ptr(), (int)rimg->info.dispSize.x, (int)rimg->info.dispSize.y, (int)bpl, (float)quality, &vp8);
 			}
 		}
-		MemFree(buff);
+		MemFreeArr(buff);
 	}
 	else
 	{
@@ -165,9 +165,9 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			UInt64 endOfst;
 			UInt32 k;
 			UInt32 l;
-			UInt8 *exifBuff;
+			UnsafeArray<UInt8> exifBuff;
 			exif->GetExifBuffSize(exifSize, endOfst);
-			exifBuff = MemAlloc(UInt8, (UIntOS)exifSize + 8);
+			exifBuff = MemAllocArr(UInt8, (UIntOS)exifSize + 8);
 			WriteInt16(&exifBuff[0], ReadInt16((const UInt8*)"II"));
 			WriteInt16(&exifBuff[2], 42);
 			WriteInt32(&exifBuff[4], 8);
@@ -175,10 +175,10 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			l = (UInt32)endOfst + 8;
 			exif->ToExifBuff(exifBuff, k, l);
 
-			data.bytes = exifBuff;
+			data.bytes = exifBuff.Ptr();
 			data.size = (size_t)exifSize + 8;
 			WebPMuxSetChunk(mux, "EXIF", &data, 1);
-			MemFree(exifBuff);
+			MemFreeArr(exifBuff);
 		}
 		WebPMuxAssemble(mux, &data);
 		WebPMuxDelete(mux);
@@ -197,9 +197,9 @@ UIntOS Exporter::WebPExporter::GetParamCnt()
 
 Optional<IO::FileExporter::ParamData> Exporter::WebPExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
-	Int32 *val = MemAlloc(Int32, 1);
-	*val = 100;
-	return (ParamData*)val;
+	UnsafeArray<Int32> val = MemAllocArr(Int32, 1);
+	val[0] = 100;
+	return (ParamData*)val.Ptr();
 }
 
 void Exporter::WebPExporter::DeleteParam(Optional<ParamData> param)

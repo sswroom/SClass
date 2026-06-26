@@ -54,6 +54,7 @@ void MemDecCounter(void *ptr);
 #define MemFreeANN(ptr) MemFreeA(ptr.Ptr())
 #define MemFreeArr(ptr) MemFree((void*)ptr.Ptr())
 #define MemFreeAArr(ptr) MemFreeA((void*)ptr.Ptr())
+#define MemFreeArrOpt(ptr) if (ptr.NotNull()) {MemFree((void*)ptr.Ptr());}
 
 void MemPtrChk(void *ptr);
 void MemInit();

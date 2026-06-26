@@ -82,22 +82,23 @@ typedef struct
 
 void* __stdcall ADL_Main_Memory_Alloc(int iSize)
 {
-	UInt8* lpBuffer = MemAlloc(UInt8, (UIntOS)(UInt32)iSize);
-	return lpBuffer;
+	UnsafeArray<UInt8> lpBuffer = MemAllocArr(UInt8, (UIntOS)(UInt32)iSize);
+	return lpBuffer.Ptr();
 }
 
 void __stdcall ADL_Main_Memory_Free(void** lpBuffer)
 {
-	if (*lpBuffer != 0)
+	UnsafeArray<UInt8> arr;
+	if (arr.Set((UInt8*)*lpBuffer))
 	{
-		MemFree(*lpBuffer);
+		MemFreeArr(arr);
 		*lpBuffer = 0;
 	}
 }
 
 IO::AMDGPUManager::AMDGPUManager()
 {
-	this->adapterInfos = 0;
+	this->adapterInfos = nullptr;
 	this->adapterList = nullptr;
 	NN<IO::Library> lib;
 #if defined (LINUX)
@@ -119,8 +120,8 @@ IO::AMDGPUManager::AMDGPUManager()
 	else
 	{
 		this->lib = lib;
-		ADLFuncs *adlFuncs = MemAlloc(ADLFuncs, 1);
-		MemClear(adlFuncs, sizeof(ADLFuncs));
+		NN<ADLFuncs> adlFuncs = MemAllocNN(ADLFuncs);
+		adlFuncs.ZeroContent();;
 
 		adlFuncs->ADL_Main_Control_Create = (ADL_MAIN_CONTROL_CREATE) lib->GetFunc("ADL_Main_Control_Create");
 		adlFuncs->ADL_Main_Control_Destroy = (ADL_MAIN_CONTROL_DESTROY) lib->GetFunc("ADL_Main_Control_Destroy");
@@ -160,7 +161,7 @@ IO::AMDGPUManager::AMDGPUManager()
 		{
 			if (adlFuncs->ADL_Main_Control_Create(ADL_Main_Memory_Alloc, 1) == ADL_OK)
 			{
-				this->funcs = adlFuncs;
+				this->funcs = adlFuncs.Ptr();
 
 				int cnt;
 				int i;
@@ -171,21 +172,22 @@ IO::AMDGPUManager::AMDGPUManager()
 				{
 					cnt = 0;
 				}
-				this->adapterInfos = MemAlloc(UInt8, sizeof(AdapterInfo) * (UIntOS)(UInt32)cnt);
+				UnsafeArray<UInt8> adapterInfos;
+				this->adapterInfos = adapterInfos = MemAllocArr(UInt8, sizeof(AdapterInfo) * (UIntOS)(UInt32)cnt);
 				NN<Data::ArrayListArr<UInt8>> adapterList;
 				NEW_CLASSNN(adapterList, Data::ArrayListArr<UInt8>());
 				this->adapterList = adapterList;
 				AdapterInfo *adapter;
 				if (cnt > 0)
 				{
-					MemClear(this->adapterInfos, sizeof(AdapterInfo) * (UIntOS)(UInt32)cnt);
+					MemClear(&adapterInfos[0], sizeof(AdapterInfo) * (UIntOS)(UInt32)cnt);
 					if (adlFuncs->ADL_Adapter_AdapterInfo_Get)
-						adlFuncs->ADL_Adapter_AdapterInfo_Get((LPAdapterInfo)this->adapterInfos, (int)sizeof(AdapterInfo) * cnt);
+						adlFuncs->ADL_Adapter_AdapterInfo_Get((LPAdapterInfo)adapterInfos.Ptr(), (int)sizeof(AdapterInfo) * cnt);
 				}
 				i = 0;
 				while (i < cnt)
 				{
-					adapter = (AdapterInfo*)&this->adapterInfos[sizeof(AdapterInfo) * (UInt32)i];
+					adapter = (AdapterInfo*)&adapterInfos[sizeof(AdapterInfo) * (UIntOS)i];
 					if (adapter->iVendorID == AMDVENDORID)
 					{
 						int active = 0;
@@ -202,7 +204,7 @@ IO::AMDGPUManager::AMDGPUManager()
 			}
 			else
 			{
-				MemFree(adlFuncs);
+				MemFreeNN(adlFuncs);
 				this->funcs = 0;
 				lib.Delete();
 				this->lib = nullptr;
@@ -210,7 +212,7 @@ IO::AMDGPUManager::AMDGPUManager()
 		}
 		else
 		{
-			MemFree(adlFuncs);
+			MemFreeNN(adlFuncs);
 			this->funcs = 0;
 			lib.Delete();
 			this->lib = nullptr;
@@ -226,9 +228,10 @@ IO::AMDGPUManager::~AMDGPUManager()
 		adlFuncs->ADL_Main_Control_Destroy();
 		MemFree(adlFuncs);
 	}
-	if (this->adapterInfos)
+	UnsafeArray<UInt8> adapterInfos;
+	if (this->adapterInfos.SetTo(adapterInfos))
 	{
-		MemFree(this->adapterInfos);
+		MemFreeArr(adapterInfos);
 	}
 	this->adapterList.Delete();
 	this->lib.Delete();

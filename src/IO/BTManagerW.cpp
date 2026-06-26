@@ -24,19 +24,19 @@ typedef BOOL (__stdcall *BluetoothFindRadioCloseFunc)(HBLUETOOTH_RADIO_FIND hFin
 
 IO::BTManager::BTManager()
 {
-	InternalData *me = MemAlloc(InternalData, 1);
-	this->internalData = me;
+	NN<InternalData> me = MemAllocNN(InternalData);
+	this->internalData = me.Ptr();
 	NEW_CLASS(me->lib, IO::Library((const UTF8Char*)"Bthprops.cpl"));
 	me->useCnt = 1;
 }
 
 IO::BTManager::~BTManager()
 {
-	InternalData *me = (InternalData*)this->internalData;
-	if (Sync::Interlocked::DecrementI32(me->useCnt) <= 0)
+	NN<InternalData> me;
+	if (me.Set((InternalData*)this->internalData) && Sync::Interlocked::DecrementI32(me->useCnt) <= 0)
 	{
 		DEL_CLASS(me->lib);
-		MemFree(me);
+		MemFreeNN(me);
 	}
 }
 

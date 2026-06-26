@@ -17,11 +17,11 @@ namespace Parser
 			virtual Int32 GetName();
 			virtual void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
+			virtual Optional<IO::ParsedObject> ParseFile(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType);
 
-			static Media::FontRenderer *ParseFontBuff(NN<Text::String> sourceName, UnsafeArray<const UInt8> fontBuff, UIntOS buffSize);
-			static UIntOS GetFileDesc(const UInt8 *fileBuff, UIntOS fileSize, NN<Text::StringBuilderUTF8> sb); //return header size
-			static void GetFileDirDesc(const UInt8 *fileBuff, UIntOS fileSize, NN<Text::StringBuilderUTF8> sb);
+			static Optional<Media::FontRenderer> ParseFontBuff(NN<Text::String> sourceName, UnsafeArray<const UInt8> fontBuff, UIntOS buffSize);
+			static UIntOS GetFileDesc(UnsafeArray<const UInt8> fileBuff, UIntOS fileSize, NN<Text::StringBuilderUTF8> sb); //return header size
+			static void GetFileDirDesc(UnsafeArray<const UInt8> fileBuff, UIntOS fileSize, NN<Text::StringBuilderUTF8> sb);
 		};
 	}
 }

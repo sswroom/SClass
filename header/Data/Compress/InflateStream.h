@@ -11,7 +11,7 @@ namespace Data
 		private:
 			NN<IO::Stream> outStm;
 			void *cmpInfo;
-			UInt8 *writeBuff;
+			UnsafeArray<UInt8> writeBuff;
 			UIntOS headerSize;
 		public:
 			InflateStream(NN<IO::Stream> outStm, UIntOS headerSize, Bool zlibHeader);

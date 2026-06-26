@@ -37,9 +37,9 @@ UIntOS Exporter::WebPExporter::GetParamCnt()
 
 Optional<IO::FileExporter::ParamData> Exporter::WebPExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
-	Int32 *val = MemAlloc(Int32, 1);
+	UnsafeArray<Int32> val = MemAllocArr(Int32, 1);
 	*val = 100;
-	return (ParamData*)val;
+	return (ParamData*)val.Ptr();
 }
 
 void Exporter::WebPExporter::DeleteParam(Optional<ParamData> param)

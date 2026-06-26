@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Math/Math_C.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
-#include "Media/Resizer/LanczosResizer8_C8.h"
+#include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "Sync/ThreadUtil.h"
 #include "DotNet/MyPictureBox.h"
 
@@ -275,17 +275,17 @@ void DotNet::MyPictureBox::SetImage(Media::Image *currImage)
 			{
 				this->csconv->SetPalette(this->currImage->pal);
 			}
-			this->imgBuff = MemAlloc(UInt8, this->currImage->info->width * this->currImage->info->height * 4);
+			this->imgBuff = MemAllocArr(UInt8, this->currImage->info->width * this->currImage->info->height * 4);
 			if (this->currImage->GetImageType() == Media::Image::ImageType::Static)
 			{
 				this->csconv->Convert(((Media::StaticImage*)this->currImage)->data, this->imgBuff, this->currImage->info->width, this->currImage->info->height, this->currImage->GetBpl(), this->currImage->info->width << 2);
 			}
 			else
 			{
-				UInt8 *imgData = MemAlloc(UInt8, this->currImage->GetBpl() * this->currImage->info->height);
+				UnsafeArray<UInt8> imgData = MemAllocArr(UInt8, this->currImage->GetBpl() * this->currImage->info->height);
 				this->currImage->GetImageData(imgData, 0, 0, this->currImage->info->width, this->currImage->info->height, this->currImage->GetBpl(), false, Media::RotateType::None);
 				this->csconv->Convert(imgData, this->imgBuff, this->currImage->info->width, this->currImage->info->height, this->currImage->GetBpl(), this->currImage->info->width << 2);
-				MemFree(imgData);
+				MemFreeArr(imgData);
 			}
 			this->UpdateSubSurface();
 			this->formCtrl->Refresh();
@@ -303,10 +303,10 @@ void DotNet::MyPictureBox::YUVParamChanged(NN<const Media::ColorHandler::YUVPARA
 		}
 		else
 		{
-			UInt8 *imgData = MemAlloc(UInt8, this->currImage->GetBpl() * this->currImage->info->height);
+			UnsafeArray<UInt8> imgData = MemAllocArr(UInt8, this->currImage->GetBpl() * this->currImage->info->height);
 			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info->width, this->currImage->info->height, this->currImage->GetBpl(), false, Media::RotateType::None);
 			this->csconv->Convert(imgData, this->imgBuff, this->currImage->info->width, this->currImage->info->height, this->currImage->info->width * (this->currImage->info->bpp >> 3), this->currImage->info->width << 2);
-			MemFree(imgData);
+			MemFreeArr(imgData);
 		}
 		UpdateSubSurface();
 		DrawToScreen();
@@ -323,10 +323,10 @@ void DotNet::MyPictureBox::RGBParamChanged(const Media::ColorHandler::RGBPARAM *
 		}
 		else
 		{
-			UInt8 *imgData = MemAlloc(UInt8, this->currImage->GetBpl() * this->currImage->info->height);
+			UnsafeArray<UInt8> imgData = MemAllocArr(UInt8, this->currImage->GetBpl() * this->currImage->info->height);
 			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info->width, this->currImage->info->height, this->currImage->GetBpl(), false, Media::RotateType::None);
 			this->csconv->Convert(imgData, this->imgBuff, this->currImage->info->width, this->currImage->info->height, this->currImage->info->width * (this->currImage->info->bpp >> 3), this->currImage->info->width << 2);
-			MemFree(imgData);
+			MemFreeArr(imgData);
 		}
 		UpdateSubSurface();
 		DrawToScreen();

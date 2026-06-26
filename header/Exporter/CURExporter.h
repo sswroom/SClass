@@ -10,7 +10,7 @@ namespace Exporter
 	public:
 		static Bool ImageSupported(NN<Media::RasterImage> img);
 		static UIntOS CalcBuffSize(NN<Media::ImageList> imgList);
-		static UIntOS BuildBuff(UInt8 *buff, NN<Media::ImageList> imgList, Bool hasHotSpot);
+		static UIntOS BuildBuff(UnsafeArray<UInt8> buff, NN<Media::ImageList> imgList, Bool hasHotSpot);
 		
 	public:
 		CURExporter();

@@ -60,23 +60,23 @@ Bool IO::CEControl::IsError()
 
 void *IO::CEControl::FindFile(const WChar *path)
 {
-	FindFileSession *sess;
-	sess = MemAlloc(FindFileSession, 1);
+	NN<FindFileSession> sess;
+	sess = MemAllocNN(FindFileSession);
 	sess->lastFound = true;
 	sess->handle = CeFindFirstFile(path, &sess->findData);
 	if (sess->handle != INVALID_HANDLE_VALUE)
 	{
-		return sess;
+		return sess.Ptr();
 	}
 	UInt32 lastErr = CeGetLastError();
 	if (lastErr == ERROR_NO_MORE_FILES)
 	{
 		sess->lastFound = false;
-		return sess;
+		return sess.Ptr();
 	}
 	else
 	{
-		MemFree(sess);
+		MemFreeNN(sess);
 		return 0;
 	}
 }
@@ -117,10 +117,13 @@ WChar *IO::CEControl::FindNextFile(WChar *buff, void *session, Data::DateTime *m
 
 void IO::CEControl::FindFileClose(void *session)
 {
-	FindFileSession *sess = (FindFileSession*)session;
-	if (sess->handle != INVALID_HANDLE_VALUE)
-		CeFindClose(sess->handle);
-	MemFree(sess);
+	NN<FindFileSession> sess;
+	if (sess.Set((FindFileSession*)session))
+	{
+		if (sess->handle != INVALID_HANDLE_VALUE)
+			CeFindClose(sess->handle);
+		MemFreeNN(sess);
+	}
 }
 
 IO::Path::PathType IO::CEControl::GetPathType(const WChar *path)

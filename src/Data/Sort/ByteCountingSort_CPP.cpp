@@ -5,9 +5,7 @@ extern "C" Bool ByteCountingSort_SortUInt32(UInt32 *arr, IntOS firstIndex, IntOS
 {
 	arr += firstIndex;
 	UIntOS arrLen = (UIntOS)(lastIndex - firstIndex + 1);
-	UInt32 *arr2 = MemAlloc(UInt32, arrLen);
-	if (arr2 == 0)
-		return false;
+	UnsafeArray<UInt32> arr2 = MemAllocArr(UInt32, arrLen);
 	UInt32 *arrTmp;
 	UIntOS dynArr3[4][256] = {{0}};
 	UIntOS i;
@@ -55,11 +53,11 @@ extern "C" Bool ByteCountingSort_SortUInt32(UInt32 *arr, IntOS firstIndex, IntOS
 		}
 
 		arrTmp = arr;
-		arr = arr2;
+		arr = arr2.Ptr();
 		arr2 = arrTmp;
 
 		k++;
 	}
-	MemFree(arr2);
+	MemFreeArr(arr2);
 	return true;
 }

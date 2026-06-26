@@ -132,6 +132,11 @@ namespace Data
 			return this->dateVal == dt.dateVal;
 		}
 
+		Bool operator!=(const Date &dt) const
+		{
+			return this->dateVal != dt.dateVal;
+		}
+
 		Bool operator>(const Date &dt) const
 		{
 			return (this->dateVal > dt.dateVal);

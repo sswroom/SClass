@@ -109,7 +109,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 					if (nnimg->info.color.GetRAWICC().SetTo(iccBuff))
 					{
 						UInt32 iccSize = ReadMUInt32(&iccBuff[0]);
-						UInt8 *chunkBuff = MemAlloc(UInt8, iccSize + 32);
+						UnsafeArray<UInt8> chunkBuff = MemAllocArr(UInt8, iccSize + 32);
 						WriteInt32(&chunkBuff[4], ReadInt32("iCCP"));
 						Text::StrConcatC((UTF8Char*)&chunkBuff[8], UTF8STRC("Photoshop ICC profile"));
 						chunkBuff[30] = 0;
@@ -117,11 +117,11 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 						UIntOS compSize = Data::Compress::Inflate::Compress(iccBuff, iccSize, &chunkBuff[31], true, Data::Compress::Deflater::CompLevel::BestCompression);
 						if (compSize > 0)
 						{
-							WriteMUInt32(chunkBuff, 23 + compSize);
+							WriteMUInt32(&chunkBuff[0], 23 + compSize);
 							WriteMUInt32(&chunkBuff[31 + compSize], crc.CalcDirect(&chunkBuff[4], 27 + compSize));
 							stm->Write(Data::ByteArrayR(chunkBuff, 35 + compSize));
 						}
-						MemFree(chunkBuff);
+						MemFreeArr(chunkBuff);
 					}
 					else
 					{

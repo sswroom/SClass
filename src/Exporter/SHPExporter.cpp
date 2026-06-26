@@ -200,8 +200,8 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		UIntOS nPtOfst;
 		UIntOS nPoint;
 		UInt8 nvals[8];
-		UInt32 *ptOfsts;
-		Math::Coord2DDbl *points;
+		UnsafeArray<UInt32> ptOfsts;
+		UnsafeArray<Math::Coord2DDbl> points;
 		
 		i = 0;
 		while (i < recCnt)
@@ -211,9 +211,9 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			{
 				box = pl->GetBounds();
 				nPtOfst = pl->GetCount();
-				ptOfsts = MemAlloc(UInt32, nPtOfst);
+				ptOfsts = MemAllocArr(UInt32, nPtOfst);
 				nPoint = pl->GetPointCount();
-				points = MemAllocA(Math::Coord2DDbl, nPoint);
+				points = MemAllocAArr(Math::Coord2DDbl, nPoint);
 				pl->FillPointOfstList(points, ptOfsts, nullptr, nullptr);
 				WriteUInt32(&nvals[0], (UInt32)nPtOfst);
 				WriteUInt32(&nvals[4], (UInt32)nPoint);
@@ -239,12 +239,12 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				stm->Write(Data::ByteArrayR((UInt8*)&box, 32));
 				stm->Write(Data::ByteArrayR(nvals, 8));
 				fileSize += 52;
-				stm->Write(Data::ByteArrayR((UInt8*)ptOfsts, nPtOfst * 4));
-				stm->Write(Data::ByteArrayR((UInt8*)points, nPoint * 16));
+				stm->Write(Data::ByteArrayR(UnsafeArray<UInt8>::ConvertFrom(ptOfsts), nPtOfst * 4));
+				stm->Write(Data::ByteArrayR(UnsafeArray<UInt8>::ConvertFrom(points), nPoint * 16));
 				fileSize += nPtOfst * 4 + nPoint * 16;
 
-				MemFreeA(points);
-				MemFree(ptOfsts);
+				MemFreeAArr(points);
+				MemFreeArr(ptOfsts);
 				pl.Delete();
 			}
 			else
@@ -265,9 +265,9 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		UIntOS nPoint;
 		Double ranges[2];
 		UInt8 nvals[8];
-		UInt32 *ptOfsts;
-		Math::Coord2DDbl *points;
-		Double *alts;
+		UnsafeArray<UInt32> ptOfsts;
+		UnsafeArray<Math::Coord2DDbl> points;
+		UnsafeArray<Double> alts;
 		
 		i = 0;
 		while (i < recCnt)
@@ -276,10 +276,10 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			{
 				box = pl->GetBounds();
 				nPtOfst = pl->GetCount();
-				ptOfsts = MemAlloc(UInt32, nPtOfst);
+				ptOfsts = MemAllocArr(UInt32, nPtOfst);
 				nPoint = pl->GetPointCount();
-				points = MemAllocA(Math::Coord2DDbl, nPoint);
-				alts = MemAlloc(Double, nPoint);
+				points = MemAllocAArr(Math::Coord2DDbl, nPoint);
+				alts = MemAllocArr(Double, nPoint);
 				pl->FillPointOfstList(points, ptOfsts, alts, nullptr);
 				WriteUInt32(&nvals[0], (UInt32)nPtOfst);
 				WriteUInt32(&nvals[4], (UInt32)nPoint);
@@ -325,16 +325,16 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				stm->Write(Data::ByteArrayR((UInt8*)&box, 32));
 				stm->Write(Data::ByteArrayR((UInt8*)nvals, 8));
 				fileSize += 52;
-				stm->Write(Data::ByteArrayR((UInt8*)ptOfsts, nPtOfst * 4));
-				stm->Write(Data::ByteArrayR((UInt8*)points, nPoint * 16));
+				stm->Write(Data::ByteArrayR(UnsafeArray<UInt8>::ConvertFrom(ptOfsts), nPtOfst * 4));
+				stm->Write(Data::ByteArrayR(UnsafeArray<UInt8>::ConvertFrom(points), nPoint * 16));
 				fileSize += nPtOfst * 4 + nPoint * 16;
 				stm->Write(Data::ByteArrayR((UInt8*)ranges, 16));
-				stm->Write(Data::ByteArrayR((UInt8*)alts, nPoint * 8));
+				stm->Write(Data::ByteArrayR(UnsafeArray<UInt8>::ConvertFrom(alts), nPoint * 8));
 				fileSize += 16 + nPoint * 8;
 
-				MemFree(alts);
-				MemFreeA(points);
-				MemFree(ptOfsts);
+				MemFreeArr(alts);
+				MemFreeAArr(points);
+				MemFreeArr(ptOfsts);
 				pl.Delete();
 			}
 			i++;
@@ -349,8 +349,8 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		UIntOS nPtOfst;
 		UIntOS nPoint;
 		UInt8 nvals[8];
-		UInt32 *ptOfsts;
-		Math::Coord2DDbl *points;
+		UnsafeArray<UInt32> ptOfsts;
+		UnsafeArray<Math::Coord2DDbl> points;
 		
 		i = 0;
 		while (i < recCnt)
@@ -360,8 +360,8 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				box = pg->GetBounds();
 				nPtOfst = pg->GetCount();
 				nPoint = pg->GetPointCount();
-				ptOfsts = MemAlloc(UInt32, nPtOfst);
-				points = MemAllocA(Math::Coord2DDbl, nPoint);
+				ptOfsts = MemAllocArr(UInt32, nPtOfst);
+				points = MemAllocAArr(Math::Coord2DDbl, nPoint);
 				pg->FillPointOfstList(points, ptOfsts, nullptr, nullptr);
 				WriteUInt32(&nvals[0], (UInt32)nPtOfst);
 				WriteUInt32(&nvals[4], (UInt32)nPoint);
@@ -387,11 +387,11 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				stm->Write(Data::ByteArrayR((UInt8*)&box, 32));
 				stm->Write(Data::ByteArrayR((UInt8*)nvals, 8));
 				fileSize += 52;
-				stm->Write(Data::ByteArrayR((UInt8*)ptOfsts, nPtOfst * 4));
-				stm->Write(Data::ByteArrayR((UInt8*)points, nPoint * 16));
+				stm->Write(Data::ByteArrayR(UnsafeArray<UInt8>::ConvertFrom(ptOfsts), nPtOfst * 4));
+				stm->Write(Data::ByteArrayR(UnsafeArray<UInt8>::ConvertFrom(points), nPoint * 16));
 				fileSize += nPtOfst * 4 + nPoint * 16;
-				MemFreeA(points);
-				MemFree(ptOfsts);
+				MemFreeAArr(points);
+				MemFreeArr(ptOfsts);
 				pg.Delete();
 			}
 			i++;

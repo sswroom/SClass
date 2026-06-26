@@ -100,9 +100,9 @@ UIntOS Exporter::GUITIFExporter::GetParamCnt()
 
 Optional<IO::FileExporter::ParamData> Exporter::GUITIFExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
-	Bool *val = MemAlloc(Bool, 1);
-	*val = false;
-	return (ParamData*)val;
+	UnsafeArray<Bool> val = MemAllocArr(Bool, 1);
+	*val.Ptr() = false;
+	return (ParamData*)val.Ptr();
 }
 
 void Exporter::GUITIFExporter::DeleteParam(Optional<ParamData> param)

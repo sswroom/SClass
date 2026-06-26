@@ -314,7 +314,7 @@ UInt32 __stdcall Data::Sort::BitonicSort::ProcessThread(AnyType userObj)
 Data::Sort::BitonicSort::BitonicSort()
 {
 	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
-	this->threads = MemAlloc(ThreadStat, this->threadCnt);
+	this->threads = MemAllocArr(ThreadStat, this->threadCnt);
 	mainThread.me = *this;
 	mainThread.toStop = false;
 	mainThread.state = 1;

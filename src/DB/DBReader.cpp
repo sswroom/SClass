@@ -72,10 +72,10 @@ Bool DB::DBReader::GetVariItem(UIntOS colIndex, NN<Data::VariItem> item)
 	case DB::DBUtil::CT_Binary:
 		{
 			size = this->GetBinarySize(colIndex);
-			UInt8 *binBuff = MemAlloc(UInt8, size);
+			UnsafeArray<UInt8> binBuff = MemAllocArr(UInt8, size);
 			this->GetBinary(colIndex, binBuff);
 			item->SetByteArr(binBuff, size);
-			MemFree(binBuff);
+			MemFreeArr(binBuff);
 			return true;
 		}
 		break;
@@ -135,7 +135,7 @@ NN<Data::VariObject> DB::DBReader::CreateVariObject()
 	DB::DBUtil::ColType ctype;
 	NN<Data::VariObject> obj;
 	Data::DateTime dt;
-	UInt8 *binBuff;
+	UnsafeArray<UInt8> binBuff;
 	NEW_CLASSNN(obj, Data::VariObject(Data::VariObject::NameType::Database));
 	i = 0;
 	j = this->ColCount();
@@ -198,10 +198,10 @@ NN<Data::VariObject> DB::DBReader::CreateVariObject()
 				break;
 			case DB::DBUtil::CT_Binary:
 				size = this->GetBinarySize(i);
-				binBuff = MemAlloc(UInt8, size);
+				binBuff = MemAllocArr(UInt8, size);
 				this->GetBinary(i, binBuff);
-				obj->SetItemByteArray(sbuff, binBuff, size);
-				MemFree(binBuff);
+				obj->SetItemByteArray(sbuff, UnsafeArray<const UInt8>(binBuff), size);
+				MemFreeArr(binBuff);
 				break;
 			case DB::DBUtil::CT_Vector:
 				obj->SetItemVectorDirect(sbuff, this->GetVector(i));

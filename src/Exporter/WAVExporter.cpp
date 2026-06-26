@@ -58,7 +58,7 @@ Bool Exporter::WAVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	{
 		return false;
 	}
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	NN<Media::MediaFile> file = NN<Media::MediaFile>::ConvertFrom(pobj);
 	if (file->GetStream(1, 0).NotNull())
 		return false;
@@ -74,7 +74,7 @@ Bool Exporter::WAVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UInt64 fileSize = 0;
 	UInt64 headerSize = 0;
 	UInt64 initPos = stm->GetPosition();
-	buff = MemAlloc(UInt8, 1048576);
+	buff = MemAllocArr(UInt8, 1048576);
 	WriteNInt32(&buff[0], *(Int32*)"RIFF");
 	WriteUInt32(&buff[4], 0);
 	WriteNInt32(&buff[8], *(Int32*)"WAVE");
@@ -138,7 +138,7 @@ Bool Exporter::WAVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	}
 	stm->SeekFromBeginning(initPos);
 	stm->Write(Data::ByteArrayR(buff, (UIntOS)headerSize));
-	MemFree(buff);
+	MemFreeArr(buff);
 
 	return true;
 }

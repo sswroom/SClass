@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
-#include "Data/StringCMap.h"
+#include "Data/ArrayListArr.hpp"
+#include "Data/StringMapNN.hpp"
 #include "IO/DBusClient.h"
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
@@ -14,7 +14,7 @@
 
 struct IO::DBusClient::PropInfo
 {
-	const Char *name;
+	UnsafeArray<const Char> name;
 	Int32 type;
 	DBusMessage *msg;
 };
@@ -22,10 +22,10 @@ struct IO::DBusClient::PropInfo
 struct IO::DBusClient::ProxyData
 {
 	Int32 refCount;
-	IO::DBusClient *client;
+	NN<IO::DBusClient> client;
 	const Char *objPath;
 	const Char *interface;
-	Data::StringCMap<PropInfo*> *propList;
+	Data::StringMapNN<PropInfo> *propList;
 	UIntOS watch;
 	PropertyFunction propFunc;
 	void *propData;
@@ -38,12 +38,12 @@ struct IO::DBusClient::ProxyData
 struct IO::DBusClient::ClassData
 {
 	Int32 refCount;
-	IO::DBusManager *dbusMgr;
+	NN<IO::DBusManager> dbusMgr;
 	DBusConnection *dbusConn;
-	const Char *serviceName;
+	UnsafeArrayOpt<const UTF8Char> serviceName;
 	const Char *basePath;
-	const Char *rootPath;
-	Data::ArrayList<const Char *> *matchRules;
+	UnsafeArrayOpt<const UTF8Char> rootPath;
+	Data::ArrayListArr<const UTF8Char> *matchRules;
 	UIntOS watch;
 	UIntOS addedWatch;
 	UIntOS removedWatch;
@@ -62,20 +62,21 @@ struct IO::DBusClient::ClassData
 	void *readyData;
 	IO::DBusClient::PropertyFunction propertyChanged;
 	void *userData;
-	Data::ArrayList<IO::DBusClient::ProxyData*> *proxyList;
+	Data::ArrayListNN<IO::DBusClient::ProxyData> *proxyList;
 };
 
 static DBusHandlerResult DBusClient_MessageFilter(DBusConnection *connection, DBusMessage *message, void *userData)
 {
 	IO::DBusClient *me = (IO::DBusClient*)userData;
 	IO::DBusManager::Message msg(message);
-	return (DBusHandlerResult)me->MessageFilter(&msg);
+	return (DBusHandlerResult)me->MessageFilter(msg);
 }
 
 void DBusClient_GetAllPropertiesReply(DBusPendingCall *pending, void *userObj)
 {
-	IO::DBusClient::ProxyData *proxy = (IO::DBusClient::ProxyData*)userObj;
-	proxy->client->GetAllPropertiesReply(pending, proxy);
+	NN<IO::DBusClient::ProxyData> proxy;
+	if (proxy.Set((IO::DBusClient::ProxyData*)userObj))
+		proxy->client->GetAllPropertiesReply(pending, proxy);
 }
 
 void DBusClient_GetManagedObjectsReply(DBusPendingCall *pending, void *userObj)
@@ -88,10 +89,12 @@ void DBusClient_ModifyMatchReply(DBusPendingCall *pending, void *userObj)
 	((IO::DBusClient*)userObj)->ModifyMatchReply(pending);
 }
 
-void IO::DBusClient::OnServiceConnect(IO::DBusManager *dbusManager, void *userData)
+void IO::DBusClient::OnServiceConnect(NN<IO::DBusManager> dbusManager, AnyType userData)
 {
-	IO::DBusClient *me = (IO::DBusClient*)userData;
-	ClassData *client = me->clsData;
+	NN<IO::DBusClient> me = userData.GetNN<IO::DBusClient>();
+	NN<ClassData> client;
+	if (!me->clsData.SetTo(client))
+		return;
 
 	me->Ref();
 
@@ -105,22 +108,24 @@ void IO::DBusClient::OnServiceConnect(IO::DBusManager *dbusManager, void *userDa
 	me->Unref();
 }
 
-void IO::DBusClient::OnServiceDisconnect(IO::DBusManager *dbusManager, void *userData)
+void IO::DBusClient::OnServiceDisconnect(NN<IO::DBusManager> dbusManager, AnyType userData)
 {
-	IO::DBusClient *me = (IO::DBusClient*)userData;
-	ClassData *client = me->clsData;
+	NN<IO::DBusClient> me = userData.GetNN<IO::DBusClient>();
+	NN<ClassData> client;
+	if (!me->clsData.SetTo(client))
+		return;
 
 	client->connected = false;
 
-	LIST_FREE_FUNC(client->proxyList, me->ProxyFree);
+	client->proxyList->FreeAll(ProxyFree);
 
 	if (client->disconnFunc)
 		client->disconnFunc(dbusManager, client->disconnData);
 }
 
-Bool IO::DBusClient::OnInterfacesAdded(IO::DBusManager *dbusManager, IO::DBusManager::Message *message, void *userData)
+Bool IO::DBusClient::OnInterfacesAdded(NN<IO::DBusManager> dbusManager, NN<IO::DBusManager::Message> message, AnyType userData)
 {
-	IO::DBusClient *me = (IO::DBusClient*)userData;
+	NN<IO::DBusClient> me = userData.GetNN<IO::DBusClient>();
 
 	DBusMessageIter iter;
 	const Char *path;
@@ -143,9 +148,9 @@ Bool IO::DBusClient::OnInterfacesAdded(IO::DBusManager *dbusManager, IO::DBusMan
 	return TRUE;
 }
 
-Bool IO::DBusClient::OnInterfacesRemoved(IO::DBusManager *dbusManager, IO::DBusManager::Message *message, void *userData)
+Bool IO::DBusClient::OnInterfacesRemoved(NN<IO::DBusManager> dbusManager, NN<IO::DBusManager::Message> message, AnyType userData)
 {
-	IO::DBusClient *me = (IO::DBusClient*)userData;
+	NN<IO::DBusClient> me = userData.GetNN<IO::DBusClient>();
 	DBusMessageIter iter;
 	DBusMessageIter entry;
 	const Char *path;
@@ -179,11 +184,13 @@ Bool IO::DBusClient::OnInterfacesRemoved(IO::DBusManager *dbusManager, IO::DBusM
 	return TRUE;
 }
 
-Bool IO::DBusClient::OnPropertiesChanged(IO::DBusManager *dbusManager, IO::DBusManager::Message *message, void *userData)
+Bool IO::DBusClient::OnPropertiesChanged(NN<IO::DBusManager> dbusManager, NN<IO::DBusManager::Message> message, AnyType userData)
 {
-	ProxyData *proxy = (ProxyData*)userData;
-	IO::DBusClient *me = proxy->client;
-	ClassData *client = me->clsData;
+	NN<ProxyData> proxy = userData.GetNN<ProxyData>();
+	NN<IO::DBusClient> me = proxy->client;
+	NN<ClassData> client;
+	if (!me->clsData.SetTo(client))
+		return false;
 	DBusMessageIter iter, entry;
 	const char *interface;
 
@@ -211,7 +218,7 @@ Bool IO::DBusClient::OnPropertiesChanged(IO::DBusManager *dbusManager, IO::DBusM
 
 		dbus_message_iter_get_basic(&entry, &name);
 
-		proxy->propList->Remove(name);
+		proxy->propList->RemoveC(Text::CStringNN::FromPtr((const UTF8Char*)name));
 
 		if (proxy->propFunc)
 			proxy->propFunc(proxy, name, NULL, proxy->propData);
@@ -273,16 +280,14 @@ void IO::DBusClient::IterAppendIter(void *baseIt, void *itera)
 	}
 }
 
-IO::DBusClient::PropInfo *IO::DBusClient::PropEntryNew(const Char *name, void *itera)
+Optional<IO::DBusClient::PropInfo> IO::DBusClient::PropEntryNew(UnsafeArray<const Char> name, void *itera)
 {
 	DBusMessageIter *iter = (DBusMessageIter*)itera;
-	PropInfo *prop;
+	NN<PropInfo> prop;
 
-	prop = MemAlloc(PropInfo, 1);
-	if (prop == NULL)
-		return NULL;
+	prop = MemAllocNN(PropInfo);
 
-	MemClear(prop, sizeof(PropInfo));
+	prop.ZeroContent();
 	prop->name = Text::StrCopyNew(name);
 	prop->type = dbus_message_iter_get_arg_type(iter);
 
@@ -291,7 +296,7 @@ IO::DBusClient::PropInfo *IO::DBusClient::PropEntryNew(const Char *name, void *i
 	return prop;
 }
 
-void IO::DBusClient::PropEntryUpdate(PropInfo *prop, void *itera)
+void IO::DBusClient::PropEntryUpdate(NN<PropInfo> prop, void *itera)
 {
 	DBusMessageIter *iter = (DBusMessageIter*)itera;
 	DBusMessage *msg;
@@ -343,7 +348,8 @@ void IO::DBusClient::ParseInterfaces(const Char *path, void *itera)
 void IO::DBusClient::ParseProperties(const Char *path, const Char *interface, void *itera)
 {
 	DBusMessageIter *iter = (DBusMessageIter*)itera;
-	ProxyData *proxy;
+	NN<ProxyData> proxy;
+	Optional<ProxyData> optProxy;
 
 	if (Text::StrEquals(interface, DBUS_INTERFACE_INTROSPECTABLE))
 		return;
@@ -351,17 +357,16 @@ void IO::DBusClient::ParseProperties(const Char *path, const Char *interface, vo
 	if (Text::StrEquals(interface, DBUS_INTERFACE_PROPERTIES))
 		return;
 
-	proxy = this->ProxyLookup(0, path, interface);
-	if (proxy && !proxy->pending)
+	optProxy = this->ProxyLookup(0, path, interface);
+	if (optProxy.SetTo(proxy) && !proxy->pending)
 	{
 		this->UpdateProperties(proxy, iter, false);
 		return;
 	}
 
-	if (!proxy)
+	if (!optProxy.SetTo(proxy))
 	{
-		proxy = this->ProxyNew(path, interface);
-		if (proxy == NULL)
+		if (!this->ProxyNew(path, interface).SetTo(proxy))
 			return;
 	}
 
@@ -370,7 +375,7 @@ void IO::DBusClient::ParseProperties(const Char *path, const Char *interface, vo
 	this->ProxyAdded(proxy);
 }
 
-void IO::DBusClient::UpdateProperties(ProxyData *proxy, void *itera, Bool sendChanged)
+void IO::DBusClient::UpdateProperties(NN<ProxyData> proxy, void *itera, Bool sendChanged)
 {
 	DBusMessageIter *iter = (DBusMessageIter*)itera;
 	DBusMessageIter dict;
@@ -392,7 +397,10 @@ void IO::DBusClient::UpdateProperties(ProxyData *proxy, void *itera, Bool sendCh
 		dbus_message_iter_get_basic(&entry, &name);
 		dbus_message_iter_next(&entry);
 
-		this->AddProperty(proxy, name, &entry, sendChanged);
+		if (name)
+		{
+			this->AddProperty(proxy, (const UTF8Char*)name, &entry, sendChanged);
+		}
 
 		dbus_message_iter_next(&dict);
 	}
@@ -400,12 +408,12 @@ void IO::DBusClient::UpdateProperties(ProxyData *proxy, void *itera, Bool sendCh
 
 void IO::DBusClient::RefreshProperties()
 {
-	ClassData *client = this->clsData;
+	NN<ClassData> client = this->clsData;
 	UIntOS i = client->proxyList->GetCount();
-	ProxyData *proxy;
+	NN<ProxyData> proxy;
 	while (i-- > 0)
 	{
-		proxy = client->proxyList->GetItem(i);
+		proxy = client->proxyList->GetItemNoCheck(i);
 		if (proxy->pending)
 		{
 			this->GetAllProperties(proxy);
@@ -413,9 +421,9 @@ void IO::DBusClient::RefreshProperties()
 	}
 }
 
-void IO::DBusClient::GetAllProperties(ProxyData *proxy)
+void IO::DBusClient::GetAllProperties(NN<ProxyData> proxy)
 {
-	ClassData *client = proxy;
+	NN<ClassData> client = this->clsData;
 	const Char *serviceName = client->serviceName;
 	DBusMessage *msg;
 
@@ -434,34 +442,34 @@ void IO::DBusClient::GetAllProperties(ProxyData *proxy)
 		return;
 	}
 
-	dbus_pending_call_set_notify(proxy->getAllCall, DBusClient_GetAllPropertiesReply, proxy, NULL);
+	dbus_pending_call_set_notify(proxy->getAllCall, DBusClient_GetAllPropertiesReply, proxy.Ptr(), NULL);
 
 	dbus_message_unref(msg);
 }
 
-void IO::DBusClient::AddProperty(ProxyData *proxy, const Char *name, void *itera, Bool sendChanged)
+void IO::DBusClient::AddProperty(NN<ProxyData> proxy, UnsafeArray<const UTF8Char> name, void *itera, Bool sendChanged)
 {
 	DBusMessageIter *iter = (DBusMessageIter*)itera;
-	ClassData *client = this->clsData;
+	NN<ClassData> client;
+	if (!this->clsData.SetTo(client))
+		return;
 	DBusMessageIter value;
-	PropInfo *prop;
+	NN<PropInfo> prop;
 
 	if (dbus_message_iter_get_arg_type(iter) != DBUS_TYPE_VARIANT)
 		return;
 
 	dbus_message_iter_recurse(iter, &value);
 
-	prop = proxy->propList->Get(name);
-	if (prop != 0)
+	if (proxy->propList->GetC(Text::CStringNN::FromPtr(name)).SetTo(prop))
 	{
 		this->PropEntryUpdate(prop, &value);
 	}
 	else
 	{
-		prop = this->PropEntryNew(name, &value);
-		if (prop == NULL)
+		if (!this->PropEntryNew(name, &value).SetTo(prop))
 			return;
-		proxy->propList->Put(prop->name, prop);
+		proxy->propList->PutC(Text::CStringNN::FromPtr(prop->name), prop);
 	}
 
 	if (proxy->propFunc)
@@ -476,7 +484,9 @@ void IO::DBusClient::AddProperty(ProxyData *proxy, const Char *name, void *itera
 
 void IO::DBusClient::GetManagedObjects()
 {
-	ClassData *client = this->clsData;
+	NN<ClassData> client;
+	if (!this->clsData.SetTo(client))
+		return;
 	DBusMessage *msg;
 
 	if (!client->connected)
@@ -503,7 +513,7 @@ void IO::DBusClient::GetManagedObjects()
 		return;
 	}
 
-	dbus_pending_call_set_notify(client->getObjectsCall, DBusClient_GetManagedObjectsReply, client, NULL);
+	dbus_pending_call_set_notify(client->getObjectsCall, DBusClient_GetManagedObjectsReply, client.Ptr(), NULL);
 
 	dbus_message_unref(msg);
 }
@@ -542,21 +552,21 @@ void IO::DBusClient::ParseManagedObjects(void *mesg)
 }
 
 
-IO::DBusClient::ProxyData *IO::DBusClient::ProxyNew(const Char *path, const Char *interface)
+Optional<IO::DBusClient::ProxyData> IO::DBusClient::ProxyNew(const Char *path, const Char *interface)
 {
-	ClassData *client = this->clsData;
-	ProxyData *proxy;
+	NN<ClassData> client;
+	if (!this->clsData.SetTo(client))
+		return nullptr;
+	NN<ProxyData> proxy;
 
-	proxy = MemAlloc(ProxyData, 1);
-	if (proxy == 0)
-		return 0;
-	MemClear(proxy, sizeof(ProxyData));
+	proxy = MemAllocNN(ProxyData);
+	proxy.ZeroContent();
 	proxy->client = this;
 	proxy->objPath = Text::StrCopyNew(path);
 	proxy->interface = Text::StrCopyNew(interface);
 
-	NEW_CLASS(proxy->propList, Data::StringCMap<PropInfo*>());
-	proxy->watch = client->dbusMgr->AddPropertiesWatch(client->serviceName, proxy->objPath, proxy->interface, OnPropertiesChanged, proxy, NULL);
+	NEW_CLASS(proxy->propList, Data::StringMapNN<PropInfo>());
+	proxy->watch = client->dbusMgr->AddPropertiesWatch(client->serviceName, proxy->objPath, proxy->interface, OnPropertiesChanged, proxy.Ptr(), NULL);
 	proxy->pending = TRUE;
 	
 	client->proxyList->Add(proxy);
@@ -564,23 +574,25 @@ IO::DBusClient::ProxyData *IO::DBusClient::ProxyNew(const Char *path, const Char
 	return this->ProxyRef(proxy);
 }
 
-void IO::DBusClient::ProxyAdded(ProxyData *proxy)
+void IO::DBusClient::ProxyAdded(NN<ProxyData> proxy)
 {
 	if (!proxy->pending)
 		return;
 
-	ClassData *client = this->clsData;
+	NN<ClassData> client;
+	if (!this->clsData.SetTo(client))
+		return;
 	if (client->proxyAdded)
 		client->proxyAdded(proxy, client->userData);
 
 	proxy->pending = false;
 }
 
-void IO::DBusClient::ProxyFree(ProxyData *proxy)
+void __stdcall IO::DBusClient::ProxyFree(NN<ProxyData> proxy)
 {
 	if (proxy->client)
 	{
-		ClassData *client = this->clsData;
+		NN<ClassData> client = this->clsData;
 
 		if (proxy->getAllCall != NULL) {
 			dbus_pending_call_cancel(proxy->getAllCall);
@@ -601,18 +613,18 @@ void IO::DBusClient::ProxyFree(ProxyData *proxy)
 	if (proxy->removedFunc)
 		proxy->removedFunc(proxy, proxy->removedData);
 
-	this->ProxyUnref(proxy);
+	ProxyUnref(proxy);
 }
 
 void IO::DBusClient::ProxyRemove(const Char *path, const Char *interface)
 {
-	ClassData *client = this->clsData;
-	ProxyData *proxy;
+	NN<ClassData> client = this->clsData;
+	NN<ProxyData> proxy;
 	UIntOS i = client->proxyList->GetCount();
 	while (i-- > 0)
 	{
-		proxy = client->proxyList->GetItem(i);
-		if (Text::StrEqualsN(proxy->interface, interface)&& Text::StrEqualsN(proxy->objPath, path))
+		proxy = client->proxyList->GetItemNoCheck(i);
+		if (Text::StrEqualsN(proxy->interface, interface) && Text::StrEqualsN(proxy->objPath, path))
 		{
 			client->proxyList->RemoveAt(i);
 			this->ProxyFree(proxy);
@@ -657,21 +669,15 @@ IO::DBusClient::ProxyData *IO::DBusClient::ProxyLookup(UIntOS *index, const Char
 	return 0;
 }
 
-IO::DBusClient::ProxyData *IO::DBusClient::ProxyRef(ProxyData *proxy)
+NN<IO::DBusClient::ProxyData> IO::DBusClient::ProxyRef(NN<ProxyData> proxy)
 {
-	if (proxy == 0)
-		return 0;
-
-	Sync::Interlocked::Increment(&proxy->refCount);
+	Sync::Interlocked::IncrementI32(proxy->refCount);
 	return proxy;
 }
 
-void IO::DBusClient::ProxyUnref(ProxyData *proxy)
+void __stdcall IO::DBusClient::ProxyUnref(NN<ProxyData> proxy)
 {
-	if (proxy == 0)
-		return;
-
-	if (Sync::Interlocked::Decrement(&proxy->refCount) > 0)
+	if (Sync::Interlocked::DecrementI32(proxy->refCount) > 0)
 		return;
 
 	if (proxy->getAllCall != NULL) {
@@ -684,22 +690,22 @@ void IO::DBusClient::ProxyUnref(ProxyData *proxy)
 	SDEL_TEXT(proxy->objPath);
 	SDEL_TEXT(proxy->interface);
 
-	MemFree(proxy);
+	MemFreeNN(proxy);
 }
 
-IO::DBusClient::DBusClient(IO::DBusManager *dbusMgr, const Char *service, const Char *path, const Char *rootPath)
+IO::DBusClient::DBusClient(NN<IO::DBusManager> dbusMgr, UnsafeArray<const UTF8Char> service, UnsafeArrayOpt<const UTF8Char> path, UnsafeArrayOpt<const UTF8Char> rootPath)
 {
-	this->clsData = 0;
-	if (dbusMgr == 0 || dbusMgr->GetHandle() == 0 || service == 0)
+	this->clsData = nullptr;
+	if (dbusMgr->GetHandle() == 0)
 	{
 		return;
 	}
-	ClassData *client = MemAlloc(ClassData, 1);
-	MemClear(client, sizeof(ClassData));
+	NN<ClassData> client = MemAllocNN(ClassData);
+	client.ZeroContent();
 	client->basePath = 0;
 	if (dbus_connection_add_filter((DBusConnection*)dbusMgr->GetHandle(), DBusClient_MessageFilter, this, NULL) == FALSE)
 	{
-		MemFree(client);
+		MemFreeNN(client);
 		return;
 	}
 	UIntOS i;
@@ -723,8 +729,8 @@ IO::DBusClient::DBusClient(IO::DBusManager *dbusMgr, const Char *service, const 
 		return;
 	}
 
-	client->addedWatch = client->dbusMgr->AddSignalWatch(service, client->rootPath, DBUS_INTERFACE_OBJECT_MANAGER, "InterfacesAdded", OnInterfacesAdded, this, NULL);
-	client->removedWatch = client->dbusMgr->AddSignalWatch(service, client->rootPath, DBUS_INTERFACE_OBJECT_MANAGER, "InterfacesRemoved", OnInterfacesRemoved, this, NULL);
+	client->addedWatch = client->dbusMgr->AddSignalWatch(service, client->rootPath, CSTR(DBUS_INTERFACE_OBJECT_MANAGER).v, U8STR("InterfacesAdded"), OnInterfacesAdded, this, NULL);
+	client->removedWatch = client->dbusMgr->AddSignalWatch(service, client->rootPath, CSTR(DBUS_INTERFACE_OBJECT_MANAGER).v, U8STR("InterfacesRemoved"), OnInterfacesRemoved, this, NULL);
 
 	Text::StringBuilderC sb;
 	sb.Append("type='signal',sender='");
@@ -748,8 +754,8 @@ IO::DBusClient::DBusClient(IO::DBusManager *dbusMgr, const Char *service, const 
 
 IO::DBusClient::~DBusClient()
 {
-	ClassData *data = this->clsData;
-	if (data)
+	NN<ClassData> data;
+	if (this->clsData.SetTo(data))
 	{
 		if (data->pendingCall != NULL)
 		{
@@ -769,14 +775,14 @@ IO::DBusClient::~DBusClient()
 		j = data->matchRules->GetCount();
 		while (i < j)
 		{
-			this->ModifyMatch("RemoveMatch", data->matchRules->GetItem(i));
-			Text::StrDelNew(data->matchRules->GetItem(i));
+			this->ModifyMatch(U8STR("RemoveMatch"), data->matchRules->GetItemNoCheck(i));
+			Text::StrDelNew(data->matchRules->GetItemNoCheck(i));
 			i++;
 		}
 		DEL_CLASS(data->matchRules);
-		dbus_connection_remove_filter(data->dbusConn, DBusClient_MessageFilter, data);
+		dbus_connection_remove_filter(data->dbusConn, DBusClient_MessageFilter, data.Ptr());
 
-		LIST_FREE_FUNC(data->proxyList, this->ProxyFree);
+		NNLIST_CALL_FUNC(data->proxyList, this->ProxyFree);
 		DEL_CLASS(data->proxyList);
 
 		if (data->disconnFunc && data->connected)
@@ -792,16 +798,16 @@ IO::DBusClient::~DBusClient()
 		SDEL_TEXT(data->basePath);
 		SDEL_TEXT(data->rootPath);
 
-		MemFree(data);
+		MemFreeNN(data);
 	}
 }
 
 IO::DBusClient *IO::DBusClient::Ref()
 {
-	ClassData *data = this->clsData;
-	if (data)
+	NN<ClassData> data;
+	if (this->clsData.SetTo(data))
 	{
-		Sync::Interlocked::Increment(&data->refCount);
+		Sync::Interlocked::IncrementI32(data->refCount);
 		return this;
 	}
 	return 0;
@@ -809,19 +815,21 @@ IO::DBusClient *IO::DBusClient::Ref()
 
 void IO::DBusClient::Unref()
 {
-	ClassData *data = this->clsData;
-	if (data)
+	NN<ClassData> data;
+	if (this->clsData.SetTo(data))
 	{
-		if (Sync::Interlocked::Decrement(&data->refCount) == 0)
+		if (Sync::Interlocked::DecrementI32(data->refCount) == 0)
 		{
 			DEL_CLASS(this);
 		}
 	}
 }
 
-IO::DBusManager::HandlerResult IO::DBusClient::MessageFilter(IO::DBusManager::Message *message)
+IO::DBusManager::HandlerResult IO::DBusClient::MessageFilter(NN<IO::DBusManager::Message> message)
 {
-	ClassData *client = this->clsData;
+	NN<ClassData> client;
+	if (!this->clsData.SetTo(client))
+		return IO::DBusManager::HR_NOT_YET_HANDLED;
 	const Char *sender;
 	const Char *path;
 	const Char *interface;
@@ -848,17 +856,20 @@ IO::DBusManager::HandlerResult IO::DBusClient::MessageFilter(IO::DBusManager::Me
 	return IO::DBusManager::HR_NOT_YET_HANDLED;
 }
 
-Bool IO::DBusClient::ModifyMatch(const Char *member, const Char *rule)
+Bool IO::DBusClient::ModifyMatch(UnsafeArray<const UTF8Char> member, UnsafeArray<const UTF8Char> rule)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data;
+	if (!this->clsData.SetTo(data))
+		return false;
 	DBusMessage *msg;
 	DBusPendingCall *call;
 
-	msg = dbus_message_new_method_call(DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS, member);
+	msg = dbus_message_new_method_call(DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS, (const Char*)member.Ptr());
 	if (msg == NULL)
 		return false;
 
-	dbus_message_append_args(msg, DBUS_TYPE_STRING, &rule, DBUS_TYPE_INVALID);
+	const Char *ruleStr = (const Char*)rule.Ptr();
+	dbus_message_append_args(msg, DBUS_TYPE_STRING, &ruleStr, DBUS_TYPE_INVALID);
 
 	if (!data->dbusMgr->SendMessageWithReply(msg, (void**)&call, -1))
 	{
@@ -874,7 +885,7 @@ Bool IO::DBusClient::ModifyMatch(const Char *member, const Char *rule)
 	return true;
 }
 
-void IO::DBusClient::GetAllPropertiesReply(void *pending, ProxyData *proxy)
+void IO::DBusClient::GetAllPropertiesReply(void *pending, NN<ProxyData> proxy)
 {
 	DBusMessage *reply = dbus_pending_call_steal_reply((DBusPendingCall*)pending);
 	DBusMessageIter iter;
@@ -906,7 +917,9 @@ void IO::DBusClient::GetAllPropertiesReply(void *pending, ProxyData *proxy)
 
 void IO::DBusClient::GetManagedObjectsReply(void *pending)
 {
-	ClassData *client = this->clsData;
+	NN<ClassData> client;
+	if (!this->clsData.SetTo(client))
+		return;
 	DBusMessage *reply = dbus_pending_call_steal_reply((DBusPendingCall*)pending);
 	DBusError error;
 

@@ -85,7 +85,7 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			{
 				NN<Map::OSM::OSMTileMap> osm = NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
 				IO::SPackageFile *spkg;
-				UInt8 *customBuff = MemAlloc(UInt8, 2048);
+				UnsafeArray<UInt8> customBuff = MemAllocArr(UInt8, 2048);
 				UIntOS buffSize = 1;
 				UIntOS i = 0;
 				UIntOS bSize;
@@ -106,7 +106,7 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				NEW_CLASS(spkg, IO::SPackageFile(stm, false, 1, buffSize, Data::ByteArray(customBuff, 2048)));
 				DEL_CLASS(spkg);
 
-				MemFree(customBuff);
+				MemFreeArr(customBuff);
 				return true;
 			}
 		}

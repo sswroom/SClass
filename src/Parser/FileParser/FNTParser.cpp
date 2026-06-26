@@ -35,7 +35,7 @@ IO::ParserType Parser::FileParser::FNTParser::GetParserType()
 	return IO::ParserType::FontRenderer;
 }
 
-IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+Optional<IO::ParsedObject> Parser::FileParser::FNTParser::ParseFile(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[118];
 	IntOS hdrSize;
@@ -43,7 +43,7 @@ IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(NN<IO::StreamData> fd
 	Int32 ver;
 	if (fd->GetRealData(0, 118, BYTEARR(hdr)) != 118)
 	{
-		return 0;
+		return nullptr;
 	}
 	ver = ReadUInt16(&hdr[0]);
 	fsize = ReadUInt32(&hdr[2]);
@@ -57,9 +57,9 @@ IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(NN<IO::StreamData> fd
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
-	Media::FontRenderer *font = 0;
+	Optional<Media::FontRenderer> font = nullptr;
 	if ((IntOS)fsize > hdrSize && fsize <= fd->GetDataSize())
 	{
 		Data::ByteBuffer fontBuff(fsize);
@@ -71,11 +71,11 @@ IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(NN<IO::StreamData> fd
 	return font;
 }
 
-Media::FontRenderer *Parser::FileParser::FNTParser::ParseFontBuff(NN<Text::String> sourceName, UnsafeArray<const UInt8> fontBuff, UIntOS buffSize)
+Optional<Media::FontRenderer> Parser::FileParser::FNTParser::ParseFontBuff(NN<Text::String> sourceName, UnsafeArray<const UInt8> fontBuff, UIntOS buffSize)
 {
 	UInt32 ver;
 	if (buffSize < 118)
-		return 0;
+		return nullptr;
 
 	ver = ReadUInt16(&fontBuff[0]);
 //	fsize = ReadUInt32(&fontBuff[2]);
@@ -89,7 +89,7 @@ Media::FontRenderer *Parser::FileParser::FNTParser::ParseFontBuff(NN<Text::Strin
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 
 	Media::MSFontRenderer *font;
@@ -97,12 +97,12 @@ Media::FontRenderer *Parser::FileParser::FNTParser::ParseFontBuff(NN<Text::Strin
 	if (font->IsError())
 	{
 		DEL_CLASS(font);
-		return 0;
+		return nullptr;
 	}
 	return font;
 }
 
-UIntOS Parser::FileParser::FNTParser::GetFileDesc(const UInt8 *fileBuff, UIntOS fileSize, NN<Text::StringBuilderUTF8> sb)
+UIntOS Parser::FileParser::FNTParser::GetFileDesc(UnsafeArray<const UInt8> fileBuff, UIntOS fileSize, NN<Text::StringBuilderUTF8> sb)
 {
 	if (fileSize < 100)
 		return 0;
@@ -243,7 +243,7 @@ UIntOS Parser::FileParser::FNTParser::GetFileDesc(const UInt8 *fileBuff, UIntOS 
 	return hdrSize;
 }
 
-void Parser::FileParser::FNTParser::GetFileDirDesc(const UInt8 *fileBuff, UIntOS fileSize, NN<Text::StringBuilderUTF8> sb)
+void Parser::FileParser::FNTParser::GetFileDirDesc(UnsafeArray<const UInt8> fileBuff, UIntOS fileSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UIntOS nFonts = ReadUInt16(&fileBuff[0]);
 	UIntOS i = 2;
