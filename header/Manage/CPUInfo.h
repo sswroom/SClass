@@ -10,13 +10,14 @@ namespace Manage
 	class CPUInfo
 	{
 	protected:
+		struct ClassData;
+		NN<ClassData> clsData;
 		Manage::CPUVendor::CPU_BRAND brand;
 		Int32 familyId;
 		Int32 model;
 		Int32 steppingId;
 
 		UIntOS infoCnt;
-		void *clsData;
 	public:
 		CPUInfo();
 		virtual ~CPUInfo();

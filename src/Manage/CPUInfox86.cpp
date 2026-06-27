@@ -14,19 +14,19 @@ typedef void (__stdcall *NoRetFunc)();
 typedef UInt32 (__stdcall *UInt32RetFunc)();
 typedef void (__stdcall *RdmsrFunc)(UInt32 ecx, UInt32 *eax, UInt32 *edx);
 
-typedef struct
+struct Manage::CPUInfo::ClassData
 {
 	IO::Library *winRing0;
 	NoRetFunc InitializeOls;
 	UInt32RetFunc GetDllStatus;
 	RdmsrFunc Rdmsr;
 	NoRetFunc DeinitializeOls;
-} InfoData;
+};
 #else
-typedef struct
+struct Manage::CPUInfo::ClassData
 {
 	UnsafeArrayOpt<const UTF8Char> cpuName;
-} InfoData;
+};
 #if defined(__FreeBSD__) || defined(__APPLE__)
 #include <sys/types.h>
 #include <sys/sysctl.h>
@@ -41,7 +41,7 @@ Manage::CPUInfo::CPUInfo()
 	Int32 cpuInfo[4];
 
 #if defined(WIN32) || defined(_WIN64)
-	InfoData *info = MemAlloc(InfoData, 1);
+	NN<ClassData> info = MemAllocNN(ClassData);
 	info->winRing0 = 0;
 	info->InitializeOls = 0;
 	info->GetDllStatus = 0;
@@ -80,7 +80,7 @@ Manage::CPUInfo::CPUInfo()
 	}
 	this->clsData = info;
 #else
-	InfoData *info = MemAlloc(InfoData, 1);
+	NN<ClassData> info = MemAllocNN(ClassData);
 	info->cpuName = nullptr;
 #if defined(__APPLE__)
 	Text::StringBuilderUTF8 sb;
@@ -425,17 +425,17 @@ void Manage::CPUInfo::GetFeatureFlags(OutParam<Int32> flag1, OutParam<Int32> fla
 Manage::CPUInfo::~CPUInfo()
 {
 #if defined(WIN32) || defined(_WIN64)
-	InfoData *info = (InfoData*)this->clsData;
+	NN<ClassData> info = this->clsData;
 	if (info->winRing0)
 	{
 		info->DeinitializeOls();
 		DEL_CLASS(info->winRing0);
 	}
-	MemFree(info);
+	MemFreeNN(info);
 #else
-	InfoData *info = (InfoData*)this->clsData;
+	NN<ClassData> info = this->clsData;
 	SDEL_TEXT(info->cpuName);
-	MemFree(info);
+	MemFreeNN(info);
 #endif
 }
 
@@ -521,7 +521,7 @@ UnsafeArrayOpt<UTF8Char> Manage::CPUInfo::GetCPUName(UnsafeArray<UTF8Char> sbuff
 
 Bool Manage::CPUInfo::GetCPURatio(OutParam<Int32> ratio)
 {
-	InfoData *info = (InfoData*)this->clsData;
+	NN<ClassData> info = this->clsData;
 	if (info->winRing0 == 0)
 		return false;
 
@@ -540,7 +540,7 @@ Bool Manage::CPUInfo::GetCPURatio(OutParam<Int32> ratio)
 
 Bool Manage::CPUInfo::GetCPUTurboRatio(OutParam<Int32> ratio)
 {
-	InfoData *info = (InfoData*)this->clsData;
+	NN<ClassData> info = this->clsData;
 	if (info->winRing0 == 0)
 		return false;
 
@@ -559,7 +559,7 @@ Bool Manage::CPUInfo::GetCPUTurboRatio(OutParam<Int32> ratio)
 
 Bool Manage::CPUInfo::GetCPUTCC(OutParam<Double> temp)
 {
-	InfoData *info = (InfoData*)this->clsData;
+	NN<ClassData> info = this->clsData;
 	if (info->winRing0 == 0)
 		return false;
 
@@ -578,7 +578,7 @@ Bool Manage::CPUInfo::GetCPUTCC(OutParam<Double> temp)
 #else
 UnsafeArrayOpt<UTF8Char> Manage::CPUInfo::GetCPUName(UnsafeArray<UTF8Char> sbuff)
 {
-	InfoData *info = (InfoData*)this->clsData;
+	NN<ClassData> info = this->clsData;
 	UnsafeArray<const UTF8Char> cpuName;	
 	if (info->cpuName.SetTo(cpuName))
 	{
@@ -589,19 +589,19 @@ UnsafeArrayOpt<UTF8Char> Manage::CPUInfo::GetCPUName(UnsafeArray<UTF8Char> sbuff
 
 Bool Manage::CPUInfo::GetCPURatio(OutParam<Int32> ratio)
 {
-//	InfoData *info = (InfoData*)this->clsData;
+//	NN<ClassData> info = this->clsData;
 	return false;
 }
 
 Bool Manage::CPUInfo::GetCPUTurboRatio(OutParam<Int32> ratio)
 {
-//	InfoData *info = (InfoData*)this->clsData;
+//	NN<ClassData> info = this->clsData;
 	return false;
 }
 
 Bool Manage::CPUInfo::GetCPUTCC(OutParam<Double> temp)
 {
-//	InfoData *info = (InfoData*)this->clsData;
+//	NN<ClassData> info = this->clsData;
 	return false;
 }
 #endif

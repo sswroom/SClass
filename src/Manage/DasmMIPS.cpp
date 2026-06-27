@@ -789,7 +789,7 @@ Manage::DasmMIPS::DasmMIPS()
 	codes[0x3E] = DasmMIPS_3E;
 	codes[0x3F] = DasmMIPS_3F;
 
-	codes = this->codes_0 = MemAlloc(DasmMIPS_Code, 256);
+	codes = this->codes_0 = MemAllocArr(DasmMIPS_Code, 256);
 	codes[0x00] = DasmMIPS_0_00;
 	codes[0x01] = DasmMIPS_0_01;
 	codes[0x02] = DasmMIPS_0_02;

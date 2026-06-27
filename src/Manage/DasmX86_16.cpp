@@ -7669,7 +7669,7 @@ Manage::DasmX86_16::DasmX86_16()
 	codes[0xFE] = DasmX86_16_FE;
 	codes[0xFF] = DasmX86_16_FF;
 
-	codes = this->codes0f = MemAlloc(DasmX86_16_Code, 256);
+	codes = this->codes0f = MemAllocArr(DasmX86_16_Code, 256);
 	codes[0x00] = DasmX86_16_0F00;
 	codes[0x01] = DasmX86_16_0F01;
 	codes[0x02] = DasmX86_16_0F02;

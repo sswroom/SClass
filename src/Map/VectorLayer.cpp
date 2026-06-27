@@ -10,9 +10,10 @@
 
 UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> strs)
 {
-	if (this->thisStrLen == 0)
+	UnsafeArray<UIntOS> thisStrLen;
+	if (!this->thisStrLen.SetTo(thisStrLen))
 	{
-		this->thisStrLen = MemAlloc(UIntOS, this->strCnt);
+		this->thisStrLen = thisStrLen = MemAllocArr(UIntOS, this->strCnt);
 	}
 	UIntOS i = this->strCnt;
 	UIntOS j = 0;
@@ -22,7 +23,7 @@ UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(UnsafeArr
 	{
 		if (strs[i].SetTo(nns))
 		{
-			this->thisStrLen[i] = k = Text::StrCharCnt(nns);
+			thisStrLen[i] = k = Text::StrCharCnt(nns);
 			j += k + 1;
 			if (this->maxStrLen[i] < k)
 			{
@@ -41,7 +42,7 @@ UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(UnsafeArr
 			if (strs[k].SetTo(nns))
 			{
 				newStrs[k] = UnsafeArray<const UTF8Char>(sptr);
-				sptr = Text::StrConcatC(sptr, nns, this->thisStrLen[k]) + 1;
+				sptr = Text::StrConcatC(sptr, nns, thisStrLen[k]) + 1;
 			}
 			else
 			{
@@ -81,10 +82,10 @@ UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(Optional<
 			}
 		}
 	}
-	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> newStrs = MemAlloc(UnsafeArrayOpt<const UTF8Char>, this->strCnt);
+	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> newStrs = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, this->strCnt);
 	if (j > 0)
 	{
-		UnsafeArray<UTF8Char> sptr = MemAlloc(UTF8Char, j);
+		UnsafeArray<UTF8Char> sptr = MemAllocArr(UTF8Char, j);
 		i = this->strCnt;
 		k = 0;
 		while (k < i)
@@ -131,10 +132,10 @@ UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(Text::PSt
 			}
 		}
 	}
-	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> newStrs = MemAlloc(UnsafeArrayOpt<const UTF8Char>, this->strCnt);
+	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> newStrs = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, this->strCnt);
 	if (j > 0)
 	{
-		UnsafeArray<UTF8Char> sptr = MemAlloc(UTF8Char, j);
+		UnsafeArray<UTF8Char> sptr = MemAllocArr(UTF8Char, j);
 		i = this->strCnt;
 		k = 0;
 		while (k < i)
@@ -182,10 +183,10 @@ UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(NN<Data::
 			}
 		}
 	}
-	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> newStrs = MemAlloc(UnsafeArrayOpt<const UTF8Char>, this->strCnt);
+	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> newStrs = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, this->strCnt);
 	if (j > 0)
 	{
-		UnsafeArray<UTF8Char> sptr = MemAlloc(UTF8Char, j);
+		UnsafeArray<UTF8Char> sptr = MemAllocArr(UTF8Char, j);
 		i = this->strCnt;
 		k = 0;
 		while (k < i)
@@ -258,10 +259,10 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sou
 	this->strCnt = 0;
 	this->min = Math::Coord2DDbl(0, 0);
 	this->max = Math::Coord2DDbl(0, 0);
-	this->maxStrLen = MemAlloc(UIntOS, 0);
-	this->thisStrLen = 0;
-	this->colNames = MemAlloc(NN<Text::String>, 0);
-	this->cols = 0;
+	this->maxStrLen = MemAllocArr(UIntOS, 0);
+	this->thisStrLen = nullptr;
+	this->colNames = MemAllocArr(NN<Text::String>, 0);
+	this->cols = nullptr;
 	this->tableName = nullptr;
 	this->mapRate = 10000000.0;
 	this->mixedData = MixedData::AllData;
@@ -273,10 +274,10 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	this->strCnt = 0;
 	this->min = Math::Coord2DDbl(0, 0);
 	this->max = Math::Coord2DDbl(0, 0);
-	this->maxStrLen = MemAlloc(UIntOS, 0);
-	this->thisStrLen = 0;
-	this->colNames = MemAlloc(NN<Text::String>, 0);
-	this->cols = 0;
+	this->maxStrLen = MemAllocArr(UIntOS, 0);
+	this->thisStrLen = nullptr;
+	this->colNames = MemAllocArr(NN<Text::String>, 0);
+	this->cols = nullptr;
 	this->tableName = nullptr;
 	this->mapRate = 10000000.0;
 	this->mixedData = MixedData::AllData;
@@ -289,10 +290,10 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sou
 	this->strCnt = strCnt;
 	this->min = Math::Coord2DDbl(0, 0);
 	this->max = Math::Coord2DDbl(0, 0);
-	this->maxStrLen = MemAlloc(UIntOS, strCnt);
-	this->thisStrLen = 0;
-	this->colNames = MemAlloc(NN<Text::String>, strCnt);
-	this->cols = 0;
+	this->maxStrLen = MemAllocArr(UIntOS, strCnt);
+	this->thisStrLen = nullptr;
+	this->colNames = MemAllocArr(NN<Text::String>, strCnt);
+	this->cols = nullptr;
 	this->tableName = nullptr;
 	this->mapRate = 10000000.0;
 	this->mixedData = MixedData::AllData;
@@ -311,10 +312,10 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	this->strCnt = strCnt;
 	this->min = Math::Coord2DDbl(0, 0);
 	this->max = Math::Coord2DDbl(0, 0);
-	this->maxStrLen = MemAlloc(UIntOS, strCnt);
-	this->thisStrLen = 0;
+	this->maxStrLen = MemAllocArr(UIntOS, strCnt);
+	this->thisStrLen = nullptr;
 	this->colNames = MemAllocArr(NN<Text::String>, strCnt);
-	this->cols = 0;
+	this->cols = nullptr;
 	this->tableName = nullptr;
 	this->mapRate = 10000000.0;
 	this->mixedData = MixedData::AllData;
@@ -329,14 +330,15 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UIntOS *colSize, UIntOS *colDP, UIntOS nameCol, Optional<Text::String> layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UIntOS i;
+	UnsafeArray<ColInfo> cols;
 	this->layerType = layerType;
 	this->strCnt = strCnt;
 	this->min = Math::Coord2DDbl(0, 0);
 	this->max = Math::Coord2DDbl(0, 0);
-	this->maxStrLen = MemAlloc(UIntOS, strCnt);
-	this->thisStrLen = 0;
+	this->maxStrLen = MemAllocArr(UIntOS, strCnt);
+	this->thisStrLen = nullptr;
 	this->colNames = MemAllocArr(NN<Text::String>, strCnt);
-	this->cols = MemAlloc(Map::VectorLayer::ColInfo, strCnt);
+	this->cols = cols = MemAllocArr(Map::VectorLayer::ColInfo, strCnt);
 	this->tableName = nullptr;
 	this->mapRate = 10000000.0;
 	this->mixedData = MixedData::AllData;
@@ -354,14 +356,15 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sou
 Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UIntOS *colSize, UIntOS *colDP, UIntOS nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UIntOS i;
+	UnsafeArray<ColInfo> cols;
 	this->layerType = layerType;
 	this->strCnt = strCnt;
 	this->min = Math::Coord2DDbl(0, 0);
 	this->max = Math::Coord2DDbl(0, 0);
-	this->maxStrLen = MemAlloc(UIntOS, strCnt);
-	this->thisStrLen = 0;
+	this->maxStrLen = MemAllocArr(UIntOS, strCnt);
+	this->thisStrLen = nullptr;
 	this->colNames = MemAllocArr(NN<Text::String>, strCnt);
-	this->cols = MemAlloc(Map::VectorLayer::ColInfo, strCnt);
+	this->cols = cols = MemAllocArr(Map::VectorLayer::ColInfo, strCnt);
 	this->tableName = nullptr;
 	this->mapRate = 10000000.0;
 	this->mixedData = MixedData::AllData;
@@ -379,14 +382,15 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NN<Data::ArrayListStringNN> colNames, NN<Math::CoordinateSystem> csys, NN<Data::ArrayListT<ColInfo>> colInfos, UIntOS nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UIntOS i;
+	UnsafeArray<ColInfo> cols;
 	this->layerType = layerType;
 	this->strCnt = colNames->GetCount();
 	this->min = Math::Coord2DDbl(0, 0);
 	this->max = Math::Coord2DDbl(0, 0);
-	this->maxStrLen = MemAlloc(UIntOS, this->strCnt);
-	this->thisStrLen = 0;
+	this->maxStrLen = MemAllocArr(UIntOS, this->strCnt);
+	this->thisStrLen = nullptr;
 	this->colNames = MemAllocArr(NN<Text::String>, this->strCnt);
-	this->cols = MemAlloc(Map::VectorLayer::ColInfo, this->strCnt);
+	this->cols = cols = MemAllocArr(Map::VectorLayer::ColInfo, this->strCnt);
 	this->tableName = nullptr;
 	this->mapRate = 10000000.0;
 	this->mixedData = MixedData::AllData;
@@ -412,15 +416,12 @@ Map::VectorLayer::~VectorLayer()
 {
 	UIntOS i;
 	UIntOS j;
-	if (this->maxStrLen)
+	UnsafeArray<UIntOS> lenArr;
+	MemFreeArr(this->maxStrLen);
+	if (this->thisStrLen.SetTo(lenArr))
 	{
-		MemFree(this->maxStrLen);
-		this->maxStrLen = 0;
-	}
-	if (this->thisStrLen)
-	{
-		MemFree(this->thisStrLen);
-		this->thisStrLen = 0;
+		MemFreeArr(lenArr);
+		this->thisStrLen = nullptr;
 	}
 	i = this->strCnt;
 	while (i-- > 0)
@@ -452,9 +453,10 @@ Map::VectorLayer::~VectorLayer()
 		}
 		MemFreeArr(strs);
 	}
-	if (this->cols)
+	UnsafeArray<ColInfo> cols;
+	if (this->cols.SetTo(cols))
 	{
-		MemFree(this->cols);
+		MemFreeArr(cols);
 	}
 	OPTSTR_DEL(this->tableName);
 }
@@ -600,22 +602,23 @@ UnsafeArrayOpt<UTF8Char> Map::VectorLayer::GetColumnName(UnsafeArray<UTF8Char> b
 
 DB::DBUtil::ColType Map::VectorLayer::GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const
 {
+	UnsafeArray<ColInfo> cols;
 	if (colIndex >= this->strCnt)
 		return DB::DBUtil::CT_Unknown;
 	if (colSize.IsNotNull())
 	{
-		if (this->cols)
+		if (this->cols.SetTo(cols))
 		{
-			colSize.SetNoCheck(this->cols[colIndex].colSize);
+			colSize.SetNoCheck(cols[colIndex].colSize);
 		}
 		else
 		{
 			colSize.SetNoCheck(this->maxStrLen[colIndex]);
 		}
 	}
-	if (this->cols)
+	if (this->cols.SetTo(cols))
 	{
-		return this->cols[colIndex].colType;
+		return cols[colIndex].colType;
 	}
 	else
 	{
@@ -629,11 +632,12 @@ Bool Map::VectorLayer::GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) cons
 	if (colIndex >= this->strCnt)
 		return false;
 	colDef->SetColName(Text::String::OrEmpty(this->colNames[colIndex]));
-	if (this->cols)
+	UnsafeArray<ColInfo> cols;
+	if (this->cols.SetTo(cols))
 	{
-		colDef->SetColType(this->cols[colIndex].colType);
-		colDef->SetColSize(this->cols[colIndex].colSize);
-		colDef->SetColDP(this->cols[colIndex].colDP);
+		colDef->SetColType(cols[colIndex].colType);
+		colDef->SetColSize(cols[colIndex].colSize);
+		colDef->SetColDP(cols[colIndex].colDP);
 		colDef->SetAttr(Text::CString(nullptr));
 		colDef->SetDefVal(Text::CString(nullptr));
 		colDef->SetAutoIncNone();

@@ -514,12 +514,12 @@ Bool IO::DirectoryPackage::Sort()
 	UIntOS i;
 	UIntOS j;
 	FileItem df;
-	FileItem *arr;
+	UnsafeArray<FileItem> arr;
 	i = 0;
 	j = this->files.GetCount();
 	if (j <= 0)
 		return true;
-	arr = MemAlloc(FileItem, j);
+	arr = MemAllocArr(FileItem, j);
 	while (i < j)
 	{
 		arr[i] = this->files.GetItem(i);
@@ -533,6 +533,6 @@ Bool IO::DirectoryPackage::Sort()
 		this->files.SetItem(i, df);
 		i++;
 	}
-	MemFree(arr);
+	MemFreeArr(arr);
 	return true;
 }

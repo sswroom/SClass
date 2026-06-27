@@ -168,7 +168,7 @@ UnsafeArray<UTF8Char> IO::Path::GetFileDirectory(UnsafeArray<UTF8Char> buff, Uns
 #else
 	WChar *ptr;
 	UnsafeArray<UTF8Char> ptr2;
-	WChar *ptr3 = 0;
+	UnsafeArray<WChar> ptr3;
 	if (fileName[1] == ':')
 	{
 		UIntOS i = Text::StrLastIndexOfChar(fileName, '\\');
@@ -183,16 +183,16 @@ UnsafeArray<UTF8Char> IO::Path::GetFileDirectory(UnsafeArray<UTF8Char> buff, Uns
 	}
 	else
 	{
-		ptr3 = MemAlloc(WChar, MAX_PATH);
+		ptr3 = MemAllocArr(WChar, MAX_PATH);
 		UnsafeArray<const WChar> wfileName = Text::StrToWCharNew(fileName);
-		GetFullPathNameW(wfileName.Ptr(), MAX_PATH, ptr3, &ptr);
+		GetFullPathNameW(wfileName.Ptr(), MAX_PATH, ptr3.Ptr(), &ptr);
 		Text::StrDelNew(wfileName);
 		if (ptr)
 		{
 			ptr[-1] = 0;
 		}
 		ptr2 = Text::StrWChar_UTF8(buff, ptr3);
-		MemFree(ptr3);
+		MemFreeArr(ptr3);
 		return ptr2;
 	}
 #endif
@@ -259,15 +259,15 @@ UnsafeArrayOpt<WChar> IO::Path::GetProcessFileNameW(UnsafeArray<WChar> buff)
 Bool IO::Path::GetProcessFileName(NN<Text::StringBuilderUTF8> sb)
 {
 	UInt32 retSize;
-	WChar *wptr = MemAlloc(WChar, 1024);
+	UnsafeArray<WChar> wptr = MemAllocArr(WChar, 1024);
 #ifdef _WIN32_WCE
-	retSize = GetModuleFileNameW(0, wptr, 1024);
+	retSize = GetModuleFileNameW(0, wptr.Ptr(), 1024);
 #else
-	retSize = GetModuleFileNameExW(GetCurrentProcess(), 0, wptr, 1024);
+	retSize = GetModuleFileNameExW(GetCurrentProcess(), 0, wptr.Ptr(), 1024);
 #endif
 	wptr[retSize] = 0;
 	sb->AppendW(wptr);
-	MemFree(wptr);
+	MemFreeArr(wptr);
 	return true;
 }
 
@@ -791,8 +791,8 @@ Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8
 Optional<IO::Path::FindFileSession> IO::Path::FindFile(Text::CStringNN path)
 {
 	WChar wbuff[MAX_PATH];
-	FindFileSession *sess;
-	sess = MemAlloc(FindFileSession, 1);
+	NN<FindFileSession> sess;
+	sess = MemAllocNN(FindFileSession);
 	sess->lastFound = true;
 	Text::StrUTF8_WCharC(wbuff, path.v, path.leng, 0);
 	sess->handle = FindFirstFileW(wbuff, &sess->findData);
@@ -807,15 +807,15 @@ Optional<IO::Path::FindFileSession> IO::Path::FindFile(Text::CStringNN path)
 	}
 	else
 	{
-		MemFree(sess);
+		MemFreeNN(sess);
 		return nullptr;
 	}
 }
 
 Optional<IO::Path::FindFileSession> IO::Path::FindFileW(UnsafeArray<const WChar> path)
 {
-	FindFileSession *sess;
-	sess = MemAlloc(FindFileSession, 1);
+	NN<FindFileSession> sess;
+	sess = MemAllocNN(FindFileSession);
 	sess->lastFound = true;
 	sess->handle = FindFirstFileW(path.Ptr(), &sess->findData);
 	if (sess->handle != INVALID_HANDLE_VALUE)
@@ -829,7 +829,7 @@ Optional<IO::Path::FindFileSession> IO::Path::FindFileW(UnsafeArray<const WChar>
 	}
 	else
 	{
-		MemFree(sess);
+		MemFreeNN(sess);
 		return nullptr;
 	}
 }

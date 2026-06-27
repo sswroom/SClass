@@ -6,7 +6,7 @@ IO::CyclicLogBuffer::CyclicLogBuffer(UIntOS buffSize)
 {
 	this->buffSize = buffSize;
 	this->logBuff = MemAllocArr(UnsafeArrayOpt<UTF8Char>, this->buffSize);
-	this->logLeng = MemAlloc(UIntOS, this->buffSize);
+	this->logLeng = MemAllocArr(UIntOS, this->buffSize);
 	this->logInd = 0;
 	MemClear(this->logBuff.Ptr(), sizeof(UnsafeArray<UTF8Char>) * this->buffSize);
 }
@@ -23,7 +23,7 @@ IO::CyclicLogBuffer::~CyclicLogBuffer()
 		i++;
 	}
 	MemFreeArr(this->logBuff);
-	MemFree(this->logLeng);
+	MemFreeArr(this->logLeng);
 }
 
 void IO::CyclicLogBuffer::LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, LogLevel logLev)

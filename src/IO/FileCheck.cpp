@@ -240,7 +240,7 @@ IO::FileCheck::FileCheck(NN<Text::String> name, Crypto::Hash::HashType chkType) 
 		hash.Delete();
 	}
 	this->chkCapacity = 40;
-	this->chkValues = MemAlloc(UInt8, this->hashSize * this->chkCapacity);
+	this->chkValues = MemAllocArr(UInt8, this->hashSize * this->chkCapacity);
 }
 
 IO::FileCheck::FileCheck(Text::CStringNN name, Crypto::Hash::HashType chkType) : IO::ParsedObject(name)
@@ -259,7 +259,7 @@ IO::FileCheck::FileCheck(Text::CStringNN name, Crypto::Hash::HashType chkType) :
 		hash.Delete();
 	}
 	this->chkCapacity = 40;
-	this->chkValues = MemAlloc(UInt8, this->hashSize * this->chkCapacity);
+	this->chkValues = MemAllocArr(UInt8, this->hashSize * this->chkCapacity);
 }
 
 IO::FileCheck::~FileCheck()
@@ -302,8 +302,8 @@ void IO::FileCheck::AddEntry(Text::CStringNN fileName, UnsafeArray<UInt8> hashVa
 	if (index >= this->chkCapacity)
 	{
 		this->chkCapacity = this->chkCapacity << 1;
-		UInt8 *newVals = MemAlloc(UInt8, this->chkCapacity * this->hashSize);
-		MemCopyNO(newVals, this->chkValues.Ptr(), index * this->hashSize);
+		UnsafeArray<UInt8> newVals = MemAllocArr(UInt8, this->chkCapacity * this->hashSize);
+		MemCopyNO(newVals.Ptr(), this->chkValues.Ptr(), index * this->hashSize);
 		MemFreeArr(this->chkValues);
 		this->chkValues = newVals;
 	}

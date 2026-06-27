@@ -22,6 +22,9 @@ void __stdcall IO::FileAnalyse::FGDBTablxFileAnalyse::ParseThread(NN<Sync::Threa
 	UInt8 tagHdr[15];
 	NN<IO::FileAnalyse::FGDBTablxFileAnalyse::TagInfo> tag;
 	Bool lastIsFree = false;
+	NN<IO::StreamData> fd;
+	if (!me->fd.SetTo(fd))
+		return;
 
 	tag = MemAllocNN(IO::FileAnalyse::FGDBTablxFileAnalyse::TagInfo);
 	tag->ofst = 0;
@@ -29,7 +32,7 @@ void __stdcall IO::FileAnalyse::FGDBTablxFileAnalyse::ParseThread(NN<Sync::Threa
 	tag->tagType = TagType::Header;
 	me->tags.Add(tag);
 
-	me->fd->GetRealData(40, 4, BYTEARR(tagHdr));
+	fd->GetRealData(40, 4, BYTEARR(tagHdr));
 	lastSize = ReadUInt32(tagHdr);
 	tag = MemAllocNN(IO::FileAnalyse::FGDBTablxFileAnalyse::TagInfo);
 	tag->ofst = 40;
@@ -39,17 +42,17 @@ void __stdcall IO::FileAnalyse::FGDBTablxFileAnalyse::ParseThread(NN<Sync::Threa
 
 	{
 		Data::ByteBuffer fieldBuff(tag->size);
-		me->fd->GetRealData(40, tag->size, fieldBuff);
+		fd->GetRealData(40, tag->size, fieldBuff);
 		me->tableInfo = Map::ESRI::FileGDBUtil::ParseFieldDesc(fieldBuff, me->prjParser);
 	}
 	NN<Map::ESRI::FileGDBTableInfo> tableInfo;
 	if (me->tableInfo.SetTo(tableInfo))
 	{
 		ofst = 40 + tag->size;
-		dataSize = me->fd->GetDataSize();
+		dataSize = fd->GetDataSize();
 		while (ofst < dataSize - 4 && !me->thread.IsStopping())
 		{
-			if (me->fd->GetRealData(ofst, 4, BYTEARR(tagHdr)) != 4)
+			if (fd->GetRealData(ofst, 4, BYTEARR(tagHdr)) != 4)
 				break;
 
 			TagType tagType = TagType::Row;
@@ -94,9 +97,9 @@ void __stdcall IO::FileAnalyse::FGDBTablxFileAnalyse::ParseThread(NN<Sync::Threa
 IO::FileAnalyse::FGDBTablxFileAnalyse::FGDBTablxFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("FGDBTablxFileAnalyse"))
 {
 	UInt8 buff[40];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
-	this->tableInfo = 0;
+	this->tableInfo = nullptr;
 	fd->GetRealData(0, 40, BYTEARR(buff));
 	////////////////////////////////////
 	if (true)//ReadUInt64(&buff[24]) != fd->GetDataSize())
@@ -115,9 +118,9 @@ IO::FileAnalyse::FGDBTablxFileAnalyse::~FGDBTablxFileAnalyse()
 	if (this->tableInfo.SetTo(tableInfo))
 	{
 		Map::ESRI::FileGDBUtil::FreeTableInfo(tableInfo);
-		this->tableInfo = 0;
+		this->tableInfo = nullptr;
 	}
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->tags.MemFreeAll();
 }
 
@@ -176,8 +179,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBTablxFileAnalyse::Ge
 	UTF8Char sbuff[1024];
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileAnalyse::FGDBTablxFileAnalyse::TagInfo> tag;
-	if (!this->tags.GetItem(index).SetTo(tag))
-		return 0;
+	NN<IO::StreamData> fd;
+	if (!this->tags.GetItem(index).SetTo(tag) || !this->fd.SetTo(fd))
+		return nullptr;
 	NN<Map::ESRI::FileGDBTableInfo> tableInfo;
 	
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
@@ -185,7 +189,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBTablxFileAnalyse::Ge
 	frame->AddHeader(CSTRP(sbuff, sptr));
 
 	Data::ByteBuffer tagData(tag->size);
-	this->fd->GetRealData(tag->ofst, tag->size, tagData);
+	fd->GetRealData(tag->ofst, tag->size, tagData);
 	if (tag->tagType == TagType::Header)
 	{
 		frame->AddUInt(0, 4, CSTR("Signature"), ReadUInt32(&tagData[0]));
@@ -274,7 +278,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBTablxFileAnalyse::Ge
 					frame->AddField(ofst + 2, srsLen, CSTR("SRS"), CSTRP(sbuff, sptr));
 					UIntOS csysLen = (UIntOS)(sptr - sbuff);
 					NN<Math::CoordinateSystem> csys;
-					if (this->prjParser.ParsePRJBuff(this->fd->GetFullName()->ToCString(), sbuff, csysLen, csysLen).SetTo(csys))
+					if (this->prjParser.ParsePRJBuff(fd->GetFullName()->ToCString(), sbuff, csysLen, csysLen).SetTo(csys))
 					{
 						Text::StringBuilderUTF8 sb;
 						csys->ToString(sb);
@@ -381,7 +385,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBTablxFileAnalyse::Ge
 			UIntOS j;
 			UInt64 v;
 			IntOS diffMul = 1;
-			Map::ESRI::FileGDBFieldInfo *field;
+			NN<Map::ESRI::FileGDBFieldInfo> field;
 			if (tableInfo->nullableCnt > 0)
 			{
 				frame->AddHexBuff(4, (tableInfo->nullableCnt + 7) >> 3, CSTR("Null Status"), &tagData[4], false);
@@ -391,7 +395,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBTablxFileAnalyse::Ge
 			j = tableInfo->fields->GetCount();
 			while (i < j)
 			{
-				field = tableInfo->fields->GetItem(i);
+				field = tableInfo->fields->GetItemNoCheck(i);
 				Bool isNull = false;
 				if (field->flags & 1)
 				{
@@ -623,7 +627,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBTablxFileAnalyse::Ge
 								frame->AddUInt(ofst, ofst2 - ofst, CSTR("YMax_RAW"), (UIntOS)v);
 								frame->AddFloat(ofst, ofst2 - ofst, CSTR("YMax"), UIntOS2Double(v) / tableInfo->xyScale + yMin);
 								ofst = ofst2;
-								UInt64 *parts = MemAlloc(UInt64, (UIntOS)nParts);
+								UnsafeArray<UInt64> parts = MemAllocArr(UInt64, (UIntOS)nParts);
 								parts[nParts - 1] = nPoints;
 								UIntOS tmpI = 0;
 								while (tmpI < nParts - 1)
@@ -675,7 +679,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBTablxFileAnalyse::Ge
 										ofst = ofst2;
 									}
 								}
-								MemFree(parts);
+								MemFreeArr(parts);
 							}
 							break;
 						case 51:
@@ -719,7 +723,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBTablxFileAnalyse::Ge
 								frame->AddUInt(ofst, ofst2 - ofst, CSTR("YMax_RAW"), (UIntOS)v);
 								frame->AddFloat(ofst, ofst2 - ofst, CSTR("YMax"), UIntOS2Double(v) / tableInfo->xyScale + yMin);
 								ofst = ofst2;
-								UInt64 *parts = MemAlloc(UInt64, (UIntOS)nParts);
+								UnsafeArray<UInt64> parts = MemAllocArr(UInt64, (UIntOS)nParts);
 								parts[nParts - 1] = nPoints;
 								UIntOS tmpI = 0;
 								while (tmpI < nParts - 1)
@@ -880,7 +884,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBTablxFileAnalyse::Ge
 										tmpI++;
 									}
 								}
-								MemFree(parts);
+								MemFreeArr(parts);
 							}
 							break;
 						}
@@ -928,7 +932,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBTablxFileAnalyse::Ge
 
 Bool IO::FileAnalyse::FGDBTablxFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::FGDBTablxFileAnalyse::IsParsing()

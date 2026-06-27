@@ -20,7 +20,7 @@ IO::ProtoHdlr::ProtoJTT808Handler::~ProtoJTT808Handler()
 
 AnyType IO::ProtoHdlr::ProtoJTT808Handler::CreateStreamData(NN<IO::Stream> stm)
 {
-	JTT808StreamData *data = MemAlloc(JTT808StreamData, 1);
+	NN<JTT808StreamData> data = MemAllocNN(JTT808StreamData);
 	UInt64 devId = this->devId;
 	data->devId[5] = ByteTool_Int2BCDB((UInt32)(devId % 100));
 	devId = devId / 100;
@@ -39,7 +39,7 @@ AnyType IO::ProtoHdlr::ProtoJTT808Handler::CreateStreamData(NN<IO::Stream> stm)
 void IO::ProtoHdlr::ProtoJTT808Handler::DeleteStreamData(NN<IO::Stream> stm, AnyType stmData)
 {
 	NN<JTT808StreamData> data = stmData.GetNN<JTT808StreamData>();
-	MemFree(data.Ptr());
+	MemFreeNN(data);
 }
 
 UIntOS IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)

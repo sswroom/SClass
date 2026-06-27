@@ -12,7 +12,7 @@ namespace IO
 	private:
 		Sync::Mutex logMut;
 		UnsafeArray<UnsafeArrayOpt<UTF8Char>> logBuff;
-		UIntOS *logLeng;
+		UnsafeArray<UIntOS> logLeng;
 		UIntOS logInd;
 		UIntOS buffSize;
 

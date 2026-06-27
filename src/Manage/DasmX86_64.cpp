@@ -1107,12 +1107,12 @@ Int32 __stdcall DasmX86_64_GetFuncStack(NN<Manage::DasmX86_64::Session> sess, UI
 			IO::FileStream fs(CSTR("ErrorMsg.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			Text::UTF8Writer console(fs);
 #endif
-			UInt8 *buff;
+			UnsafeArray<UInt8> buff;
 			UIntOS buffSize;
 			buffSize = (UIntOS)(tmpSess.regs.rip - funcAddr);
 			if (buffSize < 256)
 				buffSize = 256;
-			buff = MemAlloc(UInt8, buffSize);
+			buff = MemAllocArr(UInt8, buffSize);
 			console.WriteLine();
 			console.Write(sb.ToCString());
 
@@ -1141,7 +1141,7 @@ Int32 __stdcall DasmX86_64_GetFuncStack(NN<Manage::DasmX86_64::Session> sess, UI
 				sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 				console.WriteLine(sb.ToCString());
 			}
-			MemFree(buff);
+			MemFreeArr(buff);
 			return -1;
 		}
 		instCnt++;
@@ -5058,18 +5058,18 @@ Bool __stdcall DasmX86_64_c2(NN<Manage::DasmX86_64::Session> sess)
 	}
 	else
 	{
-		UInt8 *buff;
+		UnsafeArray<UInt8> buff;
 		UIntOS buffSize;
 		sess->retAddr = sess->memReader->ReadMemUInt32(sess->regs.rsp);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\t;"));
-		buff = MemAlloc(UInt8, cnt);
+		buff = MemAllocArr(UInt8, cnt);
 		buffSize = sess->memReader->ReadMemory(sess->regs.rsp + 4, buff, cnt);
 		if (buffSize > 0)
 		{
 			sess->sbuff = Text::StrHexBytes(sess->sbuff, buff, buffSize, ' ');
 		}
 		sess->regs.rsp += 4 + cnt;
-		MemFree(buff);
+		MemFreeArr(buff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.rip += 3;
@@ -5231,18 +5231,18 @@ Bool __stdcall DasmX86_64_ca(NN<Manage::DasmX86_64::Session> sess)
 	}
 	else
 	{
-		UInt8 *buff;
+		UnsafeArray<UInt8> buff;
 		UIntOS buffSize;
 		sess->retAddr = sess->memReader->ReadMemUInt32(sess->regs.rsp);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\t;"));
-		buff = MemAlloc(UInt8, cnt);
+		buff = MemAllocArr(UInt8, cnt);
 		buffSize = sess->memReader->ReadMemory(sess->regs.rsp + 8, buff, cnt);
 		if (buffSize > 0)
 		{
 			sess->sbuff = Text::StrHexBytes(sess->sbuff, buff, buffSize, ' ');
 		}
 		sess->regs.rsp += 8 + cnt;
-		MemFree(buff);
+		MemFreeArr(buff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.rip += 3;

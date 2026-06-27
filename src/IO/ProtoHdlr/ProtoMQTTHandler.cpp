@@ -8,7 +8,7 @@ typedef struct
 	UInt8 packetType;
 	UIntOS packetSize;
 	UIntOS packetDataSize;
-	UInt8 *packetBuff;
+	UnsafeArrayOpt<UInt8> packetBuff;
 } ClientData;
 
 IO::ProtoHdlr::ProtoMQTTHandler::ProtoMQTTHandler(NN<IO::ProtocolHandler::DataListener> listener)
@@ -22,8 +22,8 @@ IO::ProtoHdlr::ProtoMQTTHandler::~ProtoMQTTHandler()
 
 AnyType IO::ProtoHdlr::ProtoMQTTHandler::CreateStreamData(NN<IO::Stream> stm)
 {
-	ClientData *cliData = MemAlloc(ClientData, 1);
-	cliData->packetBuff = 0;
+	NN<ClientData> cliData = MemAllocNN(ClientData);
+	cliData->packetBuff = nullptr;
 	cliData->packetSize = 0;
 	cliData->packetDataSize = 0;
 	cliData->packetType = 0;
@@ -33,26 +33,28 @@ AnyType IO::ProtoHdlr::ProtoMQTTHandler::CreateStreamData(NN<IO::Stream> stm)
 void IO::ProtoHdlr::ProtoMQTTHandler::DeleteStreamData(NN<IO::Stream> stm, AnyType stmData)
 {
 	NN<ClientData> cliData = stmData.GetNN<ClientData>();
-	if (cliData->packetBuff)
+	UnsafeArray<UInt8> packetBuff;
+	if (cliData->packetBuff.SetTo(packetBuff))
 	{
-		MemFree(cliData->packetBuff);
-		cliData->packetBuff = 0;
+		MemFreeArr(packetBuff);
+		cliData->packetBuff = nullptr;
 	}
-	MemFree(cliData.Ptr());
+	MemFreeNN(cliData);
 }
 
 UIntOS IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
 	NN<ClientData> cliData = stmData.GetNN<ClientData>();
 	Data::ByteArrayR buff = srcBuff;
-	if (cliData->packetBuff)
+	UnsafeArray<UInt8> packetBuff;
+	if (cliData->packetBuff.SetTo(packetBuff))
 	{
 		if (cliData->packetSize - cliData->packetDataSize <= buff.GetSize())
 		{
-			MemCopyNO(&cliData->packetBuff[cliData->packetDataSize], buff.Arr().Ptr(), cliData->packetSize - cliData->packetDataSize);
-			this->listener->DataParsed(stm, stmObj, cliData->packetType, 0, cliData->packetBuff, cliData->packetSize);
-			MemFree(cliData->packetBuff);
-			cliData->packetBuff = 0;
+			MemCopyNO(&packetBuff[cliData->packetDataSize], buff.Arr().Ptr(), cliData->packetSize - cliData->packetDataSize);
+			this->listener->DataParsed(stm, stmObj, cliData->packetType, 0, packetBuff, cliData->packetSize);
+			MemFreeArr(packetBuff);
+			cliData->packetBuff = nullptr;
 			if (cliData->packetSize - cliData->packetDataSize == buff.GetSize())
 			{
 				return 0;
@@ -61,7 +63,7 @@ UIntOS IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NN<IO::Stream> stm, AnyTyp
 		}
 		else
 		{
-			MemCopyNO(&cliData->packetBuff[cliData->packetDataSize], buff.Arr().Ptr(), buff.GetSize());
+			MemCopyNO(&packetBuff[cliData->packetDataSize], buff.Arr().Ptr(), buff.GetSize());
 			cliData->packetDataSize += buff.GetSize();
 			return 0;
 		}
@@ -109,10 +111,10 @@ UIntOS IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NN<IO::Stream> stm, AnyTyp
 		}
 		else
 		{
-			cliData->packetBuff = MemAlloc(UInt8, packetSize);
+			cliData->packetBuff = packetBuff = MemAllocArr(UInt8, packetSize);
 			cliData->packetSize = packetSize;
 			cliData->packetType = buff[0];
-			MemCopyNO(cliData->packetBuff, &buff[i], buff.GetSize() - i);
+			MemCopyNO(&packetBuff[0], &buff[i], buff.GetSize() - i);
 			cliData->packetDataSize = buff.GetSize() - i;
 			return 0;
 		}

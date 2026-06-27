@@ -45,11 +45,11 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				UIntOS i;
 				UIntOS j;
 				UIntOS k;
-				UInt32 *ptOfsts;
+				UnsafeArray<UInt32> ptOfsts;
 				UnsafeArray<Math::Coord2DDbl> points;
 				NN<Math::Geometry::LineString> lineString;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
-				ptOfsts = MemAlloc(UInt32, nPtOfst);
+				ptOfsts = MemAllocArr(UInt32, nPtOfst);
 				buff += 44;
 				i = 0;
 				while (i < nPtOfst)
@@ -82,7 +82,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 					pl->AddGeometry(lineString);
 					i++;
 				}
-				MemFree(ptOfsts);
+				MemFreeArr(ptOfsts);
 				return pl;
 			}
 		}
@@ -181,12 +181,12 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				UIntOS i;
 				UIntOS j;
 				UIntOS k;
-				UInt32 *ptOfsts;
+				UnsafeArray<UInt32> ptOfsts;
 				NN<Math::Geometry::LineString> lineString;
 				UnsafeArray<Math::Coord2DDbl> points;
 				UnsafeArray<Double> alts;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
-				ptOfsts = MemAlloc(UInt32, nPtOfst);
+				ptOfsts = MemAllocArr(UInt32, nPtOfst);
 				buff += 44;
 				i = 0;
 				while (i < nPtOfst)
@@ -234,7 +234,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 					}
 					i++;
 				}
-				MemFree(ptOfsts);
+				MemFreeArr(ptOfsts);
 				return pl;
 			}
 		}
@@ -266,12 +266,12 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				UIntOS i;
 				UIntOS j;
 				UIntOS k;
-				UInt32 *ptOfsts;
+				UnsafeArray<UInt32> ptOfsts;
 				NN<Math::Geometry::LineString> lineString;
 				UnsafeArray<Math::Coord2DDbl> points;
 				UnsafeArray<Double> dArr;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
-				ptOfsts = MemAlloc(UInt32, nPtOfst);
+				ptOfsts = MemAllocArr(UInt32, nPtOfst);
 				buff += 44;
 				i = 0;
 				while (i < nPtOfst)
@@ -334,7 +334,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 					}
 					i++;
 				}
-				MemFree(ptOfsts);
+				MemFreeArr(ptOfsts);
 				return pl;
 			}
 		}
@@ -356,10 +356,10 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
 				UIntOS i;
-				UInt32 *ptOfsts = MemAlloc(UInt32, nPtOfst);
-				Math::Coord2DDbl *points = MemAllocA(Math::Coord2DDbl, nPoint);
-				Double *zArr = MemAlloc(Double, nPoint);
-				Double *mArr = MemAlloc(Double, nPoint);
+				UnsafeArray<UInt32> ptOfsts = MemAllocArr(UInt32, nPtOfst);
+				UnsafeArray<Math::Coord2DDbl> points = MemAllocAArr(Math::Coord2DDbl, nPoint);
+				UnsafeArray<Double> zArr = MemAllocArr(Double, nPoint);
+				UnsafeArray<Double> mArr = MemAllocArr(Double, nPoint);
 				NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 				buff += 44;
 				i = 0;
@@ -392,10 +392,10 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 					i++;
 				}
 				pg->AddFromPtOfst(ptOfsts, nPtOfst, points, nPoint, zArr, mArr);
-				MemFree(mArr);
-				MemFree(zArr);
-				MemFreeA(points);
-				MemFree(ptOfsts);
+				MemFreeArr(mArr);
+				MemFreeArr(zArr);
+				MemFreeAArr(points);
+				MemFreeArr(ptOfsts);
 				return pg;
 			}
 		}
@@ -419,9 +419,9 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
 				UIntOS i;
-				UInt32 *ptOfsts = MemAlloc(UInt32, nPtOfst);
-				Math::Coord2DDbl *points = MemAllocA(Math::Coord2DDbl, nPoint);
-				Double *zArr = MemAlloc(Double, nPoint);
+				UnsafeArray<UInt32> ptOfsts = MemAllocArr(UInt32, nPtOfst);
+				UnsafeArray<Math::Coord2DDbl> points = MemAllocAArr(Math::Coord2DDbl, nPoint);
+				UnsafeArray<Double> zArr = MemAllocArr(Double, nPoint);
 				NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 				buff += 44;
 				i = 0;
@@ -447,9 +447,9 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 					i++;
 				}
 				pg->AddFromPtOfst(ptOfsts, nPtOfst, points, nPoint, zArr, nullptr);
-				MemFree(zArr);
-				MemFreeA(points);
-				MemFree(ptOfsts);
+				MemFreeArr(zArr);
+				MemFreeAArr(points);
+				MemFreeArr(ptOfsts);
 				return pg;
 			}
 		}
@@ -484,12 +484,12 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				UIntOS i;
 				UIntOS j;
 				UIntOS k;
-				UInt32 *ptOfsts;
+				UnsafeArray<UInt32> ptOfsts;
 				NN<Math::Geometry::LineString> lineString;
 				UnsafeArray<Math::Coord2DDbl> points;
 				UnsafeArray<Double> mArr;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
-				ptOfsts = MemAlloc(UInt32, nPtOfst);
+				ptOfsts = MemAllocArr(UInt32, nPtOfst);
 				buff += 44;
 				i = 0;
 				while (i < nPtOfst)
@@ -537,7 +537,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 					}
 					i++;
 				}
-				MemFree(ptOfsts);
+				MemFreeArr(ptOfsts);
 				return pl;
 			}
 		}
@@ -559,9 +559,9 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
 				UIntOS i;
-				UInt32 *ptOfsts = MemAlloc(UInt32, nPtOfst);
-				Math::Coord2DDbl *points = MemAllocA(Math::Coord2DDbl, nPoint);
-				Double *mArr = MemAlloc(Double, nPoint);
+				UnsafeArray<UInt32> ptOfsts = MemAllocArr(UInt32, nPtOfst);
+				UnsafeArray<Math::Coord2DDbl> points = MemAllocAArr(Math::Coord2DDbl, nPoint);
+				UnsafeArray<Double> mArr = MemAllocArr(Double, nPoint);
 				NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 				buff += 44;
 				i = 0;
@@ -587,9 +587,9 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 					i++;
 				}
 				pg->AddFromPtOfst(ptOfsts, nPtOfst, points, nPoint, nullptr, mArr);
-				MemFree(mArr);
-				MemFreeA(points);
-				MemFree(ptOfsts);
+				MemFreeArr(mArr);
+				MemFreeAArr(points);
+				MemFreeArr(ptOfsts);
 				return pg;
 			}
 		}

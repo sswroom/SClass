@@ -394,7 +394,7 @@ Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8
 
 Optional<IO::Path::FindFileSession> IO::Path::FindFile(Text::CStringNN path)
 {
-	FindFileSession *sess = 0;
+	NN<FindFileSession> sess;
 	UnsafeArray<const UTF8Char> searchPattern;
 	UIntOS searchPatternLen;
 	Text::CStringNN searchDir;
@@ -426,17 +426,21 @@ Optional<IO::Path::FindFileSession> IO::Path::FindFile(Text::CStringNN path)
 	}
 	if (dirObj)
 	{
-		sess = MemAlloc(FindFileSession, 1);
+		sess = MemAllocNN(FindFileSession);
 		sess->searchPattern = Text::String::New(searchPattern, searchPatternLen);
 		sess->dirObj = dirObj;
 		sess->pathEnd = searchDir.ConcatTo(UARR(sess->pathBuff));
+		return sess;
 	}
-	return sess;
+	else
+	{
+		return nullptr;
+	}
 }
 
 Optional<IO::Path::FindFileSession> IO::Path::FindFileW(UnsafeArray<const WChar> path)
 {
-	FindFileSession *sess = 0;
+	NN<FindFileSession> sess;
 	NN<Text::String> utfPath = Text::String::NewNotNull(path);
 	Text::CStringNN searchPattern;
 	Text::CStringNN searchDir;
@@ -464,13 +468,18 @@ Optional<IO::Path::FindFileSession> IO::Path::FindFileW(UnsafeArray<const WChar>
 	}
 	if (dirObj)
 	{
-		sess = MemAlloc(FindFileSession, 1);
+		sess = MemAllocNN(FindFileSession);
 		sess->searchPattern = Text::String::New(searchPattern);
 		sess->dirObj = dirObj;
 		sess->pathEnd = searchDir.ConcatTo(sess->pathBuff);
+		utfPath->Release();
+		return sess;
 	}
-	utfPath->Release();
-	return sess;
+	else
+	{
+		utfPath->Release();
+		return nullptr;
+	}
 }
 
 UnsafeArrayOpt<UTF8Char> IO::Path::FindNextFile(UnsafeArray<UTF8Char> buff, NN<IO::Path::FindFileSession> sess, OptOut<Data::Timestamp> modTime, OptOut<IO::Path::PathType> pt, OptOut<UInt64> fileSize)

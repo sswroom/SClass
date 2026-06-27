@@ -3,7 +3,7 @@
 #include "IO/LNKFile.h"
 #include "Text/MyStringW.h"
 
-void IO::LNKFile::InitBuff(const UInt8 *buff, UIntOS buffSize)
+void IO::LNKFile::InitBuff(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
 	if (buffSize < 76)
 	{
@@ -13,14 +13,15 @@ void IO::LNKFile::InitBuff(const UInt8 *buff, UIntOS buffSize)
 	{
 		return;
 	}
-	this->buff = MemAlloc(UInt8, buffSize);
+	UnsafeArray<UInt8> newBuff;
+	this->buff = newBuff = MemAllocArr(UInt8, buffSize);
 	this->buffSize = buffSize;
-	MemCopyNO(this->buff, buff, buffSize);
+	MemCopyNO(newBuff.Ptr(), buff.Ptr(), buffSize);
 }
 
 IO::LNKFile::LNKFile(Text::CStringNN fileName)
 {
-	this->buff = 0;
+	this->buff = nullptr;
 	this->buffSize = 0;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
@@ -36,65 +37,70 @@ IO::LNKFile::LNKFile(Text::CStringNN fileName)
 	this->InitBuff(buff, buffSize);
 }
 
-IO::LNKFile::LNKFile(const UInt8 *buff, UIntOS buffSize)
+IO::LNKFile::LNKFile(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
-	this->buff = 0;
+	this->buff = nullptr;
 	this->buffSize = 0;
 	this->InitBuff(buff, buffSize);
 }
 
 IO::LNKFile::~LNKFile()
 {
-	if (this->buff)
+	UnsafeArray<UInt8> buff;
+	if (this->buff.SetTo(buff))
 	{
-		MemFree(this->buff);
-		this->buff = 0;
+		MemFreeArr(buff);
+		this->buff = nullptr;
 	}
 }
 
 Bool IO::LNKFile::IsError()
 {
-	return this->buff == 0;
+	return this->buff.IsNull();
 }
 
 Data::Timestamp IO::LNKFile::GetCreateTime()
 {
-	if (this->buff == 0)
+	UnsafeArray<UInt8> buff;
+	if (!this->buff.SetTo(buff))
 		return Data::Timestamp(0);
-	return Data::Timestamp::FromFILETIME(&this->buff[28], Data::DateTimeUtil::GetLocalTzQhr());
+	return Data::Timestamp::FromFILETIME(&buff[28], Data::DateTimeUtil::GetLocalTzQhr());
 }
 
 Data::Timestamp IO::LNKFile::GetAccessTime()
 {
-	if (this->buff == 0)
+	UnsafeArray<UInt8> buff;
+	if (!this->buff.SetTo(buff))
 		return Data::Timestamp(0);
-	return Data::Timestamp::FromFILETIME(&this->buff[36], Data::DateTimeUtil::GetLocalTzQhr());
+	return Data::Timestamp::FromFILETIME(&buff[36], Data::DateTimeUtil::GetLocalTzQhr());
 }
 
 Data::Timestamp IO::LNKFile::GetWriteTime()
 {
-	if (this->buff == 0)
+	UnsafeArray<UInt8> buff;
+	if (!this->buff.SetTo(buff))
 		return Data::Timestamp(0);
-	return Data::Timestamp::FromFILETIME(&this->buff[44], Data::DateTimeUtil::GetLocalTzQhr());
+	return Data::Timestamp::FromFILETIME(&buff[44], Data::DateTimeUtil::GetLocalTzQhr());
 }
 
 UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetLocalBasePath(UnsafeArray<UTF8Char> sbuff)
 {
-	if (this->buff == 0)
+	UnsafeArray<UInt8> buff;
+	if (!this->buff.SetTo(buff))
 		return nullptr;
-	UInt32 flags = ReadUInt32(&this->buff[20]);
+	UInt32 flags = ReadUInt32(&buff[20]);
 	if ((flags & 2) == 0)
 		return nullptr;
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) + 2;
 	}
-	UInt32 linkInfoFlags = ReadUInt32(&this->buff[ofst + 8]);
-	UInt32 localBasePathOffset = ReadUInt32(&this->buff[ofst + 16]);
+	UInt32 linkInfoFlags = ReadUInt32(&buff[ofst + 8]);
+	UInt32 localBasePathOffset = ReadUInt32(&buff[ofst + 16]);
 	if ((linkInfoFlags & 1) && localBasePathOffset != 0)
 	{
-		return Text::StrConcat(sbuff, &this->buff[ofst + localBasePathOffset]);
+		return Text::StrConcat(sbuff, &buff[ofst + localBasePathOffset]);
 	}
 	else
 	{
@@ -104,198 +110,204 @@ UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetLocalBasePath(UnsafeArray<UTF8Char> sbu
 
 UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetNameString(UnsafeArray<UTF8Char> sbuff)
 {
-	if (this->buff == 0)
+	UnsafeArray<UInt8> buff;
+	if (!this->buff.SetTo(buff))
 		return nullptr;
-	UInt32 flags = ReadUInt32(&this->buff[20]);
+	UInt32 flags = ReadUInt32(&buff[20]);
 	if ((flags & 4) == 0)
 		return nullptr;
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) + 2;
 	}
 	if (flags & 2)
 	{
-		ofst += (UIntOS)ReadUInt32(&this->buff[ofst]);
+		ofst += (UIntOS)ReadUInt32(&buff[ofst]);
 	}
-	UInt16 charCnt = ReadUInt16(&this->buff[ofst]);
-	sbuff = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&this->buff[ofst + 2], charCnt);
+	UInt16 charCnt = ReadUInt16(&buff[ofst]);
+	sbuff = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&buff[ofst + 2], charCnt);
 	*sbuff = 0;
 	return sbuff;
 }
 
 UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetRelativePath(UnsafeArray<UTF8Char> sbuff)
 {
-	if (this->buff == 0)
+	UnsafeArray<UInt8> buff;
+	if (!this->buff.SetTo(buff))
 		return nullptr;
-	UInt32 flags = ReadUInt32(&this->buff[20]);
+	UInt32 flags = ReadUInt32(&buff[20]);
 	if ((flags & 8) == 0)
 		return nullptr;
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) + 2;
 	}
 	if (flags & 2)
 	{
-		ofst += (UIntOS)ReadUInt32(&this->buff[ofst]);
+		ofst += (UIntOS)ReadUInt32(&buff[ofst]);
 	}
 	if (flags & 4)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
 	}
-	UInt16 charCnt = ReadUInt16(&this->buff[ofst]);
-	sbuff = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&this->buff[ofst + 2], charCnt);
+	UInt16 charCnt = ReadUInt16(&buff[ofst]);
+	sbuff = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&buff[ofst + 2], charCnt);
 	*sbuff = 0;
 	return sbuff;
 }
 
 UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetWorkingDirectory(UnsafeArray<UTF8Char> sbuff)
 {
-	if (this->buff == 0)
+	UnsafeArray<UInt8> buff;
+	if (!this->buff.SetTo(buff))
 		return nullptr;
-	UInt32 flags = ReadUInt32(&this->buff[20]);
+	UInt32 flags = ReadUInt32(&buff[20]);
 	if ((flags & 16) == 0)
 		return nullptr;
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) + 2;
 	}
 	if (flags & 2)
 	{
-		ofst += (UIntOS)ReadUInt32(&this->buff[ofst]);
+		ofst += (UIntOS)ReadUInt32(&buff[ofst]);
 	}
 	if (flags & 4)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 8)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
 	}
-	UInt16 charCnt = ReadUInt16(&this->buff[ofst]);
-	sbuff = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&this->buff[ofst + 2], charCnt);
+	UInt16 charCnt = ReadUInt16(&buff[ofst]);
+	sbuff = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&buff[ofst + 2], charCnt);
 	*sbuff = 0;
 	return sbuff;
 }
 
 UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetCommandLineArguments(UnsafeArray<UTF8Char> sbuff)
 {
-	if (this->buff == 0)
+	UnsafeArray<UInt8> buff;
+	if (!this->buff.SetTo(buff))
 		return nullptr;
-	UInt32 flags = ReadUInt32(&this->buff[20]);
+	UInt32 flags = ReadUInt32(&buff[20]);
 	if ((flags & 32) == 0)
 		return nullptr;
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) + 2;
 	}
 	if (flags & 2)
 	{
-		ofst += (UIntOS)ReadUInt32(&this->buff[ofst]);
+		ofst += (UIntOS)ReadUInt32(&buff[ofst]);
 	}
 	if (flags & 4)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 8)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 16)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
 	}
-	UInt16 charCnt = ReadUInt16(&this->buff[ofst]);
-	sbuff = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&this->buff[ofst + 2], charCnt);
+	UInt16 charCnt = ReadUInt16(&buff[ofst]);
+	sbuff = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&buff[ofst + 2], charCnt);
 	*sbuff = 0;
 	return sbuff;
 }
 
 UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetIconLocation(UnsafeArray<UTF8Char> sbuff)
 {
-	if (this->buff == 0)
+	UnsafeArray<UInt8> buff;
+	if (!this->buff.SetTo(buff))
 		return nullptr;
-	UInt32 flags = ReadUInt32(&this->buff[20]);
+	UInt32 flags = ReadUInt32(&buff[20]);
 	if ((flags & 64) == 0)
 		return nullptr;
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) + 2;
 	}
 	if (flags & 2)
 	{
-		ofst += (UIntOS)ReadUInt32(&this->buff[ofst]);
+		ofst += (UIntOS)ReadUInt32(&buff[ofst]);
 	}
 	if (flags & 4)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 8)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 16)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 32)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
 	}
-	UInt16 charCnt = ReadUInt16(&this->buff[ofst]);
-	sbuff = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&this->buff[ofst + 2], charCnt);
+	UInt16 charCnt = ReadUInt16(&buff[ofst]);
+	sbuff = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&buff[ofst + 2], charCnt);
 	*sbuff = 0;
 	return sbuff;
 }
 
 UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetTarget(UnsafeArray<UTF8Char> sbuff)
 {
-	if (this->buff == 0)
+	UnsafeArray<UInt8> buff;
+	if (!this->buff.SetTo(buff))
 		return nullptr;
-	UInt32 flags = ReadUInt32(&this->buff[20]);
+	UInt32 flags = ReadUInt32(&buff[20]);
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) + 2;
 	}
 	if (flags & 2)
 	{
-		ofst += (UIntOS)ReadUInt32(&this->buff[ofst]);
+		ofst += (UIntOS)ReadUInt32(&buff[ofst]);
 	}
 	if (flags & 4)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 8)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 16)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 32)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 64)
 	{
-		ofst += (UIntOS)ReadUInt16(&this->buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
 	}
 	while (ofst < this->buffSize)
 	{
-		UInt32 size = ReadUInt32(&this->buff[ofst]);
+		UInt32 size = ReadUInt32(&buff[ofst]);
 		if (size < 4)
 		{
 			return nullptr;
 		}
-		if (ReadUInt32(&this->buff[ofst + 4]) == 0xA0000001)
+		if (ReadUInt32(&buff[ofst + 4]) == 0xA0000001)
 		{
-			return Text::StrUTF16_UTF8(sbuff, (const UTF16Char*)&this->buff[ofst + 268]);
+			return Text::StrUTF16_UTF8(sbuff, (const UTF16Char*)&buff[ofst + 268]);
 		}
 		else
 		{

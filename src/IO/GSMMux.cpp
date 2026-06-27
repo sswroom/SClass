@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListArr.hpp"
 #include "IO/GSMMux.h"
 #include "IO/Stream.h"
 #include "Sync/Event.h"
@@ -119,7 +119,7 @@ IO::GSMMux::GSMMux(NN<Stream> stm, Int32 baudRate)
 	this->ports = MemAllocArr(GSMPort, MAX_GSMPORT);
 	this->readBuff = MemAllocArr(UInt8, 1024);
 	this->readBuffSize = 0;
-	this->readReq = 0;
+	this->readReq = nullptr;
 	this->checking = false;
 	this->closing = false;
 	i = MAX_GSMPORT;
@@ -127,8 +127,8 @@ IO::GSMMux::GSMMux(NN<Stream> stm, Int32 baudRate)
 	{
 		this->ports[i].portId = i;
 		this->ports[i].opened = false;
-		this->ports[i].obj = 0;
-		this->ports[i].evt = 0;
+		this->ports[i].obj = nullptr;
+		this->ports[i].evt = nullptr;
 		NEW_CLASSNN(this->ports[i].data, Data::ArrayListArr<UInt8>());
 	}
 	this->ports[0].opened = true;
@@ -143,7 +143,7 @@ IO::GSMMux::GSMMux(NN<Stream> stm, Int32 baudRate)
 	}
 	if (i <= 0)
 	{
-		this->stm = 0;
+		this->stm = nullptr;
 		return;
 	}
 
@@ -153,11 +153,11 @@ IO::GSMMux::GSMMux(NN<Stream> stm, Int32 baudRate)
 	this->stm = stm;
 	Int32 retryCnt = 3;
 
-	while (this->SendATCommand(buff, 15, 0, 0) != 0)
+	while (this->SendATCommand(buff, 15, nullptr, 0) != 0)
 	{
 		if (retryCnt-- <= 0)
 		{
-			this->stm = 0;
+			this->stm = nullptr;
 			return;
 		}
 		UInt8 buff[2];
@@ -181,7 +181,7 @@ IO::GSMMux::~GSMMux()
 	{
 		this->readEvt->Set();
 		stm->CancelRead(readReq);
-		this->readReq = 0;
+		this->readReq = nullptr;
 	}
 
 	while (this->readReq.NotNull() || this->checking)
@@ -229,7 +229,7 @@ Optional<IO::GSMMuxPort> IO::GSMMux::OpenVPort()
 		}
 		ch++;
 	}
-	return 0;
+	return nullptr;
 }
 
 void IO::GSMMux::CloseVPort(NN<GSMMuxPort> port)
@@ -294,7 +294,7 @@ Bool IO::GSMMux::CheckEvents(Int32 timeout)
 			Bool incomplete;
 			UIntOS dataSize = stm->EndRead(readReq, true, incomplete);
 			this->readBuffSize += dataSize;
-			this->readReq = 0;
+			this->readReq = nullptr;
 
 			ParseCommData();
 		}
@@ -358,9 +358,9 @@ void IO::GSMMux::ParseCommData()
 				{
 					///////////////////////////////////////////////////////////////////////////
 					NN<Sync::Event> evt;
-					UInt8 *data = MemAlloc(UInt8, frSize + 2);
+					UnsafeArray<UInt8> data = MemAllocArr(UInt8, frSize + 2);
 					MemCopyNO(&data[2], &this->readBuff[frOfst], frSize);
-					*(Int16*)data = frSize;
+					*(Int16*)&data[0] = frSize;
 					this->ports[ch].data->Add(data);
 					if (this->ports[ch].evt.SetTo(evt))
 						evt->Set();
@@ -404,7 +404,7 @@ void IO::GSMMux::ParseCommData()
 Optional<IO::GSMMuxPort> IO::GSMMux::HasAnyData()
 {
 	if (this->closing)
-		return 0;
+		return nullptr;
 	Int32 i = MAX_GSMPORT;
 	while (i-- > 0)
 	{
@@ -414,7 +414,7 @@ Optional<IO::GSMMuxPort> IO::GSMMux::HasAnyData()
 				return this->ports[i].obj;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 IO::GSMMuxPort::GSMMuxPort(NN<GSMMux> mux, NN<GSMMux::GSMPort> portInfo) : IO::Stream(CSTR("GSMMuxPort"))
@@ -431,7 +431,7 @@ IO::GSMMuxPort::GSMMuxPort(NN<GSMMux> mux, NN<GSMMux::GSMPort> portInfo) : IO::S
 IO::GSMMuxPort::~GSMMuxPort()
 {
 	this->Close();
-	this->port->obj = 0;
+	this->port->obj = nullptr;
 	while (this->reading)
 	{
 		Sync::SimpleThread::Sleep(10);
@@ -555,7 +555,7 @@ void IO::GSMMuxPort::CancelRead(NN<IO::StreamReadReq> reqData)
 	IntOS *data = (IntOS*)reqData.Ptr();
 	if (this->port->evt == (Sync::Event*)data[2])
 	{
-		this->port->evt = 0;
+		this->port->evt = nullptr;
 	}
 	MemFree(data);
 }
@@ -570,7 +570,7 @@ Optional<IO::StreamWriteReq> IO::GSMMuxPort::BeginWrite(Data::ByteArrayR buff, N
 	else
 	{
 		evt->Set();
-		return 0;
+		return nullptr;
 	}
 }
 

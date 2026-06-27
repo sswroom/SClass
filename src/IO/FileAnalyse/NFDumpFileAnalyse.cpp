@@ -302,7 +302,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UIntOS index, NN<Text::S
 		{
 			Data::DateTime dt;
 			UIntOS decBuffSize = 1048576 * 5;
-			UInt8 *decBuff = MemAlloc(UInt8, decBuffSize);
+			UnsafeArray<UInt8> decBuff = MemAllocArr(UInt8, decBuffSize);
 			decBuffSize = this->LZODecompBlock(packBuff.Arr(), size, decBuff, decBuffSize);
 			if (decBuffSize > 0)
 			{
@@ -616,7 +616,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UIntOS index, NN<Text::S
 						}
 						if (!this->extMap.Get(ReadUInt16(&decBuff[i + 4])).SetTo(extBuff))
 						{
-							extBuff = MemAlloc(UInt8, recSize - 4);
+							extBuff = MemAllocArr(UInt8, recSize - 4);
 							MemCopyNO(&extBuff[0], &decBuff[i + 4], recSize - 4);
 							WriteInt16(&extBuff[2], recSize - 4);
 							this->extMap.Put(ReadUInt16(&decBuff[i + 4]), extBuff);
@@ -714,7 +714,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UIntOS index, NN<Text::S
 					i += recSize;
 				}
 			}
-			MemFree(decBuff);
+			MemFreeArr(decBuff);
 		}
 	}
 	return true;
@@ -864,7 +864,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFr
 		{
 			Data::DateTime dt;
 			UIntOS decBuffSize = 1048576 * 5;
-			UInt8 *decBuff = MemAlloc(UInt8, decBuffSize);
+			UnsafeArray<UInt8> decBuff = MemAllocArr(UInt8, decBuffSize);
 			decBuffSize = this->LZODecompBlock(packBuff.Arr(), size, decBuff, decBuffSize);
 			if (decBuffSize > 0)
 			{
@@ -1185,7 +1185,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFr
 						extBuff = this->extMap->Get(ReadUInt16(&decBuff[i + 4]));
 						if (extBuff == 0)
 						{
-							extBuff = MemAlloc(UInt8, recSize - 4);
+							extBuff = MemAllocArr(UInt8, recSize - 4);
 							MemCopyNO(extBuff, &decBuff[i + 4], recSize - 4);
 							WriteInt16(&extBuff[2], recSize - 4);
 							this->extMap->Put(ReadUInt16(&decBuff[i + 4]), extBuff);

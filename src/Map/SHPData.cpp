@@ -25,7 +25,7 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 	UInt32 fileLen;
 //	Int32 shpType;
 	UIntOS i;
-	Map::SHPData::RecHdr *rec;
+	NN<Map::SHPData::RecHdr> rec;
 
 	this->dbf = nullptr;
 	this->shpData = nullptr;
@@ -159,7 +159,7 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 				data->GetRealData(currOfst, 44, BYTEARR(shpBuff));
 				if (*(Int32*)shpBuff == 3)
 				{
-					rec = MemAlloc(Map::SHPData::RecHdr, 1);
+					rec = MemAllocNN(Map::SHPData::RecHdr);
 					rec->x1 = ReadDouble(&shpBuff[4]);
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
@@ -199,7 +199,7 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 				data->GetRealData(currOfst, 44, BYTEARR(shpBuff));
 				if (*(Int32*)shpBuff == 5)
 				{
-					rec = MemAlloc(Map::SHPData::RecHdr, 1);
+					rec = MemAllocNN(Map::SHPData::RecHdr);
 					rec->x1 = ReadDouble(&shpBuff[4]);
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
@@ -267,7 +267,7 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 				data->GetRealData(currOfst, 44, BYTEARR(shpBuff));
 				if (*(Int32*)shpBuff == 13)
 				{
-					rec = MemAlloc(Map::SHPData::RecHdr, 1);
+					rec = MemAllocNN(Map::SHPData::RecHdr);
 					rec->x1 = ReadDouble(&shpBuff[4]);
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
@@ -307,7 +307,7 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 				data->GetRealData(currOfst, 44, BYTEARR(shpBuff));
 				if (*(Int32*)shpBuff == 15)
 				{
-					rec = MemAlloc(Map::SHPData::RecHdr, 1);
+					rec = MemAllocNN(Map::SHPData::RecHdr);
 					rec->x1 = ReadDouble(&shpBuff[4]);
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
@@ -636,13 +636,13 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 			return nullptr;
 		if (rec->vec.SetTo(vec)) return vec->Clone();
 		NEW_CLASS(pg, Math::Geometry::Polygon(srid));
-		UInt32 *ptOfstList = MemAlloc(UInt32, rec->nPtOfst);
-		Math::Coord2DDbl *pointList = MemAllocA(Math::Coord2DDbl, rec->nPoint);
-		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)ptOfstList, rec->nPtOfst << 2));
-		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pointList, rec->nPoint << 4));
+		UnsafeArray<UInt32> ptOfstList = MemAllocArr(UInt32, rec->nPtOfst);
+		UnsafeArray<Math::Coord2DDbl> pointList = MemAllocAArr(Math::Coord2DDbl, rec->nPoint);
+		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(ptOfstList), rec->nPtOfst << 2));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(pointList), rec->nPoint << 4));
 		pg->AddFromPtOfst(ptOfstList, rec->nPtOfst, pointList, rec->nPoint, nullptr, nullptr);
-		MemFreeA(pointList);
-		MemFree(ptOfstList);
+		MemFreeAArr(pointList);
+		MemFreeArr(ptOfstList);
 		rec->vec = pg->Clone();
 		return pg;
 	}
@@ -654,13 +654,13 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 			return nullptr;
 		if (rec->vec.SetTo(vec)) return vec->Clone();
 		NEW_CLASS(pl, Math::Geometry::Polyline(srid));
-		UInt32 *ptOfstList = MemAlloc(UInt32, rec->nPtOfst);
-		Math::Coord2DDbl *pointList = MemAllocA(Math::Coord2DDbl, rec->nPoint);
-		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)ptOfstList, rec->nPtOfst << 2));
-		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pointList, rec->nPoint << 4));
+		UnsafeArray<UInt32> ptOfstList = MemAllocArr(UInt32, rec->nPtOfst);
+		UnsafeArray<Math::Coord2DDbl> pointList = MemAllocAArr(Math::Coord2DDbl, rec->nPoint);
+		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(ptOfstList), rec->nPtOfst << 2));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(pointList), rec->nPoint << 4));
 		pl->AddFromPtOfst(ptOfstList, rec->nPtOfst, pointList, rec->nPoint, nullptr, nullptr);
-		MemFreeA(pointList);
-		MemFree(ptOfstList);
+		MemFreeAArr(pointList);
+		MemFreeArr(ptOfstList);
 		rec->vec = pl->Clone();
 		return pl;
 	}
@@ -672,16 +672,16 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 			return nullptr;
 		if (rec->vec.SetTo(vec)) return vec->Clone();
 		NEW_CLASS(pl, Math::Geometry::Polyline(srid));
-		UInt32 *ptOfstList = MemAlloc(UInt32, rec->nPtOfst);
-		Math::Coord2DDbl *pointList = MemAllocA(Math::Coord2DDbl, rec->nPoint);
-		Double *zList = MemAlloc(Double, rec->nPoint);
-		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)ptOfstList, rec->nPtOfst << 2));
-		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pointList, rec->nPoint << 4));
-		shpData->GetRealData(rec->endOfst - (rec->nPoint << 3), rec->nPoint << 3, Data::ByteArray((UInt8*)zList, rec->nPoint << 3));
+		UnsafeArray<UInt32> ptOfstList = MemAllocArr(UInt32, rec->nPtOfst);
+		UnsafeArray<Math::Coord2DDbl> pointList = MemAllocAArr(Math::Coord2DDbl, rec->nPoint);
+		UnsafeArray<Double> zList = MemAllocArr(Double, rec->nPoint);
+		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(ptOfstList), rec->nPtOfst << 2));
+		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(pointList), rec->nPoint << 4));
+		shpData->GetRealData(rec->endOfst - (rec->nPoint << 3), rec->nPoint << 3, Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(zList), rec->nPoint << 3));
 		pl->AddFromPtOfst(ptOfstList, rec->nPtOfst, pointList, rec->nPoint, zList, nullptr);
-		MemFree(zList);
-		MemFreeA(pointList);
-		MemFree(ptOfstList);
+		MemFreeArr(zList);
+		MemFreeAArr(pointList);
+		MemFreeArr(ptOfstList);
 		rec->vec = pl->Clone();
 		return pl;
 	}

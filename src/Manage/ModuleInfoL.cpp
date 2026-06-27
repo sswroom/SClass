@@ -14,12 +14,12 @@ typedef struct
 
 Manage::ModuleInfo::ModuleInfo(void *hProc, void *hMod)
 {
-	ModuleInfoData *info;
+	NN<ModuleInfoData> info;
 	ModuleInfoData *input = (ModuleInfoData*)hMod;
 
 	this->hProc = hProc;
-	info = MemAlloc(ModuleInfoData, 1);
-	this->hMod = info;
+	info = MemAllocNN(ModuleInfoData);
+	this->hMod = info.Ptr();
 	info->addr = input->addr;
 	info->fileName = Text::StrCopyNew(input->fileName);
 	info->size = input->size;
@@ -27,9 +27,12 @@ Manage::ModuleInfo::ModuleInfo(void *hProc, void *hMod)
 
 Manage::ModuleInfo::~ModuleInfo()
 {
-	ModuleInfoData *info = (ModuleInfoData*)this->hMod;
-	Text::StrDelNew(info->fileName);
-	MemFree(info);
+	NN<ModuleInfoData> info;
+	if (info.Set((ModuleInfoData*)this->hMod))
+	{
+		Text::StrDelNew(info->fileName);
+		MemFreeNN(info);
+	}
 }
 
 UnsafeArray<UTF8Char> Manage::ModuleInfo::GetModuleFileName(UnsafeArray<UTF8Char> buff)

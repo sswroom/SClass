@@ -8,13 +8,13 @@ namespace IO
 	class LNKFile
 	{
 	private:
-		UInt8 *buff;
+		UnsafeArrayOpt<UInt8> buff;
 		UIntOS buffSize;
 
-		void InitBuff(const UInt8 *buff, UIntOS buffSize);
+		void InitBuff(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 	public:
 		LNKFile(Text::CStringNN fileName);
-		LNKFile(const UInt8 *buff, UIntOS buffSize);
+		LNKFile(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 		~LNKFile();
 
 		Bool IsError();

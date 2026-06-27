@@ -43,13 +43,13 @@ namespace Map
 		Map::DrawLayerType layerType;
 		UnsafeArray<NN<Text::String>> colNames;
 		UIntOS strCnt;
-		UIntOS *maxStrLen;
-		UIntOS *thisStrLen;
+		UnsafeArray<UIntOS> maxStrLen;
+		UnsafeArrayOpt<UIntOS> thisStrLen;
 		Data::ArrayListNN<Math::Geometry::Vector2D> vectorList;
 		Data::ArrayListArr<UnsafeArrayOpt<const UTF8Char>> strList;
 		Math::Coord2DDbl min;
 		Math::Coord2DDbl max;
-		ColInfo *cols;
+		UnsafeArrayOpt<ColInfo> cols;
 		Double mapRate;
 		MixedData mixedData;
 		Optional<Text::String> tableName;

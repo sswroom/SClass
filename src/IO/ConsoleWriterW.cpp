@@ -67,10 +67,10 @@ Bool IO::ConsoleWriter::Write(Text::CStringNN s)
 	if (this->clsData->enc == 0)
 	{
 		UIntOS strLen = Text::StrUTF8_WCharCntC(s.v, s.leng);
-		WChar *str = MemAlloc(WChar, strLen + 1);
+		UnsafeArray<WChar> str = MemAllocArr(WChar, strLen + 1);
 		Text::StrUTF8_WCharC(str, s.v, s.leng, 0);
-		WriteConsoleW(this->clsData->hand, str, nChar = (UInt32)strLen, (LPDWORD)&outChars, 0);
-		MemFree(str);
+		WriteConsoleW(this->clsData->hand, str.Ptr(), nChar = (UInt32)strLen, (LPDWORD)&outChars, 0);
+		MemFreeArr(str);
 		if (outChars == nChar)
 		{
 			if (this->clsData->autoFlush)
@@ -84,20 +84,20 @@ Bool IO::ConsoleWriter::Write(Text::CStringNN s)
 	else
 	{
 		UIntOS nBytes;
-		UInt8 *tmpBuff;
+		UnsafeArray<UInt8> tmpBuff;
 		nChar = (UInt32)s.leng;
 		nBytes = this->clsData->enc->UTF8CountBytesC(s.v, nChar);
-		tmpBuff = MemAlloc(UInt8, nBytes + 1);
+		tmpBuff = MemAllocArr(UInt8, nBytes + 1);
 		this->clsData->enc->UTF8ToBytesC(tmpBuff, s.v, nChar);
 		if (this->clsData->fileOutput)
 		{
-			WriteFile(this->clsData->hand, tmpBuff, (UInt32)nBytes, (LPDWORD)&outChars, 0);
+			WriteFile(this->clsData->hand, tmpBuff.Ptr(), (UInt32)nBytes, (LPDWORD)&outChars, 0);
 		}
 		else
 		{
-			WriteConsoleA(this->clsData->hand, tmpBuff, (UInt32)nBytes, (LPDWORD)&outChars, 0);
+			WriteConsoleA(this->clsData->hand, tmpBuff.Ptr(), (UInt32)nBytes, (LPDWORD)&outChars, 0);
 		}
-		MemFree(tmpBuff);
+		MemFreeArr(tmpBuff);
 		if (outChars == (UInt32)nBytes)
 		{
 			if (this->clsData->autoFlush)
@@ -117,17 +117,17 @@ Bool IO::ConsoleWriter::WriteLine(Text::CStringNN s)
 	if (this->clsData->enc == 0)
 	{
 		UIntOS strLen = Text::StrUTF8_WCharCntC(s.v, s.leng);
-		WChar *str = MemAlloc(WChar, strLen + 2);
+		UnsafeArray<WChar> str = MemAllocArr(WChar, strLen + 2);
 		Text::StrUTF8_WCharC(str, s.v, s.leng, 0);
 #if defined(__CYGWIN__)
 		str[strLen] = '\r';
 		str[strLen + 1] = '\n';
-		WriteConsoleW(this->clsData->hand, str, nChar = (UInt32)(strLen + 2), (LPDWORD)&outChars, 0);
+		WriteConsoleW(this->clsData->hand, str.Ptr(), nChar = (UInt32)(strLen + 2), (LPDWORD)&outChars, 0);
 #else
 		str[strLen] = '\n';
-		WriteConsoleW(this->clsData->hand, str, nChar = (UInt32)(strLen + 1), (LPDWORD)&outChars, 0);
+		WriteConsoleW(this->clsData->hand, str.Ptr(), nChar = (UInt32)(strLen + 1), (LPDWORD)&outChars, 0);
 #endif
-		MemFree(str);
+		MemFreeArr(str);
 		if (outChars == nChar)
 		{
 			if (this->clsData->autoFlush)
@@ -141,16 +141,16 @@ Bool IO::ConsoleWriter::WriteLine(Text::CStringNN s)
 	else
 	{
 		UIntOS nBytes;
-		UInt8 *tmpBuff;
+		UnsafeArray<UInt8> tmpBuff;
 		nChar = (UInt32)s.leng;
 		nBytes = this->clsData->enc->UTF8CountBytesC(s.v, nChar) + 1;
-		tmpBuff = MemAlloc(UInt8, nBytes + 2);
+		tmpBuff = MemAllocArr(UInt8, nBytes + 2);
 		this->clsData->enc->UTF8ToBytesC(tmpBuff, s.v, nChar);
 		if (this->clsData->fileOutput)
 		{
 			tmpBuff[nBytes - 1] = '\r';
 			tmpBuff[nBytes] = '\n';
-			WriteFile(this->clsData->hand, tmpBuff, (UInt32)nBytes + 1, (LPDWORD)&outChars, 0);
+			WriteFile(this->clsData->hand, tmpBuff.Ptr(), (UInt32)nBytes + 1, (LPDWORD)&outChars, 0);
 			nBytes += 1;
 		}
 		else
@@ -158,14 +158,14 @@ Bool IO::ConsoleWriter::WriteLine(Text::CStringNN s)
 #if defined(__CYGWIN__)
 			tmpBuff[nBytes - 1] = '\r';
 			tmpBuff[nBytes] = '\n';
-			WriteConsoleA(this->clsData->hand, tmpBuff, (UInt32)nBytes + 1, (LPDWORD)&outChars, 0);
+			WriteConsoleA(this->clsData->hand, tmpBuff.Ptr(), (UInt32)nBytes + 1, (LPDWORD)&outChars, 0);
 			nBytes += 1;
 #else
 			tmpBuff[nBytes - 1] = '\n';
-			WriteConsoleA(this->clsData->hand, tmpBuff, (UInt32)nBytes, (LPDWORD)&outChars, 0);
+			WriteConsoleA(this->clsData->hand, tmpBuff.Ptr(), (UInt32)nBytes, (LPDWORD)&outChars, 0);
 #endif
 		}
-		MemFree(tmpBuff);
+		MemFreeArr(tmpBuff);
 		if (outChars == (UInt32)nBytes)
 		{
 			if (this->clsData->autoFlush)

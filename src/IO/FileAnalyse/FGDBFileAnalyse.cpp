@@ -630,7 +630,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFram
 								frame->AddUInt(ofst, ofst2 - ofst, CSTR("YMax_RAW"), (UIntOS)v);
 								frame->AddFloat(ofst, ofst2 - ofst, CSTR("YMax"), UIntOS2Double(v) / tableInfo->xyScale + yMin);
 								ofst = ofst2;
-								UInt64 *parts = MemAlloc(UInt64, (UIntOS)nParts);
+								UnsafeArray<UInt64> parts = MemAllocArr(UInt64, (UIntOS)nParts);
 								parts[nParts - 1] = nPoints;
 								UIntOS tmpI = 0;
 								while (tmpI < nParts - 1)
@@ -682,7 +682,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFram
 										ofst = ofst2;
 									}
 								}
-								MemFree(parts);
+								MemFreeArr(parts);
 							}
 							break;
 						case 51:
@@ -726,7 +726,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFram
 								frame->AddUInt(ofst, ofst2 - ofst, CSTR("YMax_RAW"), (UIntOS)v);
 								frame->AddFloat(ofst, ofst2 - ofst, CSTR("YMax"), UIntOS2Double(v) / tableInfo->xyScale + yMin);
 								ofst = ofst2;
-								UInt64 *parts = MemAlloc(UInt64, (UIntOS)nParts);
+								UnsafeArray<UInt64> parts = MemAllocArr(UInt64, (UIntOS)nParts);
 								parts[nParts - 1] = nPoints;
 								UIntOS tmpI = 0;
 								while (tmpI < nParts - 1)
@@ -887,7 +887,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFram
 										tmpI++;
 									}
 								}
-								MemFree(parts);
+								MemFreeArr(parts);
 							}
 							break;
 						}

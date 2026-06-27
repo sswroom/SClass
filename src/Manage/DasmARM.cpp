@@ -4355,7 +4355,7 @@ Bool DasmARM_TFF(NN<Manage::DasmARM::Session> sess)
 Manage::DasmARM::DasmARM()
 {
 	UnsafeArray<DasmARM_Code> codes;
-	codes = this->codes = MemAlloc(DasmARM_Code, 256);
+	codes = this->codes = MemAllocArr(DasmARM_Code, 256);
 	codes[0x00] = DasmARM_00;
 	codes[0x01] = DasmARM_01;
 	codes[0x02] = DasmARM_02;

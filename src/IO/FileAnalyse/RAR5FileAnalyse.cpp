@@ -862,7 +862,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::IsParsing()
 
 Bool IO::FileAnalyse::RAR5FileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
-/*	UInt8 *readBuff;
+/*	UnsafeArray<UInt8> readBuff;
 	IntOS readSize;
 	IntOS buffSize;
 	IntOS j;
@@ -876,7 +876,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::TrimPadding(Text::CStringNN outputFile)
 		DEL_CLASS(dfs);
 		return false;
 	}
-	readBuff = MemAlloc(UInt8, 1048576);
+	readBuff = MemAllocArr(UInt8, 1048576);
 	buffSize = 0;
 	readOfst = 0;
 	while (true)
@@ -964,7 +964,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::TrimPadding(Text::CStringNN outputFile)
 		}
 	}
 
-	MemFree(readBuff);
+	MemFreeArr(readBuff);
 	DEL_CLASS(dfs);
 	return valid;*/
 	return false;
