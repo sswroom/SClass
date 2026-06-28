@@ -259,7 +259,7 @@ Optional<Math::Geometry::Polyline> Math::Geometry::Polyline::SplitByPoint(Math::
 {
 	if (this->zArr || this->mArr)
 		return;
-	Math::Coord2DDbl *tmpPoints = MemAllocA(Math::Coord2DDbl, this->nPoint);
+	UnsafeArray<Math::Coord2DDbl> tmpPoints = MemAllocAArr(Math::Coord2DDbl, this->nPoint);
 	UInt32 lastPoints = (UInt32)this->nPoint;
 	UInt32 thisPoints;
 	UInt32 lastChkPoint;
@@ -276,7 +276,7 @@ Optional<Math::Geometry::Polyline> Math::Geometry::Polyline::SplitByPoint(Math::
 			thisChkPoint = this->ptOfstArr[j];
 			if (this->pointArr[lastChkPoint - 1] == this->pointArr[thisPoints])
 			{
-				MemCopyNO(tmpPoints, &this->pointArr[thisPoints], sizeof(Math::Coord2DDbl) * (lastPoints - thisPoints));
+				MemCopyNO(&tmpPoints[0], &this->pointArr[thisPoints], sizeof(Math::Coord2DDbl) * (lastPoints - thisPoints));
 				if (lastPoints < this->nPoint)
 				{
 					MemCopyO(&this->pointArr[lastPoints - 1], &this->pointArr[lastPoints], sizeof(Math::Coord2DDbl) * (this->nPoint - lastPoints));
@@ -284,11 +284,11 @@ Optional<Math::Geometry::Polyline> Math::Geometry::Polyline::SplitByPoint(Math::
 				if (lastChkPoint < thisPoints)
 				{
 					MemCopyNO(&tmpPoints[(lastPoints - thisPoints)], &this->pointArr[lastChkPoint], sizeof(Math::Coord2DDbl) * (thisPoints - lastChkPoint));
-					MemCopyNO(&this->pointArr[lastChkPoint], tmpPoints + 1, sizeof(Math::Coord2DDbl) * (lastPoints - lastChkPoint - 1));
+					MemCopyNO(&this->pointArr[lastChkPoint], &tmpPoints[1], sizeof(Math::Coord2DDbl) * (lastPoints - lastChkPoint - 1));
 				}
 				else
 				{
-					MemCopyNO(&this->pointArr[lastChkPoint], tmpPoints + 1, sizeof(Math::Coord2DDbl) * (lastPoints - thisPoints - 1));
+					MemCopyNO(&this->pointArr[lastChkPoint], &tmpPoints[1], sizeof(Math::Coord2DDbl) * (lastPoints - thisPoints - 1));
 				}
 				this->nPtOfst -= 1;
 				while (++j < i)
@@ -313,15 +313,15 @@ Optional<Math::Geometry::Polyline> Math::Geometry::Polyline::SplitByPoint(Math::
 			}
 			else if (this->pointArr[thisChkPoint] == this->pointArr[lastPoints - 1])
 			{
-				MemCopyNO(tmpPoints, &this->pointArr[thisPoints], sizeof(Math::Coord2DDbl) * (lastPoints - thisPoints));
+				MemCopyNO(&tmpPoints[0], &this->pointArr[thisPoints], sizeof(Math::Coord2DDbl) * (lastPoints - thisPoints));
 				if (lastPoints < this->nPoint)
 				{
 					MemCopyO(&this->pointArr[lastPoints - 1], &this->pointArr[lastPoints], sizeof(Math::Coord2DDbl) * (this->nPoint - lastPoints));
 				}
 //				MemCopyO(&points[(thisChkPoint + lastPoints - thisPoints - 1) << 1], &points[thisChkPoint << 1], sizeof(Double) * 2 * (thisPoints - thisChkPoint));
-//				MemCopyNO(&points[thisChkPoint << 1], tmpPoints, sizeof(Double) * 2 * (lastPoints - thisPoints - 1));
+//				MemCopyNO(&points[thisChkPoint << 1], &tmpPoints[0], sizeof(Double) * 2 * (lastPoints - thisPoints - 1));
 				MemCopyNO(&tmpPoints[(lastPoints - thisPoints)], &this->pointArr[(thisChkPoint + 1)], sizeof(Math::Coord2DDbl) * (thisPoints - thisChkPoint - 1));
-				MemCopyNO(&this->pointArr[thisChkPoint], tmpPoints, sizeof(Math::Coord2DDbl) * (lastPoints - thisChkPoint - 1));
+				MemCopyNO(&this->pointArr[thisChkPoint], &tmpPoints[0], sizeof(Math::Coord2DDbl) * (lastPoints - thisChkPoint - 1));
 				this->nPtOfst -= 1;
 				while (++j < i)
 				{
@@ -345,11 +345,11 @@ Optional<Math::Geometry::Polyline> Math::Geometry::Polyline::SplitByPoint(Math::
 			}
 			else if (this->pointArr[thisChkPoint] == this->pointArr[thisPoints])
 			{
-				Math::Coord2DDbl *srcPt;
-				Math::Coord2DDbl *destPt;
+				UnsafeArray<Math::Coord2DDbl> srcPt;
+				UnsafeArray<Math::Coord2DDbl> destPt;
 				UInt32 ptCnt;
 
-				MemCopyNO(tmpPoints, &this->pointArr[thisPoints], sizeof(Math::Coord2DDbl) * (lastPoints - thisPoints));
+				MemCopyNO(&tmpPoints[0], &this->pointArr[thisPoints], sizeof(Math::Coord2DDbl) * (lastPoints - thisPoints));
 				if (lastPoints < this->nPoint)
 				{
 					MemCopyO(&this->pointArr[lastPoints - 1], &this->pointArr[lastPoints], sizeof(Math::Coord2DDbl) * (this->nPoint - lastPoints));
@@ -387,11 +387,11 @@ Optional<Math::Geometry::Polyline> Math::Geometry::Polyline::SplitByPoint(Math::
 			}
 			else if (this->pointArr[(lastChkPoint - 1)] == this->pointArr[(lastPoints - 1)])
 			{
-				Math::Coord2DDbl *srcPt;
-				Math::Coord2DDbl *destPt;
+				UnsafeArray<Math::Coord2DDbl> srcPt;
+				UnsafeArray<Math::Coord2DDbl> destPt;
 				UInt32 ptCnt;
 
-				MemCopyNO(tmpPoints, &this->pointArr[thisPoints], sizeof(Math::Coord2DDbl) * (lastPoints - thisPoints));
+				MemCopyNO(&tmpPoints[0], &this->pointArr[thisPoints], sizeof(Math::Coord2DDbl) * (lastPoints - thisPoints));
 				if (lastPoints < this->nPoint)
 				{
 					MemCopyO(&this->pointArr[lastPoints - 1], &this->pointArr[lastPoints], sizeof(Math::Coord2DDbl) * (this->nPoint - lastPoints));
@@ -433,7 +433,7 @@ Optional<Math::Geometry::Polyline> Math::Geometry::Polyline::SplitByPoint(Math::
 		}
 		lastPoints = thisPoints;
 	}
-	MemFreeA(tmpPoints);
+	MemFreeAArr(tmpPoints);
 }*/
 
 IntOS Math::Geometry::Polyline::GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isPoint, OptOut<Math::Coord2DDbl> calPtOutPtr, OptOut<Double> calZOutPtr, OptOut<Double> calMOutPtr)

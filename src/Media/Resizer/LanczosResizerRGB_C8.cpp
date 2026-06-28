@@ -993,21 +993,21 @@ void Media::Resizer::LanczosResizerRGB_C8::Resize(UnsafeArray<const UInt8> src, 
 			}
 			buffW = dwidth;
 			buffH = siHeight;
-			this->buffPtr = buffPtr = MemAllocA(UInt8, buffW * (UIntOS)buffH << 3);
+			this->buffPtr = buffPtr = MemAllocAArr(UInt8, buffW * (UIntOS)buffH << 3);
 		}
 		if (this->srcAlphaType == Media::AT_ALPHA)
 		{
 			this->MTHorizontalFilterPA(src, buffPtr, dwidth, (UIntOS)siHeight, hTap, hIndex, hWeight, sbpl, (IntOS)dwidth << 3, (UIntOS)siWidth);
-/*			UInt8 *tmpbuff = MemAllocA(UInt8, siWidth << 3);
+/*			UnsafeArray<UInt8> tmpbuff = MemAllocAArr(UInt8, siWidth << 3);
 			LanczosResizer8_C8_horizontal_filter_pa(src, buffPtr, dwidth, siHeight, hTap, hIndex, hWeight, sbpl, dwidth << 3, this->rgbTable, siWidth, tmpbuff);
-			MemFreeA(tmpbuff);*/
+			MemFreeAArr(tmpbuff);*/
 		}
 		else
 		{
 			this->MTHorizontalFilter(src, buffPtr, dwidth, (UIntOS)siHeight, hTap, hIndex, hWeight, sbpl, (IntOS)dwidth << 3, (UIntOS)siWidth);
-/*			UInt8 *tmpbuff = MemAllocA(UInt8, (UIntOS)siWidth << 3);
+/*			UnsafeArray<UInt8> tmpbuff = MemAllocAArr(UInt8, (UIntOS)siWidth << 3);
 			LanczosResizer8_C8_horizontal_filter(src, buffPtr, dwidth, (UIntOS)siHeight, hTap, hIndex, hWeight, sbpl, (IntOS)dwidth << 3, this->rgbTable, (UIntOS)siWidth, tmpbuff);
-			MemFreeA(tmpbuff);*/
+			MemFreeAArr(tmpbuff);*/
 		}
 		this->MTVerticalFilter(buffPtr, dest, dwidth, dheight, vTap, vIndex, vWeight, (IntOS)dwidth << 3, dbpl);
 //		LanczosResizer8_C8_vertical_filter(buffPtr, dest, dwidth, dheight, vTap, vIndex, vWeight, dwidth << 3, dbpl, this->rgbTable);
@@ -1087,7 +1087,7 @@ void Media::Resizer::LanczosResizerRGB_C8::Resize(UnsafeArray<const UInt8> src, 
 			}
 			buffW = (UIntOS)siWidth;
 			buffH = siHeight;
-			this->buffPtr = buffPtr = MemAllocA(UInt8, buffW * (UIntOS)buffH << 3);
+			this->buffPtr = buffPtr = MemAllocAArr(UInt8, buffW * (UIntOS)buffH << 3);
 		}
 		if (this->srcAlphaType == Media::AT_ALPHA)
 		{

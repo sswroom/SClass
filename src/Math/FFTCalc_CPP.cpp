@@ -246,7 +246,7 @@ extern "C" IntOS FFTCalc_Forward(Double *complexData, IntOS sampleCount)
 	if (sampleCount & 1)
 		return false;
 	IntOS j = sampleCount >> 1;
-	Double *temp = MemAllocA(Double, sampleCount);
+	UnsafeArray<Double> temp = MemAllocAArr(Double, sampleCount);
 	IntOS i;
 	i = 0;
 	j = sampleCount >> 1;
@@ -258,8 +258,8 @@ extern "C" IntOS FFTCalc_Forward(Double *complexData, IntOS sampleCount)
 		complexData[i * 2 + 1] = complexData[i * 4 + 1];
 		i++;
 	}
-	MemCopyNA(&complexData[j * 2], temp, j * 16);
-	MemFreeA(temp);
+	MemCopyNA(&complexData[j * 2], &temp[0], j * 16);
+	MemFreeAArr(temp);
 
 	if (!Forward(complexData, j) || !Forward(&complexData[j * 2], j))
 		return false;

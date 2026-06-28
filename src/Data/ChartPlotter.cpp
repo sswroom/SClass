@@ -1731,7 +1731,7 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 
 
 //	System::Drawing::PointF currPos[];
-	Math::Coord2DDbl *currPos;
+	UnsafeArray<Math::Coord2DDbl> currPos;
 	UIntOS currPosLen;
     
 	i = 0;
@@ -1741,12 +1741,12 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 		if (chart->chartType == ChartType::FilledLine)
 		{
 			currPosLen = chart->yData->GetCount() + 2;
-			currPos = MemAllocA(Math::Coord2DDbl, currPosLen);
+			currPos = MemAllocAArr(Math::Coord2DDbl, currPosLen);
 		}
 		else
 		{
 			currPosLen = chart->yData->GetCount();
-			currPos = MemAllocA(Math::Coord2DDbl, currPosLen);
+			currPos = MemAllocAArr(Math::Coord2DDbl, currPosLen);
 		}
 
 		Double xChartLeng = width - y1Leng - y2Leng - this->pointSize * 2.0;
@@ -1860,7 +1860,7 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 		}
 
 
-		MemFreeA(currPos);
+		MemFreeAArr(currPos);
 		i += 1;
 	}
 

@@ -18,10 +18,10 @@ Bool Map::MapDrawUtil::DrawLineString(NN<Math::Geometry::LineString> pl, NN<Medi
 		return false;
 	UIntOS nPoint;
 	UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(nPoint);
-	Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
+	UnsafeArray<Math::Coord2DDbl> dpoints = MemAllocAArr(Math::Coord2DDbl, nPoint);
 	view->MapXYToScnXYArr(points, dpoints, nPoint, ofst);
 	img->DrawPolyline(dpoints, nPoint, nnp);
-	MemFreeA(dpoints);
+	MemFreeAArr(dpoints);
 	return true;
 }
 
@@ -33,25 +33,26 @@ Bool Map::MapDrawUtil::DrawPolyline(NN<Math::Geometry::Polyline> pl, NN<Media::D
 	NN<Math::Geometry::LineString> lineString;
 	UIntOS nPoint;
 	UIntOS dpointsSize = 0;
-	Math::Coord2DDbl *dpoints = 0;
+	UnsafeArrayOpt<Math::Coord2DDbl> dpoints = nullptr;
+	UnsafeArray<Math::Coord2DDbl> nndpoints;
 	Data::ArrayIterator<NN<Math::Geometry::LineString>> it = pl->Iterator();
 	while (it.HasNext())
 	{
 		lineString = it.Next();
 		UnsafeArray<Math::Coord2DDbl> points = lineString->GetPointList(nPoint);
-		if (nPoint > dpointsSize)
+		if (nPoint > dpointsSize || !dpoints.SetTo(nndpoints))
 		{
-			if (dpoints)
-				MemFreeA(dpoints);
+			if (dpoints.SetTo(nndpoints))
+				MemFreeAArr(dpoints);
 			dpointsSize = nPoint;
-			dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
+			dpoints = nndpoints = MemAllocAArr(Math::Coord2DDbl, nPoint);
 		}
-		view->MapXYToScnXYArr(points, dpoints, nPoint, ofst);
-		img->DrawPolyline(dpoints, nPoint, nnp);
+		view->MapXYToScnXYArr(points, nndpoints, nPoint, ofst);
+		img->DrawPolyline(nndpoints, nPoint, nnp);
 	}
-	if (dpoints)
+	if (dpoints.SetTo(nndpoints))
 	{
-		MemFreeA(dpoints);
+		MemFreeAArr(nndpoints);
 	}
 	return true;
 }
@@ -60,10 +61,10 @@ Bool Map::MapDrawUtil::DrawLinearRing(NN<Math::Geometry::LinearRing> lr, NN<Medi
 {
 	UIntOS nPoint;
 	UnsafeArray<Math::Coord2DDbl> points = lr->GetPointList(nPoint);
-	Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
+	UnsafeArray<Math::Coord2DDbl> dpoints = MemAllocAArr(Math::Coord2DDbl, nPoint);
 	view->MapXYToScnXYArr(points, dpoints, nPoint, ofst);
 	img->DrawPolygon(dpoints, nPoint, p, b);
-	MemFreeA(dpoints);
+	MemFreeAArr(dpoints);
 	return true;
 }
 
@@ -154,10 +155,10 @@ Bool Map::MapDrawUtil::DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp, NN<
 	}
 	if (ptList.GetCount() > 0)
 	{
-		Math::Coord2DDbl *pointArr = ptList.GetArr(nPoint).Ptr();
+		UnsafeArray<Math::Coord2DDbl> pointArr = ptList.GetArr(nPoint);
 		UIntOS nPtOfst;
-		UInt32 *ptOfstArr = ptOfst.GetArr(nPtOfst).Ptr();
-		Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
+		UnsafeArray<UInt32> ptOfstArr = ptOfst.GetArr(nPtOfst);
+		UnsafeArray<Math::Coord2DDbl> dpoints = MemAllocAArr(Math::Coord2DDbl, nPoint);
 		UIntOS k;
 		UIntOS l;
 
@@ -171,7 +172,7 @@ Bool Map::MapDrawUtil::DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp, NN<
 		}
 		ptOfstArr[k - 1] = (UInt32)(nPoint - ptOfstArr[k - 1]);
 		img->DrawPolyPolygon(dpoints, ptOfstArr, nPtOfst, p, b);
-		MemFreeA(dpoints);
+		MemFreeAArr(dpoints);
 		return true;
 	}
 	return false;
@@ -187,11 +188,11 @@ Bool Map::MapDrawUtil::DrawCompoundCurve(NN<Math::Geometry::CompoundCurve> cc, N
 	if (ptList.GetCount() > 0)
 	{
 		UIntOS nPoint;
-		Math::Coord2DDbl *pointArr = ptList.GetArr(nPoint).Ptr();
-		Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
+		UnsafeArray<Math::Coord2DDbl> pointArr = ptList.GetArr(nPoint);
+		UnsafeArray<Math::Coord2DDbl> dpoints = MemAllocAArr(Math::Coord2DDbl, nPoint);
 		view->MapXYToScnXYArr(pointArr, dpoints, nPoint, ofst);
 		img->DrawPolyline(dpoints, nPoint, nnp);
-		MemFreeA(dpoints);
+		MemFreeAArr(dpoints);
 		return true;
 	}
 	return false;

@@ -8,7 +8,7 @@ Double __stdcall SSWR::AVIRead::AVIRHashTestForm::HashTestSpeed(NN<Crypto::Hash:
 {
 	Manage::HiResClock clk;
 	UInt8 hashVal[64];
-	UInt8 *testBlock = MemAllocA(UInt8, 1048576);
+	UnsafeArray<UInt8> testBlock = MemAllocAArr(UInt8, 1048576);
 	IntOS i;
 	clk.Start();
 	i = 1024;
@@ -18,7 +18,7 @@ Double __stdcall SSWR::AVIRead::AVIRHashTestForm::HashTestSpeed(NN<Crypto::Hash:
 	}
 	hash->GetValue(hashVal);
 	Double t = 1024.0 * 1048576.0 / clk.GetTimeDiff();
-	MemFreeA(testBlock);
+	MemFreeAArr(testBlock);
 	return t;
 }
 

@@ -3061,9 +3061,9 @@ Bool Map::MapConfig2TGen::AddLabel(UnsafeArray<MapLabels2> labels, UIntOS maxLab
 					{
 //						wprintf(L"Shape: %s merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
 						UIntOS newSize = labels[i].nPoints + nPoint - 1;
-						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
+						UnsafeArray<Math::Coord2DDbl> newArr = MemAllocAArr(Math::Coord2DDbl, newSize);
 
-						MemCopyNO(newArr, points.Ptr(), nPoint << 4);
+						MemCopyNO(&newArr[0], points.Ptr(), nPoint << 4);
 						MemCopyNO(&newArr[nPoint], &ptPtr[1], (labels[i].nPoints - 1) << 4);
 
 						startPt = newArr[0];
@@ -3080,9 +3080,9 @@ Bool Map::MapConfig2TGen::AddLabel(UnsafeArray<MapLabels2> labels, UIntOS maxLab
 					{
 //						wprintf(L"Shape: %s merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
 						UIntOS newSize = labels[i].nPoints + nPoint - 1;
-						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
+						UnsafeArray<Math::Coord2DDbl> newArr = MemAllocAArr(Math::Coord2DDbl, newSize);
 
-						MemCopyNO(newArr, ptPtr.Ptr(), labels[i].nPoints << 4);
+						MemCopyNO(&newArr[0], ptPtr.Ptr(), labels[i].nPoints << 4);
 						MemCopyNO(&newArr[labels[i].nPoints], &points[1], (nPoint - 1) << 4);
 
 						startPt = newArr[0];
@@ -3099,7 +3099,7 @@ Bool Map::MapConfig2TGen::AddLabel(UnsafeArray<MapLabels2> labels, UIntOS maxLab
 					{
 //						wprintf(L"Shape: %s inverse merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
 						UIntOS newSize = labels[i].nPoints + nPoint - 1;
-						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
+						UnsafeArray<Math::Coord2DDbl> newArr = MemAllocAArr(Math::Coord2DDbl, newSize);
 						UIntOS k;
 						UIntOS l;
 						l = 0;
@@ -3124,8 +3124,8 @@ Bool Map::MapConfig2TGen::AddLabel(UnsafeArray<MapLabels2> labels, UIntOS maxLab
 					{
 //						wprintf(L"Shape: %s inverse merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
 						UIntOS newSize = labels[i].nPoints + nPoint - 1;
-						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
-						MemCopyNO(newArr, ptPtr.Ptr(), labels[i].nPoints << 4);
+						UnsafeArray<Math::Coord2DDbl> newArr = MemAllocAArr(Math::Coord2DDbl, newSize);
+						MemCopyNO(&newArr[0], ptPtr.Ptr(), labels[i].nPoints << 4);
 						UIntOS k;
 						UIntOS l;
 						l = labels[i].nPoints;
@@ -3230,14 +3230,14 @@ Bool Map::MapConfig2TGen::AddLabel(UnsafeArray<MapLabels2> labels, UIntOS maxLab
 			Math::Coord2DDbl lastPt;
 			Math::Coord2DDbl thisPt;
 			Math::Coord2DDbl thisT;
-			Math::Coord2DDbl* outPts;
+			UnsafeArray<Math::Coord2DDbl> outPts;
 			UIntOS outPtCnt;
 			Double sum;
 			Math::Coord2DDbl sumVal;
 
-			outPts = MemAllocA(Math::Coord2DDbl, nPoint);
+			outPts = MemAllocAArr(Math::Coord2DDbl, nPoint);
 			outPtCnt = 0;
-			MemCopyNO(outPts, points.Ptr(), nPoint << 4);
+			MemCopyNO(&outPts[0], points.Ptr(), nPoint << 4);
 			outPtCnt = nPoint;
 
 			i = 0;
@@ -3255,12 +3255,12 @@ Bool Map::MapConfig2TGen::AddLabel(UnsafeArray<MapLabels2> labels, UIntOS maxLab
 			}
 			if (sum != 0)
 			{
-				Math::Coord2DDbl *finalPts;
+				UnsafeArray<Math::Coord2DDbl> finalPts;
 				UInt32 finalCnt;
 				Math::Coord2DDbl max;
 				Math::Coord2DDbl min;
 				finalCnt = 0;
-				finalPts = MemAllocA(Math::Coord2DDbl, outPtCnt);
+				finalPts = MemAllocAArr(Math::Coord2DDbl, outPtCnt);
 				sumVal += max = min = lastPt = finalPts[0] = outPts[0];
 				finalCnt++;
 
@@ -3317,7 +3317,7 @@ Bool Map::MapConfig2TGen::AddLabel(UnsafeArray<MapLabels2> labels, UIntOS maxLab
 				}
 
 
-				MemFreeA(outPts);
+				MemFreeAArr(outPts);
 				outPts = finalPts;
 				outPtCnt = finalCnt;
 
@@ -3326,7 +3326,7 @@ Bool Map::MapConfig2TGen::AddLabel(UnsafeArray<MapLabels2> labels, UIntOS maxLab
 				i = NewLabel(labels, maxLabel, labelCnt, priority);
 				if (i < 0)
 				{
-					MemFreeA(outPts);
+					MemFreeAArr(outPts);
 					return false;
 				}
 
@@ -3349,7 +3349,7 @@ Bool Map::MapConfig2TGen::AddLabel(UnsafeArray<MapLabels2> labels, UIntOS maxLab
 			}
 			else
 			{
-				MemFreeA(outPts);
+				MemFreeAArr(outPts);
 			}
 		}
 		return false;
@@ -4200,8 +4200,8 @@ void Map::MapConfig2TGen::LoadLabels(NN<Media::DrawImage> img, UnsafeArray<MapLa
 			Double scaleD;
 			Int32 fontStyle;
 			Int32 isAlign;
-			Math::Coord2DDbl *ptArr;
-			Math::Coord2DDbl *currPt;
+			UnsafeArray<Math::Coord2DDbl> ptArr;
+			UnsafeArray<Math::Coord2DDbl> currPt;
 //			Double mapRate;
 			lblType = Text::StrToInt32(strs[0].v);
 			label = Text::String::New(strs[1].ToCString());
@@ -4222,7 +4222,7 @@ void Map::MapConfig2TGen::LoadLabels(NN<Media::DrawImage> img, UnsafeArray<MapLa
 
 			if (lblType == 2)
 			{
-				ptArr = MemAllocA(Math::Coord2DDbl, nPoints);
+				ptArr = MemAllocAArr(Math::Coord2DDbl, nPoints);
 				currPt = ptArr;
 				sptr = strs[14].ConcatTo(sbuff);
 				eol = false;
@@ -4323,7 +4323,7 @@ void Map::MapConfig2TGen::LoadLabels(NN<Media::DrawImage> img, UnsafeArray<MapLa
 					}
 				}
 
-				MemFreeA(ptArr);
+				MemFreeAArr(ptArr);
 			}
 			else
 			{
@@ -4888,7 +4888,7 @@ Bool Map::MapConfig2TGen::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> vie
 	UIntOS maxLabel = this->nStr;
 	isLayerEmpty.Set(true);
 	UnsafeArray<Map::MapConfig2TGen::MapLabels2> labels = MemAllocArr(Map::MapConfig2TGen::MapLabels2, maxLabel);
-	Math::RectAreaDbl *objBounds = MemAllocA(Math::RectAreaDbl, this->nStr * 2);
+	UnsafeArray<Math::RectAreaDbl> objBounds = MemAllocAArr(Math::RectAreaDbl, this->nStr * 2);
 	UIntOS objCnt = 0;
 
 	thisScale = view->GetMapScale();
@@ -5236,7 +5236,7 @@ Bool Map::MapConfig2TGen::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> vie
 	}
 	MemFreeArr(myArrs);
 	MemFreeArr(labels);
-	MemFreeA(objBounds);
+	MemFreeAArr(objBounds);
 
 //	Double t = clk.GetTimeDiff();
 //	printf("Time used: %d\n", (Int32)(t * 1000));

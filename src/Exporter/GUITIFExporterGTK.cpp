@@ -29,7 +29,8 @@ Bool Exporter::GUITIFExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char>
 
 Bool Exporter::GUITIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
-	UInt8 *tmpBuff;
+	UnsafeArrayOpt<UInt8> tmpBuff;
+	UnsafeArray<UInt8> nntmpBuff;
 	GdkPixbuf *image = (GdkPixbuf*)ToImage(pobj, tmpBuff).p;
 	if (image == 0)
 	{
@@ -41,9 +42,9 @@ Bool Exporter::GUITIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 
 	gdk_pixbuf_save_to_buffer(image, &buff, &buffSize, "tiff", 0, (void*)0);
 	g_object_unref(image);
-	if (tmpBuff)
+	if (tmpBuff.SetTo(nntmpBuff))
 	{
-		MemFreeA(tmpBuff);
+		MemFreeAArr(nntmpBuff);
 	}
 
 	if (buff)

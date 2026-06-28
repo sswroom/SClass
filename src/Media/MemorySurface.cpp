@@ -6,7 +6,7 @@
 
 Media::MemorySurface::MemorySurface(Math::Size2D<UIntOS> size, UIntOS bitPerPixel, Optional<const Media::ColorProfile> color, Double dpi)
 {
-	this->buffPtr = MemAllocA(UInt8, size.CalcArea() * (bitPerPixel >> 3));
+	this->buffPtr = MemAllocAArr(UInt8, size.CalcArea() * (bitPerPixel >> 3));
 	this->info.fourcc = 0;
 	this->info.ftype = Media::FT_NON_INTERLACE;
 	this->info.atype = Media::AT_IGNORE_ALPHA;

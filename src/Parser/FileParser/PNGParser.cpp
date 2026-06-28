@@ -36,9 +36,9 @@ UInt8 PNGParser_PaethPredictor(UInt8 a, UInt8 b, UInt8 c)
 	}
 }
 
-UnsafeArray<UInt8> PNGParser_ParsePixelsBits(UnsafeArray<UInt8> srcData, UInt8 *destBuff, UIntOS bpl, UIntOS initX, UIntOS initY, UIntOS maxX, UIntOS maxY, UIntOS xAdd, UIntOS yAdd, IntOS pxMask, IntOS pxAMask, IntOS pxShift)
+UnsafeArray<UInt8> PNGParser_ParsePixelsBits(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UIntOS bpl, UIntOS initX, UIntOS initY, UIntOS maxX, UIntOS maxY, UIntOS xAdd, UIntOS yAdd, IntOS pxMask, IntOS pxAMask, IntOS pxShift)
 {
-	UInt8 *lineStart = destBuff + initY * bpl;
+	UnsafeArray<UInt8>lineStart = destBuff + initY * bpl;
 	UIntOS currX;
 	UIntOS currY;
 	IntOS pxId;
@@ -1894,7 +1894,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 		if (bitDepth < 8)
 		{
 			UIntOS storeWidth = ((info->dispSize.x + 15) >> 4) << 4;
-			UInt8 *tmpData = MemAllocA(UInt8, storeWidth * info->dispSize.y);
+			UnsafeArray<UInt8> tmpData = MemAllocAArr(UInt8, storeWidth * info->dispSize.y);
 			UnsafeArray<UInt8> lineStart;
 			IntOS pxMask;
 			IntOS pxAMask;
@@ -1924,7 +1924,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				pxShift = 4;
 			}
 
-			MemClearAC(tmpData, storeWidth * info->dispSize.y);
+			MemClearAC(&tmpData[0], storeWidth * info->dispSize.y);
 				
 			if (interlaceMeth == 1)
 			{
@@ -2037,7 +2037,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				imgList->AddImage(simg, imgDelay);
 			}
 
-			MemFreeA(tmpData);
+			MemFreeAArr(tmpData);
 		}
 		else if (bitDepth == 8)
 		{

@@ -17,13 +17,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::ConsoleWriter *console;
 	Text::StringBuilderUTF8 sb;
 	Manage::HiResClock clk;
-	UInt8 *imgBuff1;
-	UInt8 *imgBuff2;
+	UnsafeArray<UInt8> imgBuff1;
+	UnsafeArray<UInt8> imgBuff2;
 	IntOS i;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(imgCopy, Media::ImageCopy());
-	imgBuff1 = MemAllocA(UInt8, WIDTH * HEIGHT * 4);
-	imgBuff2 = MemAllocA(UInt8, WIDTH * HEIGHT * 4);
+	imgBuff1 = MemAllocAArr(UInt8, WIDTH * HEIGHT * 4);
+	imgBuff2 = MemAllocAArr(UInt8, WIDTH * HEIGHT * 4);
 	clk.Start();
 	i = LOOPCNT;
 	while (i-- > 0)
@@ -35,8 +35,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	sb.AppendC(UTF8STRC("t = "));
 	sb.AppendDouble(t);
 	console->WriteLine(sb.ToCString());
-	MemFreeA(imgBuff1);
-	MemFreeA(imgBuff2);
+	MemFreeAArr(imgBuff1);
+	MemFreeAArr(imgBuff2);
 	DEL_CLASS(imgCopy);
 	DEL_CLASS(console);
 	return 0;

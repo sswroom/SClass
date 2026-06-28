@@ -923,7 +923,7 @@ UnsafeArrayOpt<Map::GPSTrack::GPSRecordFull> Map::GPSTrack::GetTrack(UIntOS inde
 		{
 			return this->tmpRecord;
 		}
-		this->tmpRecord = tmpRecord = MemAllocA(Map::GPSTrack::GPSRecordFull, this->currTimes.GetCount());
+		this->tmpRecord = tmpRecord = MemAllocAArr(Map::GPSTrack::GPSRecordFull, this->currTimes.GetCount());
 		while (i-- > 0)
 		{
 			MemCopyNO(&tmpRecord[i], this->currRecs.GetItemNoCheck(i).Ptr(), sizeof(Map::GPSTrack::GPSRecordFull));

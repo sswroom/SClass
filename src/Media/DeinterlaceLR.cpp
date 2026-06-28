@@ -45,11 +45,13 @@ void Media::DeinterlaceLR::SetupInterpolationParameter(UIntOS source_length, UIn
 	Double  pos;
 	Double dslen = UIntOS2Double(source_length);
 	Double drlen = UIntOS2Double(result_length);
+	UnsafeArray<Int64> weight;
+	UnsafeArray<IntOS> index;
 
 	out->length = result_length;
 	out->tap = LANCZOS_NTAP;
-	out->weight = MemAllocA(Int64, out->length * out->tap);
-	out->index = MemAllocA(IntOS, out->length * out->tap);
+	out->weight = weight = MemAllocAArr(Int64, out->length * out->tap);
+	out->index = index = MemAllocAArr(IntOS, out->length * out->tap);
 
 	work = MemAllocArr(Double, out->tap);
 
@@ -64,11 +66,11 @@ void Media::DeinterlaceLR::SetupInterpolationParameter(UIntOS source_length, UIn
 		for(j = 0; j < out->tap; j++)
 		{
 			if(n < 0){
-				out->index[i * out->tap + j] = 0;
+				index[i * out->tap + j] = 0;
 			}else if(n >= (IntOS)source_length){
-				out->index[i * out->tap + j] = (IntOS)((source_length - 1) * indexSep);
+				index[i * out->tap + j] = (IntOS)((source_length - 1) * indexSep);
 			}else{
-				out->index[i * out->tap + j] = (IntOS)((UInt32)n * indexSep);
+				index[i * out->tap + j] = (IntOS)((UInt32)n * indexSep);
 			}
 			work[j] = lanczos3_weight(pos);
 			sum += work[j];
@@ -81,7 +83,7 @@ void Media::DeinterlaceLR::SetupInterpolationParameter(UIntOS source_length, UIn
 		{
 			UInt16 v1 = (UInt16)(0xffff & Double2Int32((work[j] / sum) * 32767.0));
 			UInt16 v2 = (UInt16)(0xffff & Double2Int32((work[j + 1] / sum) * 32767.0));
-			UInt16 *tmpPtr = (UInt16*)&out->weight[i * out->tap + j];
+			UInt16 *tmpPtr = (UInt16*)&weight[i * out->tap + j];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
 			tmpPtr[2] = v1;
@@ -111,19 +113,19 @@ UInt32 __stdcall Media::DeinterlaceLR::ProcThread(AnyType obj)
 
 		if (stat->status == 2)
 		{
-			DeinterlaceLR_VerticalFilter(stat->inPt.Ptr(), stat->outPt.Ptr(), stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
+			DeinterlaceLR_VerticalFilter(stat->inPt.Ptr(), stat->outPt.Ptr(), stat->width, stat->height, stat->tap, stat->index.Ptr(), stat->weight.Ptr(), stat->sstep, stat->dstep);
 			stat->status = 3;
 			stat->evtMain->Set();
 		}
 		else if (stat->status == 5)
 		{
-			DeinterlaceLR_VerticalFilterOdd(stat->inPt.Ptr(), stat->inPtCurr.Ptr(), stat->outPt.Ptr(), stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
+			DeinterlaceLR_VerticalFilterOdd(stat->inPt.Ptr(), stat->inPtCurr.Ptr(), stat->outPt.Ptr(), stat->width, stat->height, stat->tap, stat->index.Ptr(), stat->weight.Ptr(), stat->sstep, stat->dstep);
 			stat->status = 3;
 			stat->evtMain->Set();
 		}
 		else if (stat->status == 6)
 		{
-			DeinterlaceLR_VerticalFilterEven(stat->inPt.Ptr(), stat->inPtCurr.Ptr(), stat->outPt.Ptr(), stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
+			DeinterlaceLR_VerticalFilterEven(stat->inPt.Ptr(), stat->inPtCurr.Ptr(), stat->outPt.Ptr(), stat->width, stat->height, stat->tap, stat->index.Ptr(), stat->weight.Ptr(), stat->sstep, stat->dstep);
 			stat->status = 3;
 			stat->evtMain->Set();
 		}
@@ -135,10 +137,10 @@ UInt32 __stdcall Media::DeinterlaceLR::ProcThread(AnyType obj)
 
 Media::DeinterlaceLR::DeinterlaceLR(UIntOS fieldCnt, UIntOS fieldSep)
 {
-	this->oddParam.index = 0;
-	this->oddParam.weight = 0;
-	this->evenParam.index = 0;
-	this->evenParam.weight = 0;
+	this->oddParam.index = nullptr;
+	this->oddParam.weight = nullptr;
+	this->evenParam.index = nullptr;
+	this->evenParam.weight = nullptr;
 	this->fieldCnt = 0;
 	this->fieldSep = 0;
 	Reinit(fieldCnt, fieldSep);
@@ -201,19 +203,27 @@ Media::DeinterlaceLR::~DeinterlaceLR()
 	}
 	DEL_CLASS(evtMain);
 	MemFreeArr(this->stats);
-	if (this->oddParam.index)
+	UnsafeArray<Int64> weight;
+	UnsafeArray<IntOS> index;
+	if (this->oddParam.index.SetTo(index))
 	{
-		MemFreeA(this->oddParam.weight);
-		MemFreeA(this->oddParam.index);
-		this->oddParam.weight = 0;
-		this->oddParam.index = 0;
+		MemFreeAArr(index);
+		this->oddParam.index = nullptr;
 	}
-	if (this->evenParam.index)
+	if (this->oddParam.weight.SetTo(weight))
 	{
-		MemFreeA(this->evenParam.weight);
-		MemFreeA(this->evenParam.index);
-		this->evenParam.weight = 0;
-		this->evenParam.index = 0;
+		MemFreeAArr(weight);
+		this->oddParam.weight = nullptr;
+	}
+	if (this->evenParam.index.SetTo(index))
+	{
+		MemFreeAArr(index);
+		this->evenParam.index = nullptr;
+	}
+	if (this->evenParam.weight.SetTo(weight))
+	{
+		MemFreeAArr(weight);
+		this->evenParam.weight = nullptr;
 	}
 }
 
@@ -222,19 +232,27 @@ void Media::DeinterlaceLR::Reinit(UIntOS fieldCnt, UIntOS fieldSep)
 	if (fieldCnt == this->fieldCnt && fieldSep == this->fieldSep)
 		return;
 
-	if (this->oddParam.index)
+	UnsafeArray<Int64> weight;
+	UnsafeArray<IntOS> index;
+	if (this->oddParam.index.SetTo(index))
 	{
-		MemFreeA(this->oddParam.weight);
-		MemFreeA(this->oddParam.index);
-		this->oddParam.weight = 0;
-		this->oddParam.index = 0;
+		MemFreeAArr(index);
+		this->oddParam.index = nullptr;
 	}
-	if (this->evenParam.index)
+	if (this->oddParam.weight.SetTo(weight))
 	{
-		MemFreeA(this->evenParam.weight);
-		MemFreeA(this->evenParam.index);
-		this->evenParam.weight = 0;
-		this->evenParam.index = 0;
+		MemFreeAArr(weight);
+		this->oddParam.weight = nullptr;
+	}
+	if (this->evenParam.index.SetTo(index))
+	{
+		MemFreeAArr(index);
+		this->evenParam.index = nullptr;
+	}
+	if (this->evenParam.weight.SetTo(weight))
+	{
+		MemFreeAArr(weight);
+		this->evenParam.weight = nullptr;
 	}
 	Media::DeinterlaceLR::SetupInterpolationParameter(fieldCnt, fieldCnt << 1, oddParam, fieldSep, 0.25);
 	Media::DeinterlaceLR::SetupInterpolationParameter(fieldCnt, fieldCnt << 1, evenParam, fieldSep, -0.25);
@@ -244,8 +262,14 @@ void Media::DeinterlaceLR::Reinit(UIntOS fieldCnt, UIntOS fieldSep)
 
 void Media::DeinterlaceLR::Deinterlace(UnsafeArray<UInt8> src, UnsafeArray<UInt8> dest, Bool bottomField, UIntOS width, IntOS dstep)
 {
+	UnsafeArray<Int64> weight;
+	UnsafeArray<IntOS> index;
 	if (!bottomField)
 	{
+		if (!this->oddParam.index.SetTo(index) || !this->oddParam.weight.SetTo(weight))
+		{
+			return;
+		}
 		UIntOS imgHeight = oddParam.length >> 1;
 
 		UIntOS thisLine;
@@ -260,8 +284,8 @@ void Media::DeinterlaceLR::Deinterlace(UnsafeArray<UInt8> src, UnsafeArray<UInt8
 			stats[i].width = width;
 			stats[i].height = lastLine - thisLine;
 			stats[i].tap = oddParam.tap;
-			stats[i].index = oddParam.index + thisLine * oddParam.tap;
-			stats[i].weight = oddParam.weight + thisLine * oddParam.tap;
+			stats[i].index = index + thisLine * oddParam.tap;
+			stats[i].weight = weight + thisLine * oddParam.tap;
 			stats[i].sstep = (IntOS)this->fieldSep;
 			stats[i].dstep = dstep;
 
@@ -290,6 +314,10 @@ void Media::DeinterlaceLR::Deinterlace(UnsafeArray<UInt8> src, UnsafeArray<UInt8
 	}
 	else
 	{
+		if (!this->evenParam.index.SetTo(index) || !this->evenParam.weight.SetTo(weight))
+		{
+			return;
+		}
 		UIntOS imgHeight = evenParam.length >> 1;
 
 		UIntOS thisLine;
@@ -304,8 +332,8 @@ void Media::DeinterlaceLR::Deinterlace(UnsafeArray<UInt8> src, UnsafeArray<UInt8
 			stats[i].width = width;
 			stats[i].height = lastLine - thisLine;
 			stats[i].tap = evenParam.tap;
-			stats[i].index = evenParam.index + thisLine * evenParam.tap;
-			stats[i].weight = evenParam.weight + thisLine * evenParam.tap;
+			stats[i].index = index + thisLine * evenParam.tap;
+			stats[i].weight = weight + thisLine * evenParam.tap;
 			stats[i].sstep = (IntOS)this->fieldSep;
 			stats[i].dstep = dstep;
 

@@ -1054,7 +1054,7 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(NN<SSWR::AVIRead::AVIRIma
 	UnsafeArray<UInt8> dptr;
 	if (!srcImg->PixelGetBits(srev).SetTo(sptr) || !destImg->PixelGetBits(drev).SetTo(dptr))
 		return;
-	UInt8 *tmpBuff = MemAllocA(UInt8, sHeight * sbpl);
+	UnsafeArray<UInt8> tmpBuff = MemAllocAArr(UInt8, sHeight * sbpl);
 
 	UnsafeArrayOpt<Double> gammaParam;
 	UInt32 gammaCnt;
@@ -1075,7 +1075,7 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(NN<SSWR::AVIRead::AVIRIma
 	this->filter.ProcessImage(sptr, tmpBuff, sWidth, sHeight, sbpl, sbpl, srev ^ drev);
 	this->dispResizer->Resize(tmpBuff, (IntOS)sbpl, srcImg->GetWidth(), srcImg->GetHeight(), 0, 0, dptr, (IntOS)dbpl, dWidth, dHeight);
 	mutUsage.EndUse();
-	MemFreeA(tmpBuff);
+	MemFreeAArr(tmpBuff);
 	srcImg->PixelGetBitsEnd(false);
 	destImg->PixelGetBitsEnd(true);
 }

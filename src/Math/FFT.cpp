@@ -15,7 +15,7 @@ Bool Math::FFT::Forward(UnsafeArray<Double> complexData, UIntOS sampleCount)
 		return false;
 	UIntOS i;
 	UIntOS j = sampleCount >> 1;
-	Double *temp = MemAllocA(Double, sampleCount);
+	UnsafeArray<Double> temp = MemAllocAArr(Double, sampleCount);
 #if defined(HAS_ASM32)
 	_asm
 	{
@@ -59,9 +59,9 @@ fftflop2:
 		complexData[i * 2 + 1] = complexData[i * 4 + 1];
 		i++;
 	}
-	MemCopyNAC(&complexData[j * 2], temp, j * 16);
+	MemCopyNAC(&complexData[j * 2], &temp[0], j * 16);
 #endif
-	MemFreeA(temp);
+	MemFreeAArr(temp);
 
 	if (!Forward(complexData, j) || !Forward(&complexData[j * 2], j))
 		return false;

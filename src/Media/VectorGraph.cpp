@@ -1054,7 +1054,7 @@ void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::D
 			{
 				NN<Math::Geometry::Polyline> pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
 				UIntOS nPoints;
-				Math::Coord2DDbl *points;
+				UnsafeArray<Math::Coord2DDbl> points;
 				UnsafeArray<Math::Coord2DDbl> dpoints;
 				NN<Math::Geometry::LineString> lineString;
 				Data::ArrayIterator<NN<Math::Geometry::LineString>> it = pl->Iterator();
@@ -1062,7 +1062,7 @@ void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::D
 				{
 					lineString = it.Next();
 					dpoints = lineString->GetPointList(nPoints);
-					points = MemAllocA(Math::Coord2DDbl, nPoints);
+					points = MemAllocAArr(Math::Coord2DDbl, nPoints);
 					Math::Coord2DDbl dScale = Math::Coord2DDbl(scale, scale);
 					k = nPoints;
 					while (k-- > 0)
@@ -1070,7 +1070,7 @@ void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::D
 						points[k] = (dpoints[k] + ofst) * dScale;
 					}
 					dimg->DrawPolyline(points, nPoints, p);
-					MemFreeA(points);
+					MemFreeAArr(points);
 				}
 			}
 		}
@@ -1114,10 +1114,10 @@ void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::D
 		{
 			NN<Math::Geometry::LinearRing> lr = NN<Math::Geometry::LinearRing>::ConvertFrom(vec);
 			UIntOS nPoints;
-			Math::Coord2DDbl *points;
+			UnsafeArray<Math::Coord2DDbl> points;
 			UnsafeArray<Math::Coord2DDbl> dpoints;
 			dpoints = lr->GetPointList(nPoints);
-			points = MemAllocA(Math::Coord2DDbl, nPoints);
+			points = MemAllocAArr(Math::Coord2DDbl, nPoints);
 			Math::Coord2DDbl dScale = Math::Coord2DDbl(scale, scale);
 			k = nPoints;
 			while (k-- > 0)
@@ -1125,7 +1125,7 @@ void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::D
 				points[k] = (dpoints[k] + ofst) * dScale;
 			}
 			dimg->DrawPolygon(points, nPoints, dp, ob);
-			MemFreeA(points);
+			MemFreeAArr(points);
 		}
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LineString)
 		{
@@ -1133,10 +1133,10 @@ void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::D
 			{
 				NN<Math::Geometry::LineString> lineString = NN<Math::Geometry::LineString>::ConvertFrom(vec);
 				UIntOS nPoints;
-				Math::Coord2DDbl *points;
+				UnsafeArray<Math::Coord2DDbl> points;
 				UnsafeArray<Math::Coord2DDbl> dpoints;
 				dpoints = lineString->GetPointList(nPoints);
-				points = MemAllocA(Math::Coord2DDbl, nPoints);
+				points = MemAllocAArr(Math::Coord2DDbl, nPoints);
 				Math::Coord2DDbl dScale = Math::Coord2DDbl(scale, scale);
 				k = nPoints;
 				while (k-- > 0)
@@ -1144,7 +1144,7 @@ void Media::VectorGraph::DrawTo(Math::Coord2DDbl ofst, Double scale, NN<Media::D
 					points[k] = (dpoints[k] + ofst) * dScale;
 				}
 				dimg->DrawPolyline(points, nPoints, p);
-				MemFreeA(points);
+				MemFreeAArr(points);
 			}
 		}
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::String && df.SetTo(f) && ob.SetTo(b))

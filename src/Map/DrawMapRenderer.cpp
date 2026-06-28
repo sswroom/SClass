@@ -326,9 +326,9 @@ Bool Map::DrawMapRenderer::AddLabel(UnsafeArray<MapLabels> labels, UIntOS maxLab
 					{
 //						wprintf(L"Shape: %s merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
 						UIntOS newSize = labels[i].nPoints + nPoints - 1;
-						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
+						UnsafeArray<Math::Coord2DDbl> newArr = MemAllocAArr(Math::Coord2DDbl, newSize);
 
-						MemCopyNO(newArr, points.Ptr(), nPoints << 4);
+						MemCopyNO(&newArr[0], points.Ptr(), nPoints << 4);
 						MemCopyNO(&newArr[nPoints], &ptPtr[1], (labels[i].nPoints - 1) << 4);
 
 						startPt = newArr[0];
@@ -345,9 +345,9 @@ Bool Map::DrawMapRenderer::AddLabel(UnsafeArray<MapLabels> labels, UIntOS maxLab
 					{
 //						wprintf(L"Shape: %s merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
 						UIntOS newSize = labels[i].nPoints + nPoints - 1;
-						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
+						UnsafeArray<Math::Coord2DDbl> newArr = MemAllocAArr(Math::Coord2DDbl, newSize);
 
-						MemCopyNO(newArr, ptPtr.Ptr(), labels[i].nPoints << 4);
+						MemCopyNO(&newArr[0], ptPtr.Ptr(), labels[i].nPoints << 4);
 						MemCopyNO(&newArr[labels[i].nPoints], &points[1], (nPoints - 1) << 4);
 
 						startPt = newArr[0];
@@ -364,7 +364,7 @@ Bool Map::DrawMapRenderer::AddLabel(UnsafeArray<MapLabels> labels, UIntOS maxLab
 					{
 //						wprintf(L"Shape: %s inverse merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
 						UIntOS newSize = labels[i].nPoints + nPoints - 1;
-						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
+						UnsafeArray<Math::Coord2DDbl> newArr = MemAllocAArr(Math::Coord2DDbl, newSize);
 						UIntOS k;
 						UIntOS l;
 						l = 0;
@@ -390,8 +390,8 @@ Bool Map::DrawMapRenderer::AddLabel(UnsafeArray<MapLabels> labels, UIntOS maxLab
 					{
 //						wprintf(L"Shape: %s inverse merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
 						UIntOS newSize = labels[i].nPoints + nPoints - 1;
-						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
-						MemCopyNO(newArr, ptPtr.Ptr(), labels[i].nPoints << 4);
+						UnsafeArray<Math::Coord2DDbl> newArr = MemAllocAArr(Math::Coord2DDbl, newSize);
+						MemCopyNO(&newArr[0], ptPtr.Ptr(), labels[i].nPoints << 4);
 						UIntOS k;
 						UIntOS l;
 						l = labels[i].nPoints;
@@ -456,7 +456,7 @@ Bool Map::DrawMapRenderer::AddLabel(UnsafeArray<MapLabels> labels, UIntOS maxLab
 			j = labels[i].nPoints = nPoints;
 			if (labels[i].points.SetTo(ptPtr))
 				MemFreeAArr(ptPtr);
-			labels[i].points = ptPtr = MemAllocA(Math::Coord2DDbl, nPoints);
+			labels[i].points = ptPtr = MemAllocAArr(Math::Coord2DDbl, nPoints);
 			MemCopyNO(ptPtr.Ptr(), points.Ptr(), j << 4);
 			return true;
 		}
@@ -501,17 +501,17 @@ Bool Map::DrawMapRenderer::AddLabel(UnsafeArray<MapLabels> labels, UIntOS maxLab
 			Math::Coord2DDbl lastPt;
 			Math::Coord2DDbl thisPt;
 			Math::Coord2DDbl thisT;
-			Math::Coord2DDbl* outPts;
+			UnsafeArray<Math::Coord2DDbl> outPts;
 			UIntOS outPtCnt;
 			Double sum;
 			Math::Coord2DDbl sumVal;
 
-			Math::Coord2DDbl *tmpPts;
-			tmpPts = MemAllocA(Math::Coord2DDbl, nPoints << 1);
+			UnsafeArray<Math::Coord2DDbl> tmpPts;
+			tmpPts = MemAllocAArr(Math::Coord2DDbl, nPoints << 1);
 			outPtCnt = Math::GeometryTool::BoundPolygonY(points, nPoints, tmpPts, top, bottom, {0, 0});
-			outPts = MemAllocA(Math::Coord2DDbl, nPoints << 1);
+			outPts = MemAllocAArr(Math::Coord2DDbl, nPoints << 1);
 			outPtCnt = Math::GeometryTool::BoundPolygonX(tmpPts, outPtCnt, outPts, left, right, {0, 0});
-			MemFreeA(tmpPts);
+			MemFreeAArr(tmpPts);
 
 			i = 0;
 			sum = 0;
@@ -528,12 +528,12 @@ Bool Map::DrawMapRenderer::AddLabel(UnsafeArray<MapLabels> labels, UIntOS maxLab
 			}
 			if (sum != 0)
 			{
-				Math::Coord2DDbl *finalPts;
+				UnsafeArray<Math::Coord2DDbl> finalPts;
 				UIntOS finalCnt;
 				Math::Coord2DDbl max;
 				Math::Coord2DDbl min;
 				finalCnt = 0;
-				finalPts = MemAllocA(Math::Coord2DDbl, outPtCnt);
+				finalPts = MemAllocAArr(Math::Coord2DDbl, outPtCnt);
 				sumVal += max = min = lastPt = finalPts[0] = outPts[0];
 				finalCnt++;
 
@@ -590,7 +590,7 @@ Bool Map::DrawMapRenderer::AddLabel(UnsafeArray<MapLabels> labels, UIntOS maxLab
 				}
 
 
-				MemFreeA(outPts);
+				MemFreeAArr(outPts);
 				outPts = finalPts;
 				outPtCnt = finalCnt;
 
@@ -599,7 +599,7 @@ Bool Map::DrawMapRenderer::AddLabel(UnsafeArray<MapLabels> labels, UIntOS maxLab
 				i = NewLabel(labels, maxLabel, labelCnt, priority);
 				if (i == (UIntOS)-1)
 				{
-					MemFreeA(outPts);
+					MemFreeAArr(outPts);
 					return false;
 				}
 
@@ -623,7 +623,7 @@ Bool Map::DrawMapRenderer::AddLabel(UnsafeArray<MapLabels> labels, UIntOS maxLab
 			}
 			else
 			{
-				MemFreeA(outPts);
+				MemFreeAArr(outPts);
 			}
 		}
 		return false;
@@ -776,7 +776,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 				//	MessageBoxW(NULL, L"Test", lastLbl, MB_OK);
 				}
 
-				Math::Coord2DDbl *points = MemAllocA(Math::Coord2DDbl, denv->labels[i].nPoints);
+				UnsafeArray<Math::Coord2DDbl> points = MemAllocAArr(Math::Coord2DDbl, denv->labels[i].nPoints);
 				Double dscnWidth = (Double)scnWidth;
 				Double dscnHeight = (Double)scnHeight;
 				denv->view->MapXYToScnXYArr(ptPtr, points, denv->labels[i].nPoints, Math::Coord2DDbl(0, 0));
@@ -1186,7 +1186,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 						j = (thisCnt < 10);
 					}
 				}
-				MemFree(points);
+				MemFreeArr(points);
 			}
 			else if (denv->labels[i].layerType == Map::DRAW_LAYER_POLYGON)
 			{

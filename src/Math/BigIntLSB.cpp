@@ -14,8 +14,8 @@ Math::BigIntLSB::BigIntLSB(UIntOS valSize)
 	if (valSize < 16)
 		valSize = 16;
 	this->valCnt = valSize / sizeof(UIntOS);
-	this->valArr = MemAllocA(UIntOS, this->valCnt);
-	this->tmpArr = MemAllocA(UIntOS, this->valCnt);
+	this->valArr = MemAllocAArr(UIntOS, this->valCnt);
+	this->tmpArr = MemAllocAArr(UIntOS, this->valCnt);
 }
 
 Math::BigIntLSB::BigIntLSB(UIntOS valSize, Text::CStringNN val)
@@ -27,8 +27,8 @@ Math::BigIntLSB::BigIntLSB(UIntOS valSize, Text::CStringNN val)
 	if (valSize < 16)
 		valSize = 16;
 	this->valCnt = valSize / sizeof(UIntOS);
-	this->valArr = MemAllocA(UIntOS, this->valCnt);
-	this->tmpArr = MemAllocA(UIntOS, this->valCnt);
+	this->valArr = MemAllocAArr(UIntOS, this->valCnt);
+	this->tmpArr = MemAllocAArr(UIntOS, this->valCnt);
 	this->AssignStr(val.v);
 }
 

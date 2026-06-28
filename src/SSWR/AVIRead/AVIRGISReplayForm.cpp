@@ -20,7 +20,7 @@ typedef enum
 UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
-	Math::Coord2DDbl *latLon;
+	UnsafeArray<Math::Coord2DDbl> latLon;
 	UIntOS recCnt;
 	UIntOS i;
 	UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
@@ -31,7 +31,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(AnyType userObj
 	me->threadRunning = true;
 	if (me->names.SetTo(names) && me->track->GetTrack(me->currTrackId, recCnt).SetTo(recs))
 	{
-		latLon = MemAllocA(Math::Coord2DDbl, recCnt);
+		latLon = MemAllocAArr(Math::Coord2DDbl, recCnt);
 		i = 0;
 		while (i < recCnt)
 		{
@@ -47,7 +47,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(AnyType userObj
 			}
 			i++;
 		}
-		MemFreeA(latLon);
+		MemFreeAArr(latLon);
 	}
 	me->threadRunning = false;
 	return 0;

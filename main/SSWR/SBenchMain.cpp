@@ -86,9 +86,9 @@ UInt32 __stdcall TestThread(AnyType userObj)
 Double HashTestSpeed(NN<Crypto::Hash::HashAlgorithm> hash)
 {
 	UInt8 hashVal[64];
-	UInt8 *testBlock = MemAllocA(UInt8, 1048576);	
+	UnsafeArray<UInt8> testBlock = MemAllocAArr(UInt8, 1048576);	
 	IntOS i;
-	MemClear(testBlock, 1048576);
+	MemClear(&testBlock[0], 1048576);
 	clk->Start();
 	i = 1024;
 	while (i-- > 0)
@@ -97,7 +97,7 @@ Double HashTestSpeed(NN<Crypto::Hash::HashAlgorithm> hash)
 	}
 	hash->GetValue(hashVal);
 	Double t = 1024.0 * 1048576.0 / clk->GetTimeDiff();
-	MemFreeA(testBlock);
+	MemFreeAArr(testBlock);
 	return t;
 }
 

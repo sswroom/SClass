@@ -30,15 +30,15 @@ UIntOS Media::AFilter::SoundGenerator::ReadBlock(Data::ByteArray blk)
 	UIntOS readSize = this->sourceAudio->ReadBlock(blk);
 	NN<Media::AFilter::SoundGen::SoundTypeGen> sndGen;
 	UIntOS sampleCnt = readSize / (this->format.align);
-	Double *sndBuff;
+	UnsafeArray<Double> sndBuff;
 	UIntOS i;
 	i = this->sndGenMap.GetCount();
 	if (i <= 0)
 	{
 		return readSize;
 	}
-	sndBuff = MemAllocA(Double, sampleCnt);
-	MemClear(sndBuff, sizeof(Double) * sampleCnt);
+	sndBuff = MemAllocAArr(Double, sampleCnt);
+	MemClear(&sndBuff[0], sizeof(Double) * sampleCnt);
 	while (i-- > 0)
 	{
 		sndGen = this->sndGenMap.GetItemNoCheck(i);
@@ -110,7 +110,7 @@ UIntOS Media::AFilter::SoundGenerator::ReadBlock(Data::ByteArray blk)
 			i++;
 		}
 	}
-	MemFreeA(sndBuff);
+	MemFreeAArr(sndBuff);
 	return readSize;
 }
 

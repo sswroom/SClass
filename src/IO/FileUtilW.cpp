@@ -270,14 +270,14 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 			Data::Timestamp ts3;
 			UIntOS readSize;
 			UIntOS thisSize;
-			UInt8 *buff;
+			UnsafeArray<UInt8> buff;
 			if (fileSize < ramSize)
 			{
-				buff = MemAllocA(UInt8, readSize = (UIntOS)fileSize);
+				buff = MemAllocAArr(UInt8, readSize = (UIntOS)fileSize);
 			}
 			else
 			{
-				buff = MemAllocA(UInt8, readSize = (UIntOS)ramSize);
+				buff = MemAllocAArr(UInt8, readSize = (UIntOS)ramSize);
 			}
 			while (writeSize < fileSize)
 			{
@@ -296,7 +296,7 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 					break;
 				}
 			}
-			MemFreeA(buff);
+			MemFreeAArr(buff);
 			fs1.GetFileTimes(ts1, ts2, ts3);
 			fs2->SetFileTimes(ts1, ts2, ts3);
 		}

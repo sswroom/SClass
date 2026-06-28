@@ -21,8 +21,8 @@ namespace Media
 			UIntOS width;
 			UIntOS height;
 			UIntOS tap;
-			IntOS *index;
-			Int64 *weight;
+			UnsafeArray<IntOS> index;
+			UnsafeArray<Int64> weight;
 			IntOS sstep;
 			IntOS dstep;
 		} DITHREADSTAT;
@@ -30,8 +30,8 @@ namespace Media
 		typedef struct
 		{
 			UIntOS length;
-			Int64 *weight;
-			IntOS *index;
+			UnsafeArrayOpt<Int64> weight;
+			UnsafeArrayOpt<IntOS> index;
 			UIntOS tap;
 		} DIPARAMETER;
 

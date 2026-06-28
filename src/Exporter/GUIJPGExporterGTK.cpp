@@ -36,7 +36,8 @@ Bool Exporter::GUIJPGExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char>
 
 Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
-	UInt8 *tmpBuff;
+	UnsafeArrayOpt<UInt8> tmpBuff;
+	UnsafeArray<UInt8> nntmpBuff;
 #ifdef VERBOSE
 	printf("GUIJPGExporter: begin export file\r\n");
 #endif
@@ -63,9 +64,9 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		gdk_pixbuf_save_to_buffer(image, &buff, &buffSize, "jpeg", 0, (void*)0);
 	}
 	g_object_unref(image);
-	if (tmpBuff)
+	if (tmpBuff.SetTo(nntmpBuff))
 	{
-		MemFreeA(tmpBuff);
+		MemFreeAArr(nntmpBuff);
 	}
 
 	if (buff)
