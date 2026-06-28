@@ -4,37 +4,37 @@
 #include "Media/V4LVideoCapture.h"
 #include "Media/VideoCaptureMgr.h"
 
-typedef struct
+struct Media::VideoCaptureMgr::ClassData
 {
 	Media::V4LVideoCaptureMgr *v4lMgr;
-} ManagerData;
+};
 
 Media::VideoCaptureMgr::VideoCaptureMgr()
 {
-	ManagerData *data = MemAlloc(ManagerData, 1);
+	NN<ClassData> data = MemAllocNN(ClassData);
 	NEW_CLASS(data->v4lMgr, Media::V4LVideoCaptureMgr());
-	this->mgrData = data;
+	this->clsData = data;
 }
 
 Media::VideoCaptureMgr::~VideoCaptureMgr()
 {
-	ManagerData *data = (ManagerData*)this->mgrData;;
+	NN<ClassData> data = this->clsData;
 	DEL_CLASS(data->v4lMgr);
-	MemFree(data);
+	MemFreeNN(data);
 }
 
-UIntOS Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devList)
+UIntOS Media::VideoCaptureMgr::GetDeviceList(NN<Data::ArrayListNN<DeviceInfo>> devList)
 {
-	ManagerData *data = (ManagerData*)this->mgrData;
-	DeviceInfo *devInfo;
+	NN<ClassData> data = this->clsData;
+	NN<DeviceInfo> devInfo;
 	UTF8Char sbuff[512];
-	Data::ArrayList<UInt32> devIdList;
+	Data::ArrayListNative<UInt32> devIdList;
 	UIntOS ret = 0;
 	UIntOS i = 0;
-	UIntOS j = data->v4lMgr->GetDeviceList(&devIdList);
+	UIntOS j = data->v4lMgr->GetDeviceList(devIdList);
 	while (i < j)
 	{
-		devInfo = MemAlloc(DeviceInfo, 1);
+		devInfo = MemAllocNN(DeviceInfo);
 		devInfo->devType = 0;
 		devInfo->devId = devIdList.GetItem(i);
 		data->v4lMgr->GetDeviceName(sbuff, devInfo->devId);
@@ -46,7 +46,7 @@ UIntOS Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devL
 
 	if (Media::MMALVideoCapture::IsAvailable())
 	{
-		devInfo = MemAlloc(DeviceInfo, 1);
+		devInfo = MemAllocNN(DeviceInfo);
 		devInfo->devType = 1;
 		devInfo->devId = 0;
 		devInfo->devName = Text::StrCopyNew((const UTF8Char*)"Broadcom VC Camera");
@@ -56,21 +56,21 @@ UIntOS Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devL
 	return ret;
 }
 
-void Media::VideoCaptureMgr::FreeDeviceList(Data::ArrayList<DeviceInfo *> *devList)
+void Media::VideoCaptureMgr::FreeDeviceList(NN<Data::ArrayListNN<DeviceInfo>> devList)
 {
-	DeviceInfo *devInfo;
+	NN<DeviceInfo> devInfo;
 	IntOS i = devList->GetCount();
 	while (i-- > 0)
 	{
-		devInfo = devList->GetItem(i);
-		SDEL_TEXT(devInfo->devName);
-		MemFree(devInfo);
+		devInfo = devList->GetItemNoCheck(i);
+		Text::StrDelNew(devInfo->devName);
+		MemFreeNN(devInfo);
 	}
 }
 
-Media::VideoCapturer *Media::VideoCaptureMgr::CreateDevice(Int32 devType, UIntOS devId)
+Optional<Media::VideoCapturer> Media::VideoCaptureMgr::CreateDevice(Int32 devType, UIntOS devId)
 {
-	ManagerData *data = (ManagerData*)this->mgrData;
+	NN<ClassData> data = this->clsData;
 	if (devType == 0)
 	{
 		return data->v4lMgr->CreateDevice(devId);
@@ -83,11 +83,11 @@ Media::VideoCapturer *Media::VideoCaptureMgr::CreateDevice(Int32 devType, UIntOS
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
-Text::CString Media::VideoCaptureMgr::GetDevTypeName(Int32 devType)
+Text::CStringNN Media::VideoCaptureMgr::GetDevTypeName(Int32 devType)
 {
 	switch (devType)
 	{

@@ -248,7 +248,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 UInt32 __stdcall Net::TCPClientMgr::WorkerThread(AnyType o)
 {
 	NN<Net::TCPClientMgr::WorkerStatus> stat = o.GetNN<Net::TCPClientMgr::WorkerStatus>();
-	Net::TCPClientMgr *me = stat->me;
+	NN<Net::TCPClientMgr> me = stat->me;
 	NN<ClassData> clsData;
 	if (!me->clsData.SetTo(clsData))
 	{
@@ -329,13 +329,17 @@ void Net::TCPClientMgr::ProcessClient(NN<Net::TCPClientMgr::TCPClientStatus> cli
 		printf("ProcessClient: not cliStat\r\n");
 	}
 	this->workerTasks.Put(cliStat);
-	UIntOS i = this->workerCnt;
-	while (i-- > 0)
+	UnsafeArray<Net::TCPClientMgr::WorkerStatus> workers;
+	if (this->workers.SetTo(workers))
 	{
-		if (this->workers[i].state == WorkerState::Idle)
+		UIntOS i = this->workerCnt;
+		while (i-- > 0)
 		{
-			this->workers[i].evt->Set();
-			return;
+			if (workers[i].state == WorkerState::Idle)
+			{
+				workers[i].evt->Set();
+				return;
+			}
 		}
 	}
 }
@@ -365,21 +369,21 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 	this->clsData = clsData;
 	if (!this->clsData.SetTo(clsData))
 	{
-		this->workers = 0;
+		this->workers = nullptr;
 	}
 	else
 	{
 		Sync::ThreadUtil::Create(ClientThread, this);
-		this->workers = MemAlloc(WorkerStatus, workerCnt);
+		UnsafeArray<WorkerStatus> workers;
+		this->workers = workers = MemAllocArr(WorkerStatus, workerCnt);
 		while (workerCnt-- > 0)
 		{
-			this->workers[workerCnt].index = workerCnt;
-			this->workers[workerCnt].state = WorkerState::NotStarted;
-			this->workers[workerCnt].toStop = false;
-			this->workers[workerCnt].isPrimary = (workerCnt == 0);
-			this->workers[workerCnt].me = this;
-
-			Sync::ThreadUtil::Create(WorkerThread, &this->workers[workerCnt]);
+			workers[workerCnt].index = workerCnt;
+			workers[workerCnt].state = WorkerState::NotStarted;
+			workers[workerCnt].toStop = false;
+			workers[workerCnt].isPrimary = (workerCnt == 0);
+			workers[workerCnt].me = *this;
+			Sync::ThreadUtil::Create(WorkerThread, &workers[workerCnt]);
 		}
 	}
 }
@@ -421,15 +425,16 @@ Net::TCPClientMgr::~TCPClientMgr()
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	if (this->workers)
+	UnsafeArray<WorkerStatus> workers;
+	if (this->workers.SetTo(workers))
 	{
 		i = this->workerCnt;
 		while (i-- > 0)
 		{
-			this->workers[i].toStop = true;
-			if (this->workers[i].state != WorkerState::NotStarted)
+			workers[i].toStop = true;
+			if (workers[i].state != WorkerState::NotStarted)
 			{
-				this->workers[i].evt->Set();
+				workers[i].evt->Set();
 			}
 		}
 		Bool exist = true;
@@ -439,7 +444,7 @@ Net::TCPClientMgr::~TCPClientMgr()
 			i = this->workerCnt;
 			while (i-- > 0)
 			{
-				if (this->workers[i].state != WorkerState::Stopped)
+				if (workers[i].state != WorkerState::Stopped)
 				{
 					exist = true;
 					break;
@@ -449,7 +454,7 @@ Net::TCPClientMgr::~TCPClientMgr()
 				break;
 			Sync::SimpleThread::Sleep(10);
 		}
-		MemFree(this->workers);
+		MemFreeArr(this->workers);
 	}
 
 	if (clsData.SetTo(nnclsData))

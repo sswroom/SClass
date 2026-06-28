@@ -284,16 +284,16 @@ Bool Manage::Process::GetFilename(NN<Text::StringBuilderUTF8> sb)
 	if (this->handle)
 	{
 		UInt32 retSize;
-		WChar *buff = MemAlloc(WChar, 1024);
+		UnsafeArray<WChar> buff = MemAllocArr(WChar, 1024);
 #ifdef _WIN32_WCE
-		retSize = GetModuleFileNameW((HMODULE)this->handle, buff, 1024);
+		retSize = GetModuleFileNameW((HMODULE)this->handle, buff.Ptr(), 1024);
 #else
-		//retSize = GetProcessImageFileNameW(this->handle, buff, 1024);
-		retSize = GetModuleFileNameExW(this->handle, 0, buff, 1024);
+		//retSize = GetProcessImageFileNameW(this->handle, buff.Ptr(), 1024);
+		retSize = GetModuleFileNameExW(this->handle, 0, buff.Ptr(), 1024);
 #endif
 		buff[retSize] = 0;
 		sb->AppendW(buff);
-		MemFree(buff);
+		MemFreeArr(buff);
 		return true;
 	}
 	else
@@ -339,15 +339,15 @@ Bool Manage::Process::GetCommandLine(NN<Text::StringBuilderUTF8> sb)
 	}
 	PWSTR wBuffer = rtlProcParamCopy.CommandLine.Buffer;
 	USHORT len = rtlProcParamCopy.CommandLine.Length;
-	WChar *cmdLine = MemAlloc(WChar, (len >> 1) + 1);
-	if (!ReadProcessMemory((HANDLE)this->handle, wBuffer, cmdLine, len, NULL))
+	UnsafeArray<WChar> cmdLine = MemAllocArr(WChar, (len >> 1) + 1);
+	if (!ReadProcessMemory((HANDLE)this->handle, wBuffer, cmdLine.Ptr(), len, NULL))
 	{
-		MemFree(cmdLine);
+		MemFreeArr(cmdLine);
 		return false;
 	}
 	cmdLine[len >> 1] = 0;
 	sb->AppendW(cmdLine);
-	MemFree(cmdLine);
+	MemFreeArr(cmdLine);
 	return true;
 }
 
@@ -356,15 +356,15 @@ Bool Manage::Process::GetWorkingDir(NN<Text::StringBuilderUTF8> sb)
 	if (this->handle)
 	{
 		UIntOS retSize;
-		WChar* buff = MemAlloc(WChar, 1024);
+		UnsafeArray<WChar> buff = MemAllocArr(WChar, 1024);
 #ifdef _WIN32_WCE
-		retSize = GetModuleFileNameW((HMODULE)this->handle, buff, 1024);
+		retSize = GetModuleFileNameW((HMODULE)this->handle, buff.Ptr(), 1024);
 #else
-		//retSize = GetProcessImageFileNameW(this->handle, buff, 1024);
-		retSize = GetModuleFileNameExW(this->handle, 0, buff, 1024);
+		//retSize = GetProcessImageFileNameW(this->handle, buff.Ptr(), 1024);
+		retSize = GetModuleFileNameExW(this->handle, 0, buff.Ptr(), 1024);
 #endif
 		buff[retSize] = 0;
-		retSize = Text::StrLastIndexOfCharW(buff, '\\');
+		retSize = Text::StrLastIndexOfCharW(UnsafeArray<const WChar>(buff), '\\');
 		if (retSize != INVALID_INDEX)
 		{
 			buff[retSize] = 0;
@@ -374,7 +374,7 @@ Bool Manage::Process::GetWorkingDir(NN<Text::StringBuilderUTF8> sb)
 		{
 			sb->AppendW(buff);
 		}
-		MemFree(buff);
+		MemFreeArr(buff);
 		return true;
 	}
 	else
@@ -877,8 +877,8 @@ Bool Manage::Process::GetHandleDetail(Int32 id, OutParam<HandleType> handleType,
 		}
 		else if (status == STATUS_INFO_LENGTH_MISMATCH)
 		{
-			UInt8* tmpBuff = MemAlloc(UInt8, returnLength);
-			objectTypeInfo = (UNICODE_STRING*)tmpBuff;
+			UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, returnLength);
+			objectTypeInfo = (UNICODE_STRING*)tmpBuff.Ptr();
 			if ((status = qryObj(dupHandle, ObjectNameInformation, objectTypeInfo, returnLength, 0)) >= 0)
 			{
 				sbDetail->AppendW(objectTypeInfo->Buffer, objectTypeInfo->Length >> 1);
@@ -888,7 +888,7 @@ Bool Manage::Process::GetHandleDetail(Int32 id, OutParam<HandleType> handleType,
 				sbDetail->AppendC(UTF8STRC("Error in getting handle name2: 0x"));
 				sbDetail->AppendHex32((UInt32)status);
 			}
-			MemFree(tmpBuff);
+			MemFreeArr(tmpBuff);
 		}
 		else
 		{
@@ -1226,12 +1226,12 @@ struct Manage::Process::FindProcSess
 
 Optional<Manage::Process::FindProcSess> Manage::Process::FindProcess(Text::CString processName)
 {
-	Manage::Process::FindProcSess *sess;
+	NN<Manage::Process::FindProcSess> sess;
 	HANDLE hand;
 	hand = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (hand == INVALID_HANDLE_VALUE)
 		return nullptr;
-	sess = MemAlloc(Manage::Process::FindProcSess, 1);
+	sess = MemAllocNN(Manage::Process::FindProcSess);
 	sess->hand = hand;
 	Text::CStringNN nnprocessName;
 	if (!processName.SetTo(nnprocessName) || nnprocessName.leng == 0)
@@ -1248,12 +1248,12 @@ Optional<Manage::Process::FindProcSess> Manage::Process::FindProcess(Text::CStri
 
 Optional<Manage::Process::FindProcSess> Manage::Process::FindProcessW(UnsafeArrayOpt<const WChar> processName)
 {
-	Manage::Process::FindProcSess *sess;
+	NN<Manage::Process::FindProcSess> sess;
 	HANDLE hand;
 	hand = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (hand == INVALID_HANDLE_VALUE)
 		return nullptr;
-	sess = MemAlloc(Manage::Process::FindProcSess, 1);
+	sess = MemAllocNN(Manage::Process::FindProcSess);
 	sess->hand = hand;
 	UnsafeArray<const WChar> nnprocessName;
 	if (!processName.SetTo(nnprocessName))
@@ -1453,12 +1453,12 @@ Int32 Manage::Process::ExecuteProcessW(UnsafeArray<const WChar> cmd, NN<Text::St
 	WChar progName[MAX_PATH];
 	UTF8Char tmpFile[MAX_PATH];
 	UIntOS cmdLen = Text::StrCharCnt(cmd);
-	WChar *cmdLine = MemAlloc(WChar, cmdLen + 512);
+	UnsafeArray<WChar> cmdLine = MemAllocArr(WChar, cmdLen + 512);
 	UnsafeArray<UTF8Char> sptr;
 	Text::StrConcat(cmdLine, cmd);
 
-	WChar *cptr = cmdLine;
-	WChar *pptr = progName;
+	UnsafeArray<WChar> cptr = cmdLine;
+	UnsafeArray<WChar> pptr = progName;
 	Bool isQuote = false;
 	WChar c;
 	while ((c = *cptr++) != 0)
@@ -1497,7 +1497,7 @@ Int32 Manage::Process::ExecuteProcessW(UnsafeArray<const WChar> cmd, NN<Text::St
 	cptr = Text::StrConcat(cptr, L" > \"");
 	cptr = Text::StrUTF8_WChar(cptr, tmpFile, -1, 0);
 	cptr = Text::StrConcat(cptr, L"\"");
-	createRet = CreateProcessW(0, cmdLine, 0, 0, true, 0, 0, buff, 0, &procInfo);
+	createRet = CreateProcessW(0, cmdLine.Ptr(), 0, 0, true, 0, 0, buff, 0, &procInfo);
 #else
 	startInfo.cb = sizeof(startInfo);
 	startInfo.dwFlags = STARTF_USESTDHANDLES;
@@ -1506,7 +1506,7 @@ Int32 Manage::Process::ExecuteProcessW(UnsafeArray<const WChar> cmd, NN<Text::St
 	Text::StrDelNew(wptr);
 	startInfo.hStdError = startInfo.hStdOutput;
 	startInfo.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
-	createRet = CreateProcessW(0, cmdLine, 0, 0, true, NORMAL_PRIORITY_CLASS, 0, buff, &startInfo, &procInfo);
+	createRet = CreateProcessW(0, cmdLine.Ptr(), 0, 0, true, NORMAL_PRIORITY_CLASS, 0, buff, &startInfo, &procInfo);
 #endif
 	if(createRet)
 	{
@@ -1542,7 +1542,7 @@ Int32 Manage::Process::ExecuteProcessW(UnsafeArray<const WChar> cmd, NN<Text::St
 		}
 		fs.Delete();
 		IO::FileUtil::DeleteFile(CSTRP(tmpFile, sptr), false);
-		MemFree(cmdLine);
+		MemFreeArr(cmdLine);
 		return (Int32)exitCode;
 	}
 	else
@@ -1550,7 +1550,7 @@ Int32 Manage::Process::ExecuteProcessW(UnsafeArray<const WChar> cmd, NN<Text::St
 		CloseHandle(startInfo.hStdOutput);
 		IO::FileUtil::DeleteFile(CSTRP(tmpFile, sptr), false);
 		//UInt32 ret = GetLastError();
-		MemFree(cmdLine);
+		MemFreeArr(cmdLine);
 		return -1;
 	}
 
@@ -1597,10 +1597,10 @@ Bool Manage::Process::OpenPath(Text::CStringNN path)
 	return false;
 #else
 	UIntOS strLen = Text::StrUTF8_WCharCnt(path.v);
-	WChar *s = MemAlloc(WChar, strLen + 1);
+	UnsafeArray<WChar> s = MemAllocArr(WChar, strLen + 1);
 	Text::StrUTF8_WChar(s, path.v, 0);
-	Bool succ = 32 < (IntOS)ShellExecuteW(0, L"open", s, 0, 0, SW_SHOW);
-	MemFree(s);
+	Bool succ = 32 < (IntOS)ShellExecuteW(0, L"open", s.Ptr(), 0, 0, SW_SHOW);
+	MemFreeArr(s);
 	return succ;
 #endif
 }

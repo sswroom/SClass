@@ -491,7 +491,7 @@ Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CStringNN fileName, 
 	Bool succ = false;
 	if (writeSize == dataSize)
 	{
-		FileInfo *file = MemAlloc(FileInfo, 1);
+		NN<FileInfo> file = MemAllocNN(FileInfo);
 		file->ofst = this->currOfst;
 		file->size = dataSize;
 		this->fileMap.Put(fileName, file);
@@ -544,7 +544,7 @@ Bool IO::SPackageFile::AddFile(UnsafeArray<const UInt8> fileBuff, UIntOS fileSiz
 	Bool succ = false;
 	if (this->stm->Write(Data::ByteArrayR(fileBuff, fileSize)) == fileSize)
 	{
-		FileInfo *file = MemAlloc(FileInfo, 1);
+		NN<FileInfo> file = MemAllocNN(FileInfo);
 		file->ofst = this->currOfst;
 		file->size = fileSize;
 		this->fileMap.Put(fileName, file);

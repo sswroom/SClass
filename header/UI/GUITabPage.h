@@ -11,7 +11,7 @@ namespace UI
 	private:
 		NN<UI::GUITabControl> ctrl;
 		UIntOS index;
-		void *custObj;
+		AnyType custObj;
 	public:
 		GUITabPage(NN<GUICore> ui, Optional<UI::GUIClientControl> parent, NN<UI::GUITabControl> ctrl, UIntOS index);
 		virtual ~GUITabPage();
@@ -24,8 +24,8 @@ namespace UI
 		virtual IntOS OnNotify(UInt32 code, IntOS lParam);
 		virtual Optional<GUIClientControl> GetParent();
 
-		void SetCustObj(void *custObj);
-		void *GetCustObj();
+		void SetCustObj(AnyType custObj);
+		AnyType GetCustObj();
 	};
 }
 #endif

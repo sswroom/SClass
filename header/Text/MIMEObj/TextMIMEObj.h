@@ -10,7 +10,7 @@ namespace Text
 		class TextMIMEObj : public Text::MIMEObject
 		{
 		private:
-			UInt8 *textBuff;
+			UnsafeArray<UInt8> textBuff;
 			UIntOS buffSize;
 			UInt32 codePage;
 			Text::String *contType;

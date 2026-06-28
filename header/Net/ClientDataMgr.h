@@ -6,7 +6,7 @@ namespace Net
 	class ClientDataMgr
 	{
 	private:
-		UInt8 *buff;
+		UnsafeArray<UInt8> buff;
 		UIntOS currDataSize;
 		UIntOS maxBuffSize;
 	public:
@@ -16,8 +16,8 @@ namespace Net
 		ClientDataMgr(UIntOS maxBuffSize);
 		~ClientDataMgr();
 
-		void AddData(UInt8 *buff, UIntOS buffSize);
-		UInt8 *GetData(UIntOS *dataSize);
+		void AddData(UnsafeArray<UInt8> buff, UIntOS buffSize);
+		UnsafeArray<UInt8> GetData(OutParam<UIntOS> dataSize);
 		void HandleData(UIntOS handleSize);
 	};
 }

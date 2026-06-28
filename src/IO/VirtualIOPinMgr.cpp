@@ -6,13 +6,13 @@
 IO::VirtualIOPinMgr::VirtualIOPinMgr(UIntOS pinCnt)
 {
 	this->pinCnt = pinCnt;
-	this->pins = MemAlloc(PinStatus*, this->pinCnt);
-	PinStatus *status;
+	this->pins = MemAllocArr(NN<PinStatus>, this->pinCnt);
+	NN<PinStatus> status;
 	UIntOS i;
 	i = 0;
 	while (i < pinCnt)
 	{
-		NEW_CLASS(status, PinStatus());
+		NEW_CLASSNN(status, PinStatus());
 		status->pinNum = (UInt32)i;
 		status->useCnt = 1;
 		status->pullHigh = false;
@@ -25,7 +25,7 @@ IO::VirtualIOPinMgr::VirtualIOPinMgr(UIntOS pinCnt)
 
 IO::VirtualIOPinMgr::~VirtualIOPinMgr()
 {
-	PinStatus *status;
+	NN<PinStatus> status;
 	UIntOS i = this->pinCnt;
 	Bool toRel;
 	while (i-- > 0)
@@ -37,18 +37,18 @@ IO::VirtualIOPinMgr::~VirtualIOPinMgr()
 
 		if (toRel)
 		{
-			DEL_CLASS(status);
+			status.Delete();
 		}
 	}
-	MemFree(this->pins);
+	MemFreeArr(this->pins);
 }
 
 Optional<IO::IOPin> IO::VirtualIOPinMgr::CreatePin(UInt32 pinNum)
 {
 	if (pinNum >= this->pinCnt)
 		return nullptr;
-	IO::IOPin *pin;
-	NEW_CLASS(pin, IO::VirtualIOPin(this->pins[pinNum]));
+	NN<IO::IOPin> pin;
+	NEW_CLASSNN(pin, IO::VirtualIOPin(this->pins[pinNum]));
 	return pin;
 }
 
@@ -64,7 +64,7 @@ UIntOS IO::VirtualIOPinMgr::GetAvailablePins(NN<Data::ArrayListNative<Int32>> pi
 	return j;
 }
 
-IO::VirtualIOPin::VirtualIOPin(IO::VirtualIOPinMgr::PinStatus *pinStatus)
+IO::VirtualIOPin::VirtualIOPin(NN<IO::VirtualIOPinMgr::PinStatus> pinStatus)
 {
 	this->pinStatus = pinStatus;
 	this->isOutput = false;
@@ -86,7 +86,7 @@ IO::VirtualIOPin::~VirtualIOPin()
 	mutUsage.EndUse();
 	if (isRel)
 	{
-		DEL_CLASS(this->pinStatus);
+		this->pinStatus.Delete();
 	}
 }
 

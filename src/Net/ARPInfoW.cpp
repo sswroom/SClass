@@ -8,16 +8,16 @@ Net::ARPInfo::ARPInfo(void *ipNetRow)
 {
 	MIB_IPNETROW *row = (MIB_IPNETROW *)ipNetRow;
 	this->ifIndex = row->dwIndex;
-	this->phyAddr = MemAlloc(UInt8, row->dwPhysAddrLen);
+	this->phyAddr = MemAllocArr(UInt8, row->dwPhysAddrLen);
 	this->phyAddrLen = row->dwPhysAddrLen;
-	MemCopyNO(this->phyAddr, row->bPhysAddr, this->phyAddrLen);
+	MemCopyNO(&this->phyAddr[0], row->bPhysAddr, this->phyAddrLen);
 	this->ipAddr = row->dwAddr;
 	this->arpType = (ARPType)row->dwType;
 }
 
 Net::ARPInfo::~ARPInfo()
 {
-	MemFree(this->phyAddr);
+	MemFreeArr(this->phyAddr);
 }
 
 UInt32 Net::ARPInfo::GetAdaptorIndex()
@@ -25,9 +25,9 @@ UInt32 Net::ARPInfo::GetAdaptorIndex()
 	return this->ifIndex;
 }
 
-UIntOS Net::ARPInfo::GetPhysicalAddr(UInt8 *buff)
+UIntOS Net::ARPInfo::GetPhysicalAddr(UnsafeArray<UInt8> buff)
 {
-	MemCopyNO(buff, this->phyAddr, this->phyAddrLen);
+	MemCopyNO(&buff[0], &this->phyAddr[0], this->phyAddrLen);
 	return this->phyAddrLen;
 }
 

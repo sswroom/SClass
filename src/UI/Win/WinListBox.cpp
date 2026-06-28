@@ -59,10 +59,10 @@ UI::Win::WinListBox::~WinListBox()
 UIntOS UI::Win::WinListBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 {
 	UIntOS i = Text::StrUTF8_WCharCntC(itemText->v, itemText->leng);
-	WChar *s = MemAlloc(WChar, i + 1);
+	UnsafeArray<WChar> s = MemAllocArr(WChar, i + 1);
 	Text::StrUTF8_WCharC(s, itemText->v, itemText->leng, 0);
-	i = (UIntOS)SendMessage((HWND)hwnd.OrNull(), LB_ADDSTRING, 0, (LPARAM)s);
-	MemFree(s);
+	i = (UIntOS)SendMessage((HWND)hwnd.OrNull(), LB_ADDSTRING, 0, (LPARAM)s.Ptr());
+	MemFreeArr(s);
 	if (i == INVALID_INDEX)
 		return i;
 	if (itemObj.NotNull())
@@ -75,10 +75,10 @@ UIntOS UI::Win::WinListBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 UIntOS UI::Win::WinListBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 {
 	UIntOS i = Text::StrUTF8_WCharCnt(itemText.v);
-	WChar *s = MemAlloc(WChar, i + 1);
+	UnsafeArray<WChar> s = MemAllocArr(WChar, i + 1);
 	Text::StrUTF8_WChar(s, itemText.v, 0);
-	i = (UIntOS)SendMessage((HWND)hwnd.OrNull(), LB_ADDSTRING, 0, (LPARAM)s);
-	MemFree(s);
+	i = (UIntOS)SendMessage((HWND)hwnd.OrNull(), LB_ADDSTRING, 0, (LPARAM)s.Ptr());
+	MemFreeArr(s);
 	if (i == INVALID_INDEX)
 		return i;
 	if (itemObj.NotNull())
@@ -269,17 +269,17 @@ Optional<Text::String> UI::Win::WinListBox::GetItemTextNew(UIntOS index)
 	IntOS strLen = SendMessageW((HWND)hwnd.OrNull(), LB_GETTEXTLEN, index, 0);
 	if (strLen == LB_ERR)
 		return nullptr;
-	WChar *sbuff = MemAlloc(WChar, (UIntOS)strLen + 1);
-	strLen = SendMessageW((HWND)hwnd.OrNull(), LB_GETTEXT, index, (LPARAM)sbuff);
+	UnsafeArray<WChar> sbuff = MemAllocArr(WChar, (UIntOS)strLen + 1);
+	strLen = SendMessageW((HWND)hwnd.OrNull(), LB_GETTEXT, index, (LPARAM)sbuff.Ptr());
 	if (strLen == LB_ERR)
 	{
-		MemFree(sbuff);
+		MemFreeArr(sbuff);
 		return nullptr;
 	}
 	else
 	{
-		NN<Text::String> ret = Text::String::NewNotNull(sbuff);
-		MemFree(sbuff);
+		NN<Text::String> ret = Text::String::NewNotNull(UnsafeArray<const WChar>(sbuff));
+		MemFreeArr(sbuff);
 		return ret.Ptr();
 	}
 }

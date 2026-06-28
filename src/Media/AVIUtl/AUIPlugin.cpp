@@ -93,7 +93,7 @@ typedef INPUT_PLUGIN_TABLE *(__stdcall *AUI_GetInputPluginTable)();
 
 Media::AVIUtl::AUIPlugin::AUIPlugin()
 {
-	this->plugin = MemAlloc(PluginDetail, 1);
+	this->plugin = MemAllocNN(PluginDetail);
 	this->plugin->useCnt = 1;
 }
 
@@ -108,7 +108,7 @@ Media::AVIUtl::AUIPlugin::~AUIPlugin()
 	if (Sync::Interlocked::DecrementU32(this->plugin->useCnt) == 0)
 	{
 		FreeLibrary((HMODULE)this->plugin->hMod);
-		MemFree(this->plugin);
+		MemFreeNN(this->plugin);
 	}
 }
 

@@ -19,7 +19,7 @@ namespace Media
 			Bool invert;
 
 			Media::ColorHandler::RGBPARAM2 rgbParam;
-			UInt8 *rgbTable;
+			UnsafeArrayOpt<UInt8> rgbTable;
 			Bool rgbUpdated;
 		private:
 			void UpdateRGBTable();

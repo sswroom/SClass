@@ -8,7 +8,7 @@ namespace Net
 	{
 	protected:
 		struct ClassData;
-		struct ClassData *clsData;
+		NN<ClassData> clsData;
 
 	public:
 		WinSSLClient(NN<Net::SocketFactory> sockf, NN<Socket> s, void *ctxt);

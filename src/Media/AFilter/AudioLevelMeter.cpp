@@ -8,27 +8,35 @@
 void Media::AFilter::AudioLevelMeter::ResetStatus()
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	UIntOS i = this->soundBuffLeng;
-	while (i-- > 0)
+	UnsafeArray<Int32> soundBuff;
+	UnsafeArray<ChannelStatus> status;
+	UIntOS i;
+	if (this->soundBuff.SetTo(soundBuff))
 	{
-		this->soundBuff[i] = 0;
+		i = this->soundBuffLeng;
+		while (i-- > 0)
+		{
+			soundBuff[i] = 0;
+		}
 	}
-	i = this->nChannel;
-	while (i-- > 0)
+	if (this->status.SetTo(status))
 	{
-		this->status[i].maxLevel = 0;
-		this->status[i].minLevel = 0;
-		this->status[i].levelChanged = true;
+		i = this->nChannel;
+		while (i-- > 0)
+		{
+			status[i].maxLevel = 0;
+			status[i].minLevel = 0;
+			status[i].levelChanged = true;
+		}
 	}
 	this->soundBuffOfst = 0;
-	mutUsage.EndUse();
 }
 
 Media::AFilter::AudioLevelMeter::AudioLevelMeter(NN<Media::AudioSource> sourceAudio) : Media::AudioFilter(sourceAudio)
 {
 	Media::AudioFormat fmt;
-	this->soundBuff = 0;
-	this->status = 0;
+	this->soundBuff = nullptr;
+	this->status = nullptr;
 	this->nChannel = 0;
 	this->bitCount = 0;
 	sourceAudio->GetFormat(fmt);
@@ -37,22 +45,24 @@ Media::AFilter::AudioLevelMeter::AudioLevelMeter(NN<Media::AudioSource> sourceAu
 	this->nChannel = fmt.nChannels;
 	this->bitCount = fmt.bitpersample;
 	this->soundBuffLeng = (fmt.frequency / 10) * fmt.nChannels;
-	this->soundBuff = MemAlloc(Int32, this->soundBuffLeng);
-	this->status = MemAlloc(ChannelStatus, this->nChannel);
+	this->soundBuff = MemAllocArr(Int32, this->soundBuffLeng);
+	this->status = MemAllocArr(ChannelStatus, this->nChannel);
 	this->ResetStatus();
 }
 
 Media::AFilter::AudioLevelMeter::~AudioLevelMeter()
 {
-	if (this->soundBuff)
+	UnsafeArray<Int32> soundBuff;
+	UnsafeArray<ChannelStatus> status;
+	if (this->soundBuff.SetTo(soundBuff))
 	{
-		MemFree(this->soundBuff);
-		this->soundBuff = 0;
+		MemFreeArr(soundBuff);
+		this->soundBuff = nullptr;
 	}
-	if (this->status)
+	if (this->status.SetTo(status))
 	{
-		MemFree(this->status);
-		this->status = 0;
+		MemFreeArr(status);
+		this->status = nullptr;
 	}
 }
 
@@ -64,6 +74,12 @@ Data::Duration Media::AFilter::AudioLevelMeter::SeekToTime(Data::Duration time)
 
 UIntOS Media::AFilter::AudioLevelMeter::ReadBlock(Data::ByteArray blk)
 {
+	UnsafeArray<Int32> soundBuff;
+	UnsafeArray<ChannelStatus> status;
+	if (!this->soundBuff.SetTo(soundBuff) || !this->status.SetTo(status))
+	{
+		return 0;
+	}
 	UIntOS readSize = this->sourceAudio->ReadBlock(blk);
 	if (this->bitCount == 16)
 	{
@@ -77,20 +93,20 @@ UIntOS Media::AFilter::AudioLevelMeter::ReadBlock(Data::ByteArray blk)
 			j = 0;
 			while (j < this->nChannel)
 			{
-				v = this->soundBuff[k + j];
-				if (v == this->status[j].maxLevel || v == this->status[j].minLevel)
+				v = soundBuff[k + j];
+				if (v == status[j].maxLevel || v == status[j].minLevel)
 				{
-					this->status[j].levelChanged = true;
+					status[j].levelChanged = true;
 				}
 				v = ReadInt16(&blk[i]);
-				this->soundBuff[k + j] = v;
-				if (v > this->status[j].maxLevel)
+				soundBuff[k + j] = v;
+				if (v > status[j].maxLevel)
 				{
-					this->status[j].maxLevel = v;
+					status[j].maxLevel = v;
 				}
-				if (v < this->status[j].minLevel)
+				if (v < status[j].minLevel)
 				{
-					this->status[j].minLevel = v;
+					status[j].minLevel = v;
 				}
 				j++;
 				i += 2;
@@ -112,20 +128,20 @@ UIntOS Media::AFilter::AudioLevelMeter::ReadBlock(Data::ByteArray blk)
 			j = 0;
 			while (j < this->nChannel)
 			{
-				v = this->soundBuff[k + j];
-				if (v == this->status[j].maxLevel || v == this->status[j].minLevel)
+				v = soundBuff[k + j];
+				if (v == status[j].maxLevel || v == status[j].minLevel)
 				{
-					this->status[j].levelChanged = true;
+					status[j].levelChanged = true;
 				}
 				v = blk[i] - 128;
-				this->soundBuff[k + j] = v;
-				if (v > this->status[j].maxLevel)
+				soundBuff[k + j] = v;
+				if (v > status[j].maxLevel)
 				{
-					this->status[j].maxLevel = v;
+					status[j].maxLevel = v;
 				}
-				if (v < this->status[j].minLevel)
+				if (v < status[j].minLevel)
 				{
-					this->status[j].minLevel = v;
+					status[j].minLevel = v;
 				}
 				j++;
 				i += 1;
@@ -140,36 +156,42 @@ UIntOS Media::AFilter::AudioLevelMeter::ReadBlock(Data::ByteArray blk)
 
 Double Media::AFilter::AudioLevelMeter::GetLevel(UIntOS channel)
 {
+	UnsafeArray<Int32> soundBuff;
+	UnsafeArray<ChannelStatus> status;
 	Double ret = 0;
 	Int32 v;
+	if (!this->soundBuff.SetTo(soundBuff) || !this->status.SetTo(status))
+	{
+		return 0;
+	}
 	if (channel >= this->nChannel)
 		return 0;
 	Sync::MutexUsage mutUsage(this->mut);
-	if (this->status[channel].levelChanged)
+	if (status[channel].levelChanged)
 	{
-		this->status[channel].levelChanged = false;
+		status[channel].levelChanged = false;
 		UIntOS i = channel;
 		Int32 v;
-		this->status[channel].minLevel = this->soundBuff[i];
-		this->status[channel].maxLevel = this->soundBuff[i];
+		status[channel].minLevel = soundBuff[i];
+		status[channel].maxLevel = soundBuff[i];
 		while (i < this->soundBuffLeng)
 		{
-			v = this->soundBuff[i];
-			if (v > this->status[channel].maxLevel)
-				this->status[channel].maxLevel = v;
-			if (v < this->status[channel].minLevel)
-				this->status[channel].minLevel = v;
+			v = soundBuff[i];
+			if (v > status[channel].maxLevel)
+				status[channel].maxLevel = v;
+			if (v < status[channel].minLevel)
+				status[channel].minLevel = v;
 			i += this->nChannel;
 		}
 	}
-	v = this->status[channel].minLevel;
+	v = status[channel].minLevel;
 	if (v < 0)
 	{
 		v = -v;
 	}
-	if (this->status[channel].maxLevel > v)
+	if (status[channel].maxLevel > v)
 	{
-		v = this->status[channel].maxLevel;
+		v = status[channel].maxLevel;
 	}
 	mutUsage.EndUse();
 	if (this->bitCount == 16)

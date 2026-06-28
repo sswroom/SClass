@@ -147,20 +147,20 @@ void UI::Win::WinTextBox::SetUnixText(Text::CStringNN text)
 UnsafeArrayOpt<UTF8Char> UI::Win::WinTextBox::GetText(UnsafeArray<UTF8Char> buff)
 {
 	UIntOS leng = (UIntOS)GetWindowTextLengthW((HWND)hwnd.OrNull());
-	WChar *wptr = MemAlloc(WChar, leng + 1);
-	GetWindowTextW((HWND)hwnd.OrNull(), wptr, (int)(leng + 1));
+	UnsafeArray<WChar> wptr = MemAllocArr(WChar, leng + 1);
+	GetWindowTextW((HWND)hwnd.OrNull(), wptr.Ptr(), (int)(leng + 1));
 	buff = Text::StrWChar_UTF8(buff, wptr);
-	MemFree(wptr);
+	MemFreeArr(wptr);
 	return buff;
 }
 
 Bool UI::Win::WinTextBox::GetText(NN<Text::StringBuilderUTF8> sb)
 {
 	UIntOS leng = (UIntOS)GetWindowTextLengthW((HWND)hwnd.OrNull());
-	WChar *wptr = MemAlloc(WChar, leng + 1);
-	GetWindowTextW((HWND)hwnd.OrNull(), wptr, (int)leng + 1);
+	UnsafeArray<WChar> wptr = MemAllocArr(WChar, leng + 1);
+	GetWindowTextW((HWND)hwnd.OrNull(), wptr.Ptr(), (int)leng + 1);
 	sb->AppendW(wptr);
-	MemFree(wptr);
+	MemFreeArr(wptr);
 	return true;
 }
 

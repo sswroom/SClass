@@ -10,7 +10,8 @@
 Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 {
 	IO::SMBIOS *smbios;
-	UInt8 *dataBuff = 0;
+	UnsafeArrayOpt<UInt8> optdataBuff = nullptr;
+	UnsafeArray<UInt8> dataBuff;
 	UIntOS buffSize = 0;
 	UInt8 buffTmp[1024];
 
@@ -52,7 +53,7 @@ Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 				IO::FileStream fs(CSTR("/sys/firmware/dmi/tables/DMI"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				if (!fs.IsError())
 				{
-					dataBuff = MemAlloc(UInt8, buffSize);
+					optdataBuff = dataBuff = MemAllocArr(UInt8, buffSize);
 					fs.SeekFromBeginning(ofst);
 					UIntOS totalRead = 0;
 					UIntOS thisRead;
@@ -61,8 +62,8 @@ Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 						thisRead = fs.Read(Data::ByteArray(&dataBuff[totalRead], buffSize - totalRead));
 						if (thisRead == 0)
 						{
-							MemFree(dataBuff);
-							dataBuff = 0;
+							MemFreeArr(dataBuff);
+							optdataBuff = nullptr;
 							break;
 						}
 						totalRead += thisRead;
@@ -72,7 +73,7 @@ Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 		}
 	}
 
-	if (dataBuff == 0)
+	if (optdataBuff.IsNull())
 	{
 		UnsafeArray<UTF8Char> sptr;
 		UnsafeArray<UTF8Char> sptr2;
@@ -105,12 +106,12 @@ Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 		UnsafeArray<UInt8> mstmBuff = mstm.GetBuff(readSize);
 		if (readSize > 0)
 		{
-			dataBuff = MemAlloc(UInt8, readSize);
+			optdataBuff = dataBuff = MemAllocArr(UInt8, readSize);
 			buffSize = (UInt32)readSize;
-			MemCopyNO(dataBuff, mstmBuff.Ptr(), readSize);
+			MemCopyNO(&dataBuff[0], mstmBuff.Ptr(), readSize);
 		}
 	}
-	if (dataBuff)
+	if (optdataBuff.SetTo(dataBuff))
 	{
 		NEW_CLASS(smbios, IO::SMBIOS(dataBuff, buffSize, dataBuff));
 		return smbios;

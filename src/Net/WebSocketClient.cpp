@@ -53,7 +53,7 @@ Bool Net::WebSocketClient::SendPacket(UInt8 opcode, UnsafeArray<const UInt8> buf
 	}
 	else if (buffSize < 65536)
 	{
-		UInt8 *packBuff = MemAlloc(UInt8, buffSize + 8);
+		UnsafeArray<UInt8> packBuff = MemAllocArr(UInt8, buffSize + 8);
 		packBuff[0] = (UInt8)(0x80 | (opcode));
 		packBuff[1] = 0xFE;
 		WriteMUInt16(&packBuff[2], (UInt16)buffSize);
@@ -85,12 +85,12 @@ Bool Net::WebSocketClient::SendPacket(UInt8 opcode, UnsafeArray<const UInt8> buf
 			break;
 		}
 		Bool succ = cli->Write(Data::ByteArrayR(packBuff, i + 8)) == (i + 8);
-		MemFree(packBuff);
+		MemFreeArr(packBuff);
 		return succ;
 	}
 	else
 	{
-		UInt8 *packBuff = MemAlloc(UInt8, buffSize + 14);
+		UnsafeArray<UInt8> packBuff = MemAllocArr(UInt8, buffSize + 14);
 		packBuff[0] = (UInt8)(0x80 | (opcode));
 		packBuff[1] = 0xFF;
 		WriteMUInt64(&packBuff[2], buffSize);
@@ -122,7 +122,7 @@ Bool Net::WebSocketClient::SendPacket(UInt8 opcode, UnsafeArray<const UInt8> buf
 			break;
 		}
 		Bool succ = cli->Write(Data::ByteArrayR(packBuff, i + 14)) == (i + 14);
-		MemFree(packBuff);
+		MemFreeArr(packBuff);
 		return succ;
 	}
 }
@@ -215,9 +215,9 @@ UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(OutParam<UInt8> opc
 				{
 					this->recvCapacity <<= 1;
 				}
-				UInt8 *newBuff = MemAlloc(UInt8, this->recvCapacity);
-				MemCopyNO(newBuff, &this->recvBuff[this->recvParseOfst], this->recvSize - this->recvParseOfst);
-				MemFree(this->recvBuff);
+				UnsafeArray<UInt8> newBuff = MemAllocArr(UInt8, this->recvCapacity);
+				MemCopyNO(&newBuff[0], &this->recvBuff[this->recvParseOfst], this->recvSize - this->recvParseOfst);
+				MemFreeArr(this->recvBuff);
 				this->recvBuff = newBuff;
 				this->recvSize -= this->recvParseOfst;
 				this->recvParseOfst = 0;
@@ -233,7 +233,7 @@ UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(OutParam<UInt8> opc
 			}
 			else
 			{
-				MemCopyO(this->recvBuff, &this->recvBuff[this->recvParseOfst], this->recvSize - this->recvParseOfst);
+				MemCopyO(&this->recvBuff[0], &this->recvBuff[this->recvParseOfst], this->recvSize - this->recvParseOfst);
 				this->recvSize -= this->recvParseOfst;
 				this->recvParseOfst = 0;
 			}
@@ -288,10 +288,10 @@ UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(NN<Sync::MutexUsage
 Net::WebSocketClient::WebSocketClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CStringNN path, Text::CString origin, Protocol protocol, Data::Duration timeout) : Stream(CSTR("WebSocket"))
 {
 	this->recvCapacity = 4096;
-	this->recvBuff = MemAlloc(UInt8, this->recvCapacity);
+	this->recvBuff = MemAllocArr(UInt8, this->recvCapacity);
 	this->recvParseOfst = 0;
 	this->recvSize = 0;
-	this->recvData = 0;
+	this->recvData = nullptr;
 	this->recvDataCap = 0;
 	this->recvDataOfst = 0;
 	this->recvDataSize = 0;
@@ -411,10 +411,11 @@ Net::WebSocketClient::WebSocketClient(NN<Net::TCPClientFactory> clif, Optional<N
 Net::WebSocketClient::~WebSocketClient()
 {
 	this->cli.Delete();
-	MemFree(this->recvBuff);
-	if (this->recvData)
+	MemFreeArr(this->recvBuff);
+	UnsafeArray<UInt8> recvData;
+	if (this->recvData.SetTo(recvData))
 	{
-		MemFree(this->recvData);
+		MemFreeArr(recvData);
 	}
 }
 
@@ -481,19 +482,20 @@ Bool Net::WebSocketClient::IsDown() const
 
 UIntOS Net::WebSocketClient::Read(const Data::ByteArray &buff)
 {
+	UnsafeArray<UInt8> recvData;
 	Sync::MutexUsage mutUsage(this->recvMut);
-	if (this->recvDataOfst < this->recvDataSize)
+	if (this->recvDataOfst < this->recvDataSize && this->recvData.SetTo(recvData))
 	{
 		if (this->recvDataSize - this->recvDataOfst > buff.GetSize())
 		{
-			buff.CopyFrom(Data::ByteArrayR(&this->recvData[this->recvDataOfst], buff.GetSize()));
+			buff.CopyFrom(Data::ByteArrayR(&recvData[this->recvDataOfst], buff.GetSize()));
 			this->recvDataOfst += buff.GetSize();
 			return buff.GetSize();
 		}
 		else
 		{
 			UIntOS size = this->recvDataSize - this->recvDataOfst;
-			buff.CopyFrom(Data::ByteArrayR(&this->recvData[this->recvDataOfst], size));
+			buff.CopyFrom(Data::ByteArrayR(&recvData[this->recvDataOfst], size));
 			this->recvDataOfst = this->recvDataSize;
 			return size;
 		}
@@ -508,15 +510,15 @@ UIntOS Net::WebSocketClient::Read(const Data::ByteArray &buff)
 		return packetSize;
 	}
 	buff.CopyFrom(Data::ByteArrayR(packetBuff, buff.GetSize()));
-	if (packetSize - buff.GetSize() > this->recvDataCap)
+	if (packetSize - buff.GetSize() > this->recvDataCap || !this->recvData.SetTo(recvData))
 	{
-		if (this->recvData)
-			MemFree(this->recvData);
+		if (this->recvData.SetTo(recvData))
+			MemFreeArr(recvData);
 		this->recvDataCap = packetSize - buff.GetSize();
-		this->recvData = MemAlloc(UInt8, this->recvDataCap);
+		this->recvData = recvData = MemAllocArr(UInt8, this->recvDataCap);
 	}
 	this->recvDataSize = packetSize - buff.GetSize();
-	MemCopyNO(this->recvData, &packetBuff[buff.GetSize()], this->recvDataSize);
+	MemCopyNO(&recvData[0], &packetBuff[buff.GetSize()], this->recvDataSize);
 	this->recvDataOfst = 0;
 	return buff.GetSize();
 }

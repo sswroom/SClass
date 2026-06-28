@@ -25,8 +25,8 @@ namespace Media
 				UIntOS isLast;
 				IntOS dbpl;
 				UIntOS csLineSize;
-				UInt8 *csLineBuff;
-				UInt8 *csLineBuff2;
+				UnsafeArrayOpt<UInt8> csLineBuff;
+				UnsafeArrayOpt<UInt8> csLineBuff2;
 			} THREADSTAT;
 
 			UIntOS currId;

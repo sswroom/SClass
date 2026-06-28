@@ -13,8 +13,8 @@ namespace Media
 		UInt32 blockSize;
 		UInt32 nBlocks;
 		UInt32 compLevel;
-		UInt32 *blockOfsts;
-		UInt8 *blockBuff;
+		UnsafeArray<UInt32> blockOfsts;
+		UnsafeArray<UInt8> blockBuff;
 
 	public:
 		NWASource(NN<IO::StreamData> fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, NN<const Media::AudioFormat> format, NN<Text::String> name);

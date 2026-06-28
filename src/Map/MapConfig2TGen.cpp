@@ -3566,7 +3566,7 @@ void Map::MapConfig2TGen::DrawLabels(NN<Media::DrawImage> img, UnsafeArray<MapLa
 				//	MessageBoxW(NULL, L"Test", lastLbl, MB_OK);
 				}
 
-//				Int32 *points = (Int32*)MemAlloc(labels[i].nPoints << 3);
+//				UnsafeArray<Int32> points = MemAllocArr(Int32, labels[i].nPoints << 3);
 //				view->MapToScnXY(labels[i].points, points, labels[i].nPoints, 0, 0);
 				Math::Coord2DDbl min;
 				Math::Coord2DDbl max;
@@ -3971,28 +3971,26 @@ void Map::MapConfig2TGen::DrawLabels(NN<Media::DrawImage> img, UnsafeArray<MapLa
 						if (n)
 						{
 							Math::Coord2DDbl center = rect.GetCenter();
-							Math::Coord2DDbl *points;
+							UnsafeArray<Math::Coord2DDbl> points;
 							if ((labels[i].flags & SFLG_ALIGN) != 0)
 							{
 								Math::RectAreaDbl realBounds;
-								points = MemAlloc(Math::Coord2DDbl, labels[i].nPoints);
+								points = MemAllocArr(Math::Coord2DDbl, labels[i].nPoints);
 								view->MapXYToScnXYArr(ptPtr, points, labels[i].nPoints, Math::Coord2DDbl(0, 0));
 								DrawCharsLA(img, labels[i].label->ToCString(), ptPtr, points, labels[i].nPoints, k, scaleN, scaleD, fonts[labels[i].fontStyle], realBounds);
 								DrawCharsLA(img, labels[i].label->ToCString(), ptPtr, points, labels[i].nPoints, k, scaleN, scaleD, fonts[labels[i].fontStyle], realBounds);
-								MemFree(points);
-
+								MemFreeArr(points);
 								objBounds[currPt] = realBounds;
 								currPt++;
 							}
 							else if ((labels[i].flags & SFLG_ROTATE) != 0)
 							{
 								Math::RectAreaDbl realBounds;
-								points = MemAlloc(Math::Coord2DDbl, labels[i].nPoints);
+								points = MemAllocArr(Math::Coord2DDbl, labels[i].nPoints);
 								view->MapXYToScnXYArr(ptPtr, points, labels[i].nPoints, Math::Coord2DDbl(0, 0));
 								DrawCharsL(img, labels[i].label->ToCString(), ptPtr, points, labels[i].nPoints, k, scaleN, scaleD, fonts[labels[i].fontStyle], realBounds);
 								log->AddStringL(labels[i].label->v, ptPtr, points, labels[i].nPoints, k, scaleN, scaleD, labels[i].fontStyle, false, &realBounds);
-								MemFree(points);
-
+								MemFreeArr(points);
 								objBounds[currPt] = realBounds;
 								currPt++;
 							}
@@ -4309,9 +4307,9 @@ void Map::MapConfig2TGen::LoadLabels(NN<Media::DrawImage> img, UnsafeArray<MapLa
 				{
 					if (maxX >= 0 && minX < UIntOS2Double(view->GetScnWidth()) && maxY >= 0 && minY < UIntOS2Double(view->GetScnHeight()))
 					{
-						Math::Coord2DDbl *scnPts;
+						UnsafeArray<Math::Coord2DDbl> scnPts;
 						Math::RectAreaDbl realBounds;
-						scnPts = MemAlloc(Math::Coord2DDbl, nPoints);
+						scnPts = MemAllocArr(Math::Coord2DDbl, nPoints);
 						view->MapXYToScnXYArr(ptArr, scnPts, nPoints, Math::Coord2DDbl(0, 0));
 						if (isAlign)
 						{
@@ -4321,7 +4319,7 @@ void Map::MapConfig2TGen::LoadLabels(NN<Media::DrawImage> img, UnsafeArray<MapLa
 						{
 							DrawCharsL(img, label->ToCString(), ptArr, scnPts, nPoints, ptCurr, scaleN, scaleD, fonts[fontStyle], realBounds);
 						}
-						MemFree(scnPts);
+						MemFreeArr(scnPts);
 					}
 				}
 

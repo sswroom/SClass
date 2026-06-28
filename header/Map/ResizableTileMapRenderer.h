@@ -19,7 +19,7 @@ namespace Map
 	private:
 		typedef struct
 		{
-			Int64 imgId;
+			Math::Coord2D<Int32> imgId;
 			Double tlx;
 			Double tly;
 			Double brx;
@@ -27,7 +27,7 @@ namespace Map
 			IntOS level;
 			Bool isFinish;
 			Bool isCancel;
-			Media::StaticImage *img;
+			Optional<Media::StaticImage> img;
 		} CachedImage;
 
 		typedef struct
@@ -35,40 +35,40 @@ namespace Map
 			Bool toStop;
 			Bool running;
 			ResizableTileMapRenderer *me;
-			Sync::Event *evt;
+			NN<Sync::Event> evt;
 		} ThreadStat;
 	private:
 		NN<Media::DrawEngine> eng;
-		Map::TileMap *map;
-		Parser::ParserList *parsers;
-		Media::ImageResizer *resizer;
+		NN<Map::TileMap> map;
+		NN<Parser::ParserList> parsers;
+		NN<Media::ImageResizer> resizer;
 		Media::ColorProfile srcColor;
 		Media::ColorProfile outputColor;
 
 		UIntOS threadCnt;
-		ThreadStat *threads;
+		UnsafeArray<ThreadStat> threads;
 		UIntOS threadNext;
 
 		IntOS lastLevel;
-		Data::ArrayListInt64 lastIds;
-		Data::ArrayList<CachedImage *> lastImgs;
-		Data::ArrayList<CachedImage *> idleImgs;
+		Data::ArrayListT<Math::Coord2D<Int32>> lastIds;
+		Data::ArrayListNN<CachedImage> lastImgs;
+		Data::ArrayListNN<CachedImage> idleImgs;
 
 		Data::SyncLinkedList taskQueued;
 		Sync::Event taskEvt;
 		Sync::Mutex taskMut;
 		UpdatedHandler updHdlr;
-		void *updObj;
+		AnyType updObj;
 
-		static UInt32 __stdcall TaskThread(void *userObj);
-		void AddTask(CachedImage *cimg);
-		void DrawImage(Map::MapView *view, Media::DrawImage *img, CachedImage *cimg);
+		static UInt32 __stdcall TaskThread(AnyType userObj);
+		void AddTask(NN<CachedImage> cimg);
+		void DrawImage(NN<Map::MapView> view, NN<Media::DrawImage> img, NN<CachedImage> cimg);
 	public:
-		ResizableTileMapRenderer(NN<Media::DrawEngine> eng, Map::TileMap *map, Parser::ParserList *parsers, Media::ColorManagerSess *sess, Media::ColorProfile *outputColor);
+		ResizableTileMapRenderer(NN<Media::DrawEngine> eng, NN<Map::TileMap> map, NN<Parser::ParserList> parsers, Optional<Media::ColorManagerSess> sess, NN<Media::ColorProfile> outputColor);
 		virtual ~ResizableTileMapRenderer();
 
-		virtual void DrawMap(Media::DrawImage *img, Map::MapView *view);
-		virtual void SetUpdatedHandler(UpdatedHandler hdlr, void *userObj);
+		virtual void DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view);
+		virtual void SetUpdatedHandler(UpdatedHandler hdlr, AnyType userObj);
 	};
 }
 #endif

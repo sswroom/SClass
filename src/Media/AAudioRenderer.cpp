@@ -85,7 +85,7 @@ UInt32 __stdcall Media::AAudioRenderer::PlayThread(void *obj)
 //		dataExist[i] = false;
 		buffSize[i] = 0;
 		readSize[i] = 0;
-		readBuff[i] = MemAlloc(UInt8, buffLeng);
+		readBuff[i] = MemAllocArr(UInt8, buffLeng);
 	}
 	err = snd_pcm_prepare((snd_pcm_t*)me->hand);
 	if (err < 0)
@@ -271,11 +271,11 @@ Media::AAudioRenderer::AAudioRenderer(UnsafeArrayOpt<const UTF8Char> devName)
 	this->playing = false;
 	this->endHdlr = 0;
 	this->buffTime = 0;
-	ClassData *clsData = MemAlloc(ClassData, 1);
+	NN<ClassData> clsData = MemAllocNN(ClassData);
 	clsData->stream = 0;
 	clsData->builder = 0;
 	aaudio_result_t res = AAudio_createStreamBuilder(&clsData->builder);
-	this->hand = clsData;
+	this->hand = clsData.Ptr();
 	if (res != AAUDIO_OK)
 	{
 		printf("AAudio: createStreamBuilder Error: %d\r\n", res);

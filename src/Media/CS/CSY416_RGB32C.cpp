@@ -67,7 +67,7 @@ Media::CS::CSY416_RGB32C::CSY416_RGB32C(NN<const Media::ColorProfile> srcProfile
 	{
 		this->nThread = 2;
 	}
-	stats = MemAlloc(THREADSTAT, nThread);
+	stats = MemAllocArr(THREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{

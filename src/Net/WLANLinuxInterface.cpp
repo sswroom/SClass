@@ -103,7 +103,7 @@ UIntOS Net::WLANLinuxInterface::GetBSSList(NN<Data::ArrayListNN<Net::WirelessLAN
 	NN<Net::WirelessLANIE> ie;
 	struct iwreq wrq;
 	int ret;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UIntOS buffSize = IW_SCAN_MAX_DATA;
 	this->name->ConcatTo((UTF8Char*)wrq.ifr_ifrn.ifrn_name);
 
@@ -112,8 +112,8 @@ UIntOS Net::WLANLinuxInterface::GetBSSList(NN<Data::ArrayListNN<Net::WirelessLAN
 	while (true)
 	{
 //		printf("Alloc %d bytes\r\n", buffSize);
-		buff = MemAlloc(UInt8, buffSize);
-		wrq.u.data.pointer = buff;
+		buff = MemAllocArr(UInt8, buffSize);
+		wrq.u.data.pointer = buff.Ptr();
 		wrq.u.data.flags = 0;
 		wrq.u.data.length = (UInt16)buffSize;
 //		printf("SIOCGIWSCAN before\r\n");
@@ -137,18 +137,18 @@ UIntOS Net::WLANLinuxInterface::GetBSSList(NN<Data::ArrayListNN<Net::WirelessLAN
 					buffSize = 65535;
 				}
 			}
-			MemFree(buff);
+			MemFreeArr(buff);
 		}
 		else if (errno == EFAULT)
 		{
-//			printf("SIOCGIWSCAN return %d, errno = %d, buffSize = %d, buff = %x \r\n", ret, errno, buffSize, (int)(IntOS)buff);
-			MemFree(buff);
+//			printf("SIOCGIWSCAN return %d, errno = %d, buffSize = %d, buff = %x \r\n", ret, errno, buffSize, (int)(IntOS)buff.Ptr());
+			MemFreeArr(buff);
 			return 0;
 		}
 		else
 		{
-			printf("SIOCGIWSCAN return %d, errno = %d, buffSize = %d, buff = %x \r\n", ret, errno, (UInt32)buffSize, (int)(IntOS)buff);
-			MemFree(buff);
+			printf("SIOCGIWSCAN return %d, errno = %d, buffSize = %d, buff = %x \r\n", ret, errno, (UInt32)buffSize, (int)(IntOS)buff.Ptr());
+			MemFreeArr(buff);
 			return 0;
 		}
 	}
@@ -242,8 +242,8 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 0C 10 3C 00 01 02 10 49 00 06 00 37 2A 00 01 20
 */
 
-	UInt8 *buffCurr = buff;
-	UInt8 *buffEnd = buff + wrq.u.data.length;
+	UnsafeArray<UInt8> buffCurr = buff;
+	UnsafeArray<UInt8> buffEnd = buff + wrq.u.data.length;
 	ret = 1;
 	UTF8Char essid[IW_ESSID_MAX_SIZE + 1];
 	UnsafeArray<UTF8Char> essidEnd;
@@ -426,8 +426,8 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 			if (len >= firstOfst + firstOfst)
 			{
 				Text::StringBuilderUTF8 sbTmp;
-				UInt8 *ptrEnd = buffCurr + len;
-				UInt8 *ptrCurr = buffCurr + firstOfst + firstOfst;
+				UnsafeArray<UInt8> ptrEnd = buffCurr + len;
+				UnsafeArray<UInt8> ptrCurr = buffCurr + firstOfst + firstOfst;
 				UInt8 ieCmd;
 				UInt8 ieSize;
 				while (ptrEnd - ptrCurr >= 2)
@@ -462,8 +462,8 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 					case 0xdd:
 						if (ptrCurr[0] == 0 && ptrCurr[1] == 0x50 && ptrCurr[2] == 0xF2 && ptrCurr[3] == 4) //WPS?
 						{
-							UInt8 *currItem = ptrCurr + 4;
-							UInt8 *itemEnd = ptrCurr + ieSize;
+							UnsafeArray<UInt8> currItem = ptrCurr + 4;
+							UnsafeArray<UInt8> itemEnd = ptrCurr + ieSize;
 							UInt16 itemId;
 							UInt16 itemSize;
 							while (itemEnd - currItem >= 4)
@@ -551,6 +551,6 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 		bss.ieList.Clear();
 	}
 	
-	MemFree(buff);
+	MemFreeArr(buff);
 	return retVal;
 }

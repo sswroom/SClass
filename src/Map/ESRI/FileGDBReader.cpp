@@ -444,10 +444,10 @@ Bool Map::ESRI::FileGDBReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF
 	case 8:
 		{
 			UIntOS size = this->GetBinarySize(colIndex);
-			UInt8 *binBuff = MemAlloc(UInt8, size);
+			UnsafeArray<UInt8> binBuff = MemAllocArr(UInt8, size);
 			this->GetBinary(colIndex, binBuff);
 			sb->AppendHexBuff(binBuff, size, 0, Text::LineBreakType::None);
-			MemFree(binBuff);
+			MemFreeArr(binBuff);
 			return true;
 		}
 	case 10:
@@ -520,10 +520,10 @@ Optional<Text::String> Map::ESRI::FileGDBReader::GetNewStr(UIntOS colIndex)
 		{
 			Text::StringBuilderUTF8 sb;
 			UIntOS size = this->GetBinarySize(colIndex);
-			UInt8 *binBuff = MemAlloc(UInt8, size);
+			UnsafeArray<UInt8> binBuff = MemAllocArr(UInt8, size);
 			this->GetBinary(colIndex, binBuff);
 			sb.AppendHexBuff(binBuff, size, 0, Text::LineBreakType::None);
-			MemFree(binBuff);
+			MemFreeArr(binBuff);
 			return Text::String::New(sb.ToCString());
 		}
 	case 10:
@@ -848,13 +848,13 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UIntOS co
 			UIntOS j;
 			UIntOS k;
 			NN<Math::Geometry::LineString> lineString;
-			UInt32 *ptOfstList;
+			UnsafeArray<UInt32> ptOfstList;
 			UnsafeArray<Math::Coord2DDbl> points;
 			UnsafeArray<Double> zArr;
 			UnsafeArray<Double> mArr;
 			NEW_CLASS(pl, Math::Geometry::Polyline(srid));
 			//, (UIntOS)nParts, (UIntOS)nPoints, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0
-			ptOfstList = MemAlloc(UInt32, (UIntOS)nParts);
+			ptOfstList = MemAllocArr(UInt32, (UIntOS)nParts);
 			ptOfstList[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
@@ -925,7 +925,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UIntOS co
 
 				i++;
 			}
-			MemFree(ptOfstList);
+			MemFreeArr(ptOfstList);
 			return pl;
 		}
 		break;
@@ -955,17 +955,18 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UIntOS co
 			}
 			NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
 			UIntOS i;
-			UInt32 *parts = MemAlloc(UInt32, (UIntOS)nParts);
-			Math::Coord2DDbl *points = MemAllocA(Math::Coord2DDbl, (UIntOS)nPoints);
-			Double *zArr = 0;
-			Double *mArr = 0;
+			UnsafeArray<UInt32> parts = MemAllocArr(UInt32, (UIntOS)nParts);
+			UnsafeArray<Math::Coord2DDbl> points = MemAllocAArr(Math::Coord2DDbl, (UIntOS)nPoints);
+			UnsafeArrayOpt<Double> zArr = nullptr;
+			UnsafeArrayOpt<Double> mArr = nullptr;
+			UnsafeArray<Double> nnArr;
 			if ((this->tableInfo->geometryFlags & 0x80) != 0)
 			{
-				zArr = MemAlloc(Double, (UIntOS)nPoints);
+				zArr = MemAllocArr(Double, (UIntOS)nPoints);
 			}
 			if ((this->tableInfo->geometryFlags & 0x40) != 0)
 			{
-				mArr = MemAlloc(Double, (UIntOS)nPoints);
+				mArr = MemAllocArr(Double, (UIntOS)nPoints);
 			}
 			parts[0] = 0;
 			UInt32 ptOfst = 0;
@@ -993,7 +994,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UIntOS co
 				points[i].y = y;
 				i++;
 			}
-			if (this->tableInfo->geometryFlags & 0x80)
+			if (this->tableInfo->geometryFlags & 0x80 && zArr.SetTo(nnArr))
 			{
 				dx = 0;
 				i = 0;
@@ -1002,11 +1003,11 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UIntOS co
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 					dx += iv;
 					z = Int64_Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
-					zArr[i] = z;
+					nnArr[i] = z;
 					i++;
 				}
 			}
-			if (this->tableInfo->geometryFlags & 0x40)
+			if (this->tableInfo->geometryFlags & 0x40 && mArr.SetTo(nnArr))
 			{
 				dx = 0;
 				i = 0;
@@ -1015,17 +1016,17 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UIntOS co
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
 					dx += iv;
 					m = Int64_Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
-					mArr[i] = m;
+					nnArr[i] = m;
 					i++;
 				}
 			}
 			pg->AddFromPtOfst(parts, nParts, points, nPoints, zArr, mArr);
-			if (mArr)
-				MemFree(mArr);
-			if (zArr)
-				MemFree(zArr);
-			MemFreeA(points);
-			MemFree(parts);
+			if (mArr.SetTo(nnArr))
+				MemFreeArr(nnArr);
+			if (zArr.SetTo(nnArr))
+				MemFreeArr(nnArr);
+			MemFreeAArr(points);
+			MemFreeArr(parts);
 			NN<Math::Geometry::MultiPolygon> mpg;
 			NEW_CLASSNN(mpg, Math::Geometry::MultiPolygon(pg->GetSRID()));
 			mpg->AddGeometry(pg);
@@ -1496,10 +1497,10 @@ NN<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(Text::CStringNN name)
 	case 8:
 		{
 			UIntOS size = this->GetBinarySize(colIndex);
-			UInt8 *binBuff = MemAlloc(UInt8, size);
+			UnsafeArray<UInt8> binBuff = MemAllocArr(UInt8, size);
 			this->GetBinary(colIndex, binBuff);
-			NN<Data::VariItem> item = Data::VariItem::NewByteArr(binBuff, size);
-			MemFree(binBuff);
+			NN<Data::VariItem> item = Data::VariItem::NewByteArr(UnsafeArray<const UInt8>(binBuff), size);
+			MemFreeArr(binBuff);
 			return item;
 		}
 	case 10:

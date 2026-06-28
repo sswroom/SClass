@@ -10,14 +10,14 @@ struct Media::VideoCaptureMgr::ClassData
 
 Media::VideoCaptureMgr::VideoCaptureMgr()
 {
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	NEW_CLASS(this->clsData->v4lMgr, Media::V4LVideoCaptureMgr());
 }
 
 Media::VideoCaptureMgr::~VideoCaptureMgr()
 {
 	DEL_CLASS(this->clsData->v4lMgr);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 UIntOS Media::VideoCaptureMgr::GetDeviceList(NN<Data::ArrayListNN<DeviceInfo>> devList)

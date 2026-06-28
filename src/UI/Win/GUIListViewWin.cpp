@@ -173,34 +173,34 @@ Bool UI::GUIListView::ClearAll()
 UIntOS UI::GUIListView::AddItem(NN<Text::String> itemText, AnyType itemObj)
 {
 	UIntOS strLen = Text::StrUTF8_WCharCntC(itemText->v, itemText->leng);
-	WChar *ws = MemAlloc(WChar, strLen + 1);
+	UnsafeArray<WChar> ws = MemAllocArr(WChar, strLen + 1);
 	Text::StrUTF8_WCharC(ws, itemText->v, itemText->leng, 0);
 	LVITEMW item;
 	item.iItem = (Int32)GetCount();
 	item.iSubItem = 0;
 	item.mask = LVIF_PARAM | LVIF_TEXT;
 	item.lParam = (LPARAM)itemObj.p;
-	item.pszText = (LPWSTR)ws;
+	item.pszText = (LPWSTR)ws.Ptr();
 	item.cchTextMax = 256;
 	strLen = (UIntOS)SendMessage((HWND)this->hwnd.OrNull(), LVM_INSERTITEMW, 0, (LPARAM)&item);
-	Text::StrDelNew(ws);
+	MemFreeArr(ws);
 	return strLen;
 }
 
 UIntOS UI::GUIListView::AddItem(Text::CStringNN itemText, AnyType itemObj)
 {
 	UIntOS strLen = Text::StrUTF8_WCharCnt(itemText.v);
-	WChar *ws = MemAlloc(WChar, strLen + 1);
+	UnsafeArray<WChar> ws = MemAllocArr(WChar, strLen + 1);
 	Text::StrUTF8_WChar(ws, itemText.v, 0);
 	LVITEMW item;
 	item.iItem = (Int32)GetCount();
 	item.iSubItem = 0;
 	item.mask = LVIF_PARAM | LVIF_TEXT;
 	item.lParam = (LPARAM)itemObj.p;
-	item.pszText = (LPWSTR)ws;
+	item.pszText = (LPWSTR)ws.Ptr();
 	item.cchTextMax = 256;
 	strLen = (UIntOS)SendMessage((HWND)this->hwnd.OrNull(), LVM_INSERTITEMW, 0, (LPARAM)&item);
-	Text::StrDelNew(ws);
+	MemFreeArr(ws);
 	return strLen;
 }
 
@@ -449,10 +449,10 @@ void UI::GUIListView::SetShowGrid(Bool showGrid)
 UIntOS UI::GUIListView::GetStringWidth(UnsafeArray<const UTF8Char> s)
 {
 	UIntOS strLen = Text::StrUTF8_WCharCnt(s);
-	WChar *ws = MemAlloc(WChar, strLen + 1);
+	UnsafeArray<WChar> ws = MemAllocArr(WChar, strLen + 1);
 	Text::StrUTF8_WChar(ws, s, 0);
-	strLen = (UIntOS)SendMessage((HWND)this->hwnd.OrNull(), LVM_GETSTRINGWIDTHW, 0, (LPARAM)ws);
-	MemFree(ws);
+	strLen = (UIntOS)SendMessage((HWND)this->hwnd.OrNull(), LVM_GETSTRINGWIDTHW, 0, (LPARAM)ws.Ptr());
+	MemFreeArr(ws);
 	return strLen;
 }
 

@@ -727,7 +727,7 @@ UInt32 Media::CS::CSI420_RGB8::WorkerThread(AnyType obj)
 		}
 		else if (ts->status == 3)
 		{
-			CSI420_RGB8_do_yv12rgb(ts->yPtr.Ptr(), ts->uPtr.Ptr(), ts->vPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, converter->yuv2rgb.Ptr(), converter->rgbGammaCorr.Ptr());
+			CSI420_RGB8_do_yv12rgb(ts->yPtr.Ptr(), ts->uPtr.Ptr(), ts->vPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff.Ptr(), ts->csLineBuff2.Ptr(), converter->yuv2rgb.Ptr(), converter->rgbGammaCorr.Ptr());
 			ts->status = 4;
 			converter->evtMain.Set();
 		}
@@ -749,8 +749,8 @@ Media::CS::CSI420_RGB8::CSI420_RGB8(NN<const Media::ColorProfile> srcColor, NN<c
 		NEW_CLASSNN(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 		stats[i].csLineSize = 0;
-		stats[i].csLineBuff = 0;
-		stats[i].csLineBuff2 = 0;
+		stats[i].csLineBuff = nullptr;
+		stats[i].csLineBuff2 = nullptr;
 
 		currId = i;
 		Sync::ThreadUtil::Create(WorkerThread, this);
@@ -807,18 +807,19 @@ Media::CS::CSI420_RGB8::~CSI420_RGB8()
 
 		this->evtMain.Wait(100);
 	}
+	UnsafeArray<UInt8> lineBuff;
 	i = nThread;
 	while (i-- > 0)
 	{
-		if (stats[i].csLineBuff)
+		if (stats[i].csLineBuff.SetTo(lineBuff))
 		{
-			MemFree(stats[i].csLineBuff);
-			stats[i].csLineBuff = 0;
+			MemFreeArr(lineBuff);
+			stats[i].csLineBuff = nullptr;
 		}
-		if (stats[i].csLineBuff2)
+		if (stats[i].csLineBuff2.SetTo(lineBuff))
 		{
-			MemFree(stats[i].csLineBuff2);
-			stats[i].csLineBuff2 = 0;
+			MemFreeArr(lineBuff);
+			stats[i].csLineBuff2 = nullptr;
 		}
 		stats[i].evt.Delete();
 	}
@@ -835,6 +836,7 @@ void Media::CS::CSI420_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> src
 	UIntOS lastHeight = dispHeight;
 	UIntOS currHeight;
 	UIntOS cSize = dispWidth << 4;
+	UnsafeArray<UInt8> lineBuff;
 
 	while (i-- > 0)
 	{
@@ -855,13 +857,13 @@ void Media::CS::CSI420_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> src
 
 		if (stats[i].csLineSize < dispWidth)
 		{
-			if (stats[i].csLineBuff)
-				MemFree(stats[i].csLineBuff);
-			if (stats[i].csLineBuff2)
-				MemFree(stats[i].csLineBuff2);
+			if (stats[i].csLineBuff.SetTo(lineBuff))
+				MemFreeArr(lineBuff);
+			if (stats[i].csLineBuff2.SetTo(lineBuff))
+				MemFreeArr(lineBuff);
 			stats[i].csLineSize = dispWidth;
-			stats[i].csLineBuff = MemAlloc(UInt8, cSize << 1);
-			stats[i].csLineBuff2 = MemAlloc(UInt8, cSize << 1);
+			stats[i].csLineBuff = MemAllocArr(UInt8, cSize << 1);
+			stats[i].csLineBuff2 = MemAllocArr(UInt8, cSize << 1);
 		}
 		stats[i].status = 3;
 		stats[i].evt->Set();

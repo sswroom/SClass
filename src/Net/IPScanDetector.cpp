@@ -19,7 +19,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(AnyType obj)
 	NN<Socket> soc;
 	if (stat->me->soc.SetTo(soc))
 	{
-		UInt8 *buff = MemAlloc(UInt8, 2048);
+		UnsafeArray<UInt8> buff = MemAllocArr(UInt8, 2048);
 		while (!stat->toStop)
 		{
 			UIntOS recvSize;
@@ -128,7 +128,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(AnyType obj)
 				}
 			}
 		}
-		MemFree(buff);
+		MemFreeArr(buff);
 	}
 	stat->threadRunning = false;
 	stat->me->ctrlEvt->Set();
@@ -144,22 +144,24 @@ Net::IPScanDetector::IPScanDetector(NN<Net::SocketFactory> sockf, IPScanHandler 
 	this->userData = userData;
 	this->ctrlEvt = 0;
 	this->soc = this->sockf->CreateARPSocket();
+	this->threadStats = nullptr;
 
+	UnsafeArray<ThreadStat> threadStats;
 	NN<Socket> soc;
 	if (this->soc.SetTo(soc))
 	{
 		NEW_CLASS(this->ctrlEvt, Sync::Event(true));
 
-		this->threadStats = MemAlloc(Net::IPScanDetector::ThreadStat, this->threadCnt);
+		this->threadStats = threadStats = MemAllocArr(Net::IPScanDetector::ThreadStat, this->threadCnt);
 
 		i = this->threadCnt;
 		while (i-- > 0)
 		{
-			this->threadStats[i].toStop = false;
-			this->threadStats[i].threadRunning = false;
-			NEW_CLASS(this->threadStats[i].evt, Sync::Event(true));
-			this->threadStats[i].me = this;
-			Sync::ThreadUtil::Create(DataThread, &this->threadStats[i]);
+			threadStats[i].toStop = false;
+			threadStats[i].threadRunning = false;
+			NEW_CLASS(threadStats[i].evt, Sync::Event(true));
+			threadStats[i].me = this;
+			Sync::ThreadUtil::Create(DataThread, &threadStats[i]);
 		}
 		Bool running;
 		while (true)
@@ -168,7 +170,7 @@ Net::IPScanDetector::IPScanDetector(NN<Net::SocketFactory> sockf, IPScanHandler 
 			i = this->threadCnt;
 			while (i-- > 0)
 			{
-				if (!this->threadStats[i].threadRunning)
+				if (!threadStats[i].threadRunning)
 				{
 					running = false;
 					break;
@@ -185,24 +187,25 @@ Net::IPScanDetector::~IPScanDetector()
 {
 	UIntOS i;
 	NN<Socket> soc;
-	if (this->threadStats)
+	UnsafeArray<ThreadStat> threadStats;
+	if (this->threadStats.SetTo(threadStats))
 	{
 		i = this->threadCnt;
 		while (i-- > 0)
 		{
-			this->threadStats[i].toStop = true;
+			threadStats[i].toStop = true;
 		}
 	}
 	if (this->soc.SetTo(soc))
 	{
 		this->sockf->DestroySocket(soc);
 	}
-	if (this->threadStats)
+	if (this->threadStats.SetTo(threadStats))
 	{
 		i = this->threadCnt;
 		while (i-- > 0)
 		{
-			this->threadStats[i].evt->Set();
+			threadStats[i].evt->Set();
 		}
 
 		Bool threadRunning = true;
@@ -212,7 +215,7 @@ Net::IPScanDetector::~IPScanDetector()
 			i = this->threadCnt;
 			while (i-- > 0)
 			{
-				if (this->threadStats[i].threadRunning)
+				if (threadStats[i].threadRunning)
 				{
 					threadRunning = true;
 					break;
@@ -226,9 +229,9 @@ Net::IPScanDetector::~IPScanDetector()
 		i = this->threadCnt;
 		while (i-- > 0)
 		{
-			DEL_CLASS(this->threadStats[i].evt);
+			DEL_CLASS(threadStats[i].evt);
 		}
-		MemFree(this->threadStats);
+		MemFreeArr(threadStats);
 	}
 	this->soc = nullptr;
 

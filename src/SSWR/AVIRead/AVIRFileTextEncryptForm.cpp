@@ -61,17 +61,17 @@ void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnConvertClicked(AnyType 
 		}
 		if (me->chkDecrypt->IsChecked())
 		{
-			UInt8 *destBuff = MemAlloc(UInt8, buffSize << 1);
+			UnsafeArray<UInt8> destBuff = MemAllocArr(UInt8, buffSize << 1);
 			UIntOS destSize = destEnc->DecodeBin(Text::CStringNN(srcBuff.Arr(), buffSize), destBuff);
 			if (destSize == 0)
 			{
 				me->ui->ShowMsgOK(CSTR("Error in decrypting file"), CSTR("File Text Encrypt"), me);
-				MemFree(destBuff);
+				MemFreeArr(destBuff);
 				return;
 			}
 			IO::FileStream fs2(sbDest.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			fs2.WriteCont(destBuff, destSize);
-			MemFree(destBuff);
+			MemFreeArr(destBuff);
 		}
 		else
 		{

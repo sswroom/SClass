@@ -84,10 +84,10 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseFileHdr(NN<IO::S
 		return nullptr;
 	}
 	UIntOS buffSize = (UIntOS)(fd->GetDataSize() - fileOfst);
-	UInt8 *fileBuff = MemAlloc(UInt8, buffSize + 1);
+	UnsafeArray<UInt8> fileBuff = MemAllocArr(UInt8, buffSize + 1);
 	fileBuff[fd->GetRealData(fileOfst, buffSize, Data::ByteArray(fileBuff, buffSize + 1))] = 0;
 	Optional<Text::JSONBase> fileJSON = Text::JSONBase::ParseJSONStr(Text::CStringNN(fileBuff, buffSize));
-	MemFree(fileBuff);
+	MemFreeArr(fileBuff);
 
 	Optional<IO::ParsedObject> pobj = nullptr;
 	NN<Text::JSONBase> nnfileJSON;

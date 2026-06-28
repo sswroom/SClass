@@ -11,8 +11,8 @@ namespace Media
 		{
 		private:
 			UIntOS srcCnt;
-			Double *invLUT;
-			Double *fwdLUT;
+			UnsafeArray<Double> invLUT;
+			UnsafeArray<Double> fwdLUT;
 
 		public:
 			TransferFuncLUT(NN<const Media::LUT> lut);

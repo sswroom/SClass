@@ -15,11 +15,11 @@ void __stdcall Net::LogServer::ConnHdlr(NN<Socket> s, AnyType userObj)
 {
 	NN<Net::LogServer> me = userObj.GetNN<Net::LogServer>();
 	NN<Net::TCPClient> cli;
-	ClientStatus *cliStatus;
+	NN<ClientStatus> cliStatus;
 	Net::SocketUtil::AddressInfo addr;
 	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
-	cliStatus = MemAlloc(ClientStatus, 1);
-	cliStatus->buff = MemAlloc(UInt8, BUFFSIZE);
+	cliStatus = MemAllocNN(ClientStatus);
+	cliStatus->buff = MemAllocArr(UInt8, BUFFSIZE);
 	cliStatus->buffSize = 0;
 	cli->GetRemoteAddr(addr);
 	cliStatus->status = me->GetIPStatus(addr);
@@ -33,8 +33,8 @@ void __stdcall Net::LogServer::ClientEvent(NN<Net::TCPClient> cli, AnyType userO
 	{
 		NN<ClientStatus> cliStatus = cliData.GetNN<ClientStatus>();
 		me->log->LogMessage(CSTR("Client Disconnected"), IO::LogHandler::LogLevel::Command);
-		MemFree(cliStatus->buff);
-		MemFree(cliStatus.Ptr());
+		MemFreeArr(cliStatus->buff);
+		MemFreeNN(cliStatus);
 		cli.Delete();
 	}
 	else if (evtType == Net::TCPClientMgr::TCP_EVENT_HASDATA)
@@ -48,12 +48,12 @@ void __stdcall Net::LogServer::ClientData(NN<Net::TCPClient> cli, AnyType userOb
 	NN<ClientStatus> cliStatus = cliData.GetNN<ClientStatus>();
 	if (buff.GetSize() > BUFFSIZE)
 	{
-		MemCopyNO(cliStatus->buff, &buff[buff.GetSize() - BUFFSIZE], BUFFSIZE);
+		MemCopyNO(&cliStatus->buff[0], &buff[buff.GetSize() - BUFFSIZE], BUFFSIZE);
 		cliStatus->buffSize = BUFFSIZE;
 	}
 	else if (cliStatus->buffSize + buff.GetSize() > BUFFSIZE)
 	{
-		MemCopyO(cliStatus->buff, &cliStatus->buff[cliStatus->buffSize - BUFFSIZE + buff.GetSize()], BUFFSIZE - buff.GetSize());
+		MemCopyO(&cliStatus->buff[0], &cliStatus->buff[cliStatus->buffSize - BUFFSIZE + buff.GetSize()], BUFFSIZE - buff.GetSize());
 		MemCopyNO(&cliStatus->buff[BUFFSIZE - buff.GetSize()], buff.Arr().Ptr(), buff.GetSize());
 		cliStatus->buffSize = BUFFSIZE;
 	}
@@ -70,7 +70,7 @@ void __stdcall Net::LogServer::ClientData(NN<Net::TCPClient> cli, AnyType userOb
 	}
 	else if (sizeLeft < cliStatus->buffSize)
 	{
-		MemCopyO(cliStatus->buff, &cliStatus->buff[cliStatus->buffSize - sizeLeft], sizeLeft);
+		MemCopyO(&cliStatus->buff[0], &cliStatus->buff[cliStatus->buffSize - sizeLeft], sizeLeft);
 		cliStatus->buffSize = sizeLeft;
 	}
 }
@@ -216,8 +216,8 @@ void Net::LogServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTyp
 		{
 			if (cliStatus->status.SetTo(status))
 			{
-				UInt8 *tmpPtr = MemAlloc(UInt8, cmdSize - 8 + 1);
-				MemCopyNO(tmpPtr, &cmd[8], cmdSize - 8);
+				UnsafeArray<UInt8> tmpPtr = MemAllocArr(UInt8, cmdSize - 8 + 1);
+				MemCopyNO(&tmpPtr[0], &cmd[8], cmdSize - 8);
 				tmpPtr[cmdSize - 8] = 0;
 				status->log->LogMessage({tmpPtr, cmdSize - 8}, IO::LogHandler::LogLevel::Command);
 
@@ -225,7 +225,7 @@ void Net::LogServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTyp
 				{
 					this->logHdlr(this->logHdlrObj, status->ip, {tmpPtr, cmdSize - 8});
 				}
-				MemFree(tmpPtr);
+				MemFreeArr(tmpPtr);
 			}
 		}
 		break;

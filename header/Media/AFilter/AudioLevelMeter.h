@@ -20,9 +20,9 @@ namespace Media
 			UInt32 nChannel;
 			UInt32 bitCount;
 			UInt32 soundBuffLeng;
-			Int32 *soundBuff;
+			UnsafeArrayOpt<Int32> soundBuff;
 			UInt32 soundBuffOfst;
-			ChannelStatus *status;
+			UnsafeArrayOpt<ChannelStatus> status;
 			Sync::Mutex mut;
 		private:
 			void ResetStatus();

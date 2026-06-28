@@ -26,7 +26,7 @@ struct Net::WLANWindowsCore::ClassData
 
 Net::WLANWindowsCore::WLANWindowsCore()
 {
-	ClassData *clsData = MemAlloc(ClassData, 1);
+	NN<ClassData> clsData = MemAllocNN(ClassData);
 	this->clsData = clsData;
 	UInt32 ver;
 	NEW_CLASS(clsData->apiLib, IO::Library((const UTF8Char*)"Wlanapi.dll"));
@@ -58,7 +58,7 @@ Net::WLANWindowsCore::~WLANWindowsCore()
 		func(this->clsData->hand, 0);
 	}
 	DEL_CLASS(this->clsData->apiLib);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Bool Net::WLANWindowsCore::IsError()

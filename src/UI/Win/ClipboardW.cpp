@@ -393,10 +393,10 @@ Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilde
 			}
 			else
 			{
-				UInt8 *tmpPtr = MemAlloc(UInt8, 1048576);
+				UnsafeArray<UInt8> tmpPtr = MemAllocArr(UInt8, 1048576);
 				UInt32 readSize;
 				Int64 fileSize = 0;
-				while (stm->Read(tmpPtr, 1048576, (ULONG*)&readSize) == S_OK)
+				while (stm->Read(tmpPtr.Ptr(), 1048576, (ULONG*)&readSize) == S_OK)
 				{
 					if (readSize <= 0)
 						break;
@@ -404,7 +404,7 @@ Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilde
 				}
 				sb->AppendC(UTF8STRC("File Size = "));
 				sb->AppendI64(fileSize);
-				MemFree(tmpPtr);
+				MemFreeArr(tmpPtr);
 				return true;
 			}
 		}

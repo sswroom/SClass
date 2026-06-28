@@ -13,7 +13,7 @@ namespace Media
 		private:
 			struct ClassData;
 
-			ClassData *clsData;
+			NN<ClassData> clsData;
 			Bool endProcessing;
 			Data::Duration lastFrameTime;
 

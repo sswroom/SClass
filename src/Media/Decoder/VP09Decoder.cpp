@@ -169,11 +169,11 @@ UIntOS Media::Decoder::VP09Decoder::GetFrameSize(UIntOS frameIndex)
 		if (frameSize <= 0)
 			return 0;
 
-		UInt8 *frameBuff = MemAlloc(UInt8, frameSize);
+		UnsafeArray<UInt8> frameBuff = MemAllocArr(UInt8, frameSize);
 		frameSize = this->sourceVideo->ReadFrame(nextFrameIndex, frameBuff);
 		if (frameSize <= 0)
 		{
-			MemFree(frameBuff);
+			MemFreeArr(frameBuff);
 			return 0;
 		}
 		UInt32 fr1;
@@ -233,7 +233,7 @@ UIntOS Media::Decoder::VP09Decoder::GetFrameSize(UIntOS frameIndex)
 			frInfo->fullFrameSize = frameSize;
 			this->frameList.Add(frInfo);
 		}
-		MemFree(frameBuff);
+		MemFreeArr(frameBuff);
 		return frInfo->frameSize;
 	}
 	else
@@ -260,11 +260,11 @@ UIntOS Media::Decoder::VP09Decoder::ReadFrame(UIntOS frameIndex, UnsafeArray<UIn
 		if (frameSize <= 0)
 			return 0;
 
-		UInt8 *frameBuff = MemAlloc(UInt8, frameSize);
+		UnsafeArray<UInt8> frameBuff = MemAllocArr(UInt8, frameSize);
 		frameSize = this->sourceVideo->ReadFrame(nextFrameIndex, frameBuff);
 		if (frameSize <= 0)
 		{
-			MemFree(frameBuff);
+			MemFreeArr(frameBuff);
 			return 0;
 		}
 		UInt32 fr1;
@@ -325,7 +325,7 @@ UIntOS Media::Decoder::VP09Decoder::ReadFrame(UIntOS frameIndex, UnsafeArray<UIn
 			this->frameList.Add(frInfo);
 		}
 		MemCopyNO(buff.Ptr(), &frameBuff[frInfo->frameOfst], frInfo->frameSize);
-		MemFree(frameBuff);
+		MemFreeArr(frameBuff);
 		return frInfo->frameSize;
 	}
 	else
@@ -338,17 +338,17 @@ UIntOS Media::Decoder::VP09Decoder::ReadFrame(UIntOS frameIndex, UnsafeArray<UIn
 		}
 		else
 		{
-			UInt8 *frameBuff = MemAlloc(UInt8, frInfo->fullFrameSize);
+			UnsafeArray<UInt8> frameBuff = MemAllocArr(UInt8, frInfo->fullFrameSize);
 			UIntOS frameSize = this->sourceVideo->ReadFrame(frInfo->srcFrameIndex, frameBuff);
 			if (frameSize == frInfo->fullFrameSize)
 			{
 				MemCopyNO(buff.Ptr(), &frameBuff[frInfo->frameOfst], frInfo->frameSize);
-				MemFree(frameBuff);
+				MemFreeArr(frameBuff);
 				return frInfo->frameSize;
 			}
 			else
 			{
-				MemFree(frameBuff);
+				MemFreeArr(frameBuff);
 				return 0;
 			}
 		}

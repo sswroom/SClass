@@ -86,13 +86,13 @@ UInt32 __stdcall Net::ICMPScanner::Ping1Thread(AnyType userObj)
 UInt32 __stdcall Net::ICMPScanner::Ping2Thread(AnyType userObj)
 {
 	NN<Net::ICMPScanner> me = userObj.GetNN<Net::ICMPScanner>();
-	UInt8 *readBuff;
+	UnsafeArray<UInt8> readBuff;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	Net::SocketFactory::ErrorType et;
 	UIntOS readSize;
 	NN<ScanResult> result;
-	readBuff = MemAlloc(UInt8, 4096);
+	readBuff = MemAllocArr(UInt8, 4096);
 	UInt8 *ipData;
 	UIntOS ipDataSize;
 	NN<Socket> soc;
@@ -138,7 +138,7 @@ UInt32 __stdcall Net::ICMPScanner::Ping2Thread(AnyType userObj)
 			}
 		}
 	}
-	MemFree(readBuff);
+	MemFreeArr(readBuff);
 	me->threadRunning = false;
 	return 0;
 }
@@ -277,7 +277,7 @@ Bool Net::ICMPScanner::Scan(UInt32 ip)
 	}
 	else
 	{
-		PingStatus *status = MemAlloc(PingStatus, (1 << THREADLEV));
+		UnsafeArray<PingStatus>status = MemAllocArr(PingStatus, (1 << THREADLEV));
 		NEW_CLASS(status[0].evt, Sync::Event(true));
 		UIntOS i = 0;
 		while (i < (UIntOS)(1 << THREADLEV))
@@ -316,7 +316,7 @@ Bool Net::ICMPScanner::Scan(UInt32 ip)
 			}
 		}
 		DEL_CLASS(status[0].evt);
-		MemFree(status);
+		MemFreeArr(status);
 
 		this->AppendMACs(ip);
 	}

@@ -405,7 +405,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(AnyType userObj)
 		NN<Text::String> srchText;
 		if (me->isSearching && me->srchText.SetTo(srchText))
 		{
-			UInt8 *srchTxt;
+			UnsafeArray<UInt8> srchTxt;
 			UIntOS srchTxtLen;
 			UIntOS strLen;
 			UInt32 startCaretX = me->caretX;
@@ -424,7 +424,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(AnyType userObj)
 				Text::Encoding enc(me->fileCodePage);
 				strLen = srchText->leng;
 				srchTxtLen = enc.UTF8CountBytesC(srchText->v, strLen);
-				srchTxt = MemAlloc(UInt8, srchTxtLen + 1);
+				srchTxt = MemAllocArr(UInt8, srchTxtLen + 1);
 				enc.UTF8ToBytesC(srchTxt, srchText->v, strLen);
 				srchTxt[srchTxtLen] = 0;
 
@@ -545,7 +545,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(AnyType userObj)
 						currOfst += currSize - srchTxtLen + 1;
 					}
 				}
-				MemFree(srchTxt);
+				MemFreeArr(srchTxt);
 			}
 			OPTSTR_DEL(me->srchText);
 			me->isSearching = false;
@@ -595,7 +595,7 @@ void UI::GUITextFileView::EnsureCaretVisible()
 		}
 		if (nextOfst > lineOfst)
 		{
-			WChar *line;
+			UnsafeArray<WChar> line;
 			UIntOS drawW;
 			UIntOS drawH;
 
@@ -603,17 +603,17 @@ void UI::GUITextFileView::EnsureCaretVisible()
 			Data::ByteBuffer rbuff((UIntOS)(nextOfst - lineOfst));
 			this->fs->SeekFromBeginning(lineOfst);
 			this->fs->Read(rbuff);
-			UIntOS charCnt = enc.CountWChars(rbuff.Arr().Ptr(), (UIntOS)(nextOfst - lineOfst));
+			UIntOS charCnt = enc.CountWChars(rbuff.Arr(), (UIntOS)(nextOfst - lineOfst));
 			if (charCnt < this->caretX)
 			{
 				this->caretX = (UInt32)charCnt;
 			}
-			line = MemAlloc(WChar, charCnt + 1);
-			enc.WFromBytes(line, rbuff.Arr().Ptr(), (UIntOS)(nextOfst - lineOfst), 0);
+			line = MemAllocArr(WChar, charCnt + 1);
+			enc.WFromBytes(line, rbuff.Arr(), (UIntOS)(nextOfst - lineOfst), 0);
 			Text::StrReplaceW(line, '\t', ' ');
 			this->GetDrawSize(line, this->caretX, drawW, drawH);
 			xPos = this->dispLineNumW + (UInt32)drawW;
-			MemFree(line);
+			MemFreeArr(line);
 		}
 		mutUsage.EndUse();
 	}
@@ -813,14 +813,14 @@ UIntOS UI::GUITextFileView::GetLineCharCnt(UIntOS lineNum)
 		this->fs->SeekFromBeginning(lineOfst);
 		this->fs->Read(rbuff);
 		UIntOS charCnt = enc.CountWChars(rbuff.Arr().Ptr(), (UIntOS)(nextOfst - lineOfst));
-		WChar *line = MemAlloc(WChar, charCnt + 1);
+		UnsafeArray<WChar> line = MemAllocArr(WChar, charCnt + 1);
 		enc.WFromBytes(line, rbuff.Arr().Ptr(), (UIntOS)(nextOfst - lineOfst), 0);
 		charCnt -= 1;
 		if (charCnt > 0 && (line[charCnt - 1] == 0x0d || line[charCnt - 1] == 0x0a))
 		{
 			charCnt--;
 		}
-		MemFree(line);
+		MemFreeArr(line);
 		return charCnt;
 	}
 	else
@@ -1187,7 +1187,7 @@ void UI::GUITextFileView::DrawImage(NN<Media::DrawImage> dimg)
 	UInt64 nextOfst;
 	UIntOS i;
 	UIntOS j;
-	WChar *line;
+	UnsafeArray<WChar> line;
 	UnsafeArray<WChar> wptr;
 	WChar c;
 	Math::Size2DDbl sz;
@@ -1273,7 +1273,7 @@ void UI::GUITextFileView::DrawImage(NN<Media::DrawImage> dimg)
 		if (nextOfst > currOfst)
 		{
 			j = enc.CountWChars(&rbuff[(UIntOS)(currOfst - startOfst)], (UIntOS)(nextOfst - currOfst));
-			line = MemAlloc(WChar, j + 1);
+			line = MemAllocArr(WChar, j + 1);
 			wptr = enc.WFromBytes(line, &rbuff[(UIntOS)(currOfst - startOfst)], (UIntOS)(nextOfst - currOfst), 0);
 			Text::StrReplaceW(line, '\t', ' ');
 			if (wptr[-1] == 13)
@@ -1305,7 +1305,7 @@ void UI::GUITextFileView::DrawImage(NN<Media::DrawImage> dimg)
 
 			Math::Size2DDbl szWhole;
 			Math::Size2DDbl szThis;
-			s = Text::String::NewNotNull(line);
+			s = Text::String::NewNotNull(UnsafeArray<const WChar>(line));
 			szWhole = dimg->GetTextSize(fnt, s->ToCString());
 			if (maxScnWidth < (UIntOS)Double2IntOS(szWhole.x + sz.x + 8))
 			{
@@ -1335,7 +1335,7 @@ void UI::GUITextFileView::DrawImage(NN<Media::DrawImage> dimg)
 					{
 						c = line[selTopX];
 						line[selTopX] = 0;
-						s2 = Text::String::NewNotNull(line);
+						s2 = Text::String::NewNotNull(UnsafeArray<const WChar>(line));
 						line[selTopX] = c;
 						szThis = dimg->GetTextSize(fnt, s2->ToCString());
 						dimg->DrawString(Math::Coord2DDbl(drawLeft, drawTop), s2->ToCString(), fnt, textBrush);
@@ -1354,7 +1354,7 @@ void UI::GUITextFileView::DrawImage(NN<Media::DrawImage> dimg)
 					{
 						c = line[selTopX];
 						line[selTopX] = 0;
-						s2 = Text::String::NewNotNull(line);
+						s2 = Text::String::NewNotNull(UnsafeArray<const WChar>(line));
 						line[selTopX] = c;
 						szThis = dimg->GetTextSize(fnt, s2->ToCString());
 						dimg->DrawString(Math::Coord2DDbl(drawLeft, drawTop), s2->ToCString(), fnt, textBrush);
@@ -1392,7 +1392,7 @@ void UI::GUITextFileView::DrawImage(NN<Media::DrawImage> dimg)
 				{
 					c = line[selTopX];
 					line[selTopX] = 0;
-					s2 = Text::String::NewNotNull(line);
+					s2 = Text::String::NewNotNull(UnsafeArray<const WChar>(line));
 					line[selTopX] = c;
 					szThis = dimg->GetTextSize(fnt, s2->ToCString());
 					dimg->DrawString(Math::Coord2DDbl(drawLeft, drawTop), s2->ToCString(), fnt, textBrush);
@@ -1421,7 +1421,7 @@ void UI::GUITextFileView::DrawImage(NN<Media::DrawImage> dimg)
 				{
 					c = line[selBottomX];
 					line[selBottomX] = 0;
-					s2 = Text::String::NewNotNull(line);
+					s2 = Text::String::NewNotNull(UnsafeArray<const WChar>(line));
 					line[selBottomX] = c;
 					szThis = dimg->GetTextSize(fnt, s2->ToCString());
 					dimg->DrawRect(Math::Coord2DDbl(drawLeft, drawTop), szThis, nullptr, selBrush);
@@ -1439,7 +1439,7 @@ void UI::GUITextFileView::DrawImage(NN<Media::DrawImage> dimg)
 				dimg->DrawString(Math::Coord2DDbl(drawLeft, drawTop), s->ToCString(), fnt, textBrush);
 			}
 			s->Release();
-			MemFree(line);
+			MemFreeArr(line);
 		}
 
 		currOfst = nextOfst;
@@ -1480,7 +1480,7 @@ void UI::GUITextFileView::UpdateCaretPos()
 		}
 		if (nextOfst > lineOfst)
 		{
-			WChar *line;
+			UnsafeArray<WChar> line;
 			UIntOS drawW;
 			UIntOS drawH;
 
@@ -1493,12 +1493,12 @@ void UI::GUITextFileView::UpdateCaretPos()
 			{
 				this->caretX = (UInt32)charCnt;
 			}
-			line = MemAlloc(WChar, charCnt + 1);
+			line = MemAllocArr(WChar, charCnt + 1);
 			enc.WFromBytes(line, rbuff.Arr().Ptr(), (UIntOS)(nextOfst - lineOfst), 0);
 			Text::StrReplaceW(line, '\t', ' ');
 			this->GetDrawSize(line, this->caretX, drawW, drawH);
 			xPos = this->dispLineNumW + (UInt32)drawW;
-			MemFree(line);
+			MemFreeArr(line);
 		}
 		mutUsage.EndUse();
 	}
@@ -1606,14 +1606,14 @@ void UI::GUITextFileView::GetTextPos(IntOS scnPosX, IntOS scnPosY, OutParam<UInt
 		}
 		if (nextOfst > lineOfst)
 		{
-			WChar *line;
+			UnsafeArray<WChar> line;
 
 			Text::Encoding enc(this->fileCodePage);
 			Data::ByteBuffer rbuff((UIntOS)(nextOfst - lineOfst));
 			this->fs->SeekFromBeginning(lineOfst);
 			this->fs->Read(rbuff);
 			UIntOS charCnt = enc.CountWChars(rbuff.Arr().Ptr(), (UIntOS)(nextOfst - lineOfst));
-			line = MemAlloc(WChar, charCnt + 1);
+			line = MemAllocArr(WChar, charCnt + 1);
 			enc.WFromBytes(line, rbuff.Arr().Ptr(), (UIntOS)(nextOfst - lineOfst), 0);
 			Text::StrReplaceW(line, '\t', ' ');
 			charCnt -= 1;
@@ -1622,7 +1622,7 @@ void UI::GUITextFileView::GetTextPos(IntOS scnPosX, IntOS scnPosY, OutParam<UInt
 				charCnt--;
 			}
 			textX = this->GetCharCntAtWidth(line, charCnt, (UIntOS)drawX);
-			MemFree(line);
+			MemFreeArr(line);
 		}
 		mutUsage.EndUse();
 	}

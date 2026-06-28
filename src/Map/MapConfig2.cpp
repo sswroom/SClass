@@ -3404,7 +3404,7 @@ void Map::MapConfig2::DrawLabels(NN<Media::DrawImage> img, UnsafeArray<MapLabels
 				//	MessageBoxW(NULL, L"Test", lastLbl, MB_OK);
 				}
 
-				Math::Coord2DDbl *points = MemAlloc(Math::Coord2DDbl, labels[i].nPoints);
+				UnsafeArray<Math::Coord2DDbl> points = MemAllocArr(Math::Coord2DDbl, labels[i].nPoints);
 				view->MapXYToScnXYArr(ptPtr, points, labels[i].nPoints, Math::Coord2DDbl(0, 0));
 				Double minX = 0;
 				Double minY = 0;
@@ -3817,7 +3817,7 @@ void Map::MapConfig2::DrawLabels(NN<Media::DrawImage> img, UnsafeArray<MapLabels
 						j = (thisCnt < 10);
 					}
 				}
-				MemFree(points);
+				MemFreeArr(points);
 			}
 			else if (labels[i].shapeType == 5)
 			{
@@ -3958,8 +3958,8 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 				this->nLine = Text::StrToUInt32(strs[2].v);
 				this->nFont = Text::StrToUInt32(strs[3].v);
 				this->nStr = Text::StrToUInt32(strs[4].v);
-				this->lines = lines = MemAlloc(Optional<Data::ArrayListNN<MapLineStyle>>, this->nLine);
-				this->fonts = fonts = MemAlloc(Optional<Data::ArrayListNN<MapFontStyle>>, this->nFont);
+				this->lines = lines = MemAllocArr(Optional<Data::ArrayListNN<MapLineStyle>>, this->nLine);
+				this->fonts = fonts = MemAllocArr(Optional<Data::ArrayListNN<MapFontStyle>>, this->nFont);
 				i = this->nLine;
 				while (i-- > 0)
 				{

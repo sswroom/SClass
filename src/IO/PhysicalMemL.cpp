@@ -22,32 +22,35 @@ struct IO::PhysicalMem::ClassData
 	IntOS size;
 };
 
-static PhysicalMemInfo *PhysicalMem_status = 0;
+static Optional<PhysicalMemInfo> PhysicalMem_status = nullptr;
 
 IO::PhysicalMem::PhysicalMem(IntOS addr, IntOS size)
 {
-	if (PhysicalMem_status == 0)
+	NN<PhysicalMemInfo> status;
+	if (!PhysicalMem_status.SetTo(status))
 	{
-		PhysicalMem_status = MemAlloc(PhysicalMemInfo, 1);
-		PhysicalMem_status->fd = open("/dev/mem", O_RDWR|O_SYNC);
-		PhysicalMem_status->useCnt = 1;
+		PhysicalMem_status = status = MemAllocNN(PhysicalMemInfo);
+		status->fd = open("/dev/mem", O_RDWR|O_SYNC);
+		status->useCnt = 1;
 	}
 	else
 	{
-		Sync::Interlocked::IncrementI32(PhysicalMem_status->useCnt);
+		Sync::Interlocked::IncrementI32(status->useCnt);
 	}
 
-	ClassData *clsData = 0;
-	if (PhysicalMem_status->fd >= 0)
+	this->clsData = nullptr;
+	NN<ClassData> clsData;
+	if (status->fd >= 0)
 	{
 		IntOS addrRet = addr & (size - 1);
-		void *m = mmap(0, (size_t)size, PROT_READ|PROT_WRITE, MAP_SHARED, PhysicalMem_status->fd, addr - addrRet);
+		void *m = mmap(0, (size_t)size, PROT_READ|PROT_WRITE, MAP_SHARED, status->fd, addr - addrRet);
 		if (m != MAP_FAILED)
 		{
-			clsData = MemAlloc(ClassData, 1);
+			clsData = MemAllocNN(ClassData);
 			clsData->map = m;
 			clsData->ptr = addrRet + (UInt8*)m;
 			clsData->size = size;
+			this->clsData = clsData;
 		}
 		else
 		{
@@ -58,34 +61,35 @@ IO::PhysicalMem::PhysicalMem(IntOS addr, IntOS size)
 	{
 		printf("Error in opening /dev/mem\r\n");
 	}
-	
-	this->clsData = clsData;
 }
 
 IO::PhysicalMem::~PhysicalMem()
 {
-	if (this->clsData)
+	NN<ClassData> clsData;
+	if (this->clsData.SetTo(clsData))
 	{
-		munmap(this->clsData->map, (size_t)this->clsData->size);
-		MemFree(this->clsData);
-		this->clsData = 0;
+		munmap(clsData->map, (size_t)clsData->size);
+		MemFreeNN(clsData);
+		this->clsData = nullptr;
 	}
-	if (Sync::Interlocked::DecrementI32(PhysicalMem_status->useCnt) == 0)
+	NN<PhysicalMemInfo> status;
+	if (PhysicalMem_status.SetTo(status) && Sync::Interlocked::DecrementI32(status->useCnt) == 0)
 	{
-		close(PhysicalMem_status->fd);
-		MemFree(PhysicalMem_status);
-		PhysicalMem_status = 0;
+		close(status->fd);
+		MemFreeNN(status);
+		PhysicalMem_status = nullptr;
 	}
 }
 
-UInt8 *IO::PhysicalMem::GetPointer()
+UnsafeArrayOpt<UInt8> IO::PhysicalMem::GetPointer()
 {
-	if (this->clsData == 0)
-		return 0;
-	return (UInt8*)this->clsData->ptr;
+	NN<ClassData> clsData;
+	if (!this->clsData.SetTo(clsData))
+		return nullptr;
+	return (UInt8*)clsData->ptr;
 }
 
 Bool IO::PhysicalMem::IsError()
 {
-	return this->clsData == 0;
+	return this->clsData.IsNull();
 }

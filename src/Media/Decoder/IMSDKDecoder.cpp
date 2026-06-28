@@ -376,11 +376,11 @@ public:
 		if (frameSize > 0)
 		{
 			mfxBitstream bs;
-			UInt8 *firstFrame = MemAlloc(UInt8, frameSize);
+			UnsafeArray<UInt8> firstFrame = MemAllocArr(UInt8, frameSize);
 			frameSize = sourceVideo->ReadFrame(0, firstFrame);
 
 			MemClear(&bs, sizeof(bs));
-			bs.Data = firstFrame;
+			bs.Data = firstFrame.Ptr();
 			bs.DataOffset = 0;
 			bs.DataLength = (mfxU32)frameSize;
 			bs.MaxLength = (mfxU32)frameSize;
@@ -388,11 +388,11 @@ public:
 			if (par.mfx.CodecId == MFX_CODEC_AVC)
 			{
 				Media::H264Parser::H264Flags flags;
-				Media::H264Parser::GetFrameInfo(firstFrame, frameSize, &this->streamInfo, &flags);
+				Media::H264Parser::GetFrameInfo(firstFrame, frameSize, this->streamInfo, &flags);
 			}
 			else if (par.mfx.CodecId == MFX_CODEC_HEVC);
 			{
-				Media::H265Parser::GetFrameInfoSPS(firstFrame, frameSize, &this->streamInfo);
+				Media::H265Parser::GetFrameInfoSPS(firstFrame, frameSize, this->streamInfo);
 			}
 
 			this->par.IOPattern = MFX_IOPATTERN_OUT_SYSTEM_MEMORY;
@@ -439,7 +439,7 @@ public:
 
 				}
 			}
-			MemFree(firstFrame);
+			MemFreeArr(firstFrame);
 		}
 	}
 

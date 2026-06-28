@@ -245,7 +245,7 @@ UInt64 SSWR::AVIRead::AVIRFileSizePackForm::NewCalc(NN<Data::ArrayListNN<SSWR::A
 {
 	UInt64 currMaxSize = 0;
 	UIntOS leng = fileList->GetCount();
-	UInt32 *list = MemAlloc(UInt32, leng);
+	UnsafeArray<UInt32> list = MemAllocArr(UInt32, leng);
 	UIntOS listCount = 0;
 	UIntOS j;
 	UInt64 currSize = 0;
@@ -287,7 +287,7 @@ UInt64 SSWR::AVIRead::AVIRFileSizePackForm::NewCalc(NN<Data::ArrayListNN<SSWR::A
 
                 if (currMaxSize >= minSize)
 				{
-					MemFree(list);
+					MemFreeArr(list);
                     return currMaxSize;
 				}
 			}
@@ -329,7 +329,7 @@ UInt64 SSWR::AVIRead::AVIRFileSizePackForm::NewCalc(NN<Data::ArrayListNN<SSWR::A
 			}
 		}
 	}
-	MemFree(list);
+	MemFreeArr(list);
 	return 0;
 }
 

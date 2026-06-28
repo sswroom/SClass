@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnDecryptClicked(AnyType userObj)
 	me->txtMessage->GetText(sb2);
 	if (sb.GetLength() > 0 && sb2.GetLength() > 0)
 	{
-		UInt8 *res = MemAlloc(UInt8, sb2.GetLength());
+		UnsafeArray<UInt8> res = MemAllocArr(UInt8, sb2.GetLength());
 		UIntOS resSize;
 		Crypto::Encrypt::JasyptEncryptor *enc;
 		NEW_CLASS(enc, Crypto::Encrypt::JasyptEncryptor((Crypto::Encrypt::JasyptEncryptor::KeyAlgorithm)me->cboKeyAlg->GetSelectedItem().GetIntOS(), (Crypto::Encrypt::JasyptEncryptor::CipherAlgorithm)me->cboEncAlg->GetSelectedItem().GetIntOS(), sb.ToByteArray()));
@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnDecryptClicked(AnyType userObj)
 		sb.AppendC(res, resSize);
 		me->txtResult->SetText(sb.ToCString());
 		DEL_CLASS(enc);
-		MemFree(res);
+		MemFreeArr(res);
 	}
 }
 

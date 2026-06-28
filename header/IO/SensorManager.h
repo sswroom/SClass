@@ -8,7 +8,8 @@ namespace IO
 	class SensorManager
 	{
 	private:
-		void *clsData;
+		struct ClassData;
+		NN<ClassData> clsData;
 
 	public:
 		SensorManager();

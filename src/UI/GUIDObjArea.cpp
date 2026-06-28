@@ -21,7 +21,7 @@ void __stdcall UI::GUIDObjArea::DisplayThread(NN<Sync::Thread> thread)
 					UnsafeArray<UInt8> destBuff;
 					if (me->LockSurfaceBegin(currDrawImg->PixelGetWidth(), currDrawImg->PixelGetHeight(), dbpl).SetTo(destBuff))
 					{
-						UInt8 *tmpBuff = MemAlloc(UInt8, me->dispSize.CalcArea() << 2);
+						UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, me->dispSize.CalcArea() << 2);
 						currDrawImg->CopyBits(0, 0, tmpBuff, me->dispSize.x << 2, me->dispSize.x, me->dispSize.y, false);
 	//					UIntOS w = me->surfaceW;
 	//					UIntOS h = me->surfaceH;
@@ -113,7 +113,7 @@ void __stdcall UI::GUIDObjArea::DisplayThread(NN<Sync::Thread> thread)
 	#endif*/
 
 						me->LockSurfaceEnd();
-						MemFree(tmpBuff);
+						MemFreeArr(tmpBuff);
 					}
 				}
 				else

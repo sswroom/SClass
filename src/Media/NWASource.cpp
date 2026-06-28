@@ -15,10 +15,10 @@ Media::NWASource::NWASource(NN<IO::StreamData> fd, UInt32 sampleCount, UInt32 bl
 	this->blockSize = blockSize;
 	this->compLevel = compLevel;
 	this->nBlocks = nBlocks;
-	this->blockOfsts = MemAlloc(UInt32, this->nBlocks);
-	this->blockBuff = MemAlloc(UInt8, blockSize * (this->format.bitpersample / 8) * 2);
+	this->blockOfsts = MemAllocArr(UInt32, this->nBlocks);
+	this->blockBuff = MemAllocArr(UInt8, blockSize * (this->format.bitpersample / 8) * 2);
 	this->currBlock = 0;
-	fd->GetRealData(0x2c, this->nBlocks * 4, Data::ByteArray((UInt8*)this->blockOfsts, this->nBlocks * 4));
+	fd->GetRealData(0x2c, this->nBlocks * 4, Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(this->blockOfsts), this->nBlocks * 4));
 }
 
 Media::NWASource::NWASource(NN<IO::StreamData> fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, NN<const Media::AudioFormat> format, Text::CStringNN name) : Media::LPCMSource(fd, 0, fd->GetDataSize(), format, name)
@@ -27,16 +27,16 @@ Media::NWASource::NWASource(NN<IO::StreamData> fd, UInt32 sampleCount, UInt32 bl
 	this->blockSize = blockSize;
 	this->compLevel = compLevel;
 	this->nBlocks = nBlocks;
-	this->blockOfsts = MemAlloc(UInt32, this->nBlocks);
-	this->blockBuff = MemAlloc(UInt8, blockSize * (this->format.bitpersample / 8) * 2);
+	this->blockOfsts = MemAllocArr(UInt32, this->nBlocks);
+	this->blockBuff = MemAllocArr(UInt8, blockSize * (this->format.bitpersample / 8) * 2);
 	this->currBlock = 0;
-	fd->GetRealData(0x2c, this->nBlocks * 4, Data::ByteArray((UInt8*)this->blockOfsts, this->nBlocks * 4));
+	fd->GetRealData(0x2c, this->nBlocks * 4, Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(this->blockOfsts), this->nBlocks * 4));
 }
 
 Media::NWASource::~NWASource()
 {
-	MemFree(this->blockOfsts);
-	MemFree(this->blockBuff);
+	MemFreeArr(this->blockOfsts);
+	MemFreeArr(this->blockBuff);
 }
 
 Data::Duration Media::NWASource::GetStreamTime()

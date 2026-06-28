@@ -26,7 +26,7 @@ namespace Media
 			ExifType t;
 			Int32 numerator;
 			Int32 denominator;
-			Char *s;
+			UnsafeArrayOpt<UTF8Char> s;
 		} ExifValue;
 
 	private:
@@ -43,12 +43,12 @@ namespace Media
 
 		NN<ExifValue> AddExifGroup(Int32 id);
 		void SetExif(Optional<ExifValue> grp, Int32 id, Int32 numerator, Int32 denominator);
-		void SetExif(Optional<ExifValue> grp, Int32 id, const Char *s);
-		void SetExif(Optional<ExifValue> grp, Int32 id, const UInt8 *s, Int32 size);
-		void SetExifUnk(Optional<ExifValue> grp, Int32 id, const UInt8 *s, Int32 size);
+		void SetExif(Optional<ExifValue> grp, Int32 id, UnsafeArray<const UTF8Char> s);
+		void SetExif(Optional<ExifValue> grp, Int32 id, UnsafeArray<const UInt8> s, Int32 size);
+		void SetExifUnk(Optional<ExifValue> grp, Int32 id, UnsafeArray<const UInt8> s, Int32 size);
 		void SetExif(Optional<ExifValue> grp, Int32 id, UInt16 val);
 		void SetExif(Optional<ExifValue> grp, Int32 id, UInt32 val);
-		void SetExif(Optional<ExifValue> grp, Int32 id, const Int32 *val, Int32 cnt);
+		void SetExif(Optional<ExifValue> grp, Int32 id, UnsafeArray<const Int32> val, Int32 cnt);
 		void DelExif(Optional<ExifValue> grp, Int32 id);
 
 		Bool WriteExif(NN<IO::Stream> input, NN<IO::Stream> output);

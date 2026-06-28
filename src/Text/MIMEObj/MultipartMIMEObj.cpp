@@ -98,22 +98,22 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UIntOS buffSize)
 			if (tenc->Equals(UTF8STRC("base64")))
 			{
 				Text::TextBinEnc::Base64Enc b64;
-				UInt8 *tmpBuff = MemAlloc(UInt8, buffSize - lineStart);
+				UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, buffSize - lineStart);
 				j = b64.DecodeBin(Text::CStringNN(&buff[lineStart], buffSize - lineStart), tmpBuff);
 
 				IO::StmData::MemoryDataRef mdata(tmpBuff, j);
 				obj = Text::MIMEObject::ParseFromData(mdata, contType->ToCString());
-				MemFree(tmpBuff);
+				MemFreeArr(tmpBuff);
 			}
 			else if (tenc->Equals(UTF8STRC("quoted-printable")))
 			{
 				Text::TextBinEnc::QuotedPrintableEnc qpenc;
-				UInt8 *tmpBuff = MemAlloc(UInt8, buffSize - lineStart);
+				UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, buffSize - lineStart);
 				j = qpenc.DecodeBin(Text::CStringNN(&buff[lineStart], buffSize - lineStart), tmpBuff);
 
 				IO::StmData::MemoryDataRef mdata(tmpBuff, j);
 				obj = Text::MIMEObject::ParseFromData(mdata, contType->ToCString());
-				MemFree(tmpBuff);
+				MemFreeArr(tmpBuff);
 			}
 			else if (tenc->Equals(UTF8STRC("7bit")))
 			{
@@ -349,7 +349,7 @@ Optional<Text::MIMEObj::MultipartMIMEObj> Text::MIMEObj::MultipartMIMEObj::Parse
 			Text::StringBuilderUTF8 boundary;
 			Text::MIMEObj::MultipartMIMEObj *obj;
 			UIntOS buffSize;
-			UInt8 *buff;
+			UnsafeArray<UInt8> buff;
 			i = currPart.leng;
 			j = currPart.IndexOf(';');
 			if (j != INVALID_INDEX)
@@ -368,7 +368,7 @@ Optional<Text::MIMEObj::MultipartMIMEObj> Text::MIMEObj::MultipartMIMEObj::Parse
 			}
 
 			buffSize = (UIntOS)data->GetDataSize();
-			buff = MemAlloc(UInt8, buffSize + 1);
+			buff = MemAllocArr(UInt8, buffSize + 1);
 			data->GetRealData(0, buffSize, Data::ByteArray(buff, buffSize + 1));
 			buff[buffSize] = 0;
 
@@ -381,7 +381,7 @@ Optional<Text::MIMEObj::MultipartMIMEObj> Text::MIMEObj::MultipartMIMEObj::Parse
 			else
 			{
 				buff[j] = 0;
-				NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, {buff, j}, boundary.ToCString()));
+				NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, Text::CString(UnsafeArray<const UInt8>(buff), j), boundary.ToCString()));
 				i = j + boundary.GetLength();
 				if (buff[i] == '\r' && buff[i + 1] == '\n')
 				{
@@ -403,7 +403,7 @@ Optional<Text::MIMEObj::MultipartMIMEObj> Text::MIMEObj::MultipartMIMEObj::Parse
 				}
 			}
 			obj->ParsePart(&buff[i], buffSize - i);
-			MemFree(buff);
+			MemFreeArr(buff);
 			return obj;
 		}	
 		else

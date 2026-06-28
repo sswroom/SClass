@@ -52,11 +52,11 @@ namespace Net
 			UInt8 decimals;
 		} ColumnDef;
 
-		Data::ArrayListObj<ColumnDef*> cols;
+		Data::ArrayListNN<ColumnDef> cols;
 		UIntOS colCount;
 		IntOS rowChanged;
-		Optional<Text::String> *currRow;
-		Optional<Text::String> *nextRow;
+		UnsafeArrayOpt<Optional<Text::String>> currRow;
+		UnsafeArrayOpt<Optional<Text::String>> nextRow;
 		Bool nextRowReady;
 		Sync::Event rowEvt;
 		Sync::Event nextRowEvt;
@@ -67,8 +67,8 @@ namespace Net
 		{
 			this->mutUsage.ReplaceMutex(mut);
 			this->rowChanged = -1;
-			this->currRow = 0;
-			this->nextRow = 0;
+			this->currRow = nullptr;
+			this->nextRow = nullptr;
 			this->tzQhr = tzQhr;
 			this->colCount = 0;
 			this->nextRowReady = false;
@@ -76,7 +76,7 @@ namespace Net
 
 		virtual ~MySQLTCPReader()
 		{
-			ColumnDef *col;
+			NN<ColumnDef> col;
 			while (this->ReadNext())
 			{
 
@@ -84,31 +84,32 @@ namespace Net
 			UIntOS i = this->cols.GetCount();
 			while (i-- > 0)
 			{
-				col = this->cols.GetItem(i);
+				col = this->cols.GetItemNoCheck(i);
 				col->name->Release();
 				OPTSTR_DEL(col->defValues);
-				MemFree(col); 
+				MemFreeNN(col); 
 			}
 		}
 
 		virtual Bool ReadNext()
 		{
+			UnsafeArray<Optional<Text::String>> row;
 			UIntOS i;
-			if (this->currRow)
+			if (this->currRow.SetTo(row))
 			{
 				i = this->colCount;
 				while (i-- > 0)
 				{
-					OPTSTR_DEL(this->currRow[i]);
+					OPTSTR_DEL(row[i]);
 				}
-				MemFree(this->currRow);
-				this->currRow = 0;
+				MemFreeArr(row);
+				this->currRow = nullptr;
 			}
 			while (!this->nextRowReady)
 			{
 				this->rowEvt.Wait(1000);
 			}
-			if (this->nextRow)
+			if (this->nextRow.NotNull())
 			{
 				this->currRow = this->nextRow;
 				this->nextRowReady = false;
@@ -133,8 +134,9 @@ namespace Net
 
 		virtual Int32 GetInt32(UIntOS colIndex)
 		{
+			UnsafeArray<Optional<Text::String>> row;
 			NN<Text::String> s;
-			if (this->currRow == 0)
+			if (!this->currRow.SetTo(row))
 			{
 				return 0;
 			}
@@ -142,7 +144,7 @@ namespace Net
 			{
 				return 0;
 			}
-			if (!this->currRow[colIndex].SetTo(s))
+			if (!row[colIndex].SetTo(s))
 			{
 				return 0;
 			}
@@ -151,7 +153,8 @@ namespace Net
 
 		virtual Int64 GetInt64(UIntOS colIndex)
 		{
-			if (this->currRow == 0)
+			UnsafeArray<Optional<Text::String>> row;
+			if (!this->currRow.SetTo(row))
 			{
 				return 0;
 			}
@@ -160,7 +163,7 @@ namespace Net
 				return 0;
 			}
 			NN<Text::String> s;
-			if (!this->currRow[colIndex].SetTo(s))
+			if (!row[colIndex].SetTo(s))
 			{
 				return 0;
 			}
@@ -169,7 +172,8 @@ namespace Net
 
 		virtual UnsafeArrayOpt<WChar> GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 		{
-			if (this->currRow == 0)
+			UnsafeArray<Optional<Text::String>> row;
+			if (!this->currRow.SetTo(row))
 			{
 				return nullptr;
 			}
@@ -178,7 +182,7 @@ namespace Net
 				return nullptr;
 			}
 			NN<Text::String> s;
-			if (!this->currRow[colIndex].SetTo(s))
+			if (!row[colIndex].SetTo(s))
 			{
 				return nullptr;
 			}
@@ -187,7 +191,8 @@ namespace Net
 
 		virtual Bool GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 		{
-			if (this->currRow == 0)
+			UnsafeArray<Optional<Text::String>> row;
+			if (!this->currRow.SetTo(row))
 			{
 				return false;
 			}
@@ -196,7 +201,7 @@ namespace Net
 				return false;
 			}
 			NN<Text::String> s;
-			if (!this->currRow[colIndex].SetTo(s))
+			if (!row[colIndex].SetTo(s))
 			{
 				return false;
 			}
@@ -206,7 +211,8 @@ namespace Net
 
 		virtual Optional<Text::String> GetNewStr(UIntOS colIndex)
 		{
-			if (this->currRow == 0)
+			UnsafeArray<Optional<Text::String>> row;
+			if (!this->currRow.SetTo(row))
 			{
 				return nullptr;
 			}
@@ -215,7 +221,7 @@ namespace Net
 				return nullptr;
 			}
 			NN<Text::String> s;
-			if (!this->currRow[colIndex].SetTo(s))
+			if (!row[colIndex].SetTo(s))
 			{
 				return nullptr;
 			}
@@ -224,7 +230,8 @@ namespace Net
 
 		virtual UnsafeArrayOpt<UTF8Char> GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 		{
-			if (this->currRow == 0)
+			UnsafeArray<Optional<Text::String>> row;
+			if (!this->currRow.SetTo(row))
 			{
 				return nullptr;
 			}
@@ -233,7 +240,7 @@ namespace Net
 				return nullptr;
 			}
 			NN<Text::String> s;
-			if (!this->currRow[colIndex].SetTo(s))
+			if (!row[colIndex].SetTo(s))
 			{
 				return nullptr;
 			}
@@ -242,7 +249,8 @@ namespace Net
 
 		virtual Data::Timestamp GetTimestamp(UIntOS colIndex)
 		{
-			if (this->currRow == 0)
+			UnsafeArray<Optional<Text::String>> row;
+			if (!this->currRow.SetTo(row))
 			{
 				return Data::Timestamp(nullptr);
 			}
@@ -251,7 +259,7 @@ namespace Net
 				return Data::Timestamp(nullptr);
 			}
 			NN<Text::String> s;
-			if (!this->currRow[colIndex].SetTo(s))
+			if (!row[colIndex].SetTo(s))
 			{
 				return Data::Timestamp(nullptr);
 			}
@@ -260,7 +268,8 @@ namespace Net
 
 		virtual Double GetDblOrNAN(UIntOS colIndex)
 		{
-			if (this->currRow == 0)
+			UnsafeArray<Optional<Text::String>> row;
+			if (!this->currRow.SetTo(row))
 			{
 				return NAN;
 			}
@@ -269,7 +278,7 @@ namespace Net
 				return NAN;
 			}
 			NN<Text::String> s;
-			if (!this->currRow[colIndex].SetTo(s))
+			if (!row[colIndex].SetTo(s))
 			{
 				return NAN;
 			}
@@ -278,7 +287,8 @@ namespace Net
 
 		virtual Bool GetBool(UIntOS colIndex)
 		{
-			if (this->currRow == 0)
+			UnsafeArray<Optional<Text::String>> row;
+			if (!this->currRow.SetTo(row))
 			{
 				return false;
 			}
@@ -287,7 +297,7 @@ namespace Net
 				return false;
 			}
 			NN<Text::String> s;
-			if (!this->currRow[colIndex].SetTo(s))
+			if (!row[colIndex].SetTo(s))
 			{
 				return false;
 			}
@@ -320,7 +330,8 @@ namespace Net
 
 		virtual Bool IsNull(UIntOS colIndex)
 		{
-			if (this->currRow == 0)
+			UnsafeArray<Optional<Text::String>> row;
+			if (!this->currRow.SetTo(row))
 			{
 				return true;
 			}
@@ -328,13 +339,13 @@ namespace Net
 			{
 				return true;
 			}
-			return this->currRow[colIndex].IsNull();
+			return row[colIndex].IsNull();
 		}
 
 		virtual UnsafeArrayOpt<UTF8Char> GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 		{
-			ColumnDef *col = this->cols.GetItem(colIndex);
-			if (col)
+			NN<ColumnDef> col;
+			if (this->cols.GetItem(colIndex).SetTo(col))
 			{
 				return col->name->ConcatTo(buff);
 			}
@@ -343,8 +354,8 @@ namespace Net
 
 		virtual DB::DBUtil::ColType GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 		{
-			ColumnDef *col = this->cols.GetItem(colIndex);
-			if (col)
+			NN<ColumnDef> col;
+			if (this->cols.GetItem(colIndex).SetTo(col))
 			{
 				colSize.Set(col->colLen);
 				return col->dbColType;
@@ -354,8 +365,8 @@ namespace Net
 
 		virtual Bool GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 		{
-			ColumnDef *col = this->cols.GetItem(colIndex);
-			if (col)
+			NN<ColumnDef> col;
+			if (this->cols.GetItem(colIndex).SetTo(col))
 			{
 				colDef->SetColName(col->name);
 				colDef->SetColDP(col->decimals);
@@ -372,28 +383,28 @@ namespace Net
 			this->nextRowReady = true;
 		}
 
-		void AddColumnDef41(const UInt8 *colDef, UIntOS buffSize)
+		void AddColumnDef41(UnsafeArray<const UInt8> colDef, UIntOS buffSize)
 		{
 			UInt64 v;
-			ColumnDef *col = MemAlloc(ColumnDef, 1);
-			const UInt8 *colEnd = colDef + buffSize;
-			colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //catalog
+			NN<ColumnDef> col = MemAllocNN(ColumnDef);
+			UnsafeArray<const UInt8> colEnd = colDef + buffSize;
+			colDef = Net::MySQLUtil::ReadLenencInt(colDef, v); //catalog
 			colDef += v;
-			colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //schema
+			colDef = Net::MySQLUtil::ReadLenencInt(colDef, v); //schema
 			colDef += v;
-			colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //table
+			colDef = Net::MySQLUtil::ReadLenencInt(colDef, v); //table
 			colDef += v;
-			colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //org_table
+			colDef = Net::MySQLUtil::ReadLenencInt(colDef, v); //org_table
 			colDef += v;
-			colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //name
+			colDef = Net::MySQLUtil::ReadLenencInt(colDef, v); //name
 			col->name = Text::String::New(colDef, (UIntOS)v);
 			colDef += v;
-			colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //org_name
+			colDef = Net::MySQLUtil::ReadLenencInt(colDef, v); //org_name
 			colDef += v;
 			if (colDef[0] != 12)
 			{
 				col->name->Release();
-				MemFree(col);
+				MemFreeNN(col);
 				return;
 			}
 			colDef += 1;
@@ -407,7 +418,7 @@ namespace Net
 			col->defValues = nullptr;
 			if (colDef < colEnd)
 			{
-				colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //catalog
+				colDef = Net::MySQLUtil::ReadLenencInt(colDef, v); //catalog
 				if ((colDef + v) <= colEnd)
 				{
 					col->defValues = Text::String::New(colDef, (UIntOS)v).Ptr();
@@ -417,9 +428,9 @@ namespace Net
 			this->colCount++;
 		}
 
-		void AddRowData(const UInt8 *rowData, UIntOS dataSize)
+		void AddRowData(UnsafeArray<const UInt8> rowData, UIntOS dataSize)
 		{
-			Optional<Text::String> *row = MemAlloc(Optional<Text::String>, this->colCount);
+			UnsafeArray<Optional<Text::String>> row = MemAllocArr(Optional<Text::String>, this->colCount);
 			UIntOS i = 0;
 			UIntOS j = this->colCount;
 			UInt64 v;
@@ -432,7 +443,7 @@ namespace Net
 				}
 				else
 				{
-					rowData = Net::MySQLUtil::ReadLenencInt(rowData, &v);
+					rowData = Net::MySQLUtil::ReadLenencInt(rowData, v);
 					row[i] = Text::String::New(rowData, (UIntOS)v);
 					rowData += v;
 				}
@@ -449,7 +460,7 @@ namespace Net
 
 		void EndData()
 		{
-			if (this->nextRow == 0 && this->nextRowReady)
+			if (this->nextRow.IsNull() && this->nextRowReady)
 			{
 				return;
 			}
@@ -457,7 +468,7 @@ namespace Net
 			{
 				this->nextRowEvt.Wait(1000);
 			}
-			this->nextRow = 0;
+			this->nextRow = nullptr;
 			this->nextRowReady = true;
 			this->rowEvt.Set();
 		}
@@ -488,20 +499,20 @@ namespace Net
 
 		typedef struct
 		{
-			UInt8 *rowBuff;
+			UnsafeArray<UInt8> rowBuff;
 			UIntOS rowBuffCapacity;
-			RowColumn *cols;
+			UnsafeArray<RowColumn> cols;
 			UIntOS rowNum;
 		} RowData;	
 
-		Data::ArrayListObj<ColumnDef*> cols;
-		Net::MySQLUtil::MySQLType *colTypes;
+		Data::ArrayListNN<ColumnDef> cols;
+		UnsafeArrayOpt<Net::MySQLUtil::MySQLType> colTypes;
 		UIntOS colCount;
 		IntOS rowChanged;
-		RowData *currRow;
-		RowData *nextRow[ROWBUFFCNT];
+		Optional<RowData> currRow;
+		Optional<RowData> nextRow[ROWBUFFCNT];
 		Bool nextRowReady[ROWBUFFCNT];
-		RowData *preparingRow;
+		Optional<RowData> preparingRow;
 		Sync::Event rowEvt;
 		Sync::Event nextRowEvt;
 		Sync::MutexUsage mutUsage;
@@ -512,63 +523,65 @@ namespace Net
 		MySQLTCPBinaryReader(NN<Sync::Mutex> mut, Int8 tzQhr)
 		{
 			this->mutUsage.ReplaceMutex(mut);
-			this->colTypes = 0;
+			this->colTypes = nullptr;
 			this->rowChanged = -1;
-			this->currRow = 0;
+			this->currRow = nullptr;
 			this->rowNum = 0;
 			this->tzQhr = tzQhr;
 			UIntOS i = ROWBUFFCNT;
 			while (i-- > 0)
 			{
-				this->nextRow[i] = 0;
+				this->nextRow[i] = nullptr;
 				this->nextRowReady[i] = false;
 			}
-			this->preparingRow = 0;
+			this->preparingRow = nullptr;
 			this->colCount = 0;
 			this->stmtId = 0;
 		}
 
 		virtual ~MySQLTCPBinaryReader()
 		{
-			ColumnDef *col;
+			NN<ColumnDef> col;
+			NN<RowData> row;
 			this->WaitForDataEnd();
 			UIntOS i = this->cols.GetCount();
 			while (i-- > 0)
 			{
-				col = this->cols.GetItem(i);
+				col = this->cols.GetItemNoCheck(i);
 				col->name->Release();
 				OPTSTR_DEL(col->defValues);
-				MemFree(col); 
+				MemFreeNN(col); 
 			}
 			i = ROWBUFFCNT;
 			while (i-- > 0)
 			{
-				if (this->nextRow[i])
+				if (this->nextRow[i].SetTo(row))
 				{
-					MemFree(this->nextRow[i]->cols);
-					MemFree(this->nextRow[i]->rowBuff);
-					MemFree(this->nextRow[i]);
-					this->nextRow[i] = 0;
+					MemFreeArr(row->cols);
+					MemFreeArr(row->rowBuff);
+					MemFreeNN(row);
+					this->nextRow[i] = nullptr;
 				}
 			}
-			if (this->currRow)
+			if (this->currRow.SetTo(row))
 			{
-				MemFree(this->currRow->cols);
-				MemFree(this->currRow->rowBuff);
-				MemFree(this->currRow);
-				this->currRow = 0;
+				MemFreeArr(row->cols);
+				MemFreeArr(row->rowBuff);
+				MemFreeNN(row);
+				this->currRow = nullptr;
 			}
-			if (this->preparingRow)
+			if (this->preparingRow.SetTo(row))
 			{
-				MemFree(this->preparingRow->cols);
-				MemFree(this->preparingRow->rowBuff);
-				MemFree(this->preparingRow);
-				this->preparingRow = 0;
+				MemFreeArr(row->cols);
+				MemFreeArr(row->rowBuff);
+				MemFreeNN(row);
+				this->preparingRow = nullptr;
 			}
-			if (this->colTypes)
+			UnsafeArray<Net::MySQLUtil::MySQLType> colTypes;
+			if (this->colTypes.SetTo(colTypes))
 			{
-				MemFree(this->colTypes);
-				this->colTypes = 0;
+				MemFreeArr(colTypes);
+				this->colTypes = nullptr;
 			}
 		}
 
@@ -582,6 +595,7 @@ namespace Net
 
 		virtual Bool ReadNext()
 		{
+			NN<RowData> row;
 			UIntOS rowIndex = INVALID_INDEX;
 			UIntOS i;
 			UIntOS minRowNum = INVALID_INDEX;
@@ -592,15 +606,15 @@ namespace Net
 				{
 					if (this->nextRowReady[i])
 					{
-						if (this->nextRow[i] == 0)
+						if (!this->nextRow[i].SetTo(row))
 						{
 							rowIndex = i;
 							break;
 						}
-						else if (this->nextRow[i]->rowNum < minRowNum)
+						else if (row->rowNum < minRowNum)
 						{
 							rowIndex = i;
-							minRowNum = this->nextRow[i]->rowNum;
+							minRowNum = row->rowNum;
 						}
 					}
 				}
@@ -610,11 +624,11 @@ namespace Net
 				}
 				this->rowEvt.Wait(1000);
 			}
-			if (this->nextRow[rowIndex])
+			if (this->nextRow[rowIndex].SetTo(row))
 			{
-				RowData *row = this->currRow;
-				this->currRow = this->nextRow[rowIndex];
-				this->nextRow[rowIndex] = row;
+				Optional<RowData> optRow = this->currRow;
+				this->currRow = row;
+				this->nextRow[rowIndex] = optRow;
 				this->nextRowReady[rowIndex] = false;
 				this->nextRowEvt.Set();
 				return true;
@@ -728,7 +742,9 @@ namespace Net
 
 		virtual Data::Timestamp GetTimestamp(UIntOS colIndex)
 		{
-			if (this->currRow == 0)
+			NN<RowData> row;
+			UnsafeArray<MySQLUtil::MySQLType> colTypes;
+			if (!this->currRow.SetTo(row) || !this->colTypes.SetTo(colTypes))
 			{
 				return Data::Timestamp(nullptr);
 			}
@@ -736,14 +752,14 @@ namespace Net
 			{
 				return Data::Timestamp(nullptr);
 			}
-			RowColumn *col = &this->currRow->cols[colIndex];
+			RowColumn *col = &row->cols[colIndex];
 			if (col->isNull)
 			{
 				return Data::Timestamp(nullptr);
 			}
-			if (this->colTypes[colIndex] == Net::MySQLUtil::MYSQL_TYPE_DATE ||
-				this->colTypes[colIndex] == Net::MySQLUtil::MYSQL_TYPE_DATETIME ||
-				this->colTypes[colIndex] == Net::MySQLUtil::MYSQL_TYPE_TIMESTAMP)
+			if (colTypes[colIndex] == Net::MySQLUtil::MYSQL_TYPE_DATE ||
+				colTypes[colIndex] == Net::MySQLUtil::MYSQL_TYPE_DATETIME ||
+				colTypes[colIndex] == Net::MySQLUtil::MYSQL_TYPE_TIMESTAMP)
 			{
 				Data::DateTimeUtil::TimeValue tval;
 				UInt32 microsec;
@@ -752,29 +768,29 @@ namespace Net
 				case 0:
 					return Data::Timestamp(nullptr);
 				case 4:
-					tval.year = ReadUInt16(&this->currRow->rowBuff[col->ofst]);
-					tval.month = this->currRow->rowBuff[col->ofst + 2];
-					tval.day = this->currRow->rowBuff[col->ofst + 3];
+					tval.year = ReadUInt16(&row->rowBuff[col->ofst]);
+					tval.month = row->rowBuff[col->ofst + 2];
+					tval.day = row->rowBuff[col->ofst + 3];
 					tval.hour = 0;
 					tval.minute = 0;
 					tval.second = 0;
 					return Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, 0), 0), this->tzQhr);
 				case 7:
-					tval.year = ReadUInt16(&this->currRow->rowBuff[col->ofst]);
-					tval.month = this->currRow->rowBuff[col->ofst + 2];
-					tval.day = this->currRow->rowBuff[col->ofst + 3];
-					tval.hour = this->currRow->rowBuff[col->ofst + 4];
-					tval.minute = this->currRow->rowBuff[col->ofst + 5];
-					tval.second = this->currRow->rowBuff[col->ofst + 6];
+					tval.year = ReadUInt16(&row->rowBuff[col->ofst]);
+					tval.month = row->rowBuff[col->ofst + 2];
+					tval.day = row->rowBuff[col->ofst + 3];
+					tval.hour = row->rowBuff[col->ofst + 4];
+					tval.minute = row->rowBuff[col->ofst + 5];
+					tval.second = row->rowBuff[col->ofst + 6];
 					return Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, 0), 0), this->tzQhr);
 				case 11:
-					tval.year = ReadUInt16(&this->currRow->rowBuff[col->ofst]);
-					tval.month = this->currRow->rowBuff[col->ofst + 2];
-					tval.day = this->currRow->rowBuff[col->ofst + 3];
-					tval.hour = this->currRow->rowBuff[col->ofst + 4];
-					tval.minute = this->currRow->rowBuff[col->ofst + 5];
-					tval.second = this->currRow->rowBuff[col->ofst + 6];
-					microsec = ReadUInt32(&this->currRow->rowBuff[col->ofst + 7]);
+					tval.year = ReadUInt16(&row->rowBuff[col->ofst]);
+					tval.month = row->rowBuff[col->ofst + 2];
+					tval.day = row->rowBuff[col->ofst + 3];
+					tval.hour = row->rowBuff[col->ofst + 4];
+					tval.minute = row->rowBuff[col->ofst + 5];
+					tval.second = row->rowBuff[col->ofst + 6];
+					microsec = ReadUInt32(&row->rowBuff[col->ofst + 7]);
 					return Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, 0), microsec * 1000), this->tzQhr);
 				default:
 					//////////////////////////////////////
@@ -810,7 +826,8 @@ namespace Net
 
 		virtual UIntOS GetBinarySize(UIntOS colIndex)
 		{
-			if (this->currRow == 0)
+			NN<RowData> row;
+			if (!this->currRow.SetTo(row))
 			{
 				return 0;
 			}
@@ -818,12 +835,13 @@ namespace Net
 			{
 				return 0;
 			}
-			return this->currRow->cols[colIndex].len;
+			return row->cols[colIndex].len;
 		}
 
 		virtual UIntOS GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 		{
-			if (this->currRow == 0)
+			NN<RowData> row;
+			if (!this->currRow.SetTo(row))
 			{
 				return 0;
 			}
@@ -831,8 +849,8 @@ namespace Net
 			{
 				return 0;
 			}
-			UIntOS len = this->currRow->cols[colIndex].len;
-			MemCopyNO(buff.Ptr(), &this->currRow->rowBuff[this->currRow->cols[colIndex].ofst], len);
+			UIntOS len = row->cols[colIndex].len;
+			MemCopyNO(buff.Ptr(), &row->rowBuff[row->cols[colIndex].ofst], len);
 			return len;
 		}
 
@@ -865,17 +883,19 @@ namespace Net
 
 		virtual Bool GetVariItem(UIntOS colIndex, NN<Data::VariItem> item)
 		{
-			if (this->currRow == 0 || colIndex >= this->colCount)
+			NN<RowData> row;
+			UnsafeArray<MySQLUtil::MySQLType> colTypes;
+			if (!this->currRow.SetTo(row) || !this->colTypes.SetTo(colTypes) || colIndex >= this->colCount)
 			{
 				return false;
 			}
-			RowColumn *col = &this->currRow->cols[colIndex];
+			RowColumn *col = &row->cols[colIndex];
 			if (col->isNull)
 			{
 				item->SetNull();
 				return true;
 			}
-			switch (this->colTypes[colIndex])
+			switch (colTypes[colIndex])
 			{
 			case Net::MySQLUtil::MYSQL_TYPE_STRING:
 			case Net::MySQLUtil::MYSQL_TYPE_VARCHAR:
@@ -884,33 +904,33 @@ namespace Net
 			case Net::MySQLUtil::MYSQL_TYPE_MEDIUM_BLOB:
 			case Net::MySQLUtil::MYSQL_TYPE_BLOB:
 			case Net::MySQLUtil::MYSQL_TYPE_TINY_BLOB:
-				item->SetStr(UnsafeArray<const UTF8Char>(&this->currRow->rowBuff[col->ofst]), col->len);
+				item->SetStr(UnsafeArray<const UTF8Char>(&row->rowBuff[col->ofst]), col->len);
 				return true;
 
 			case Net::MySQLUtil::MYSQL_TYPE_LONGLONG:
-				item->SetI64(ReadInt64(&this->currRow->rowBuff[col->ofst]));
+				item->SetI64(ReadInt64(&row->rowBuff[col->ofst]));
 				return true;
 
 			case Net::MySQLUtil::MYSQL_TYPE_LONG:
 			case Net::MySQLUtil::MYSQL_TYPE_INT24:
-				item->SetI32(ReadInt32(&this->currRow->rowBuff[col->ofst]));
+				item->SetI32(ReadInt32(&row->rowBuff[col->ofst]));
 				return true;
 
 			case Net::MySQLUtil::MYSQL_TYPE_SHORT:
 			case Net::MySQLUtil::MYSQL_TYPE_YEAR:
-				item->SetI16(ReadInt16(&this->currRow->rowBuff[col->ofst]));
+				item->SetI16(ReadInt16(&row->rowBuff[col->ofst]));
 				return true;
 
 			case Net::MySQLUtil::MYSQL_TYPE_TINY:
-				item->SetI8((Int8)this->currRow->rowBuff[col->ofst]);
+				item->SetI8((Int8)row->rowBuff[col->ofst]);
 				return true;
 
 			case Net::MySQLUtil::MYSQL_TYPE_DOUBLE:
-				item->SetF64(ReadDouble(&this->currRow->rowBuff[col->ofst]));
+				item->SetF64(ReadDouble(&row->rowBuff[col->ofst]));
 				return true;
 
 			case Net::MySQLUtil::MYSQL_TYPE_FLOAT:
-				item->SetF32(ReadFloat(&this->currRow->rowBuff[col->ofst]));
+				item->SetF32(ReadFloat(&row->rowBuff[col->ofst]));
 				return true;
 
 			case Net::MySQLUtil::MYSQL_TYPE_DATE:
@@ -926,9 +946,9 @@ namespace Net
 				case 4:
 					{
 						Data::DateTimeUtil::TimeValue tval;
-						tval.year = ReadUInt16(&this->currRow->rowBuff[col->ofst]);
-						tval.month = this->currRow->rowBuff[col->ofst + 2];
-						tval.day = this->currRow->rowBuff[col->ofst + 3];
+						tval.year = ReadUInt16(&row->rowBuff[col->ofst]);
+						tval.month = row->rowBuff[col->ofst + 2];
+						tval.day = row->rowBuff[col->ofst + 3];
 						tval.hour = 0;
 						tval.minute = 0;
 						tval.second = 0;
@@ -938,12 +958,12 @@ namespace Net
 				case 7:
 					{
 						Data::DateTimeUtil::TimeValue tval;
-						tval.year = ReadUInt16(&this->currRow->rowBuff[col->ofst]);
-						tval.month = this->currRow->rowBuff[col->ofst + 2];
-						tval.day = this->currRow->rowBuff[col->ofst + 3];
-						tval.hour = this->currRow->rowBuff[col->ofst + 4];
-						tval.minute = this->currRow->rowBuff[col->ofst + 5];
-						tval.second = this->currRow->rowBuff[col->ofst + 6];
+						tval.year = ReadUInt16(&row->rowBuff[col->ofst]);
+						tval.month = row->rowBuff[col->ofst + 2];
+						tval.day = row->rowBuff[col->ofst + 3];
+						tval.hour = row->rowBuff[col->ofst + 4];
+						tval.minute = row->rowBuff[col->ofst + 5];
+						tval.second = row->rowBuff[col->ofst + 6];
 						item->SetDate(Data::Timestamp::FromTimeValue(tval, 0, 0));
 					}
 					return true;
@@ -951,13 +971,13 @@ namespace Net
 					{
 						UInt32 us;
 						Data::DateTimeUtil::TimeValue tval;
-						tval.year = ReadUInt16(&this->currRow->rowBuff[col->ofst]);
-						tval.month = this->currRow->rowBuff[col->ofst + 2];
-						tval.day = this->currRow->rowBuff[col->ofst + 3];
-						tval.hour = this->currRow->rowBuff[col->ofst + 4];
-						tval.minute = this->currRow->rowBuff[col->ofst + 5];
-						tval.second = this->currRow->rowBuff[col->ofst + 6];
-						us = ReadUInt32(&this->currRow->rowBuff[col->ofst + 7]);
+						tval.year = ReadUInt16(&row->rowBuff[col->ofst]);
+						tval.month = row->rowBuff[col->ofst + 2];
+						tval.day = row->rowBuff[col->ofst + 3];
+						tval.hour = row->rowBuff[col->ofst + 4];
+						tval.minute = row->rowBuff[col->ofst + 5];
+						tval.second = row->rowBuff[col->ofst + 6];
+						us = ReadUInt32(&row->rowBuff[col->ofst + 7]);
 						item->SetDate(Data::Timestamp::FromTimeValue(tval, us * 1000, 0));
 					}
 					return true;
@@ -977,8 +997,8 @@ namespace Net
 					item->SetF64(0);
 					return true;
 				case 8:
-					v = ReadUInt32(&this->currRow->rowBuff[col->ofst + 1]) * 86400 + (UInt32)this->currRow->rowBuff[col->ofst + 5] * 3600 + (UInt32)this->currRow->rowBuff[col->ofst + 6] * 60 + this->currRow->rowBuff[col->ofst + 7];
-					if (this->currRow->rowBuff[col->ofst])
+					v = ReadUInt32(&row->rowBuff[col->ofst + 1]) * 86400 + (UInt32)row->rowBuff[col->ofst + 5] * 3600 + (UInt32)row->rowBuff[col->ofst + 6] * 60 + row->rowBuff[col->ofst + 7];
+					if (row->rowBuff[col->ofst])
 					{
 						item->SetF64(-v);
 					}
@@ -988,8 +1008,8 @@ namespace Net
 					}
 					return true;
 				case 12:
-					v = ReadUInt32(&this->currRow->rowBuff[col->ofst + 1]) * 86400 + (UInt32)this->currRow->rowBuff[col->ofst + 5] * 3600 + (UInt32)this->currRow->rowBuff[col->ofst + 6] * 60 + this->currRow->rowBuff[col->ofst + 7] + (ReadUInt32(&this->currRow->rowBuff[col->ofst + 1]) / 1000000);
-					if (this->currRow->rowBuff[col->ofst])
+					v = ReadUInt32(&row->rowBuff[col->ofst + 1]) * 86400 + (UInt32)row->rowBuff[col->ofst + 5] * 3600 + (UInt32)row->rowBuff[col->ofst + 6] * 60 + row->rowBuff[col->ofst + 7] + (ReadUInt32(&row->rowBuff[col->ofst + 1]) / 1000000);
+					if (row->rowBuff[col->ofst])
 					{
 						item->SetF64(-v);
 					}
@@ -1022,9 +1042,9 @@ namespace Net
 			case Net::MySQLUtil::MYSQL_TYPE_GEOMETRY:
 				if (col->len > 4)
 				{
-					Math::WKBReader wkb(ReadUInt32(&this->currRow->rowBuff[col->ofst]));
+					Math::WKBReader wkb(ReadUInt32(&row->rowBuff[col->ofst]));
 					NN<Math::Geometry::Vector2D> vec;
-					if (wkb.ParseWKB(&this->currRow->rowBuff[col->ofst + 4], col->len - 4, 0).SetTo(vec))
+					if (wkb.ParseWKB(&row->rowBuff[col->ofst + 4], col->len - 4, 0).SetTo(vec))
 					{
 						item->SetVectorDirect(vec);
 						return true;
@@ -1043,7 +1063,7 @@ namespace Net
 					return true;
 				}
 			case Net::MySQLUtil::MYSQL_TYPE_NEWDECIMAL:
-				item->SetStrCopy(&this->currRow->rowBuff[col->ofst], col->len);
+				item->SetStrCopy(&row->rowBuff[col->ofst], col->len);
 				return true;
 			case Net::MySQLUtil::MYSQL_TYPE_ENUM:
 			case Net::MySQLUtil::MYSQL_TYPE_SET:
@@ -1053,8 +1073,8 @@ namespace Net
 				////////////////////////////////////
 				{
 					Text::StringBuilderUTF8 sb;
-					sb.AppendHexBuff(&this->currRow->rowBuff[col->ofst], col->len, ' ', Text::LineBreakType::None);
-					printf("Unknown binary other format %d: %s\r\n", this->colTypes[colIndex], sb.ToPtr());
+					sb.AppendHexBuff(&row->rowBuff[col->ofst], col->len, ' ', Text::LineBreakType::None);
+					printf("Unknown binary other format %d: %s\r\n", colTypes[colIndex], sb.ToPtr());
 				}
 				item->SetNull();
 				return true;
@@ -1063,7 +1083,8 @@ namespace Net
 
 		virtual Bool IsNull(UIntOS colIndex)
 		{
-			if (this->currRow == 0)
+			NN<RowData> row;
+			if (!this->currRow.SetTo(row))
 			{
 				return true;
 			}
@@ -1071,13 +1092,13 @@ namespace Net
 			{
 				return true;
 			}
-			return this->currRow->cols[colIndex].isNull;
+			return row->cols[colIndex].isNull;
 		}
 
 		virtual UnsafeArrayOpt<UTF8Char> GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 		{
-			ColumnDef *col = this->cols.GetItem(colIndex);
-			if (col)
+			NN<ColumnDef> col;
+			if (this->cols.GetItem(colIndex).SetTo(col))
 			{
 				return Text::StrConcat(buff, col->name->v);
 			}
@@ -1086,8 +1107,8 @@ namespace Net
 
 		virtual DB::DBUtil::ColType GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 		{
-			ColumnDef *col = this->cols.GetItem(colIndex);
-			if (col)
+			NN<ColumnDef> col;
+			if (this->cols.GetItem(colIndex).SetTo(col))
 			{
 				colSize.Set(col->colLen);
 				return col->dbColType;
@@ -1097,8 +1118,8 @@ namespace Net
 
 		virtual Bool GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 		{
-			ColumnDef *col = this->cols.GetItem(colIndex);
-			if (col)
+			NN<ColumnDef> col;
+			if (this->cols.GetItem(colIndex).SetTo(col))
 			{
 				colDef->SetColName(col->name);
 				colDef->SetColDP(col->decimals);
@@ -1117,31 +1138,31 @@ namespace Net
 
 		Bool IsDataEnd()
 		{
-			return this->nextRow[0] == 0 && this->nextRowReady[0];
+			return this->nextRow[0].IsNull() && this->nextRowReady[0];
 		}
 
-		void AddColumnDef41(const UInt8 *colDef, UIntOS buffSize)
+		void AddColumnDef41(UnsafeArray<const UInt8> colDef, UIntOS buffSize)
 		{
 			UInt64 v;
-			ColumnDef *col = MemAlloc(ColumnDef, 1);
-			const UInt8 *colEnd = colDef + buffSize;
-			colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //catalog
+			NN<ColumnDef> col = MemAllocNN(ColumnDef);
+			UnsafeArray<const UInt8> colEnd = colDef + buffSize;
+			colDef = Net::MySQLUtil::ReadLenencInt(colDef, v); //catalog
 			colDef += v;
-			colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //schema
+			colDef = Net::MySQLUtil::ReadLenencInt(colDef, v); //schema
 			colDef += v;
-			colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //table
+			colDef = Net::MySQLUtil::ReadLenencInt(colDef, v); //table
 			colDef += v;
-			colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //org_table
+			colDef = Net::MySQLUtil::ReadLenencInt(colDef, v); //org_table
 			colDef += v;
-			colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //name
+			colDef = Net::MySQLUtil::ReadLenencInt(colDef, v); //name
 			col->name = Text::String::New(colDef, (UIntOS)v);
 			colDef += v;
-			colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //org_name
+			colDef = Net::MySQLUtil::ReadLenencInt(colDef, v); //org_name
 			colDef += v;
 			if (colDef[0] != 12)
 			{
 				col->name->Release();
-				MemFree(col);
+				MemFreeNN(col);
 				return;
 			}
 			colDef += 1;
@@ -1155,7 +1176,7 @@ namespace Net
 			col->defValues = nullptr;
 			if (colDef < colEnd)
 			{
-				colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //catalog
+				colDef = Net::MySQLUtil::ReadLenencInt(colDef, v); //catalog
 				if ((colDef + v) <= colEnd)
 				{
 					col->defValues = Text::String::New(colDef, (UIntOS)v).Ptr();
@@ -1165,29 +1186,29 @@ namespace Net
 			this->colCount++;
 		}
 
-		void AddRowData(const UInt8 *rowData, UIntOS dataSize)
+		void AddRowData(UnsafeArray<const UInt8> rowData, UIntOS dataSize)
 		{
-			RowData *row;
-			if (this->IsDataEnd())
+			NN<RowData> row;
+			UnsafeArray<MySQLUtil::MySQLType> colTypes;
+			if (this->IsDataEnd() || !this->colTypes.SetTo(colTypes))
 				return;
-			if (this->preparingRow == 0)
+			if (!this->preparingRow.SetTo(row))
 			{
-				row = this->preparingRow = MemAlloc(RowData, 1);
-				row->cols = MemAlloc(RowColumn, this->colCount);
+				this->preparingRow = row = MemAllocNN(RowData);
+				row->cols = MemAllocArr(RowColumn, this->colCount);
 				row->rowBuffCapacity = dataSize * 2;
-				row->rowBuff = MemAlloc(UInt8, dataSize * 2);
+				row->rowBuff = MemAllocArr(UInt8, dataSize * 2);
 			}
 			else
 			{
-				row = this->preparingRow;
 				if (row->rowBuffCapacity < dataSize)
 				{
 					row->rowBuffCapacity = dataSize;
-					MemFree(row->rowBuff);
-					row->rowBuff = MemAlloc(UInt8, dataSize);
+					MemFreeArr(row->rowBuff);
+					row->rowBuff = MemAllocArr(UInt8, dataSize);
 				}
 			}
-			MemCopyNO(row->rowBuff, rowData, dataSize);
+			MemCopyNO(&row->rowBuff[0], &rowData[0], dataSize);
 			row->rowNum = this->rowNum++;
 			UIntOS i = 0;
 			UIntOS j = this->colCount;
@@ -1209,7 +1230,7 @@ namespace Net
 				{
 					col->isNull = false;
 					col->ofst = tableOfst;
-					switch (this->colTypes[i])
+					switch (colTypes[i])
 					{
 					case Net::MySQLUtil::MYSQL_TYPE_STRING:
 					case Net::MySQLUtil::MYSQL_TYPE_VARCHAR:
@@ -1224,7 +1245,7 @@ namespace Net
 					case Net::MySQLUtil::MYSQL_TYPE_BIT:
 					case Net::MySQLUtil::MYSQL_TYPE_DECIMAL:
 					case Net::MySQLUtil::MYSQL_TYPE_NEWDECIMAL:
-						col->ofst = (UIntOS)(Net::MySQLUtil::ReadLenencInt(&rowData[tableOfst], &v) - rowData);
+						col->ofst = (UIntOS)(Net::MySQLUtil::ReadLenencInt(&rowData[tableOfst], v) - rowData);
 						col->len = (UIntOS)v;
 						tableOfst = col->ofst + (UIntOS)v;
 						break;
@@ -1315,22 +1336,24 @@ namespace Net
 					break;
 				}
 			}
-			row = this->nextRow[i];
+			Optional<RowData> optRow;
+			optRow = this->nextRow[i];
 			this->nextRow[i] = this->preparingRow;
-			this->preparingRow = row;
+			this->preparingRow = optRow;
 			this->nextRowReady[i] = true;
 			this->rowEvt.Set();
 		}
 
 		void EndCols()
 		{
-			if (this->colTypes == 0)
+			UnsafeArray<MySQLUtil::MySQLType> colTypes;
+			if (this->colTypes.IsNull())
 			{
-				this->colTypes = MemAlloc(Net::MySQLUtil::MySQLType, this->colCount);
+				this->colTypes = colTypes = MemAllocArr(Net::MySQLUtil::MySQLType, this->colCount);
 				UIntOS i = this->colCount;
 				while (i-- > 0)
 				{
-					this->colTypes[i] = this->cols.GetItem(i)->colType;
+					colTypes[i] = this->cols.GetItemNoCheck(i)->colType;
 				}
 			}
 		}
@@ -1357,15 +1380,16 @@ namespace Net
 			i = ROWBUFFCNT;
 			while (i-- > 0)
 			{
-				RowData *row = this->nextRow[i];
-				this->nextRow[i] = 0;
+				Optional<RowData> optRow = this->nextRow[i];
+				this->nextRow[i] = nullptr;
 				this->nextRowReady[i] = true;
 
-				if (row)
+				NN<RowData> row;
+				if (optRow.SetTo(row))
 				{
-					MemFree(row->cols);
-					MemFree(row->rowBuff);
-					MemFree(row);
+					MemFreeArr(row->cols);
+					MemFreeArr(row->rowBuff);
+					MemFreeNN(row);
 				}
 			}
 			this->rowEvt.Set();
@@ -1386,7 +1410,7 @@ namespace Net
 UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 {
 	NN<Net::MySQLTCPClient> me = userObj.GetNN<Net::MySQLTCPClient>();
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UIntOS buffCapacity = INITBUFFSIZE;
 	UIntOS buffSize;
 	UIntOS readSize;
@@ -1408,7 +1432,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 	#if defined(VERBOSE)
 		Text::StringBuilderUTF8 sb;
 	#endif
-		buff = MemAlloc(UInt8, buffCapacity);
+		buff = MemAllocArr(UInt8, buffCapacity);
 		while (true)
 		{
 			if (me->cli.SetTo(cli))
@@ -1451,7 +1475,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 					}
 					else
 					{
-						UIntOS packetSize = ReadUInt32(buff);
+						UIntOS packetSize = ReadUInt32(&buff[0]);
 						if (packetSize < 10 || packetSize > 1024)
 						{
 	#if defined(VERBOSE)
@@ -1757,7 +1781,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 								}
 								else if (Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(&buff[5], readSize - 1), fileName).SetTo(x509))
 								{
-									UInt8 *encPwd = MemAlloc(UInt8, 1024 + me->password->leng + 1);
+									UnsafeArray<UInt8> encPwd = MemAllocArr(UInt8, 1024 + me->password->leng + 1);
 									me->password->ConcatTo(&encPwd[1024]);
 									UIntOS i = 0;
 									UIntOS j = me->password->leng + 1;
@@ -1811,7 +1835,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 										me->SetLastError(CSTR("Public key file type invalid"));
 									}
 									x509.Delete();
-									MemFree(encPwd);
+									MemFreeArr(encPwd);
 								}
 								else
 								{
@@ -1891,9 +1915,9 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 						{
 							buffCapacity <<= 1;
 						}
-						UInt8 *newBuff = MemAlloc(UInt8, buffCapacity);
-						MemCopyNO(newBuff, buff, buffSize);
-						MemFree(buff);
+						UnsafeArray<UInt8> newBuff = MemAllocArr(UInt8, buffCapacity);
+						MemCopyNO(&newBuff[0], &buff[0], buffSize);
+						MemFreeArr(buff);
 						buff = newBuff;
 					}
 					if (readSize + 4 + packetSize > buffSize)
@@ -1986,7 +2010,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 								}
 								else
 								{
-									Net::MySQLUtil::ReadLenencInt(&buff[readSize + 4], &val);
+									Net::MySQLUtil::ReadLenencInt(&buff[readSize + 4], val);
 	#if defined(VERBOSE)
 									printf("MySQLTCP %d COM_STMT_EXECUTE executed, column cnt = %lld\r\n", cli->GetLocalPort(), val);
 	#endif
@@ -2006,7 +2030,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 							{
 								if (buff[readSize + 4] == 0) //OK
 								{
-									Net::MySQLUtil::ReadLenencInt(&buff[readSize + 5], &val);
+									Net::MySQLUtil::ReadLenencInt(&buff[readSize + 5], val);
 									{
 										Sync::MutexUsage readerMutUsage(me->readerMut);
 										if (me->cmdTCPReader.SetTo(cmdTCPReader))
@@ -2040,7 +2064,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 								}
 								else
 								{
-									Net::MySQLUtil::ReadLenencInt(&buff[readSize + 4], &val);
+									Net::MySQLUtil::ReadLenencInt(&buff[readSize + 4], val);
 	#if defined(VERBOSE)
 									printf("MySQLTCP %d Command executed, column cnt = %lld\r\n", cli->GetLocalPort(), val);
 	#endif
@@ -2185,7 +2209,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 			}
 			else if (readSize < buffSize)
 			{
-				MemCopyO(buff, &buff[readSize], buffSize - readSize);
+				MemCopyO(&buff[0], &buff[readSize], buffSize - readSize);
 				buffSize -= readSize;
 			}
 			else
@@ -2235,7 +2259,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 	#if defined(VERBOSE)	
 		printf("MySQLTCP %d End connection\r\n", cli->GetLocalPort());
 	#endif
-		MemFree(buff);
+		MemFreeArr(buff);
 	}
 	me->recvRunning = false;
 	return 0;
@@ -2484,8 +2508,8 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sq
 	this->cmdResultType = CmdResultType::Processing;
 	this->cmdSeqNum = 1;
 	this->cmdTCPReader = reader;
-	UInt8 *buff = MemAlloc(UInt8, sql.leng + 5);
-	WriteInt32(buff, (Int32)(sql.leng + 1));
+	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, sql.leng + 5);
+	WriteInt32(&buff[0], (Int32)(sql.leng + 1));
 	buff[4] = 3;
 	MemCopyNO(&buff[5], sql.v.Ptr(), sql.leng);
 	if (!this->cli.SetTo(cli) || cli->Write(Data::ByteArrayR(buff, 5 + sql.leng)) != 5 + sql.leng)
@@ -2495,11 +2519,11 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sq
 			this->cmdTCPReader = nullptr;
 			reader.Delete();
 		}
-		MemFree(buff);
+		MemFreeArr(buff);
 		this->lastDataError = DB::DBConn::DataError::ConnError;
 		return nullptr;
 	}
-	MemFree(buff);
+	MemFreeArr(buff);
 #if defined(VERBOSE)
 	printf("MySQLTCP %d Sent SQL: %s\r\n", cli->GetLocalPort(), sql.v.Ptr());
 #endif
@@ -2555,19 +2579,19 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN 
 	this->cmdResultType = CmdResultType::ProcessingBinary;
 	this->cmdSeqNum = 1;
 	this->cmdBinReader = reader;
-	UInt8 *buff = MemAlloc(UInt8, sql.leng + 5);
-	WriteInt32(buff, (Int32)(sql.leng + 1));
+	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, sql.leng + 5);
+	WriteInt32(&buff[0], (Int32)(sql.leng + 1));
 	buff[4] = 22;
 	MemCopyNO(&buff[5], sql.v.Ptr(), sql.leng);
 	if (!this->cli.SetTo(cli) || cli->Write(Data::ByteArrayR(buff, 5 + sql.leng)) != 5 + sql.leng)
 	{
 		this->cmdBinReader = nullptr;
 		reader.Delete();
-		MemFree(buff);
+		MemFreeArr(buff);
 		this->lastDataError = DB::DBConn::DataError::ConnError;
 		return nullptr;
 	}
-	MemFree(buff);
+	MemFreeArr(buff);
 #if defined(VERBOSE)
 	printf("MySQLTCP %d Sent Prepare Stmt: %s\r\n", cli->GetLocalPort(), sql.v.Ptr());
 #endif

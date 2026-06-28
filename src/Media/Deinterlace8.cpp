@@ -557,7 +557,7 @@ void Media::Deinterlace8::SetupInterpolationParameter(UIntOS source_length, UInt
 {
 	UInt32 i,j;
 	Int32 n;
-	Double *work;
+	UnsafeArray<Double> work;
 	Double  sum;
 	Double  pos;
 	UnsafeArray<Int64> weight;
@@ -568,7 +568,7 @@ void Media::Deinterlace8::SetupInterpolationParameter(UIntOS source_length, UInt
 	out->weight = weight = MemAllocAArr(Int64, out->length * out->tap);
 	out->index = index = MemAllocAArr(IntOS, out->length * out->tap);
 
-	work = MemAlloc(Double, out->tap);
+	work = MemAllocArr(Double, out->tap);
 
 	i = 0;
 	while (i < result_length)
@@ -612,7 +612,7 @@ void Media::Deinterlace8::SetupInterpolationParameter(UIntOS source_length, UInt
 		i++;
 	}
 
-	MemFree(work);
+	MemFreeArr(work);
 }
 
 UInt32 __stdcall Media::Deinterlace8::ProcThread(AnyType obj)
@@ -667,7 +667,7 @@ Media::Deinterlace8::Deinterlace8(UIntOS fieldCnt, UIntOS fieldSep)
 		nCore = 4;
 	}
 
-	this->stats = MemAlloc(DI8THREADSTAT, nCore);
+	this->stats = MemAllocArr(DI8THREADSTAT, nCore);
 	UIntOS i = nCore;
 
 	NEW_CLASSNN(evtMain, Sync::Event());

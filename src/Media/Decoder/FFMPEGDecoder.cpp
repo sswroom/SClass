@@ -213,7 +213,7 @@ struct Media::Decoder::FFMPEGDecoder::ClassData
 
 void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
     AVPacket avpkt;
 	Int32 ret;
 #ifdef _DEBUG
@@ -537,7 +537,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 
 Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<VideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
 {
-	ClassData *data = MemAlloc(ClassData, 1);
+	NN<ClassData> data = MemAllocNN(ClassData);
 	this->clsData = data;
 	this->endProcessing = false;
 	this->lastFrameTime = (UInt32)-1;
@@ -696,7 +696,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<VideoSource> sourceVideo) : Medi
 	{
 	    AVPacket avpkt;
 		Int32 ret;
-		UInt8 *firstFrame;
+		UnsafeArray<UInt8> firstFrame;
 		UIntOS frameNum;
 		ret = FFMPEGDecoder_avcodec_open2(data->ctx, data->codec, 0);
 		if (ret < 0)
@@ -711,21 +711,21 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<VideoSource> sourceVideo) : Medi
 		while (true)
 		{
 #if VERSION_FROM(56, 1, 1) //not sure
-			firstFrame = MemAlloc(UInt8, frameSize + AV_INPUT_BUFFER_PADDING_SIZE);
+			firstFrame = MemAllocArr(UInt8, frameSize + AV_INPUT_BUFFER_PADDING_SIZE);
 #else
-			firstFrame = MemAlloc(UInt8, frameSize);
+			firstFrame = MemAllocArr(UInt8, frameSize);
 #endif
 			frameSize = sourceVideo->ReadFrame(frameNum, firstFrame);
 
-			avpkt.data = firstFrame;
+			avpkt.data = firstFrame.Ptr();
 			avpkt.size = (int)frameSize;
 #if VERSION_FROM(56, 1, 1) //not sure
-			MemClear(firstFrame + frameSize, AV_INPUT_BUFFER_PADDING_SIZE);
+			MemClear(&firstFrame[0] + frameSize, AV_INPUT_BUFFER_PADDING_SIZE);
 #endif
 
 #if VERSION_FROM(57, 41, 0)
 			ret = FFMPEGDecoder_avcodec_send_packet(data->ctx, &avpkt);
-			MemFree(firstFrame);
+			MemFreeArr(firstFrame);
 			if (ret != 0)
 			{
 				FFMPEGDecoder_avcodec_close(data->ctx);
@@ -763,7 +763,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<VideoSource> sourceVideo) : Medi
 #else
 			int check = 0;
 			ret = FFMPEGDecoder_avcodec_decode_video2(data->ctx, data->frame, &check, &avpkt);
-			MemFree(firstFrame);
+			MemFreeArr(firstFrame);
 			if (ret == 0)
 			{
 				break;
@@ -861,7 +861,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<VideoSource> sourceVideo) : Medi
 
 Media::Decoder::FFMPEGDecoder::~FFMPEGDecoder()
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->inited)
 	{
 		FFMPEGDecoder_avcodec_close(data->ctx);
@@ -886,7 +886,7 @@ Media::Decoder::FFMPEGDecoder::~FFMPEGDecoder()
 	DEL_CLASS(data->dbgStm);
 	DEL_CLASS(data->dbgWriter);
 #endif
-	MemFree(data);
+	MemFreeNN(data);
 }
 
 Bool Media::Decoder::FFMPEGDecoder::CaptureImage(ImageCallback imgCb, AnyType userData)
@@ -901,7 +901,7 @@ Text::CStringNN Media::Decoder::FFMPEGDecoder::GetFilterName()
 
 Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (this->sourceVideo == 0)
 		return false;
 	if (!this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize))
@@ -1187,7 +1187,7 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 
 void Media::Decoder::FFMPEGDecoder::Stop()
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (this->sourceVideo == 0)
 		return;
 
@@ -1238,7 +1238,7 @@ void Media::Decoder::FFMPEGDecoder::OnFrameChanged(Media::VideoSource::FrameChan
 
 Bool Media::Decoder::FFMPEGDecoder::IsError()
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	return !data->inited || data->frameSize == 0;
 }
 
@@ -1342,7 +1342,7 @@ private:
 	AVCodecContext *ctx;
 	AVFrame *frame;
 	Media::AudioFormat *decFmt;
-	UInt8 *frameBuff;
+	UnsafeArrayOpt<UInt8> frameBuff;
 	UIntOS frameMaxSize;
 	UIntOS frameBuffSize;
 	UInt8 *readBuff;
@@ -1367,13 +1367,13 @@ public:
 	{
 		Media::AudioFormat fmt;
 		Int32 ret;
-		this->sourceAudio = sourceAudio.Ptr();
+		this->sourceAudio = sourceAudio;
 		this->inited = false;
 		this->codec = 0;
 		this->ctx = 0;
 		this->frame = 0;
 		this->decFmt = 0;
-		this->frameBuff = 0;
+		this->frameBuff = nullptr;
 		this->readBuff = 0;
 		this->readBlockSize = 0;
 		this->frameMaxSize = 65536;
@@ -1477,7 +1477,7 @@ public:
 		}
 		this->readBuff = MemAlloc(UInt8, this->readBlockSize);
 		this->frameMaxSize = 65536;
-		this->frameBuff = MemAlloc(UInt8, this->frameMaxSize);
+		this->frameBuff = MemAllocArr(UInt8, this->frameMaxSize);
 		this->frameBuffSize = 0;
 		NEW_CLASS(this->decFmt, Media::AudioFormat());
 		this->decFmt->FromAudioFormat(fmt);
@@ -1542,10 +1542,11 @@ public:
 			FFMPEGDecoder_avcodec_free_context(&this->ctx);
 			this->ctx = 0;
 		}
-		if (this->frameBuff)
+		UnsafeArray<UInt8> frameBuff;
+		if (this->frameBuff.SetTo(frameBuff))
 		{
-			MemFree(this->frameBuff);
-			this->frameBuff = 0;
+			MemFreeArr(frameBuff);
+			this->frameBuff = nullptr;
 		}
 		if (this->readBuff)
 		{
@@ -1645,24 +1646,25 @@ public:
 		}
 
 		FFMPEGDecoder_av_init_packet(&avpkt);
+		UnsafeArray<UInt8> frameBuff;
 		while (blk.GetSize() > 0)
 		{
-			if (this->frameBuffSize)
+			if (this->frameBuffSize && this->frameBuff.SetTo(frameBuff))
 			{
 				if (this->frameBuffSize < blk.GetSize())
 				{
-					blk.CopyFrom(Data::ByteArrayR(this->frameBuff, this->frameBuffSize));
+					blk.CopyFrom(Data::ByteArrayR(frameBuff, this->frameBuffSize));
 					blk += this->frameBuffSize;
 					outSize += this->frameBuffSize;
 					this->frameBuffSize = 0;
 				}
 				else
 				{
-					blk.CopyFrom(Data::ByteArrayR(this->frameBuff, blk.GetSize()));
+					blk.CopyFrom(Data::ByteArrayR(frameBuff, blk.GetSize()));
 					outSize += blk.GetSize();
 					if (this->frameBuffSize > blk.GetSize())
 					{
-						MemCopyO(this->frameBuff, &this->frameBuff[blk.GetSize()], this->frameBuffSize - blk.GetSize());
+						MemCopyO(&frameBuff[0], &frameBuff[blk.GetSize()], this->frameBuffSize - blk.GetSize());
 						this->frameBuffSize -= blk.GetSize();
 						if (this->readEvt.SetTo(readEvt))
 							readEvt->Set();
@@ -1715,28 +1717,29 @@ public:
 					{
 						UInt8 *dataPtr = this->frame->data[0];
 						UIntOS dataSize = (UIntOS)this->frame->nb_samples * this->decFmt->align;
-						if (this->frameBuffSize + dataSize > this->frameMaxSize)
+						UnsafeArray<UInt8> frameBuff;
+						if (!this->frameBuff.SetTo(frameBuff) || this->frameBuffSize + dataSize > this->frameMaxSize)
 						{
 							while (this->frameBuffSize + dataSize > this->frameMaxSize)
 							{
 								this->frameMaxSize = this->frameMaxSize << 1;
 							}
-							UInt8 *tmpBuff = MemAlloc(UInt8, this->frameMaxSize);
-							if (this->frameBuffSize)
+							UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, this->frameMaxSize);
+							if (this->frameBuffSize && this->frameBuff.SetTo(frameBuff))
 							{
-								MemCopyNO(tmpBuff, this->frameBuff, this->frameBuffSize);
+								MemCopyNO(&tmpBuff[0], &frameBuff[0], this->frameBuffSize);
 							}
-							MemFree(this->frameBuff);
-							this->frameBuff = tmpBuff;
+							MemFreeArr(this->frameBuff);
+							this->frameBuff = frameBuff = tmpBuff;
 						}
 						if (this->GetChannelCnt() == 1)
 						{
-							MemCopyNO(&this->frameBuff[this->frameBuffSize], dataPtr, dataSize);
+							MemCopyNO(&frameBuff[this->frameBuffSize], dataPtr, dataSize);
 						}
 						else if (this->frame->format == AV_SAMPLE_FMT_U8P)
 						{
 							UInt8 *arr[8];
-							UInt8 *outBuff = &this->frameBuff[this->frameBuffSize];
+							UInt8 *outBuff = &frameBuff[this->frameBuffSize];
 							IntOS ch = this->GetChannelCnt();
 							IntOS ind = 0;
 							IntOS sampleLeft = this->frame->nb_samples;
@@ -1759,7 +1762,7 @@ public:
 						else if (this->frame->format == AV_SAMPLE_FMT_S16P)
 						{
 							Int16 *arr[8];
-							Int16 *outBuff = (Int16*)&this->frameBuff[this->frameBuffSize];
+							Int16 *outBuff = (Int16*)&frameBuff[this->frameBuffSize];
 							IntOS ch = this->GetChannelCnt();
 							IntOS ind = 0;
 							IntOS sampleLeft = this->frame->nb_samples;
@@ -1782,7 +1785,7 @@ public:
 						else if (this->frame->format == AV_SAMPLE_FMT_S32P)
 						{
 							Int32 *arr[8];
-							Int32 *outBuff = (Int32*)&this->frameBuff[this->frameBuffSize];
+							Int32 *outBuff = (Int32*)&frameBuff[this->frameBuffSize];
 							IntOS ch = this->GetChannelCnt();
 							IntOS ind = 0;
 							IntOS sampleLeft = this->frame->nb_samples;
@@ -1805,7 +1808,7 @@ public:
 						else if (this->frame->format == AV_SAMPLE_FMT_FLTP)
 						{
 							Single *arr[8];
-							Single *outBuff = (Single*)&this->frameBuff[this->frameBuffSize];
+							Single *outBuff = (Single*)&frameBuff[this->frameBuffSize];
 							IntOS ch = this->GetChannelCnt();
 							IntOS ind = 0;
 							IntOS sampleLeft = this->frame->nb_samples;
@@ -1828,7 +1831,7 @@ public:
 						else if (this->frame->format == AV_SAMPLE_FMT_DBLP)
 						{
 							Double *arr[8];
-							Double *outBuff = (Double*)&this->frameBuff[this->frameBuffSize];
+							Double *outBuff = (Double*)&frameBuff[this->frameBuffSize];
 							IntOS ch = this->GetChannelCnt();
 							IntOS ind = 0;
 							IntOS sampleLeft = this->frame->nb_samples;
@@ -1852,7 +1855,7 @@ public:
 						else if (this->frame->format == AV_SAMPLE_FMT_S64P)
 						{
 							Int64 *arr[8];
-							Int64 *outBuff = (Int64*)&this->frameBuff[this->frameBuffSize];
+							Int64 *outBuff = (Int64*)&frameBuff[this->frameBuffSize];
 							IntOS ch = this->frame->channels;
 							IntOS ind = 0;
 							IntOS sampleLeft = this->frame->nb_samples;
@@ -1875,22 +1878,22 @@ public:
 #endif
 						else
 						{
-							MemCopyNO(&this->frameBuff[this->frameBuffSize], dataPtr, dataSize);
+							MemCopyNO(&frameBuff[this->frameBuffSize], dataPtr, dataSize);
 						}
 						this->frameBuffSize += dataSize;
 
 						if (blk.GetSize() >= this->frameBuffSize)
 						{
-							blk.CopyFrom(Data::ByteArrayR(this->frameBuff, this->frameBuffSize));
+							blk.CopyFrom(Data::ByteArrayR(frameBuff, this->frameBuffSize));
 							blk += this->frameBuffSize;
 							outSize += this->frameBuffSize;
 							this->frameBuffSize = 0;
 						}
 						else if (blk.GetSize() > 0)
 						{
-							blk.CopyFrom(Data::ByteArrayR(this->frameBuff, blk.GetSize()));
+							blk.CopyFrom(Data::ByteArrayR(frameBuff, blk.GetSize()));
 							outSize += blk.GetSize();
-							MemCopyO(this->frameBuff, &this->frameBuff[blk.GetSize()], this->frameBuffSize - blk.GetSize());
+							MemCopyO(&frameBuff[0], &frameBuff[blk.GetSize()], this->frameBuffSize - blk.GetSize());
 							this->frameBuffSize -= blk.GetSize();
 							blk = blk.WithSize(0);
 						}
@@ -1935,12 +1938,12 @@ public:
 						{
 							this->frameMaxSize = this->frameMaxSize << 1;
 						}
-						UInt8 *tmpBuff = MemAlloc(UInt8, this->frameMaxSize);
+						UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, this->frameMaxSize);
 						if (this->frameBuffSize)
 						{
-							MemCopyNO(tmpBuff, this->frameBuff, this->frameBuffSize);
+							MemCopyNO(&tmpBuff[0], this->frameBuff, this->frameBuffSize);
 						}
-						MemFree(this->frameBuff);
+						MemFreeArr(this->frameBuff);
 						this->frameBuff = tmpBuff;
 					}
 					MemCopyNO(&this->frameBuff[this->frameBuffSize], dataPtr, dataSize);

@@ -8,7 +8,7 @@ namespace Sync
 	public:
 		struct ClassData;
 	private:
-		ClassData *clsData;
+		NN<ClassData> clsData;
 		UInt32 writeTId;
 		Int32 readCnt;
 	public:

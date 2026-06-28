@@ -365,10 +365,10 @@ UIntOS Text::Encoding::CountUTF8Chars(UnsafeArray<const UInt8> bytes, UIntOS byt
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
 		UIntOS charCnt = (UIntOS)MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, 0, 0);
-		WChar *buff = MemAlloc(WChar, charCnt + 1);
-		MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, buff, (Int32)charCnt);
+		UnsafeArray<WChar> buff = MemAllocArr(WChar, charCnt + 1);
+		MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, buff.Ptr(), (Int32)charCnt);
 		charCnt = Text::StrWChar_UTF8Cnt(buff);
-		MemFree(buff);
+		MemFreeArr(buff);
 		return charCnt;
 #else
 		return byteSize;
@@ -529,11 +529,11 @@ UnsafeArray<UTF8Char> Text::Encoding::UTF8FromBytes(UnsafeArray<UTF8Char> buff, 
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
 		UIntOS charCnt = (UIntOS)MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, 0, 0);
-		WChar *wbuff = MemAlloc(WChar, charCnt + 1);
-		MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, wbuff, (Int32)charCnt);
+		UnsafeArray<WChar> wbuff = MemAllocArr(WChar, charCnt + 1);
+		MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, wbuff.Ptr(), (Int32)charCnt);
 		wbuff[charCnt] = 0;
 		UnsafeArray<UTF8Char> dest = Text::StrWChar_UTF8(buff, wbuff);
-		MemFree(wbuff);
+		MemFreeArr(wbuff);
 		byteConv.Set((UIntOS)(dest - buff));
 		return dest;
 #else
@@ -795,10 +795,10 @@ UIntOS Text::Encoding::UTF8CountBytesC(UnsafeArray<const UTF8Char> str, UIntOS s
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
 		UIntOS ret = Text::StrUTF8_WCharCntC(str, strLen);
-		WChar *wptr = MemAlloc(WChar, ret + 1);
+		UnsafeArray<WChar> wptr = MemAllocArr(WChar, ret + 1);
 		Text::StrUTF8_WCharC(wptr, str, strLen, 0);
-		ret = (UIntOS)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)ret, 0, 0, 0, 0) + 1;
-		MemFree(wptr);
+		ret = (UIntOS)WideCharToMultiByte(this->codePage, 0, wptr.Ptr(), (Int32)ret, 0, 0, 0, 0) + 1;
+		MemFreeArr(wptr);
 		return ret;
 #else
 		return strLen;
@@ -1062,10 +1062,10 @@ UIntOS Text::Encoding::UTF8ToBytesC(UnsafeArray<UInt8> bytes, UnsafeArray<const 
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
 		UIntOS ret = Text::StrUTF8_WCharCntC(str, strLen);
-		WChar *wptr = MemAlloc(WChar, ret + 1);
+		UnsafeArray<WChar> wptr = MemAllocArr(WChar, ret + 1);
 		Text::StrUTF8_WCharC(wptr, str, strLen, 0);
-		ret = (UIntOS)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)ret, (LPSTR)bytes.Ptr(), (Int32)(ret * 3), 0, 0) + 1;
-		MemFree(wptr);
+		ret = (UIntOS)WideCharToMultiByte(this->codePage, 0, wptr.Ptr(), (Int32)ret, (LPSTR)bytes.Ptr(), (Int32)(ret * 3), 0, 0) + 1;
+		MemFreeArr(wptr);
 		return ret;
 #else
 		return (UIntOS)(Text::StrConcatC(bytes, str, strLen) - bytes);

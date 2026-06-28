@@ -49,7 +49,7 @@ void Media::Resizer::NearestNeighbourResizer32_32::Resize(UnsafeArray<const UInt
 		{
 			MemFreeArr(xindex);
 		}
-		this->xindex = xindex = MemAlloc(IntOS, dwidth);
+		this->xindex = xindex = MemAllocArr(IntOS, dwidth);
 		this->lastswidth = swidth;
 		this->lastdwidth = dwidth;
 		v = swidth / (Double)dwidth;
@@ -73,7 +73,7 @@ void Media::Resizer::NearestNeighbourResizer32_32::Resize(UnsafeArray<const UInt
 		{
 			MemFreeArr(yindex);
 		}
-		this->yindex = yindex = MemAlloc(IntOS, dheight);
+		this->yindex = yindex = MemAllocArr(IntOS, dheight);
 		this->lastsheight = sheight;
 		this->lastdheight = dheight;
 		this->lastsbpl = sbpl;

@@ -264,16 +264,16 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 				imgList.Delete();
 				return nullptr;
 			}
-			UInt8 *iccBuff = MemAlloc(UInt8, icc_size);
+			UnsafeArray<UInt8> iccBuff = MemAllocArr(UInt8, icc_size);
 #if JPEGXL_NUMERIC_VERSION < JPEGXL_COMPUTE_NUMERIC_VERSION(0,9,0)
-			if (JXL_DEC_SUCCESS != JxlDecoderGetColorAsICCProfile(dec.get(), 0, JXL_COLOR_PROFILE_TARGET_DATA, iccBuff, icc_size)) {
+			if (JXL_DEC_SUCCESS != JxlDecoderGetColorAsICCProfile(dec.get(), 0, JXL_COLOR_PROFILE_TARGET_DATA, iccBuff.Ptr(), icc_size)) {
 #else
-			if (JXL_DEC_SUCCESS != JxlDecoderGetColorAsICCProfile(dec.get(), JXL_COLOR_PROFILE_TARGET_DATA, iccBuff, icc_size)) {
+			if (JXL_DEC_SUCCESS != JxlDecoderGetColorAsICCProfile(dec.get(), JXL_COLOR_PROFILE_TARGET_DATA, iccBuff.Ptr(), icc_size)) {
 #endif
 				printf("JXLParser: JxlDecoderGetColorAsICCProfile failed\r\n");
 				FreeBoxData(boxData);
 				optimg.Delete();
-				MemFree(iccBuff);
+				MemFreeArr(iccBuff);
 				imgList.Delete();
 				return nullptr;
 			}
@@ -284,7 +284,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 				icc->SetToColorProfile(finfo.color);
 				icc.Delete();
 			}
-			MemFree(iccBuff);
+			MemFreeArr(iccBuff);
 		} else if (status == JXL_DEC_NEED_IMAGE_OUT_BUFFER) {
 			size_t buffer_size;
 			if (JXL_DEC_SUCCESS != JxlDecoderImageOutBufferSize(dec.get(), &format, &buffer_size)) {

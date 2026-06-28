@@ -15,7 +15,7 @@ namespace Media
 		Int32 scnUpdStat;
 
 		Int64 updStart;
-		Int32 *updDelayAll;
+		UnsafeArray<Int32> updDelayAll;
 		Int32 updDelayInd;
 		Int32 updDelayTot;
 		Int32 updDelayAvg;

@@ -170,7 +170,7 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 				break;
 			}
 			field->defSize = fieldDesc[ofst];
-			field->defValue = valArr = MemAlloc(UInt8, field->defSize);
+			field->defValue = valArr = MemAllocArr(UInt8, field->defSize);
 			if (field->defSize)
 			{
 				MemCopyNO(valArr.Ptr(), &fieldDesc[ofst + 1], field->defSize);

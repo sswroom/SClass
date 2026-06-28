@@ -31,11 +31,11 @@ UInt32 __stdcall Media::RGBColorFilter::ProcessThread(AnyType userObj)
 			{
 				if (tstat->me->hdrLev != 0 && tstat->me->hasSSE41)
 				{
-					RGBColorFilter_ProcessImageHDRDLPart(tstat->srcPtr.Ptr(), tstat->destPtr.Ptr(), tstat->width, tstat->height, tstat->sAdd, tstat->dAdd, tstat->me->lut, tstat->me->bpp, tstat->me->hdrLev);
+					RGBColorFilter_ProcessImageHDRDLPart(tstat->srcPtr.Ptr(), tstat->destPtr.Ptr(), tstat->width, tstat->height, tstat->sAdd, tstat->dAdd, tstat->me->lut.Ptr(), tstat->me->bpp, tstat->me->hdrLev);
 				}
 				else
 				{
-					RGBColorFilter_ProcessImagePart(tstat->srcPtr.Ptr(), tstat->destPtr.Ptr(), tstat->width, tstat->height, tstat->sAdd, tstat->dAdd, tstat->me->lut, tstat->me->bpp);
+					RGBColorFilter_ProcessImagePart(tstat->srcPtr.Ptr(), tstat->destPtr.Ptr(), tstat->width, tstat->height, tstat->sAdd, tstat->dAdd, tstat->me->lut.Ptr(), tstat->me->bpp);
 				}
 				tstat->threadStat = 1;
 				tstat->me->threadEvt.Set();
@@ -71,11 +71,11 @@ void Media::RGBColorFilter::WaitForThread(Int32 stat)
 Media::RGBColorFilter::RGBColorFilter(NN<Media::ColorManager> colorMgr)
 {
 	this->colorMgr = colorMgr;
-	this->lut = 0;
+	this->lut = nullptr;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 	this->threadStats = MemAllocArr(ThreadStat, this->nThread);
 	this->hdrLev = 0;
-	this->gammaParam = 0;
+	this->gammaParam = nullptr;
 	this->gammaCnt = 0;
 	this->pf = Media::PF_UNKNOWN;
 #if defined(CPU_X86_64) || defined(CPU_X86_32)
@@ -122,35 +122,38 @@ Media::RGBColorFilter::~RGBColorFilter()
 		}
 	}
 	MemFreeArr(this->threadStats);
-	if (this->lut)
+	UnsafeArray<UInt8> lut;
+	if (this->lut.SetTo(lut))
 	{
-		MemFree(this->lut);
-		this->lut = 0;
+		MemFreeArr(lut);
+		this->lut = nullptr;
 	}
-	if (this->gammaParam)
+	UnsafeArray<Double> gammaParam;
+	if (this->gammaParam.SetTo(gammaParam))
 	{
-		MemFree(this->gammaParam);
-		this->gammaParam = 0;
+		MemFreeArr(gammaParam);
+		this->gammaParam = nullptr;
 	}
 }
 
 void Media::RGBColorFilter::SetGammaCorr(UnsafeArrayOpt<Double> gammaParam, UIntOS gammaCnt)
 {
-	if (this->gammaParam)
-	{
-		MemFree(this->gammaParam);
-	}
 	UnsafeArray<Double> nngammaParam;
+	UnsafeArray<Double> newgammaParam;
+	if (this->gammaParam.SetTo(nngammaParam))
+	{
+		MemFreeArr(nngammaParam);
+	}
 	if (gammaParam.SetTo(nngammaParam) && gammaCnt > 0)
 	{
 		this->gammaCnt = gammaCnt;
-		this->gammaParam = MemAlloc(Double, gammaCnt);
-		MemCopyNO(this->gammaParam, nngammaParam.Ptr(), sizeof(Double) * gammaCnt);
+		this->gammaParam = newgammaParam = MemAllocArr(Double, gammaCnt);
+		MemCopyNO(newgammaParam.Ptr(), nngammaParam.Ptr(), sizeof(Double) * gammaCnt);
 	}
 	else
 	{
 		this->gammaCnt = 0;
-		this->gammaParam = 0;
+		this->gammaParam = nullptr;
 	}
 }
 
@@ -163,32 +166,34 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 	this->pf = pf;
 	this->hdrLev = hdrLev;
 
-	if (this->lut)
+	UnsafeArray<UInt8> nnlut;
+	if (this->lut.SetTo(nnlut))
 	{
-		MemFree(this->lut);
-		this->lut = 0;
+		MemFreeArr(nnlut);
+		this->lut = nullptr;
 	}
 
+	UnsafeArray<Double> gammaParam;
 	UIntOS i;
 	NN<Media::CS::TransferFunc> rtFunc = Media::CS::TransferFunc::CreateFunc(color->GetRTranParamRead());
 	NN<Media::CS::TransferFunc> gtFunc = Media::CS::TransferFunc::CreateFunc(color->GetGTranParamRead());
 	NN<Media::CS::TransferFunc> btFunc = Media::CS::TransferFunc::CreateFunc(color->GetBTranParamRead());
 	if (bpp == 24 || bpp == 32)
 	{
-		Int16 *srcLUT;
-		Int32 *srcLUT32;
-		UInt8 *destLUT;
-		lut = MemAlloc(UInt8, 512 + 65536 + 1024);
-		srcLUT = (Int16*)lut;
-		srcLUT32 = (Int32*)(lut + 512 + 65536);
-		destLUT = (UInt8*)(srcLUT + 256);
+		UnsafeArray<Int16> srcLUT;
+		UnsafeArray<Int32> srcLUT32;
+		UnsafeArray<UInt8> destLUT;
+		lut = nnlut = MemAllocArr(UInt8, 512 + 65536 + 1024);
+		srcLUT = UnsafeArray<Int16>::ConvertFrom(nnlut);
+		srcLUT32 = UnsafeArray<Int32>::ConvertFrom(nnlut + 512 + 65536);
+		destLUT = UnsafeArray<UInt8>::ConvertFrom(srcLUT + 256);
 
 		Double tmp = 1 / 255.0;
 		Double tmpD = 1 / 8192.0;
 		Int32 v;
 		Double lVal;
 		UIntOS j;
-		if (this->gammaParam != 0 && this->gammaCnt > 0)
+		if (this->gammaParam.SetTo(gammaParam) && this->gammaCnt > 0)
 		{
 			Double gammaCntM1 = UIntOS2Double(this->gammaCnt - 1);
 			i = 256;
@@ -198,7 +203,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 				if (lVal >= 0 && lVal < 1)
 				{
 					j = (UInt32)(lVal * gammaCntM1);
-					lVal = this->gammaParam[j] + (this->gammaParam[j + 1] - this->gammaParam[j]) * (lVal - UIntOS2Double(j) * (1.0 / gammaCntM1)) * gammaCntM1;
+					lVal = gammaParam[j] + (gammaParam[j + 1] - gammaParam[j]) * (lVal - UIntOS2Double(j) * (1.0 / gammaCntM1)) * gammaCntM1;
 				}
 				v = Double2Int32((Math_Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
 				srcLUT32[i] = v;
@@ -244,10 +249,10 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 	}
 	else if (bpp == 48 || bpp == 64 || (bpp == 16 && pf == Media::PF_LE_W16))
 	{
-		lut = MemAlloc(UInt8, 65536 * 8);
-		Int16 *srcLUT = (Int16*)lut;
-		Int32 *srcLUT32 = (Int32*)(lut + (65536 * 4));
-		UInt16 *destLUT = (UInt16*)(srcLUT + 65536);
+		lut = nnlut = MemAllocArr(UInt8, 65536 * 8);
+		UnsafeArray<Int16> srcLUT = UnsafeArray<Int16>::ConvertFrom(nnlut);
+		UnsafeArray<Int32> srcLUT32 = UnsafeArray<Int32>::ConvertFrom(nnlut + (65536 * 4));
+		UnsafeArray<UInt16> destLUT = UnsafeArray<UInt16>::ConvertFrom(srcLUT + 65536);
 
 		Double tmp = 1 / 65535.0;
 		Double tmpD = 1 / 8192.0;
@@ -255,7 +260,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 
 		Double lVal;
 		IntOS j;
-		if (this->gammaParam != 0 && this->gammaCnt > 0)
+		if (this->gammaParam.SetTo(gammaParam) && this->gammaCnt > 0)
 		{
 			Double gammaCntM1 = UIntOS2Double(this->gammaCnt - 1);
 			i = 65536;
@@ -265,7 +270,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 				if (lVal >= 0 && lVal < 1)
 				{
 					j = (Int32)(lVal * gammaCntM1);
-					lVal = this->gammaParam[j] + (this->gammaParam[j + 1] - this->gammaParam[j]) * (lVal - IntOS2Double(j) * (1.0 / gammaCntM1)) * gammaCntM1;
+					lVal = gammaParam[j] + (gammaParam[j + 1] - gammaParam[j]) * (lVal - IntOS2Double(j) * (1.0 / gammaCntM1)) * gammaCntM1;
 				}
 				v = Double2Int32((Math_Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
 				srcLUT32[i] = v;
@@ -305,7 +310,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 
 void Media::RGBColorFilter::ProcessImage(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UIntOS width, UIntOS height, UIntOS sbpl, UIntOS dbpl, Bool upsideDown)
 {
-	if (this->lut == 0)
+	if (this->lut.IsNull())
 		return;
 	if (this->bpp == 32 || this->bpp == 48)
 	{

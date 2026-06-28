@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(AnyType userOb
 	if (buffSize > 0)
 	{
 		NN<Crypto::Hash::HashAlgorithm> hash;
-		UInt8 *decBuff = MemAlloc(UInt8, buffSize);
+		UnsafeArray<UInt8> decBuff = MemAllocArr(UInt8, buffSize);
 		if (srcEnc->DecodeBin(sb.ToCString(), decBuff) != buffSize)
 		{
 			me->ui->ShowMsgOK(CSTR("Error in decrypting the text"), CSTR("Text Hash"), me);
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(AnyType userOb
 			hash.Delete();
 			me->txtHashValue->SetText(sb.ToCString());
 		}
-		MemFree(decBuff);
+		MemFreeArr(decBuff);
 	}
 	else
 	{

@@ -28,10 +28,10 @@ struct Net::WinSSLClient::ClassData
 	CtxtHandle ctxt;
 	UIntOS step;
 	SecPkgContext_StreamSizes stmSizes;
-	UInt8 *recvBuff;
+	UnsafeArray<UInt8> recvBuff;
 	UIntOS recvBuffSize;
 	UIntOS recvOfst;
-	UInt8 *decBuff;
+	UnsafeArray<UInt8> decBuff;
 	UIntOS decSize;
 
 	UInt8 *readBuff;
@@ -43,20 +43,17 @@ struct Net::WinSSLClient::ClassData
 
 Net::WinSSLClient::WinSSLClient(NN<Net::SocketFactory> sockf, NN<Socket> s, void *ctxt) : SSLClient(sockf, s)
 {
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->ctxt = *(CredHandle*)ctxt;
 	this->clsData->hCred = 0;
-	this->clsData->step = 0;
-	this->clsData->recvBuff = 0;
-	this->clsData->decBuff = 0;
 	this->clsData->step = 1;
 	MemClear(&this->clsData->stmSizes, sizeof(this->clsData->stmSizes));
 	
 	QueryContextAttributes(&this->clsData->ctxt, SECPKG_ATTR_STREAM_SIZES, &this->clsData->stmSizes);
 	this->clsData->recvBuffSize = this->clsData->stmSizes.cbHeader + (UIntOS)this->clsData->stmSizes.cbMaximumMessage + this->clsData->stmSizes.cbTrailer;
-	this->clsData->recvBuff = MemAlloc(UInt8, this->clsData->recvBuffSize);
+	this->clsData->recvBuff = MemAllocArr(UInt8, this->clsData->recvBuffSize);
 	this->clsData->recvOfst = 0;
-	this->clsData->decBuff = MemAlloc(UInt8, this->clsData->stmSizes.cbMaximumMessage);
+	this->clsData->decBuff = MemAllocArr(UInt8, this->clsData->stmSizes.cbMaximumMessage);
 	this->clsData->decSize = 0;
 	this->clsData->readBuff = 0;
 	this->clsData->readSize = 0;
@@ -96,14 +93,8 @@ Net::WinSSLClient::~WinSSLClient()
 		DeleteSecurityContext(&this->clsData->ctxt);
 		this->clsData->step = 0;
 	}
-	if (this->clsData->recvBuff)
-	{
-		MemFree(this->clsData->recvBuff);
-	}
-	if (this->clsData->decBuff)
-	{
-		MemFree(this->clsData->decBuff);
-	}
+	MemFreeArr(this->clsData->recvBuff);
+	MemFreeArr(this->clsData->decBuff);
 	if (this->clsData->remoteCerts)
 	{
 		UIntOS i = this->clsData->remoteCerts->GetCount();
@@ -114,7 +105,7 @@ Net::WinSSLClient::~WinSSLClient()
 		}
 		DEL_CLASS(this->clsData->remoteCerts);
 	}
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 UIntOS Net::WinSSLClient::Read(const Data::ByteArray &buff)
@@ -136,7 +127,7 @@ UIntOS Net::WinSSLClient::Read(const Data::ByteArray &buff)
 			myBuff.CopyFrom(Data::ByteArrayR(this->clsData->decBuff, myBuff.GetSize()));
 			if (this->clsData->decSize > myBuff.GetSize())
 			{
-				MemCopyO(this->clsData->decBuff, &this->clsData->decBuff[myBuff.GetSize()], this->clsData->decSize - myBuff.GetSize());
+				MemCopyO(&this->clsData->decBuff[0], &this->clsData->decBuff[myBuff.GetSize()], this->clsData->decSize - myBuff.GetSize());
 				this->clsData->decSize -= myBuff.GetSize();
 			}
 			else
@@ -168,7 +159,7 @@ UIntOS Net::WinSSLClient::Read(const Data::ByteArray &buff)
 		SecBuffer buffs[4];
 		SECURITY_STATUS status = SEC_E_INCOMPLETE_MESSAGE;
 
-		SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff, (UInt32)this->clsData->recvOfst);
+		SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff.Ptr(), (UInt32)this->clsData->recvOfst);
 		SecBuffer_Set(&buffs[1], SECBUFFER_EMPTY, 0, 0);
 		SecBuffer_Set(&buffs[2], SECBUFFER_EMPTY, 0, 0);
 		SecBuffer_Set(&buffs[3], SECBUFFER_EMPTY, 0, 0);
@@ -188,7 +179,7 @@ UIntOS Net::WinSSLClient::Read(const Data::ByteArray &buff)
 			printf("%s Recv size = %d\r\n", debugBuff, (UInt32)recvSize);
 #endif
 			this->clsData->recvOfst += recvSize;
-			SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff, (UInt32)this->clsData->recvOfst);
+			SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff.Ptr(), (UInt32)this->clsData->recvOfst);
 			SecBuffer_Set(&buffs[1], SECBUFFER_EMPTY, 0, 0);
 			SecBuffer_Set(&buffs[2], SECBUFFER_EMPTY, 0, 0);
 			SecBuffer_Set(&buffs[3], SECBUFFER_EMPTY, 0, 0);
@@ -306,12 +297,12 @@ UIntOS Net::WinSSLClient::Write(Data::ByteArrayR buff)
 		debugDt.ToString(debugBuff, "HH:mm:ss.fff");
 		printf("%s Writing %d bytes, enc size = %d\r\n", debugBuff, (UInt32)size, (UInt32)(this->clsData->stmSizes.cbHeader + size + this->clsData->stmSizes.cbTrailer));
 #endif
-		UInt8 *encBuff = MemAlloc(UInt8, this->clsData->stmSizes.cbHeader + buff.GetSize() + this->clsData->stmSizes.cbTrailer);
-		MemCopyNO(&encBuff[this->clsData->stmSizes.cbHeader], buff.Ptr(), buff.GetSize());
+		UnsafeArray<UInt8> encBuff = MemAllocArr(UInt8, this->clsData->stmSizes.cbHeader + buff.GetSize() + this->clsData->stmSizes.cbTrailer);
+		MemCopyNO(&encBuff[(UInt32)this->clsData->stmSizes.cbHeader], buff.Ptr(), buff.GetSize());
 		SecBuffer outputBuff[4];
 		SecBufferDesc outputDesc;
 		SecBuffer_Set(&outputBuff[0], SECBUFFER_STREAM_HEADER, &encBuff[0], this->clsData->stmSizes.cbHeader);
-		SecBuffer_Set(&outputBuff[1], SECBUFFER_DATA, &encBuff[this->clsData->stmSizes.cbHeader], (UInt32)buff.GetSize());
+		SecBuffer_Set(&outputBuff[1], SECBUFFER_DATA, &encBuff[(UInt32)this->clsData->stmSizes.cbHeader], (UInt32)buff.GetSize());
 		SecBuffer_Set(&outputBuff[2], SECBUFFER_STREAM_TRAILER, &encBuff[this->clsData->stmSizes.cbHeader + buff.GetSize()], this->clsData->stmSizes.cbTrailer);
 		SecBuffer_Set(&outputBuff[3], SECBUFFER_EMPTY, 0, 0);
 		SecBufferDesc_Set(&outputDesc, outputBuff, 4);
@@ -323,6 +314,7 @@ UIntOS Net::WinSSLClient::Write(Data::ByteArrayR buff)
 			debugDt.ToString(debugBuff, "HH:mm:ss.fff");
 			printf("%s Encrypt Failed\r\n", debugBuff);
 #endif
+			MemFreeArr(encBuff);
 			this->flags |= 1;
 			return 0;
 		}
@@ -333,7 +325,7 @@ UIntOS Net::WinSSLClient::Write(Data::ByteArrayR buff)
 		debugDt.ToString(debugBuff, "HH:mm:ss.fff");
 		printf("%s Sent %d bytes\r\n", debugBuff, (UInt32)ret);
 #endif
-		MemFree(encBuff);
+		MemFreeArr(encBuff);
 		if (ret > (UIntOS)outputBuff[0].cbBuffer + outputBuff[2].cbBuffer)
 		{
 			ret -= (UIntOS)outputBuff[0].cbBuffer + outputBuff[2].cbBuffer;
@@ -367,7 +359,7 @@ Optional<IO::StreamReadReq> Net::WinSSLClient::BeginRead(const Data::ByteArray &
 		SecBufferDesc buffDesc;
 		SecBuffer buffs[4];
 		SECURITY_STATUS status = SEC_E_INCOMPLETE_MESSAGE;
-		SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff, (UInt32)this->clsData->recvOfst);
+		SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff.Ptr(), (UInt32)this->clsData->recvOfst);
 		SecBuffer_Set(&buffs[1], SECBUFFER_EMPTY, 0, 0);
 		SecBuffer_Set(&buffs[2], SECBUFFER_EMPTY, 0, 0);
 		SecBuffer_Set(&buffs[3], SECBUFFER_EMPTY, 0, 0);
@@ -458,10 +450,10 @@ UIntOS Net::WinSSLClient::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, Ou
 	{
 		if (this->clsData->decSize >= this->clsData->readSize)
 		{
-			MemCopyNO(this->clsData->readBuff, this->clsData->decBuff, this->clsData->readSize);
+			MemCopyNO(this->clsData->readBuff, &this->clsData->decBuff[0], this->clsData->readSize);
 			if (this->clsData->decSize > this->clsData->readSize)
 			{
-				MemCopyO(this->clsData->decBuff, &this->clsData->decBuff[this->clsData->readSize], this->clsData->decSize - this->clsData->readSize);
+				MemCopyO(&this->clsData->decBuff[0], &this->clsData->decBuff[this->clsData->readSize], this->clsData->decSize - this->clsData->readSize);
 				this->clsData->decSize -= this->clsData->readSize;
 			}
 			else
@@ -475,7 +467,7 @@ UIntOS Net::WinSSLClient::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, Ou
 #endif
 			return this->clsData->readSize;
 		}
-		MemCopyNO(this->clsData->readBuff, this->clsData->decBuff, this->clsData->decSize);
+		MemCopyNO(this->clsData->readBuff, &this->clsData->decBuff[0], this->clsData->decSize);
 		ret = this->clsData->decSize;
 		this->clsData->decSize = 0;
 		return ret;
@@ -513,7 +505,7 @@ UIntOS Net::WinSSLClient::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, Ou
 	printf("%s EndRead Recv size = %d\r\n", debugBuff, (UInt32)recvSize);
 #endif
 	this->clsData->recvOfst += recvSize;
-	SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff, (UInt32)this->clsData->recvOfst);
+	SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff.Ptr(), (UInt32)this->clsData->recvOfst);
 	SecBuffer_Set(&buffs[1], SECBUFFER_EMPTY, 0, 0);
 	SecBuffer_Set(&buffs[2], SECBUFFER_EMPTY, 0, 0);
 	SecBuffer_Set(&buffs[3], SECBUFFER_EMPTY, 0, 0);
@@ -571,7 +563,7 @@ UIntOS Net::WinSSLClient::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, Ou
 				return ret;
 			}
 			this->clsData->recvOfst += recvSize;
-			SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff, (UInt32)this->clsData->recvOfst);
+			SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff.Ptr(), (UInt32)this->clsData->recvOfst);
 			SecBuffer_Set(&buffs[1], SECBUFFER_EMPTY, 0, 0);
 			SecBuffer_Set(&buffs[2], SECBUFFER_EMPTY, 0, 0);
 			SecBuffer_Set(&buffs[3], SECBUFFER_EMPTY, 0, 0);

@@ -43,7 +43,7 @@ namespace Net
 		struct TopicInfo
 		{
 			NN<Text::String> topic;
-			UInt8 *message;
+			UnsafeArray<UInt8> message;
 			UIntOS msgSize;
 		};
 		

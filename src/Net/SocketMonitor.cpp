@@ -10,7 +10,7 @@ void __stdcall Net::SocketMonitor::DataThread(NN<Sync::Thread> thread)
 {
 	NN<Net::SocketMonitor> me = thread->GetUserObj().GetNN<Net::SocketMonitor>();
 	{
-		UInt8 *buff = MemAlloc(UInt8, 65536);
+		UnsafeArray<UInt8> buff = MemAllocArr(UInt8, 65536);
 		while (!thread->IsStopping())
 		{
 			UIntOS recvSize;
@@ -28,7 +28,7 @@ void __stdcall Net::SocketMonitor::DataThread(NN<Sync::Thread> thread)
 				}
 			}
 		}
-		MemFree(buff);
+		MemFreeArr(buff);
 	}
 }
 
@@ -37,19 +37,18 @@ Net::SocketMonitor::SocketMonitor(NN<Net::SocketFactory> sockf, NN<Socket> soc, 
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	this->threadCnt = threadCnt;
-	this->threads = 0;
 	UIntOS i;
 
 	this->sockf = sockf;
 	this->hdlr = {hdlr, userData};
 
 	this->soc = soc;
-	this->threads = MemAlloc(Sync::Thread*, this->threadCnt);
+	this->threads = MemAllocArr(NN<Sync::Thread>, this->threadCnt);
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
 		sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("SocketMonitor")), i);
-		NEW_CLASS(this->threads[i], Sync::Thread(DataThread, this, CSTRP(sbuff, sptr)));
+		NEW_CLASSNN(this->threads[i], Sync::Thread(DataThread, this, CSTRP(sbuff, sptr)));
 		this->threads[i]->Start();
 	}
 }
@@ -57,24 +56,18 @@ Net::SocketMonitor::SocketMonitor(NN<Net::SocketFactory> sockf, NN<Socket> soc, 
 Net::SocketMonitor::~SocketMonitor()
 {
 	UIntOS i;
-	if (this->threads)
+	i = this->threadCnt;
+	while (i-- > 0)
 	{
-		i = this->threadCnt;
-		while (i-- > 0)
-		{
-			this->threads[i]->BeginStop();
-		}
+		this->threads[i]->BeginStop();
 	}
 	this->sockf->ShutdownSocket(this->soc);
 	this->sockf->DestroySocket(this->soc);
-	if (this->threads)
+	i = this->threadCnt;
+	while (i-- > 0)
 	{
-		i = this->threadCnt;
-		while (i-- > 0)
-		{
-			this->threads[i]->WaitForEnd();
-			DEL_CLASS(this->threads[i]);
-		}
-		MemFree(this->threads);
+		this->threads[i]->WaitForEnd();
+		this->threads[i].Delete();
 	}
+	MemFreeArr(this->threads);
 }

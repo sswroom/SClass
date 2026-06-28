@@ -1283,7 +1283,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFr
 					i += recSize;
 				}*/
 			}
-			MemFree(decBuff);
+			MemFreeArr(decBuff);
 		}
 	}
 	return frame;

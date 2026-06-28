@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Text/MyString.h"
@@ -9,8 +9,6 @@
 #include "IO/FileStream.h"
 #include "IO/StreamReader.h"
 #include "Map/MapLayer.h"
-#include "Map/MapEngine.h"
-#include <windows.h>
 namespace Map
 {
 	typedef struct
@@ -18,7 +16,7 @@ namespace Map
 		Int32 lineType;
 		Int32 lineWidth;
 		Int32 color;
-		WChar *styles;
+		UnsafeArray<WChar> styles;
 	} MAP_LINE_STYLE;
 
 	typedef struct
@@ -32,7 +30,7 @@ namespace Map
 
 	Int32 map_get_color(WChar *str)
 	{
-		Int32 v = Text::StrHex2Int(str);
+		Int32 v = Text::StrHex2Int32V(str);
 		return 0xff000000 | ((v & 0xff) << 16) | (v & 0xff00) | ((v >> 16) & 0xff);
 	}
 }
@@ -53,15 +51,15 @@ Int32 Map::MapLayer::Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Do
 	Int32 thisLine;
 	Int32 i;
 	Int32 lastLine = -1;
-	Data::ArrayList<MAP_LINE_STYLE*> *lastLines;
+	Data::ArrayListNN<MAP_LINE_STYLE> *lastLines;
 	Int32 lastFont = -1;
-	Data::ArrayList<MAP_FONT_STYLE*> *lastFonts;
-	MAP_LINE_STYLE *currLine;
+	Data::ArrayListNN<MAP_FONT_STYLE> *lastFonts;
+	NN<MAP_LINE_STYLE> currLine;
 	MAP_FONT_STYLE *currFont;
 	Bool drawn = false;
 
-	NEW_CLASS(lastLines, Data::ArrayList<MAP_LINE_STYLE*>());
-	NEW_CLASS(lastFonts, Data::ArrayList<MAP_FONT_STYLE*>());
+	NEW_CLASS(lastLines, Data::ArrayListNN<MAP_LINE_STYLE>());
+	NEW_CLASS(lastFonts, Data::ArrayListNN<MAP_FONT_STYLE>());
 
 
 	wptr = Text::StrConcat(fileName, L"MapLayer_");
@@ -122,7 +120,7 @@ Int32 Map::MapLayer::Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Do
 
 				if (strCnt == 5)
 				{
-					currLine = MemAlloc(MAP_LINE_STYLE, 1);
+					currLine = MemAllocNN(MAP_LINE_STYLE);
 					currLine->lineType = Text::StrToInt32(strs[2]);
 					currLine->lineWidth = Text::StrToInt32(strs[3]);
 					currLine->color = map_get_color(strs[4]);
@@ -138,11 +136,11 @@ Int32 Map::MapLayer::Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Do
 					}
 					wptr = strs[strCnt-1];
 					while (*wptr++);
-					currLine = MemAlloc(MAP_LINE_STYLE, 1);
+					currLine = MemAllocNN(MAP_LINE_STYLE);
 					currLine->lineType = Text::StrToInt32(strs[2]);
 					currLine->lineWidth = Text::StrToInt32(strs[3]);
 					currLine->color = map_get_color(strs[4]);
-					currLine->styles = MemAlloc(WChar,  wptr - strs[5]);
+					currLine->styles = MemAllocArr(WChar,  wptr - strs[5]);
 					Text::StrConcat(currLine->styles, strs[5]);
 					lastLines->Add(currLine);
 				}

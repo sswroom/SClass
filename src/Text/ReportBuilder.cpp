@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/FastStringMapObj.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "Data/StringUTF8Map.hpp"
 #include "IO/Path.h"
 #include "Math/Math_C.h"
@@ -32,19 +32,19 @@ Text::SpreadSheet::AxisType Text::ReportBuilder::FromChartDataType(Data::ChartPl
 
 Text::ReportBuilder::ReportBuilder(Text::CStringNN name, UIntOS colCount, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> columns)
 {
-	TableCell *cols;
+	UnsafeArray<TableCell> cols;
 	UIntOS i;
 	this->name = Text::String::New(name);
 	this->nameHAlign = Text::HAlignment::Unknown;
 	this->fontName = Text::String::New(UTF8STRC("Arial"));
 	this->colCount = colCount;
-	this->colWidthPts = MemAlloc(Double, this->colCount);
+	this->colWidthPts = MemAllocArr(Double, this->colCount);
 	this->chart = 0;
 	this->paperHori = false;
 	this->tableBorders = false;
-	this->colTypes = MemAlloc(ColType, this->colCount);
+	this->colTypes = MemAllocArr(ColType, this->colCount);
 	UnsafeArray<const UTF8Char> nns;
-	cols = MemAlloc(TableCell, this->colCount);
+	cols = MemAllocArr(TableCell, this->colCount);
 	i = 0;
 	while (i < this->colCount)
 	{
@@ -124,8 +124,8 @@ Text::ReportBuilder::~ReportBuilder()
 		}
 	}
 	SDEL_CLASS(this->chart);
-	MemFree(this->colWidthPts);
-	MemFree(this->colTypes);
+	MemFreeArr(this->colWidthPts);
+	MemFreeArr(this->colTypes);
 	this->fontName->Release();
 	this->name->Release();
 }
@@ -205,7 +205,7 @@ void Text::ReportBuilder::AddTableHeader(UnsafeArray<UnsafeArrayOpt<const UTF8Ch
 	UnsafeArray<TableCell> cols;
 	UnsafeArray<const UTF8Char> nns;
 	UIntOS i;
-	cols = MemAlloc(TableCell, this->colCount);
+	cols = MemAllocArr(TableCell, this->colCount);
 	i = 0;
 	while (i < this->colCount)
 	{
@@ -226,10 +226,10 @@ void Text::ReportBuilder::AddTableHeader(UnsafeArray<UnsafeArrayOpt<const UTF8Ch
 
 void Text::ReportBuilder::AddTableContent(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> content)
 {
-	TableCell *cols;
+	UnsafeArray<TableCell> cols;
 	UIntOS i;
 	UnsafeArray<const UTF8Char> nns;
-	cols = MemAlloc(TableCell, this->colCount);
+	cols = MemAllocArr(TableCell, this->colCount);
 	i = 0;
 	while (i < this->colCount)
 	{
@@ -250,10 +250,10 @@ void Text::ReportBuilder::AddTableContent(UnsafeArray<UnsafeArrayOpt<const UTF8C
 
 void Text::ReportBuilder::AddTableSummary(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> content)
 {
-	TableCell *cols;
+	UnsafeArray<TableCell> cols;
 	UIntOS i;
 	UnsafeArray<const UTF8Char> nns;
-	cols = MemAlloc(TableCell, this->colCount);
+	cols = MemAllocArr(TableCell, this->colCount);
 	i = 0;
 	while (i < this->colCount)
 	{
@@ -554,7 +554,7 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 			}
 			if (this->icons.GetItem(i).SetTo(iconList))
 			{
-				NN<Text::StringBuilderUTF8> *sbList = MemAlloc(NN<Text::StringBuilderUTF8>, this->colCount);
+				UnsafeArray<NN<Text::StringBuilderUTF8>> sbList = MemAllocArr(NN<Text::StringBuilderUTF8>, this->colCount);
 				l = 0;
 				while (l < this->colCount)
 				{
@@ -588,7 +588,7 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 					sbList[l].Delete();
 					l++;
 				}
-				MemFree(sbList);
+				MemFreeArr(sbList);
 			}
 			else if (currRowType == RT_HEADER)
 			{
@@ -1015,25 +1015,25 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 	UIntOS l;
 	UIntOS m;
 	UIntOS n;
-	Double *colMinWidth;
-	Double *colTotalWidth;
-	Double *colPos;
-	Double *colSize;
-	Double *colCurrX;
+	UnsafeArray<Double> colMinWidth;
+	UnsafeArray<Double> colTotalWidth;
+	UnsafeArray<Double> colPos;
+	UnsafeArray<Double> colSize;
+	UnsafeArray<Double> colCurrX;
 	Int32 pageId = 0;
 	RowType lastRowType;
 	RowType currRowType;
 	NN<Text::String> s;
 
-	colMinWidth = MemAlloc(Double, this->colCount);
-	colTotalWidth = MemAlloc(Double, this->colCount);
-	colPos = MemAlloc(Double, this->colCount);
-	colSize = MemAlloc(Double, this->colCount);
-	colCurrX = MemAlloc(Double, this->colCount);
+	colMinWidth = MemAllocArr(Double, this->colCount);
+	colTotalWidth = MemAllocArr(Double, this->colCount);
+	colPos = MemAllocArr(Double, this->colCount);
+	colSize = MemAllocArr(Double, this->colCount);
+	colCurrX = MemAllocArr(Double, this->colCount);
 
 	NN<Data::ArrayListNN<Text::ReportBuilder::ColIcon>> iconList;
-	Data::FastStringMapObj<IconStatus *> iconStatus;
-	IconStatus *iconSt;
+	Data::FastStringMapNN<IconStatus> iconStatus;
+	NN<IconStatus> iconSt;
 	NN<Text::ReportBuilder::ColIcon> icon;
 	NN<Media::DrawImage> dimg;
 
@@ -1133,10 +1133,9 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 				icon = iconList->GetItemNoCheck(j);
 				if (icon->fileName.SetTo(s))
 				{
-					iconSt = iconStatus.GetNN(s);
-					if (iconSt == 0)
+					if (!iconStatus.GetNN(s).SetTo(iconSt))
 					{
-						iconSt = MemAlloc(IconStatus, 1);
+						iconSt = MemAllocNN(IconStatus);
 						iconSt->dimg = deng->LoadImage(s->ToCString());
 						iconStatus.PutNN(s, iconSt);
 					}
@@ -1453,9 +1452,8 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 						icon = iconList->GetItemNoCheck(i);
 						if (icon->fileName.SetTo(s))
 						{
-							iconSt = iconStatus.GetNN(s);
 							NN<Media::DrawImage> dimg;
-							if (iconSt && iconSt->dimg.SetTo(dimg))
+							if (iconStatus.GetNN(s).SetTo(iconSt) && iconSt->dimg.SetTo(dimg))
 							{
 								Double w = fontHeightPx * UIntOS2Double(dimg->GetWidth()) / UIntOS2Double(dimg->GetHeight());
 								Double dpi = UIntOS2Double(dimg->GetHeight()) / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_PIXEL, Math::Unit::Distance::DU_INCH, fontHeightPx);
@@ -1515,22 +1513,22 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 		g = doc->AddGraph(0, deng, paperWidthMM, paperHeightMM, Math::Unit::Distance::DU_MILLIMETER);
 		lastRowType = RT_UNKNOWN;
 	}
-	MemFree(colMinWidth);
-	MemFree(colTotalWidth);
-	MemFree(colPos);
-	MemFree(colSize);
-	MemFree(colCurrX);
+	MemFreeArr(colMinWidth);
+	MemFreeArr(colTotalWidth);
+	MemFreeArr(colPos);
+	MemFreeArr(colSize);
+	MemFreeArr(colCurrX);
 
 	NN<Media::DrawImage> img;
 	i = iconStatus.GetCount();
 	while (i-- > 0)
 	{
-		iconSt = iconStatus.GetItem(i);
+		iconSt = iconStatus.GetItemNoCheck(i);
 		if (iconSt->dimg.SetTo(img))
 		{
 			deng->DeleteImage(img);
 		}
-		MemFree(iconSt);
+		MemFreeNN(iconSt);
 	}
 	return doc;
 }

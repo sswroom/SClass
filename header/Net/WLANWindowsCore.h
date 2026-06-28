@@ -7,7 +7,7 @@ namespace Net
 	{
 	private:
 		struct ClassData;
-		ClassData *clsData;
+		NN<ClassData> clsData;
 	public:
 		WLANWindowsCore();
 		~WLANWindowsCore();

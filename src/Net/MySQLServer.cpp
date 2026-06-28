@@ -20,7 +20,7 @@
 
 typedef struct
 {
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UIntOS buffSize;
 	Int32 mode;
 	Int32 connId;
@@ -300,8 +300,8 @@ void __stdcall Net::MySQLServer::OnClientEvent(NN<Net::TCPClient> cli, AnyType u
 			Text::StrDelNew(attrList->GetItem(i));
 		}
 		DEL_CLASS(data->attrMap);
-		MemFree(data->buff);
-		MemFree(data.Ptr());
+		MemFreeArr(data->buff);
+		MemFreeNN(data);
 		cli.Delete();
 	}
 }
@@ -338,7 +338,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 				cli->Close();
 				return;
 			}
-			packetSize = ReadUInt24(data->buff);
+			packetSize = ReadUInt24(&data->buff[0]);
 			if (packetSize > data->param.clientMaxPacketSize - 4)
 			{
 				cli->Close();
@@ -347,8 +347,8 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 			if (packetSize + 4 <= data->buffSize)
 			{
 				UTF8Char sbuff[256];
-				const UInt8 *bptr;
-				const UInt8 *bptrEnd;
+				UnsafeArray<const UInt8> bptr;
+				UnsafeArray<const UInt8> bptrEnd;
 				UInt64 iVal;
 				UIntOS len;
 				UnsafeArray<const UTF8Char> authResp;
@@ -363,9 +363,9 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 						if (data->param.clientMaxPacketSize < ReadUInt32(&data->buff[8]))
 						{
 							data->param.clientMaxPacketSize = ReadUInt32(&data->buff[8]);
-							UInt8 *newBuff = MemAlloc(UInt8, data->param.clientMaxPacketSize + 2048);
-							MemCopyNO(newBuff, data->buff, data->buffSize);
-							MemFree(data->buff);
+							UnsafeArray<UInt8> newBuff = MemAllocArr(UInt8, data->param.clientMaxPacketSize + 2048);
+							MemCopyNO(newBuff.Ptr(), &data->buff[0], data->buffSize);
+							MemFreeArr(data->buff);
 							data->buff = newBuff;
 						}
 						else
@@ -388,7 +388,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 					sb.AppendC(data->userName, len);
 					if (data->clientCap & Net::MySQLUtil::CLIENT_PLUGIN_AUTH_LENENC_CLIENT_DATA)
 					{
-						bptr = Net::MySQLUtil::ReadLenencInt(bptr, &iVal);
+						bptr = Net::MySQLUtil::ReadLenencInt(bptr, iVal);
 						authResp = bptr;
 						bptr += iVal;
 						authLen = (UIntOS)iVal;
@@ -425,12 +425,12 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 					{
 						bptrEnd = &data->buff[packetSize + 4];
 						sb.AppendC(UTF8STRC("\r\nAttr:"));
-						bptr = Net::MySQLUtil::ReadLenencInt(bptr, &iVal);
+						bptr = Net::MySQLUtil::ReadLenencInt(bptr, iVal);
 						sb.AppendC(UTF8STRC("\r\n-Length of all key-values = "));
 						sb.AppendU64(iVal);
 						while (bptr < bptrEnd)
 						{
-							bptr = Net::MySQLUtil::ReadLenencInt(bptr, &iVal);
+							bptr = Net::MySQLUtil::ReadLenencInt(bptr, iVal);
 							if (iVal == 0 || bptr + iVal > bptrEnd)
 								break;
 							sb.AppendC(UTF8STRC("\r\n-"));
@@ -438,7 +438,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 							Text::StrConcatC(sbuff, bptr, (UIntOS)iVal);
 							bptr += iVal;
 							sb.AppendC(UTF8STRC(" = "));
-							bptr = Net::MySQLUtil::ReadLenencInt(bptr, &iVal);
+							bptr = Net::MySQLUtil::ReadLenencInt(bptr, iVal);
 							if (bptr + iVal > bptrEnd)
 								break;
 							sb.AppendC(bptr, (UIntOS)iVal);
@@ -756,7 +756,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 		}
 		else if (i > 0)
 		{
-			MemCopyO(data->buff, &data->buff[i], data->buffSize - i);
+			MemCopyO(&data->buff[0], &data->buff[i], data->buffSize - i);
 			data->buffSize -= i;
 		}
 	}
@@ -777,10 +777,10 @@ void __stdcall Net::MySQLServer::OnClientConn(NN<Socket> s, AnyType userObj)
 	UnsafeArray<UInt8> bptr;
 	IntOS i;
 	NN<Net::TCPClient> cli;
-	ClientData *data;
+	NN<ClientData> data;
 	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
-	data = MemAlloc(ClientData, 1);
-	data->buff = MemAlloc(UInt8, DEFAULT_BUFF_SIZE + 2048);
+	data = MemAllocNN(ClientData);
+	data->buff = MemAllocArr(UInt8, DEFAULT_BUFF_SIZE + 2048);
 	data->buffSize = 0;
 	data->mode = 0;
 	data->connId = Sync::Interlocked::IncrementI32(me->connId);

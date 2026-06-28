@@ -477,7 +477,7 @@ NN<Math::BigFloat> Math::BigFloat::operator *=(NN<const Math::BigFloat> val)
 	UIntOS tCnt = this->valCnt;
 	UIntOS vCnt = val->valCnt;
 	UIntOS tmpCnt = tCnt + vCnt;
-	UnsafeArray<UIntOS> tarr = MemAlloc(UIntOS, tmpCnt);
+	UnsafeArray<UIntOS> tarr = MemAllocArr(UIntOS, tmpCnt);
 	Int32 tIndex = this->valIndex + val->valIndex;
 	UnsafeArray<UIntOS> varr = val->valArr;
 	MemCopyNO(tarr.Ptr(), this->valArr.Ptr(), tCnt * sizeof(UIntOS));
@@ -540,8 +540,8 @@ NN<Math::BigFloat> Math::BigFloat::operator *=(IntOS val)
 NN<Math::BigFloat> Math::BigFloat::operator /=(NN<const Math::BigFloat> val)
 {
 /*	Int32 tsize;
-	UInt8 *tarr = MemAlloc(UInt8, tsize = this->valSize + val->valSize);
-	UInt8 *tarr2 = MemAlloc(UInt8, tsize);
+	UnsafeArray<UInt8> tarr = MemAllocArr(UInt8, tsize = this->valSize + val->valSize);
+	UnsafeArray<UInt8> tarr2 = MemAllocArr(UInt8, tsize);
 	Int32 tIndex = this->valIndex - val->valIndex;
 	UInt8 *tharr = this->valArr;
 	MemCopyNO(val->tmpArr, val->valArr, val->valSize);
@@ -1391,7 +1391,7 @@ UnsafeArray<UTF8Char> Math::BigFloat::ToString(UnsafeArray<UTF8Char> buff)
 	MemCopyNO(tmpArr.Ptr(), valArr.Ptr(), vCnt);
 
 	ssize = (IntOS)(vCnt * sizeof(UIntOS) * 3);
-	strBuff = MemAlloc(UTF8Char, (UIntOS)ssize);
+	strBuff = MemAllocArr(UTF8Char, (UIntOS)ssize);
 	sptr = BigIntUtil::LSBToString(strBuff, this->valArr, this->tmpArr, this->valCnt);
 	
 	if (strBuff[0] == '0' && strBuff[1] == 0)
@@ -1472,7 +1472,7 @@ void Math::BigFloat::ToString(NN<Text::StringBuilderUTF8> sb)
 	MemCopyNO(tmpArr.Ptr(), valArr.Ptr(), vCnt);
 
 	ssize = (IntOS)(vCnt * sizeof(UIntOS) * 3);
-	strBuff = MemAlloc(UTF8Char, (UIntOS)ssize);
+	strBuff = MemAllocArr(UTF8Char, (UIntOS)ssize);
 	sptr = BigIntUtil::LSBToString(strBuff, this->valArr, this->tmpArr, this->valCnt);
 	
 	if (strBuff[0] == '0' && strBuff[1] == 0)

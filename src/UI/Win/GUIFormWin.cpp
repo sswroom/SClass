@@ -915,7 +915,7 @@ void UI::GUIForm::OnDropFiles(void *hDrop)
 	{
 		UInt32 i;
 		WChar wbuff[256];
-		NN<Text::String> *files = MemAlloc(NN<Text::String>, fileCnt);
+		UnsafeArray<NN<Text::String>> files = MemAllocArr(NN<Text::String>, fileCnt);
 		i = 0;
 		while (i < fileCnt)
 		{
@@ -933,7 +933,7 @@ void UI::GUIForm::OnDropFiles(void *hDrop)
 		{
 			files[fileCnt]->Release();
 		}
-		MemFree(files);
+		MemFreeArr(files);
 	}
 #endif
 }

@@ -10,7 +10,7 @@ namespace Media
 	private:
 		struct ClassData;
 
-		ClassData *clsData;
+		NN<ClassData> clsData;
 
 		Bool UpdateToScreen(Bool waitForVBlank);
 	public:

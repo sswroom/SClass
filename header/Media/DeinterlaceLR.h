@@ -38,7 +38,7 @@ namespace Media
 	private:
 		DIPARAMETER oddParam;
 		DIPARAMETER evenParam;
-		DITHREADSTAT *stats;
+		UnsafeArray<DITHREADSTAT> stats;
 		UIntOS nCore;
 		Sync::Event *evtMain;
 		UIntOS fieldCnt;

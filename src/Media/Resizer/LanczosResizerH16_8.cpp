@@ -30,23 +30,17 @@ Double Media::Resizer::LanczosResizerH16_8::Lanczos3Weight(Double phase, UIntOS 
 void Media::Resizer::LanczosResizerH16_8::SetupInterpolationParameter(Int32 source_length, UIntOS result_length, NN<LRH16PARAMETER> out, Int32 indexSep, Double offsetCorr)
 {
 	Int32 i,j,n;
-	Double *work;
+	UnsafeArray<Double> work;
 	Double  sum;
 	Double  pos;
 	Int32 nTap = this->hnTap;
 
-//	clear_parameter(out);
-	
 	out->length = result_length;
 	out->tap = nTap;
-	out->weight = MemAlloc(Int64, out->length * out->tap);
-	out->index = MemAlloc(Int32, out->length * out->tap);
+	out->weight = MemAllocArr(Int64, out->length * out->tap);
+	out->index = MemAllocArr(Int32, out->length * out->tap);
 
-//	for(i=0;i<result_length;i++){
-//		out->weight[i] = (int *)MemAlloc(sizeof(int)*out->tap);
-//		out->index[i] = (int *)MemAlloc(sizeof(int)*out->tap);
-//	}
-	work = MemAlloc(Double, out->tap);
+	work = MemAllocArr(Double, out->tap);
 
 	for(i=0;i<result_length;i++){
 		pos = (i+0.5)*source_length;
@@ -74,13 +68,13 @@ void Media::Resizer::LanczosResizerH16_8::SetupInterpolationParameter(Int32 sour
 		}
 	}
 
-	MemFree(work);
+	MemFreeArr(work);
 }
 
 void Media::Resizer::LanczosResizerH16_8::SetupDecimationParameter(Int32 source_length, UIntOS result_length, NN<LRH16PARAMETER> out, Int32 indexSep, Int32 offsetCorr)
 {
 	Int32 i,j,n;
-	Double *work;
+	UnsafeArray<Double> work;
 	Double  sum;
 	Double  pos, phase;
 	Int32 nTap = this->hnTap;
@@ -88,14 +82,10 @@ void Media::Resizer::LanczosResizerH16_8::SetupDecimationParameter(Int32 source_
 	out->length = result_length;
 	out->tap = (nTap * (source_length) + (result_length - 1)) / result_length;
 
-	out->weight = MemAlloc(Int64, out->length * out->tap);
-	out->index = MemAlloc(Int32, out->length * out->tap);
+	out->weight = MemAllocArr(Int64, out->length * out->tap);
+	out->index = MemAllocArr(Int32, out->length * out->tap);
 	
-//	for(i=0;i<result_length;i++){
-//		out->weight[i] = (int *)MemAlloc(sizeof(int)*out->tap);
-//		out->index[i] = (int *)MemAlloc(sizeof(int)*out->tap);
-//	}
-	work = MemAlloc(Double, out->tap);
+	work = MemAllocArr(Double, out->tap);
 
 	for(i=0;i<result_length;i++){
 		pos = (i - (nTap / 2) + 0.5) * source_length / result_length + 0.5;
@@ -123,7 +113,7 @@ void Media::Resizer::LanczosResizerH16_8::SetupDecimationParameter(Int32 source_
 		}
 	}
 
-	MemFree(work);
+	MemFreeArr(work);
 }
 
 /*-----------------------------------------------------------------*/
@@ -601,12 +591,12 @@ void Media::Resizer::LanczosResizerH16_8::DestoryHori()
 	if (this->hIndex.SetTo(hIndex))
 	{
 		MemFreeArr(hIndex);
-		this->hIndex = 0;
+		this->hIndex = nullptr;
 	}
 	if (this->hWeight.SetTo(hWeight))
 	{
 		MemFreeArr(hWeight);
-		this->hWeight = 0;
+		this->hWeight = nullptr;
 	}
 	hsSize = 0;
 }
@@ -618,12 +608,12 @@ void Media::Resizer::LanczosResizerH16_8::DestoryVert()
 	if (this->vIndex.SetTo(vIndex))
 	{
 		MemFreeArr(vIndex);
-		this->vIndex = 0;
+		this->vIndex = nullptr;
 	}
 	if (this->vWeight.SetTo(vWeight))
 	{
 		MemFreeArr(vWeight);
-		this->vWeight = 0;
+		this->vWeight = nullptr;
 	}
 	vsSize = 0;
 }
@@ -638,7 +628,7 @@ Media::Resizer::LanczosResizerH16_8::LanczosResizerH16_8(UIntOS hnTap, UIntOS vn
 	this->hnTap = hnTap << 1;
 	this->vnTap = vnTap << 1;
 	NEW_CLASSNN(evtMain, Sync::Event(true));
-	stats = MemAlloc(LRH16THREADSTAT, nThread);
+	stats = MemAllocArr(LRH16THREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
@@ -654,19 +644,19 @@ Media::Resizer::LanczosResizerH16_8::LanczosResizerH16_8(UIntOS hnTap, UIntOS vn
 
 	hsSize = 0;
 	hdSize = 0;
-	hIndex = 0;
-	hWeight = 0;
+	hIndex = nullptr;
+	hWeight = nullptr;
 	hTap = 0;
 
 	vsSize = 0;
 	vdSize = 0;
-	vIndex = 0;
-	vWeight = 0;
+	vIndex = nullptr;
+	vWeight = nullptr;
 	vTap = 0;
 
 	buffW = 0;
 	buffH = 0;
-	buffPtr = 0;
+	buffPtr = nullptr;
 }
 
 Media::Resizer::LanczosResizerH16_8::~LanczosResizerH16_8()
@@ -712,7 +702,7 @@ Media::Resizer::LanczosResizerH16_8::~LanczosResizerH16_8()
 	if (this->buffPtr.SetTo(buffPtr))
 	{
 		MemFreeArr(buffPtr);
-		this->buffPtr = 0;
+		this->buffPtr = nullptr;
 	}
 }
 
@@ -772,11 +762,11 @@ void Media::Resizer::LanczosResizerH16_8::Resize(UnsafeArray<const UInt8> src, I
 			if (this->buffPtr.SetTo(buffPtr))
 			{
 				MemFreeArr(buffPtr);
-				this->buffPtr = 0;
+				this->buffPtr = nullptr;
 			}
 			buffW = swidth;
 			buffH = dheight;
-			this->buffPtr = buffPtr = MemAlloc(UInt8, buffW * buffH << 3);
+			this->buffPtr = buffPtr = MemAllocArr(UInt8, buffW * buffH << 3);
 		}
 		MTVerticalFilter(src, buffPtr, swidth, dheight, vTap, vIndex, vWeight, sbpl, swidth << 3);
 		MTHorizontalFilter(buffPtr, dest, dwidth, dheight, hTap,hIndex, hWeight, swidth << 3, dbpl);
@@ -806,11 +796,11 @@ void Media::Resizer::LanczosResizerH16_8::Resize(UnsafeArray<const UInt8> src, I
 			if (this->buffPtr.SetTo(buffPtr))
 			{
 				MemFreeArr(buffPtr);
-				this->buffPtr = 0;
+				this->buffPtr = nullptr;
 			}
 			buffW = swidth;
 			buffH = dheight;
-			this->buffPtr = buffPtr = MemAlloc(UInt8, buffW * buffH << 3);
+			this->buffPtr = buffPtr = MemAllocArr(UInt8, buffW * buffH << 3);
 		}
 		MTExpand(src, buffPtr, swidth, sheight, sbpl, swidth << 3);
 		MTHorizontalFilter(buffPtr, dest, dwidth, sheight, hTap, hIndex, hWeight, swidth << 3, dbpl);
@@ -823,11 +813,11 @@ void Media::Resizer::LanczosResizerH16_8::Resize(UnsafeArray<const UInt8> src, I
 
 			if (sheight > dheight)
 			{
-				SetupDecimationParameter(sheight, dheight, &prm, sbpl, 0);
+				SetupDecimationParameter(sheight, dheight, prm, sbpl, 0);
 			}
 			else
 			{
-				SetupInterpolationParameter(sheight, dheight, &prm, sbpl, 0);
+				SetupInterpolationParameter(sheight, dheight, prm, sbpl, 0);
 			}
 			vsSize = sheight;
 			vdSize = dheight;
@@ -840,11 +830,11 @@ void Media::Resizer::LanczosResizerH16_8::Resize(UnsafeArray<const UInt8> src, I
 			if (this->buffPtr.SetTo(buffPtr))
 			{
 				MemFreeArr(buffPtr);
-				this->buffPtr = 0;
+				this->buffPtr = nullptr;
 			}
 			buffW = swidth;
 			buffH = dheight;
-			this->buffPtr = buffPtr = MemAlloc(UInt8, buffW * buffH << 3);
+			this->buffPtr = buffPtr = MemAllocArr(UInt8, buffW * buffH << 3);
 		}
 		MTVerticalFilter(src, buffPtr, swidth, dheight, vTap, vIndex, vWeight, sbpl, swidth << 3);
 		MTCollapse(buffPtr, dest, swidth, dheight, swidth << 3, dbpl);

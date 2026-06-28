@@ -308,10 +308,10 @@ UIntOS Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::In
 		Text::StringBuilderUTF8 sb;
 		UIntOS i;
 		struct iwreq wrq;
-		UInt8 *buff;
+		UnsafeArray<UInt8> buff;
 		UIntOS buffSize = 16;
 		int ioret;
-		buff = MemAlloc(UInt8, buffSize * sizeof(iw_priv_args));
+		buff = MemAllocArr(UInt8, buffSize * sizeof(iw_priv_args));
 
 		Text::UTF8Reader reader(fs);
 		sb.ClearStr();
@@ -328,7 +328,7 @@ UIntOS Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::In
 				sb.TrimToLength((UIntOS)i);
 				Text::StrConcatC((UTF8Char*)wrq.ifr_ifrn.ifrn_name, sb.ToString(), sb.GetLength());
 //				printf("Trying interface = %s\r\n", sb.ToString());
-				wrq.u.data.pointer = buff;
+				wrq.u.data.pointer = buff.Ptr();
 				wrq.u.data.flags = 0;
 				wrq.u.data.length = 16;
 //				printf("SIOCGIWSCAN before\r\n");
@@ -342,7 +342,7 @@ UIntOS Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::In
 				}
 				else
 				{
-					wrq.u.data.pointer = buff;
+					wrq.u.data.pointer = buff.Ptr();
 					wrq.u.data.length = (UInt16)buffSize;
 					wrq.u.data.flags = 0;
 					while (true)
@@ -354,7 +354,7 @@ UIntOS Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::In
 							UInt32 siteSurveyCmd = 0;
 							UInt32 setCmd = 0;
 //							printf("SIOCGIWPRIV if = %s:\r\n", wrq.ifr_ifrn.ifrn_name);
-							iw_priv_args *args = (iw_priv_args*)buff;
+							iw_priv_args *args = (iw_priv_args*)buff.Ptr();
 							IntOS j;
 							j = 0;
 							while (j < wrq.u.data.length)
@@ -387,9 +387,9 @@ UIntOS Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::In
 								break;
 							}
 							buffSize = buffSize << 1;
-							MemFree(buff);
-							buff = MemAlloc(UInt8, buffSize * sizeof(iw_priv_args));
-							wrq.u.data.pointer = buff;
+							MemFreeArr(buff);
+							buff = MemAllocArr(UInt8, buffSize * sizeof(iw_priv_args));
+							wrq.u.data.pointer = buff.Ptr();
 							wrq.u.data.length = (UInt16)buffSize;
 						}
 						else
@@ -402,7 +402,7 @@ UIntOS Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::In
 			}
 			sb.ClearStr();
 		}
-		MemFree(buff);
+		MemFreeArr(buff);
 	}
 	return ret;
 }

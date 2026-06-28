@@ -278,7 +278,7 @@ Media::OpenSLESRenderer::OpenSLESRenderer(UnsafeArrayOpt<const UTF8Char> devName
 	this->playing = false;
 	this->endHdlr = 0;
 	this->buffTime = 0;
-	ClassData *clsData = MemAlloc(ClassData, 1);
+	NN<ClassData> clsData = MemAllocNN(ClassData);
 	clsData->stream = 0;
 	clsData->builder = 0;
 	this->hand = clsData;

@@ -493,19 +493,19 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 				else
 				{
 					UIntOS recvCnt = currTopic->recvCnt;
-					Int64 *dateList = MemAlloc(Int64, 256);
-					Double *valueList = MemAlloc(Double, 256);
+					UnsafeArray<Int64> dateList = MemAllocArr(Int64, 256);
+					UnsafeArray<Double> valueList = MemAllocArr(Double, 256);
 					if (recvCnt & 255)
 					{
-						MemCopyNO(dateList, &currTopic->dateList[recvCnt & 255], sizeof(Int64) * (256 - (recvCnt & 255)));
-						MemCopyNO(valueList, &currTopic->valueList[recvCnt & 255], sizeof(Double) * (256 - (recvCnt & 255)));
+						MemCopyNO(&dateList[0], &currTopic->dateList[recvCnt & 255], sizeof(Int64) * (256 - (recvCnt & 255)));
+						MemCopyNO(&valueList[0], &currTopic->valueList[recvCnt & 255], sizeof(Double) * (256 - (recvCnt & 255)));
 						MemCopyNO(&dateList[256 - (recvCnt & 255)], currTopic->dateList, sizeof(Int64) * (recvCnt & 255));
 						MemCopyNO(&valueList[256 - (recvCnt & 255)], currTopic->valueList, sizeof(Double) * (recvCnt & 255));
 					}
 					else
 					{
-						MemCopyNO(dateList, currTopic->dateList, sizeof(Int64) * 256);
-						MemCopyNO(valueList, currTopic->valueList, sizeof(Double) * 256);
+						MemCopyNO(&dateList[0], currTopic->dateList, sizeof(Int64) * 256);
+						MemCopyNO(&valueList[0], currTopic->valueList, sizeof(Double) * 256);
 					}
 					
 					Data::ChartPlotter *chart;
@@ -513,8 +513,8 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 					chart->AddLineChart(currTopic->topic, Data::ChartPlotter::NewData(currTopic->valueList, 256), Data::ChartPlotter::NewData(currTopic->dateList, 256), 0xFFFF0000);
 					chart->Plot(gimg, 0, 0, UIntOS2Double(sz.x), UIntOS2Double(sz.y));
 					DEL_CLASS(chart);
-					MemFree(dateList);
-					MemFree(valueList);
+					MemFreeArr(dateList);
+					MemFreeArr(valueList);
 				}
 				
 			}

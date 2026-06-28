@@ -41,14 +41,14 @@ UI::GTK::GTKTabControl::GTKTabControl(NN<UI::GUICore> ui, NN<UI::GUIClientContro
 UI::GTK::GTKTabControl::~GTKTabControl()
 {
 	NN<UI::GUITabPage> tp;
-	PageInfo *page;
+	NN<PageInfo> page;
 	Data::ArrayIterator<NN<GUITabPage>> it = this->tabPages.Iterator();
 	while (it.HasNext())
 	{
 		tp = it.Next();
-		page = (PageInfo*)tp->GetCustObj();
+		page = tp->GetCustObj().GetNN<PageInfo>();
 		page->txt->Release();
-		MemFree(page);
+		MemFreeNN(page);
 		tp.Delete();
 	}
 }
@@ -56,9 +56,9 @@ UI::GTK::GTKTabControl::~GTKTabControl()
 NN<UI::GUITabPage> UI::GTK::GTKTabControl::AddTabPage(NN<Text::String> tabName)
 {
 	NN<UI::GUITabPage> tp;
-	PageInfo *page;
+	NN<PageInfo> page;
 	NEW_CLASSNN(tp, UI::GUITabPage(this->ui, nullptr, *this, this->tabPages.GetCount()));
-	page = MemAlloc(PageInfo, 1);
+	page = MemAllocNN(PageInfo);
 	page->lbl = gtk_label_new((const Char*)tabName->v.Ptr());
 	page->txt = tabName->Clone();
 	tp->SetCustObj(page);
@@ -74,9 +74,9 @@ NN<UI::GUITabPage> UI::GTK::GTKTabControl::AddTabPage(NN<Text::String> tabName)
 NN<UI::GUITabPage> UI::GTK::GTKTabControl::AddTabPage(Text::CStringNN tabName)
 {
 	NN<UI::GUITabPage> tp;
-	PageInfo *page;
+	NN<PageInfo> page;
 	NEW_CLASSNN(tp, UI::GUITabPage(this->ui, nullptr, *this, this->tabPages.GetCount()));
-	page = MemAlloc(PageInfo, 1);
+	page = MemAllocNN(PageInfo);
 	page->lbl = gtk_label_new((const Char*)tabName.v.Ptr());
 	page->txt = Text::String::New(tabName);
 	tp->SetCustObj(page);
@@ -126,7 +126,7 @@ void UI::GTK::GTKTabControl::SetTabPageName(UIntOS index, Text::CStringNN name)
 	NN<UI::GUITabPage> tp;
 	if (!this->tabPages.GetItem(index).SetTo(tp))
 		return;
-	PageInfo *page = (PageInfo*)tp->GetCustObj();
+	NN<PageInfo> page = tp->GetCustObj().GetNN<PageInfo>();
 	gtk_label_set_text((GtkLabel*)page->lbl, (const Char*)name.v.Ptr());
 	page->txt->Release();
 	page->txt = Text::String::New(name);
@@ -137,7 +137,7 @@ UnsafeArrayOpt<UTF8Char> UI::GTK::GTKTabControl::GetTabPageName(UIntOS index, Un
 	NN<UI::GUITabPage> tp;
 	if (!this->tabPages.GetItem(index).SetTo(tp))
 		return nullptr;
-	PageInfo *page = (PageInfo*)tp->GetCustObj();
+	NN<PageInfo> page = tp->GetCustObj().GetNN<PageInfo>();
 	return page->txt->ConcatTo(buff);
 }
 

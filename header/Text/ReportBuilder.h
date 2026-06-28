@@ -77,8 +77,8 @@ namespace Text
 		Data::ArrayListNN<ColURLLatLon> urlList;
 		Data::ArrayListObj<Optional<Data::ArrayListNN<ColIcon>>> icons;
 		Bool tableBorders;
-		Double *colWidthPts;
-		ColType *colTypes;
+		UnsafeArray<Double> colWidthPts;
+		UnsafeArray<ColType> colTypes;
 		Data::ChartPlotter *chart;
 		Bool paperHori;
 

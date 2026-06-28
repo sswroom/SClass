@@ -383,11 +383,11 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(UnsafeArray<const WChar> str, UIntOS s
 			}
 			else
 			{
-				WChar *wbuffTmp = MemAlloc(WChar, strLen + 1);
-				MemCopyNO(wbuffTmp, str.Ptr(), strLen * sizeof(WChar));
+				UnsafeArray<WChar> wbuffTmp = MemAllocArr(WChar, strLen + 1);
+				MemCopyNO(&wbuffTmp[0], str.Ptr(), strLen * sizeof(WChar));
 				wbuffTmp[strLen] = 0;
-				csptr = Text::StrToUTF8New(wbuffTmp);
-				MemFree(wbuffTmp);
+				csptr = Text::StrToUTF8New(UnsafeArray<const WChar>(wbuffTmp));
+				MemFreeArr(wbuffTmp);
 			}
 			NN<Media::GTKDrawFont>::ConvertFrom(fnt)->Init(cr);
 			cairo_text_extents_t extents;
@@ -467,11 +467,11 @@ void UI::GUITextView::GetDrawSize(UnsafeArray<const WChar> str, UIntOS strLen, O
 			}
 			else
 			{
-				WChar *wbuffTmp = MemAlloc(WChar, strLen + 1);
-				MemCopyNO(wbuffTmp, str.Ptr(), strLen * sizeof(WChar));
+				UnsafeArray<WChar> wbuffTmp = MemAllocArr(WChar, strLen + 1);
+				MemCopyNO(&wbuffTmp[0], str.Ptr(), strLen * sizeof(WChar));
 				wbuffTmp[strLen] = 0;
-				s = Text::String::NewNotNull(wbuffTmp);
-				MemFree(wbuffTmp);
+				s = Text::String::NewNotNull(UnsafeArray<const WChar>(wbuffTmp));
+				MemFreeArr(wbuffTmp);
 			}
 			sz = drawBuff->GetTextSize(fnt, s->ToCString());
 			s->Release();
@@ -528,7 +528,7 @@ UI::GUITextView::GUITextView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent
 	this->pageLineHeight = 12;
 
 
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->scrSize = 8;
 	this->clsData->scrVMin = 0;
 	this->clsData->scrVMax = 100;
@@ -578,7 +578,7 @@ UI::GUITextView::~GUITextView()
 	{
 		this->deng->DeleteImage(img);
 	}
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Text::CStringNN UI::GUITextView::GetObjectClass() const

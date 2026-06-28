@@ -17,7 +17,7 @@ namespace Media
 		} DeviceInfo;
 	private:
 		struct ClassData;
-		ClassData *clsData;
+		NN<ClassData> clsData;
 	public:
 		VideoCaptureMgr();
 		~VideoCaptureMgr();

@@ -1877,14 +1877,14 @@ Media::VideoRenderer::VideoRenderer(NN<Media::ColorManagerSess> colorSess, NN<Me
 	this->videoProcCnt = 0;
 	this->avOfst = 0;
 
-	this->procDelayBuff = MemAlloc(Double, PROCDELAYBUFF);
+	this->procDelayBuff = MemAllocArr(Double, PROCDELAYBUFF);
 	this->procThisCount = 0;
 	this->procCnt = 0;
 
-	this->dispDelayBuff = MemAlloc(Double, DISPDELAYBUFF);
-	this->dispJitterBuff = MemAlloc(Data::Duration, DISPDELAYBUFF);
+	this->dispDelayBuff = MemAllocArr(Double, DISPDELAYBUFF);
+	this->dispJitterBuff = MemAllocArr(Data::Duration, DISPDELAYBUFF);
 
-	this->buffs = MemAlloc(VideoBuff, this->allBuffCnt);
+	this->buffs = MemAllocArr(VideoBuff, this->allBuffCnt);
 	i = allBuffCnt;
 	while (i-- > 0)
 	{
@@ -1897,7 +1897,7 @@ Media::VideoRenderer::VideoRenderer(NN<Media::ColorManagerSess> colorSess, NN<Me
 		this->buffs[i].destSurface = nullptr;
 		this->buffs[i].destSize = Math::Size2D<UIntOS>(0, 0);
 	}
-	this->tstats = MemAlloc(ThreadStat, this->threadCnt);
+	this->tstats = MemAllocArr(ThreadStat, this->threadCnt);
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
@@ -1980,7 +1980,7 @@ Media::VideoRenderer::~VideoRenderer()
 			DEL_CLASS(this->tstats[i].deint);
 		}
 	}
-	MemFree(this->tstats);
+	MemFreeArr(this->tstats);
 
 	UnsafeArray<UInt8> srcBuff;
 	i = this->allBuffCnt;
@@ -1994,10 +1994,10 @@ Media::VideoRenderer::~VideoRenderer()
 	}
 	this->imgFilters.DeleteAll();
 
-	MemFree(this->procDelayBuff);
-	MemFree(this->dispDelayBuff);
-	MemFree(this->dispJitterBuff);
-	MemFree(this->buffs);
+	MemFreeArr(this->procDelayBuff);
+	MemFreeArr(this->dispDelayBuff);
+	MemFreeArr(this->dispJitterBuff);
+	MemFreeArr(this->buffs);
 }
 
 

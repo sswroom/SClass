@@ -103,7 +103,7 @@ void Math::BigIntUtil::LSBMul(UnsafeArray<UIntOS> destBuff, UnsafeArray<const UI
 	UIntOS i;
 	UIntOS v;
 	UIntOS lastHi;
-	tmpBuff = MemAlloc(UIntOS, destCnt + srcCnt);
+	tmpBuff = MemAllocArr(UIntOS, destCnt + srcCnt);
 	if ((IntOS)destBuff[destCnt - 1] < 0)
 	{
 		LSBNeg(destBuff, destCnt);

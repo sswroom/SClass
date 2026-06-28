@@ -25,13 +25,13 @@ Double Media::ImageCmp::ImageMeanSqrErr::CompareImage(NN<Media::RasterImage> ori
 		{
 			UIntOS w = oriImage->info.dispSize.GetWidth();
 			UIntOS bpl = w << 2;
-			UInt8 *srcImg;
-			UInt8 *destImg;
+			UnsafeArray<UInt8> srcImg;
+			UnsafeArray<UInt8> destImg;
 			UIntOS i = oriImage->info.dispSize.GetHeight();
-			srcImg = MemAlloc(UInt8, bpl);
-			destImg = MemAlloc(UInt8, bpl);
-			UInt8 *srcPtr;
-			UInt8 *destPtr;
+			srcImg = MemAllocArr(UInt8, bpl);
+			destImg = MemAllocArr(UInt8, bpl);
+			UnsafeArray<UInt8> srcPtr;
+			UnsafeArray<UInt8> destPtr;
 			UIntOS j;
 			IntOS db;
 			IntOS dg;
@@ -53,8 +53,8 @@ Double Media::ImageCmp::ImageMeanSqrErr::CompareImage(NN<Media::RasterImage> ori
 					destPtr += 4;
 				}
 			}
-			MemFree(srcImg);
-			MemFree(destImg);
+			MemFreeArr(srcImg);
+			MemFreeArr(destImg);
 			return diffSum / (Double)(w * oriImage->info.dispSize.GetHeight() * 3);
 		}
 		return -1;

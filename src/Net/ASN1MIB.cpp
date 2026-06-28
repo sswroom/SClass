@@ -1029,7 +1029,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 /*								if (impInd >= 0)
 								{
 									impObj = impModule->objValues->GetItem((UIntOS)impInd);
-									impObj2 = MemAlloc(ObjectInfo, 1);
+									impObj2 = MemAllocNN(ObjectInfo);
 									impObj2->objectName = Text::StrCopyNew(impSarr[0]);
 									if (impObj->typeName)
 									{
@@ -1863,7 +1863,7 @@ Bool Net::ASN1MIB::LoadFileInner(Text::CStringNN fileName, NN<Text::StringBuilde
 				errMessage->AppendC(UTF8STRC(" already loaded"));
 				break;
 			}
-			module = MemAlloc(ModuleInfo, 1);
+			module = MemAllocNN(ModuleInfo);
 			module->moduleName = Text::StrCopyNew(sb.ToString());
 			module->moduleFileName = Text::StrCopyNew(fileName);
 			NEW_CLASS(module->objKeys, Data::ArrayListStrUTF8());

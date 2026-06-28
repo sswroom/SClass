@@ -11,7 +11,7 @@ namespace Net
 	class SDPFile
 	{
 	private:
-		UInt8 *buff;
+		UnsafeArray<UInt8> buff;
 		UIntOS buffSize;
 
 		Int32 version;
@@ -39,7 +39,7 @@ namespace Net
 
 		void InitSDP();
 	public:
-		SDPFile(UInt8 *buff, UIntOS buffSize);
+		SDPFile(UnsafeArray<UInt8> buff, UIntOS buffSize);
 		SDPFile();
 		~SDPFile();
 

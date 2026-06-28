@@ -58,7 +58,7 @@ namespace Net
 			Bool toStop;
 			Bool isPrimary;
 			Sync::Event *evt;
-			TCPClientMgr *me;
+			NN<TCPClientMgr> me;
 		} WorkerStatus;
 
 		typedef void (CALLBACKFUNC TCPClientEvent)(NN<TCPClient> cli, AnyType userObj, AnyType cliData, TCPEventType evtType);
@@ -79,7 +79,7 @@ namespace Net
 		Data::UInt64FastMapNN<TCPClientStatus> cliMap;
 		Sync::Mutex cliMut;
 
-		WorkerStatus *workers;
+		UnsafeArrayOpt<WorkerStatus> workers;
 		UIntOS workerCnt;
 		Data::SyncCircularBuffNN<TCPClientStatus> workerTasks;
 

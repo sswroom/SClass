@@ -23,17 +23,17 @@ void Media::Resizer::LanczosResizerLR_C16::SetupInterpolationParameter(UIntOS nT
 	UIntOS i;
 	UIntOS j;
 	IntOS n;
-	Double *work;
+	UnsafeArray<Double> work;
 	Double  sum;
 	Double  pos;
 	Math::LanczosFilter lanczos(nTap);
 
 	out->length = result_length;
 	out->tap = nTap;
-	out->weight = MemAllocA(Int64, out->length * out->tap);
-	out->index = MemAllocA(IntOS, out->length * out->tap);
+	out->weight = MemAllocAArr(Int64, out->length * out->tap);
+	out->index = MemAllocAArr(IntOS, out->length * out->tap);
 
-	work = MemAlloc(Double, out->tap);
+	work = MemAllocArr(Double, out->tap);
 
 	i = 0;
 	while (i < result_length)
@@ -79,7 +79,7 @@ void Media::Resizer::LanczosResizerLR_C16::SetupInterpolationParameter(UIntOS nT
 		i++;
 	}
 
-	MemFree(work);
+	MemFreeArr(work);
 }
 
 void Media::Resizer::LanczosResizerLR_C16::SetupDecimationParameter(UIntOS nTap, Double source_length, UIntOS source_max_pos, UIntOS result_length, NN<LRHPARAMETER> out, IntOS indexSep, Double offsetCorr)
@@ -88,7 +88,7 @@ void Media::Resizer::LanczosResizerLR_C16::SetupDecimationParameter(UIntOS nTap,
 	UIntOS j;
 	IntOS n;
 	UIntOS ttap;
-	Double *work;
+	UnsafeArray<Double> work;
 	Double  sum;
 	Double  pos, phase;
 	Math::LanczosFilter lanczos(nTap);
@@ -98,10 +98,10 @@ void Media::Resizer::LanczosResizerLR_C16::SetupDecimationParameter(UIntOS nTap,
 	ttap = out->tap;
 	out->tap += out->tap & 1;
 
-	out->weight = MemAllocA(Int64, out->length * out->tap);
-	out->index = MemAllocA(IntOS, out->length * out->tap);
+	out->weight = MemAllocAArr(Int64, out->length * out->tap);
+	out->index = MemAllocAArr(IntOS, out->length * out->tap);
 	
-	work = MemAlloc(Double, out->tap);
+	work = MemAllocArr(Double, out->tap);
 
 	i = 0;
 	while (i < result_length)
@@ -152,7 +152,7 @@ void Media::Resizer::LanczosResizerLR_C16::SetupDecimationParameter(UIntOS nTap,
 		i++;
 	}
 
-	MemFree(work);
+	MemFreeArr(work);
 }
 
 void Media::Resizer::LanczosResizerLR_C16::MTHorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS width, UIntOS height, UIntOS tap, UnsafeArray<IntOS> index, UnsafeArray<Int64> weight, IntOS sstep, IntOS dstep)
@@ -232,7 +232,7 @@ void Media::Resizer::LanczosResizerLR_C16::UpdateRGBTable()
 	UnsafeArray<UInt8> rgbTable;
 	if (!this->rgbTable.SetTo(rgbTable))
 	{
-		this->rgbTable = rgbTable = MemAlloc(UInt8, 65536 * 6);
+		this->rgbTable = rgbTable = MemAllocArr(UInt8, 65536 * 6);
 	}
 	Media::RGBLUTGen lutGen(this->colorSess);
 	lutGen.GenLRGB_RGB16(rgbTable, this->destColor, 14, this->srcRefLuminance);

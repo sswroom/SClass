@@ -18,9 +18,9 @@ namespace Media
 			UIntOS frameSize;
 			Bool lastIsField;
 			Bool spsFound;
-			UInt8 *sps;
+			UnsafeArrayOpt<UInt8> sps;
 			UIntOS spsSize;
-			UInt8 *pps;
+			UnsafeArrayOpt<UInt8> pps;
 			UIntOS ppsSize;
 			Bool toRelease;
 			Bool size32;

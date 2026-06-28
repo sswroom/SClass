@@ -10,10 +10,11 @@ namespace UI
 	class GUIListView : public GUIControl
 	{
 	public:
+		struct ClassData;
 		typedef void (CALLBACKFUNC ItemEvent)(AnyType userObj, UIntOS itemIndex);
 		typedef void (CALLBACKFUNC MouseEvent)(AnyType userObj, Math::Coord2DDbl pos, UIntOS index);
 	protected:
-		void *clsData;
+		NN<ClassData> clsData;
 	private:
 		Data::ArrayListObj<Data::CallbackStorage<UI::UIEvent>> selChgHdlrs;
 		Data::ArrayListObj<Data::CallbackStorage<ItemEvent>> dblClkHdlrs;

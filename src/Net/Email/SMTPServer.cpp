@@ -233,7 +233,7 @@ void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMT
 		if (cliStatus->loginMode == 1)
 		{
 			Bool succ = false;
-			UInt8 *decBuff = MemAlloc(UInt8, cmdLen);
+			UnsafeArray<UInt8> decBuff = MemAllocArr(UInt8, cmdLen);
 			Text::CStringNN userName;
 			Text::CStringNN pwd;
 			Crypto::Encrypt::Base64 b64;
@@ -244,10 +244,10 @@ void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMT
 			pwd.v = userName.v + userName.leng + 1;
 			if (pwd.v < UnsafeArray<const UTF8Char>(decBuff + cmdLen))
 			{
-				pwd.leng = (UIntOS)(decBuff + cmdLen - pwd.v.Ptr());
+				pwd.leng = (UIntOS)(UnsafeArray<const UInt8>(decBuff) - pwd.v) + cmdLen;
 				succ = this->loginHdlr(this->mailObj, userName, pwd);
 			}
-			MemFree(decBuff);
+			MemFreeArr(decBuff);
 			cliStatus->loginMode = 0;
 			if (succ)
 			{
@@ -263,25 +263,25 @@ void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMT
 		}
 		else if (cliStatus->loginMode == 2)
 		{
-			UInt8 *decBuff = MemAlloc(UInt8, cmdLen);
+			UnsafeArray<UInt8> decBuff = MemAllocArr(UInt8, cmdLen);
 			Crypto::Encrypt::Base64 b64;
 			cmdLen = b64.Decrypt(cmd, cmdLen, decBuff);
 			decBuff[cmdLen] = 0;
 			OPTSTR_DEL(cliStatus->userName);
 			cliStatus->userName = Text::String::New(decBuff, cmdLen);
-			MemFree(decBuff);
+			MemFreeArr(decBuff);
 			cliStatus->loginMode = 3;
 			WriteMessage(cli, 334, CSTR("UGFzc3dvcmQ6"));
 		}
 		else if (cliStatus->loginMode == 3 && cliStatus->userName.SetTo(nnuserName))
 		{
 			Bool succ = false;
-			UInt8 *decBuff = MemAlloc(UInt8, cmdLen);
+			UnsafeArray<UInt8> decBuff = MemAllocArr(UInt8, cmdLen);
 			Crypto::Encrypt::Base64 b64;
 			cmdLen = b64.Decrypt(cmd, cmdLen, decBuff);
 			decBuff[cmdLen] = 0;
 			succ = this->loginHdlr(this->mailObj, nnuserName->ToCString(), {decBuff, cmdLen});
-			MemFree(decBuff);
+			MemFreeArr(decBuff);
 			cliStatus->loginMode = 0;
 			if (succ)
 			{
@@ -431,7 +431,7 @@ void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMT
 		else if (Text::StrStartsWithICaseC(&cmd[5], cmdLen - 5, UTF8STRC("PLAIN ")))
 		{
 			Bool succ = false;
-			UInt8 *decBuff = MemAlloc(UInt8, cmdLen - 10);
+			UnsafeArray<UInt8> decBuff = MemAllocArr(UInt8, cmdLen - 10);
 			Text::CStringNN userName;
 			Text::CStringNN pwd;
 			Crypto::Encrypt::Base64 b64;
@@ -442,10 +442,10 @@ void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMT
 			pwd.v = userName.v + userName.leng + 1;
 			if (pwd.v < UnsafeArray<const UTF8Char>(decBuff + cmdLen))
 			{
-				pwd.leng = (UIntOS)(decBuff + cmdLen - pwd.v.Ptr());
+				pwd.leng = (UIntOS)(UnsafeArray<const UTF8Char>(decBuff) - pwd.v) + cmdLen;
 				succ = this->loginHdlr(this->mailObj, userName, pwd);
 			}
-			MemFree(decBuff);
+			MemFreeArr(decBuff);
 			if (succ)
 			{
 				WriteMessage(cli, 235, CSTR("2.7.0 Authentication successful"));
@@ -460,14 +460,14 @@ void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMT
 		}
 		else if (Text::StrStartsWithICaseC(&cmd[5], cmdLen - 5, UTF8STRC("LOGIN ")))
 		{
-			UInt8 *decBuff = MemAlloc(UInt8, cmdLen - 10);
+			UnsafeArray<UInt8> decBuff = MemAllocArr(UInt8, cmdLen - 10);
 			Crypto::Encrypt::Base64 b64;
 			cmdLen = b64.Decrypt((UInt8*)&cmd[11], cmdLen - 11, decBuff);
 			decBuff[cmdLen] = 0;
 			OPTSTR_DEL(cliStatus->userName);
 			cliStatus->userName = Text::String::New((UTF8Char*)&decBuff[1], cmdLen - 1);
 			cliStatus->loginMode = 3;
-			MemFree(decBuff);
+			MemFreeArr(decBuff);
 			WriteMessage(cli, 334, CSTR("UGFzc3dvcmQ6"));
 		}
 	}

@@ -14,7 +14,6 @@
 
 void Net::SDPFile::InitSDP()
 {
-	this->buff = 0;
 	this->buffSize = 0;
 
 	this->version = 0;
@@ -35,12 +34,12 @@ void Net::SDPFile::InitSDP()
 	this->reqUserAgent = nullptr;
 }
 
-Net::SDPFile::SDPFile(UInt8 *buff, UIntOS buffSize)
+Net::SDPFile::SDPFile(UnsafeArray<UInt8> buff, UIntOS buffSize)
 {
 	InitSDP();
-	this->buff = MemAlloc(UInt8, buffSize);
+	this->buff = MemAllocArr(UInt8, buffSize);
 	this->buffSize = buffSize;
-	MemCopyNO(this->buff, buff, buffSize);
+	MemCopyNO(&this->buff[0], &buff[0], buffSize);
 
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -172,13 +171,14 @@ Net::SDPFile::SDPFile(UInt8 *buff, UIntOS buffSize)
 Net::SDPFile::SDPFile()
 {
 	InitSDP();
+	this->buff = MemAllocArr(UInt8, 0);
 }
 
 Net::SDPFile::~SDPFile()
 {
 	UIntOS i;
 	NN<Data::ArrayListStrUTF8> currMedia;
-	MemFree(this->buff);
+	MemFreeArr(this->buff);
 	OPTSTR_DEL(this->sessName);
 	OPTSTR_DEL(this->userName);
 	OPTSTR_DEL(this->sessId);
@@ -481,12 +481,9 @@ Bool Net::SDPFile::BuildBuff()
 	UIntOS buffSize;
 	UnsafeArray<UInt8> buff;
 	buff = mstm.GetBuff(buffSize);
-	if (this->buff)
-	{
-		MemFree(this->buff);
-	}
-	this->buff = MemAlloc(UInt8, buffSize);
-	MemCopyNO(this->buff, buff.Ptr(), buffSize);
+	MemFreeArr(this->buff);
+	this->buff = MemAllocArr(UInt8, buffSize);
+	MemCopyNO(&this->buff[0], buff.Ptr(), buffSize);
 	this->buffSize = buffSize;
 	return true;
 }

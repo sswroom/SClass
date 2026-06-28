@@ -26,12 +26,12 @@ namespace Net
 		Sync::Mutex sendMut;
 
 		Sync::Mutex recvMut;
-		UInt8 *recvBuff;
+		UnsafeArray<UInt8> recvBuff;
 		UIntOS recvCapacity;
 		UIntOS recvSize;
 		UIntOS recvParseOfst;
 
-		UInt8 *recvData;
+		UnsafeArrayOpt<UInt8> recvData;
 		UIntOS recvDataCap;
 		UIntOS recvDataSize;
 		UIntOS recvDataOfst;

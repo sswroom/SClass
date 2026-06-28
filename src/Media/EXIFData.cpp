@@ -1599,7 +1599,7 @@ void Media::EXIFData::AddBytes(UInt32 id, UInt64 cnt, UnsafeArray<const UInt8> b
 	else
 	{
 		item->value = ReadNInt32(&buff[0]);
-		item->dataBuff = MemAlloc(UInt8, cnt);
+		item->dataBuff = MemAllocArr(UInt8, cnt);
 		MemCopyNO(item->dataBuff.GetOpt<UInt8>().OrNull(), &buff[0], cnt);
 	}
 	if (this->exifMap.Put(id, item).SetTo(item))
@@ -1615,7 +1615,7 @@ void Media::EXIFData::AddString(UInt32 id, UInt64 cnt, UnsafeArray<const Char> b
 	item->type = ET_STRING;
 	item->cnt = cnt;
 	item->value = 0;
-	item->dataBuff = MemAlloc(UInt8, cnt);
+	item->dataBuff = MemAllocArr(UInt8, cnt);
 	MemCopyNO(item->dataBuff.GetOpt<UInt8>().OrNull(), &buff[0], cnt);
 	if (this->exifMap.Put(id, item).SetTo(item))
 	{
@@ -1637,7 +1637,7 @@ void Media::EXIFData::AddUInt16(UInt32 id, UInt64 cnt, UnsafeArray<const UInt16>
 	else
 	{
 		item->value = ReadNInt32((const UInt8*)&buff[0]);
-		item->dataBuff = MemAlloc(UInt16, cnt);
+		item->dataBuff = MemAllocArr(UInt16, cnt);
 		MemCopyNO(item->dataBuff.GetOpt<UInt16>().OrNull(), &buff[0], cnt * sizeof(UInt16));
 	}
 	if (this->exifMap.Put(id, item).SetTo(item))
@@ -1660,7 +1660,7 @@ void Media::EXIFData::AddUInt32(UInt32 id, UInt64 cnt, UnsafeArray<const UInt32>
 	else
 	{
 		item->value = (Int32)*buff;
-		item->dataBuff = MemAlloc(UInt32, cnt);
+		item->dataBuff = MemAllocArr(UInt32, cnt);
 		MemCopyNO(item->dataBuff.GetOpt<UInt32>().OrNull(), &buff[0], cnt * sizeof(UInt32));
 	}
 	if (this->exifMap.Put(id, item).SetTo(item))
@@ -1683,7 +1683,7 @@ void Media::EXIFData::AddInt16(UInt32 id, UInt64 cnt, UnsafeArray<const Int16> b
 	else
 	{
 		item->value = ReadNInt32((const UInt8*)&buff[0]);
-		item->dataBuff = MemAlloc(Int16, cnt);
+		item->dataBuff = MemAllocArr(Int16, cnt);
 		MemCopyNO(item->dataBuff.GetOpt<Int16>().OrNull(), &buff[0], cnt * sizeof(Int16));
 	}
 	if (this->exifMap.Put(id, item).SetTo(item))
@@ -1706,7 +1706,7 @@ void Media::EXIFData::AddInt32(UInt32 id, UInt64 cnt, UnsafeArray<const Int32> b
 	else
 	{
 		item->value = ReadNInt32((const UInt8*)&buff[0]);
-		item->dataBuff = MemAlloc(Int32, cnt);
+		item->dataBuff = MemAllocArr(Int32, cnt);
 		MemCopyNO(item->dataBuff.GetOpt<Int32>().OrNull(), &buff[0], cnt * sizeof(Int32));
 	}
 	if (this->exifMap.Put(id, item).SetTo(item))
@@ -1722,7 +1722,7 @@ void Media::EXIFData::AddRational(UInt32 id, UInt64 cnt, UnsafeArray<const UInt3
 	item->type = ET_RATIONAL;
 	item->cnt = cnt;
 	item->value = 0;
-	item->dataBuff = MemAlloc(UInt32, cnt << 1);
+	item->dataBuff = MemAllocArr(UInt32, cnt << 1);
 	MemCopyNO(item->dataBuff.GetOpt<UInt32>().OrNull(), &buff[0], cnt * sizeof(UInt32) * 2);
 
 	if (this->exifMap.Put(id, item).SetTo(item))
@@ -1738,7 +1738,7 @@ void Media::EXIFData::AddSRational(UInt32 id, UInt64 cnt, UnsafeArray<const Int3
 	item->type = ET_SRATIONAL;
 	item->cnt = cnt;
 	item->value = 0;
-	item->dataBuff = MemAlloc(Int32, cnt << 1);
+	item->dataBuff = MemAllocArr(Int32, cnt << 1);
 	MemCopyNO(item->dataBuff.GetOpt<Int32>().OrNull(), &buff[0], cnt * sizeof(Int32) * 2);
 
 	if (this->exifMap.Put(id, item).SetTo(item))
@@ -1754,7 +1754,7 @@ void Media::EXIFData::AddOther(UInt32 id, UInt64 cnt, UnsafeArray<const UInt8> b
 	item->type = ET_OTHER;
 	item->cnt = cnt;
 	item->value = 0;
-	item->dataBuff = MemAlloc(UInt8, cnt);
+	item->dataBuff = MemAllocArr(UInt8, cnt);
 	MemCopyNO(item->dataBuff.GetOpt<UInt8>().OrNull(), buff.Ptr(), cnt);
 
 	if (this->exifMap.Put(id, item).SetTo(item))
@@ -1784,7 +1784,7 @@ void Media::EXIFData::AddDouble(UInt32 id, UInt64 cnt, UnsafeArray<const Double>
 	item->type = ET_DOUBLE;
 	item->cnt = cnt;
 	item->value = 0;
-	item->dataBuff = MemAlloc(Double, cnt);
+	item->dataBuff = MemAllocArr(Double, cnt);
 	MemCopyNO(item->dataBuff.GetOpt<Double>().OrNull(), &buff[0], cnt * sizeof(Double));
 	if (this->exifMap.Put(id, item).SetTo(item))
 	{
@@ -1799,7 +1799,7 @@ void Media::EXIFData::AddUInt64(UInt32 id, UInt64 cnt, UnsafeArray<const UInt64>
 	item->type = ET_UINT64;
 	item->cnt = cnt;
 	item->value = 0;
-	item->dataBuff = MemAlloc(UInt64, cnt);
+	item->dataBuff = MemAllocArr(UInt64, cnt);
 	MemCopyNO(item->dataBuff.GetOpt<UInt64>().OrNull(), &buff[0], cnt * sizeof(UInt64));
 	if (this->exifMap.Put(id, item).SetTo(item))
 	{
@@ -1814,7 +1814,7 @@ void Media::EXIFData::AddInt64(UInt32 id, UInt64 cnt, UnsafeArray<const Int64> b
 	item->type = ET_INT64;
 	item->cnt = cnt;
 	item->value = 0;
-	item->dataBuff = MemAlloc(Int64, cnt);
+	item->dataBuff = MemAllocArr(Int64, cnt);
 	MemCopyNO(item->dataBuff.GetOpt<Int64>().OrNull(), &buff[0], cnt * sizeof(Int64));
 	if (this->exifMap.Put(id, item).SetTo(item))
 	{
@@ -4884,7 +4884,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(UnsafeArray<const UInt8> buf
 	ifdCnt = bo->GetUInt16(buff);
 	ifdEntries = &buff[2];
 
-	UInt8 *tmpBuff;
+	UnsafeArray<UInt8> tmpBuff;
 	UInt32 j;
 	NEW_CLASS(exif, Media::EXIFData(exifMaker));
 
@@ -5062,16 +5062,16 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(UnsafeArray<const UInt8> buf
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt << 1);
-				MemCopyNO(tmpBuff, &basePtr[bo->GetUInt32(&ifdEntries[ifdOfst + 8])], fcnt << 1);
+				tmpBuff = MemAllocArr(UInt8, fcnt << 1);
+				MemCopyNO(&tmpBuff[0], &basePtr[bo->GetUInt32(&ifdEntries[ifdOfst + 8])], fcnt << 1);
 				j = fcnt << 1;
 				while (j > 0)
 				{
 					j -= 2;
 					*(UInt16*)&tmpBuff[j] = bo->GetUInt16(&tmpBuff[j]);
 				}
-				exif->AddUInt16(tag, fcnt, (UInt16*)tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddUInt16(tag, fcnt, UnsafeArray<UInt16>::ConvertFrom(tmpBuff));
+				MemFreeArr(tmpBuff);
 			}
 			break;
 		}
@@ -5096,22 +5096,22 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(UnsafeArray<const UInt8> buf
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt << 2);
-				MemCopyNO(tmpBuff, &basePtr[bo->GetUInt32(&ifdEntries[ifdOfst + 8])], fcnt << 2);
+				tmpBuff = MemAllocArr(UInt8, fcnt << 2);
+				MemCopyNO(&tmpBuff[0], &basePtr[bo->GetUInt32(&ifdEntries[ifdOfst + 8])], fcnt << 2);
 				j = fcnt << 2;
 				while (j > 0)
 				{
 					j -= 4;
 					*(UInt32*)&tmpBuff[j] = bo->GetUInt32(&tmpBuff[j]);
 				}
-				exif->AddUInt32(tag, fcnt, (UInt32*)tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddUInt32(tag, fcnt, UnsafeArray<UInt32>::ConvertFrom(tmpBuff));
+				MemFreeArr(tmpBuff);
 			}
 			break;
 		}
 		case 5:
-			tmpBuff = MemAlloc(UInt8, fcnt << 3);
-			MemCopyNO(tmpBuff, &basePtr[bo->GetUInt32(&ifdEntries[ifdOfst + 8])], fcnt << 3);
+			tmpBuff = MemAllocArr(UInt8, fcnt << 3);
+			MemCopyNO(&tmpBuff[0], &basePtr[bo->GetUInt32(&ifdEntries[ifdOfst + 8])], fcnt << 3);
 			j = fcnt << 3;
 			while (j > 0)
 			{
@@ -5119,8 +5119,8 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(UnsafeArray<const UInt8> buf
 				*(UInt32*)&tmpBuff[j] = bo->GetUInt32(&tmpBuff[j]);
 				*(UInt32*)&tmpBuff[j + 4] = bo->GetUInt32(&tmpBuff[j + 4]);
 			}
-			exif->AddRational(tag, fcnt, (UInt32*)tmpBuff);
-			MemFree(tmpBuff);
+			exif->AddRational(tag, fcnt, UnsafeArray<UInt32>::ConvertFrom(tmpBuff));
+			MemFreeArr(tmpBuff);
 			break;
 		case 7:
 			if (fcnt <= 4)
@@ -5153,16 +5153,16 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(UnsafeArray<const UInt8> buf
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt << 1);
-				MemCopyNO(tmpBuff, &basePtr[bo->GetUInt32(&ifdEntries[ifdOfst + 8])], fcnt << 1);
+				tmpBuff = MemAllocArr(UInt8, fcnt << 1);
+				MemCopyNO(&tmpBuff[0], &basePtr[bo->GetUInt32(&ifdEntries[ifdOfst + 8])], fcnt << 1);
 				j = fcnt << 1;
 				while (j > 0)
 				{
 					j -= 2;
 					*(Int16*)&tmpBuff[j] = bo->GetInt16(&tmpBuff[j]);
 				}
-				exif->AddInt16(tag, fcnt, (Int16*)tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddInt16(tag, fcnt, UnsafeArray<Int16>::ConvertFrom(tmpBuff));
+				MemFreeArr(tmpBuff);
 			}
 			break;
 		}
@@ -5174,21 +5174,21 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(UnsafeArray<const UInt8> buf
 			}
 			else
 			{
-				tmpBuff = MemAlloc(UInt8, fcnt << 2);
-				MemCopyNO(tmpBuff, &basePtr[bo->GetUInt32(&ifdEntries[ifdOfst + 8])], fcnt << 2);
+				tmpBuff = MemAllocArr(UInt8, fcnt << 2);
+				MemCopyNO(&tmpBuff[0], &basePtr[bo->GetUInt32(&ifdEntries[ifdOfst + 8])], fcnt << 2);
 				j = fcnt << 2;
 				while (j > 0)
 				{
 					j -= 4;
 					*(Int32*)&tmpBuff[j] = bo->GetInt32(&tmpBuff[j]);
 				}
-				exif->AddInt32(tag, fcnt, (Int32*)tmpBuff);
-				MemFree(tmpBuff);
+				exif->AddInt32(tag, fcnt, UnsafeArray<Int32>::ConvertFrom(tmpBuff));
+				MemFreeArr(tmpBuff);
 			}
 			break;
 		case 10:
-			tmpBuff = MemAlloc(UInt8, fcnt << 3);
-			MemCopyNO(tmpBuff, &basePtr[bo->GetUInt32(&ifdEntries[ifdOfst + 8])], fcnt << 3);
+			tmpBuff = MemAllocArr(UInt8, fcnt << 3);
+			MemCopyNO(&tmpBuff[0], &basePtr[bo->GetUInt32(&ifdEntries[ifdOfst + 8])], fcnt << 3);
 			j = fcnt << 3;
 			while (j > 0)
 			{
@@ -5196,20 +5196,20 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(UnsafeArray<const UInt8> buf
 				*(Int32*)&tmpBuff[j] = bo->GetInt32(&tmpBuff[j]);
 				*(Int32*)&tmpBuff[j + 4] = bo->GetInt32(&tmpBuff[j + 4]);
 			}
-			exif->AddSRational(tag, fcnt, (Int32*)tmpBuff);
-			MemFree(tmpBuff);
+			exif->AddSRational(tag, fcnt, UnsafeArray<Int32>::ConvertFrom(tmpBuff));
+			MemFreeArr(tmpBuff);
 			break;
 		case 12:
-			tmpBuff = MemAlloc(UInt8, fcnt << 3);
-			MemCopyNO(tmpBuff, &basePtr[bo->GetUInt32(&ifdEntries[ifdOfst + 8])], fcnt << 3);
+			tmpBuff = MemAllocArr(UInt8, fcnt << 3);
+			MemCopyNO(&tmpBuff[0], &basePtr[bo->GetUInt32(&ifdEntries[ifdOfst + 8])], fcnt << 3);
 			j = fcnt << 3;
 			while (j > 0)
 			{
 				j -= 8;
 				*(Double*)&tmpBuff[j] = bo->GetFloat64(&tmpBuff[j]);
 			}
-			exif->AddDouble(tag, fcnt, (Double*)tmpBuff);
-			MemFree(tmpBuff);
+			exif->AddDouble(tag, fcnt, UnsafeArray<Double>::ConvertFrom(tmpBuff));
+			MemFreeArr(tmpBuff);
 			break;
 		case 13: //Olympus innerIFD
 		{

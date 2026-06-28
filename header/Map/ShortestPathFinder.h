@@ -1,8 +1,8 @@
 #ifndef _SM_MAP_SHORTESTPATHFINDER
 #define _SM_MAP_SHORTESTPATHFINDER
-#include "Data/Int64Map.h"
+#include "Data/FastMapNN.hpp"
 #include "Map/MapDrawLayer.h"
-#include "Math/Polyline.h"
+#include "Math/Geometry/Polyline.h"
 
 namespace Map
 {
@@ -20,8 +20,8 @@ namespace Map
 			Double x;
 			Double y;
 			Double dist;
-			UnsafeArray<const UTF8Char> name;
-			Math::Polyline *pl;
+			UnsafeArrayOpt<const UTF8Char> name;
+			NN<Math::Geometry::Polyline> pl;
 			Bool isReversed;
 		} NeighbourInfo;
 
@@ -29,24 +29,24 @@ namespace Map
 		{
 			Double x;
 			Double y;
-			Optional<Data::ArrayListNN<NeighbourInfo>> neighbours;
+			NN<Data::ArrayListNN<NeighbourInfo>> neighbours;
 		} NodeInfo;
 	private:
 		NN<Map::MapDrawLayer> layer;
-		void *nameArr;
+		Optional<Map::NameArray> nameArr;
 		Bool toRelease;
 		IntOS nameCol;
 		IntOS dirCol;
 		CoordinateUnit cu;
-		NN<Data::Int64MapNN<NodeInfo>> nodeMap;
+		NN<Data::Int64FastMapNN<NodeInfo>> nodeMap;
 
 		Int64 CoordToId(Double x, Double y);
-		Bool SearchShortestPath(NN<Data::ArrayList<Double>> points, void *sess, Int64 fromObjId, Double fromX, Double fromY, Int64 toObjId, Double toX, Double toY);
+		Bool SearchShortestPath(NN<Data::ArrayListNative<Double>> points, NN<Map::GetObjectSess> sess, Int64 fromObjId, Double fromX, Double fromY, Int64 toObjId, Double toX, Double toY);
 	public:
 		ShortestPathFinder(NN<Map::MapDrawLayer> layer, Bool toRelease, CoordinateUnit cu, IntOS nameCol, IntOS dirCol);
 		~ShortestPathFinder();
 
-		Optional<Math::Polyline> GetPath(Double fromX, Double fromY, Double toX, Double toY, Bool sameName);
+		Optional<Math::Geometry::LineString> GetPath(Double fromX, Double fromY, Double toX, Double toY, Bool sameName);
 	};
 }
 #endif

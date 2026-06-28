@@ -21,7 +21,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(AnyType obj)
 		stat->threadRunning = true;
 		stat->me->ctrlEvt.Set();
 
-		UInt8 *buff = MemAlloc(UInt8, 2048);
+		UnsafeArray<UInt8> buff = MemAllocArr(UInt8, 2048);
 		while (!stat->toStop)
 		{
 			UIntOS recvSize;
@@ -75,7 +75,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(AnyType obj)
 				stat->me->hdlr.func(recvAddr, recvPort, Data::ByteArrayR(buff, recvSize), stat->me->hdlr.userObj);
 			}
 		}
-		MemFree(buff);
+		MemFreeArr(buff);
 	}
 	stat->threadRunning = false;
 	stat->me->ctrlEvt.Set();
@@ -96,7 +96,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 		stat->threadRunning = true;
 		stat->me->ctrlEvt.Set();
 
-		UInt8 *buff = MemAlloc(UInt8, 2048);
+		UnsafeArray<UInt8> buff = MemAllocArr(UInt8, 2048);
 		while (!stat->toStop)
 		{
 			UIntOS recvSize;
@@ -150,7 +150,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 				stat->me->hdlr.func(recvAddr, recvPort, Data::ByteArrayR(buff, recvSize), stat->me->hdlr.userObj);
 			}
 		}
-		MemFree(buff);
+		MemFreeArr(buff);
 	}
 	stat->threadRunning = false;
 	stat->me->ctrlEvt.Set();

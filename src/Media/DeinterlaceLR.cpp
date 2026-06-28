@@ -40,7 +40,7 @@ void Media::DeinterlaceLR::SetupInterpolationParameter(UIntOS source_length, UIn
 {
 	UInt32 i,j;
 	Int32 n;
-	Double *work;
+	UnsafeArray<Double> work;
 	Double  sum;
 	Double  pos;
 	Double dslen = UIntOS2Double(source_length);
@@ -51,7 +51,7 @@ void Media::DeinterlaceLR::SetupInterpolationParameter(UIntOS source_length, UIn
 	out->weight = MemAllocA(Int64, out->length * out->tap);
 	out->index = MemAllocA(IntOS, out->length * out->tap);
 
-	work = MemAlloc(Double, out->tap);
+	work = MemAllocArr(Double, out->tap);
 
 	i = 0;
 	while (i < result_length)
@@ -95,7 +95,7 @@ void Media::DeinterlaceLR::SetupInterpolationParameter(UIntOS source_length, UIn
 		i++;
 	}
 
-	MemFree(work);
+	MemFreeArr(work);
 }
 
 
@@ -149,7 +149,7 @@ Media::DeinterlaceLR::DeinterlaceLR(UIntOS fieldCnt, UIntOS fieldSep)
 		this->nCore = 4;
 	}
 
-	this->stats = MemAlloc(DITHREADSTAT, this->nCore);
+	this->stats = MemAllocArr(DITHREADSTAT, this->nCore);
 	UIntOS i = this->nCore;
 
 	NEW_CLASS(evtMain, Sync::Event());
@@ -200,7 +200,7 @@ Media::DeinterlaceLR::~DeinterlaceLR()
 		DEL_CLASS(stats[i].evt);
 	}
 	DEL_CLASS(evtMain);
-	MemFree(this->stats);
+	MemFreeArr(this->stats);
 	if (this->oddParam.index)
 	{
 		MemFreeA(this->oddParam.weight);

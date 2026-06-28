@@ -53,12 +53,12 @@ Optional<UI::GUIClientControl> UI::GUITabPage::GetParent()
 	return this->ctrl->GetParent();
 }
 
-void UI::GUITabPage::SetCustObj(void *custObj)
+void UI::GUITabPage::SetCustObj(AnyType custObj)
 {
 	this->custObj = custObj;
 }
 
-void *UI::GUITabPage::GetCustObj()
+AnyType UI::GUITabPage::GetCustObj()
 {
 	return this->custObj;
 }

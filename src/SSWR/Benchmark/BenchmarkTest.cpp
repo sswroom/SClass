@@ -33,23 +33,22 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(NN<SSWR::Benchmar
 	if (valid)
 	{
 		UIntOS leng;
-		const UInt8 *data;
-		data = req->GetReqData(leng);
-		if (leng <= 128 || leng >= 65536)
+		UnsafeArray<const UInt8> data;
+		if (!req->GetReqData(leng).SetTo(data) || leng <= 128 || leng >= 65536)
 		{
 			printf("leng out of range: %d\r\n", (UInt32)leng);
 			valid = false;
 		}
 		else
 		{
-			const UTF8Char *platform = 0;
-			const UTF8Char *cpu = 0;
+			UnsafeArrayOpt<const UTF8Char> platform = nullptr;
+			UnsafeArrayOpt<const UTF8Char> cpu = nullptr;
 			NN<IO::MemoryStream> mstm;
 			Text::UTF8Reader *reader;
 			UTF8Char sbuff[512];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			NEW_CLASSNN(mstm, IO::MemoryStream(leng));
-			mstm->Write(data, leng);
+			mstm->Write(Data::ByteArrayR(data, leng));
 			mstm->SeekFromBeginning(0);
 			NEW_CLASS(reader, Text::UTF8Reader(mstm));
 
@@ -93,7 +92,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(NN<SSWR::Benchmar
 				{
 					if (sb.StartsWith(UTF8STRC("Platform: ")))
 					{
-						platform = Text::StrCopyNew(sb.ToString() + 10).Ptr();
+						platform = Text::StrCopyNew(sb.ToString() + 10);
 					}
 					else
 					{
@@ -133,19 +132,20 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(NN<SSWR::Benchmar
 			DEL_CLASS(reader);
 			mstm.Delete();
 
-			if (valid)
+			UnsafeArray<const UTF8Char> nnplatform;
+			if (valid && platform.SetTo(nnplatform))
 			{
 				Data::DateTime dt;
-				UTF8Char *sptrTmp;
+				UnsafeArray<UTF8Char> sptrTmp;
 				dt.SetCurrTimeUTC();
 				Int64 t = dt.ToTicks();
-				sptr = IO::Path::GetProcessFileName(sbuff);
+				sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 				sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Benchmark"));
 				IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				sptr = Text::StrConcatC(sptr, UTF8STRC("SBench_"));
 				sptrTmp = sptr;
-				sptr = Text::StrConcat(sptr, platform);
+				sptr = Text::StrConcat(sptr, nnplatform);
 				Text::StrReplace(sptrTmp, '/', '_');
 				Text::StrReplace(sptrTmp, ':', '_');
 				sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
@@ -160,7 +160,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(NN<SSWR::Benchmar
 				}
 				else
 				{
-					fs.Write(data, leng);
+					fs.Write(Data::ByteArrayR(data, leng));
 				}
 			}
 			SDEL_TEXT(platform);
@@ -175,7 +175,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(NN<SSWR::Benchmar
 	resp->AddDefHeaders(req);
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
 	resp->AddContentLength(2);
-	resp->Write((const UInt8*)"ok", 2);
+	resp->Write(CSTR("ok").ToByteArray());
 	return true;
 }
 
@@ -183,14 +183,14 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 {
 	Text::CString msg = nullptr;
 	UTF8Char fileName[512];
-	UTF8Char *fileNameEnd;
+	UnsafeArray<UTF8Char> fileNameEnd;
 	UTF8Char path[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
-	if (req->GetQueryValueStr(CSTR("model"), fileName, 512))
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	if (req->GetQueryValueStr(CSTR("model"), fileName, 512).NotNull())
 	{
 		UIntOS fileSize;
-		sptr = IO::Path::GetProcessFileName(path);
+		sptr = IO::Path::GetProcessFileName(path).Or(path);
 		sptr = IO::Path::AppendPath(path, sptr, CSTR("CPUInfo"));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcat(sptr, fileName);
@@ -198,15 +198,15 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 		fileSize = (UIntOS)fs.GetLength();
 		if (fileSize > 0)
 		{
-			UInt8 *fileBuff = MemAlloc(UInt8, fileSize);
+			UnsafeArray<UInt8> fileBuff = MemAllocArr(UInt8, fileSize);
 			fs.Read(Data::ByteArray(fileBuff, fileSize));
 
 			resp->SetStatusCode(Net::WebStatus::SC_OK);
 			resp->AddDefHeaders(req);
 			resp->AddContentType(CSTR("text/plain"));
 			resp->AddContentLength(fileSize);
-			resp->Write(fileBuff, fileSize);
-			MemFree(fileBuff);
+			resp->Write(Data::ByteArrayR(fileBuff, fileSize));
+			MemFreeArr(fileBuff);
 			return true;
 		}
 	}
@@ -222,10 +222,10 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 		{
 			req->GetHeader(fileName, CSTR("Content-Length"), 512);
 			UIntOS reqSize;
-			const UInt8 *reqData = req->GetReqData(reqSize);
-			if (reqSize > 0 && reqSize <= 128)
+			UnsafeArray<const UInt8> reqData;
+			if (req->GetReqData(reqSize).SetTo(reqData) && reqSize > 0 && reqSize <= 128)
 			{
-				sptr = IO::Path::GetProcessFileName(path);
+				sptr = IO::Path::GetProcessFileName(path).Or(path);
 				sptr = IO::Path::AppendPath(path, sptr, CSTR("X86CPUInfo.txt"));
 				IO::FileStream fs(CSTRP(path, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 
@@ -235,23 +235,24 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 				*sptr++ = '\t';
 				sptr = Text::StrInt32(sptr, cpuStepping);
 				*sptr++ = '\t';
-				fs.Write(fileName, sptr - fileName);
-				fs.Write(reqData, reqSize);
-				fs.Write((const UInt8*)"\r\n", 2);
+				fs.Write(Data::ByteArrayR(fileName, sptr - fileName));
+				fs.Write(Data::ByteArrayR(reqData, reqSize));
+				fs.Write(CSTR("\r\n").ToByteArray());
 
 				resp->SetStatusCode(Net::WebStatus::SC_OK);
 				resp->AddDefHeaders(req);
 				resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 				resp->AddContentLength(2);
-				resp->Write((const UInt8*)"ok", 2);
+				resp->Write(CSTR("ok").ToByteArray());
 				return true;
 			}
 		}
 		else
 		{
 			UIntOS fileSize;
-			const UInt8 *fileBuff;
-			if (req->GetQueryValueStr(CSTR("file"), fileName, 512))
+			UnsafeArrayOpt<const UInt8> fileBuff;
+			UnsafeArray<const UInt8> nnfileBuff;
+			if (req->GetQueryValueStr(CSTR("file"), fileName, 512).NotNull())
 			{
 				fileBuff = req->GetReqData(fileSize);
 				fileNameEnd = Text::StrConcatC(fileName, UTF8STRC("cpuinfo"));
@@ -261,7 +262,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 				req->ParseHTTPForm();
 				fileBuff = req->GetHTTPFormFile(CSTR("uploadfile"), 0, fileName, 512, fileNameEnd, fileSize);
 			}
-			if (fileBuff == 0)
+			if (!fileBuff.SetTo(nnfileBuff))
 			{
 				msg = CSTR("Upload file not found");
 			}
@@ -278,26 +279,27 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 				Text::CString cpuModel;
 				{
 					IO::MemoryStream mstm(fileSize);
-					mstm.Write(fileBuff, fileSize);
+					mstm.Write(Data::ByteArrayR(nnfileBuff, fileSize));
 					mstm.SeekFromBeginning(0);
 					cpuModel = Manage::CPUDB::ParseCPUInfo(mstm);
 				}
 
-				if (cpuModel.v)
+				Text::CStringNN nncpuModel;
+				if (cpuModel.SetTo(nncpuModel))
 				{
 					msg = CSTRP(fileName, fileNameEnd);
-					cpuModel.ConcatTo(Text::StrConcatC(fileName, UTF8STRC("Identified as ")));
+					nncpuModel.ConcatTo(Text::StrConcatC(fileName, UTF8STRC("Identified as ")));
 
-					sptr = IO::Path::GetProcessFileName(path);
+					sptr = IO::Path::GetProcessFileName(path).Or(path);
 					sptr = IO::Path::AppendPath(path, sptr, CSTR("CPUInfo"));
 					IO::Path::CreateDirectory(CSTRP(path, sptr));
 					*sptr++ = IO::Path::PATH_SEPERATOR;
-					sptr = cpuModel.ConcatTo(sptr);
+					sptr = nncpuModel.ConcatTo(sptr);
 
 					if (IO::Path::GetPathType(CSTRP(path, sptr)) == IO::Path::PathType::Unknown)
 					{
 						IO::FileStream fs(CSTRP(path, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-						if (fileSize == fs.Write(fileBuff, fileSize))
+						if (fileSize == fs.Write(Data::ByteArrayR(nnfileBuff, fileSize)))
 						{
 						}
 					}
@@ -306,7 +308,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 				{
 					Data::DateTime dt;
 					dt.SetCurrTimeUTC();
-					sptr = IO::Path::GetProcessFileName(path);
+					sptr = IO::Path::GetProcessFileName(path).Or(path);
 					sptr = IO::Path::AppendPath(path, sptr, CSTR("CPUInfo"));
 					IO::Path::CreateDirectory(CSTRP(path, sptr));
 					*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -314,7 +316,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 					sptr = Text::StrInt64(sptr, dt.ToTicks());
 
 					IO::FileStream fs(CSTRP(path, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-					if (fileSize == fs.Write(fileBuff, fileSize))
+					if (fileSize == fs.Write(Data::ByteArrayR(nnfileBuff, fileSize)))
 					{
 						msg = CSTR("File uploaded successfully");
 					}
@@ -335,24 +337,20 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 	sbOut.AppendC(UTF8STRC("<form name=\"upload\" method=\"POST\" action=\"cpuinfo\" enctype=\"multipart/form-data\">"));
 	sbOut.AppendC(UTF8STRC("Upload /proc/cpuinfo: <input type=\"file\" name=\"uploadfile\"/><br/><input type=\"submit\"/>"));
 	sbOut.AppendC(UTF8STRC("</form>"));
-	if (msg.v)
-	{
-		sbOut.Append(msg);
-	}
-
+	sbOut.AppendOpt(msg);
 	sbOut.AppendC(UTF8STRC("<h3>Uploaded list</h3>\r\n"));
 	sbOut.AppendC(UTF8STRC("<table border=\"1\">\r\n"));
 	sbOut.AppendC(UTF8STRC("<tr><td>Model</td><td>Brand</td><td>Name</td><td>Archtecture</td></tr>\r\n"));
-	sptr = IO::Path::GetProcessFileName(path);
+	sptr = IO::Path::GetProcessFileName(path).Or(path);
 	sptr = IO::Path::AppendPath(path, sptr, CSTR("CPUInfo"));
 	IO::Path::CreateDirectory(CSTRP(path, sptr));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(path, sptr));
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(CSTRP(path, sptr)).SetTo(sess))
 	{
 		IO::Path::PathType pt;
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -367,21 +365,18 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 				}
 				else
 				{
-					const Manage::CPUDB::CPUSpec *cpu = Manage::CPUDB::GetCPUSpec(CSTRP(sptr, sptr2));
+					NN<const Manage::CPUDB::CPUSpec> cpu;
 					sbOut.AppendC(UTF8STRC("<tr><td>"));
 					sbOut.AppendC(UTF8STRC("<a href=\"cpuinfo?model="));
 					sbOut.AppendP(sptr, sptr2);
 					sbOut.AppendC(UTF8STRC("\">"));
 					sbOut.AppendP(sptr, sptr2);
 					sbOut.AppendC(UTF8STRC("</a></td><td>"));
-					if (cpu)
+					if (Manage::CPUDB::GetCPUSpec(CSTRP(sptr, sptr2)).SetTo(cpu))
 					{
 						sbOut.Append(Manage::CPUVendor::GetBrandName(cpu->brand));
 						sbOut.AppendC(UTF8STRC("</td><td>"));
-						if (cpu->name)
-						{
-							sbOut.AppendSlow((const UTF8Char*)cpu->name);
-						}
+						sbOut.AppendSlow(UnsafeArray<const UTF8Char>::ConvertFrom(cpu->name));
 						sbOut.AppendC(UTF8STRC("</td><td>"));
 						switch (cpu->contextType)
 						{
@@ -425,7 +420,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 	resp->AddContentLength(sbOut.GetLength());
-	resp->Write(sbOut.ToString(), sbOut.GetLength());
+	resp->Write(sbOut.ToByteArray());
 	return true;
 }
 

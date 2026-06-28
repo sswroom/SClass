@@ -21,8 +21,8 @@ Map::MapBar::MapBarAdjuster::~MapBarAdjuster()
 
 Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destLatLons, Int32 imgWidth, Int32 imgHeight, IntOS nPoints)
 {
-	UInt8 *buff;
-	UInt8 *xmlBuff;
+	UnsafeArray<UInt8> buff;
+	UnsafeArray<UInt8> xmlBuff;
 	NN<Net::HTTPClient> cli;
 	IO::MemoryStream *mstm;
 	Text::XMLDocument *xmlDoc;
@@ -36,12 +36,12 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 	UIntOS readSize;
 	UIntOS objCnt;
 	Int32 j;
-	Text::XMLNode **xmlNodes;
-	Text::XMLNode *node;
+	UnsafeArray<NN<Text::XMLNode>> xmlNodes;
+	NN<Text::XMLNode> node;
 	Bool valid;
 
-	buff = MemAlloc(UInt8, 2048);
-	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Map.MapBar.MapBarAdjuster.AdjustPoints.mstm")));
+	buff = MemAllocArr(UInt8, 2048);
+	NEW_CLASS(mstm, IO::MemoryStream());
 	currPoint = 0;
 	while (currPoint < nPoints)
 	{
@@ -74,72 +74,63 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 		sb.AppendC(UTF8STRC("&customer=2"));
 
 		mstm->Clear();
-		cli = Net::HTTPClient::CreateConnect(sockf, 0, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
-		if (cli)
+		cli = Net::HTTPClient::CreateConnect(sockf, nullptr, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
+		while ((readSize = cli->Read(Data::ByteArray(buff, 2048))) > 0)
 		{
-			while ((readSize = cli->Read(buff, 2048)) > 0)
-			{
-				mstm->Write(buff, readSize);
-			}
-			DEL_CLASS(cli);
+			mstm->Write(Data::ByteArrayR(buff, readSize));
 		}
+		cli.Delete();
 
-		xmlBuff = mstm->GetBuff(&readSize);
+		xmlBuff = mstm->GetBuff(readSize);
 		valid = false;
 		NEW_CLASS(xmlDoc, Text::XMLDocument());
-		if (xmlDoc->ParseBuff(&encFact, xmlBuff, readSize))
+		if (xmlDoc->ParseBuff(encFact, xmlBuff, readSize))
 		{
-			xmlNodes = xmlDoc->SearchNode(CSTR("/result/pois/item"), &objCnt);
-			if (xmlNodes)
+			xmlNodes = xmlDoc->SearchNode(CSTR("/result/pois/item"), objCnt);
+			if (objCnt == cnt)
 			{
-				if (objCnt == cnt)
+				valid = true;
+				i = objCnt;
+				while (i-- > 0)
 				{
-					valid = true;
-					i = objCnt;
-					while (i-- > 0)
+					if (!xmlNodes[i]->SearchFirstNode(CSTR("/@id")).SetTo(node))
 					{
-						node = xmlNodes[i]->SearchFirstNode(CSTR("/@id"));
-						if (node == 0)
+						valid = false;
+					}
+					else
+					{
+						j = Text::String::OrEmpty(node->value)->ToInt32();
+						if (j >= 0 && j < cnt)
 						{
-							valid = false;
-						}
-						else
-						{
-							j = node->value->ToInt32();
-							if (j >= 0 && j < cnt)
+							if (xmlNodes[i]->SearchFirstNode(CSTR("/lat")).SetTo(node))
 							{
-								node = xmlNodes[i]->SearchFirstNode(CSTR("/lat"));
-								if (node)
-								{
-									sb2.ClearStr();
-									node->GetInnerText(sb2);
-									destLatLons[((currPoint + j) << 1) + 0] = Text::StrToDouble(sb2.ToString());
-								}
-								else
-								{
-									valid = false;
-								}
-								node = xmlNodes[i]->SearchFirstNode(CSTR("/lon"));
-								if (node)
-								{
-									sb2.ClearStr();
-									node->GetInnerText(sb2);
-									destLatLons[((currPoint + j) << 1) + 1] = Text::StrToDouble(sb2.ToString());
-								}
-								else
-								{
-									valid = false;
-								}
+								sb2.ClearStr();
+								node->GetInnerText(sb2);
+								destLatLons[((currPoint + j) << 1) + 0] = sb2.ToDoubleOrNAN();
+							}
+							else
+							{
+								valid = false;
+							}
+							if (xmlNodes[i]->SearchFirstNode(CSTR("/lon")).SetTo(node))
+							{
+								sb2.ClearStr();
+								node->GetInnerText(sb2);
+								destLatLons[((currPoint + j) << 1) + 1] = sb2.ToDoubleOrNAN();
 							}
 							else
 							{
 								valid = false;
 							}
 						}
+						else
+						{
+							valid = false;
+						}
 					}
 				}
-				xmlDoc->ReleaseSearch(xmlNodes);
 			}
+			xmlDoc->ReleaseSearch(xmlNodes);
 		}
 		DEL_CLASS(xmlDoc);
 
@@ -151,7 +142,7 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 		currPoint = nextPoint;
 	}
 	DEL_CLASS(mstm);
-	MemFree(buff);
+	MemFreeArr(buff);
 
 	return true;
 }

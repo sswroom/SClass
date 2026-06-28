@@ -20,8 +20,8 @@ typedef struct
 
 NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reader, Text::CStringNN fileName)
 {
-	Data::FastMapObj<Int64, OSMNodeInfo*> nodeMap;
-	OSMNodeInfo *node;
+	Data::FastMapNN<Int64, OSMNodeInfo> nodeMap;
+	NN<OSMNodeInfo> node;
 	Data::ArrayListNative<Double> latList;
 	Data::ArrayListNative<Double> lonList;
 	Map::VectorLayer *layers[OSMTYPECNT];
@@ -131,14 +131,13 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 			}
 			if (id != 0 && lat != 0 && lon != 0)
 			{
-				node = MemAlloc(OSMNodeInfo, 1);
+				node = MemAllocNN(OSMNodeInfo);
 				node->id = id;
 				node->lat = lat;
 				node->lon = lon;
-				node = nodeMap.Put(node->id, node);
-				if (node)
+				if (nodeMap.Put(node->id, node).SetTo(node))
 				{
-					MemFree(node);
+					MemFreeNN(node);
 				}
 
 				if (!reader->IsElementEmpty())
@@ -698,8 +697,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 						if (aname->Equals(UTF8STRC("ref")) && attr->value.SetTo(avalue))
 						{
 							nodeId = avalue->ToInt64();
-							node = nodeMap.Get(nodeId);
-							if (node == 0)
+							if (!nodeMap.Get(nodeId).SetTo(node))
 							{
 								isErr = true;
 							}
@@ -1368,7 +1366,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 	i = nodeMap.GetCount();
 	while (i-- > 0)
 	{
-		MemFree(nodeMap.GetItem(i));
+		MemFreeNN(nodeMap.GetItemNoCheck(i));
 	}
 	NN<Map::MapLayerCollection> layerList;
 	NN<Map::MapDrawLayer> layer;

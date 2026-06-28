@@ -8,7 +8,7 @@ namespace Net
 	{
 	private:
 		struct ClassData;
-		struct ClassData *clsData;
+		NN<ClassData> clsData;
 		Bool skipCertCheck;
 		ClientCertType cliCert;
 

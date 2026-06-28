@@ -15,24 +15,24 @@ Bool Net::WebServer::WebSocketServerStream::SendPacket(UInt8 opcode, Data::ByteA
 	}
 	else if (buff.GetSize() < 65536)
 	{
-		UInt8 *packBuff = MemAlloc(UInt8, buff.GetSize() + 8);
+		UnsafeArray<UInt8> packBuff = MemAllocArr(UInt8, buff.GetSize() + 8);
 		packBuff[0] = (UInt8)(0x80 | (opcode));
 		packBuff[1] = 0x7E;
 		WriteMUInt16(&packBuff[2], (UInt16)buff.GetSize());
 		MemCopyNO(&packBuff[4], buff.Ptr(), buff.GetSize());
 		Bool succ = this->resp->Write(Data::ByteArrayR(packetBuff, buff.GetSize() + 4)) == (buff.GetSize() + 4);
-		MemFree(packBuff);
+		MemFreeArr(packBuff);
 		return succ;
 	}
 	else
 	{
-		UInt8 *packBuff = MemAlloc(UInt8, buff.GetSize() + 10);
+		UnsafeArray<UInt8> packBuff = MemAllocArr(UInt8, buff.GetSize() + 10);
 		packBuff[0] = (UInt8)(0x80 | (opcode));
 		packBuff[1] = 0x7F;
 		WriteMUInt64(&packBuff[2], buff.GetSize());
 		MemCopyNO(&packBuff[10], buff.Ptr(), buff.GetSize());
 		Bool succ = this->resp->Write(Data::ByteArrayR(packetBuff, buff.GetSize() + 10)) == (buff.GetSize() + 10);
-		MemFree(packBuff);
+		MemFreeArr(packBuff);
 		return succ;
 	}
 }

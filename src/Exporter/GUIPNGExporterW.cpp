@@ -151,7 +151,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 					{
 						UInt8 crcBuff[4];
 						Crypto::Hash::CRC32R crc;
-						WriteMUInt32(chunkBuff, 23 + compSize);
+						WriteMUInt32(&chunkBuff[0], 23 + compSize);
 						crc.Calc(&chunkBuff[4], 27 + compSize);
 						crc.GetValue(crcBuff);
 						WriteMUInt32(&chunkBuff[31 + compSize], ReadMUInt32(crcBuff));

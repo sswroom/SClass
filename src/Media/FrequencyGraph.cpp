@@ -34,10 +34,10 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 	UIntOS j;
 	UIntOS k;
 	UIntOS l;
-	Double *allFreqs;
-	Double *freqs;
-	Double *maxFreq;
-	Double *minFreq;
+	UnsafeArray<Double> allFreqs;
+	UnsafeArray<Double> freqs;
+	UnsafeArray<Double> maxFreq;
+	UnsafeArray<Double> minFreq;
 	UInt32 iVal;
 	Double dfftSize = UIntOS2Double(fftSize);
 	Media::AudioFormat fmt;
@@ -54,9 +54,9 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 		{
 			return nullptr;
 		}
-		allFreqs = MemAllocA(Double, fftSize * (timeRes + 1));
-		maxFreq = MemAlloc(Double, fftSize);
-		minFreq = MemAlloc(Double, fftSize);
+		allFreqs = MemAllocAArr(Double, fftSize * (timeRes + 1));
+		maxFreq = MemAllocArr(Double, fftSize);
+		minFreq = MemAllocArr(Double, fftSize);
 
 		f = tmpImg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
 		Data::ChartPlotter::CalScaleMarkDbl(chartPos, chartLabels, 0, fmt.frequency * 0.0005, dfftSize * 0.5, fontSizePx, "0", 1, nullptr);
@@ -176,7 +176,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 				i++;
 			}
 
-			UInt32 *lut = MemAlloc(UInt32, 16385);
+			UnsafeArray<UInt32> lut = MemAllocArr(UInt32, 16385);
 			Double imaxVal = 16384.0 / maxVal;
 			i = 0;
 			j = 16385;
@@ -261,7 +261,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 				}
 			}
 			trans.Delete();
-			MemFree(lut);
+			MemFreeArr(lut);
 
 			p = tmpImg->NewPenARGB(0xff000000, 1, nullptr, 0);
 			b = tmpImg->NewBrushARGB(0xff000000);
@@ -305,9 +305,9 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 			tmpImg->DelFont(f);
 		}
 
-		MemFree(maxFreq);
-		MemFree(minFreq);
-		MemFreeA(allFreqs);
+		MemFreeArr(maxFreq);
+		MemFreeArr(minFreq);
+		MemFreeAArr(allFreqs);
 	}
 	return retImg;
 }

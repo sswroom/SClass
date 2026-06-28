@@ -169,7 +169,7 @@ UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::CacheName(UnsafeArray<UTF8C
 
 AnyType Map::ReverseGeocoderServer::NewConn(NN<Net::TCPClient> cli)
 {
-	ClientStatus *stat = MemAlloc(ClientStatus, 1);
+	NN<ClientStatus> stat = MemAllocNN(ClientStatus);
 	stat->cliData = this->protocol.CreateStreamData(cli);
 	stat->lastReqTime = 0;
 	return stat;

@@ -24,7 +24,7 @@ Media::VectorGraph::VectorPenStyle::VectorPenStyle(UIntOS index, UInt32 color, D
 	if (nPattern > 0 && pattern.SetTo(nnpattern))
 	{
 		this->nPattern = nPattern;
-		this->pattern = MemAlloc(UInt8, this->nPattern);
+		this->pattern = MemAllocArr(UInt8, this->nPattern);
 		MemCopyNO(this->pattern.Ptr(), nnpattern.Ptr(), this->nPattern);
 	}
 	else
@@ -294,18 +294,18 @@ Bool Media::VectorGraph::DrawLine(Double x1, Double y1, Double x2, Double y2, NN
 
 Bool Media::VectorGraph::DrawPolylineI(UnsafeArray<const Int32> points, UIntOS nPoints, NN<DrawPen> p)
 {
-	Double *dPoints = MemAlloc(Double, nPoints * 2);
-	Math_Int32Arr2DblArr(dPoints, points.Ptr(), nPoints * 2);
+	UnsafeArray<Double> dPoints = MemAllocAArr(Double, nPoints * 2);
+	Math_Int32Arr2DblArr(dPoints.Ptr(), points.Ptr(), nPoints * 2);
 	NN<Math::Geometry::LineString> pl;
 	NN<VectorStyles> style;
-	NEW_CLASSNN(pl, Math::Geometry::LineString(this->srid, (Math::Coord2DDbl*)dPoints, nPoints, nullptr, nullptr));
+	NEW_CLASSNN(pl, Math::Geometry::LineString(this->srid, (Math::Coord2DDbl*)dPoints.Ptr(), nPoints, nullptr, nullptr));
 	style = MemAllocNN(VectorStyles);
 	style->pen = (VectorPenStyle*)p.Ptr();
 	style->brush = nullptr;
 	style->font = nullptr;
 	this->items.Add(pl);
 	this->itemStyle.Add(style);
-	MemFree(dPoints);
+	MemFreeAArr(dPoints);
 	return true;
 }
 

@@ -19,7 +19,7 @@ namespace Net
 		NN<Socket> soc;
 		Data::CallbackStorage<RAWDataHdlr> hdlr;
 
-		Sync::Thread **threads;
+		UnsafeArray<NN<Sync::Thread>> threads;
 		UIntOS threadCnt;
 
 	private:

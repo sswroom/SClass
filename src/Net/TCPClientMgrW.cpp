@@ -166,7 +166,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 UInt32 __stdcall Net::TCPClientMgr::WorkerThread(AnyType o)
 {
 	NN<Net::TCPClientMgr::WorkerStatus> stat = o.GetNN<Net::TCPClientMgr::WorkerStatus>();
-	Net::TCPClientMgr *me = stat->me;
+	NN<Net::TCPClientMgr> me = stat->me;
 	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
@@ -195,13 +195,17 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(AnyType o)
 void Net::TCPClientMgr::ProcessClient(NN<Net::TCPClientMgr::TCPClientStatus> cliStat)
 {
 	this->workerTasks.Put(cliStat);
-	UIntOS i = this->workerCnt;
-	while (i-- > 0)
+	UnsafeArray<WorkerStatus> workers;
+	if (this->workers.SetTo(workers))
 	{
-		if (this->workers[i].state == WorkerState::Idle)
+		UIntOS i = this->workerCnt;
+		while (i-- > 0)
 		{
-			this->workers[i].evt->Set();
-			return;
+			if (workers[i].state == WorkerState::Idle)
+			{
+				workers[i].evt->Set();
+				return;
+			}
 		}
 	}
 }
@@ -244,17 +248,18 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 	NEW_CLASSNN(recvEvt, Sync::Event(false));
 	this->clsData = NN<ClassData>::ConvertFrom(recvEvt);
 	Sync::ThreadUtil::Create(ClientThread, this);
-	this->workers = MemAlloc(WorkerStatus, workerCnt);
+	UnsafeArray<WorkerStatus> workers;
+	this->workers = workers = MemAllocArr(WorkerStatus, workerCnt);
 	while (workerCnt-- > 0)
 	{
-		this->workers[workerCnt].index = workerCnt;
-		this->workers[workerCnt].state = WorkerState::NotStarted;
-		this->workers[workerCnt].toStop = false;
-		this->workers[workerCnt].isPrimary = (workerCnt == 0);
-		this->workers[workerCnt].me = this;
-		NEW_CLASS(this->workers[workerCnt].evt, Sync::Event(true));
+		workers[workerCnt].index = workerCnt;
+		workers[workerCnt].state = WorkerState::NotStarted;
+		workers[workerCnt].toStop = false;
+		workers[workerCnt].isPrimary = (workerCnt == 0);
+		workers[workerCnt].me = *this;
+		NEW_CLASS(workers[workerCnt].evt, Sync::Event(true));
 		
-		Sync::ThreadUtil::Create(WorkerThread, &this->workers[workerCnt]);
+		Sync::ThreadUtil::Create(WorkerThread, &workers[workerCnt]);
 	}
 }
 
@@ -286,35 +291,39 @@ Net::TCPClientMgr::~TCPClientMgr()
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	i = this->workerCnt;
-	while (i-- > 0)
+	UnsafeArray<WorkerStatus> workers;
+	if (this->workers.SetTo(workers))
 	{
-		this->workers[i].toStop = true;
-		this->workers[i].evt->Set();
-	}
-	Bool exist = true;
-	while (exist)
-	{
-		exist = false;
 		i = this->workerCnt;
 		while (i-- > 0)
 		{
-			if (this->workers[i].state != WorkerState::Stopped)
-			{
-				exist = true;
-				break;
-			}
+			workers[i].toStop = true;
+			workers[i].evt->Set();
 		}
-		if (!exist)
-			break;
-		Sync::SimpleThread::Sleep(10);
+		Bool exist = true;
+		while (exist)
+		{
+			exist = false;
+			i = this->workerCnt;
+			while (i-- > 0)
+			{
+				if (workers[i].state != WorkerState::Stopped)
+				{
+					exist = true;
+					break;
+				}
+			}
+			if (!exist)
+				break;
+			Sync::SimpleThread::Sleep(10);
+		}
+		i = this->workerCnt;
+		while (i-- > 0)
+		{
+			DEL_CLASS(workers[i].evt);
+		}
+		MemFreeArr(workers);
 	}
-	i = this->workerCnt;
-	while (i-- > 0)
-	{
-		DEL_CLASS(this->workers[i].evt);
-	}
-	MemFree(this->workers);
 
 	if (Optional<Sync::Event>::ConvertFrom(this->clsData).SetTo(mainEvt))
 		mainEvt.Delete();

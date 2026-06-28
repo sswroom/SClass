@@ -22,9 +22,9 @@ Text::MIMEObj::TextMIMEObj::TextMIMEObj(UnsafeArray<const UInt8> textBuff, UIntO
 {
 	this->contType = 0;
 	this->codePage = codePage;
-	this->textBuff = MemAlloc(UInt8, buffSize);
+	this->textBuff = MemAllocArr(UInt8, buffSize);
 	this->buffSize = buffSize;
-	MemCopyNO(this->textBuff, textBuff.Ptr(), buffSize);
+	MemCopyNO(&this->textBuff[0], textBuff.Ptr(), buffSize);
 	this->BuildContentType();
 }
 
@@ -36,14 +36,14 @@ Text::MIMEObj::TextMIMEObj::TextMIMEObj(const WChar *txt, UInt32 codePage) : Tex
 	this->codePage = codePage;
 	strLen = Text::StrCharCnt(txt);
 	this->buffSize = enc.WCountBytesC(txt, strLen);
-	this->textBuff = MemAlloc(UInt8, this->buffSize);
+	this->textBuff = MemAllocArr(UInt8, this->buffSize);
 	enc.WToBytesC(this->textBuff, txt, strLen);
 	this->BuildContentType();
 }
 
 Text::MIMEObj::TextMIMEObj::~TextMIMEObj()
 {
-	MemFree(this->textBuff);
+	MemFreeArr(this->textBuff);
 	this->contType->Release();
 }
 

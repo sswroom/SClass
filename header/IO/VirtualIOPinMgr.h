@@ -19,7 +19,7 @@ namespace IO
 			Bool outputHigh;
 		};
 	private:
-		PinStatus **pins;
+		UnsafeArray<NN<PinStatus>> pins;
 		UIntOS pinCnt;
 
 	public:
@@ -34,9 +34,9 @@ namespace IO
 	{
 	private:
 		Bool isOutput;
-		VirtualIOPinMgr::PinStatus *pinStatus;
+		NN<VirtualIOPinMgr::PinStatus> pinStatus;
 	public:
-		VirtualIOPin(VirtualIOPinMgr::PinStatus *pinStatus);
+		VirtualIOPin(NN<VirtualIOPinMgr::PinStatus> pinStatus);
 		virtual ~VirtualIOPin();
 
 		virtual Bool IsPinHigh();

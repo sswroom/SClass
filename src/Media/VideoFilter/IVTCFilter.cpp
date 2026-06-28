@@ -1975,7 +1975,7 @@ Media::VideoFilter::IVTCFilter::IVTCFilter(Media::VideoSource *srcVideo) : Media
 	{
 		this->threadCnt = 1;
 	}
-	this->threadStats = MemAlloc(ThreadStat, this->threadCnt);
+	this->threadStats = MemAllocArr(ThreadStat, this->threadCnt);
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
@@ -2048,7 +2048,7 @@ Media::VideoFilter::IVTCFilter::~IVTCFilter()
 		this->ivtcCurrFrame = 0;
 	}
 	MemFreeAArr(this->fieldBuff);
-	MemFree(this->threadStats);
+	MemFreeArr(this->threadStats);
 #ifdef _DEBUG
 	DEL_CLASS(this->debugLog);
 	DEL_CLASS(this->debugFS);

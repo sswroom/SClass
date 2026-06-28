@@ -40,7 +40,7 @@ Bool Media::FBSurface::UpdateToScreen(Bool waitForVBlank)
 
 Media::FBSurface::FBSurface(Optional<MonitorHandle> hMon, Optional<const Media::ColorProfile> color, Double dpi, Media::RotateType rotateType)
 {
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->hMon = hMon;
 	this->clsData->buffSurface = nullptr;
 	this->clsData->ttyfd = -1;
@@ -111,7 +111,7 @@ Media::FBSurface::~FBSurface()
 	{
 		close(this->clsData->ttyfd);
 	}
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Bool Media::FBSurface::IsError() const

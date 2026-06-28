@@ -193,7 +193,7 @@ Media::ABlend::AlphaBlend8_C8::AlphaBlend8_C8(Optional<Media::ColorSess> colorSe
 		this->threadCnt = 4;
 	}
 
-	this->stats = MemAlloc(ThreadStat, this->threadCnt);
+	this->stats = MemAllocArr(ThreadStat, this->threadCnt);
 	UIntOS i = this->threadCnt;
 	while (i-- > 0)
 	{

@@ -356,7 +356,7 @@ Bool Net::HTTPClient::ReadAllContent(NN<IO::Stream> outStm, UIntOS buffSize, UIn
 	UIntOS readSize;
 	if (contLeng > 0 && contLeng <= maxSize)
 	{
-		UInt8 *readBuff = MemAlloc(UInt8, buffSize);
+		UnsafeArray<UInt8> readBuff = MemAllocArr(UInt8, buffSize);
 		while ((readSize = this->Read(Data::ByteArray(readBuff, buffSize))) > 0)
 		{
 			outStm->Write(Data::ByteArrayR(readBuff, readSize));
@@ -366,7 +366,7 @@ Bool Net::HTTPClient::ReadAllContent(NN<IO::Stream> outStm, UIntOS buffSize, UIn
 				break;
 			}
 		}
-		MemFree(readBuff);
+		MemFreeArr(readBuff);
 		return currPos >= contLeng;
 	}
 	else
@@ -374,18 +374,18 @@ Bool Net::HTTPClient::ReadAllContent(NN<IO::Stream> outStm, UIntOS buffSize, UIn
 		Text::CStringNN tranEnc;
 		if (this->GetTransferEncoding().SetTo(tranEnc) && tranEnc.Equals(UTF8STRC("chunked")))
 		{
-			UInt8 *readBuff = MemAlloc(UInt8, buffSize);
+			UnsafeArray<UInt8> readBuff = MemAllocArr(UInt8, buffSize);
 			while ((readSize = this->Read(Data::ByteArray(readBuff, buffSize))) > 0)
 			{
 				outStm->Write(Data::ByteArrayR(readBuff, readSize));
 				currPos += readSize;
 				if (currPos > maxSize)
 				{
-					MemFree(readBuff);
+					MemFreeArr(readBuff);
 					return false;
 				}
 			}
-			MemFree(readBuff);
+			MemFreeArr(readBuff);
 			return true;
 		}
 		return false;
@@ -400,7 +400,7 @@ Bool Net::HTTPClient::ReadAllContent(NN<Text::StringBuilderUTF8> sb, UIntOS buff
 	UIntOS readSize;
 	if (contLeng > 0 && contLeng <= maxSize)
 	{
-		UInt8 *readBuff = MemAlloc(UInt8, buffSize);
+		UnsafeArray<UInt8> readBuff = MemAllocArr(UInt8, buffSize);
 		while ((readSize = this->Read(Data::ByteArray(readBuff, buffSize))) > 0)
 		{
 			sb->AppendC(readBuff, readSize);
@@ -410,7 +410,7 @@ Bool Net::HTTPClient::ReadAllContent(NN<Text::StringBuilderUTF8> sb, UIntOS buff
 				break;
 			}
 		}
-		MemFree(readBuff);
+		MemFreeArr(readBuff);
 		return currPos >= contLeng;
 	}
 	else
@@ -418,18 +418,18 @@ Bool Net::HTTPClient::ReadAllContent(NN<Text::StringBuilderUTF8> sb, UIntOS buff
 		Text::CStringNN tranEnc;
 		if (this->GetTransferEncoding().SetTo(tranEnc) && tranEnc.Equals(UTF8STRC("chunked")))
 		{
-			UInt8 *readBuff = MemAlloc(UInt8, buffSize);
+			UnsafeArray<UInt8> readBuff = MemAllocArr(UInt8, buffSize);
 			while ((readSize = this->Read(Data::ByteArray(readBuff, buffSize))) > 0)
 			{
 				sb->AppendC(readBuff, readSize);
 				currPos += readSize;
 				if (currPos > maxSize)
 				{
-					MemFree(readBuff);
+					MemFreeArr(readBuff);
 					return false;
 				}
 			}
-			MemFree(readBuff);
+			MemFreeArr(readBuff);
 			return true;
 		}
 		return false;

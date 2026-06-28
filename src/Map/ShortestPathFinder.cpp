@@ -15,10 +15,10 @@ Int64 Map::ShortestPathFinder::CoordToId(Double x, Double y)
 	}
 }
 
-Bool Map::ShortestPathFinder::SearchShortestPath(Data::ArrayList<Double> *pointList, void *sess, Int64 fromObjId, Double fromX, Double fromY, Int64 toObjId, Double toX, Double toY)
+Bool Map::ShortestPathFinder::SearchShortestPath(NN<Data::ArrayListNative<Double>> pointList, NN<Map::GetObjectSess> sess, Int64 fromObjId, Double fromX, Double fromY, Int64 toObjId, Double toX, Double toY)
 {
 	UIntOS i;
-	Math::Polyline *pl;
+	Math::Geometry::Polyline *pl;
 	UIntOS fromPointNo;
 	UIntOS toPointNo;
 	Int64 toId1;
@@ -43,7 +43,7 @@ Bool Map::ShortestPathFinder::SearchShortestPath(Data::ArrayList<Double> *pointL
 		NodeInfo *node;
 		NeighbourInfo *neighbour;
 		Bool valid = true;
-		pl = (Math::Polyline*)this->layer->GetNewVectorById(sess, toObjId);
+		pl = (Math::Geometry::Polyline*)this->layer->GetNewVectorById(sess, toObjId);
 		toPointNo = pl->GetPointNo(toX, toY, 0, 0, 0);
 		points = pl->GetPointList(&nPoints);
 		toId1 = this->CoordToId(points[0], points[1]);
@@ -174,7 +174,7 @@ Bool Map::ShortestPathFinder::SearchShortestPath(Data::ArrayList<Double> *pointL
 					{
 						lastId = nextId;
 						nextId = this->CoordToId(neighbour->x, neighbour->y);
-						points = neighbour->pl->GetPointList(&nPoints);
+						points = neighbour->pl->GetPointList(nPoints);
 						if (neighbour->isReversed)
 						{
 							i = nPoints - 1;
@@ -227,47 +227,46 @@ Bool Map::ShortestPathFinder::SearchShortestPath(Data::ArrayList<Double> *pointL
 	}
 }
 
-Map::ShortestPathFinder::ShortestPathFinder(Map::MapDrawLayer *layer, Bool toRelease, CoordinateUnit cu, IntOS nameCol, IntOS dirCol)
+Map::ShortestPathFinder::ShortestPathFinder(NN<Map::MapDrawLayer> layer, Bool toRelease, CoordinateUnit cu, IntOS nameCol, IntOS dirCol)
 {
 	this->layer = layer;
 	this->toRelease = toRelease;
 	this->cu = cu;
 	this->nameCol = nameCol;
 	this->dirCol = dirCol;
-	NEW_CLASS(this->nodeMap, Data::Int64Map<NodeInfo*>());
+	NEW_CLASSNN(this->nodeMap, Data::Int64FastMapNN<NodeInfo>());
 
 	UTF8Char sbuff[256];
 	Data::ArrayListInt64 idList;
-	Math::Geometry::Vector2D *vec;
-	Math::Polyline *pl;
-	NodeInfo *fromNode;
-	NodeInfo *toNode;
+	NN<Math::Geometry::Vector2D> vec;
+	NN<Math::Geometry::Polyline> pl;
+	NN<NodeInfo> fromNode;
+	NN<NodeInfo> toNode;
 	Int64 fromId;
 	Int64 toId;
-	NeighbourInfo *frNeighbour;
-	NeighbourInfo *toNeighbour;
+	NN<NeighbourInfo> frNeighbour;
+	NN<NeighbourInfo> toNeighbour;
 	Double dist;
 	UIntOS nPoints;
 	Double *points;
 	Double xDiff;
 	Double yDiff;
-	void *sess;
+	NN<Map::GetObjectSess> sess;
 	UIntOS i;
 	UIntOS j;
 	UIntOS k;
-	layer->GetAllObjectIds(&idList, &this->nameArr);
+	layer->GetAllObjectIds(idList, this->nameArr);
 	sess = layer->BeginGetObject();
 	i = 0;
 	j = idList.GetCount();
 	while (i < j)
 	{
-		vec = layer->GetNewVectorById(sess, idList.GetItem(i));
-		if (vec)
+		if (layer->GetNewVectorById(sess, idList.GetItem(i)).SetTo(vec))
 		{
 			if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
 			{
-				pl = (Math::Polyline *)vec;
-				points = pl->GetPointList(&nPoints);
+				pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
+				points = pl->GetPointList(nPoints);
 				dist = 0;
 				k = 1;
 				while (k < nPoints)
@@ -279,32 +278,30 @@ Map::ShortestPathFinder::ShortestPathFinder(Map::MapDrawLayer *layer, Bool toRel
 				}
 				fromId = this->CoordToId(points[0], points[1]);
 				toId = this->CoordToId(points[nPoints * 2 - 2], points[nPoints * 2 - 1]);
-				fromNode = this->nodeMap->Get(fromId);
-				toNode = this->nodeMap->Get(toId);
-				if (fromNode == 0)
+				if (!this->nodeMap->Get(fromId).SetTo(fromNode))
 				{
-					fromNode = MemAlloc(NodeInfo, 1);
+					fromNode = MemAllocNN(NodeInfo);
 					fromNode->x = points[0];
 					fromNode->y = points[1];
-					NEW_CLASS(fromNode->neighbours, Data::ArrayList<NeighbourInfo*>());
+					NEW_CLASSNN(fromNode->neighbours, Data::ArrayListNN<NeighbourInfo>());
 					this->nodeMap->Put(fromId, fromNode);
 				}
-				if (toNode == 0)
+				if (!this->nodeMap->Get(toId).SetTo(toNode))
 				{
-					toNode = MemAlloc(NodeInfo, 1);
+					toNode = MemAllocNN(NodeInfo);
 					toNode->x = points[nPoints * 2 - 2];
 					toNode->y = points[nPoints * 2 - 1];
-					NEW_CLASS(toNode->neighbours, Data::ArrayList<NeighbourInfo*>());
+					NEW_CLASSNN(toNode->neighbours, Data::ArrayListNN<NeighbourInfo>());
 					this->nodeMap->Put(toId, toNode);
 				}
 
-				frNeighbour = MemAlloc(NeighbourInfo, 1);
+				frNeighbour = MemAllocNN(NeighbourInfo);
 				frNeighbour->x = points[nPoints * 2 - 2];
 				frNeighbour->y = points[nPoints * 2 - 1];
 				frNeighbour->isReversed = false;
 				frNeighbour->pl = pl;
 				frNeighbour->dist = dist;
-				frNeighbour->name = 0;
+				frNeighbour->name = nullptr;
 
 				Bool bothDir = true;
 				if (this->dirCol >= 0)
@@ -320,13 +317,13 @@ Map::ShortestPathFinder::ShortestPathFinder(Map::MapDrawLayer *layer, Bool toRel
 
 				if (bothDir)
 				{
-					toNeighbour = MemAlloc(NeighbourInfo, 1);
+					toNeighbour = MemAllocNN(NeighbourInfo);
 					toNeighbour->x = points[0];
 					toNeighbour->y = points[1];
 					toNeighbour->isReversed = true;
 					toNeighbour->pl = pl;
 					toNeighbour->dist = dist;
-					toNeighbour->name = 0;
+					toNeighbour->name = nullptr;
 				}
 
 				if (layer->GetString(sbuff, sizeof(sbuff), nameArr, idList.GetItem(i), nameCol))
@@ -345,7 +342,7 @@ Map::ShortestPathFinder::ShortestPathFinder(Map::MapDrawLayer *layer, Bool toRel
 			}
 			else
 			{
-				DEL_CLASS(vec);
+				vec.Delete();
 			}
 		}
 		i++;
@@ -358,71 +355,70 @@ Map::ShortestPathFinder::~ShortestPathFinder()
 	this->layer->ReleaseNameArr(this->nameArr);
 	if (this->toRelease)
 	{
-		DEL_CLASS(this->layer);
+		this->layer.Delete();
 	}
 	IntOS i;
 	IntOS j;
-	NodeInfo *node;
-	NeighbourInfo *neighbour;
-	Data::ArrayList<NodeInfo*> *nodeList = this->nodeMap->GetValues();
-	i = nodeList->GetCount();
+	NN<NodeInfo> node;
+	NN<NeighbourInfo>neighbour;
+	i = this->nodeMap->GetCount();
 	while (i-- > 0)
 	{
-		node = nodeList->GetItem(i);
+		node = this->nodeMap->GetItemNoCheck(i);
 		j = node->neighbours->GetCount();
 		while (j-- > 0)
 		{
-			neighbour = node->neighbours->GetItem(j);
+			neighbour = node->neighbours->GetItemNoCheck(j);
 			if (!neighbour->isReversed)
 			{
 				DEL_CLASS(neighbour->pl);
 			}
 			SDEL_TEXT(neighbour->name);
-			MemFree(neighbour);
+			MemFreeNN(neighbour);
 		}
 	}
-	DEL_CLASS(this->nodeMap);
+	this->nodeMap.Delete();
 }
 
-Math::Polyline *Map::ShortestPathFinder::GetPath(Double fromX, Double fromY, Double toX, Double toY, Bool sameName)
+Optional<Math::Geometry::LineString> Map::ShortestPathFinder::GetPath(Double fromX, Double fromY, Double toX, Double toY, Bool sameName)
 {
-	Math::Polyline *retPl = 0;
-	Data::ArrayList<Double> pointList;
+	Math::Geometry::LineString *retPl = 0;
+	Data::ArrayListNative<Double> pointList;
 	IntOS i;
 	IntOS j;
 	IntOS fromCnt;
 	IntOS toCnt;
 	UIntOS nPoints;
-	Data::ArrayList<Map::MapDrawLayer::ObjectInfo *> fromObjs;
-	Data::ArrayList<Map::MapDrawLayer::ObjectInfo *> toObjs;
-	Map::MapDrawLayer::ObjectInfo *fromObj;
-	Map::MapDrawLayer::ObjectInfo *toObj;
-	void *sess;
+	Data::ArrayListNN<Map::MapDrawLayer::ObjectInfo> fromObjs;
+	Data::ArrayListNN<Map::MapDrawLayer::ObjectInfo> toObjs;
+	NN<Map::MapDrawLayer::ObjectInfo> fromObj;
+	NN<Map::MapDrawLayer::ObjectInfo> toObj;
+	NN<Map::GetObjectSess> sess;
 	sess = this->layer->BeginGetObject();
 	if (this->cu == Map::ShortestPathFinder::CU_METER)
 	{
-		this->layer->GetNearObjects(sess, &fromObjs, fromX, fromY, 30);
-		this->layer->GetNearObjects(sess, &toObjs, toX, toY, 30);
+		this->layer->GetNearObjects(sess, fromObjs, Math::Coord2DDbl(fromX, fromY), 30);
+		this->layer->GetNearObjects(sess, toObjs, Math::Coord2DDbl(toX, toY), 30);
 	}
 	else
 	{
-		this->layer->GetNearObjects(sess, &fromObjs, fromX, fromY, 0.00015);
-		this->layer->GetNearObjects(sess, &toObjs, toX, toY, 0.00015);
+		this->layer->GetNearObjects(sess, fromObjs, Math::Coord2DDbl(fromX, fromY), 0.00015);
+		this->layer->GetNearObjects(sess, toObjs, Math::Coord2DDbl(toX, toY), 0.00015);
 	}
 	fromCnt = fromObjs.GetCount();
 	toCnt = toObjs.GetCount();
 	i = 0;
 	while (i < fromCnt)
 	{
-		fromObj = fromObjs.GetItem(i);
+		fromObj = fromObjs.GetItemNoCheck(i);
 		j = 0;
 		while (j < toCnt && j <= i)
 		{
-			toObj = toObjs.GetItem(j);
+			toObj = toObjs.GetItemNoCheck(j);
 			pointList.Clear();
-			if (this->SearchShortestPath(&pointList, sess, fromObj->objId, fromObj->objX, fromObj->objY, toObj->objId, toObj->objX, toObj->objY))
+			if (this->SearchShortestPath(pointList, sess, fromObj->objId, fromObj->objX, fromObj->objY, toObj->objId, toObj->objX, toObj->objY))
 			{
-				NEW_CLASS(retPl, Math::Polyline(0, pointList.GetArray(&nPoints), pointList.GetCount() >> 1));
+				NEW_CLASS(retPl, Math::Geometry::LineString(0, UnsafeArray<const Math::Coord2DDbl>::ConvertFrom(pointList.GetArr(nPoints)), pointList.GetCount() >> 1, nullptr, nullptr));
 				break;
 			}
 			j++;
@@ -436,15 +432,15 @@ Math::Polyline *Map::ShortestPathFinder::GetPath(Double fromX, Double fromY, Dou
 		j = fromCnt + 1;
 		while (j < toCnt)
 		{
-			toObj = toObjs.GetItem(j);
+			toObj = toObjs.GetItemNoCheck(j);
 			i = 0;
 			while (i < fromCnt)
 			{
-				fromObj = fromObjs.GetItem(i);
+				fromObj = fromObjs.GetItemNoCheck(i);
 				pointList.Clear();
-				if (this->SearchShortestPath(&pointList, sess, fromObj->objId, fromObj->objX, fromObj->objY, toObj->objId, toObj->objX, toObj->objY))
+				if (this->SearchShortestPath(pointList, sess, fromObj->objId, fromObj->objX, fromObj->objY, toObj->objId, toObj->objX, toObj->objY))
 				{
-					NEW_CLASS(retPl, Math::Polyline(0, pointList.GetArray(&nPoints), pointList.GetCount() >> 1));
+					NEW_CLASS(retPl, Math::Geometry::LineString(0, UnsafeArray<const Math::Coord2DDbl>::ConvertFrom(pointList.GetArr(nPoints)), pointList.GetCount() >> 1, nullptr, nullptr));
 					break;
 				}
 				i++;
@@ -454,12 +450,12 @@ Math::Polyline *Map::ShortestPathFinder::GetPath(Double fromX, Double fromY, Dou
 			j++;
 		}
 	}
-	this->layer->FreeObjects(&fromObjs);
-	this->layer->FreeObjects(&toObjs);
+	this->layer->FreeObjects(fromObjs);
+	this->layer->FreeObjects(toObjs);
 	this->layer->EndGetObject(sess);
 	if (retPl == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	return retPl;
 }

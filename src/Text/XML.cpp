@@ -729,7 +729,7 @@ NN<Text::String> Text::XML::ToNewXMLText(UnsafeArray<const UTF8Char> text)
 UnsafeArray<const WChar> Text::XML::ToNewXMLTextW(UnsafeArray<const WChar> text)
 {
 	UIntOS cnt = GetXMLTextLen(text) + 1;
-	WChar *dptr = MemAlloc(WChar, cnt);
+	UnsafeArray<WChar> dptr = MemAllocArr(WChar, cnt);
 	ToXMLTextW(dptr, text);
 	return dptr;
 }
@@ -745,7 +745,7 @@ NN<Text::String> Text::XML::ToNewXMLTextLite(UnsafeArray<const UTF8Char> text)
 UnsafeArray<const WChar> Text::XML::ToNewXMLTextLite(UnsafeArray<const WChar> text)
 {
 	UIntOS cnt = GetXMLTextLiteLen(text) + 1;
-	WChar *dptr = MemAlloc(WChar, cnt);
+	UnsafeArray<WChar> dptr = MemAllocArr(WChar, cnt);
 	ToXMLTextLite(dptr, text);
 	return dptr;
 }
@@ -808,7 +808,7 @@ UnsafeArray<const WChar> Text::XML::ToNewAttrTextW(UnsafeArrayOpt<const WChar> t
 	UnsafeArray<WChar> buff;
 	if (!text.SetTo(nntext))
 	{
-		dptr = MemAlloc(WChar, 3);
+		dptr = MemAllocArr(WChar, 3);
 		buff = dptr;
 		*buff++ = '"';
 		*buff++ = '"';
@@ -818,7 +818,7 @@ UnsafeArray<const WChar> Text::XML::ToNewAttrTextW(UnsafeArrayOpt<const WChar> t
 	else
 	{
 		UIntOS cnt = GetXMLTextLen(nntext) + 3;
-		dptr = MemAlloc(WChar, cnt);
+		dptr = MemAllocArr(WChar, cnt);
 		buff = dptr;
 		*buff++ = '"';
 		buff = ToXMLTextW(buff, nntext);

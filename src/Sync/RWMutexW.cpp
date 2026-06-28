@@ -18,7 +18,7 @@ Sync::RWMutex::RWMutex()
 {
 	this->writeTId = 0;
 	this->readCnt = 0;
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->hand = CreateEvent(0, FALSE, FALSE, 0);
 	InitializeCriticalSection(&this->clsData->mutHand);
 }
@@ -27,7 +27,7 @@ Sync::RWMutex::~RWMutex()
 {
 	CloseHandle(this->clsData->hand);
 	DeleteCriticalSection(&this->clsData->mutHand);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 void Sync::RWMutex::LockRead()

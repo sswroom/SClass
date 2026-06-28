@@ -452,10 +452,10 @@ UnsafeArray<UTF8Char> Text::MIMEObj::MIMEMessage::ParseHeaderStr(UnsafeArray<UTF
 						Crypto::Encrypt::Base64 b64;
 						UIntOS buffSize = (sbc.GetLength() >> 2) * 3;
 						UIntOS outSize;
-						UInt8 *tmpBuff = MemAlloc(UInt8, buffSize);
+						UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, buffSize);
 						outSize = b64.Decrypt((const UInt8*)sbc.ToPtr(), sbc.GetLength(), tmpBuff);
 						sbuff = enc.UTF8FromBytes(sbuff, tmpBuff, outSize, 0);
-						MemFree(tmpBuff);
+						MemFreeArr(tmpBuff);
 					}
 				}
 			}

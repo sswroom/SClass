@@ -15,25 +15,25 @@ namespace Map
 			UInt32 objCnt;
 			Math::Coord2D<Int32> blk;
 			UInt32 sofst;
-			Int32 *ids;
+			UnsafeArray<Int32> ids;
 		} CIPBlock;
 
 		typedef struct
 		{
 			Int32 id;
 			UInt32 nPtOfst;
-			UInt32 *ptOfstArr;
+			UnsafeArrayOpt<UInt32> ptOfstArr;
 			UInt32 nPoint;
-			Int32 *pointArr;
+			UnsafeArray<Int32> pointArr;
 		} CIPFileObject;
 
 		//IO::FileStream *cip;
-		Int32 *ids;
+		UnsafeArrayOpt<Int32> ids;
 		UInt32 *ofsts;
 		UInt32 nblks;
 		Int32 blkScale;
 		Bool missFile;
-		CIPBlock *blks;
+		UnsafeArrayOpt<CIPBlock> blks;
 		UIntOS maxTextSize;
 		Map::DrawLayerType lyrType;
 		NN<Text::String> layerName;

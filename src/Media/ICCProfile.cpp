@@ -1650,8 +1650,8 @@ Media::CS::TransferType Media::ICCProfile::FindTransferType(UIntOS colorCount, U
 		return Media::CS::TRANT_GAMMA;
 	}
 
-	NN<Media::CS::TransferFunc> *funcs = MemAlloc(NN<Media::CS::TransferFunc>, tranCnt);
-	Double *diffSqrSum = MemAlloc(Double, tranCnt);
+	UnsafeArray<NN<Media::CS::TransferFunc>> funcs = MemAllocArr(NN<Media::CS::TransferFunc>, tranCnt);
+	UnsafeArray<Double> diffSqrSum = MemAllocArr(Double, tranCnt);
 	UIntOS i = tranCnt;
 	while (i-- > 0)
 	{
@@ -1690,8 +1690,8 @@ Media::CS::TransferType Media::ICCProfile::FindTransferType(UIntOS colorCount, U
 		funcs[i].Delete();
 	}
 
-	MemFree(funcs);
-	MemFree(diffSqrSum);
+	MemFreeArr(funcs);
+	MemFreeArr(diffSqrSum);
 	gamma.Set(2.2);
 	return minType;
 }

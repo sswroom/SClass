@@ -314,11 +314,11 @@ Optional<Math::Geometry::Vector2D> Map::OruxDBLayer::GetNewVectorById(NN<GetObje
 	if (r->ReadNext())
 	{
 		UIntOS size = r->GetBinarySize(0);
-		UInt8 *buff = MemAlloc(UInt8, size);
+		UnsafeArray<UInt8> buff = MemAllocArr(UInt8, size);
 		r->GetBinary(0, buff);
 		IO::StmData::MemoryDataRef fd(buff, size);
 		imgList = Optional<Media::ImageList>::ConvertFrom(this->parsers->ParseFileType(fd, IO::ParserType::ImageList));
-		MemFree(buff);
+		MemFreeArr(buff);
 	}
 	db->CloseReader(r);
 	NN<Media::ImageList> nnimgList;
@@ -446,10 +446,10 @@ Bool Map::OruxDBLayer::GetObjectData(Int64 objectId, NN<IO::Stream> stm, OptOut<
 	if (r->ReadNext())
 	{
 		UIntOS size = r->GetBinarySize(0);
-		UInt8 *buff = MemAlloc(UInt8, size);
+		UnsafeArray<UInt8> buff = MemAllocArr(UInt8, size);
 		r->GetBinary(0, buff);
 		stm->Write(Data::ByteArrayR(buff, size));
-		MemFree(buff);
+		MemFreeArr(buff);
 		tileX.Set(x);
 		tileY.Set(y);
 		modTimeTicks.Set(0);

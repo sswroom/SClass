@@ -957,12 +957,12 @@ struct Manage::Process::FindProcSess
 Optional<Manage::Process::FindProcSess> Manage::Process::FindProcess(Text::CString processName)
 {
 	NN<IO::Path::FindFileSession> ffsess;
-	FindProcSess *sess;
+	NN<FindProcSess> sess;
 	if (!IO::Path::FindFile(CSTR("/proc/*")).SetTo(ffsess))
 	{
 		return nullptr;
 	}
-	sess = MemAlloc(FindProcSess, 1);
+	sess = MemAllocNN(FindProcSess);
 	sess->findFileSess = ffsess;
 	sess->procName = Text::String::NewOrNull(processName);
 	return sess;
@@ -971,12 +971,12 @@ Optional<Manage::Process::FindProcSess> Manage::Process::FindProcess(Text::CStri
 Optional<Manage::Process::FindProcSess> Manage::Process::FindProcessW(UnsafeArrayOpt<const WChar> processName)
 {
 	NN<IO::Path::FindFileSession> ffsess;
-	FindProcSess *sess;
+	NN<FindProcSess> sess;
 	if (!IO::Path::FindFile(CSTR("/proc/*")).SetTo(ffsess))
 	{
 		return nullptr;
 	}
-	sess = MemAlloc(FindProcSess, 1);
+	sess = MemAllocNN(FindProcSess);
 	sess->findFileSess = ffsess;
 	sess->procName = Text::String::NewOrNull(processName);
 	return sess;

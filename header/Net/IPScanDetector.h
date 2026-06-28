@@ -38,7 +38,7 @@ namespace Net
 		Data::FastMapNN<UInt64, AdapterStatus> adapterMap;
 		Sync::Mutex adapterMut;
 
-		ThreadStat *threadStats;
+		UnsafeArrayOpt<ThreadStat> threadStats;
 		UIntOS threadCnt;
 		Sync::Event *ctrlEvt;
 

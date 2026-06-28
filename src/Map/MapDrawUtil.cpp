@@ -72,10 +72,10 @@ Bool Map::MapDrawUtil::DrawPolygon(NN<Math::Geometry::Polygon> pg, NN<Media::Dra
 	UIntOS nPoint = pg->GetPointCount();
 	UIntOS k;
 	UnsafeArray<Math::Coord2DDbl> points;
-	Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
+	UnsafeArray<Math::Coord2DDbl> dpoints = MemAllocAArr(Math::Coord2DDbl, nPoint);
 	NN<Math::Geometry::LinearRing> lr;
 	UIntOS nPtOfst = pg->GetCount();
-	UInt32 *myPtCnts = MemAlloc(UInt32, nPtOfst);
+	UnsafeArray<UInt32> myPtCnts = MemAllocArr(UInt32, nPtOfst);
 
 	Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = pg->Iterator();
 	UIntOS i = 0;
@@ -91,8 +91,8 @@ Bool Map::MapDrawUtil::DrawPolygon(NN<Math::Geometry::Polygon> pg, NN<Media::Dra
 	}
 
 	img->DrawPolyPolygon(dpoints, myPtCnts, nPtOfst, p, b);
-	MemFreeA(dpoints);
-	MemFree(myPtCnts);
+	MemFreeAArr(dpoints);
+	MemFreeArr(myPtCnts);
 	return true;
 }
 

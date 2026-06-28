@@ -18,15 +18,15 @@
 DEFINE_GUID(CLSID_SensorManager,              0X77a1c827, 0Xfcd2, 0X4689, 0X89, 0X15, 0X9d, 0X61, 0X3c, 0Xc5, 0Xfa, 0X3e);
 #endif
 
-typedef struct
+struct IO::SensorManager::ClassData
 {
 	ISensorManager *mgr;
 	Bool accessDenined;
-} ClassData;
+};
 
 IO::SensorManager::SensorManager()
 {
-	ClassData *me = MemAlloc(ClassData, 1);
+	NN<ClassData> me = MemAllocNN(ClassData);
 	this->clsData = me;
 	me->mgr = 0;
 	me->accessDenined = false;
@@ -53,18 +53,18 @@ IO::SensorManager::SensorManager()
 
 IO::SensorManager::~SensorManager()
 {
-	ClassData *me = (ClassData*)this->clsData;
+	NN<ClassData> me = this->clsData;
 	if (me->mgr)
 	{
 		me->mgr->Release();
 	}
-	MemFree(me);
+	MemFreeNN(me);
 	CoUninitialize();
 }
 
 UIntOS IO::SensorManager::GetSensorCnt()
 {
-	ClassData *me = (ClassData*)this->clsData;
+	NN<ClassData> me = this->clsData;
 	if (me->mgr == 0)
 		return 0;
 
@@ -90,7 +90,7 @@ UIntOS IO::SensorManager::GetSensorCnt()
 
 IO::Sensor::SensorType IO::SensorManager::GetSensorType(UIntOS index)
 {
-	ClassData *me = (ClassData*)this->clsData;
+	NN<ClassData> me = this->clsData;
 	if (me->mgr == 0)
 		return IO::Sensor::SensorType::Unknown;
 
@@ -151,7 +151,7 @@ IO::Sensor::SensorType IO::SensorManager::GetSensorType(UIntOS index)
 
 Optional<IO::Sensor> IO::SensorManager::CreateSensor(UIntOS index)
 {
-	ClassData *me = (ClassData*)this->clsData;
+	NN<ClassData> me = this->clsData;
 	if (me->mgr == 0 || index < 0)
 		return nullptr;
 
@@ -220,7 +220,7 @@ Optional<IO::Sensor> IO::SensorManager::CreateSensor(UIntOS index)
 
 UIntOS IO::SensorManager::GetAccelerometerCnt()
 {
-	ClassData *me = (ClassData*)this->clsData;
+	NN<ClassData> me = this->clsData;
 	if (me->mgr == 0)
 		return 0;
 
@@ -247,7 +247,7 @@ UIntOS IO::SensorManager::GetAccelerometerCnt()
 Optional<IO::SensorAccelerometer> IO::SensorManager::CreateAccelerometer(UIntOS index)
 {
 	IO::SensorAccelerometer *ret = 0;
-	ClassData *me = (ClassData*)this->clsData;
+	NN<ClassData> me = this->clsData;
 	if (me->mgr == 0 || index < 0)
 		return nullptr;
 

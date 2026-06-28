@@ -10,7 +10,7 @@ typedef struct
 	NN<Text::String> txt;
 } MyRow;
 
-typedef struct
+struct UI::GUIListView::ClassData
 {
 	GtkListStore *listStore;
 	GtkWidget *treeView;
@@ -19,7 +19,7 @@ typedef struct
 	Data::ArrayListNN<MyRow> *rows;
 	UI::ListViewStyle lvstyle;
 	Bool noChgEvt;
-} GUIListViewData;
+};
 
 UI::GTK::GTKCheckedListBox::GTKCheckedListBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUICheckedListBox(ui, parent)
 {
@@ -31,7 +31,7 @@ UI::GTK::GTKCheckedListBox::~GTKCheckedListBox()
 
 Bool UI::GTK::GTKCheckedListBox::GetItemChecked(UIntOS index)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> r;
 	if (!data->rows->GetItem(index).SetTo(r))
 		return false;
@@ -42,7 +42,7 @@ Bool UI::GTK::GTKCheckedListBox::GetItemChecked(UIntOS index)
 
 void UI::GTK::GTKCheckedListBox::SetItemChecked(UIntOS index, Bool isChecked)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> r;
 	if (!data->rows->GetItem(index).SetTo(r))
 		return;
@@ -53,7 +53,7 @@ IntOS UI::GTK::GTKCheckedListBox::OnNotify(UInt32 code, IntOS lParam)
 {
 	if (code == 0x1234)
 	{
-		GUIListViewData *data = (GUIListViewData*)this->clsData;
+		NN<ClassData> data = this->clsData;
 		GtkTreeIter iter;
 		if (gtk_tree_model_get_iter_from_string((GtkTreeModel*)data->listStore, &iter, (gchar*)lParam))
 		{

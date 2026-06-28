@@ -12,7 +12,7 @@ namespace UI
 
 		static IntOS useCnt;
 		NN<Media::DrawEngine> deng;
-		ClassData *clsData;
+		NN<ClassData> clsData;
 		void *drawFont;
 		Optional<Media::DrawImage> drawBuff;
 		Optional<Media::ColorSess> colorSess;

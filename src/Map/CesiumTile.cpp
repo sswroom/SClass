@@ -75,7 +75,7 @@ Map::CesiumTile::CesiumTile(NN<IO::PackageFile> pkg, Optional<Text::String> name
 					if (fd->GetDataSize() <= 1048576)
 					{
 						UIntOS len = (UIntOS)fd->GetDataSize();
-						UInt8 *buff = MemAlloc(UInt8, len + 1);
+						UnsafeArray<UInt8> buff = MemAllocArr(UInt8, len + 1);
 						if (fd->GetRealData(0, len, Data::ByteArray(buff, len)) == len)
 						{
 							buff[len] = 0;
@@ -88,7 +88,7 @@ Map::CesiumTile::CesiumTile(NN<IO::PackageFile> pkg, Optional<Text::String> name
 								json->EndUse();
 							}
 						}
-						MemFree(buff);
+						MemFreeArr(buff);
 					}
 					fd.Delete();
 

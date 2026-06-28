@@ -23,7 +23,7 @@ namespace Net
 		
 		typedef struct
 		{
-			UInt8 *buff;
+			UnsafeArray<UInt8> buff;
 			UIntOS buffSize;
 			Optional<IPStatus> status;
 		} ClientStatus;

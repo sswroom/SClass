@@ -14,7 +14,7 @@ typedef struct
 	NN<Text::String> txt;
 } MyRow;
 
-typedef struct
+struct UI::GUIListView::ClassData
 {
 	GtkListStore *listStore;
 	GtkWidget *treeView;
@@ -23,7 +23,7 @@ typedef struct
 	Data::ArrayListNN<MyRow> *rows;
 	UI::ListViewStyle lvstyle;
 	Bool noChgEvt;
-} GUIListViewData;
+};
 
 void GUIListView_SelChange(GtkTreeView *tree_view, gpointer user_data)
 {
@@ -74,7 +74,7 @@ void GUIListView_Toggled(GtkCellRendererToggle* self, gchar* path, gpointer user
 
 UI::GUIListView::GUIListView(NN<GUICore> ui, NN<GUIClientControl> parent, ListViewStyle lvstyle, UIntOS colCount) : UI::GUIControl(ui, parent)
 {
-	GUIListViewData *data = MemAlloc(GUIListViewData, 1);
+	NN<ClassData> data = MemAllocNN(ClassData);
 	data->noChgEvt = false;
 	UIntOS i;
 	GType *types;
@@ -138,7 +138,7 @@ UI::GUIListView::GUIListView(NN<GUICore> ui, NN<GUIClientControl> parent, ListVi
 UI::GUIListView::~GUIListView()
 {
 	UIntOS i;
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> row;
 	i = data->rows->GetCount();
 	while (i-- > 0)
@@ -149,12 +149,12 @@ UI::GUIListView::~GUIListView()
 	}
 	MemFree(data->colSizes);
 	DEL_CLASS(data->rows);
-	MemFree(data);
+	MemFreeNN(data);
 }
 
 void UI::GUIListView::ChangeColumnCnt(UIntOS newColCnt)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	UIntOS i;
 	GType *types;
 	MemFree(data->colSizes);
@@ -201,7 +201,7 @@ Bool UI::GUIListView::AddColumn(NN<Text::String> columnName, Double colWidth)
 
 Bool UI::GUIListView::AddColumn(Text::CStringNN columnName, Double colWidth)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->colCnt <= this->colCnt)
 		return false;
 
@@ -220,7 +220,7 @@ Bool UI::GUIListView::AddColumn(Text::CStringNN columnName, Double colWidth)
 
 Bool UI::GUIListView::AddColumn(UnsafeArray<const WChar> columnName, Double colWidth)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->colCnt <= this->colCnt)
 		return false;
 
@@ -238,7 +238,7 @@ Bool UI::GUIListView::AddColumn(UnsafeArray<const WChar> columnName, Double colW
 
 Bool UI::GUIListView::SetColumnWidth(UIntOS index, Double colWidth)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (index >= data->colCnt)
 		return false;
 	GtkTreeViewColumn *col = gtk_tree_view_get_column((GtkTreeView*)data->treeView, (gint)index);
@@ -251,7 +251,7 @@ Bool UI::GUIListView::SetColumnWidth(UIntOS index, Double colWidth)
 
 Bool UI::GUIListView::ClearAll()
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	guint cnt = gtk_tree_view_get_n_columns((GtkTreeView *)data->treeView);
 	while (cnt-- > 0)
 	{
@@ -265,7 +265,7 @@ Bool UI::GUIListView::ClearAll()
 
 UIntOS UI::GUIListView::AddItem(NN<Text::String> text, AnyType itemObj)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> row = MemAllocNN(MyRow);
 	row->data = itemObj;
 	row->txt = text->Clone();
@@ -277,7 +277,7 @@ UIntOS UI::GUIListView::AddItem(NN<Text::String> text, AnyType itemObj)
 
 UIntOS UI::GUIListView::AddItem(Text::CStringNN text, AnyType itemObj)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> row = MemAllocNN(MyRow);
 	row->data = itemObj;
 	row->txt = Text::String::New(text);
@@ -289,7 +289,7 @@ UIntOS UI::GUIListView::AddItem(Text::CStringNN text, AnyType itemObj)
 
 UIntOS UI::GUIListView::AddItem(UnsafeArray<const WChar> text, AnyType itemObj)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> row = MemAllocNN(MyRow);
 	row->data = itemObj;
 	row->txt = Text::String::NewNotNull(text);
@@ -301,7 +301,7 @@ UIntOS UI::GUIListView::AddItem(UnsafeArray<const WChar> text, AnyType itemObj)
 
 UIntOS UI::GUIListView::AddItem(Text::CStringNN text, AnyType itemObj, UIntOS imageIndex)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> row = MemAllocNN(MyRow);
 	row->data = itemObj;
 	row->txt = Text::String::New(text);
@@ -313,7 +313,7 @@ UIntOS UI::GUIListView::AddItem(Text::CStringNN text, AnyType itemObj, UIntOS im
 
 Bool UI::GUIListView::SetSubItem(UIntOS row, UIntOS col, NN<Text::String> text)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> r;
 	if (!data->rows->GetItem(row).SetTo(r) || col < 0 || col >= data->colCnt)
 		return false;
@@ -323,7 +323,7 @@ Bool UI::GUIListView::SetSubItem(UIntOS row, UIntOS col, NN<Text::String> text)
 
 Bool UI::GUIListView::SetSubItem(UIntOS row, UIntOS col, Text::CStringNN text)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> r;
 	if (!data->rows->GetItem(row).SetTo(r) || col < 0 || col >= data->colCnt)
 		return false;
@@ -333,7 +333,7 @@ Bool UI::GUIListView::SetSubItem(UIntOS row, UIntOS col, Text::CStringNN text)
 
 Bool UI::GUIListView::SetSubItem(UIntOS row, UIntOS col, UnsafeArray<const WChar> text)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> r;
 	if (!data->rows->GetItem(row).SetTo(r) || col >= data->colCnt)
 		return false;
@@ -345,7 +345,7 @@ Bool UI::GUIListView::SetSubItem(UIntOS row, UIntOS col, UnsafeArray<const WChar
 
 Bool UI::GUIListView::GetSubItem(UIntOS index, UIntOS subIndex, NN<Text::StringBuilderUTF8> sb)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> r;
 	if (!data->rows->GetItem(index).SetTo(r) || subIndex >= data->colCnt)
 		return false;
@@ -365,7 +365,7 @@ Bool UI::GUIListView::GetSubItem(UIntOS index, UIntOS subIndex, NN<Text::StringB
 
 UIntOS UI::GUIListView::InsertItem(UIntOS index, NN<Text::String> itemText, AnyType itemObj)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> row = MemAllocNN(MyRow);
 	row->data = itemObj;
 	row->txt = itemText->Clone();
@@ -377,7 +377,7 @@ UIntOS UI::GUIListView::InsertItem(UIntOS index, NN<Text::String> itemText, AnyT
 
 UIntOS UI::GUIListView::InsertItem(UIntOS index, Text::CStringNN itemText, AnyType itemObj)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> row = MemAllocNN(MyRow);
 	row->data = itemObj;
 	row->txt = Text::String::New(itemText);
@@ -389,7 +389,7 @@ UIntOS UI::GUIListView::InsertItem(UIntOS index, Text::CStringNN itemText, AnyTy
 
 UIntOS UI::GUIListView::InsertItem(UIntOS index, UnsafeArray<const WChar> itemText, AnyType itemObj)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> row = MemAllocNN(MyRow);
 	row->data = itemObj;
 	row->txt = Text::String::NewNotNull(itemText);
@@ -401,7 +401,7 @@ UIntOS UI::GUIListView::InsertItem(UIntOS index, UnsafeArray<const WChar> itemTe
 
 AnyType UI::GUIListView::RemoveItem(UIntOS index)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> r;
 	if (!data->rows->RemoveAt(index).SetTo(r))
 		return 0;
@@ -415,7 +415,7 @@ AnyType UI::GUIListView::RemoveItem(UIntOS index)
 
 AnyType UI::GUIListView::GetItem(UIntOS index)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> r;
 	if (!data->rows->GetItem(index).SetTo(r))
 		return 0;
@@ -424,7 +424,7 @@ AnyType UI::GUIListView::GetItem(UIntOS index)
 
 void UI::GUIListView::ClearItems()
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	UIntOS i;
 	NN<MyRow> row;
 	data->noChgEvt = true;
@@ -442,13 +442,13 @@ void UI::GUIListView::ClearItems()
 
 UIntOS UI::GUIListView::GetCount()
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	return data->rows->GetCount();
 }
 
 void UI::GUIListView::SetSelectedIndex(UIntOS index)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (index == (UIntOS)-1)
 	{
 		//////////////////////
@@ -464,7 +464,7 @@ void UI::GUIListView::SetSelectedIndex(UIntOS index)
 
 UIntOS UI::GUIListView::GetSelectedIndex()
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	GtkTreeSelection *sel = gtk_tree_view_get_selection((GtkTreeView*)data->treeView);
 	GtkTreeIter iter;
 	if (gtk_tree_selection_get_selected(sel, 0, &iter))
@@ -482,7 +482,7 @@ UIntOS UI::GUIListView::GetSelectedIndex()
 UIntOS UI::GUIListView::GetSelectedIndices(Data::ArrayListNative<UIntOS> *selIndices)
 {
 	UIntOS ret = 0;
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	GtkTreeSelection *sel = gtk_tree_view_get_selection((GtkTreeView*)data->treeView);
 	GtkTreeIter iter;
 	if (gtk_tree_selection_get_selected(sel, 0, &iter))
@@ -530,7 +530,7 @@ Optional<Text::String> UI::GUIListView::GetSelectedItemTextNew()
 
 UnsafeArrayOpt<UTF8Char> UI::GUIListView::GetItemText(UnsafeArray<UTF8Char> buff, UIntOS index)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> r;
 	if (!data->rows->GetItem(index).SetTo(r))
 		return nullptr;
@@ -539,7 +539,7 @@ UnsafeArrayOpt<UTF8Char> UI::GUIListView::GetItemText(UnsafeArray<UTF8Char> buff
 
 Optional<Text::String> UI::GUIListView::GetItemTextNew(UIntOS index)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> r;
 	if (!data->rows->GetItem(index).SetTo(r))
 		return nullptr;
@@ -553,13 +553,13 @@ void UI::GUIListView::SetFullRowSelect(Bool fullRowSelect)
 
 void UI::GUIListView::SetShowGrid(Bool showGrid)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	gtk_tree_view_set_grid_lines((GtkTreeView*)data->treeView, showGrid?GTK_TREE_VIEW_GRID_LINES_BOTH:GTK_TREE_VIEW_GRID_LINES_NONE);
 }
 
 UIntOS UI::GUIListView::GetStringWidth(UnsafeArray<const UTF8Char> s)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	UIntOS ret = 0;
 	int width;
 	int height;
@@ -572,7 +572,7 @@ UIntOS UI::GUIListView::GetStringWidth(UnsafeArray<const UTF8Char> s)
 
 UIntOS UI::GUIListView::GetStringWidth(const WChar *s)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	UIntOS ret = 0;
 	int width;
 	int height;
@@ -587,7 +587,7 @@ UIntOS UI::GUIListView::GetStringWidth(const WChar *s)
 
 void UI::GUIListView::GetItemRectP(UIntOS index, Int32 *rect)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> r;
 	if (!data->rows->GetItem(index).SetTo(r))
 	{
@@ -609,7 +609,7 @@ void UI::GUIListView::GetItemRectP(UIntOS index, Int32 *rect)
 
 void UI::GUIListView::EnsureVisible(UIntOS index)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> r;
 	if (data->rows->GetItem(index).SetTo(r))
 	{
@@ -620,7 +620,7 @@ void UI::GUIListView::EnsureVisible(UIntOS index)
 
 AnyType UI::GUIListView::SetItem(UIntOS index, AnyType itemObj)
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<MyRow> r;
 	if (!data->rows->GetItem(index).SetTo(r))
 		return itemObj;
@@ -665,7 +665,7 @@ void UI::GUIListView::OnSizeChanged(Bool updateScn)
 
 void UI::GUIListView::EventSelChg()
 {
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->noChgEvt)
 		return;
 	UIntOS i;
@@ -716,7 +716,7 @@ void UI::GUIListView::SetDPI(Double hdpi, Double ddpi)
 	{
 		this->UpdateFont();
 	}
-	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	UIntOS i = 0;
 	while (i < this->colCnt)
 	{

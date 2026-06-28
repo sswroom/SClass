@@ -611,11 +611,12 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8>
 
 void IO::JavaClass::DetailConstVal(UInt16 index, NN<Text::StringBuilderUTF8> sb, Bool brankets) const
 {
-	if (index == 0 || index >= this->constPoolCnt)
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
+	UnsafeArray<UInt8> ptr;
+	if (index == 0 || index >= this->constPoolCnt || !this->constPool.SetTo(constPool) || !constPool[index].SetTo(ptr))
 	{
 		return;
 	}
-	UInt8 *ptr = this->constPool[index];
 	if (ptr[0] == 3)
 	{
 		if (brankets)
@@ -672,8 +673,7 @@ void IO::JavaClass::DetailConstVal(UInt16 index, NN<Text::StringBuilderUTF8> sb,
 	{
 		UInt16 sindex = ReadMUInt16(&ptr[1]);
 		UInt16 strLen;
-		ptr = this->constPool[sindex];
-		if (ptr[0] == 1)
+		if (constPool[sindex].SetTo(ptr) && ptr[0] == 1)
 		{
 			strLen = ReadMUInt16(&ptr[1]);
 			if (brankets)
@@ -701,7 +701,7 @@ void IO::JavaClass::DetailConstVal(UInt16 index, NN<Text::StringBuilderUTF8> sb,
 		}
 		else
 		{
-			UnsafeArray<const UTF8Char> s = Text::StrCopyNewC(ptr + 3, strLen).Ptr();
+			UnsafeArray<const UTF8Char> s = Text::StrCopyNewC(UnsafeArray<const UInt8>(ptr) + 3, strLen).Ptr();
 			NN<Text::String> j = Text::JSText::ToNewJSTextDQuote(s);
 			sb->Append(j);
 			j->Release();
@@ -712,11 +712,12 @@ void IO::JavaClass::DetailConstVal(UInt16 index, NN<Text::StringBuilderUTF8> sb,
 
 void IO::JavaClass::DetailName(UInt16 index, NN<Text::StringBuilderUTF8> sb, Bool brankets) const
 {
-	if (index == 0 || index >= this->constPoolCnt)
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
+	UnsafeArray<UInt8> ptr;
+	if (index == 0 || index >= this->constPoolCnt || !this->constPool.SetTo(constPool) || !constPool[index].SetTo(ptr))
 	{
 		return;
 	}
-	UInt8 *ptr = this->constPool[index];
 	if (ptr[0] != 1)
 	{
 		return;
@@ -736,36 +737,40 @@ void IO::JavaClass::DetailName(UInt16 index, NN<Text::StringBuilderUTF8> sb, Boo
 
 void IO::JavaClass::DetailClassName(UInt16 index, NN<Text::StringBuilderUTF8> sb) const
 {
-	if (index == 0 || index >= this->constPoolCnt)
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
+	UnsafeArray<UInt8> constPoolVal;
+	if (index == 0 || index >= this->constPoolCnt || !this->constPool.SetTo(constPool) || !constPool[index].SetTo(constPoolVal))
 	{
 		return;
 	}
-	if (this->constPool[index][0] != 7)
+	if (constPoolVal[0] != 7)
 	{
 		return;
 	}
-	UInt16 nameIndex = ReadMUInt16(&this->constPool[index][1]);
+	UInt16 nameIndex = ReadMUInt16(&constPoolVal[1]);
 	this->DetailClassNameStr(nameIndex, sb);
 }
 
 void IO::JavaClass::DetailClassNameStr(UInt16 index, NN<Text::StringBuilderUTF8> sb) const
 {
-	if (index == 0 || index >= this->constPoolCnt)
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
+	UnsafeArray<UInt8> constPoolVal;
+	if (index == 0 || index >= this->constPoolCnt || !this->constPool.SetTo(constPool) || !constPool[index].SetTo(constPoolVal))
 	{
 		return;
 	}
-	if (this->constPool[index][0] != 1)
+	if (constPoolVal[0] != 1)
 	{
 		return;
 	}
-	UInt8 *ptr = this->constPool[index];
+	UnsafeArray<UInt8> ptr = constPoolVal;
 	if (ptr[0] != 1)
 	{
 		return;
 	}
 	UInt16 strLen = ReadMUInt16(&ptr[1]);
-	UInt8 *strStart;
-	UInt8 *strEnd;
+	UnsafeArray<UInt8> strStart;
+	UnsafeArray<UInt8> strEnd;
 	UInt8 c;
 	ptr += 3;
 	sb->AppendUTF8Char(' ');
@@ -795,38 +800,43 @@ void IO::JavaClass::DetailClassNameStr(UInt16 index, NN<Text::StringBuilderUTF8>
 
 void IO::JavaClass::DetailFieldRef(UInt16 index, NN<Text::StringBuilderUTF8> sb) const
 {
-	if (index == 0 || index >= this->constPoolCnt)
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
+	UnsafeArray<UInt8> constPoolVal;
+	if (index == 0 || index >= this->constPoolCnt || !this->constPool.SetTo(constPool) || !constPool[index].SetTo(constPoolVal))
 	{
 		return;
 	}
-	if (this->constPool[index][0] != 9)
+	if (constPoolVal[0] != 9)
 	{
 		return;
 	}
-	UInt16 classIndex = ReadMUInt16(&this->constPool[index][1]);
-	UInt16 nameIndex = ReadMUInt16(&this->constPool[index][3]);
+	UInt16 classIndex = ReadMUInt16(&constPoolVal[1]);
+	UInt16 nameIndex = ReadMUInt16(&constPoolVal[3]);
+	UnsafeArray<UInt8> ptr;
 	if (classIndex == 0 || classIndex >= this->constPoolCnt || nameIndex == 0 || nameIndex >= this->constPoolCnt)
 	{
 		return;
 	}
-	if (this->constPool[classIndex][0] != 7 || this->constPool[nameIndex][0] != 12)
+	if (!constPool[nameIndex].SetTo(ptr) || ptr[0] != 12)
 	{
 		return;
 	}
-	UInt8 *ptr = this->constPool[classIndex];
+	if (!constPool[classIndex].SetTo(ptr) || ptr[0] != 7)
+	{
+		return;
+	}
 	UInt16 i = ReadMUInt16(&ptr[1]);
 	if (i == 0 || i >= this->constPoolCnt)
 	{
 		return;
 	}
-	ptr = this->constPool[i];
-	if (ptr[0] != 1)
+	if (!constPool[i].SetTo(ptr) || ptr[0] != 1)
 	{
 		return;
 	}
 	UInt16 strLen = ReadMUInt16(&ptr[1]);
-	UInt8 *strStart;
-	UInt8 *strEnd;
+	UnsafeArray<UInt8> strStart;
+	UnsafeArray<UInt8> strEnd;
 	UInt8 c;
 	ptr += 3;
 	strEnd = ptr + strLen;
@@ -849,38 +859,43 @@ void IO::JavaClass::DetailFieldRef(UInt16 index, NN<Text::StringBuilderUTF8> sb)
 
 void IO::JavaClass::DetailMethodRef(UInt16 index, NN<Text::StringBuilderUTF8> sb) const
 {
-	if (index == 0 || index >= this->constPoolCnt)
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
+	UnsafeArray<UInt8> constPoolVal;
+	if (index == 0 || index >= this->constPoolCnt || !this->constPool.SetTo(constPool) || !constPool[index].SetTo(constPoolVal))
 	{
 		return;
 	}
-	if (this->constPool[index][0] != 10 && this->constPool[index][0] != 11)
+	if (constPoolVal[0] != 10 && constPoolVal[0] != 11)
 	{
 		return;
 	}
-	UInt16 classIndex = ReadMUInt16(&this->constPool[index][1]);
-	UInt16 nameIndex = ReadMUInt16(&this->constPool[index][3]);
+	UInt16 classIndex = ReadMUInt16(&constPoolVal[1]);
+	UInt16 nameIndex = ReadMUInt16(&constPoolVal[3]);
 	if (classIndex == 0 || classIndex >= this->constPoolCnt || nameIndex == 0 || nameIndex >= this->constPoolCnt)
 	{
 		return;
 	}
-	if (this->constPool[classIndex][0] != 7 || this->constPool[nameIndex][0] != 12)
+	UnsafeArray<UInt8> ptr;
+	if (!constPool[nameIndex].SetTo(ptr) || ptr[0] != 12)
 	{
 		return;
 	}
-	UInt8 *ptr = this->constPool[classIndex];
+	if (!constPool[classIndex].SetTo(ptr) || ptr[0] != 7)
+	{
+		return;
+	}
 	UInt16 i = ReadMUInt16(&ptr[1]);
 	if (i == 0 || i >= this->constPoolCnt)
 	{
 		return;
 	}
-	ptr = this->constPool[i];
-	if (ptr[0] != 1)
+	if (!constPool[i].SetTo(ptr) || ptr[0] != 1)
 	{
 		return;
 	}
 	UInt16 strLen = ReadMUInt16(&ptr[1]);
-	UInt8 *strStart;
-	UInt8 *strEnd;
+	UnsafeArray<UInt8> strStart;
+	UnsafeArray<UInt8> strEnd;
 	UInt8 c;
 	ptr += 3;
 	strEnd = ptr + strLen;
@@ -903,16 +918,18 @@ void IO::JavaClass::DetailMethodRef(UInt16 index, NN<Text::StringBuilderUTF8> sb
 
 Bool IO::JavaClass::MethodGetReturnType(UInt16 index, NN<Text::StringBuilderUTF8> sb) const
 {
-	if (index == 0 || index >= this->constPoolCnt)
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
+	UnsafeArray<UInt8> constPoolVal;
+	if (index == 0 || index >= this->constPoolCnt || !this->constPool.SetTo(constPool) || !constPool[index].SetTo(constPoolVal))
 	{
 		return false;
 	}
-	if (this->constPool[index][0] != 1)
+	if (constPoolVal[0] != 1)
 	{
 		return false;
 	}
 
-	UnsafeArray<const UInt8> ptr = this->constPool[index];
+	UnsafeArray<const UInt8> ptr = constPoolVal;
 	UInt16 strLen = ReadMUInt16(&ptr[1]);
 	UnsafeArray<const UInt8> strEnd;
 	Text::StringBuilderUTF8 sbTmp;
@@ -938,36 +955,43 @@ Bool IO::JavaClass::MethodGetReturnType(UInt16 index, NN<Text::StringBuilderUTF8
 
 void IO::JavaClass::DetailNameAndType(UInt16 index, UInt16 classIndex, NN<Text::StringBuilderUTF8> sb) const
 {
-	if (index == 0 || index >= this->constPoolCnt)
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
+	UnsafeArray<UInt8> constPoolVal;
+	if (index == 0 || index >= this->constPoolCnt || !this->constPool.SetTo(constPool) || !constPool[index].SetTo(constPoolVal))
 	{
 		return;
 	}
-	if (this->constPool[index][0] != 12)
+	if (constPoolVal[0] != 12)
 	{
 		return;
 	}
-	UInt16 nameIndex = ReadMUInt16(&this->constPool[index][1]);
-	UInt16 typeIndex = ReadMUInt16(&this->constPool[index][3]);
+	UInt16 nameIndex = ReadMUInt16(&constPoolVal[1]);
+	UInt16 typeIndex = ReadMUInt16(&constPoolVal[3]);
 	this->DetailNameType(nameIndex, typeIndex, classIndex, U8STR(" "), sb, nullptr, nullptr, nullptr, nullptr);
 }
 
 void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 classIndex, UnsafeArrayOpt<const UTF8Char> prefix, NN<Text::StringBuilderUTF8> sb, UnsafeArrayOpt<UTF8Char> typeBuff, Optional<MethodInfo> method, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
 {
-	if (nameIndex == 0 || nameIndex >= this->constPoolCnt || typeIndex == 0 || typeIndex >= this->constPoolCnt)
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
+	UnsafeArray<UInt8> constPoolVal;
+	if (nameIndex == 0 || nameIndex >= this->constPoolCnt || typeIndex == 0 || typeIndex >= this->constPoolCnt || !this->constPool.SetTo(constPool))
 	{
 		return;
 	}
-	if (this->constPool[nameIndex][0] != 1 || this->constPool[typeIndex][0] != 1)
+	if (!constPool[nameIndex].SetTo(constPoolVal) || constPoolVal[0] != 1)
 	{
 		return;
 	}
-
+	if (!constPool[typeIndex].SetTo(constPoolVal) || constPoolVal[0] != 1)
+	{
+		return;
+	}
+	UnsafeArray<const UInt8> ptr = constPoolVal;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	Data::ArrayListObj<Optional<Text::String>> typeNames;
 	Text::StringBuilderUTF8 sbParam;
 	Text::StringBuilderUTF8 sbTmp;
-	UnsafeArray<const UInt8> ptr = this->constPool[typeIndex];
 	UInt16 strLen = ReadMUInt16(&ptr[1]);
 	UnsafeArray<const UInt8> strEnd;
 	UInt32 paramIndex;
@@ -1054,45 +1078,51 @@ void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 cl
 	{
 		sb->AppendSlow(nnprefix);
 	}
-	const UInt8 *ptr2 = this->constPool[nameIndex];
-	strLen = ReadMUInt16(&ptr2[1]);
-	if (strLen == 6 && Text::StrStartsWith(&ptr2[3], (const UTF8Char*)"<init>"))
+	UnsafeArray<const UInt8> ptr2;
+	if (UnsafeArrayOpt<const UInt8>(constPool[nameIndex]).SetTo(ptr2))
 	{
-		ptr = this->constPool[classIndex];
-		ptr = this->constPool[ReadMUInt16(&ptr[1])];
-		strLen = ReadMUInt16(&ptr[1]);
-		ptr += 3;
-		UnsafeArray<const UInt8> endPtr = ptr + strLen;
-		UnsafeArray<const UInt8> startPtr = ptr;
-		while (ptr < endPtr)
+		strLen = ReadMUInt16(&ptr2[1]);
+		if (strLen == 6 && Text::StrStartsWith(&ptr2[3], (const UTF8Char*)"<init>"))
 		{
-			if (*ptr++ == '/')
+			if (UnsafeArrayOpt<const UInt8>(constPool[classIndex]).SetTo(ptr) && UnsafeArrayOpt<const UInt8>(constPool[ReadMUInt16(&ptr[1])]).SetTo(ptr))
 			{
-				startPtr = ptr;
+				strLen = ReadMUInt16(&ptr[1]);
+				ptr += 3;
+				UnsafeArray<const UInt8> endPtr = ptr + strLen;
+				UnsafeArray<const UInt8> startPtr = ptr;
+				while (ptr < endPtr)
+				{
+					if (*ptr++ == '/')
+					{
+						startPtr = ptr;
+					}
+				}
+				sb->AppendC(startPtr, (UIntOS)(endPtr - startPtr));
 			}
 		}
-		sb->AppendC(startPtr, (UIntOS)(endPtr - startPtr));
-	}
-	else
-	{
-		AppendCodeType2String(sb, ptr, importList, packageName);
-		sb->AppendUTF8Char(' ');
-		sb->AppendC(&ptr2[3], strLen);
+		else
+		{
+			AppendCodeType2String(sb, ptr, importList, packageName);
+			sb->AppendUTF8Char(' ');
+			sb->AppendC(&ptr2[3], strLen);
+		}
 	}
 	sb->AppendC(sbParam.ToString(), sbParam.GetLength());
 }
 
 void IO::JavaClass::DetailType(UInt16 typeIndex, NN<Text::StringBuilderUTF8> sb, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
 {
-	if (typeIndex == 0 || typeIndex >= this->constPoolCnt)
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
+	UnsafeArray<UInt8> constPoolVal;
+	if (typeIndex == 0 || typeIndex >= this->constPoolCnt || !this->constPool.SetTo(constPool) || !constPool[typeIndex].SetTo(constPoolVal))
 	{
 		return;
 	}
-	if (this->constPool[typeIndex][0] != 1)
+	if (constPoolVal[0] != 1)
 	{
 		return;
 	}	
-	const UInt8 *ptr = this->constPool[typeIndex];
+	UnsafeArray<const UInt8> ptr = constPoolVal;
 	ptr += 3;
 	AppendCodeType2String(sb, ptr, importList, packageName);
 }
@@ -3706,12 +3736,13 @@ UnsafeArray<const UInt8> IO::JavaClass::DetailVerificationTypeInfo(UnsafeArray<c
 
 UnsafeArrayOpt<UTF8Char> IO::JavaClass::GetConstName(UnsafeArray<UTF8Char> sbuff, UInt16 index) const
 {
-	if (index == 0 || index >= this->constPoolCnt)
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
+	if (index == 0 || index >= this->constPoolCnt || !this->constPool.SetTo(constPool))
 	{
 		return nullptr;
 	}
-	UInt8 *ptr = this->constPool[index];
-	if (ptr[0] != 1)
+	UnsafeArray<UInt8> ptr;
+	if (!constPool[index].SetTo(ptr) || ptr[0] != 1)
 	{
 		return nullptr;
 	}
@@ -3721,23 +3752,25 @@ UnsafeArrayOpt<UTF8Char> IO::JavaClass::GetConstName(UnsafeArray<UTF8Char> sbuff
 
 Bool IO::JavaClass::ClassNameString(UInt16 index, NN<Text::StringBuilderUTF8> sb) const
 {
-	if (index == 0 || index >= this->constPoolCnt)
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
+	UnsafeArray<UInt8> constPoolVal;
+	if (index == 0 || index >= this->constPoolCnt || !this->constPool.SetTo(constPool) || !constPool[index].SetTo(constPoolVal))
 	{
 		return false;
 	}
-	if (this->constPool[index][0] != 7)
+	if (constPoolVal[0] != 7)
 	{
 		return false;
 	}
-	UInt16 nameIndex = ReadMUInt16(&this->constPool[index][1]);
-	UInt8 *ptr = this->constPool[nameIndex];
-	if (ptr[0] != 1)
+	UInt16 nameIndex = ReadMUInt16(&constPoolVal[1]);
+	UnsafeArray<UInt8> ptr;
+	if (!constPool[nameIndex].SetTo(ptr) || ptr[0] != 1)
 	{
 		return false;
 	}
 	UInt16 strLen = ReadMUInt16(&ptr[1]);
-	UInt8 *strStart;
-	UInt8 *strEnd;
+	UnsafeArray<UInt8> strStart;
+	UnsafeArray<UInt8> strEnd;
 	UInt8 c;
 	ptr += 3;
 	if (ptr[0] == '[')
@@ -4242,6 +4275,8 @@ void IO::JavaClass::AppendCodeField(NN<Text::StringBuilderUTF8> sb, UIntOS index
 	UInt16 descriptorIndex = ReadMUInt16(&ptr[4]);
 	UInt16 signatureIndex = 0;
 	UInt16 attrCnt = ReadMUInt16(&ptr[6]);
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
+	UnsafeArray<UInt8> constPoolVal;
 	this->GetConstName(sbuff, descriptorIndex);
 	Text::StringBuilderUTF8 sbTypeName;
 	Type2String(sbuff, sbTypeName);
@@ -4257,14 +4292,14 @@ void IO::JavaClass::AppendCodeField(NN<Text::StringBuilderUTF8> sb, UIntOS index
 			if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("ConstantValue")))
 			{
 				nameIndex = ReadMUInt16(&ptr[6]);
-				if (nameIndex > 0 && nameIndex < this->constPoolCnt && this->constPool[nameIndex] != 0)
+				if (nameIndex > 0 && nameIndex < this->constPoolCnt && this->constPool.SetTo(constPool) && constPool[nameIndex].SetTo(constPoolVal))
 				{
-					if (this->constPool[nameIndex][0] == 3)
+					if (constPoolVal[0] == 3)
 					{
 						sbValue.AppendC(UTF8STRC(" = "));
 						if (sbTypeName.Equals(UTF8STRC("boolean")))
 						{
-							if (ReadMInt32(&this->constPool[nameIndex][1]) != 0)
+							if (ReadMInt32(&constPoolVal[1]) != 0)
 							{
 								sbValue.AppendC(UTF8STRC("true"));
 							}
@@ -4275,43 +4310,42 @@ void IO::JavaClass::AppendCodeField(NN<Text::StringBuilderUTF8> sb, UIntOS index
 						}
 						else
 						{
-							sbValue.AppendI32(ReadMInt32(&this->constPool[nameIndex][1]));
+							sbValue.AppendI32(ReadMInt32(&constPoolVal[1]));
 						}
 					}
-					else if (this->constPool[nameIndex][0] == 4)
+					else if (constPoolVal[0] == 4)
 					{
 						sbValue.AppendC(UTF8STRC(" = "));
-						Text::SBAppendF32(sbValue, ReadMFloat(&this->constPool[nameIndex][1]));
+						Text::SBAppendF32(sbValue, ReadMFloat(&constPoolVal[1]));
 						sbValue.AppendUTF8Char('f');
 					}
-					else if (this->constPool[nameIndex][0] == 5)
+					else if (constPoolVal[0] == 5)
 					{
 						sbValue.AppendC(UTF8STRC(" = "));
-						sbValue.AppendI64(ReadMInt64(&this->constPool[nameIndex][1]));
+						sbValue.AppendI64(ReadMInt64(&constPoolVal[1]));
 						sbValue.AppendUTF8Char('L');
 					}
-					else if (this->constPool[nameIndex][0] == 6)
+					else if (constPoolVal[0] == 6)
 					{
 						sbValue.AppendC(UTF8STRC(" = "));
-						Text::SBAppendF64(sbValue, ReadMDouble(&this->constPool[nameIndex][1]));
+						Text::SBAppendF64(sbValue, ReadMDouble(&constPoolVal[1]));
 					}
-					else if (this->constPool[nameIndex][0] == 8)
+					else if (constPoolVal[0] == 8)
 					{
-						UInt16 sindex = ReadMUInt16(&this->constPool[nameIndex][1]);
+						UInt16 sindex = ReadMUInt16(&constPoolVal[1]);
 						UInt16 strLen;
-						ptr = this->constPool[sindex];
-						if (ptr[0] == 1)
+						if (constPool[sindex].SetTo(constPoolVal) && constPoolVal[0] == 1)
 						{
 							sbValue.AppendC(UTF8STRC(" = "));
-							strLen = ReadMUInt16(&ptr[1]);
-							UnsafeArray<const UTF8Char> s = Text::StrCopyNewC(ptr + 3, strLen).Ptr();
+							strLen = ReadMUInt16(&constPoolVal[1]);
+							UnsafeArray<const UTF8Char> s = Text::StrCopyNewC(UnsafeArray<const UInt8>(constPoolVal) + 3, strLen);
 							Text::JSText::ToJSTextDQuote(sbValue, s);
 							Text::StrDelNew(s);
 						}
 					}
 					else
 					{
-						printf("AppendCodeField: Unsupported type %d\r\n", this->constPool[nameIndex][0]);
+						printf("AppendCodeField: Unsupported type %d\r\n", constPoolVal[0]);
 					}
 				}
 			}
@@ -4905,10 +4939,10 @@ UnsafeArray<const UTF8Char> IO::JavaClass::AppendCodeType2String(NN<Text::String
 
 void IO::JavaClass::Init(Data::ByteArrayR buff)
 {
-	this->fileBuff = 0;
+	this->fileBuff = nullptr;
 	this->fileBuffSize = 0;
 	this->constPoolCnt = 0;
-	this->constPool = 0;
+	this->constPool = nullptr;
 	this->accessFlags = 0;
 	this->thisClass = 0;
 	this->superClass = 0;
@@ -4930,24 +4964,26 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 		return;
 	}
 	this->fileBuffSize = buff.GetSize();
-	this->fileBuff = MemAlloc(UInt8, buff.GetSize());
-	MemCopyNO(this->fileBuff, buff.Arr().Ptr(), buff.GetSize());
+	UnsafeArray<UInt8> fileBuff;
+	this->fileBuff = fileBuff = MemAllocArr(UInt8, buff.GetSize());
+	MemCopyNO(&fileBuff[0], buff.Arr().Ptr(), buff.GetSize());
 
 	UIntOS ofst;
-	UInt16 constant_pool_count = ReadMUInt16(&this->fileBuff[8]);
+	UInt16 constant_pool_count = ReadMUInt16(&fileBuff[8]);
 	UInt16 i;
 	UInt16 j;
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
 	Bool valid = true;
 	this->constPoolCnt = constant_pool_count;
-	this->constPool = MemAlloc(UInt8*, this->constPoolCnt);
-	this->constPool[0] = 0;
+	this->constPool = constPool = MemAllocArr(UnsafeArrayOpt<UInt8>, this->constPoolCnt);
+	constPool[0] = nullptr;
 	i = 1;
 	ofst = 10;
 	while (i < constant_pool_count && ofst < this->fileBuffSize)
 	{
 		UInt16 strLen;
-		this->constPool[i] = &this->fileBuff[ofst];
-		switch (this->fileBuff[ofst])
+		constPool[i] = &fileBuff[ofst];
+		switch (fileBuff[ofst])
 		{
 		case 1: //CONSTANT_Utf8
 			if (ofst + 3 > this->fileBuffSize)
@@ -4956,7 +4992,7 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 				valid = false;
 				break;
 			}
-			strLen = ReadMUInt16(&this->fileBuff[ofst + 1]);
+			strLen = ReadMUInt16(&fileBuff[ofst + 1]);
 			if (ofst + 3 + strLen > this->fileBuffSize)
 			{
 				this->constPoolCnt = i;
@@ -4992,7 +5028,7 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 			}
 			ofst += 9;
 			i++;
-			this->constPool[i] = 0;
+			constPool[i] = nullptr;
 			break;
 		case 6: //CONSTANT_Double
 			if (ofst + 9 > this->fileBuffSize)
@@ -5003,7 +5039,7 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 			}
 			ofst += 9;
 			i++;
-			this->constPool[i] = 0;
+			constPool[i] = nullptr;
 			break;
 		case 7: //CONSTANT_Class
 			if (ofst + 3 > this->fileBuffSize)
@@ -5087,7 +5123,7 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 			ofst += 5;
 			break;
 		default:
-			printf("Constant Pool %d/%d, unknown tag %d\r\n", i, constant_pool_count, this->fileBuff[ofst]);
+			printf("Constant Pool %d/%d, unknown tag %d\r\n", i, constant_pool_count, fileBuff[ofst]);
 			this->constPoolCnt = i;
 			valid = false;
 			break;
@@ -5104,22 +5140,22 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 		return;
 	}
 
-	this->accessFlags = ReadMUInt16(&this->fileBuff[ofst]);
-	this->thisClass = ReadMUInt16(&this->fileBuff[ofst + 2]);
-	this->superClass = ReadMUInt16(&this->fileBuff[ofst + 4]);
-	this->interfaceCnt = ReadMUInt16(&this->fileBuff[ofst + 6]);
+	this->accessFlags = ReadMUInt16(&fileBuff[ofst]);
+	this->thisClass = ReadMUInt16(&fileBuff[ofst + 2]);
+	this->superClass = ReadMUInt16(&fileBuff[ofst + 4]);
+	this->interfaceCnt = ReadMUInt16(&fileBuff[ofst + 6]);
 	ofst += 8;
 	if (ofst + this->interfaceCnt * 2 > this->fileBuffSize)
 	{
 		return ;
 	}
-	this->interfaces = &this->fileBuff[ofst];
+	this->interfaces = &fileBuff[ofst];
 	ofst += this->interfaceCnt * 2;
 	if (ofst + 2 > this->fileBuffSize)
 	{
 		return;
 	}
-	UInt16 fields_count = ReadMUInt16(&this->fileBuff[ofst]);
+	UInt16 fields_count = ReadMUInt16(&fileBuff[ofst]);
 	ofst += 2;
 	this->fieldsCnt = fields_count;
 	if (this->fieldsCnt > 0)
@@ -5128,13 +5164,13 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 		i = 0;
 		while (i < fields_count)
 		{
-			this->fields[i] = &this->fileBuff[ofst];
+			this->fields[i] = &fileBuff[ofst];
 			if (ofst + 8 > this->fileBuffSize)
 			{
 				this->fieldsCnt = i;
 				return;
 			}
-			UInt16 attributes_count = ReadMUInt16(&this->fileBuff[ofst + 6]);
+			UInt16 attributes_count = ReadMUInt16(&fileBuff[ofst + 6]);
 			ofst += 8;
 			j = 0;
 			while (j < attributes_count)
@@ -5144,7 +5180,7 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 					this->fieldsCnt = i;
 					return;
 				}
-				ofst += 6 + ReadMUInt32(&this->fileBuff[ofst + 2]);
+				ofst += 6 + ReadMUInt32(&fileBuff[ofst + 2]);
 				j++;
 			}
 			i++;
@@ -5155,7 +5191,7 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 	{
 		return ;
 	}
-	UInt16 methods_count = ReadMUInt16(&this->fileBuff[ofst]);
+	UInt16 methods_count = ReadMUInt16(&fileBuff[ofst]);
 	ofst += 2;
 	this->methodCnt = methods_count;
 	if (this->methodCnt > 0)
@@ -5164,13 +5200,13 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 		i = 0;
 		while (i < methods_count)
 		{
-			this->methods[i] = &this->fileBuff[ofst];
+			this->methods[i] = &fileBuff[ofst];
 			if (ofst + 8 > this->fileBuffSize)
 			{
 				this->methodCnt = i;
 				return;
 			}
-			UInt16 attributes_count = ReadMUInt16(&this->fileBuff[ofst + 6]);
+			UInt16 attributes_count = ReadMUInt16(&fileBuff[ofst + 6]);
 
 			ofst += 8;
 			j = 0;
@@ -5181,7 +5217,7 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 					this->methodCnt = i;
 					return;
 				}
-				ofst += 6 + ReadMUInt32(&this->fileBuff[ofst + 2]);
+				ofst += 6 + ReadMUInt32(&fileBuff[ofst + 2]);
 				j++;
 			}
 			i++;
@@ -5193,7 +5229,7 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 	}
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UInt16 attributes_count = ReadMUInt16(&this->fileBuff[ofst]);
+	UInt16 attributes_count = ReadMUInt16(&fileBuff[ofst]);
 	ofst += 2;
 	this->attrCnt = attributes_count;
 	if (this->attrCnt > 0)
@@ -5202,19 +5238,19 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 		j = 0;
 		while (j < attributes_count)
 		{
-			this->attrs[j] = &this->fileBuff[ofst];
+			this->attrs[j] = &fileBuff[ofst];
 			if (ofst + 6 > this->fileBuffSize)
 			{
 				this->attrCnt = j;
 				return;
 			}
-			UInt32 len = ReadMUInt32(&this->fileBuff[ofst + 2]);
-			UInt16 nameIndex = ReadMUInt16(&this->fileBuff[ofst + 0]);
+			UInt32 len = ReadMUInt32(&fileBuff[ofst + 2]);
+			UInt16 nameIndex = ReadMUInt16(&fileBuff[ofst + 0]);
 			if (this->GetConstName(sbuff, nameIndex).SetTo(sptr))
 			{
 				if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("Signature")) && len == 2)
 				{
-					this->signatureIndex = ReadMUInt16(&this->fileBuff[ofst + 6]);
+					this->signatureIndex = ReadMUInt16(&fileBuff[ofst + 6]);
 				}
 			}
 			ofst += 6 + len;
@@ -5235,15 +5271,17 @@ IO::JavaClass::JavaClass(Text::CStringNN sourceName, Data::ByteArrayR buff) : IO
 
 IO::JavaClass::~JavaClass()
 {
-	if (this->fileBuff)
+	UnsafeArray<UInt8> fileBuff;
+	if (this->fileBuff.SetTo(fileBuff))
 	{
-		MemFree(this->fileBuff);
-		this->fileBuff = 0;
+		MemFreeArr(fileBuff);
+		this->fileBuff = nullptr;
 	}
-	if (this->constPool)
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
+	if (this->constPool.SetTo(constPool))
 	{
-		MemFree(this->constPool);
-		this->constPool = 0;
+		MemFreeArr(constPool);
+		this->constPool = nullptr;
 	}
 	if (this->fields)
 	{
@@ -5279,104 +5317,113 @@ Bool IO::JavaClass::GetSuperClass(NN<Text::StringBuilderUTF8> sb) const
 
 Bool IO::JavaClass::FileStructDetail(NN<Text::StringBuilderUTF8> sb) const
 {
-	sb->AppendC(UTF8STRC("Version = "));
-	sb->AppendU16(ReadMUInt16(&this->fileBuff[6]));
-	sb->AppendUTF8Char('.');
-	sb->AppendU16(ReadMUInt16(&this->fileBuff[4]));
-	sb->AppendC(UTF8STRC("\r\n"));
+	UnsafeArray<UInt8> fileBuff;
+	if (this->fileBuff.SetTo(fileBuff))
+	{
+		sb->AppendC(UTF8STRC("Version = "));
+		sb->AppendU16(ReadMUInt16(&fileBuff[6]));
+		sb->AppendUTF8Char('.');
+		sb->AppendU16(ReadMUInt16(&fileBuff[4]));
+		sb->AppendC(UTF8STRC("\r\n"));
+	}
 	sb->AppendC(UTF8STRC("constant_pool_count = "));
 	sb->AppendUIntOS(this->constPoolCnt);
 	sb->AppendC(UTF8STRC("\r\n"));
 	UIntOS i;
 	UInt16 j;
-	i = 1;
-	while (i < this->constPoolCnt)
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
+	UnsafeArray<UInt8> constPoolVal;
+	if (this->constPool.SetTo(constPool))
 	{
-		UInt16 strLen;
-		sb->AppendC(UTF8STRC("Const "));
-		sb->AppendUIntOS(i);
-		sb->AppendC(UTF8STRC(": "));
-		if (this->constPool[i] == 0)
+		i = 1;
+		while (i < this->constPoolCnt)
 		{
-			sb->AppendC(UTF8STRC("unusable"));
-		}
-		else
-		{
-			switch (this->constPool[i][0])
+			UInt16 strLen;
+			sb->AppendC(UTF8STRC("Const "));
+			sb->AppendUIntOS(i);
+			sb->AppendC(UTF8STRC(": "));
+			if (!constPool[i].SetTo(constPoolVal))
 			{
-			case 1: //CONSTANT_Utf8
-				strLen = ReadMUInt16(&this->constPool[i][1]);
-				sb->AppendC(UTF8STRC("UTF8 = "));
-				sb->AppendC(&this->constPool[i][3], strLen);
-				break;
-			case 3: //CONSTANT_Integer
-				sb->AppendC(UTF8STRC("Integer, value = "));
-				sb->AppendI32(ReadMInt32(&this->constPool[i][1]));
-				break;
-			case 4: //CONSTANT_Float
-				sb->AppendC(UTF8STRC("Float, value = "));
-				Text::SBAppendF32(sb, ReadMFloat(&this->constPool[i][1]));
-				break;
-			case 5: //CONSTANT_Long
-				sb->AppendC(UTF8STRC("Long, value = "));
-				sb->AppendI64(ReadMInt64(&this->constPool[i][1]));
-				break;
-			case 6: //CONSTANT_Float
-				sb->AppendC(UTF8STRC("Double, value = "));
-				Text::SBAppendF64(sb, ReadMDouble(&this->constPool[i][1]));
-				break;
-			case 7: //CONSTANT_Class
-				sb->AppendC(UTF8STRC("Class, Name index = "));
-				sb->AppendU16(ReadMUInt16(&this->constPool[i][1]));
-				break;
-			case 8: //CONSTANT_String
-				sb->AppendC(UTF8STRC("String, String index = "));
-				sb->AppendU16(ReadMUInt16(&this->constPool[i][1]));
-				break;
-			case 9: //CONSTANT_Fieldref
-				sb->AppendC(UTF8STRC("Fieldref, Class index = "));
-				sb->AppendU16(ReadMUInt16(&this->constPool[i][1]));
-				sb->AppendC(UTF8STRC(", Name and type index = "));
-				sb->AppendU16(ReadMUInt16(&this->constPool[i][3]));
-				break;
-			case 10: //CONSTANT_Methodref
-				sb->AppendC(UTF8STRC("Methodref, Class index = "));
-				sb->AppendU16(ReadMUInt16(&this->constPool[i][1]));
-				sb->AppendC(UTF8STRC(", Name and type index = "));
-				sb->AppendU16(ReadMUInt16(&this->constPool[i][3]));
-				break;
-			case 11: //CONSTANT_InterfaceMethodref
-				sb->AppendC(UTF8STRC("InterfaceMethodref, Class index = "));
-				sb->AppendU16(ReadMUInt16(&this->constPool[i][1]));
-				sb->AppendC(UTF8STRC(", Name and type index = "));
-				sb->AppendU16(ReadMUInt16(&this->constPool[i][3]));
-				break;
-			case 12: //CONSTANT_NameAndType
-				sb->AppendC(UTF8STRC("NameAndType, Name index = "));
-				sb->AppendU16(ReadMUInt16(&this->constPool[i][1]));
-				sb->AppendC(UTF8STRC(", Descriptor index = "));
-				sb->AppendU16(ReadMUInt16(&this->constPool[i][3]));
-				break;
-			case 15: //CONSTANT_MethodHandle
-				sb->AppendC(UTF8STRC("MethodHandle, Ref Kind = "));
-				sb->AppendU16(this->constPool[i][1]);
-				sb->AppendC(UTF8STRC(", Ref index = "));
-				sb->AppendU16(ReadMUInt16(&this->constPool[i][2]));
-				break;
-			case 16: //CONSTANT_MethodType
-				sb->AppendC(UTF8STRC("MethodType, Descriptor index = "));
-				sb->AppendU16(ReadMUInt16(&this->constPool[i][1]));
-				break;
-			case 18: //CONSTANT_InvokeDynamic
-				sb->AppendC(UTF8STRC("InvokeDynamic, bootstrap method attr index = "));
-				sb->AppendU16(ReadMUInt16(&this->constPool[i][1]));
-				sb->AppendC(UTF8STRC(", Name and Type index = "));
-				sb->AppendU16(ReadMUInt16(&this->constPool[i][3]));
-				break;
+				sb->AppendC(UTF8STRC("unusable"));
 			}
+			else
+			{
+				switch (constPoolVal[0])
+				{
+				case 1: //CONSTANT_Utf8
+					strLen = ReadMUInt16(&constPoolVal[1]);
+					sb->AppendC(UTF8STRC("UTF8 = "));
+					sb->AppendC(&constPoolVal[3], strLen);
+					break;
+				case 3: //CONSTANT_Integer
+					sb->AppendC(UTF8STRC("Integer, value = "));
+					sb->AppendI32(ReadMInt32(&constPoolVal[1]));
+					break;
+				case 4: //CONSTANT_Float
+					sb->AppendC(UTF8STRC("Float, value = "));
+					Text::SBAppendF32(sb, ReadMFloat(&constPoolVal[1]));
+					break;
+				case 5: //CONSTANT_Long
+					sb->AppendC(UTF8STRC("Long, value = "));
+					sb->AppendI64(ReadMInt64(&constPoolVal[1]));
+					break;
+				case 6: //CONSTANT_Float
+					sb->AppendC(UTF8STRC("Double, value = "));
+					Text::SBAppendF64(sb, ReadMDouble(&constPoolVal[1]));
+					break;
+				case 7: //CONSTANT_Class
+					sb->AppendC(UTF8STRC("Class, Name index = "));
+					sb->AppendU16(ReadMUInt16(&constPoolVal[1]));
+					break;
+				case 8: //CONSTANT_String
+					sb->AppendC(UTF8STRC("String, String index = "));
+					sb->AppendU16(ReadMUInt16(&constPoolVal[1]));
+					break;
+				case 9: //CONSTANT_Fieldref
+					sb->AppendC(UTF8STRC("Fieldref, Class index = "));
+					sb->AppendU16(ReadMUInt16(&constPoolVal[1]));
+					sb->AppendC(UTF8STRC(", Name and type index = "));
+					sb->AppendU16(ReadMUInt16(&constPoolVal[3]));
+					break;
+				case 10: //CONSTANT_Methodref
+					sb->AppendC(UTF8STRC("Methodref, Class index = "));
+					sb->AppendU16(ReadMUInt16(&constPoolVal[1]));
+					sb->AppendC(UTF8STRC(", Name and type index = "));
+					sb->AppendU16(ReadMUInt16(&constPoolVal[3]));
+					break;
+				case 11: //CONSTANT_InterfaceMethodref
+					sb->AppendC(UTF8STRC("InterfaceMethodref, Class index = "));
+					sb->AppendU16(ReadMUInt16(&constPoolVal[1]));
+					sb->AppendC(UTF8STRC(", Name and type index = "));
+					sb->AppendU16(ReadMUInt16(&constPoolVal[3]));
+					break;
+				case 12: //CONSTANT_NameAndType
+					sb->AppendC(UTF8STRC("NameAndType, Name index = "));
+					sb->AppendU16(ReadMUInt16(&constPoolVal[1]));
+					sb->AppendC(UTF8STRC(", Descriptor index = "));
+					sb->AppendU16(ReadMUInt16(&constPoolVal[3]));
+					break;
+				case 15: //CONSTANT_MethodHandle
+					sb->AppendC(UTF8STRC("MethodHandle, Ref Kind = "));
+					sb->AppendU16(constPoolVal[1]);
+					sb->AppendC(UTF8STRC(", Ref index = "));
+					sb->AppendU16(ReadMUInt16(&constPoolVal[2]));
+					break;
+				case 16: //CONSTANT_MethodType
+					sb->AppendC(UTF8STRC("MethodType, Descriptor index = "));
+					sb->AppendU16(ReadMUInt16(&constPoolVal[1]));
+					break;
+				case 18: //CONSTANT_InvokeDynamic
+					sb->AppendC(UTF8STRC("InvokeDynamic, bootstrap method attr index = "));
+					sb->AppendU16(ReadMUInt16(&constPoolVal[1]));
+					sb->AppendC(UTF8STRC(", Name and Type index = "));
+					sb->AppendU16(ReadMUInt16(&constPoolVal[3]));
+					break;
+				}
+			}
+			sb->AppendC(UTF8STRC("\r\n"));
+			i++;
 		}
-		sb->AppendC(UTF8STRC("\r\n"));
-		i++;
 	}
 
 	sb->AppendC(UTF8STRC("Access Flags = "));
@@ -5626,6 +5673,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 	UInt16 val;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
+	UnsafeArray<UInt8> constPoolVal;
 	UTF8Char typeBuff[128];
 	while (codePtr < codeEnd)
 	{
@@ -7782,7 +7831,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			return EndType::Return;
 		case 0xB2: //getstatic
 			val = ReadMUInt16(&codePtr[1]);
-			if (val == 0 || val >= this->constPoolCnt)
+			if (val == 0 || val >= this->constPoolCnt || !this->constPool.SetTo(constPool))
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// getstatic index invalid:"));
@@ -7790,7 +7839,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
-			if (this->constPool[val] == 0 || this->constPool[val][0] != 9)
+			if (!constPool[val].SetTo(constPoolVal) || constPoolVal[0] != 9)
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// getstatic const pool not fieldref:"));
@@ -7800,12 +7849,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			}
 			else
 			{
-				UInt16 classIndex = ReadMUInt16(&this->constPool[val][1]);
-				UInt16 nameTypeIndex = ReadMUInt16(&this->constPool[val][3]);
+				UInt16 classIndex = ReadMUInt16(&constPoolVal[1]);
+				UInt16 nameTypeIndex = ReadMUInt16(&constPoolVal[3]);
 				sbTmp.ClearStr();
 				this->ClassNameString(classIndex, sbTmp);
-				UInt8 *ptr = this->constPool[nameTypeIndex];
-				if (ptr == 0 || ptr[0] != 12)
+				UnsafeArray<UInt8> ptr;
+				if (!constPool[nameTypeIndex].SetTo(ptr) || ptr[0] != 12)
 				{
 					this->AppendIndent(sb, lev);
 					sb->AppendC(UTF8STRC("// getstatic const pool not nameAndType:"));
@@ -7837,7 +7886,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
-			if (val == 0 || val >= this->constPoolCnt)
+			if (val == 0 || val >= this->constPoolCnt || !this->constPool.SetTo(constPool))
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// putstatic index invalid:"));
@@ -7845,7 +7894,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
-			if (this->constPool[val] == 0 || this->constPool[val][0] != 9)
+			if (!constPool[val].SetTo(constPoolVal) || constPoolVal[0] != 9)
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// putstatic const pool not fieldref:"));
@@ -7855,12 +7904,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			}
 			else
 			{
-				UInt16 classIndex = ReadMUInt16(&this->constPool[val][1]);
-				UInt16 nameTypeIndex = ReadMUInt16(&this->constPool[val][3]);
+				UInt16 classIndex = ReadMUInt16(&constPoolVal[1]);
+				UInt16 nameTypeIndex = ReadMUInt16(&constPoolVal[3]);
 				sbTmp.ClearStr();
 				this->ClassNameString(classIndex, sbTmp);
-				UInt8 *ptr = this->constPool[nameTypeIndex];
-				if (ptr == 0 || ptr[0] != 12)
+				UnsafeArray<UInt8> ptr;
+				if (!constPool[nameTypeIndex].SetTo(ptr) || ptr[0] != 12)
 				{
 					this->AppendIndent(sb, lev);
 					sb->AppendC(UTF8STRC("// putstatic const pool not nameAndType:"));
@@ -7894,7 +7943,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
-			if (val == 0 || val >= this->constPoolCnt)
+			if (val == 0 || val >= this->constPoolCnt || !this->constPool.SetTo(constPool))
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// getfield index invalid:"));
@@ -7902,7 +7951,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
-			if (this->constPool[val] == 0 || this->constPool[val][0] != 9)
+			if (!constPool[val].SetTo(constPoolVal) || constPoolVal[0] != 9)
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// getfield const pool not fieldref:"));
@@ -7913,9 +7962,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			else
 			{
 				UInt16 classIndex;
-				UInt16 nameTypeIndex = ReadMUInt16(&this->constPool[val][3]);
-				UInt8 *ptr = this->constPool[nameTypeIndex];
-				if (ptr == 0 || ptr[0] != 12)
+				UInt16 nameTypeIndex = ReadMUInt16(&constPoolVal[3]);
+				UnsafeArray<UInt8> ptr;
+				if (!constPool[nameTypeIndex].SetTo(ptr) || ptr[0] != 12)
 				{
 					this->AppendIndent(sb, lev);
 					sb->AppendC(UTF8STRC("// getfield const pool not nameAndType:"));
@@ -7950,7 +7999,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
-			if (val == 0 || val >= this->constPoolCnt)
+			if (val == 0 || val >= this->constPoolCnt || !this->constPool.SetTo(constPool))
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// putfield index invalid:"));
@@ -7958,7 +8007,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
-			if (this->constPool[val] == 0 || this->constPool[val][0] != 9)
+			if (!constPool[val].SetTo(constPoolVal) || constPoolVal[0] != 9)
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("// putfield const pool not fieldref:"));
@@ -7969,9 +8018,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 			else
 			{
 				UInt16 classIndex;
-				UInt16 nameTypeIndex = ReadMUInt16(&this->constPool[val][3]);
-				UInt8 *ptr = this->constPool[nameTypeIndex];
-				if (ptr == 0 || ptr[0] != 12)
+				UInt16 nameTypeIndex = ReadMUInt16(&constPoolVal[3]);
+				UnsafeArray<UInt8> ptr;
+				if (!constPool[nameTypeIndex].SetTo(ptr) || ptr[0] != 12)
 				{
 					this->AppendIndent(sb, lev);
 					sb->AppendC(UTF8STRC("// putfield const pool not nameAndType:"));
@@ -8484,11 +8533,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> cod
 
 void IO::JavaClass::DecompileLDC(UInt16 index, NN<IO::JavaClass::DecompileEnv> env) const
 {
-	if (index == 0 || index >= this->constPoolCnt)
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
+	UnsafeArray<UInt8> ptr;
+	if (index == 0 || index >= this->constPoolCnt || !this->constPool.SetTo(constPool) || !constPool[index].SetTo(ptr))
 	{
 		return;
 	}
-	UInt8 *ptr = this->constPool[index];
 	Text::StringBuilderUTF8 sb;
 	if (ptr[0] == 3)
 	{
@@ -8518,8 +8568,7 @@ void IO::JavaClass::DecompileLDC(UInt16 index, NN<IO::JavaClass::DecompileEnv> e
 	{
 		UInt16 sindex = ReadMUInt16(&ptr[1]);
 		UInt16 strLen;
-		ptr = this->constPool[sindex];
-		if (ptr[0] == 1)
+		if (constPool[sindex].SetTo(ptr) && ptr[0] == 1)
 		{
 			strLen = ReadMUInt16(&ptr[1]);
 			Text::StringBuilderUTF8 sbTmp;
@@ -8535,8 +8584,7 @@ void IO::JavaClass::DecompileLDC(UInt16 index, NN<IO::JavaClass::DecompileEnv> e
 	{
 		UInt16 sindex = ReadMUInt16(&ptr[1]);
 		UInt16 strLen;
-		ptr = this->constPool[sindex];
-		if (ptr[0] == 1)
+		if (constPool[sindex].SetTo(ptr) && ptr[0] == 1)
 		{
 			strLen = ReadMUInt16(&ptr[1]);
 			sb.AppendC(ptr + 3, strLen);
@@ -8805,15 +8853,16 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(UnsafeArray<const UInt
 
 UnsafeArrayOpt<UTF8Char> IO::JavaClass::DecompileMethod(UInt16 methodIndex, UnsafeArray<UTF8Char> nameBuff, OutParam<UInt16> classIndex, UnsafeArray<UTF8Char> retType, NN<IO::JavaClass::DecompileEnv> env, NN<Text::StringBuilderUTF8> sb) const
 {
-	if (methodIndex == 0 || methodIndex >= this->constPoolCnt)
+	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
+	if (methodIndex == 0 || methodIndex >= this->constPoolCnt || !this->constPool.SetTo(constPool))
 	{
 		sb->AppendC(UTF8STRC("// method index out of range: "));
 		sb->AppendU16(methodIndex);
 		sb->AppendC(UTF8STRC("\r\n"));
 		return nullptr;
 	}
-	const UInt8 *constPtr = this->constPool[methodIndex];
-	if (constPtr == 0)
+	UnsafeArray<UInt8> constPtr;
+	if (!constPool[methodIndex].SetTo(constPtr))
 	{
 		sb->AppendC(UTF8STRC("// method constPool is not used: "));
 		sb->AppendU16(methodIndex);
@@ -8836,8 +8885,7 @@ UnsafeArrayOpt<UTF8Char> IO::JavaClass::DecompileMethod(UInt16 methodIndex, Unsa
 
 	classIndex.Set(ReadMUInt16(&constPtr[1]));
 	UInt16 nameTypeIndex = ReadMUInt16(&constPtr[3]);
-	constPtr = this->constPool[nameTypeIndex];
-	if (constPtr == 0 || constPtr[0] != 12)
+	if (!constPool[nameTypeIndex].SetTo(constPtr) || constPtr[0] != 12)
 	{
 		sb->AppendC(UTF8STRC("// method constPool is not nameAndType: "));
 		sb->AppendU16(constPtr[0]);

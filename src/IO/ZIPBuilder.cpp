@@ -165,7 +165,7 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> 
 {
 	UInt8 hdrBuff[512];
 	UIntOS hdrLen;
-	UInt8 *outBuff = MemAlloc(UInt8, fileSize + 32);
+	UnsafeArray<UInt8> outBuff = MemAllocArr(UInt8, fileSize + 32);
 	UIntOS compSize;
 	if (compLevel == Data::Compress::Deflater::CompLevel::NoCompression)
 	{
@@ -289,7 +289,7 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> 
 #endif
 		succ = writeSize == (hdrLen + compSize);
 	}
-	MemFree(outBuff);
+	MemFreeArr(outBuff);
 	return succ;
 }
 

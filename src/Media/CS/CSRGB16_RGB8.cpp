@@ -24,10 +24,11 @@ void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
 	Double rMul;
 	Double gMul;
 	Double bMul;
+	UnsafeArray<UInt8> rgbTable;
 
-	if (this->rgbTable == 0)
+	if (!this->rgbTable.SetTo(rgbTable))
 	{
-		this->rgbTable = MemAlloc(UInt8, 65536 * 3);
+		this->rgbTable = rgbTable = MemAllocArr(UInt8, 65536 * 3);
 	}
 	NN<Media::ColorProfile> srcProfile;
 	NN<Media::ColorProfile> destProfile;
@@ -126,23 +127,23 @@ void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
 		Double gV = (gBright - 1.0 + Math_Pow(gv, gGammaVal) * gContr) * 255.0;
 		Double bV = (bBright - 1.0 + Math_Pow(bv, bGammaVal) * bContr) * 255.0;
 		if (rV > 255.0)
-			this->rgbTable[i + 131072] = 255;
+			rgbTable[i + 131072] = 255;
 		else if (rV < 0)
-			this->rgbTable[i + 131072] = 0;
+			rgbTable[i + 131072] = 0;
 		else
-			this->rgbTable[i + 131072] = (UInt8)Double2Int32(rV);
+			rgbTable[i + 131072] = (UInt8)Double2Int32(rV);
 		if (gV > 255.0)
-			this->rgbTable[i + 65536] = 255;
+			rgbTable[i + 65536] = 255;
 		else if (gV < 0)
-			this->rgbTable[i + 65536] = 0;
+			rgbTable[i + 65536] = 0;
 		else
-			this->rgbTable[i + 65536] = (UInt8)Double2Int32(gV);
+			rgbTable[i + 65536] = (UInt8)Double2Int32(gV);
 		if (bV > 255.0)
-			this->rgbTable[i + 0] = 255;
+			rgbTable[i + 0] = 255;
 		else if (bV < 0)
-			this->rgbTable[i + 0] = 0;
+			rgbTable[i + 0] = 0;
 		else
-			this->rgbTable[i + 0] = (UInt8)Double2Int32(bV);
+			rgbTable[i + 0] = (UInt8)Double2Int32(bV);
 	}
 	irFunc.Delete();
 	igFunc.Delete();
@@ -169,16 +170,17 @@ Media::CS::CSRGB16_RGB8::CSRGB16_RGB8(UIntOS srcNBits, Media::PixelFormat srcPF,
 	{
 		Media::MonitorColorManager::SetDefaultRGB(this->rgbParam);
 	}
-	this->rgbTable = 0;
+	this->rgbTable = nullptr;
 	this->rgbUpdated = true;
 }
 
 Media::CS::CSRGB16_RGB8::~CSRGB16_RGB8()
 {
-	if (this->rgbTable)
+	UnsafeArray<UInt8> rgbTable;
+	if (this->rgbTable.SetTo(rgbTable))
 	{
-		MemFree(this->rgbTable);
-		this->rgbTable = 0;
+		MemFreeArr(rgbTable);
+		this->rgbTable = nullptr;
 	}
 }
 
@@ -194,7 +196,7 @@ void Media::CS::CSRGB16_RGB8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> sr
 		destPtr = destPtr + (IntOS)(srcStoreHeight - 1) * destRGBBpl;
 		destRGBBpl = -destRGBBpl;
 	}
-	CSRGB16_RGB8_Convert(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (IntOS)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, destNBits, this->rgbTable);
+	CSRGB16_RGB8_Convert(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (IntOS)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, destNBits, this->rgbTable.Ptr());
 }
 
 UIntOS Media::CS::CSRGB16_RGB8::GetSrcFrameSize(UIntOS width, UIntOS height)

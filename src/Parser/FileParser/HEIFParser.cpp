@@ -367,8 +367,8 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 #endif
 			if (Text::StrEqualsCh(type, "Exif"))
 			{
-				UInt8* exifData = MemAlloc(UInt8, (UIntOS)exifSize);
-				struct heif_error error = heif_image_handle_get_metadata(imgHdlr, metaIds[i], exifData);
+				UnsafeArray<UInt8> exifData = MemAllocArr(UInt8, (UIntOS)exifSize);
+				struct heif_error error = heif_image_handle_get_metadata(imgHdlr, metaIds[i], exifData.Ptr());
 				if (error.code == heif_error_Ok)
 				{
 					NN<Media::EXIFData> exif;
@@ -381,7 +381,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 						simg->SetEXIFData(exif).Delete();
 					}
 				}
-				MemFree(exifData);
+				MemFreeArr(exifData);
 			}
 			i++;
 		}
@@ -532,13 +532,13 @@ Bool Parser::FileParser::HEIFParser::ParseHeaders(NN<IO::StreamData> fd, OutPara
 					const char *type = heif_image_handle_get_metadata_type(imgHdlr, metaIds[i]);
 					if (Text::StrEqualsCh(type, "Exif"))
 					{
-						UInt8* exifData = MemAlloc(UInt8, (UIntOS)exifSize);
-						struct heif_error error = heif_image_handle_get_metadata(imgHdlr, metaIds[i], exifData);
+						UnsafeArray<UInt8> exifData = MemAllocArr(UInt8, (UIntOS)exifSize);
+						struct heif_error error = heif_image_handle_get_metadata(imgHdlr, metaIds[i], exifData.Ptr());
 						if (error.code == heif_error_Ok)
 						{
 							exif.Set(Media::EXIFData::ParseExifJPG(exifData, (UIntOS)exifSize));
 						}
-						MemFree(exifData);
+						MemFreeArr(exifData);
 					}
 					i++;
 				}

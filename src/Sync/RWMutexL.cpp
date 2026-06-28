@@ -16,7 +16,7 @@ struct Sync::RWMutex::ClassData
 	Bool isSet;
 };
 
-void RWMutex_Wait(Sync::RWMutex::ClassData *clsData, UIntOS timeout)
+void RWMutex_Wait(NN<Sync::RWMutex::ClassData> clsData, UIntOS timeout)
 {
 	struct timespec outtime;
 	pthread_mutex_lock(&clsData->evtMutex);
@@ -44,7 +44,7 @@ Sync::RWMutex::RWMutex()
 {
 	this->writeTId = 0;
 	this->readCnt = 0;
-	this->clsData = MemAllocA(ClassData, 1);
+	this->clsData = MemAllocANN(ClassData);
 	pthread_cond_init(&this->clsData->evtCond, 0);
 	pthread_mutex_init(&this->clsData->evtMutex, 0);
 	pthread_mutex_init(&this->clsData->mutHand, 0);
@@ -58,7 +58,7 @@ Sync::RWMutex::~RWMutex()
 	pthread_mutex_unlock(&this->clsData->evtMutex);
 	pthread_mutex_destroy(&this->clsData->evtMutex);
 	pthread_mutex_destroy(&this->clsData->mutHand);
-	MemFreeA(this->clsData);
+	MemFreeANN(this->clsData);
 }
 
 void Sync::RWMutex::LockRead()

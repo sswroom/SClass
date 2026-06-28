@@ -9,16 +9,16 @@
 #include <stdio.h>
 #include <android/sensor.h>
 
-typedef struct
+struct IO::SensorManager::ClassData
 {
 	ASensorManager *mgr;
 	ASensorList sensorList;
 	IntOS sensorCnt;
-} ClassData;
+};
 
 IO::SensorManager::SensorManager()
 {
-	ClassData *me = MemAlloc(ClassData, 1);
+	NN<ClassData> me = MemAllocNN(ClassData);
 	this->clsData = me;
 	me->mgr = ASensorManager_getInstance();
 	me->sensorList = 0;
@@ -31,19 +31,17 @@ IO::SensorManager::SensorManager()
 
 IO::SensorManager::~SensorManager()
 {
-	ClassData *me = (ClassData*)this->clsData;
-	MemFree(me);
+	MemFreeNN(this->clsData);
 }
 
 UIntOS IO::SensorManager::GetSensorCnt()
 {
-	ClassData *me = (ClassData*)this->clsData;
-	return me->sensorCnt;
+	return this->clsData->sensorCnt;
 }
 
 IO::Sensor::SensorType IO::SensorManager::GetSensorType(UIntOS index)
 {
-	ClassData *me = (ClassData*)this->clsData;
+	NN<ClassData> me = this->clsData;
 	if (index >= me->sensorCnt)
 	{
 		return IO::Sensor::SensorType::Unknown;
@@ -70,12 +68,12 @@ IO::Sensor::SensorType IO::SensorManager::GetSensorType(UIntOS index)
 
 }
 
-IO::Sensor *IO::SensorManager::CreateSensor(UIntOS index)
+Optional<IO::Sensor> IO::SensorManager::CreateSensor(UIntOS index)
 {
-	ClassData *me = (ClassData*)this->clsData;
+	NN<ClassData> me = this->clsData;
 	if (index < 0 || index >= me->sensorCnt)
 	{
-		return 0;
+		return nullptr;
 	}
 	switch (ASensor_getType(me->sensorList[index]))
 	{
@@ -133,12 +131,12 @@ UIntOS IO::SensorManager::GetAccelerometerCnt()
 	return ret;
 }
 
-IO::SensorAccelerometer *IO::SensorManager::CreateAccelerometer(UIntOS index)
+Optional<IO::SensorAccelerometer> IO::SensorManager::CreateAccelerometer(UIntOS index)
 {
-	IO::SensorAccelerometer *ret = 0;
-	ClassData *me = (ClassData*)this->clsData;
+	Optional<IO::SensorAccelerometer> ret = nullptr;	
+	NN<ClassData> me = this->clsData;
 	if (me->mgr == 0 || index < 0)
-		return 0;
+		return nullptr;
 
 	IntOS i = 0;
 	IntOS j = this->GetSensorCnt();

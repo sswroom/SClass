@@ -129,10 +129,10 @@ namespace Media
 		UIntOS threadCnt;
 		UIntOS buffCnt;
 		UIntOS allBuffCnt;
-		VideoBuff *buffs;
+		UnsafeArray<VideoBuff> buffs;
 		Sync::Mutex buffMut;
 		Sync::Event buffEvt;
-		ThreadStat *tstats;
+		UnsafeArray<ThreadStat> tstats;
 		Bool threadToStop;
 		Double forcePAR;
 		Double monPAR;
@@ -147,12 +147,12 @@ namespace Media
 
 		Sync::RWMutex procMut;
 		Int32 procThisCount;
-		Double *procDelayBuff;
+		UnsafeArray<Double> procDelayBuff;
 		Int32 procCnt;
 
 		Sync::RWMutex dispDelayMut;
-		Double *dispDelayBuff;
-		Data::Duration *dispJitterBuff;
+		UnsafeArray<Double> dispDelayBuff;
+		UnsafeArray<Data::Duration> dispJitterBuff;
 		Int32 dispCnt;
 
 		UIntOS cropLeft;

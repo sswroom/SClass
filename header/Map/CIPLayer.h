@@ -15,7 +15,7 @@ namespace Map
 			Int32 xblk;
 			Int32 yblk;
 			Int32 sofst;
-			Int32 *ids;
+			UnsafeArray<Int32> ids;
 		} CIPBlock;
 
 		typedef struct
@@ -28,12 +28,12 @@ namespace Map
 		} CIPFileObject;
 
 		//IO::FileStream *cip;
-		Int32 *ids;
+		UnsafeArrayOpt<Int32> ids;
 		Int32 *ofsts;
 		UInt32 nblks;
 		Int32 blkScale;
 		Bool missFile;
-		CIPBlock *blks;
+		UnsafeArrayOpt<CIPBlock> blks;
 		Int32 maxTextSize;
 		Map::DrawLayerType lyrType;
 		NN<Text::String> layerName;

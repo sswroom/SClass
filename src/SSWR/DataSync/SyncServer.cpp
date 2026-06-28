@@ -21,7 +21,7 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientConn(NN<Socket> s, AnyType us
 	NN<SSWR::DataSync::SyncServer> me = userObj.GetNN<SSWR::DataSync::SyncServer>();
 	NN<Net::TCPClient> cli;
 	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
-	ClientData *data = MemAlloc(ClientData, 1);
+	NN<ClientData> data = MemAllocNN(ClientData);
 	data->stmData = me->protoHdlr.CreateStreamData(cli);
 	data->buffSize = 0;
 	data->serverId = 0;

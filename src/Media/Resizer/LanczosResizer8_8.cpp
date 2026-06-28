@@ -13,7 +13,7 @@
 void Media::Resizer::LanczosResizer8_8::SetupInterpolationParameter(Double source_length, Int32 source_max_pos, Int32 result_length, NN<PARAMETER> out, Int32 indexSep, Double offsetCorr)
 {
 	Int32 i,j,n;
-	Double *work;
+	UnsafeArray<Double> work;
 	Double  sum;
 	Double  pos;
 	
@@ -22,7 +22,7 @@ void Media::Resizer::LanczosResizer8_8::SetupInterpolationParameter(Double sourc
 	out->weight = MemAllocArr(Int32, out->length * out->tap);
 	out->index = MemAllocArr(Int32, out->length * out->tap);
 
-	work = MemAlloc(Double, out->tap);
+	work = MemAllocArr(Double, out->tap);
 
 	for(i=0;i<result_length;i++){
 		pos = (i+0.5)*source_length;
@@ -49,7 +49,7 @@ void Media::Resizer::LanczosResizer8_8::SetupInterpolationParameter(Double sourc
 		}
 	}
 
-	MemFree(work);
+	MemFreeArr(work);
 }
 
 void Media::Resizer::LanczosResizer8_8::SetupDecimationParameter(Double source_length, Int32 source_max_pos, Int32 result_length, NN<PARAMETER> out, Int32 indexSep, Double offsetCorr)
@@ -62,10 +62,10 @@ void Media::Resizer::LanczosResizer8_8::SetupDecimationParameter(Double source_l
 	out->length = result_length;
 	out->tap = Double2Int32((this->nTap * (source_length) + (result_length - 1)) / result_length);
 
-	out->weight = MemAlloc(Int32, out->length * out->tap);
-	out->index = MemAlloc(Int32, out->length * out->tap);
+	out->weight = MemAllocArr(Int32, out->length * out->tap);
+	out->index = MemAllocArr(Int32, out->length * out->tap);
 	
-	work = MemAlloc(Double, out->tap);
+	work = MemAllocArr(Double, out->tap);
 
 	for(i=0;i<result_length;i++){
 		pos = (i - (this->nTap / 2) + 0.5) * source_length / result_length + 0.5;
@@ -92,7 +92,7 @@ void Media::Resizer::LanczosResizer8_8::SetupDecimationParameter(Double source_l
 		}
 	}
 
-	MemFree(work);
+	MemFreeArr(work);
 }
 
 /*-----------------------------------------------------------------*/
@@ -1230,12 +1230,12 @@ void Media::Resizer::LanczosResizer8_8::DestoryHori()
 	if (this->hIndex.SetTo(hIndex))
 	{
 		MemFreeArr(hIndex);
-		this->hIndex = 0;
+		this->hIndex = nullptr;
 	}
 	if (this->hWeight.SetTo(hWeight))
 	{
 		MemFreeArr(hWeight);
-		this->hWeight = 0;
+		this->hWeight = nullptr;
 	}
 	this->hsSize = 0;
 }
@@ -1247,12 +1247,12 @@ void Media::Resizer::LanczosResizer8_8::DestoryVert()
 	if (this->vIndex.SetTo(vIndex))
 	{
 		MemFreeArr(vIndex);
-		this->vIndex = 0;
+		this->vIndex = nullptr;
 	}
 	if (this->vWeight.SetTo(vWeight))
 	{
 		MemFreeArr(vWeight);
-		this->vWeight = 0;
+		this->vWeight = nullptr;
 	}
 	vsSize = 0;
 }
@@ -1267,7 +1267,7 @@ Media::Resizer::LanczosResizer8_8::LanczosResizer8_8(Int32 nTap) : Media::ImageR
 		nThread = 1;
 
 	this->nTap = nTap << 1;
-	stats = MemAlloc(LRTHREADSTAT, nThread);
+	stats = MemAllocArr(LRTHREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
@@ -1284,20 +1284,20 @@ Media::Resizer::LanczosResizer8_8::LanczosResizer8_8(Int32 nTap) : Media::ImageR
 	hsSize = 0;
 	hdSize = 0;
 	hsOfst = 0;
-	hIndex = 0;
-	hWeight = 0;
+	hIndex = nullptr;
+	hWeight = nullptr;
 	hTap = 0;
 
 	vsSize = 0;
 	vdSize = 0;
 	vsOfst = 0;
-	vIndex = 0;
-	vWeight = 0;
+	vIndex = nullptr;
+	vWeight = nullptr;
 	vTap = 0;
 
 	buffW = 0;
 	buffH = 0;
-	buffPtr = 0;
+	buffPtr = nullptr;
 }
 
 Media::Resizer::LanczosResizer8_8::~LanczosResizer8_8()
@@ -1342,7 +1342,7 @@ Media::Resizer::LanczosResizer8_8::~LanczosResizer8_8()
 	if (this->buffPtr.SetTo(buffPtr))
 	{
 		MemFreeArr(buffPtr);
-		this->buffPtr = 0;
+		this->buffPtr = nullptr;
 	}
 }
 
@@ -1412,7 +1412,7 @@ void Media::Resizer::LanczosResizer8_8::Resize(UnsafeArray<const UInt8> src, Int
 			if (this->buffPtr.SetTo(buffPtr))
 			{
 				MemFreeArr(buffPtr);
-				this->buffPtr = 0;
+				this->buffPtr = nullptr;
 			}
 			buffW = siWidth;
 			buffH = dheight;
@@ -1514,7 +1514,7 @@ Optional<Media::StaticImage> Media::Resizer::LanczosResizer8_8::ProcessToNewPart
 	Media::FrameInfo destInfo;
 	Media::StaticImage *img;
 	if (!IsSupported(srcImage->info))
-		return 0;
+		return nullptr;
 	Math::Size2D<UIntOS> targetSize = this->targetSize;
 	if (targetSize.x == 0)
 	{

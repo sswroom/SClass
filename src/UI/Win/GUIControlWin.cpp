@@ -201,10 +201,10 @@ UnsafeArrayOpt<UTF8Char> UI::GUIControl::GetText(UnsafeArray<UTF8Char> buff)
 Bool UI::GUIControl::GetText(NN<Text::StringBuilderUTF8> sb)
 {
 	UIntOS leng = (UIntOS)GetWindowTextLengthW((HWND)hwnd.OrNull());
-	WChar *wptr = MemAlloc(WChar, leng + 1);
-	GetWindowTextW((HWND)hwnd.OrNull(), wptr, (int)leng + 1);
+	UnsafeArray<WChar> wptr = MemAllocArr(WChar, leng + 1);
+	GetWindowTextW((HWND)hwnd.OrNull(), wptr.Ptr(), (int)leng + 1);
 	sb->AppendW(wptr);
-	MemFree(wptr);
+	MemFreeArr(wptr);
 	return true;
 }
 

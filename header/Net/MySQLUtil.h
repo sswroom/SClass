@@ -77,7 +77,7 @@ namespace Net
 		};
 		
 	public:
-		static const UInt8 *ReadLenencInt(const UInt8 *buff, UInt64 *val);
+		static UnsafeArray<const UInt8> ReadLenencInt(UnsafeArray<const UInt8> buff, OutParam<UInt64> val);
 		static UnsafeArray<UInt8> AppendLenencInt(UnsafeArray<UInt8> buff, UInt64 val);
 		static UnsafeArray<UInt8> AppendLenencStrC(UnsafeArray<UInt8> buff, UnsafeArrayOpt<const UTF8Char> s, UIntOS len);
 		static MySQLType ColType2MySQLType(DB::DBUtil::ColType colType);

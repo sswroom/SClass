@@ -498,7 +498,7 @@ void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, U
 					UInt32 k;
 					UInt32 l;
 
-					UInt8 *exifBuff;
+					UnsafeArray<UInt8> exifBuff;
 					exif->GetExifBuffSize(exifSize, endOfst);
 					while (exifSize + 16 >= 65536)
 					{
@@ -507,7 +507,7 @@ void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, U
 							break;
 						exif->GetExifBuffSize(exifSize, endOfst);
 					}
-					exifBuff = MemAlloc(UInt8, exifSize + 18);
+					exifBuff = MemAllocArr(UInt8, exifSize + 18);
 					exifBuff[0] = 0xff;
 					exifBuff[1] = 0xe1;
 					WriteMInt16(&exifBuff[2], exifSize + 16);
@@ -520,7 +520,7 @@ void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, U
 					l = (UInt32)(endOfst + 8);
 					exif->ToExifBuff(&exifBuff[10], k, l);
 					stm->Write(Data::ByteArrayR(exifBuff, exifSize + 18));
-					MemFree(exifBuff);
+					MemFreeArr(exifBuff);
 					exif.Delete();
 				}
 

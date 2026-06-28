@@ -38,7 +38,7 @@ void Net::MQTTConn::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType
 		UIntOS topicLen = 0;
 		if ((UIntOS)(packetId + 2) <= cmdSize)
 		{
-			nntopic = MemAlloc(UTF8Char, packetId + 1);
+			nntopic = MemAllocArr(UTF8Char, packetId + 1);
 			MemCopyNO(nntopic.Ptr(), &cmd[2], packetId);
 			nntopic[packetId] = 0;
 			topic = nntopic;
@@ -102,7 +102,7 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(AnyType userObj)
 	NN<Net::MQTTConn> me = userObj.GetNN<Net::MQTTConn>();
 	Sync::ThreadUtil::SetName(CSTR("MQTTConnRecv"));
 	UIntOS maxBuffSize = 9000;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UIntOS buffSize;
 	UIntOS readSize;
 	NN<IO::Stream> stm;
@@ -113,7 +113,7 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(AnyType userObj)
 	me->recvStarted = true;
 	me->recvRunning = true;
 	buffSize = 0;
-	buff = MemAlloc(UInt8, maxBuffSize);
+	buff = MemAllocArr(UInt8, maxBuffSize);
 	while (true)
 	{
 		readSize = stm->Read(Data::ByteArray(&buff[buffSize], maxBuffSize - buffSize));
@@ -131,14 +131,14 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(AnyType userObj)
 		}
 		else if (readSize < buffSize)
 		{
-			MemCopyO(buff, &buff[buffSize - readSize], readSize);
+			MemCopyO(&buff[0], &buff[buffSize - readSize], readSize);
 			buffSize = readSize;
 		}
 	}
 #ifdef DEBUG_PRINT
 	printf("MQTTConn: Disconnected\r\n");
 #endif
-	MemFree(buff);
+	MemFreeArr(buff);
 	me->recvRunning = false;
 	me->packetEvt.Set();
 	if (me->discHdlr.func)
@@ -349,8 +349,8 @@ Bool Net::MQTTConn::SendPublish(Text::CStringNN topic, Text::CStringNN message, 
 	if (retain) cmd = (UInt8)(cmd | 1);
 	if (topic.leng + message.leng > 507)
 	{
-		UInt8 *pack1 = MemAlloc(UInt8, topic.leng + message.leng + 2);
-		UInt8 *pack2 = MemAlloc(UInt8, topic.leng + message.leng + 7);
+		UnsafeArray<UInt8> pack1 = MemAllocArr(UInt8, topic.leng + message.leng + 2);
+		UnsafeArray<UInt8> pack2 = MemAllocArr(UInt8, topic.leng + message.leng + 7);
 		j = topic.leng;
 		WriteMInt16(&pack1[i], j);
 		MemCopyNO(&pack1[i + 2], topic.v.Ptr(), j);
@@ -361,8 +361,8 @@ Bool Net::MQTTConn::SendPublish(Text::CStringNN topic, Text::CStringNN message, 
 
 		j = this->protoHdlr.BuildPacket(pack2, 0x30, 0, pack1, i, this->cliData);
 		i = this->SendPacket(pack2, j);
-		MemFree(pack1);
-		MemFree(pack2);
+		MemFreeArr(pack1);
+		MemFreeArr(pack2);
 		return i;
 	}
 	else
@@ -435,8 +435,8 @@ Bool Net::MQTTConn::SendSubscribe(UInt16 packetId, Text::CStringNN topic)
 
 	if (topic.leng > 504)
 	{
-		UInt8 *packet1 = MemAlloc(UInt8, topic.leng + 5);
-		UInt8 *packet2 = MemAlloc(UInt8, topic.leng + 10);
+		UnsafeArray<UInt8> packet1 = MemAllocArr(UInt8, topic.leng + 5);
+		UnsafeArray<UInt8> packet2 = MemAllocArr(UInt8, topic.leng + 10);
 		WriteMInt16(&packet1[0], packetId);
 		i = 2;
 		j = topic.leng;
@@ -450,8 +450,8 @@ Bool Net::MQTTConn::SendSubscribe(UInt16 packetId, Text::CStringNN topic)
 #endif
 		j = this->protoHdlr.BuildPacket(packet2, 0x82, 0, packet1, i, this->cliData);
 		i = this->SendPacket(packet2, j);
-		MemFree(packet1);
-		MemFree(packet2);
+		MemFreeArr(packet1);
+		MemFreeArr(packet2);
 		return i;
 	}
 	else

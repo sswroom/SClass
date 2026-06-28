@@ -18,14 +18,14 @@ namespace Manage
 	class MonConn
 	{
 	public:
-		static UIntOS BuildPacket(UInt8 *outbuff, UInt8 *data, UIntOS dataSize, UInt16 cmdType, UInt16 cmdSeq);
-		static UInt16 CalCheck(UInt8 *packet);
-		static UInt8 *FindPacket(UInt8 *buff, UIntOS buffSize);
-		static Bool IsCompletePacket(UInt8 *buff, UIntOS buffSize);
-		static void ParsePacket(UInt8 *buff, UInt16 *cmdSize, UInt16 *cmdType, UInt16 *cmdSeq, UInt8** cmdData);
+		static UIntOS BuildPacket(UnsafeArray<UInt8> outbuff, UnsafeArray<UInt8> data, UIntOS dataSize, UInt16 cmdType, UInt16 cmdSeq);
+		static UInt16 CalCheck(UnsafeArray<UInt8> packet);
+		static UnsafeArrayOpt<UInt8> FindPacket(UnsafeArray<UInt8> buff, UIntOS buffSize);
+		static Bool IsCompletePacket(UnsafeArray<UInt8> buff, UIntOS buffSize);
+		static void ParsePacket(UnsafeArray<UInt8> buff, OutParam<UInt16> cmdSize, OutParam<UInt16> cmdType, OutParam<UInt16> cmdSeq, OutParam<UnsafeArray<UInt8>> cmdData);
 
 	private:
-		Data::SyncArrayListObj<UInt8*> cmdList;
+		Data::SyncArrayListObj<UnsafeArrayOpt<UInt8>> cmdList;
 		EventHandler hdlr;
 		Bool ConnRRunning;
 		Bool ConnTRunning;
@@ -49,7 +49,7 @@ namespace Manage
 
 		static UInt32 __stdcall ConnTThread(AnyType conn);
 		static UInt32 __stdcall ConnRThread(AnyType conn);
-		void AddCommand(UInt8 *data, UIntOS dataSize, UInt16 cmdType);
+		void AddCommand(UnsafeArray<UInt8> data, UIntOS dataSize, UInt16 cmdType);
 	public:
 		MonConn(EventHandler hdlr, AnyType userObj, NN<Net::TCPClientFactory> clif, NN<IO::Writer> msgWriter, Data::Duration timeout);
 		~MonConn();

@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientConn(NN<Socket> s, AnyT
 	}
 	else
 	{
-		ClientStatus *cliStatus = MemAlloc(ClientStatus, 1);
+		NN<ClientStatus> cliStatus = MemAllocNN(ClientStatus);
 		cliStatus->echo = me->echo;
 		cliStatus->cli = cli;
 		Sync::ThreadUtil::Create(RecvThread, cliStatus);

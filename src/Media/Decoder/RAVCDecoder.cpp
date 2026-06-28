@@ -342,8 +342,8 @@ Media::Decoder::RAVCDecoder::RAVCDecoder(NN<VideoSource> sourceVideo, Bool toRel
 	UInt32 frameRateDenorm;
 	UInt8 *buff;
 	this->toRelease = toRelease;
-	this->sps = 0;
-	this->pps = 0;
+	this->sps = nullptr;
+	this->pps = nullptr;
 	this->frameSize = 0;
 	this->size32 = false;
 	this->spsFound = false;
@@ -374,9 +374,10 @@ Media::Decoder::RAVCDecoder::RAVCDecoder(NN<VideoSource> sourceVideo, Bool toRel
 		this->sourceVideo = 0;
 		return;
 	}
-	this->sps = MemAlloc(UInt8, size32);
+	UnsafeArray<UInt8> sps;
+	this->sps = sps = MemAllocArr(UInt8, size32);
 	this->spsSize = size32;
-	MemCopyNO(this->sps, buff, size32);
+	MemCopyNO(&sps[0], buff, size32);
 	this->maxFrameSize += 8 + size32;
 
 	buff = sourceVideo->GetProp(*(Int32*)"pps", &size32);
@@ -386,9 +387,10 @@ Media::Decoder::RAVCDecoder::RAVCDecoder(NN<VideoSource> sourceVideo, Bool toRel
 		this->sourceVideo = 0;
 		return;
 	}
-	this->pps = MemAlloc(UInt8, size32);
+	UnsafeArray<UInt8> pps;
+	this->pps = pps = MemAllocArr(UInt8, size32);
 	this->ppsSize = size32;
-	MemCopyNO(this->pps, buff, size32);
+	MemCopyNO(&pps[0], buff, size32);
 	this->maxFrameSize += 4 + size32;
 	this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 //	IntOS oriW;
@@ -419,13 +421,14 @@ Media::Decoder::RAVCDecoder::~RAVCDecoder()
 	{
 		DEL_CLASS(this->sourceVideo);
 	}
-	if (this->sps)
+	UnsafeArray<UInt8> buff;
+	if (this->sps.SetTo(buff))
 	{
-		MemFree(this->sps);
+		MemFreeArr(buff);
 	}
-	if (this->pps)
+	if (this->pps.SetTo(buff))
 	{
-		MemFree(this->pps);
+		MemFreeArr(buff);
 	}
 	MemFreeAArr(this->frameBuff);
 }
@@ -575,7 +578,7 @@ UIntOS Media::Decoder::RAVCDecoder::ReadFrame(UIntOS frameIndex, UnsafeArray<UIn
 
 Bool Media::Decoder::RAVCDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
-	if (this->pps == 0 || this->sps == 0)
+	if (this->pps.IsNull() || this->sps.IsNull())
 		return false;
 
 	UIntOS size = this->BuildIFrameHeader(this->frameBuff, true);
@@ -591,13 +594,15 @@ Bool Media::Decoder::RAVCDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutPar
 
 UIntOS Media::Decoder::RAVCDecoder::BuildIFrameHeader(UnsafeArray<UInt8> buff, Bool forceBuild)
 {
-	if (this->skipHeader && !forceBuild)
+	UnsafeArray<UInt8> sps;
+	UnsafeArray<UInt8> pps;
+	if ((this->skipHeader && !forceBuild) || !this->sps.SetTo(sps) || !this->pps.SetTo(pps))
 	{
 		return 0;
 	}
 	WriteMInt32(&buff[0], 1);
-	MemCopyNO(&buff[4], this->sps, this->spsSize);
+	MemCopyNO(&buff[4], &sps[0], this->spsSize);
 	WriteMInt32(&buff[this->spsSize + 4], 1);
-	MemCopyNO(&buff[this->spsSize + 8], this->pps, this->ppsSize);
+	MemCopyNO(&buff[this->spsSize + 8], &pps[0], this->ppsSize);
 	return this->spsSize + 8 + this->ppsSize;
 }

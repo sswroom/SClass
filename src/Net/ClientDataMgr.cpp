@@ -5,41 +5,41 @@
 Net::ClientDataMgr::ClientDataMgr(UIntOS maxBuffSize)
 {
 	this->maxBuffSize = maxBuffSize;
-	this->buff = MemAlloc(UInt8, maxBuffSize);
+	this->buff = MemAllocArr(UInt8, maxBuffSize);
 	this->currDataSize = 0;
 	this->userData = 0;
 }
 Net::ClientDataMgr::~ClientDataMgr()
 {
-	MemFree(this->buff);
+	MemFreeArr(this->buff);
 }
 
-void Net::ClientDataMgr::AddData(UInt8 *buff, UIntOS buffSize)
+void Net::ClientDataMgr::AddData(UnsafeArray<UInt8> buff, UIntOS buffSize)
 {
 	if (this->currDataSize + buffSize > this->currDataSize)
 	{
 		this->currDataSize = 0;
 		if (this->maxBuffSize < buffSize)
 		{
-			MemCopyNO(this->buff, &buff[buffSize - this->maxBuffSize], this->maxBuffSize);
+			MemCopyNO(&this->buff[0], &buff[buffSize - this->maxBuffSize], this->maxBuffSize);
 			this->currDataSize = this->maxBuffSize;
 		}
 		else
 		{
-			MemCopyNO(this->buff, buff, buffSize);
+			MemCopyNO(&this->buff[0], &buff[0], buffSize);
 			this->currDataSize = buffSize;
 		}
 	}
 	else
 	{
-		MemCopyNO(&this->buff[this->currDataSize], buff, buffSize);
+		MemCopyNO(&this->buff[this->currDataSize], &buff[0], buffSize);
 		this->currDataSize += buffSize;
 	}
 }
 
-UInt8 *Net::ClientDataMgr::GetData(UIntOS *dataSize)
+UnsafeArray<UInt8> Net::ClientDataMgr::GetData(OutParam<UIntOS> dataSize)
 {
-	*dataSize = this->currDataSize;
+	dataSize.Set(this->currDataSize);
 	return this->buff;
 }
 
@@ -51,7 +51,7 @@ void Net::ClientDataMgr::HandleData(UIntOS handleSize)
 	}
 	else
 	{
-		MemCopyNO(this->buff, &this->buff[handleSize], this->currDataSize - handleSize);
+		MemCopyNO(&this->buff[0], &this->buff[handleSize], this->currDataSize - handleSize);
 		this->currDataSize -= handleSize;
 	}
 }

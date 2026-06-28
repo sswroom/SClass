@@ -25,16 +25,16 @@ Net::ARPInfo::ARPInfo(void *ipNetRow)
 {
 	ARPData *data = (ARPData*)ipNetRow;
 	this->ifIndex = data->ifIndex;
-	this->phyAddr = MemAlloc(UInt8, 6);
+	this->phyAddr = MemAllocArr(UInt8, 6);
 	this->phyAddrLen = 6;
-	MemCopyNO(this->phyAddr, data->addr, 6);
+	MemCopyNO(&this->phyAddr[0], data->addr, 6);
 	this->ipAddr = data->ipAddr;
 	this->arpType = data->arpType;
 }
 
 Net::ARPInfo::~ARPInfo()
 {
-	MemFree(this->phyAddr);
+	MemFreeArr(this->phyAddr);
 }
 
 UInt32 Net::ARPInfo::GetAdaptorIndex()
@@ -42,17 +42,10 @@ UInt32 Net::ARPInfo::GetAdaptorIndex()
 	return this->ifIndex;
 }
 
-UIntOS Net::ARPInfo::GetPhysicalAddr(UInt8 *buff)
+UIntOS Net::ARPInfo::GetPhysicalAddr(UnsafeArray<UInt8> buff)
 {
-	if (this->phyAddr)
-	{
-		MemCopyNO(buff, this->phyAddr, this->phyAddrLen);
-		return this->phyAddrLen;
-	}
-	else
-	{
-		return 0;
-	}
+	MemCopyNO(&buff[0], &this->phyAddr[0], this->phyAddrLen);
+	return this->phyAddrLen;
 }
 
 UInt32 Net::ARPInfo::GetIPAddress()

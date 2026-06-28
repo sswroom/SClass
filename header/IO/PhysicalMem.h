@@ -7,13 +7,13 @@ namespace IO
 	{
 	private:
 		struct ClassData;
-		ClassData *clsData;
+		Optional<ClassData> clsData;
 
 	public:
 		PhysicalMem(IntOS addr, IntOS size);
 		~PhysicalMem();
 
-		UInt8 *GetPointer();
+		UnsafeArrayOpt<UInt8> GetPointer();
 		Bool IsError();
 	};
 }

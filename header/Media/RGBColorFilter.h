@@ -31,9 +31,9 @@ namespace Media
 		UInt32 bpp;
 		Media::PixelFormat pf;
 		UInt32 hdrLev;
-		UInt8 *lut;
+		UnsafeArrayOpt<UInt8> lut;
 		Bool hasSSE41;
-		Double *gammaParam;
+		UnsafeArrayOpt<Double> gammaParam;
 		UIntOS gammaCnt;
 
 		UIntOS nThread;

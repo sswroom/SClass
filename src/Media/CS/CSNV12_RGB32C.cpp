@@ -40,7 +40,7 @@ void Media::CS::CSNV12_RGB32C::SetupInterpolationParameter(UIntOS source_length,
 	UIntOS i;
 	UIntOS j;
 	IntOS n;
-	Double *work;
+	UnsafeArray<Double> work;
 	Double  sum;
 	Double  pos;
 
@@ -55,7 +55,7 @@ void Media::CS::CSNV12_RGB32C::SetupInterpolationParameter(UIntOS source_length,
 	out->index = MemAllocA(IntOS, out->length * out->tap);
 #endif
 
-	work = MemAlloc(Double, out->tap);
+	work = MemAllocArr(Double, out->tap);
 
 	i = 0;
 	while (i < result_length)
@@ -134,7 +134,7 @@ void Media::CS::CSNV12_RGB32C::SetupInterpolationParameter(UIntOS source_length,
 		i++;
 	}
 
-	MemFree(work);
+	MemFreeArr(work);
 }
 
 UInt32 Media::CS::CSNV12_RGB32C::WorkerThread(AnyType obj)

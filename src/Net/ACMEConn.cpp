@@ -175,12 +175,13 @@ Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderParse(UnsafeArray<const UInt8
 	if (Text::JSONBase::ParseJSONBytes(buff, buffSize).SetTo(json))
 	{
 		NN<Text::String> s;
-		Order *order = 0;
+		Optional<Order> optOrder = nullptr;
+		NN<Order> order;
 		if (json->GetType() == Text::JSONType::Object)
 		{
 			NN<Text::JSONObject> o = NN<Text::JSONObject>::ConvertFrom(json);
-			order = MemAlloc(Order, 1);
-			MemClear(order, sizeof(Order));
+			optOrder = order = MemAllocNN(Order);
+			order.ZeroContent();
 			order->status = ACMEStatusFromString(o->GetObjectString(CSTR("status")));
 			if (o->GetObjectString(CSTR("expires")).SetTo(s))
 			{
@@ -209,7 +210,7 @@ Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderParse(UnsafeArray<const UInt8
 			}
 		}
 		json->EndUse();
-		return order;
+		return optOrder;
 	}
 	return nullptr;
 }

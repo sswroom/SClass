@@ -45,7 +45,7 @@ IO::BTController::BTDevice::BTDevice(void *internalData, void *hRadio, void *dev
 	this->hRadio = hRadio;
 	this->devInfo = MemAllocArr(UInt8, sizeof(BLUETOOTH_DEVICE_INFO));
 	this->clsData = 0;
-	MemCopyNO(this->devInfo, devInfo, sizeof(BLUETOOTH_DEVICE_INFO));
+	MemCopyNO(&this->devInfo[0], devInfo, sizeof(BLUETOOTH_DEVICE_INFO));
 }
 
 IO::BTController::BTDevice::~BTDevice()
@@ -66,7 +66,7 @@ IO::BTController::BTDevice::~BTDevice()
 
 NN<Text::String> IO::BTController::BTDevice::GetName() const
 {
-	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
+	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo.Ptr();
 	if (this->clsData == 0)
 	{
 		((IO::BTController::BTDevice*)this)->clsData = (void*)Text::String::NewNotNull(dev->szName).Ptr();
@@ -76,43 +76,43 @@ NN<Text::String> IO::BTController::BTDevice::GetName() const
 
 UInt8 *IO::BTController::BTDevice::GetAddress()
 {
-	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
+	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo.Ptr();
 	return dev->Address.rgBytes;
 }
 
 UInt32 IO::BTController::BTDevice::GetDevClass()
 {
-	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
+	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo.Ptr();
 	return dev->ulClassofDevice;
 }
 
 Bool IO::BTController::BTDevice::IsConnected()
 {
-	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
+	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo.Ptr();
 	return dev->fConnected != 0;
 }
 
 Bool IO::BTController::BTDevice::IsRemembered()
 {
-	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
+	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo.Ptr();
 	return dev->fRemembered != 0;
 }
 
 Bool IO::BTController::BTDevice::IsAuthenticated()
 {
-	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
+	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo.Ptr();
 	return dev->fAuthenticated != 0;
 }
 
 void IO::BTController::BTDevice::GetLastSeen(NN<Data::DateTime> dt)
 {
-	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
+	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo.Ptr();
 	dt->SetValueSYSTEMTIME(&dev->stLastSeen);
 }
 
 void IO::BTController::BTDevice::GetLastUsed(NN<Data::DateTime> dt)
 {
-	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
+	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo.Ptr();
 	dt->SetValueSYSTEMTIME(&dev->stLastUsed);
 }
 
@@ -123,7 +123,7 @@ Bool IO::BTController::BTDevice::Pair(UnsafeArray<const UTF8Char> key)
 	if (AuthDev == 0)
 		return false;
 
-	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
+	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo.Ptr();
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(key);
 	Bool ret = (ERROR_SUCCESS == AuthDev(0, this->hRadio, dev, (PWSTR)wptr.Ptr(), (ULONG)Text::StrCharCnt(wptr)));
 	Text::StrDelNew(key);
@@ -137,7 +137,7 @@ Bool IO::BTController::BTDevice::Unpair()
 	if (RemoveDev == 0)
 		return false;
 
-	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
+	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo.Ptr();
 	return ERROR_SUCCESS == RemoveDev(&dev->Address);
 }
 
@@ -148,7 +148,7 @@ UIntOS IO::BTController::BTDevice::QueryServices(NN<Data::ArrayListNN<Data::UUID
 	if (EnumServices == 0)
 		return false;
 
-	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
+	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo.Ptr();
 	GUID guids[16];
 	NN<Data::UUID> guid;
 	UInt32 i;
@@ -182,7 +182,7 @@ Bool IO::BTController::BTDevice::EnableService(NN<Data::UUID> guid, Bool toEnabl
 	if (SetState == 0)
 		return false;
 
-	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
+	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo.Ptr();
 	return ERROR_SUCCESS == SetState((HANDLE)this->hRadio, dev, (GUID*)guid->GetBytes().Ptr(), toEnable?BLUETOOTH_SERVICE_ENABLE:BLUETOOTH_SERVICE_DISABLE);
 }
 

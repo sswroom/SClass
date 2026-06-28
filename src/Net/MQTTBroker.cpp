@@ -784,8 +784,8 @@ void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, UnsafeArray<const UInt8
 	{
 		topicInfo = MemAllocNN(TopicInfo);
 		topicInfo->topic = Text::String::New(topic);
-		topicInfo->message = MemAlloc(UInt8, msgSize);
-		MemCopyNO(topicInfo->message, message.Ptr(), msgSize);
+		topicInfo->message = MemAllocArr(UInt8, msgSize);
+		MemCopyNO(topicInfo->message.Ptr(), message.Ptr(), msgSize);
 		topicInfo->msgSize = msgSize;
 		this->topicMap.PutNN(topicInfo->topic, topicInfo);
 	}
@@ -793,10 +793,10 @@ void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, UnsafeArray<const UInt8
 	{
 		if (msgSize != topicInfo->msgSize)
 		{
-			MemFree(topicInfo->message);
-			topicInfo->message = MemAlloc(UInt8, msgSize);
+			MemFreeArr(topicInfo->message);
+			topicInfo->message = MemAllocArr(UInt8, msgSize);
 			topicInfo->msgSize = msgSize;
-			MemCopyNO(topicInfo->message, message.Ptr(), msgSize);
+			MemCopyNO(topicInfo->message.Ptr(), message.Ptr(), msgSize);
 		}
 		else
 		{
@@ -820,7 +820,7 @@ void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, UnsafeArray<const UInt8
 			}
 			else
 			{
-				MemCopyNO(topicInfo->message, message.Ptr(), msgSize);
+				MemCopyNO(topicInfo->message.Ptr(), message.Ptr(), msgSize);
 			}		
 		}
 	}
@@ -851,8 +851,8 @@ Bool Net::MQTTBroker::TopicSend(NN<IO::Stream> stm, AnyType stmData, NN<const To
 {
 	UInt8 packet1[128];
 	UInt8 packet2[128];
-	UInt8 *packetBuff1;
-	UInt8 *packetBuff2;
+	UnsafeArray<UInt8> packetBuff1;
+	UnsafeArray<UInt8> packetBuff2;
 	UIntOS i;
 	UIntOS sent;
 	UIntOS topicLen = topic->topic->leng;
@@ -862,7 +862,7 @@ Bool Net::MQTTBroker::TopicSend(NN<IO::Stream> stm, AnyType stmData, NN<const To
 	{
 		WriteMInt16(&packet1[0], topicLen);
 		topic->topic->ConcatTo(&packet1[2]);
-		MemCopyNO(&packet1[2 + topicLen], topic->message, topic->msgSize);
+		MemCopyNO(&packet1[2 + topicLen], topic->message.Ptr(), topic->msgSize);
 		i = this->protoHdlr.BuildPacket(packet2, 0x30, 0, packet1, 2 + topicLen + topic->msgSize, stmData);
 		sent = stm->Write(Data::ByteArrayR(packet2, i));
 		Sync::Interlocked::AddU64(this->infoTotalSent, sent);
@@ -870,15 +870,15 @@ Bool Net::MQTTBroker::TopicSend(NN<IO::Stream> stm, AnyType stmData, NN<const To
 	}
 	else
 	{
-		packetBuff1 = MemAlloc(UInt8, topicLen + topic->msgSize + 3);
-		packetBuff2 = MemAlloc(UInt8, topicLen + topic->msgSize + 7);
+		packetBuff1 = MemAllocArr(UInt8, topicLen + topic->msgSize + 3);
+		packetBuff2 = MemAllocArr(UInt8, topicLen + topic->msgSize + 7);
 		WriteMInt16(&packetBuff1[0], topicLen);
 		topic->topic->ConcatTo(&packetBuff1[2]);
-		MemCopyNO(&packetBuff1[2 + topicLen], topic->message, topic->msgSize);
+		MemCopyNO(&packetBuff1[2 + topicLen], topic->message.Ptr(), topic->msgSize);
 		i = this->protoHdlr.BuildPacket(packetBuff2, 0x30, 0, packetBuff1, 2 + topicLen + topic->msgSize, stmData);
 		sent = stm->Write(Data::ByteArrayR(packetBuff2, i));
-		MemFree(packetBuff1);
-		MemFree(packetBuff2);
+		MemFreeArr(packetBuff1);
+		MemFreeArr(packetBuff2);
 		Sync::Interlocked::AddU64(this->infoTotalSent, sent);
 		return sent == i;
 	}
@@ -886,8 +886,8 @@ Bool Net::MQTTBroker::TopicSend(NN<IO::Stream> stm, AnyType stmData, NN<const To
 
 AnyType Net::MQTTBroker::StreamCreated(NN<IO::Stream> stm)
 {
-	ClientData *data;
-	data = MemAlloc(ClientData, 1);
+	NN<ClientData> data;
+	data = MemAllocNN(ClientData);
 	data->buffSize = 0;
 	data->cliData = this->protoHdlr.CreateStreamData(stm);
 	data->keepAlive = 0;
@@ -1030,7 +1030,7 @@ Net::MQTTBroker::~MQTTBroker()
 	{
 		topic = this->topicMap.GetItemNoCheck(i);
 		topic->topic->Release();
-		MemFree(topic->message);
+		MemFreeArr(topic->message);
 		MemFreeNN(topic);
 	}
 

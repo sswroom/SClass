@@ -1377,8 +1377,8 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 
 Net::WinSSLEngine::WinSSLEngine(NN<Net::TCPClientFactory> clif, Method method) : Net::SSLEngine(clif)
 {
-	this->clsData = MemAlloc(ClassData, 1);
-	MemClear(this->clsData, sizeof(ClassData));
+	this->clsData = MemAllocNN(ClassData);
+	this->clsData.ZeroContent();
 	this->clsData->method = method;
 
 	this->skipCertCheck = false;
@@ -1395,7 +1395,7 @@ Net::WinSSLEngine::~WinSSLEngine()
 	{
 		FreeCredentialsHandle(&this->clsData->hCredSvr);
 	}
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Bool Net::WinSSLEngine::IsError()

@@ -13,9 +13,9 @@ namespace Net
 
 		typedef struct
 		{
-			ARPHandler *me;
+			NN<ARPHandler> me;
 			Bool threadRunning;
-			Sync::Event *evt;
+			NN<Sync::Event> evt;
 			Bool toStop;
 		} ThreadStat;
 
@@ -28,7 +28,7 @@ namespace Net
 		ARPResponseHdlr hdlr;
 		AnyType userData;
 
-		ThreadStat *threadStats;
+		UnsafeArrayOpt<ThreadStat> threadStats;
 		UIntOS threadCnt;
 		Sync::Event *ctrlEvt;
 

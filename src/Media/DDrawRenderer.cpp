@@ -282,7 +282,7 @@ Media::DDrawRenderer::DDrawRenderer(void *hwnd)
 	this->scnUpdStat = 0;
 	this->active = 1;
 	this->waitVBlank = 0;
-	this->updDelayAll = (Int32*)MemAlloc(NFRAMEAVG * sizeof(Int32));
+	this->updDelayAll = MemAllocArr(Int32, NFRAMEAVG);
 	i = NFRAMEAVG;
 	while (i-- > 0)
 	{

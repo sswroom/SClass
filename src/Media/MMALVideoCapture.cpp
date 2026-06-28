@@ -294,7 +294,7 @@ Bool Media::MMALVideoCapture::IsRunning()
 	return info->isRunning;
 }
 
-void Media::MMALVideoCapture::SetPreferSize(UIntOS width, UIntOS height, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom)
+void Media::MMALVideoCapture::SetPreferSize(Math::Size2D<UIntOS> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom)
 {
 	MMAL_ES_FORMAT_T *format;
 	MMAL_STATUS_T status;
@@ -307,12 +307,12 @@ void Media::MMALVideoCapture::SetPreferSize(UIntOS width, UIntOS height, UInt32 
 	format = info->port->format;
 	format->encoding_variant = fourcc;
 	format->encoding = fourcc;
-	format->es->video.width = width;
-	format->es->video.height = height;
+	format->es->video.width = size.x;
+	format->es->video.height = size.y;
 	format->es->video.crop.x = 0;
 	format->es->video.crop.y = 0;
-	format->es->video.crop.width = width;
-	format->es->video.crop.height = height;
+	format->es->video.crop.width = size.x;
+	format->es->video.crop.height = size.y;
 	format->es->video.frame_rate.num = frameRateNumer;
 	format->es->video.frame_rate.den = frameRateDenom;
 	mmal_port_disable(info->port);
@@ -321,8 +321,8 @@ void Media::MMALVideoCapture::SetPreferSize(UIntOS width, UIntOS height, UInt32 
 
 	if (status == MMAL_SUCCESS)
 	{
-		info->currWidth = width;
-		info->currHeight = height;
+		info->currWidth = size.x;
+		info->currHeight = size.y;
 		info->currRateNumer = frameRateNumer;
 		info->currRateDenom = frameRateDenom;
 		info->currFourcc = inpfcc;

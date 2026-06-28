@@ -37,11 +37,11 @@ void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(AnyType userOb
 			{
 				Text::TextBinEnc::Base64Enc enc;
 				UIntOS outLen = (UIntOS)(mstm.GetLength() >> 2) * 3;
-				UInt8 *destBuff = MemAlloc(UInt8, outLen);
+				UnsafeArray<UInt8> destBuff = MemAllocArr(UInt8, outLen);
 				UIntOS retSize = enc.DecodeBin(Text::CStringNN(mstm.GetBuff(), (UIntOS)mstm.GetLength()), destBuff);
 				IO::FileStream destFS(sbSrcFile.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				succ = destFS.WriteCont(destBuff, retSize);
-				MemFree(destBuff);
+				MemFreeArr(destBuff);
 			}
 		}
 		else

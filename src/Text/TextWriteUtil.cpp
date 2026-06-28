@@ -86,7 +86,7 @@ void Text::TextWriteUtil::WriteTableData(NN<Text::StyledTextWriter> writer, NN<D
 	}
 	Math::Size2D<UIntOS> thisSize;
 	UIntOS colCnt = r->ColCount();
-	UIntOS *maxW = MemAlloc(UIntOS, colCnt);
+	UnsafeArray<UIntOS> maxW = MemAllocArr(UIntOS, colCnt);
 	UIntOS i;
 	NN<Text::String> s;
 	i = 0;
@@ -131,7 +131,7 @@ void Text::TextWriteUtil::WriteTableData(NN<Text::StyledTextWriter> writer, NN<D
 		writer->SetTextColor(Text::StandardColor::Red);
 		writer->WriteLine(CSTR("Error in reading TableData"));
 		writer->ResetTextColor();
-		MemFree(maxW);
+		MemFreeArr(maxW);
 		return;
 	}
 
@@ -290,7 +290,7 @@ void Text::TextWriteUtil::WriteTableData(NN<Text::StyledTextWriter> writer, NN<D
 	data->CloseReader(r);
 	MemFreeArr(valArr);
 	MemFreeArr(sArr);
-	MemFree(maxW);
+	MemFreeArr(maxW);
 }
 
 void Text::TextWriteUtil::WriteTableDataPart(NN<Text::StyledTextWriter> writer, NN<Data::TableData> data, UIntOS nTop, UIntOS nBottom)
@@ -327,7 +327,7 @@ void Text::TextWriteUtil::WriteTableDataPart(NN<Text::StyledTextWriter> writer, 
 	}
 	Math::Size2D<UIntOS> thisSize;
 	UIntOS colCnt = r->ColCount();
-	UIntOS *maxW = MemAlloc(UIntOS, colCnt);
+	UnsafeArray<UIntOS> maxW = MemAllocArr(UIntOS, colCnt);
 	UIntOS i;
 	NN<Text::String> s;
 	i = 0;
@@ -377,7 +377,7 @@ void Text::TextWriteUtil::WriteTableDataPart(NN<Text::StyledTextWriter> writer, 
 		writer->SetTextColor(Text::StandardColor::Red);
 		writer->WriteLine(CSTR("Error in reading TableData"));
 		writer->ResetTextColor();
-		MemFree(maxW);
+		MemFreeArr(maxW);
 		return;
 	}
 
@@ -576,7 +576,7 @@ void Text::TextWriteUtil::WriteTableDataPart(NN<Text::StyledTextWriter> writer, 
 	data->CloseReader(r);
 	MemFreeArr(valArr);
 	MemFreeArr(sArr);
-	MemFree(maxW);
+	MemFreeArr(maxW);
 }
 
 Bool Text::TextWriteUtil::WriteColumnLine(NN<Text::StyledTextWriter> writer, NN<Text::PString> column, UIntOS colSize)

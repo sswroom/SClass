@@ -6,12 +6,13 @@
 #include "Media/DDCReader.h"
 #include "Text/MyString.h"
 
-UInt8 *DDCReader_GetMonitorEDID(void *hMon, UIntOS *edidSizeRet)
+UnsafeArrayOpt<UInt8> DDCReader_GetMonitorEDID(void *hMon, OutParam<UIntOS> edidSizeRet)
 {
 	UTF8Char sbuff[512];
 	UIntOS edidSize;
 	UInt8 edid[1025];
-	UInt8 *ret = 0;
+	UnsafeArrayOpt<UInt8> ret = nullptr;
+	UnsafeArray<UInt8> nnret;
 
 	// Intel GPU
 	UnsafeArray<UTF8Char> sptr;
@@ -57,22 +58,22 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UIntOS *edidSizeRet)
 									edidSize = fs.Read(Data::ByteArray(edid, 1024));
 									if (edidSize > 0)
 									{
-										ret = MemAlloc(UInt8, edidSize);
-										MemCopyNO(ret, edid, edidSize);
-										*edidSizeRet = edidSize;
+										ret = nnret = MemAllocArr(UInt8, edidSize);
+										MemCopyNO(&nnret[0], edid, edidSize);
+										edidSizeRet.Set(edidSize);
 									}
 								}
-								if (ret)
+								if (ret.NotNull())
 									break;
 							}
 							IO::Path::FindFileClose(sess3);
 						}
-						if (ret)
+						if (ret.NotNull())
 							break;
 					}
 					IO::Path::FindFileClose(sess2);
 				}
-				if (ret)
+				if (ret.NotNull())
 					break;
 			}
 			else
@@ -105,29 +106,29 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UIntOS *edidSizeRet)
 												edidSize = fs.Read(Data::ByteArray(edid, 1024));
 												if (edidSize > 0)
 												{
-													ret = MemAlloc(UInt8, edidSize);
-													MemCopyNO(ret, edid, edidSize);
-													*edidSizeRet = edidSize;
+													ret = nnret = MemAllocArr(UInt8, edidSize);
+													MemCopyNO(&nnret[0], edid, edidSize);
+													edidSizeRet.Set(edidSize);
 												}
 											}
-											if (ret)
+											if (ret.NotNull())
 												break;
 										}
 										IO::Path::FindFileClose(sess4);
 									}
-									if (ret)
+									if (ret.NotNull())
 										break;
 								}
 								IO::Path::FindFileClose(sess3);
 							}
 
 						}
-						if (ret)
+						if (ret.NotNull())
 							break;
 					}
 					IO::Path::FindFileClose(sess2);
 				}
-				if (ret)
+				if (ret.NotNull())
 					break;
 			}
 		}
@@ -137,7 +138,7 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UIntOS *edidSizeRet)
 	{
 //		wprintf(L"Error in founding %ls\r\n", sbuff);
 	}
-	if (ret)
+	if (ret.NotNull())
 		return ret;
 
 	// hdmi
@@ -148,17 +149,16 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UIntOS *edidSizeRet)
 			edidSize = fs.Read(Data::ByteArray(edid, 1024));
 			if (edidSize > 0)
 			{
-				*edidSizeRet = edidSize;
-				ret = MemAlloc(UInt8, edidSize);
-				MemCopyNO(ret, edid, edidSize);
+				edidSizeRet.Set(edidSize);
+				ret = nnret = MemAllocArr(UInt8, edidSize);
+				MemCopyNO(&nnret[0], edid, edidSize);
 			}
 		}
 	}
-	if (ret)
+	if (ret.NotNull())
 		return ret;
 
 	// Amlogic
-	if (ret == 0)
 	{
 		IO::FileStream fs(CSTR("/sys/class/amhdmitx/amhdmitx0/rawedid"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!fs.IsError())
@@ -166,10 +166,10 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UIntOS *edidSizeRet)
 			edidSize = fs.Read(Data::ByteArray(edid, 1024));
 			if (edidSize > 0)
 			{
-				ret = MemAlloc(UInt8, edidSize >> 1);
+				ret = nnret = MemAllocArr(UInt8, edidSize >> 1);
 				edid[edidSize] = 0;
-				edidSize = Text::StrHex2Bytes(edid, ret);
-				*edidSizeRet = edidSize;
+				edidSize = Text::StrHex2Bytes(edid, nnret);
+				edidSizeRet.Set(edidSize);
 			}
 		}
 	}
@@ -181,7 +181,7 @@ Media::DDCReader::DDCReader(Optional<MonitorHandle> hMon)
 	this->edid = nullptr;
 	this->edidSize = 0;
 	this->hMon = hMon;
-	this->edid = DDCReader_GetMonitorEDID(hMon.OrNull(), &edidSize);	
+	this->edid = DDCReader_GetMonitorEDID(hMon.OrNull(), edidSize);	
 }
 
 Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
@@ -189,7 +189,7 @@ Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
 	this->edid = nullptr;
 	this->edidSize = 0;
 	this->hMon = nullptr;
-	this->edid = DDCReader_GetMonitorEDID(hMon.OrNull(), &edidSize);	
+	this->edid = DDCReader_GetMonitorEDID(hMon.OrNull(), edidSize);	
 }
 
 Media::DDCReader::DDCReader(UnsafeArray<UInt8> edid, UIntOS edidSize)
@@ -347,12 +347,12 @@ UIntOS Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> reade
 			edidSize = fs.Read(Data::ByteArray(edid, 1024));
 			if (edidSize > 0)
 			{
-				UInt8 *edidData = MemAlloc(UInt8, edidSize >> 1);
+				UnsafeArray<UInt8> edidData = MemAllocArr(UInt8, edidSize >> 1);
 				edid[edidSize] = 0;
 				edidSize = Text::StrHex2Bytes(edid, edidData);
 				NEW_CLASSNN(reader, Media::DDCReader(edidData, edidSize));
 				readerList->Add(reader);
-				MemFree(edidData);
+				MemFreeArr(edidData);
 				ret++;
 			}
 		}

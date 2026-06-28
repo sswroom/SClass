@@ -40,10 +40,10 @@ Optional<IO::ParsedObject> Parser::FileParser::JPGParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 	UIntOS fileLen = (UIntOS)fd->GetDataSize();
-	UInt8 *buff = MemAlloc(UInt8, fileLen);
+	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, fileLen);
 	if (fd->GetRealData(0, fileLen, Data::ByteArray(buff, fileLen)) != fileLen)
 	{
-		MemFree(buff);
+		MemFreeArr(buff);
 		return nullptr;
 	}
 	
@@ -51,7 +51,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JPGParser::ParseFileHdr(NN<IO::St
 	Media::JPEGDecoder jpgDecoder;
 	if (!jpgDecoder.DecodeImage(Data::ByteArrayR(buff, fileLen)).SetTo(img))
 	{
-		MemFree(buff);
+		MemFreeArr(buff);
 		return nullptr;
 	}
 	NN<Media::ImageList> imgList;
@@ -61,6 +61,6 @@ Optional<IO::ParsedObject> Parser::FileParser::JPGParser::ParseFileHdr(NN<IO::St
 		IO::StmData::MemoryDataRef fd(buff, fileLen);
 		Media::JPEGFile::ParseJPEGHeader(fd, img, imgList, nullptr);
 	}
-	MemFree(buff);
+	MemFreeArr(buff);
 	return imgList;
 }

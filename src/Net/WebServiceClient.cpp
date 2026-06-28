@@ -146,7 +146,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 			UInt64 contLeng = cli->GetContentLength();
 			if (contLeng > 0 && contLeng < 1048576)
 			{
-				buff = MemAlloc(UInt8, contLeng);
+				buff = MemAllocArr(UInt8, contLeng);
 				i = 0;
 				while (i < contLeng)
 				{
@@ -282,7 +282,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 			UInt64 contLeng = cli->GetContentLength();
 			if (contLeng > 0 && contLeng < 1048576)
 			{
-				buff = MemAlloc(UInt8, contLeng);
+				buff = MemAllocArr(UInt8, contLeng);
 				i = 0;
 				while (i < contLeng)
 				{

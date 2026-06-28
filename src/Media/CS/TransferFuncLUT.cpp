@@ -7,8 +7,8 @@
 Media::CS::TransferFuncLUT::TransferFuncLUT(NN<const Media::LUT> lut) : Media::CS::TransferFunc(lut)
 {
 	this->srcCnt = lut->GetInputLevel();
-	this->fwdLUT = MemAlloc(Double, 65536);
-	this->invLUT = MemAlloc(Double, this->srcCnt);
+	this->fwdLUT = MemAllocArr(Double, 65536);
+	this->invLUT = MemAllocArr(Double, this->srcCnt);
 	UIntOS i;
 	UIntOS j;
 	UIntOS k;
@@ -147,8 +147,8 @@ Media::CS::TransferFuncLUT::TransferFuncLUT(NN<const Media::LUT> lut) : Media::C
 
 Media::CS::TransferFuncLUT::~TransferFuncLUT()
 {
-	MemFree(this->fwdLUT);
-	MemFree(this->invLUT);
+	MemFreeArr(this->fwdLUT);
+	MemFreeArr(this->invLUT);
 }
 
 Double Media::CS::TransferFuncLUT::ForwardTransfer(Double linearVal)

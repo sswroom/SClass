@@ -1168,7 +1168,7 @@ void IO::SMake::CompileTask(AnyType userObj)
 
 void IO::SMake::CompileObject(Text::CStringNN cmd)
 {
-	CompileReq *req = MemAlloc(CompileReq, 1);
+	NN<CompileReq> req = MemAllocNN(CompileReq);
 	req->cmd = Text::String::New(cmd);
 	req->me = *this;
 	this->tasks->AddTask(CompileTask, req);
@@ -1176,7 +1176,7 @@ void IO::SMake::CompileObject(Text::CStringNN cmd)
 
 void IO::SMake::CompileObject(NN<Text::String> cmd)
 {
-	CompileReq *req = MemAlloc(CompileReq, 1);
+	NN<CompileReq> req = MemAllocNN(CompileReq);
 	req->cmd = cmd;
 	req->me = *this;
 	this->tasks->AddTask(CompileTask, req);

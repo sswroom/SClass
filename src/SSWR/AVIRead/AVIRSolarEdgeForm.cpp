@@ -306,8 +306,8 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 			chart.SetFontHeightPt(9.0);
 			UIntOS i = 0;
 			UIntOS j = this->siteEnergyList.GetCount();
-			Data::Timestamp *tsList = MemAlloc(Data::Timestamp, j);
-			Double *valList = MemAlloc(Double, j);
+			UnsafeArray<Data::Timestamp> tsList = MemAllocArr(Data::Timestamp, j);
+			UnsafeArray<Double> valList = MemAllocArr(Double, j);
 			while (i < j)
 			{
 				tsList[i] = this->siteEnergyList.GetItem(i).ts;
@@ -316,8 +316,8 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 			}
 			chart.AddLineChart(CSTR("Wh"), Data::ChartPlotter::NewData(valList, j), Data::ChartPlotter::NewData(tsList, j), 0xffff0000);
 			chart.Plot(dimg, 0, 0, UIntOS2Double(size.x), UIntOS2Double(size.y));
-			MemFree(tsList);
-			MemFree(valList);
+			MemFreeArr(tsList);
+			MemFreeArr(valList);
 			Optional<Media::StaticImage> simg = dimg->ToStaticImage();
 			this->pbSiteEnergy->SetImage(simg);
 			this->imgSiteEnergy.Delete();
@@ -342,8 +342,8 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSitePowerGraph()
 			chart.SetFontHeightPt(9.0);
 			UIntOS i = 0;
 			UIntOS j = this->sitePowerList.GetCount();
-			Data::Timestamp *tsList = MemAlloc(Data::Timestamp, j);
-			Double *valList = MemAlloc(Double, j);
+			UnsafeArray<Data::Timestamp> tsList = MemAllocArr(Data::Timestamp, j);
+			UnsafeArray<Double> valList = MemAllocArr(Double, j);
 			while (i < j)
 			{
 				tsList[i] = this->sitePowerList.GetItem(i).ts;
@@ -352,8 +352,8 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSitePowerGraph()
 			}
 			chart.AddLineChart(CSTR("W"), Data::ChartPlotter::NewData(valList, j), Data::ChartPlotter::NewData(tsList, j), 0xffff0000);
 			chart.Plot(dimg, 0, 0, UIntOS2Double(size.x), UIntOS2Double(size.y));
-			MemFree(tsList);
-			MemFree(valList);
+			MemFreeArr(tsList);
+			MemFreeArr(valList);
 			Optional<Media::StaticImage> simg = dimg->ToStaticImage();
 			this->pbSitePower->SetImage(simg);
 			this->imgSitePower.Delete();

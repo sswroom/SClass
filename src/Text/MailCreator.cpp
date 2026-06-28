@@ -29,16 +29,16 @@ void Text::MailCreator::AppendStr(NN<Text::StringBuilderUTF8> sbc, Text::CString
 	if (found)
 	{
 		UIntOS strLen;
-		UInt8 *b64Buff;
+		UnsafeArray<UInt8> b64Buff;
 		UIntOS b64Size;
 		Crypto::Encrypt::Base64 b64;
 		strLen = s.leng;
 		b64Size = (strLen / 3) * 4 + 4;
-		b64Buff = MemAlloc(UInt8, b64Size + 1);
+		b64Buff = MemAllocArr(UInt8, b64Size + 1);
 		b64Size = b64.Encrypt(s.v, strLen, b64Buff);
 		b64Buff[b64Size] = 0;
 		sbc->AppendC(b64Buff, b64Size);
-		MemFree(b64Buff);
+		MemFreeArr(b64Buff);
 	}
 	else
 	{
@@ -64,16 +64,16 @@ void Text::MailCreator::AppendStr(NN<Text::StringBuilderUTF8> sbc, const WChar *
 	{
 		NN<Text::String> str = Text::String::NewNotNull(s);
 		UIntOS buffSize;
-		UInt8 *b64Buff;
+		UnsafeArray<UInt8> b64Buff;
 		UIntOS b64Size;
 		Crypto::Encrypt::Base64 b64;
 		buffSize = str->leng;
 		b64Size = (buffSize / 3) * 4 + 4;
-		b64Buff = MemAlloc(UInt8, b64Size + 1);
+		b64Buff = MemAllocArr(UInt8, b64Size + 1);
 		b64Size = b64.Encrypt(str->v, buffSize, b64Buff);
 		b64Buff[b64Size] = 0;
 		sbc->AppendC(b64Buff, b64Size);
-		MemFree(b64Buff);
+		MemFreeArr(b64Buff);
 		str->Release();
 	}
 	else
@@ -419,14 +419,14 @@ void Text::MailCreator::SetContentHTML(const WChar *content, Text::CStringNN htm
 	NN<Text::MIMEObject> obj;
 	UIntOS strLen = Text::StrCharCnt(content);
 	UIntOS buffSize = Text::StrWChar_UTF8CntC(content, strLen);
-	UInt8 *buff = MemAlloc(UInt8, buffSize + 1);
+	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, buffSize + 1);
 	Text::StrWChar_UTF8C(buff, content, strLen);
 	if (ParseContentHTML(buff, buffSize, 65001, htmlPath).SetTo(obj))
 	{
 		this->content.Delete();
 		this->content = obj;
 	}
-	MemFree(buff);
+	MemFreeArr(buff);
 }
 
 void Text::MailCreator::SetContentHTML(NN<Text::String> content, Text::CStringNN htmlPath)
@@ -459,7 +459,7 @@ Bool Text::MailCreator::SetContentFile(Text::CStringNN filePath)
 {
 	NN<Text::MIMEObject> obj;
 	UIntOS buffSize;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	{
 		IO::FileStream fs(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (fs.IsError())
@@ -467,17 +467,17 @@ Bool Text::MailCreator::SetContentFile(Text::CStringNN filePath)
 			return false;
 		}
 		buffSize = (UIntOS)fs.GetLength();
-		buff = MemAlloc(UInt8, buffSize);
+		buff = MemAllocArr(UInt8, buffSize);
 		fs.Read(Data::ByteArray(buff, buffSize));
 	}
 	if (ParseContentHTML(buff, buffSize, 65001, filePath).SetTo(obj))
 	{
-		MemFree(buff);
+		MemFreeArr(buff);
 		this->content.Delete();
 		this->content = obj;
 		return true;
 	}
-	MemFree(buff);
+	MemFreeArr(buff);
 	return false;
 }
 

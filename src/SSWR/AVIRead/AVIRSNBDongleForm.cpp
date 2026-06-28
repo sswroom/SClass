@@ -422,7 +422,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::LoadFile()
 		UInt64 flen = fs.GetLength();
 		if (flen > 0 && (flen % 12) == 0)
 		{
-			UInt8 *dataBuff = MemAlloc(UInt8, (UIntOS)flen);
+			UnsafeArray<UInt8> dataBuff = MemAllocArr(UInt8, (UIntOS)flen);
 			UIntOS i;
 			fs.Read(Data::ByteArray(dataBuff, (UIntOS)flen));
 			this->devMut.LockWrite();
@@ -433,7 +433,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::LoadFile()
 				i += 12;
 			}
 			this->devMut.UnlockWrite();
-			MemFree(dataBuff);
+			MemFreeArr(dataBuff);
 		}
 	}
 }
@@ -443,12 +443,12 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 	UIntOS i;
 	UIntOS j;
 	UIntOS k;
-	UInt8 *dataBuff;
+	UnsafeArray<UInt8> dataBuff;
 	this->devMut.LockRead();
 	i = 0;
 	j = this->devHandlerMap.GetCount();
 	k = 0;
-	dataBuff = MemAlloc(UInt8, j * 12);
+	dataBuff = MemAllocArr(UInt8, j * 12);
 	while (i < j)
 	{
 		WriteUInt64(&dataBuff[k], this->devHandlerMap.GetKey(i));
@@ -467,7 +467,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		fs.Write(Data::ByteArrayR(dataBuff, k));
 	}
-	MemFree(dataBuff);
+	MemFreeArr(dataBuff);
 }
 
 SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::Stream> stm) : UI::GUIForm(parent, 1024, 768, ui)

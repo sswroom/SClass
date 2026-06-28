@@ -5,36 +5,36 @@
 #include "Net/MySQLUtil.h"
 #include "Text/MyString.h"
 
-const UInt8 *Net::MySQLUtil::ReadLenencInt(const UInt8 *buff, UInt64 *val)
+UnsafeArray<const UInt8> Net::MySQLUtil::ReadLenencInt(UnsafeArray<const UInt8> buff, OutParam<UInt64> val)
 {
 	if (buff[0] < 251)
 	{
-		*val = buff[0];
+		val.Set(buff[0]);
 		buff++;
 	}
 	else if (buff[0] == 251)
 	{
-		*val = 0; //NULL
+		val.Set(0); //NULL
 		buff++;
 	}
 	else if (buff[0] == 252)
 	{
-		*val = ReadUInt16(&buff[1]);
+		val.Set(ReadUInt16(&buff[1]));
 		buff += 3;
 	}
 	else if (buff[0] == 253)
 	{
-		*val = ReadUInt24(&buff[1]);
+		val.Set(ReadUInt24(&buff[1]));
 		buff += 4;
 	}
 	else if (buff[0] == 254)
 	{
-		*val = ReadUInt64(&buff[1]);
+		val.Set(ReadUInt64(&buff[1]));
 		buff += 9;
 	}
 	else
 	{
-		*val = 0; // ERR_Packet
+		val.Set(0); // ERR_Packet
 		buff += 1;
 	}
 	return buff;

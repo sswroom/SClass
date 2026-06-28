@@ -162,8 +162,8 @@ Media::CS::CSRGB8_RGB8::CSRGB8_RGB8(UIntOS srcNBits, Media::PixelFormat srcPF, U
 	if (this->srcNBits <= 8)
 	{
 		UIntOS palSize = (UIntOS)(4 << this->srcNBits);
-		this->srcPal = MemAlloc(UInt8, palSize);
-		this->destPal = MemAlloc(UInt8, palSize);
+		this->srcPal = MemAllocArr(UInt8, palSize);
+		this->destPal = MemAllocArr(UInt8, palSize);
 	}
 	this->rgbTable = nullptr;
 	this->rgbUpdated = true;

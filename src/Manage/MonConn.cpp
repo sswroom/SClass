@@ -24,20 +24,21 @@
 #include <windows.h>
 #endif
 
-UIntOS Manage::MonConn::BuildPacket(UInt8 *outbuff, UInt8 *data, UIntOS dataSize, UInt16 cmdType, UInt16 cmdSeq)
+UIntOS Manage::MonConn::BuildPacket(UnsafeArray<UInt8> outbuff, UnsafeArray<UInt8> data, UIntOS dataSize, UInt16 cmdType, UInt16 cmdSeq)
 {
 	WriteNUInt16(&outbuff[0], ReadNUInt16((const UInt8*)"sM"));
 	WriteUInt16(&outbuff[2], (UInt16)(dataSize + 10));
 	WriteUInt16(&outbuff[4], cmdType);
 	WriteUInt16(&outbuff[6], cmdSeq);
-	MemCopyNO(&outbuff[8], data, dataSize);
+	MemCopyNO(&outbuff[8], &data[0], dataSize);
 	WriteUInt16(&outbuff[dataSize + 8], CalCheck(outbuff));
 	return dataSize + 10;
 }
 
-UInt16 Manage::MonConn::CalCheck(UInt8 *packet)
+UInt16 Manage::MonConn::CalCheck(UnsafeArray<UInt8> nnpacket)
 {
 #ifdef HAS_ASM32
+	UInt8 *packet = nnpacket.Ptr();
 	_asm
 	{
 		mov edx,packet
@@ -54,7 +55,7 @@ mmccclop:
 		jnz mmccclop
 	}
 #else
-	UInt32 size = *(UInt16*)&packet[2];
+	UInt32 size = *(UInt16*)&nnpacket[2];
 	UInt8 chkDigit1 = 0;
 	UInt8 chkDigit2 = 0;
 	UInt32 i;
@@ -63,15 +64,16 @@ mmccclop:
 	i = 0;
 	while (i < size - 2)
 	{
-		j = (UInt32)chkDigit1 + packet[i];
+		j = (UInt32)chkDigit1 + nnpacket[i];
 		chkDigit1 = (UInt8)(j & 255);
-		chkDigit2 = (UInt8)(((UInt32)(chkDigit2 << 1) | (j >> 8)) ^ packet[i]);
+		chkDigit2 = (UInt8)(((UInt32)(chkDigit2 << 1) | (j >> 8)) ^ nnpacket[i]);
+		i++;
 	}
 	return (UInt16)((((UInt32)chkDigit2) << 8) | chkDigit1);
 #endif
 }
 
-UInt8 *Manage::MonConn::FindPacket(UInt8 *buff, UIntOS buffSize)
+UnsafeArrayOpt<UInt8> Manage::MonConn::FindPacket(UnsafeArray<UInt8> buff, UIntOS buffSize)
 {
 	UIntOS i = 0;
 	while (i < buffSize - 4)
@@ -92,10 +94,10 @@ UInt8 *Manage::MonConn::FindPacket(UInt8 *buff, UIntOS buffSize)
 		}
 		i++;
 	}
-	return 0;
+	return nullptr;
 }
 
-Bool Manage::MonConn::IsCompletePacket(UInt8 *buff, UIntOS buffSize)
+Bool Manage::MonConn::IsCompletePacket(UnsafeArray<UInt8> buff, UIntOS buffSize)
 {
 	UInt32 packSize;
 	if (buffSize < 10)
@@ -112,12 +114,12 @@ Bool Manage::MonConn::IsCompletePacket(UInt8 *buff, UIntOS buffSize)
 	return false;
 }
 
-void Manage::MonConn::ParsePacket(UInt8 *buff, UInt16 *cmdSize, UInt16 *cmdType, UInt16 *cmdSeq, UInt8** cmdData)
+void Manage::MonConn::ParsePacket(UnsafeArray<UInt8> buff, OutParam<UInt16> cmdSize, OutParam<UInt16> cmdType, OutParam<UInt16> cmdSeq, OutParam<UnsafeArray<UInt8>> cmdData)
 {
-	*cmdSize = ReadUInt16(&buff[2]);
-	*cmdType = ReadUInt16(&buff[4]);
-	*cmdSeq = ReadUInt16(&buff[6]);
-	*cmdData = &buff[8];
+	cmdSize.Set(ReadUInt16(&buff[2]));
+	cmdType.Set(ReadUInt16(&buff[4]));
+	cmdSeq.Set(ReadUInt16(&buff[6]));
+	cmdData.Set(&buff[8]);
 }
 
 UInt32 __stdcall Manage::MonConn::ConnRThread(AnyType conn)
@@ -151,35 +153,35 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(AnyType conn)
 				buffSize = cli->Read(dataBuff);
 				if (buffSize)
 				{
-					UInt8 *packet = dataBuff.Arr().Ptr();
-					while ((packet = Manage::MonConn::FindPacket(packet, buffSize - (UIntOS)(packet - dataBuff.Arr()))) != 0)
+					UnsafeArray<UInt8> packet = dataBuff.Arr();
+					while (Manage::MonConn::FindPacket(packet, buffSize - (UIntOS)(packet - dataBuff.Arr())).SetTo(packet))
 					{
 						if (Manage::MonConn::IsCompletePacket(packet, buffSize - (UIntOS)(packet - dataBuff.Arr())))
 						{
 							UInt16 cmdSize;
 							UInt16 cmdType;
 							UInt16 cmdSeq;
-							UInt8 *data;
-							Manage::MonConn::ParsePacket(packet, &cmdSize, &cmdType, &cmdSeq, &data);
+							UnsafeArray<UInt8> data;
+							Manage::MonConn::ParsePacket(packet, cmdSize, cmdType, cmdSeq, data);
 
 							if (cmdType & 0x8000)
 							{
-								UInt8 *lastCmd;
-								if (me->cmdList.GetCount())
+								UnsafeArray<UInt8> lastCmd;
+								if (me->cmdList.GetCount() && me->cmdList.GetItem(0).SetTo(lastCmd))
 								{
-									lastCmd = me->cmdList.GetItem(0);
 									if ((cmdType & 0x7fff) == ReadUInt16(&lastCmd[4]) && cmdSeq == ReadUInt16(&lastCmd[6]))
 									{
-										MemFree(me->cmdList.RemoveAt(0));
+										me->cmdList.RemoveAt(0);
+										MemFreeArr(lastCmd);
 										me->requesting = false;
 										me->connTEvt->Set();
 
 
 										if (cmdType == 0x8000)
 										{
-											if (ReadUInt16(data) != 0)
+											if (ReadUInt16(&data[0]) != 0)
 											{
-												me->hdlr(Manage::MON_EVT_PROCESS_START_ERR, ReadUInt16(data), me->userObj);
+												me->hdlr(Manage::MON_EVT_PROCESS_START_ERR, ReadUInt16(&data[0]), me->userObj);
 											}
 										}
 									}
@@ -218,7 +220,7 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(AnyType conn)
 UInt32 __stdcall Manage::MonConn::ConnTThread(AnyType conn)
 {
 	NN<Manage::MonConn> me = conn.GetNN<Manage::MonConn>();
-	UInt8 *data;
+	UnsafeArray<UInt8> data;
 	NN<Net::TCPClient> cli;
 	me->ConnTRunning = true;
 	while (true)
@@ -249,9 +251,8 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(AnyType conn)
 					me->lastKATime.SetCurrTimeUTC();
 				}
 
-				if (me->cmdList.GetCount())
+				if (me->cmdList.GetCount() && me->cmdList.GetItem(0).SetTo(data))
 				{
-					data = me->cmdList.GetItem(0);
 					me->requesting = true;
 					me->lastReqTime.SetCurrTimeUTC();
 					cli->Write(Data::ByteArrayR(data, ReadUInt16(&data[2])));
@@ -271,9 +272,9 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(AnyType conn)
 	return 0;
 }
 
-void Manage::MonConn::AddCommand(UInt8 *data, UIntOS dataSize, UInt16 cmdType)
+void Manage::MonConn::AddCommand(UnsafeArray<UInt8> data, UIntOS dataSize, UInt16 cmdType)
 {
-	UInt8 *buff = MemAlloc(UInt8, dataSize + 10);
+	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, dataSize + 10);
 	Sync::MutexUsage mutUsage(this->cmdSeqMut);
 	Manage::MonConn::BuildPacket(buff, data, dataSize, cmdType, cmdSeq++);
 	mutUsage.EndUse();
@@ -354,10 +355,14 @@ Manage::MonConn::~MonConn()
 		DEL_CLASS(this->connTEvt);
 		this->connTEvt = 0;
 	}
+	UnsafeArray<UInt8> data;
 	UIntOS i = this->cmdList.GetCount();
 	while (i-- > 0)
 	{
-		MemFree(this->cmdList.RemoveAt(i));
+		if (this->cmdList.GetItem(i).SetTo(data))
+		{
+			MemFreeArr(data);
+		}
 	}
 }
 
@@ -404,12 +409,12 @@ void Manage::MonConn::StartUDPPort(UInt16 portNum)
 void Manage::MonConn::AddLogMessage(Int32 name, Int32 name2, UInt16 logLevel, Text::CStringNN msg)
 {
 	UIntOS procId = Manage::Process::GetCurrProcId();
-	UInt8 *buff = MemAlloc(UInt8, 14 + msg.leng + 1);
+	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, 14 + msg.leng + 1);
 	WriteUInt32(&buff[0], (UInt32)procId);
 	WriteInt32(&buff[4], name);
 	WriteInt32(&buff[8], name2);
 	WriteUInt16(&buff[12], logLevel);
 	msg.ConcatTo((UTF8Char*)&buff[14]);
 	AddCommand(buff, 14 + msg.leng, 4);
-	MemFree(buff);
+	MemFreeArr(buff);
 }

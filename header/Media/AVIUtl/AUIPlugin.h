@@ -28,7 +28,7 @@ namespace Media
 			} AUIInput;
 
 		private:
-			PluginDetail *plugin;
+			NN<PluginDetail> plugin;
 
 			AUIPlugin();
 			AUIPlugin(const AUIPlugin *plugin);

@@ -16,13 +16,13 @@ typedef struct
 	vpx_codec_ctx_t codec;
 } ClassData;
 
-void Media::Decoder::VPXDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::VPXDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 }
 
-Media::Decoder::VPXDecoder::VPXDecoder(VideoSource *sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::VPXDecoder::VPXDecoder(NN<VideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
 {
-	ClassData *data = MemAlloc(ClassData, 1);
+	NN<ClassData> data = MemAllocNN(ClassData);
 	this->clsData = data;
 	data->inited = false;
 
@@ -63,7 +63,7 @@ Media::Decoder::VPXDecoder::~VPXDecoder()
 	MemFree(data);
 }
 
-Bool Media::Decoder::VPXDecoder::CaptureImage(ImageCallback imgCb, void *userData)
+Bool Media::Decoder::VPXDecoder::CaptureImage(ImageCallback imgCb, AnyType userData)
 {
 	return false;
 }
@@ -73,7 +73,7 @@ Text::CString Media::Decoder::VPXDecoder::GetFilterName()
 	return CSTR("VPXDecoder");
 }
 
-Bool Media::Decoder::VPXDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UIntOS *maxFrameSize)
+Bool Media::Decoder::VPXDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	return false;
 }
@@ -92,7 +92,7 @@ UInt32 Media::Decoder::VPXDecoder::GetFrameTime(UIntOS frameIndex)
 	return 0;
 }
 
-void Media::Decoder::VPXDecoder::EnumFrameInfos(FrameInfoCallback cb, void *userData)
+void Media::Decoder::VPXDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 }
 

@@ -241,7 +241,7 @@ Bool Math::FFT::Forward(UnsafeArray<ComplexNumber> data, UIntOS sampleCount)
 		return false;
 	UIntOS i;
 	UIntOS j;
-	ComplexNumber *temp = MemAlloc(ComplexNumber, sampleCount >> 1);
+	UnsafeArray<ComplexNumber> temp = MemAllocArr(ComplexNumber, sampleCount >> 1);
 	i = 0;
 	j = sampleCount >> 1;
 	while (i < j)
@@ -250,8 +250,8 @@ Bool Math::FFT::Forward(UnsafeArray<ComplexNumber> data, UIntOS sampleCount)
 		data[i] = data[i * 2];
 		i++;
 	}
-	MemCopyNAC(&data[j], temp, sizeof(ComplexNumber) * j);
-	MemFree(temp);
+	MemCopyNAC(&data[j], &temp[0], sizeof(ComplexNumber) * j);
+	MemFreeArr(temp);
 
 	if (!Forward(data, j) || !Forward(&data[j], j))
 		return false;
@@ -285,8 +285,8 @@ Bool Math::FFT::ForwardBits(UnsafeArray<UInt8> samples, UnsafeArray<Double> freq
 	UIntOS i;
 	UIntOS j;
 	UnsafeArray<UInt8> currSamples;
-	Double *temp = MemAllocA(Double, sampleCount * 2);
-	Double *tmpFreq = MemAlloc(Double, sampleCount);
+	UnsafeArray<Double> temp = MemAllocAArr(Double, sampleCount * 2);
+	UnsafeArray<Double> tmpFreq = MemAllocArr(Double, sampleCount);
 	Double f;
 	Double f2;
 
@@ -350,7 +350,7 @@ Bool Math::FFT::ForwardBits(UnsafeArray<UInt8> samples, UnsafeArray<Double> freq
 		freq[j] = freq[j] * f;
 		j++;
 	}
-	MemFree(tmpFreq);
-	MemFreeA(temp);
+	MemFreeArr(tmpFreq);
+	MemFreeAArr(temp);
 	return true;
 }

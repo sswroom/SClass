@@ -12,19 +12,19 @@ typedef void (__stdcall *NoRetFunc)();
 typedef UInt32 (__stdcall *UInt32RetFunc)();
 typedef void (__stdcall *RdmsrFunc)(UInt32 ecx, UInt32 *eax, UInt32 *edx);
 
-typedef struct
+struct Manage::CPUInfo::ClassData
 {
 	IO::Library *winRing0;
 	NoRetFunc InitializeOls;
 	UInt32RetFunc GetDllStatus;
 	RdmsrFunc Rdmsr;
 	NoRetFunc DeinitializeOls;
-} InfoData;
+};
 #else
-typedef struct
+struct Manage::CPUInfo::ClassData
 {
 	UnsafeArray<const UTF8Char> cpuName;
-} InfoData;
+};
 #if defined(__FreeBSD__) || defined(__APPLE__)
 #include <sys/types.h>
 #include <sys/sysctl.h>
@@ -79,7 +79,7 @@ Int32 Manage::CPUInfoDetail::GetTCC()
 #if defined(WIN32) || defined(_WIN64)
 Bool Manage::CPUInfoDetail::GetCPUTemp(UIntOS index, OutParam<Double> temp)
 {
-	InfoData *info = (InfoData*)this->clsData;
+	NN<ClassData> info = this->clsData;
 	if (info->winRing0 == 0)
 		return false;
 

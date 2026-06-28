@@ -96,10 +96,10 @@ namespace IO
 		};
 
 	private:
-		UInt8 *fileBuff;
+		UnsafeArrayOpt<UInt8> fileBuff;
 		UIntOS fileBuffSize;
 		UIntOS constPoolCnt;
-		UInt8 **constPool;
+		UnsafeArrayOpt<UnsafeArrayOpt<UInt8>> constPool;
 		UInt16 accessFlags;
 		UInt16 thisClass;
 		UInt16 superClass;

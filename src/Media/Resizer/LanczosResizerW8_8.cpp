@@ -31,7 +31,7 @@ void Media::Resizer::LanczosResizerW8_8::SetupInterpolationParameterV(UIntOS nTa
 	UIntOS i;
 	UIntOS j;
 	IntOS n;
-	Double *work;
+	UnsafeArray<Double> work;
 	Double  sum;
 	Double  pos;
 	Double dnTap = UIntOS2Double(nTap);
@@ -42,12 +42,11 @@ void Media::Resizer::LanczosResizerW8_8::SetupInterpolationParameterV(UIntOS nTa
 
 	out->length = result_length;
 	out->tap = nTap;
-	out->weight = MemAllocA(Int16, out->length * out->tap);
-	out->index = MemAllocA(IntOS, out->length * out->tap);
+	out->weight = MemAllocAArr(Int16, out->length * out->tap);
+	out->index = MemAllocAArr(IntOS, out->length * out->tap);
 	out->tap += out->tap & 1;
 
-	work = MemAlloc(Double, out->tap);
-
+	work = MemAllocArr(Double, out->tap);
 	i = 0;
 	while (i < result_length)
 	{
@@ -85,7 +84,7 @@ void Media::Resizer::LanczosResizerW8_8::SetupInterpolationParameterV(UIntOS nTa
 		i++;
 	}
 
-	MemFree(work);
+	MemFreeArr(work);
 }
 
 void Media::Resizer::LanczosResizerW8_8::SetupDecimationParameterV(UIntOS nTap, Double source_length, IntOS source_max_pos, UIntOS result_length, NN<Media::Resizer::LanczosResizerW8_8::LRHPARAMETER> out, IntOS indexSep, Double offsetCorr)
@@ -94,7 +93,7 @@ void Media::Resizer::LanczosResizerW8_8::SetupDecimationParameterV(UIntOS nTap, 
 	UIntOS j;
 	IntOS n;
 	UIntOS ttap;
-	Double *work;
+	UnsafeArray<Double> work;
 	Double  sum;
 	Double  pos, phase;
 	Double dnTap = UIntOS2Double(nTap);
@@ -106,10 +105,10 @@ void Media::Resizer::LanczosResizerW8_8::SetupDecimationParameterV(UIntOS nTap, 
 	ttap = out->tap;
 	out->tap += out->tap & 1;
 
-	out->weight = MemAllocA(Int16, out->length * out->tap);
-	out->index = MemAllocA(IntOS, out->length * out->tap);
+	out->weight = MemAllocAArr(Int16, out->length * out->tap);
+	out->index = MemAllocAArr(IntOS, out->length * out->tap);
 	
-	work = MemAlloc(Double, out->tap);
+	work = MemAllocArr(Double, out->tap);
 
 	i = 0;
 	while (i < result_length)
@@ -155,7 +154,7 @@ void Media::Resizer::LanczosResizerW8_8::SetupDecimationParameterV(UIntOS nTap, 
 		i++;
 	}
 
-	MemFree(work);
+	MemFreeArr(work);
 }
 
 void Media::Resizer::LanczosResizerW8_8::SetupInterpolationParameterH(UIntOS nTap, Double source_length, IntOS source_max_pos, UIntOS result_length, NN<Media::Resizer::LanczosResizerW8_8::LRHPARAMETER> out, IntOS indexSep, Double offsetCorr)
@@ -163,7 +162,7 @@ void Media::Resizer::LanczosResizerW8_8::SetupInterpolationParameterH(UIntOS nTa
 	UIntOS i;
 	UIntOS j;
 	IntOS n;
-	Double *work;
+	UnsafeArray<Double> work;
 	Double  sum;
 	Double  pos;
 	Double posDiff = UIntOS2Double(nTap / 2) - 0.5; //2.5
@@ -174,10 +173,10 @@ void Media::Resizer::LanczosResizerW8_8::SetupInterpolationParameterH(UIntOS nTa
 
 	out->length = result_length;
 	out->tap = nTap;
-	out->weight = MemAllocA(Int16, out->length * out->tap);
-	out->index = MemAllocA(IntOS, out->length * out->tap);
+	out->weight = MemAllocAArr(Int16, out->length * out->tap);
+	out->index = MemAllocAArr(IntOS, out->length * out->tap);
 
-	work = MemAlloc(Double, out->tap);
+	work = MemAllocArr(Double, out->tap);
 
 	i = 0;
 	while (i < result_length)
@@ -238,7 +237,7 @@ void Media::Resizer::LanczosResizerW8_8::SetupInterpolationParameterH(UIntOS nTa
 		i++;
 	}
 
-	MemFree(work);
+	MemFreeArr(work);
 }
 
 void Media::Resizer::LanczosResizerW8_8::SetupDecimationParameterH(UIntOS nTap, Double source_length, IntOS source_max_pos, UIntOS result_length, NN<Media::Resizer::LanczosResizerW8_8::LRHPARAMETER> out, IntOS indexSep, Double offsetCorr)
@@ -249,7 +248,7 @@ void Media::Resizer::LanczosResizerW8_8::SetupDecimationParameterH(UIntOS nTap, 
 	Double dn;
 	Double di;
 	UIntOS ttap;
-	Double *work;
+	UnsafeArray<Double> work;
 	Double  sum;
 	Double  pos;
 	Double phase;
@@ -264,10 +263,10 @@ void Media::Resizer::LanczosResizerW8_8::SetupDecimationParameterH(UIntOS nTap, 
 	ttap = out->tap;
 	out->tap += out->tap & 1;
 
-	out->weight = MemAllocA(Int16, out->length * out->tap);
-	out->index = MemAllocA(IntOS, out->length * out->tap);
+	out->weight = MemAllocAArr(Int16, out->length * out->tap);
+	out->index = MemAllocAArr(IntOS, out->length * out->tap);
 	
-	work = MemAlloc(Double, out->tap);
+	work = MemAllocArr(Double, out->tap);
 
 	i = 0;
 	while (i < result_length)
@@ -327,7 +326,7 @@ void Media::Resizer::LanczosResizerW8_8::SetupDecimationParameterH(UIntOS nTap, 
 		i++;
 	}
 
-	MemFree(work);
+	MemFreeArr(work);
 }
 
 void Media::Resizer::LanczosResizerW8_8::MTHorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UIntOS dwidth, UIntOS height, UIntOS tap, UnsafeArray<IntOS> index, UnsafeArray<Int16> weight, IntOS sstep, IntOS dstep, UIntOS swidth)
@@ -678,7 +677,7 @@ void Media::Resizer::LanczosResizerW8_8::Resize(UnsafeArray<const UInt8> src, In
 			}
 			buffW = dwidth;
 			buffH = siHeight;
-			this->buffPtr = buffPtr = MemAllocA(UInt8, buffW * (UIntOS)buffH << 3);
+			this->buffPtr = buffPtr = MemAllocAArr(UInt8, buffW * (UIntOS)buffH << 3);
 		}
 		MTHorizontalFilter(src, buffPtr, dwidth, (UIntOS)siHeight, hTap, hIndex, hWeight, sbpl, (IntOS)dwidth << 1, (UIntOS)siWidth);
 		MTVerticalFilter(buffPtr, dest, dwidth, dheight, vTap, vIndex, vWeight, (IntOS)dwidth << 1, dbpl);
@@ -751,7 +750,7 @@ void Media::Resizer::LanczosResizerW8_8::Resize(UnsafeArray<const UInt8> src, In
 			}
 			buffW = (UIntOS)siWidth;
 			buffH = siHeight;
-			this->buffPtr = buffPtr = MemAllocA(UInt8, buffW * (UIntOS)buffH << 3);
+			this->buffPtr = buffPtr = MemAllocAArr(UInt8, buffW * (UIntOS)buffH << 3);
 		}
 		MTExpand(src, buffPtr, (UIntOS)siWidth, (UIntOS)siHeight, sbpl, siWidth << 1);
 		MTVerticalFilter(buffPtr, dest, (UIntOS)siWidth, dheight, vTap, vIndex, vWeight, siWidth << 1, dbpl);

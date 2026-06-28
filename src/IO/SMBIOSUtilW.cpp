@@ -22,7 +22,8 @@ Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 {
 	IO::SMBIOS *smbios;
 	IO::Library lib((const UTF8Char*)"kernel32.dll");
-	UInt8 *dataBuff = 0;
+	UnsafeArray<UInt8> dataBuff;
+	UnsafeArrayOpt<UInt8> optdataBuff = nullptr;
 	UInt32 buffSize;
 	GetSystemFirmwareTableFunc func = (GetSystemFirmwareTableFunc)lib.GetFunc("GetSystemFirmwareTable");
 	if (func)
@@ -30,9 +31,9 @@ Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 		buffSize = func(*(UInt32*)"BMSR", 0, 0, 0);
 		if (buffSize > 0)
 		{
-			dataBuff = MemAlloc(UInt8, buffSize);
-			func(*(UInt32*)"BMSR", 0, dataBuff, buffSize);
-			const RawSMBIOSData *pDMIData = (RawSMBIOSData *)dataBuff;
+			dataBuff = MemAllocArr(UInt8, buffSize);
+			func(*(UInt32*)"BMSR", 0, dataBuff.Ptr(), buffSize);
+			UnsafeArray<const RawSMBIOSData> pDMIData = UnsafeArray<RawSMBIOSData>::ConvertFrom(dataBuff);
 			NEW_CLASS(smbios, IO::SMBIOS(&pDMIData->SMBIOSTableData[0], pDMIData->Length, dataBuff));
 			return smbios;
 		}
@@ -46,7 +47,7 @@ Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 	{
 		UIntOS i;
 		UIntOS j;
-		dataBuff = 0;
+		optdataBuff = nullptr;
 		buffSize = 0;
 		if (r->ReadNext())
 		{
@@ -60,7 +61,7 @@ Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 					buffSize = (UInt32)r->GetBinarySize(i);
 					if (buffSize > 0)
 					{
-						dataBuff = MemAlloc(UInt8, buffSize);
+						optdataBuff = dataBuff = MemAllocArr(UInt8, buffSize);
 						r->GetBinary(i, dataBuff);
 						break;
 					}
@@ -71,7 +72,7 @@ Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 		db->CloseReader(r);
 	}
 	DEL_CLASS(db);
-	if (dataBuff)
+	if (optdataBuff.SetTo(dataBuff))
 	{
 		NEW_CLASS(smbios, IO::SMBIOS(dataBuff, buffSize, dataBuff));
 		return smbios;

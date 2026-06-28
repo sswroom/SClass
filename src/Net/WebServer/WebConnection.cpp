@@ -53,7 +53,7 @@ Net::WebServer::WebConnection::WebConnection(NN<Net::TCPClientFactory> clif, Opt
 	this->cstm = nullptr;
 	this->hdlr = hdlr;
 	this->currReq = nullptr;
-	this->dataBuff = MemAlloc(UInt8, 4096);
+	this->dataBuff = MemAllocArr(UInt8, 4096);
 	this->dataBuffSize = 4096;
 	this->buffSize = 0;
 	this->respLeng = 0;
@@ -403,10 +403,10 @@ Optional<Text::String> Net::WebServer::WebConnection::GetRequestURL()
 
 void Net::WebServer::WebConnection::SendHeaders(Net::WebServer::WebRequest::RequestProtocol protocol)
 {
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UnsafeArray<UTF8Char> sptr;
-	buff = MemAlloc(UInt8, 256 + (this->respHeaders.GetLength() * 3));
-	sptr = (UTF8Char*)buff;
+	buff = MemAllocArr(UInt8, 256 + (this->respHeaders.GetLength() * 3));
+	sptr = UnsafeArray<UTF8Char>::ConvertFrom(buff);
 	if (protocol == Net::WebServer::WebRequest::RequestProtocol::HTTP1_0)
 	{
 		sptr = Text::StrConcatNE(sptr, UTF8STRC("HTTP/1.0 "));
@@ -432,10 +432,10 @@ void Net::WebServer::WebConnection::SendHeaders(Net::WebServer::WebRequest::Requ
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 
 #if defined(VERBOSE)
-	printf("WebConn: Send headers\r\n%s", buff);
+	printf("WebConn: Send headers\r\n%s", buff.Ptr());
 #endif
-	this->SendData(buff, (UIntOS)(sptr - (UTF8Char*)buff));
-	MemFree(buff);
+	this->SendData(buff, (UIntOS)(sptr - UnsafeArray<UTF8Char>::ConvertFrom(buff)));
+	MemFreeArr(buff);
 	this->respHeaderSent = true;
 }
 

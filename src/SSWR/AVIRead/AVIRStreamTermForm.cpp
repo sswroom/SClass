@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendClicked(AnyType userObj)
 		}
 		else
 		{
-			UInt8 *buff = MemAlloc(UInt8, (sb.GetLength() >> 1) + 2);
+			UnsafeArray<UInt8> buff = MemAllocArr(UInt8, (sb.GetLength() >> 1) + 2);
 			size = sb.Hex2Bytes(buff);
 			switch (me->cboSendLBreak->GetSelectedIndex())
 			{
@@ -95,7 +95,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendClicked(AnyType userObj)
 			}
 			stm->Write(Data::ByteArrayR(buff, size));
 			me->sendBuff.Write(Data::ByteArrayR(buff, size));
-			MemFree(buff);
+			MemFreeArr(buff);
 			me->UpdateSendDisp();
 		}
 	}

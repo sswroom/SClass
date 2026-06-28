@@ -56,10 +56,10 @@ UIntOS Net::SAMLUtil::DecryptEncryptedKey(NN<Net::SSLEngine> ssl, NN<Crypto::Cer
 				sbResult->AppendC(UTF8STRC("Length of e:CipherData not valid in EncryptedKey"));
 				return 0;
 			}
-			UInt8 *data = MemAlloc(UInt8, dataSize);
+			UnsafeArray<UInt8> data = MemAllocArr(UInt8, dataSize);
 			b64.DecodeBin(sb.ToCString(), data);
 			keySize = ssl->Decrypt(key, keyBuff, Data::ByteArrayR(data, dataSize), rsaPadding);
-			MemFree(data);
+			MemFreeArr(data);
 			if (keySize == 0)
 			{
 				sbResult->AppendC(UTF8STRC("Error in decrypting the EncryptedKey"));
@@ -206,8 +206,8 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 						}
 					}
 					UIntOS blkSize = cipher->GetDecBlockSize();
-					UInt8 *data = MemAlloc(UInt8, dataSize);
-					UInt8 *decData = MemAlloc(UInt8, dataSize + blkSize);
+					UnsafeArray<UInt8> data = MemAllocArr(UInt8, dataSize);
+					UnsafeArray<UInt8> decData = MemAllocArr(UInt8, dataSize + blkSize);
 					UIntOS decSize;
 					b64.DecodeBin(sb.ToCString(), data);
 					if (headingIV)
@@ -224,8 +224,8 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 						decSize -= decData[decSize - 1];
 					}
 					sbResult->AppendC(decData, decSize);
-					MemFree(data);
-					MemFree(decData);
+					MemFreeArr(data);
+					MemFreeArr(decData);
 					DEL_CLASS(cipher);
 					return true;
 				}
@@ -355,12 +355,12 @@ Bool Net::SAMLUtil::DecodeRequest(Text::CStringNN requestB64, NN<Text::StringBui
 	UIntOS decSize = b64.CalcBinSize(requestB64);
 	if (decSize == 0)
 		return false;
-	UInt8 *decBuff = MemAlloc(UInt8, decSize);
+	UnsafeArray<UInt8> decBuff = MemAllocArr(UInt8, decSize);
 	b64.DecodeBin(requestB64, decBuff);
 	IO::MemoryStream mstm;
 	Data::Compress::Inflater inf(mstm, false);
 	Bool succ = inf.Write(Data::ByteArrayR(decBuff, decSize)) == decSize;
-	MemFree(decBuff);
+	MemFreeArr(decBuff);
 	if (succ)
 	{
 		sbResult->AppendC(mstm.GetBuff(), (UIntOS)mstm.GetLength());

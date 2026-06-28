@@ -14,7 +14,7 @@ UInt32 __stdcall Net::ARPHandler::DataThread(AnyType obj)
 
 	if (stat->me->soc.SetTo(soc))
 	{
-		UInt8 *buff = MemAlloc(UInt8, 2048);
+		UnsafeArray<UInt8> buff = MemAllocArr(UInt8, 2048);
 		while (!stat->toStop)
 		{
 			UIntOS recvSize;
@@ -38,7 +38,7 @@ UInt32 __stdcall Net::ARPHandler::DataThread(AnyType obj)
 				}
 			}
 		}
-		MemFree(buff);
+		MemFreeArr(buff);
 	}
 	stat->threadRunning = false;
 	stat->me->ctrlEvt->Set();
@@ -57,23 +57,24 @@ Net::ARPHandler::ARPHandler(NN<Net::SocketFactory> sockf, UnsafeArray<const UTF8
 	this->userData = userData;
 	this->ctrlEvt = 0;
 	this->soc = this->sockf->CreateARPSocket();
-	this->threadStats = 0;
+	this->threadStats = nullptr;
 
+	UnsafeArray<ThreadStat> threadStats;
 	NN<Socket> soc;
 	if (this->soc.SetTo(soc))
 	{
 		NEW_CLASS(this->ctrlEvt, Sync::Event(true));
 
-		this->threadStats = MemAlloc(Net::ARPHandler::ThreadStat, this->threadCnt);
+		this->threadStats = threadStats = MemAllocArr(Net::ARPHandler::ThreadStat, this->threadCnt);
 
 		i = this->threadCnt;
 		while (i-- > 0)
 		{
-			this->threadStats[i].toStop = false;
-			this->threadStats[i].threadRunning = false;
-			NEW_CLASS(this->threadStats[i].evt, Sync::Event(true));
-			this->threadStats[i].me = this;
-			Sync::ThreadUtil::Create(DataThread, &this->threadStats[i]);
+			threadStats[i].toStop = false;
+			threadStats[i].threadRunning = false;
+			NEW_CLASSNN(threadStats[i].evt, Sync::Event(true));
+			threadStats[i].me = *this;
+			Sync::ThreadUtil::Create(DataThread, &threadStats[i]);
 		}
 		Bool running;
 		while (true)
@@ -82,7 +83,7 @@ Net::ARPHandler::ARPHandler(NN<Net::SocketFactory> sockf, UnsafeArray<const UTF8
 			i = this->threadCnt;
 			while (i-- > 0)
 			{
-				if (!this->threadStats[i].threadRunning)
+				if (!threadStats[i].threadRunning)
 				{
 					running = false;
 					break;
@@ -99,24 +100,25 @@ Net::ARPHandler::~ARPHandler()
 {
 	UIntOS i;
 	NN<Socket> soc;
-	if (this->threadStats)
+	UnsafeArray<ThreadStat> threadStats;
+	if (this->threadStats.SetTo(threadStats))
 	{
 		i = this->threadCnt;
 		while (i-- > 0)
 		{
-			this->threadStats[i].toStop = true;
+		threadStats[i].toStop = true;
 		}
 	}
 	if (this->soc.SetTo(soc))
 	{
 		this->sockf->DestroySocket(soc);
 	}
-	if (this->threadStats)
+	if (this->threadStats.SetTo(threadStats))
 	{
 		i = this->threadCnt;
 		while (i-- > 0)
 		{
-			this->threadStats[i].evt->Set();
+			threadStats[i].evt->Set();
 		}
 
 		Bool threadRunning = true;
@@ -126,7 +128,7 @@ Net::ARPHandler::~ARPHandler()
 			i = this->threadCnt;
 			while (i-- > 0)
 			{
-				if (this->threadStats[i].threadRunning)
+				if (threadStats[i].threadRunning)
 				{
 					threadRunning = true;
 					break;
@@ -140,9 +142,9 @@ Net::ARPHandler::~ARPHandler()
 		i = this->threadCnt;
 		while (i-- > 0)
 		{
-			DEL_CLASS(this->threadStats[i].evt);
+			threadStats[i].evt.Delete();
 		}
-		MemFree(this->threadStats);
+		MemFreeArr(threadStats);
 	}
 	this->soc = nullptr;
 

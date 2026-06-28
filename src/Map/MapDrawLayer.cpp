@@ -601,7 +601,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 	Text::StringBuilderUTF8 sb;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	UIntOS *ofsts;
+	UnsafeArray<UIntOS> ofsts;
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> sptrs;
 	NN<Map::VectorLayer> lyr;
 	Data::ArrayListInt64 objIds;
@@ -617,7 +617,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 
 	k = this->GetColumnCnt();
 	i = k;
-	ofsts = MemAlloc(UIntOS, k);
+	ofsts = MemAllocArr(UIntOS, k);
 	sptrs = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, k);
 	sb.AllocLeng(65536);
 	sptr = sb.v;
@@ -732,7 +732,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 	}
 
 	MemFreeArr(sptrs);
-	MemFree(ofsts);
+	MemFreeArr(ofsts);
 	return lyr;
 }
 
