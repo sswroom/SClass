@@ -24,8 +24,8 @@ namespace Media
 			typedef struct
 			{
 				UIntOS length;
-				Int64 *weight;
-				IntOS *index;
+				UnsafeArrayOpt<Int64> weight;
+				UnsafeArrayOpt<IntOS> index;
 				UIntOS tap;
 			} YVPARAMETER;
 

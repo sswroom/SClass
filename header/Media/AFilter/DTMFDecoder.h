@@ -19,14 +19,14 @@ namespace Media
 			AnyType toneChgObj;
 
 			WChar currTone;
-			UInt8 *sampleBuff;
+			UnsafeArray<UInt8> sampleBuff;
 			UIntOS sampleBuffSize;
 			UIntOS sampleOfst;
 			UIntOS sampleCnt;
 			Sync::Mutex sampleMut;
 			UIntOS calcLeft;
 			UIntOS calcInt;
-			UInt8 *calcBuff;
+			UnsafeArray<UInt8> calcBuff;
 			Bool calcReady;
 			Sync::Mutex calcMut;
 			UInt32 nChannels;

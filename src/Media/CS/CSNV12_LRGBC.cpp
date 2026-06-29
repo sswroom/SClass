@@ -43,16 +43,18 @@ void Media::CS::CSNV12_LRGBC::SetupInterpolationParameter(UIntOS source_length, 
 	UnsafeArray<Double> work;
 	Double  sum;
 	Double  pos;
+	UnsafeArray<Int64> weight;
+	UnsafeArray<IntOS> index;
 
 	out->length = result_length;
 	out->tap = LANCZOS_NTAP;
 #if LANCZOS_NTAP == 4
 	Int32 *ind;
-	out->weight = MemAllocA(Int64, out->length * 6);
-	out->index = MemAllocA(IntOS, out->length);
+	out->weight = weight = MemAllocAArr(Int64, out->length * 6);
+	out->index = index = MemAllocAArr(IntOS, out->length);
 #else
-	out->weight = MemAllocA(Int64, out->length * out->tap);
-	out->index = MemAllocA(IntOS, out->length * out->tap);
+	out->weight = weight = MemAllocAArr(Int64, out->length * out->tap);
+	out->index = index = MemAllocAArr(IntOS, out->length * out->tap);
 #endif
 
 	work = MemAllocArr(Double, out->tap);
@@ -66,7 +68,7 @@ void Media::CS::CSNV12_LRGBC::SetupInterpolationParameter(UIntOS source_length, 
 		pos = (IntOS2Double(n) + 0.5 - pos);
 		sum = 0;
 #if LANCZOS_NTAP == 4
-		ind = (Int32*)&out->weight[i * 6];
+		ind = (Int32*)&weight[i * 6];
 		for(j = 0; j < out->tap; j++)
 		{
 			if(n < 0){
@@ -87,7 +89,7 @@ void Media::CS::CSNV12_LRGBC::SetupInterpolationParameter(UIntOS source_length, 
 		{
 			UInt16 v1 = (UInt16)(0xffff & Double2Int32((work[j] / sum) * 32767.0));
 			UInt16 v2 = (UInt16)(0xffff & Double2Int32((work[j + 1] / sum) * 32767.0));
-			UInt16 *tmpPtr = (UInt16*)&out->weight[i * 6 + j + 2];
+			UInt16 *tmpPtr = (UInt16*)&weight[i * 6 + j + 2];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
 			tmpPtr[2] = v1;
@@ -102,11 +104,11 @@ void Media::CS::CSNV12_LRGBC::SetupInterpolationParameter(UIntOS source_length, 
 		for(j = 0; j < out->tap; j++)
 		{
 			if(n < 0){
-				out->index[i * out->tap + j] = 0;
+				index[i * out->tap + j] = 0;
 			}else if(n >= source_length){
-				out->index[i * out->tap + j] = (source_length - 1) * indexSep;
+				index[i * out->tap + j] = (source_length - 1) * indexSep;
 			}else{
-				out->index[i * out->tap + j] = n * indexSep;
+				index[i * out->tap + j] = n * indexSep;
 			}
 			work[j] = lanczos3_weight(pos + offsetCorr);
 			sum += work[j];
@@ -119,7 +121,7 @@ void Media::CS::CSNV12_LRGBC::SetupInterpolationParameter(UIntOS source_length, 
 		{
 			UInt16 v1 = (UInt16)(0xffff & Double2Int32((work[j] / sum) * 32767.0));
 			UInt16 v2 = (UInt16)(0xffff & Double2Int32((work[j + 1] / sum) * 32767.0));
-			UInt16 *tmpPtr = (UInt16*)&out->weight[i * out->tap + j];
+			UInt16 *tmpPtr = (UInt16*)&weight[i * out->tap + j];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
 			tmpPtr[2] = v1;
@@ -168,9 +170,9 @@ UInt32 Media::CS::CSNV12_LRGBC::WorkerThread(AnyType obj)
 		else if (ts->status == 11)
 		{
 #if LANCZOS_NTAP == 4
-			CSNV12_LRGBC_VerticalFilterLRGB(ts->yPtr.Ptr(), ts->uvPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl, ts->yvParam->weight + ts->uvBpl * 6, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->dbpl, converter->yuv2rgb14.Ptr(), converter->rgbGammaCorr.Ptr());
+			CSNV12_LRGBC_VerticalFilterLRGB(ts->yPtr.Ptr(), ts->uvPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index.Ptr() + ts->uvBpl, ts->yvParam->weight.Ptr() + ts->uvBpl * 6, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->dbpl, converter->yuv2rgb14.Ptr(), converter->rgbGammaCorr.Ptr());
 #else
-			CSNV12_LRGBC_VerticalFilterLRGB(ts->yPtr.Ptr(), ts->uvPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl * LANCZOS_NTAP, ts->yvParam->weight + ts->uvBpl * LANCZOS_NTAP, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->dbpl, converter->yuv2rgb14.Ptr(), converter->rgbGammaCorr.Ptr());
+			CSNV12_LRGBC_VerticalFilterLRGB(ts->yPtr.Ptr(), ts->uvPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index.Ptr() + ts->uvBpl * LANCZOS_NTAP, ts->yvParam->weight.Ptr() + ts->uvBpl * LANCZOS_NTAP, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->dbpl, converter->yuv2rgb14.Ptr(), converter->rgbGammaCorr.Ptr());
 #endif
 			ts->status = 4;
 			converter->evtMain.Set();
@@ -212,10 +214,10 @@ Media::CS::CSNV12_LRGBC::CSNV12_LRGBC(NN<const Media::ColorProfile> srcProfile, 
 	{
 		this->nThread = this->nThread >> 1;
 	}
-	this->yvParamO.weight = 0;
-	this->yvParamO.index = 0;
-	this->yvParamE.weight = 0;
-	this->yvParamE.index = 0;
+	this->yvParamO.weight = nullptr;
+	this->yvParamO.index = nullptr;
+	this->yvParamE.weight = nullptr;
+	this->yvParamE.index = nullptr;
 	this->uBuff = 0;
 	this->vBuff = 0;
 	this->yvBuffSize = 0;
@@ -304,19 +306,27 @@ Media::CS::CSNV12_LRGBC::~CSNV12_LRGBC()
 	}
 	MemFreeArr(stats);
 
-	if (this->yvParamO.index)
+	UnsafeArray<IntOS> index;
+	UnsafeArray<Int64> weight;
+	if (this->yvParamO.index.SetTo(index))
 	{
-		MemFreeA(this->yvParamO.weight);
-		MemFreeA(this->yvParamO.index);
-		this->yvParamO.weight = 0;
-		this->yvParamO.index = 0;
+		MemFreeAArr(index);
+		this->yvParamO.index = nullptr;
 	}
-	if (this->yvParamE.index)
+	if (this->yvParamO.weight.SetTo(weight))
 	{
-		MemFreeA(this->yvParamE.weight);
-		MemFreeA(this->yvParamE.index);
-		this->yvParamE.weight = 0;
-		this->yvParamE.index = 0;
+		MemFreeAArr(weight);
+		this->yvParamO.weight = nullptr;
+	}
+	if (this->yvParamE.index.SetTo(index))
+	{
+		MemFreeAArr(index);
+		this->yvParamE.index = nullptr;
+	}
+	if (this->yvParamE.weight.SetTo(weight))
+	{
+		MemFreeAArr(weight);
+		this->yvParamE.weight = nullptr;
 	}
 	if (this->uBuff)
 	{
@@ -343,6 +353,8 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> sr
 	UIntOS lastHeight = dispHeight;
 	UIntOS currHeight;
 	UIntOS cSize = dispWidth << 4;
+	UnsafeArray<Int64> weight;
+	UnsafeArray<IntOS> index;
 	UnsafeArray<UInt8> srcPtr = srcPtr2[0];
 	if (srcStoreWidth & 1)
 	{
@@ -370,14 +382,17 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> sr
 		{
 			if (ftype == Media::FT_MERGED_TF)
 			{
-				if (this->yvParamO.index == 0 || (this->yvParamO.length != dispHeight >> 1) || this->yvStepO != (srcStoreWidth << 1))
+				if (!this->yvParamO.index.SetTo(index) || !this->yvParamO.weight.SetTo(weight) || (this->yvParamO.length != dispHeight >> 1) || this->yvStepO != (srcStoreWidth << 1))
 				{
-					if (this->yvParamO.index)
+					if (this->yvParamO.index.SetTo(index))
 					{
-						MemFreeA(this->yvParamO.weight);
-						MemFreeA(this->yvParamO.index);
-						this->yvParamO.weight = 0;
-						this->yvParamO.index = 0;
+						MemFreeAArr(index);
+						this->yvParamO.index = nullptr;
+					}
+					if (this->yvParamO.weight.SetTo(weight))
+					{
+						MemFreeAArr(weight);
+						this->yvParamO.weight = nullptr;
 					}
 					this->yvStepO = srcStoreWidth << 1;
 					SetupInterpolationParameter(dispHeight >> 2, dispHeight >> 1, this->yvParamO, this->yvStepO, 0);
@@ -385,14 +400,17 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> sr
 			}
 			else
 			{
-				if (this->yvParamE.index == 0 || (this->yvParamE.length != dispHeight >> 1) || this->yvStepE != (srcStoreWidth << 1))
+				if (!this->yvParamE.index.SetTo(index) || !this->yvParamE.weight.SetTo(weight) || (this->yvParamE.length != dispHeight >> 1) || this->yvStepE != (srcStoreWidth << 1))
 				{
-					if (this->yvParamE.index)
+					if (this->yvParamE.index.SetTo(index))
 					{
-						MemFreeA(this->yvParamE.weight);
-						MemFreeA(this->yvParamE.index);
-						this->yvParamE.weight = 0;
-						this->yvParamE.index = 0;
+						MemFreeAArr(index);
+						this->yvParamE.index = nullptr;
+					}
+					if (this->yvParamE.weight.SetTo(weight))
+					{
+						MemFreeAArr(weight);
+						this->yvParamE.weight = nullptr;
 					}
 					this->yvStepE = srcStoreWidth << 1;
 					SetupInterpolationParameter(dispHeight >> 2, dispHeight >> 1, this->yvParamE, this->yvStepE, YVADJ);
@@ -500,26 +518,32 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> sr
 			{
 				UnsafeArray<UInt8> uvStart = srcPtr + srcStoreWidth * srcStoreHeight;
 
-				if (this->yvParamO.index == 0 || this->yvParamO.length != (dispHeight >> 1) || this->yvStepO != (srcStoreWidth << 1))
+				if (!this->yvParamO.index.SetTo(index) || !this->yvParamO.weight.SetTo(weight) || this->yvParamO.length != (dispHeight >> 1) || this->yvStepO != (srcStoreWidth << 1))
 				{
-					if (this->yvParamO.index)
+					if (this->yvParamO.index.SetTo(index))
 					{
-						MemFreeA(this->yvParamO.weight);
-						MemFreeA(this->yvParamO.index);
-						this->yvParamO.weight = 0;
-						this->yvParamO.index = 0;
+						MemFreeAArr(index);
+						this->yvParamO.index = nullptr;
+					}
+					if (this->yvParamO.weight.SetTo(weight))
+					{
+						MemFreeAArr(weight);
+						this->yvParamO.weight = nullptr;
 					}
 					this->yvStepO = srcStoreWidth << 1;
 					SetupInterpolationParameter(dispHeight >> 2, dispHeight >> 1, this->yvParamO, this->yvStepO, 0);
 				}
-				if (this->yvParamE.index == 0 || this->yvParamE.length != (dispHeight >> 1) || this->yvStepE != (srcStoreWidth << 1))
+				if (!this->yvParamE.index.SetTo(index) || !this->yvParamE.weight.SetTo(weight) || this->yvParamE.length != (dispHeight >> 1) || this->yvStepE != (srcStoreWidth << 1))
 				{
-					if (this->yvParamE.index)
+					if (this->yvParamE.index.SetTo(index))
 					{
-						MemFreeA(this->yvParamE.weight);
-						MemFreeA(this->yvParamE.index);
-						this->yvParamE.weight = 0;
-						this->yvParamE.index = 0;
+						MemFreeAArr(index);
+						this->yvParamE.index = nullptr;
+					}
+					if (this->yvParamE.weight.SetTo(weight))
+					{
+						MemFreeAArr(weight);
+						this->yvParamE.weight = nullptr;
 					}
 					this->yvStepE = srcStoreWidth << 1;
 					SetupInterpolationParameter(dispHeight >> 2, dispHeight >> 1, this->yvParamE, this->yvStepE, YVADJ);
@@ -689,14 +713,17 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> sr
 		{
 			UnsafeArray<UInt8> uvStart = srcPtr + srcStoreWidth * srcStoreHeight;
 
-			if (this->yvParamO.index == 0 || this->yvParamO.length != dispHeight || this->yvStepO != srcStoreWidth)
+			if (!this->yvParamO.index.SetTo(index) || !this->yvParamO.weight.SetTo(weight) || this->yvParamO.length != dispHeight || this->yvStepO != srcStoreWidth)
 			{
-				if (this->yvParamO.index)
+				if (this->yvParamO.index.SetTo(index))
 				{
-					MemFreeA(this->yvParamO.weight);
-					MemFreeA(this->yvParamO.index);
-					this->yvParamO.weight = 0;
-					this->yvParamO.index = 0;
+					MemFreeAArr(index);
+					this->yvParamO.index = nullptr;
+				}
+				if (this->yvParamO.weight.SetTo(weight))
+				{
+					MemFreeAArr(weight);
+					this->yvParamO.weight = nullptr;
 				}
 				this->yvStepO = srcStoreWidth;
 				SetupInterpolationParameter(dispHeight >> 1, dispHeight, this->yvParamO, this->yvStepO, 0);

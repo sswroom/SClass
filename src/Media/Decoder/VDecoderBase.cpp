@@ -17,7 +17,7 @@ void __stdcall Media::Decoder::VDecoderBase::OnVideoChange(Media::VideoSource::F
 
 Media::Decoder::VDecoderBase::VDecoderBase(NN<VideoSource> sourceVideo)
 {
-	this->sourceVideo = sourceVideo.Ptr();
+	this->sourceVideo = sourceVideo;
 	this->fcCb = 0;
 	this->started = false;
 }
@@ -28,99 +28,111 @@ Media::Decoder::VDecoderBase::~VDecoderBase()
 
 void Media::Decoder::VDecoderBase::SetBorderCrop(UIntOS cropLeft, UIntOS cropTop, UIntOS cropRight, UIntOS cropBottom)
 {
-	this->sourceVideo->SetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return;
+	sourceVideo->SetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 }
 
 void Media::Decoder::VDecoderBase::GetBorderCrop(OutParam<UIntOS> cropLeft, OutParam<UIntOS> cropTop, OutParam<UIntOS> cropRight, OutParam<UIntOS> cropBottom)
 {
-	this->sourceVideo->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return;
+	sourceVideo->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 }
 
 UnsafeArrayOpt<UTF8Char> Media::Decoder::VDecoderBase::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
-	if (this->sourceVideo)
-		return this->sourceVideo->GetSourceName(buff);
+	NN<Media::VideoSource> sourceVideo;
+	if (this->sourceVideo.SetTo(sourceVideo))
+		return sourceVideo->GetSourceName(buff);
 	//////////////////////////////////////
 	return nullptr;
 }
 
 Bool Media::Decoder::VDecoderBase::Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData)
 {
-	if (this->sourceVideo == 0)
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
 		return false;
 	this->frameCb = cb;
 	this->fcCb = fcCb;
 	this->frameCbData = userData;
-	this->sourceVideo->Init(OnVideoFrame, OnVideoChange, this);
+	sourceVideo->Init(OnVideoFrame, OnVideoChange, this);
 	return true;
 }
 
 Bool Media::Decoder::VDecoderBase::Start()
 {
-	if (this->sourceVideo == 0)
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
 		return false;
 
 	this->started = true;
-	return this->sourceVideo->Start();
+	return sourceVideo->Start();
 }
 
 void Media::Decoder::VDecoderBase::Stop()
 {
-	if (this->sourceVideo == 0)
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
 		return;
 
 	this->started = false;
-	this->sourceVideo->Stop();
+	sourceVideo->Stop();
 	this->frameCb = 0;
 	this->frameCbData = 0;
 }
 
 Bool Media::Decoder::VDecoderBase::IsRunning()
 {
-	if (this->sourceVideo == 0)
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
 		return false;
-	return this->sourceVideo->IsRunning();
+	return sourceVideo->IsRunning();
 }
 
 Data::Duration Media::Decoder::VDecoderBase::GetStreamTime()
 {
-	if (this->sourceVideo)
-		return this->sourceVideo->GetStreamTime();
-	return 0;
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return 0;
+	return sourceVideo->GetStreamTime();
 }
 
 Bool Media::Decoder::VDecoderBase::CanSeek()
 {
-	if (this->sourceVideo)
-		return this->sourceVideo->CanSeek();
+//	if (this->sourceVideo)
+//		return this->sourceVideo->CanSeek();
 	return false;
 }
 
 Data::Duration Media::Decoder::VDecoderBase::SeekToTime(Data::Duration time)
 {
-	if (this->sourceVideo)
-		return this->sourceVideo->SeekToTime(time);
+//	if (this->sourceVideo)
+//		return this->sourceVideo->SeekToTime(time);
 	return 0;
 }
 
 Bool Media::Decoder::VDecoderBase::IsRealTimeSrc()
 {
-	if (this->sourceVideo)
-		return this->sourceVideo->IsRealTimeSrc();
+//	if (this->sourceVideo)
+//		return this->sourceVideo->IsRealTimeSrc();
 	return false;
 }
 
 Bool Media::Decoder::VDecoderBase::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
-	if (this->sourceVideo)
-		return this->sourceVideo->TrimStream(trimTimeStart, trimTimeEnd, syncTime);
+//	if (this->sourceVideo)
+//		return this->sourceVideo->TrimStream(trimTimeStart, trimTimeEnd, syncTime);
 	return false;
 }
 
 UIntOS Media::Decoder::VDecoderBase::GetDataSeekCount()
 {
-	if (this->sourceVideo)
-		return this->sourceVideo->GetDataSeekCount();
+//	if (this->sourceVideo)
+//		return this->sourceVideo->GetDataSeekCount();
 	return 0;
 }
 
@@ -134,11 +146,10 @@ UInt8 *Media::Decoder::VDecoderBase::GetProp(Int32 propName, UInt32 *size)
 	UInt8 *ret = Media::VideoSource::GetProp(propName, size);
 	if (ret)
 		return ret;
-	if (this->sourceVideo)
-	{
-		return this->sourceVideo->GetProp(propName, size);
-	}
-	return 0;
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return nullptr;
+	return sourceVideo->GetProp(propName, size);
 }
 
 void Media::Decoder::VDecoderBase::OnFrameChanged(Media::VideoSource::FrameChange fc)

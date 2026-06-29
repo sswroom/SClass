@@ -13,18 +13,16 @@ Media::Decoder::VDecoderChain::VDecoderChain(NN<VideoSource> sourceVideo) : Medi
 
 Media::Decoder::VDecoderChain::~VDecoderChain()
 {
-	if (this->sourceVideo)
-	{
-		DEL_CLASS(this->sourceVideo);
-	}
+	this->sourceVideo.Delete();
 	this->srcFilters.DeleteAll();
 }
 
 Text::CStringNN Media::Decoder::VDecoderChain::GetFilterName()
 {
-	if (this->sourceVideo)
+	NN<Media::VideoSource> sourceVideo;
+	if (this->sourceVideo.SetTo(sourceVideo))
 	{
-		return this->sourceVideo->GetFilterName();
+		return sourceVideo->GetFilterName();
 	}
 	return CSTR("VDecoderChain");
 }
@@ -36,30 +34,48 @@ void Media::Decoder::VDecoderChain::AddDecoder(NN<Media::VideoSource> decoder)
 
 Bool Media::Decoder::VDecoderChain::CaptureImage(ImageCallback imgCb, AnyType userData)
 {
-	return this->sourceVideo->CaptureImage(imgCb, userData);
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return false;
+	return sourceVideo->CaptureImage(imgCb, userData);
 }
 
 Bool Media::Decoder::VDecoderChain::HasFrameCount()
 {
-	return this->sourceVideo->HasFrameCount();
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return false;
+	return sourceVideo->HasFrameCount();
 }
 
 UIntOS Media::Decoder::VDecoderChain::GetFrameCount()
 {
-	return this->sourceVideo->GetFrameCount();
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return 0;
+	return sourceVideo->GetFrameCount();
 }
 
 Data::Duration Media::Decoder::VDecoderChain::GetFrameTime(UIntOS frameIndex)
 {
-	return this->sourceVideo->GetFrameTime(frameIndex);
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return 0;
+	return sourceVideo->GetFrameTime(frameIndex);
 }
 
 void Media::Decoder::VDecoderChain::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
-	this->sourceVideo->EnumFrameInfos(cb, userData);
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return;
+	sourceVideo->EnumFrameInfos(cb, userData);
 }
 
 Bool Media::Decoder::VDecoderChain::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
-	return this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return false;
+	return sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 }

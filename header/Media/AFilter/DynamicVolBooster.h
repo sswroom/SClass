@@ -11,7 +11,7 @@ namespace Media
 		{
 		private:
 			UInt32 soundBuffLeng;
-			Int32 *soundBuff;
+			UnsafeArrayOpt<Int32> soundBuff;
 			Int32 maxVol;
 			Int32 lastVol;
 			Int32 thisVol;

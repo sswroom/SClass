@@ -25,6 +25,8 @@ void Media::CS::CSYUV420P8_RGB32C::ConvertV2(UnsafeArray<const UnsafeArray<UInt8
 	UIntOS lastHeight = dispHeight;
 	UIntOS currHeight;
 	UIntOS cSize = dispWidth << 4;
+	UnsafeArray<Int64> weight;
+	UnsafeArray<IntOS> index;
 	if (srcStoreWidth & 1)
 	{
 		srcStoreWidth = srcStoreWidth + 1;//+ 4 - (width & 3);
@@ -54,14 +56,17 @@ void Media::CS::CSYUV420P8_RGB32C::ConvertV2(UnsafeArray<const UnsafeArray<UInt8
 		{
 			if (ftype == Media::FT_MERGED_TF)
 			{
-				if (this->yvParamO.index == 0 || (this->yvParamO.length != dispHeight >> 1) || this->yvStepO != srcStoreWidth)
+				if (!this->yvParamO.index.SetTo(index) || !this->yvParamO.weight.SetTo(weight) || this->yvParamO.length != (dispHeight >> 1) || this->yvStepO != srcStoreWidth)
 				{
-					if (this->yvParamO.index)
+					if (this->yvParamO.index.SetTo(index))
 					{
-						MemFreeA(this->yvParamO.weight);
-						MemFreeA(this->yvParamO.index);
-						this->yvParamO.weight = 0;
-						this->yvParamO.index = 0;
+						MemFreeAArr(index);
+						this->yvParamO.index = nullptr;
+					}
+					if (this->yvParamO.weight.SetTo(weight))
+					{
+						MemFreeAArr(weight);
+						this->yvParamO.weight = nullptr;
 					}
 					this->yvStepO = srcStoreWidth;
 					SetupInterpolationParameter(dispHeight >> 2, dispHeight >> 1, this->yvParamO, this->yvStepO, 0);
@@ -69,14 +74,17 @@ void Media::CS::CSYUV420P8_RGB32C::ConvertV2(UnsafeArray<const UnsafeArray<UInt8
 			}
 			else
 			{
-				if (this->yvParamE.index == 0 || (this->yvParamE.length != dispHeight >> 1) || this->yvStepE != srcStoreWidth)
+				if (!this->yvParamE.index.SetTo(index) || !this->yvParamE.weight.SetTo(weight) || this->yvParamE.length != (dispHeight >> 1) || this->yvStepE != srcStoreWidth)
 				{
-					if (this->yvParamE.index)
+					if (this->yvParamE.index.SetTo(index))
 					{
-						MemFreeA(this->yvParamE.weight);
-						MemFreeA(this->yvParamE.index);
-						this->yvParamE.weight = 0;
-						this->yvParamE.index = 0;
+						MemFreeAArr(index);
+						this->yvParamE.index = nullptr;
+					}
+					if (this->yvParamE.weight.SetTo(weight))
+					{
+						MemFreeAArr(weight);
+						this->yvParamE.weight = nullptr;
 					}
 					this->yvStepE = srcStoreWidth;
 					SetupInterpolationParameter(dispHeight >> 2, dispHeight >> 1, this->yvParamE, this->yvStepE, YVADJ);
@@ -188,26 +196,32 @@ void Media::CS::CSYUV420P8_RGB32C::ConvertV2(UnsafeArray<const UnsafeArray<UInt8
 				UnsafeArray<UInt8> uStart = srcPtr[1];
 				UnsafeArray<UInt8> vStart = srcPtr[2];
 
-				if (this->yvParamO.index == 0 || this->yvParamO.length != (dispHeight >> 1) || this->yvStepO != srcStoreWidth)
+				if (!this->yvParamO.index.SetTo(index) || !this->yvParamO.weight.SetTo(weight) || this->yvParamO.length != (dispHeight >> 1) || this->yvStepO != srcStoreWidth)
 				{
-					if (this->yvParamO.index)
+					if (this->yvParamO.index.SetTo(index))
 					{
-						MemFreeA(this->yvParamO.weight);
-						MemFreeA(this->yvParamO.index);
-						this->yvParamO.weight = 0;
-						this->yvParamO.index = 0;
+						MemFreeAArr(index);
+						this->yvParamO.index = nullptr;
+					}
+					if (this->yvParamO.weight.SetTo(weight))
+					{
+						MemFreeAArr(weight);
+						this->yvParamO.weight = nullptr;
 					}
 					this->yvStepO = srcStoreWidth;
 					SetupInterpolationParameter(dispHeight >> 2, dispHeight >> 1, this->yvParamO, this->yvStepO, 0);
 				}
-				if (this->yvParamE.index == 0 || this->yvParamE.length != (dispHeight >> 1) || this->yvStepE != srcStoreWidth)
+				if (!this->yvParamE.index.SetTo(index) || !this->yvParamE.weight.SetTo(weight) || this->yvParamE.length != (dispHeight >> 1) || this->yvStepE != srcStoreWidth)
 				{
-					if (this->yvParamE.index)
+					if (this->yvParamE.index.SetTo(index))
 					{
-						MemFreeA(this->yvParamE.weight);
-						MemFreeA(this->yvParamE.index);
-						this->yvParamE.weight = 0;
-						this->yvParamE.index = 0;
+						MemFreeAArr(index);
+						this->yvParamE.index = nullptr;
+					}
+					if (this->yvParamE.weight.SetTo(weight))
+					{
+						MemFreeAArr(weight);
+						this->yvParamE.weight = nullptr;
 					}
 					this->yvStepE = srcStoreWidth;
 					SetupInterpolationParameter(dispHeight >> 2, dispHeight >> 1, this->yvParamE, this->yvStepE, YVADJ);
@@ -382,14 +396,17 @@ void Media::CS::CSYUV420P8_RGB32C::ConvertV2(UnsafeArray<const UnsafeArray<UInt8
 			UnsafeArray<UInt8> uStart = srcPtr[1];
 			UnsafeArray<UInt8> vStart = srcPtr[2];
 
-			if (this->yvParamO.index == 0 || this->yvParamO.length != dispHeight || this->yvStepO != (srcStoreWidth >> 1))
+			if (!this->yvParamO.index.SetTo(index) || !this->yvParamO.weight.SetTo(weight) || this->yvParamO.length != dispHeight || this->yvStepO != (srcStoreWidth >> 1))
 			{
-				if (this->yvParamO.index)
+				if (this->yvParamO.index.SetTo(index))
 				{
-					MemFreeA(this->yvParamO.weight);
-					MemFreeA(this->yvParamO.index);
-					this->yvParamO.weight = 0;
-					this->yvParamO.index = 0;
+					MemFreeAArr(index);
+					this->yvParamO.index = nullptr;
+				}
+				if (this->yvParamO.weight.SetTo(weight))
+				{
+					MemFreeAArr(weight);
+					this->yvParamO.weight = nullptr;
 				}
 				this->yvStepO = srcStoreWidth >> 1;
 				SetupInterpolationParameter(dispHeight >> 1, dispHeight, this->yvParamO, this->yvStepO, 0);

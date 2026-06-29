@@ -9,7 +9,7 @@ namespace Media
 		class VDecoderBase : public VideoSource
 		{
 		protected:
-			Media::VideoSource *sourceVideo;
+			Optional<Media::VideoSource> sourceVideo;
 			FrameCallback frameCb;
 			FrameChangeCallback fcCb;
 			AnyType frameCbData;

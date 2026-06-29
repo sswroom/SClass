@@ -19,8 +19,8 @@ void __stdcall Media::AFilter::DTMFDecoder::CalcThread(NN<Sync::Thread> thread)
 {
 	NN<Media::AFilter::DTMFDecoder> me = thread->GetUserObj().GetNN<Media::AFilter::DTMFDecoder>();
 
-	Double *avgData = MemAlloc(Double, me->sampleCnt);
-	UInt8 *tmpBuff = MemAlloc(UInt8, me->sampleBuffSize);
+	UnsafeArray<Double> avgData = MemAllocArr(Double, me->sampleCnt);
+	UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, me->sampleBuffSize);
 	Double v;
 	UIntOS i;
 	UIntOS j;
@@ -85,7 +85,7 @@ void __stdcall Media::AFilter::DTMFDecoder::CalcThread(NN<Sync::Thread> thread)
 					align = me->nChannels << 1;
 
 					Sync::MutexUsage mutUsage(me->calcMut);
-					MemCopyNO(tmpBuff, me->calcBuff, me->sampleBuffSize);
+					MemCopyNO(&tmpBuff[0], &me->calcBuff[0], me->sampleBuffSize);
 					mutUsage.EndUse();
 					
 					i = 0;
@@ -419,8 +419,8 @@ void __stdcall Media::AFilter::DTMFDecoder::CalcThread(NN<Sync::Thread> thread)
 			}
 			thread->Wait(1000);
 		}
-		MemFree(avgData);
-		MemFree(tmpBuff);
+		MemFreeArr(avgData);
+		MemFreeArr(tmpBuff);
 	}
 }
 
@@ -445,11 +445,11 @@ Media::AFilter::DTMFDecoder::DTMFDecoder(NN<Media::AudioSource> audSrc, UIntOS c
 	}
 	this->sampleCnt = i;
 	this->sampleBuffSize = fmt.align * (i + FFTAVG - 1);
-	this->sampleBuff = MemAlloc(UInt8, this->sampleBuffSize);
+	this->sampleBuff = MemAllocArr(UInt8, this->sampleBuffSize);
 	this->sampleOfst = 0;
 	this->calcInt = calcInt;
 	this->calcLeft = this->sampleCnt;
-	this->calcBuff = MemAlloc(UInt8, this->sampleBuffSize);
+	this->calcBuff = MemAllocArr(UInt8, this->sampleBuffSize);
 	this->nChannels = fmt.nChannels;
 	this->bitCount = fmt.bitpersample;
 	this->align = fmt.align;
@@ -463,8 +463,8 @@ Media::AFilter::DTMFDecoder::DTMFDecoder(NN<Media::AudioSource> audSrc, UIntOS c
 Media::AFilter::DTMFDecoder::~DTMFDecoder()
 {
 	this->thread.Stop();
-	MemFree(this->sampleBuff);
-	MemFree(this->calcBuff);
+	MemFreeArr(this->sampleBuff);
+	MemFreeArr(this->calcBuff);
 }
 
 Data::Duration Media::AFilter::DTMFDecoder::SeekToTime(Data::Duration time)
@@ -498,10 +498,10 @@ UIntOS Media::AFilter::DTMFDecoder::ReadBlock(Data::ByteArray blk)
 			this->sampleOfst += thisSize;
 		}
 		Sync::MutexUsage mutUsage(this->calcMut);
-		MemCopyNO(this->calcBuff, &this->sampleBuff[this->sampleOfst], this->sampleBuffSize - this->sampleOfst);
+		MemCopyNO(&this->calcBuff[0], &this->sampleBuff[this->sampleOfst], this->sampleBuffSize - this->sampleOfst);
 		if (this->sampleBuffSize > 0)
 		{
-			MemCopyNO(&this->calcBuff[this->sampleBuffSize - this->sampleOfst], this->sampleBuff, this->sampleOfst);
+			MemCopyNO(&this->calcBuff[this->sampleBuffSize - this->sampleOfst], &this->sampleBuff[0], this->sampleOfst);
 		}
 		this->calcReady = true;
 		mutUsage.EndUse();

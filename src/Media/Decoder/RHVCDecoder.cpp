@@ -131,9 +131,10 @@ void Media::Decoder::RHVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 
 	if (this->finfoMode)
 	{
-		if (!this->finfoCb.func(frameTime, frameNum, (UIntOS)(frameBuff - this->frameBuff), frameStruct, frameType, this->finfoCb.userObj, ycOfst))
+		NN<Media::VideoSource> sourceVideo;
+		if (!this->finfoCb.func(frameTime, frameNum, (UIntOS)(frameBuff - this->frameBuff), frameStruct, frameType, this->finfoCb.userObj, ycOfst) && this->sourceVideo.SetTo(sourceVideo))
 		{
-			this->sourceVideo->Stop();
+			sourceVideo->Stop();
 		}
 	}
 	else
@@ -181,13 +182,13 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(NN<VideoSource> sourceVideo, Bool toRel
 	if (!sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, size))
 	{
 		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
-		this->sourceVideo = 0;
+		this->sourceVideo = nullptr;
 		return;
 	}
 	if (info.fourcc != *(UInt32*)"rhvc")
 	{
 		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
-		this->sourceVideo = 0;
+		this->sourceVideo = nullptr;
 		return;
 	}
 	this->maxFrameSize = size;
@@ -196,7 +197,7 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(NN<VideoSource> sourceVideo, Bool toRel
 	if (buff == 0)
 	{
 		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
-		this->sourceVideo = 0;
+		this->sourceVideo = nullptr;
 		return;
 	}
 	this->sps = MemAlloc(UInt8, size32);
@@ -208,7 +209,7 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(NN<VideoSource> sourceVideo, Bool toRel
 	if (buff == 0)
 	{
 		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
-		this->sourceVideo = 0;
+		this->sourceVideo = nullptr;
 		return;
 	}
 	this->pps = MemAlloc(UInt8, size32);
@@ -220,7 +221,7 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(NN<VideoSource> sourceVideo, Bool toRel
 	if (buff == 0)
 	{
 		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
-		this->sourceVideo = 0;
+		this->sourceVideo = nullptr;
 		return;
 	}
 	this->vps = MemAlloc(UInt8, size32);
@@ -254,7 +255,7 @@ Media::Decoder::RHVCDecoder::~RHVCDecoder()
 {
 	if (this->toRelease)
 	{
-		DEL_CLASS(this->sourceVideo);
+		this->sourceVideo.Delete();
 	}
 	if (this->sps)
 	{
@@ -278,40 +279,38 @@ Text::CStringNN Media::Decoder::RHVCDecoder::GetFilterName()
 
 Bool Media::Decoder::RHVCDecoder::HasFrameCount()
 {
-	if (this->sourceVideo)
-	{
-		return this->sourceVideo->HasFrameCount();
-	}
-	return false;
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return false;
+	return sourceVideo->HasFrameCount();
 }
 
 UIntOS Media::Decoder::RHVCDecoder::GetFrameCount()
 {
-	if (this->sourceVideo)
-	{
-		return this->sourceVideo->GetFrameCount();
-	}
-	return 0;
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return 0;
+	return sourceVideo->GetFrameCount();
 }
 
 Data::Duration Media::Decoder::RHVCDecoder::GetFrameTime(UIntOS frameIndex)
 {
-	if (this->sourceVideo)
-	{
-		return this->sourceVideo->GetFrameTime(frameIndex);
-	}
-	return 0;
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return 0;
+	return sourceVideo->GetFrameTime(frameIndex);
 }
 void Media::Decoder::RHVCDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
+	NN<Media::VideoSource> sourceVideo;
 	this->finfoCb = {cb, userData};
-	if (this->sourceVideo)
+	if (this->sourceVideo.SetTo(sourceVideo))
 	{
 		this->finfoMode = true;
-		this->sourceVideo->Stop();
-		this->sourceVideo->Init(Media::Decoder::VDecoderBase::OnVideoFrame, this->fcCb, this);
-		this->sourceVideo->Start();
-		while (this->sourceVideo->IsRunning())
+		sourceVideo->Stop();
+		sourceVideo->Init(Media::Decoder::VDecoderBase::OnVideoFrame, this->fcCb, this);
+		sourceVideo->Start();
+		while (sourceVideo->IsRunning())
 		{
 			Sync::SimpleThread::Sleep(10);
 		}
@@ -322,9 +321,10 @@ void Media::Decoder::RHVCDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType u
 UIntOS Media::Decoder::RHVCDecoder::GetFrameSize(UIntOS frameIndex)
 {
 	UIntOS srcFrameSize = 0;
-	if (this->sourceVideo == 0)
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
 		return 0;
-	srcFrameSize = this->sourceVideo->GetFrameSize(frameIndex);
+	srcFrameSize = sourceVideo->GetFrameSize(frameIndex);
 	if (srcFrameSize == 0)
 		return 0;
 	return this->maxFrameSize;
@@ -332,10 +332,11 @@ UIntOS Media::Decoder::RHVCDecoder::GetFrameSize(UIntOS frameIndex)
 
 UIntOS Media::Decoder::RHVCDecoder::ReadFrame(UIntOS frameIndex, UnsafeArray<UInt8> buff)
 {
-	if (this->sourceVideo == 0)
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
 		return 0;
 	Bool frameFound = false;
-	UIntOS frameSize = this->sourceVideo->ReadFrame(frameIndex, this->frameBuff);
+	UIntOS frameSize = sourceVideo->ReadFrame(frameIndex, this->frameBuff);
 	UIntOS outSize = 0;
 	UIntOS imgOfst = 0;
 	UIntOS imgSize;
@@ -397,10 +398,11 @@ UIntOS Media::Decoder::RHVCDecoder::ReadFrame(UIntOS frameIndex, UnsafeArray<UIn
 
 Bool Media::Decoder::RHVCDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
-	if (this->pps == 0 || this->sps == 0)
+	NN<Media::VideoSource> sourceVideo;
+	if (this->pps == 0 || this->sps == 0 || !this->sourceVideo.SetTo(sourceVideo))
 		return false;
 
-	this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
+	sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 	Math::Size2D<UIntOS> oriSize = info->dispSize;
 	if (this->sps)
 	{

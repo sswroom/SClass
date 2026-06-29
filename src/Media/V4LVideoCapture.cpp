@@ -89,10 +89,10 @@ Media::V4LVideoCapture::V4LVideoCapture(UIntOS devId) : thread(PlayThread, this,
 	this->fd = open(cbuff, O_RDONLY | O_NONBLOCK);
 	this->devId = devId;
 
-	this->frameBuffs[0] = 0;
-	this->frameBuffs[1] = 0;
-	this->frameBuffs[2] = 0;
-	this->frameBuffs[3] = 0;
+	this->frameBuffs[0] = nullptr;
+	this->frameBuffs[1] = nullptr;
+	this->frameBuffs[2] = nullptr;
+	this->frameBuffs[3] = nullptr;
 	this->frameBuffSize = 0;
 	this->cb = 0;
 	this->fcCb = 0;
@@ -106,16 +106,26 @@ Media::V4LVideoCapture::~V4LVideoCapture()
 	{
 		close(this->fd);
 	}
-	if (this->frameBuffs[0])
+	UnsafeArray<UInt8> frameBuff;
+	if (this->frameBuffs[0].SetTo(frameBuff))
 	{
-		MemFreeA(this->frameBuffs[0]);
-		MemFreeA(this->frameBuffs[1]);
-		MemFreeA(this->frameBuffs[2]);
-		MemFreeA(this->frameBuffs[3]);
-		this->frameBuffs[0] = 0;
-		this->frameBuffs[1] = 0;
-		this->frameBuffs[2] = 0;
-		this->frameBuffs[3] = 0;
+		MemFreeAArr(frameBuff);
+		this->frameBuffs[0] = nullptr;
+	}
+	if (this->frameBuffs[1].SetTo(frameBuff))
+	{
+		MemFreeAArr(frameBuff);
+		this->frameBuffs[1] = nullptr;
+	}
+	if (this->frameBuffs[2].SetTo(frameBuff))
+	{
+		MemFreeAArr(frameBuff);
+		this->frameBuffs[2] = nullptr;
+	}
+	if (this->frameBuffs[3].SetTo(frameBuff))
+	{
+		MemFreeAArr(frameBuff);
+		this->frameBuffs[3] = nullptr;
 	}
 }
 
@@ -431,7 +441,11 @@ Bool Media::V4LVideoCapture::ReadFrameBegin()
 	{
 		return false;
 	}
-	if (this->frameBuffs[0])
+	UnsafeArray<UInt8> frameBuff0;
+	UnsafeArray<UInt8> frameBuff1;
+	UnsafeArray<UInt8> frameBuff2;
+	UnsafeArray<UInt8> frameBuff3;
+	if (this->frameBuffs[0].SetTo(frameBuff0) && this->frameBuffs[1].SetTo(frameBuff1) && this->frameBuffs[2].SetTo(frameBuff2) && this->frameBuffs[3].SetTo(frameBuff3))
 	{
 		if (this->frameBuffSize >= frameSize)
 		{
@@ -439,23 +453,23 @@ Bool Media::V4LVideoCapture::ReadFrameBegin()
 		}
 		else
 		{
-			MemFreeA(this->frameBuffs[0]);
-			MemFreeA(this->frameBuffs[1]);
-			MemFreeA(this->frameBuffs[2]);
-			MemFreeA(this->frameBuffs[3]);
-			this->frameBuffs[0] = MemAllocA(UInt8, frameSize);
-			this->frameBuffs[1] = MemAllocA(UInt8, frameSize);
-			this->frameBuffs[2] = MemAllocA(UInt8, frameSize);
-			this->frameBuffs[3] = MemAllocA(UInt8, frameSize);
+			MemFreeAArr(frameBuff0);
+			MemFreeAArr(frameBuff1);
+			MemFreeAArr(frameBuff2);
+			MemFreeAArr(frameBuff3);
+			this->frameBuffs[0] = MemAllocAArr(UInt8, frameSize);
+			this->frameBuffs[1] = MemAllocAArr(UInt8, frameSize);
+			this->frameBuffs[2] = MemAllocAArr(UInt8, frameSize);
+			this->frameBuffs[3] = MemAllocAArr(UInt8, frameSize);
 			this->frameBuffSize = frameSize;
 		}
 	}
 	else
 	{
-		this->frameBuffs[0] = MemAllocA(UInt8, frameSize);
-		this->frameBuffs[1] = MemAllocA(UInt8, frameSize);
-		this->frameBuffs[2] = MemAllocA(UInt8, frameSize);
-		this->frameBuffs[3] = MemAllocA(UInt8, frameSize);
+		this->frameBuffs[0] = MemAllocAArr(UInt8, frameSize);
+		this->frameBuffs[1] = MemAllocAArr(UInt8, frameSize);
+		this->frameBuffs[2] = MemAllocAArr(UInt8, frameSize);
+		this->frameBuffs[3] = MemAllocAArr(UInt8, frameSize);
 		this->frameBuffSize = frameSize;
 	}
 	int r;
@@ -478,7 +492,7 @@ Bool Media::V4LVideoCapture::ReadFrameBegin()
 		buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 		buf.memory = V4L2_MEMORY_USERPTR;
 		buf.index = (UInt32)i;
-		buf.m.userptr = (UIntOS)this->frameBuffs[i];
+		buf.m.userptr = (UIntOS)this->frameBuffs[i].Ptr();
 		buf.length = (UInt32)this->frameBuffSize;
 		r = ioctl(fd, VIDIOC_QBUF, &buf);
 		if (r != 0)

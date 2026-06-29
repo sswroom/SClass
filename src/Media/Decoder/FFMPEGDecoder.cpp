@@ -332,7 +332,8 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 		outFlags = (Media::VideoSource::FrameFlag)(Media::VideoSource::FF_BFRAMEPROC | (flags & Media::VideoSource::FF_REALTIME));
 		UnsafeArray<UnsafeArray<UInt8>> outFrameBuff = &data->frameBuff;
 
-		UInt8 *frameTempBuff = 0;
+		UnsafeArrayOpt<UInt8> frameTempBuff = nullptr;
+		UnsafeArray<UInt8> nnframeTempBuff;
 		switch (data->frame->format)
 		{
 		case AV_PIX_FMT_YUV420P:
@@ -349,10 +350,10 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 				IntOS vbpl = data->frame->linesize[2];
 				IntOS w = data->frame->width;
 				IntOS h = data->frame->height;
-				UInt8 *dptr;
+				UnsafeArray<UInt8> dptr;
 				IntOS i;
-				frameTempBuff = MemAllocA(UInt8, (UIntOS)(w * h * 2));
-				dptr = frameTempBuff;
+				frameTempBuff = nnframeTempBuff = MemAllocAArr(UInt8, (UIntOS)(w * h * 2));
+				dptr = nnframeTempBuff;
 				w = w >> 1;
 				while (h-- > 0)
 				{
@@ -370,7 +371,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 					uptr += ubpl;
 					vptr += vbpl;					
 				}
-				outFrameBuff = UnsafeArray<UnsafeArray<UInt8>>::ConvertFrom(UnsafeArray<UInt8*>(&frameTempBuff));
+				outFrameBuff = &nnframeTempBuff;
 			}
 			break;
 		case AV_PIX_FMT_YUV420P10LE:
@@ -527,9 +528,9 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 			data->lastFrameTime = outFrameTime;
 			this->frameCb(outFrameTime, outFrameNum, outFrameBuff, data->frameSize, outFrameStruct, this->frameCbData, outFrameType, outFlags, outYCOfst);
 		}
-		if (frameTempBuff)
+		if (frameTempBuff.SetTo(nnframeTempBuff))
 		{
-			MemFreeA(frameTempBuff);
+			MemFreeAArr(frameTempBuff);
 		}
 	}
 
@@ -902,9 +903,10 @@ Text::CStringNN Media::Decoder::FFMPEGDecoder::GetFilterName()
 Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
 	NN<ClassData> data = this->clsData;
-	if (this->sourceVideo == 0)
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
 		return false;
-	if (!this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize))
+	if (!sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize))
 		return false;
 	Bool fullRange = false;
 	info->dispSize = Math::Size2D<UIntOS>(data->dispWidth, data->dispHeight);
@@ -1188,11 +1190,12 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 void Media::Decoder::FFMPEGDecoder::Stop()
 {
 	NN<ClassData> data = this->clsData;
-	if (this->sourceVideo == 0)
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
 		return;
 
 	this->started = false;
-	this->sourceVideo->Stop();
+	sourceVideo->Stop();
 	while (this->endProcessing)
 	{
 		Sync::SimpleThread::Sleep(10);
@@ -1207,22 +1210,34 @@ void Media::Decoder::FFMPEGDecoder::Stop()
 
 Bool Media::Decoder::FFMPEGDecoder::HasFrameCount()
 {
-	return this->sourceVideo->HasFrameCount();
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return false;
+	return sourceVideo->HasFrameCount();
 }
 
 UIntOS Media::Decoder::FFMPEGDecoder::GetFrameCount()
 {
-	return this->sourceVideo->GetFrameCount();
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return 0;
+	return sourceVideo->GetFrameCount();
 }
 
 Data::Duration Media::Decoder::FFMPEGDecoder::GetFrameTime(UIntOS frameIndex)
 {
-	return this->sourceVideo->GetFrameTime(frameIndex);
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return 0;
+	return sourceVideo->GetFrameTime(frameIndex);
 }
 
 void Media::Decoder::FFMPEGDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
-	return this->sourceVideo->EnumFrameInfos(cb, userData);
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return;
+	sourceVideo->EnumFrameInfos(cb, userData);
 }
 
 void Media::Decoder::FFMPEGDecoder::OnFrameChanged(Media::VideoSource::FrameChange fc)

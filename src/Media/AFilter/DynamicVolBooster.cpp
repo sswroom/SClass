@@ -6,10 +6,14 @@
 
 void Media::AFilter::DynamicVolBooster::ResetStatus()
 {
-	UIntOS i = soundBuffLeng;
-	while (i-- > 0)
+	UnsafeArray<Int32> soundBuff;
+	if (this->soundBuff.SetTo(soundBuff))
 	{
-		soundBuff[i] = 0;
+		UIntOS i = soundBuffLeng;
+		while (i-- > 0)
+		{
+			soundBuff[i] = 0;
+		}
 	}
 	maxVol = 0;
 	lastVol = 0;
@@ -21,7 +25,7 @@ void Media::AFilter::DynamicVolBooster::ResetStatus()
 Media::AFilter::DynamicVolBooster::DynamicVolBooster(NN<Media::AudioSource> sourceAudio) : Media::AudioFilter(sourceAudio)
 {
 	Media::AudioFormat fmt;
-	this->soundBuff = 0;
+	this->soundBuff = nullptr;
 	this->bgLevel = 0.001;
 	this->bitCount = 0;
 	this->nChannels = 0;
@@ -31,7 +35,7 @@ Media::AFilter::DynamicVolBooster::DynamicVolBooster(NN<Media::AudioSource> sour
 	if (fmt.bitpersample != 16 && fmt.bitpersample != 8)
 		return;
 	this->soundBuffLeng = fmt.frequency >> 3;
-	this->soundBuff = MemAlloc(Int32, this->soundBuffLeng);
+	this->soundBuff = MemAllocArr(Int32, this->soundBuffLeng);
 	this->nChannels = fmt.nChannels;
 	this->bitCount = fmt.bitpersample;
 	this->ResetStatus();
@@ -39,10 +43,11 @@ Media::AFilter::DynamicVolBooster::DynamicVolBooster(NN<Media::AudioSource> sour
 
 Media::AFilter::DynamicVolBooster::~DynamicVolBooster()
 {
-	if (this->soundBuff)
+	UnsafeArray<Int32> soundBuff;
+	if (this->soundBuff.SetTo(soundBuff))
 	{
-		MemFree(this->soundBuff);
-		this->soundBuff = 0;
+		MemFreeArr(this->soundBuff);
+		this->soundBuff = nullptr;
 	}
 }
 
@@ -70,8 +75,9 @@ Data::Duration Media::AFilter::DynamicVolBooster::SeekToTime(Data::Duration time
 
 UIntOS Media::AFilter::DynamicVolBooster::ReadBlock(Data::ByteArray blk)
 {
+	UnsafeArray<Int32> soundBuff;
 	UIntOS readSize = this->sourceAudio->ReadBlock(blk);
-	if (this->enabled)
+	if (this->enabled && this->soundBuff.SetTo(soundBuff))
 	{
 		if (this->bitCount == 16)
 		{

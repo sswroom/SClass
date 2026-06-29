@@ -116,12 +116,12 @@ Media::Decoder::M2VDecoder::M2VDecoder(NN<VideoSource> sourceVideo, Bool toRelea
 	this->toRelease = toRelease;
 	if (!sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, size))
 	{
-		this->sourceVideo = 0;
+		this->sourceVideo = nullptr;
 		return;
 	}
 	if (info.fourcc != *(UInt32*)"m2v1")
 	{
-		this->sourceVideo = 0;
+		this->sourceVideo = nullptr;
 		return;
 	}
 	this->par = info.CalcPAR();
@@ -131,7 +131,7 @@ Media::Decoder::M2VDecoder::~M2VDecoder()
 {
 	if (this->toRelease)
 	{
-		DEL_CLASS(this->sourceVideo);
+		this->sourceVideo.Delete();
 	}
 }
 
@@ -142,27 +142,30 @@ Text::CStringNN Media::Decoder::M2VDecoder::GetFilterName()
 
 Bool Media::Decoder::M2VDecoder::HasFrameCount()
 {
-	if (this->sourceVideo)
+	NN<Media::VideoSource> sourceVideo;
+	if (this->sourceVideo.SetTo(sourceVideo))
 	{
-		return this->sourceVideo->HasFrameCount();
+		return sourceVideo->HasFrameCount();
 	}
 	return false;
 }
 
 UIntOS Media::Decoder::M2VDecoder::GetFrameCount()
 {
-	if (this->sourceVideo)
+	NN<Media::VideoSource> sourceVideo;
+	if (this->sourceVideo.SetTo(sourceVideo))
 	{
-		return this->sourceVideo->GetFrameCount();
+		return sourceVideo->GetFrameCount();
 	}
 	return 0;
 }
 
 Data::Duration Media::Decoder::M2VDecoder::GetFrameTime(UIntOS frameIndex)
 {
-	if (this->sourceVideo)
+	NN<Media::VideoSource> sourceVideo;
+	if (this->sourceVideo.SetTo(sourceVideo))
 	{
-		return this->sourceVideo->GetFrameTime(frameIndex);
+		return sourceVideo->GetFrameTime(frameIndex);
 	}
 	return 0;
 }
@@ -187,28 +190,31 @@ void Media::Decoder::M2VDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType us
 
 UIntOS Media::Decoder::M2VDecoder::GetFrameSize(UIntOS frameIndex)
 {
-	if (this->sourceVideo)
+	NN<Media::VideoSource> sourceVideo;
+	if (this->sourceVideo.SetTo(sourceVideo))
 	{
-		return this->sourceVideo->GetFrameSize(frameIndex);
+		return sourceVideo->GetFrameSize(frameIndex);
 	}
 	return 0;
 }
 
 UIntOS Media::Decoder::M2VDecoder::ReadFrame(UIntOS frameIndex, UnsafeArray<UInt8> buff)
 {
-	if (this->sourceVideo)
+	NN<Media::VideoSource> sourceVideo;
+	if (this->sourceVideo.SetTo(sourceVideo))
 	{
-		return this->sourceVideo->ReadFrame(frameIndex, buff);
+		return sourceVideo->ReadFrame(frameIndex, buff);
 	}
 	return 0;
 }
 
 Bool Media::Decoder::M2VDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
-	if (this->sourceVideo == 0)
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
 		return false;
 
-	this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
+	sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 	info->fourcc = ReadNUInt32((const UInt8*)"MPG2");
 	info->SetPAR(this->par);
 

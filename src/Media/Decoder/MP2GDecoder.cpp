@@ -327,11 +327,11 @@ Media::Decoder::MP2GDecoder::MP2GDecoder(NN<VideoSource> sourceVideo, Bool toRel
 	this->finfoMode = false;
 	if (!sourceVideo->GetVideoInfo(info, this->frameRateNorm, this->frameRateDenorm, size))
 	{
-		this->sourceVideo = 0;
+		this->sourceVideo = nullptr;
 	}
 	if (info.fourcc != *(UInt32*)"MP2G")
 	{
-		this->sourceVideo = 0;
+		this->sourceVideo = nullptr;
 	}
 	this->par = info.CalcPAR();
 
@@ -348,7 +348,7 @@ Media::Decoder::MP2GDecoder::~MP2GDecoder()
 {
 	if (this->toRelease)
 	{
-		DEL_CLASS(this->sourceVideo);
+		this->sourceVideo.Delete();
 	}
 }
 
@@ -374,11 +374,14 @@ Data::Duration Media::Decoder::MP2GDecoder::GetFrameTime(UIntOS frameIndex)
 
 void Media::Decoder::MP2GDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return;
 	this->finfoMode = true;
 	this->finfoCb = {cb, userData};
 	this->Init(Media::Decoder::VDecoderBase::OnVideoFrame, 0, this);
 	this->Start();
-	while (this->sourceVideo->IsRunning())
+	while (sourceVideo->IsRunning())
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
@@ -388,9 +391,10 @@ void Media::Decoder::MP2GDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType u
 
 Bool Media::Decoder::MP2GDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
-	if (this->sourceVideo == 0)
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
 		return false;
-	Bool succ = this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
+	Bool succ = sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 	if (succ)
 	{
 		info->fourcc = *(UInt32*)"MPG2";

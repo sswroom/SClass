@@ -12,7 +12,8 @@
                 "/usr/include/**",
                 "/usr/lib/x86_64-linux-gnu/**",
                 "/usr/lib/jvm/java-17-openjdk-amd64/include",
-                "/usr/lib/jvm/java-17-openjdk-amd64/include/linux"
+                "/usr/lib/jvm/java-17-openjdk-amd64/include/linux",
+				"/opt/intel/mediasdk/include/mfx"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

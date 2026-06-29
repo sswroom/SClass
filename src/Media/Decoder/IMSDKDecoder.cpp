@@ -2,13 +2,14 @@
 #include "Core/Core.h"
 #include "Media/H264Parser.h"
 #include "Media/H265Parser.h"
-#include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 #include "Media/Decoder/IMSDKDecoder.h"
 #include "Media/Decoder/M2VDecoder.h"
 #include "Media/Decoder/RAVCDecoder.h"
 #include "Media/Decoder/RHVCDecoder.h"
 #include "Media/Decoder/VDecoderBase.h"
 #include "Media/Decoder/VDecoderChain.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 #include "mfxvideo.h"
 #define FOURCC(c1, c2, c3, c4) (((UInt32)c1) | (((UInt32)c2) << 8) | (((UInt32)c3) << 16) | (((UInt32)c4) << 24))
@@ -40,9 +41,9 @@ private:
 	Bool endProcessing;
 	UInt32 lastFrameTime;
 	UInt32 lastFrameNum;
-	UInt8 *frameBuff;
+	UnsafeArrayOpt<UInt8> frameBuff;
 	Bool seeked;
-	UInt32 seekTime;
+	Data::Duration seekTime;
 
 	void FreeSurface(SurfaceInfo *surface)
 	{
@@ -127,7 +128,7 @@ private:
 		return currSurface;
 	}
 
-	virtual void ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+	virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 	{
 		SurfaceInfo *currSurface = 0;
 		mfxStatus status;
@@ -144,11 +145,11 @@ private:
 		}
 
 		MemClear(&bs, sizeof(bs));
-		bs.Data = imgData[0];
+		bs.Data = imgData[0].Ptr();
 		bs.DataOffset = 0;
 		bs.DataLength = (mfxU32)dataSize;
 		bs.MaxLength = (mfxU32)dataSize;
-		bs.TimeStamp = frameTime * 90LL;
+		bs.TimeStamp = frameTime.GetTotalMS() * 90LL;
 		mfxFrameSurface1 *outSurface;
 
 		status = MFX_WRN_DEVICE_BUSY;
@@ -250,7 +251,7 @@ private:
 					{
 						if (isKey)
 						{
-							if ((outFrameTime >= this->seekTime) && (outFrameTime < this->seekTime + 1000))
+							if ((outFrameTime >= this->seekTime.GetTotalMS()) && (outFrameTime < this->seekTime.GetTotalMS() + 1000))
 							{
 								this->lastFrameTime = outFrameTime;
 								outFlags = (Media::VideoSource::FrameFlag)(outFlags | Media::VideoSource::FF_DISCONTTIME);
@@ -276,14 +277,16 @@ private:
 					}
 					if (!skip)
 					{
-						if (outSurface->Info.FourCC == FOURCC('P', '0', '1', '0'))
+						UnsafeArray<UInt8> frameBuff;
+						if (outSurface->Info.FourCC == FOURCC('P', '0', '1', '0') && this->frameBuff.SetTo(frameBuff))
 						{
-							ImageUtil_CopyShiftW(outSurface->Data.Y, this->frameBuff, outSurface->Info.Width * outSurface->Info.Height * 3, 6);
-							this->frameCb(outFrameTime, outFrameNum, &this->frameBuff, this->decFrameSize, outFrameStruct, this->frameCbData, outFrameType, outFlags, outYCOfst);
+							ImageUtil_CopyShiftW(outSurface->Data.Y, frameBuff.Ptr(), outSurface->Info.Width * outSurface->Info.Height * 3, 6);
+							this->frameCb(outFrameTime, outFrameNum, &frameBuff, this->decFrameSize, outFrameStruct, this->frameCbData, outFrameType, outFlags, outYCOfst);
 						}
 						else
 						{
-							this->frameCb(outFrameTime, outFrameNum, &outSurface->Data.Y, this->decFrameSize, outFrameStruct, this->frameCbData, outFrameType, outFlags, outYCOfst);
+							UnsafeArray<UInt8> yData = outSurface->Data.Y;
+							this->frameCb(outFrameTime, outFrameNum, &yData, this->decFrameSize, outFrameStruct, this->frameCbData, outFrameType, outFlags, outYCOfst);
 						}
 					}
 				}
@@ -297,7 +300,7 @@ private:
 	}
 
 public:
-	IMSDKDecoder(Media::VideoSource *sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
+	IMSDKDecoder(NN<Media::VideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
 	{
 		mfxStatus status;
 		this->inited = false;
@@ -308,7 +311,7 @@ public:
 		this->streamInfo.dispSize = Math::Size2D<UIntOS>(0, 0);
 		this->decFCC = 0;
 		this->decBPP = 0;
-		this->frameBuff = 0;
+		this->frameBuff = nullptr;
 		this->frameTime = 33;
 		this->endProcessing = false;
 		this->lastFrameTime = -1;
@@ -317,10 +320,10 @@ public:
 		this->seekTime = 0;
 
 		Media::FrameInfo info;
-		Int32 frameRateNorm;
-		Int32 frameRateDenorm;
+		UInt32 frameRateNorm;
+		UInt32 frameRateDenorm;
 		UIntOS maxFrameSize;
-		this->sourceVideo->GetVideoInfo(&info, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
+		sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 		this->srcFCC = info.fourcc;
 
 		MemClear(&par, sizeof(par));
@@ -414,7 +417,7 @@ public:
 					case FOURCC('P', '0', '1', '0'):
 						this->decBPP = 24;
 						this->decFrameSize = this->par.mfx.FrameInfo.Width * this->par.mfx.FrameInfo.Height * 3;
-						this->frameBuff = MemAllocA(UInt8, this->decFrameSize);
+						this->frameBuff = MemAllocAArr(UInt8, this->decFrameSize);
 						break;
 					default:
 						this->decBPP = (Int32)(this->par.mfx.FrameInfo.BufferSize * 8 / (this->par.mfx.FrameInfo.Width * this->par.mfx.FrameInfo.Height));
@@ -445,6 +448,7 @@ public:
 
 	virtual ~IMSDKDecoder()
 	{
+		UnsafeArray<UInt8> frameBuff;
 		if (this->prepared)
 		{
 			MFXVideoDECODE_Close(this->session);
@@ -463,14 +467,14 @@ public:
 		{
 			MFXClose(this->session);
 		}
-		if (this->frameBuff)
+		if (this->frameBuff.SetTo(frameBuff))
 		{
-			MemFreeA(this->frameBuff);
-			this->frameBuff = 0;
+			MemFreeAArr(frameBuff);
+			this->frameBuff = nullptr;
 		}
 	}
 
-	virtual Text::CString GetFilterName()
+	virtual Text::CStringNN GetFilterName()
 	{
 		return CSTR("IMSDKDecoder");
 	}
@@ -480,38 +484,40 @@ public:
 		return false;
 	}
 
-	virtual Bool GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UIntOS *maxFrameSize)
+	virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 	{
-		if (this->sourceVideo == 0)
+		NN<Media::VideoSource> sourceVideo;
+		if (!this->sourceVideo.SetTo(sourceVideo))
 			return false;
 		if (this->streamInfo.dispSize.x != 0 && this->streamInfo.dispSize.y != 0)
 		{
-			info->Set(&this->streamInfo);
+			info->Set(this->streamInfo);
 		}
 		else
 		{
-			if (!this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize))
+			if (!sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize))
 				return false;
 		}
-		info->storeWidth = this->par.mfx.FrameInfo.Width;
-		info->storeHeight = this->par.mfx.FrameInfo.Height;
-		info->dispWidth = this->par.mfx.FrameInfo.CropW;
-		info->dispHeight = this->par.mfx.FrameInfo.CropH;
+		info->storeSize.x = this->par.mfx.FrameInfo.Width;
+		info->storeSize.y = this->par.mfx.FrameInfo.Height;
+		info->dispSize.x = this->par.mfx.FrameInfo.CropW;
+		info->dispSize.y = this->par.mfx.FrameInfo.CropH;
 		info->fourcc = this->decFCC;
 		info->storeBPP = this->decBPP;
 		info->pf = Media::PixelFormatGetDef(this->decFCC, this->decBPP);
 		info->byteSize = this->decFrameSize;
-		*maxFrameSize = this->decFrameSize;
+		maxFrameSize.Set(this->decFrameSize);
 		return true;
 	}
 
 	virtual void Stop()
 	{
-		if (this->sourceVideo == 0)
+		NN<Media::VideoSource> sourceVideo;
+		if (!this->sourceVideo.SetTo(sourceVideo))
 			return;
 
 		this->started = false;
-		this->sourceVideo->Stop();
+		sourceVideo->Stop();
 		while (this->endProcessing)
 		{
 			Sync::SimpleThread::Sleep(10);
@@ -522,19 +528,36 @@ public:
 		this->lastFrameTime = -1;
 	}
 
-	virtual IntOS GetFrameCount()
+	virtual Bool HasFrameCount()
 	{
-		return this->sourceVideo->GetFrameCount();
+		NN<Media::VideoSource> sourceVideo;
+		if (!this->sourceVideo.SetTo(sourceVideo))
+			return false;
+		return sourceVideo->HasFrameCount();
 	}
 
-	virtual UInt32 GetFrameTime(UIntOS frameIndex)
+	virtual UIntOS GetFrameCount()
 	{
-		return this->sourceVideo->GetFrameTime(frameIndex);
+		NN<Media::VideoSource> sourceVideo;
+		if (!this->sourceVideo.SetTo(sourceVideo))
+			return 0;
+		return sourceVideo->GetFrameCount();
 	}
 
-	virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData)
+	virtual Data::Duration GetFrameTime(UIntOS frameIndex)
 	{
-		return this->sourceVideo->EnumFrameInfos(cb, userData);
+		NN<Media::VideoSource> sourceVideo;
+		if (!this->sourceVideo.SetTo(sourceVideo))
+			return Data::Duration(0);
+		return sourceVideo->GetFrameTime(frameIndex);
+	}
+
+	virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
+	{
+		NN<Media::VideoSource> sourceVideo;
+		if (!this->sourceVideo.SetTo(sourceVideo))
+			return;
+		return sourceVideo->EnumFrameInfos(cb, userData);
 	}
 
 	virtual void OnFrameChanged(Media::VideoSource::FrameChange fc)
@@ -643,7 +666,8 @@ public:
 						}
 						outFlags = Media::VideoSource::FF_NONE;
 						outYCOfst = Media::YCOFST_C_CENTER_LEFT;
-						this->frameCb(outFrameTime, outFrameNum, &outSurface->Data.Y, this->decFrameSize, outFrameStruct, this->frameCbData, outFrameType, outFlags, outYCOfst);
+						UnsafeArray<UInt8> yData = outSurface->Data.Y;
+						this->frameCb(outFrameTime, outFrameNum, &yData, this->decFrameSize, outFrameStruct, this->frameCbData, outFrameType, outFlags, outYCOfst);
 					}
 					status = MFX_WRN_DEVICE_BUSY;
 				}
@@ -662,30 +686,30 @@ public:
 	}
 };
 
-Media::VideoSource *__stdcall IMSDKDecoder_DecodeVideo(Media::VideoSource *video)
+Optional<Media::VideoSource> __stdcall IMSDKDecoder_DecodeVideo(NN<Media::VideoSource> video)
 {
-	IMSDKDecoder *decoder;
+	NN<IMSDKDecoder> decoder;
 	Media::FrameInfo frameInfo;
 	Media::FrameInfo decFrameInfo;
-	Int32 frameRateNorm;
-	Int32 frameRateDenorm;
+	UInt32 frameRateNorm;
+	UInt32 frameRateDenorm;
 	UIntOS maxFrameSize;
-	video->GetVideoInfo(&frameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
+	video->GetVideoInfo(frameInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
 	if (frameInfo.fourcc == 0 || frameInfo.fourcc == -1)
-		return 0;
+		return nullptr;
 
 	if (frameInfo.fourcc == *(Int32*)"ravc")
 	{
-		Media::Decoder::RAVCDecoder *ravc;
+		NN<Media::Decoder::RAVCDecoder> ravc;
 		Media::Decoder::VDecoderChain *decChain;
 
-		NEW_CLASS(ravc, Media::Decoder::RAVCDecoder(video, false, false));
-		NEW_CLASS(decoder, IMSDKDecoder(ravc));
+		NEW_CLASSNN(ravc, Media::Decoder::RAVCDecoder(video, false, false));
+		NEW_CLASSNN(decoder, IMSDKDecoder(ravc));
 		if (decoder->IsError())
 		{
-			DEL_CLASS(decoder);
-			DEL_CLASS(ravc);
-			return 0;
+			decoder.Delete();
+			ravc.Delete();
+			return nullptr;
 		}
 		NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
 		decChain->AddDecoder(ravc);
@@ -693,50 +717,50 @@ Media::VideoSource *__stdcall IMSDKDecoder_DecodeVideo(Media::VideoSource *video
 	}
 	else if (frameInfo.fourcc == *(Int32*)"rhvc")
 	{
-		Media::Decoder::RHVCDecoder *rhvc;
-		Media::Decoder::VDecoderChain *decChain;
+		NN<Media::Decoder::RHVCDecoder> rhvc;
+		NN<Media::Decoder::VDecoderChain> decChain;
 
-		NEW_CLASS(rhvc, Media::Decoder::RHVCDecoder(video, false));
-		NEW_CLASS(decoder, IMSDKDecoder(rhvc));
+		NEW_CLASSNN(rhvc, Media::Decoder::RHVCDecoder(video, false));
+		NEW_CLASSNN(decoder, IMSDKDecoder(rhvc));
 		if (decoder->IsError())
 		{
-			DEL_CLASS(decoder);
-			DEL_CLASS(rhvc);
-			return 0;
+			decoder.Delete();
+			rhvc.Delete();
+			return nullptr;
 		}
-		NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
+		NEW_CLASSNN(decChain, Media::Decoder::VDecoderChain(decoder));
 		decChain->AddDecoder(rhvc);
 		return decChain;
 	}
 	else if (frameInfo.fourcc == *(Int32*)"m2v1")
 	{
-		Media::Decoder::M2VDecoder *m2vd;
-		Media::Decoder::VDecoderChain *decChain;
+		NN<Media::Decoder::M2VDecoder> m2vd;
+		NN<Media::Decoder::VDecoderChain> decChain;
 
-		NEW_CLASS(m2vd, Media::Decoder::M2VDecoder(video, false));
-		NEW_CLASS(decoder, IMSDKDecoder(m2vd));
+		NEW_CLASSNN(m2vd, Media::Decoder::M2VDecoder(video, false));
+		NEW_CLASSNN(decoder, IMSDKDecoder(m2vd));
 		if (decoder->IsError())
 		{
-			DEL_CLASS(decoder);
-			DEL_CLASS(m2vd);
-			return 0;
+			decoder.Delete();
+			m2vd.Delete();
+			return nullptr;
 		}
-		NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
+		NEW_CLASSNN(decChain, Media::Decoder::VDecoderChain(decoder));
 		decChain->AddDecoder(m2vd);
 		return decChain;
 	}
 	else //if (frameInfo.fourcc == *(Int32*)"VP90" || frameInfo.fourcc == *(Int32*)"MPG2")
 	{
-		NEW_CLASS(decoder, IMSDKDecoder(video));
+		NEW_CLASSNN(decoder, IMSDKDecoder(video));
 		if (decoder->IsError())
 		{
-			DEL_CLASS(decoder);
-			return 0;
+			decoder.Delete();
+			return nullptr;
 		}
 		return decoder;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 

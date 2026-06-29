@@ -9,7 +9,7 @@ namespace Media
 	class H265Parser
 	{
 	public:
-		static Bool GetFrameInfoSPS(const UInt8 *frame, UIntOS frameSize, NN<Media::FrameInfo> info); //Only update defined values
+		static Bool GetFrameInfoSPS(UnsafeArray<const UInt8> frame, UIntOS frameSize, NN<Media::FrameInfo> info); //Only update defined values
 	};
 }
 #endif

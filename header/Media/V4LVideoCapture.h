@@ -13,7 +13,7 @@ namespace Media
 		Int32 fd;
 		UIntOS devId;
 		Media::FrameInfo frameInfo;
-		UInt8 *frameBuffs[4];
+		UnsafeArrayOpt<UInt8> frameBuffs[4];
 		UIntOS frameBuffSize;
 
 		FrameCallback cb;
