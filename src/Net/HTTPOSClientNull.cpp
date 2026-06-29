@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
 #include "Net/HTTPClient.h"
@@ -12,7 +11,7 @@
 
 Net::HTTPOSClient::HTTPOSClient(NN<Net::TCPClientFactory> clif, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(clif, kaConn)
 {
-	this->cliHost = 0;
+	this->cliHost = nullptr;
 	this->writing = false;
 	this->buffSize = 0;
 //	this->timeOutMS = 5000;
@@ -85,5 +84,5 @@ Bool Net::HTTPOSClient::SetClientCert(NN<Crypto::Cert::X509Cert> cert, NN<Crypto
 
 Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> Net::HTTPOSClient::GetServerCerts()
 {
-	return 0;
+	return nullptr;
 }

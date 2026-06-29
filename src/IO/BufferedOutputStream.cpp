@@ -149,3 +149,8 @@ UInt64 IO::BufferedOutputStream::GetPosition() const
 {
 	return this->totalWrite;
 }
+
+Bool IO::BufferedOutputStream::HasBuffer() const
+{
+	return this->cacheSize > 0;
+}

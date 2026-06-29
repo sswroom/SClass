@@ -98,9 +98,9 @@ namespace Media
 			UInt32 resizerBitDepth;
 			Bool resizer10Bit;
 			Optional<Media::CS::CSConverter> csconv;
-			UInt8 *lrBuff;
+			UnsafeArrayOpt<UInt8> lrBuff;
 			UIntOS lrSize;
-			UInt8 *diBuff;
+			UnsafeArrayOpt<UInt8> diBuff;
 			UIntOS diSize;
 			Media::Deinterlacer *deint;
 			VideoRenderer *me;

@@ -11,6 +11,7 @@
 # NO_OPENCV := 1
 # NO_LIBPQ := 1
 # NO_PYTHON := 1
+# NO_CURL := 1
 # USE_FDEEP := 1
 # USE_AWS := 1
 

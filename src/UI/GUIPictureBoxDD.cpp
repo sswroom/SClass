@@ -570,22 +570,22 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::Image> currImage, Bool sameIm
 
 				if (rotType == Media::RotateType::CW_90)
 				{
-					UInt8 *tmpBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
-					ImageUtil_Rotate64_CW90(imgBuff.Ptr(), tmpBuff, this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
+					UnsafeArray<UInt8> tmpBuff = MemAllocAArr(UInt8, this->currImageSize.CalcArea() * 8);
+					ImageUtil_Rotate64_CW90(imgBuff.Ptr(), tmpBuff.Ptr(), this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
 					MemFreeAArr(imgBuff);
 					this->imgBuff = tmpBuff;
 				}
 				else if (rotType == Media::RotateType::CW_180)
 				{
-					UInt8 *tmpBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
-					ImageUtil_Rotate64_CW180(imgBuff.Ptr(), tmpBuff, this->currImageSize.x, this->currImageSize.y, this->currImageSize.x << 3, this->currImageSize.x << 3);
+					UnsafeArray<UInt8> tmpBuff = MemAllocAArr(UInt8, this->currImageSize.CalcArea() * 8);
+					ImageUtil_Rotate64_CW180(imgBuff.Ptr(), tmpBuff.Ptr(), this->currImageSize.x, this->currImageSize.y, this->currImageSize.x << 3, this->currImageSize.x << 3);
 					MemFreeAArr(imgBuff);
 					this->imgBuff = tmpBuff;
 				}
 				else if (rotType == Media::RotateType::CW_270)
 				{
-					UInt8 *tmpBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
-					ImageUtil_Rotate64_CW270(imgBuff.Ptr(), tmpBuff, this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
+					UnsafeArray<UInt8> tmpBuff = MemAllocAArr(UInt8, this->currImageSize.CalcArea() * 8);
+					ImageUtil_Rotate64_CW270(imgBuff.Ptr(), tmpBuff.Ptr(), this->currImageSize.y, this->currImageSize.x, this->currImageSize.y << 3, this->currImageSize.x << 3);
 					MemFreeAArr(imgBuff);
 					this->imgBuff = tmpBuff;
 				}
@@ -644,7 +644,7 @@ void UI::GUIPictureBoxDD::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM
 		}
 		else
 		{
-			imgBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
+			imgBuff = MemAllocAArr(UInt8, this->currImageSize.CalcArea() * 8);
 		}
 		if (rimg->GetImageClass() == Media::RasterImage::ImageClass::StaticImage)
 		{
@@ -703,7 +703,7 @@ void UI::GUIPictureBoxDD::RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM
 		}
 		else
 		{
-			imgBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
+			imgBuff = MemAllocAArr(UInt8, this->currImageSize.CalcArea() * 8);
 		}
 		if (rimg->GetImageClass() == Media::RasterImage::ImageClass::StaticImage)
 		{
@@ -1126,7 +1126,7 @@ Optional<Media::StaticImage> UI::GUIPictureBoxDD::CreatePreviewImage(NN<const Me
 	Math::Size2D<UIntOS> prevSize;
 	this->GetImageViewSize(&prevSize, image->info.dispSize);
 
-	UInt8 *prevImgData = MemAllocA(UInt8, image->info.dispSize.CalcArea() * 8);
+	UnsafeArray<UInt8> prevImgData = MemAllocAArr(UInt8, image->info.dispSize.CalcArea() * 8);
 	Media::ColorProfile color(NN<const Media::ColorProfile>(image->info.color));
 	color.GetRTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
 	color.GetGTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
@@ -1134,7 +1134,7 @@ Optional<Media::StaticImage> UI::GUIPictureBoxDD::CreatePreviewImage(NN<const Me
 	NN<Media::CS::CSConverter> csConv;
 	if (!Media::CS::CSConverter::NewConverter(image->info.fourcc, image->info.storeBPP, image->info.pf, image->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess.Ptr()).SetTo(csConv))
 	{
-		MemFreeA(prevImgData);
+		MemFreeAArr(prevImgData);
 		return nullptr;
 	}
 	Media::Resizer::LanczosResizerLR_C32 *resizer;
@@ -1147,7 +1147,7 @@ Optional<Media::StaticImage> UI::GUIPictureBoxDD::CreatePreviewImage(NN<const Me
 
 	DEL_CLASS(resizer);
 	csConv.Delete();
-	MemFreeA(prevImgData);
+	MemFreeAArr(prevImgData);
 	return outImage;
 }
 

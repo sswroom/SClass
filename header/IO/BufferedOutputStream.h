@@ -26,6 +26,7 @@ namespace IO
 		virtual StreamType GetStreamType() const;
 
 		UInt64 GetPosition() const;
+		Bool HasBuffer() const;
 	};
 }
 #endif

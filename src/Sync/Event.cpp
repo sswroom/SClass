@@ -170,8 +170,8 @@ typedef struct
 
 Sync::Event::Event()
 {
-	EventStatus *status = MemAllocA(EventStatus, 1);
-	this->hand = status;
+	NN<EventStatus> status = MemAllocANN(EventStatus);
+	this->hand = status.Ptr();
 	pthread_cond_init(&status->cond, 0);
 	pthread_mutex_init(&status->mutex, 0);
 	status->useCnt = 0;
@@ -181,8 +181,8 @@ Sync::Event::Event()
 
 Sync::Event::Event(Bool isAuto)
 {
-	EventStatus *status = MemAllocA(EventStatus, 1);
-	this->hand = status;
+	NN<EventStatus> status = MemAllocANN(EventStatus);
+	this->hand = status.Ptr();
 	pthread_cond_init(&status->cond, 0);
 	pthread_mutex_init(&status->mutex, 0);
 	status->useCnt = 0;

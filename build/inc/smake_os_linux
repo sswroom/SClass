@@ -128,7 +128,8 @@ Media/OpenCV/OCVUtil.h:
 @OCVUtil.o
 
 Net/HTTPOSClient.h:
-@HTTPOSClientL.o
+@?(NO_CURL == 0)HTTPOSClientL.o
+@?(NO_CURL > 0)HTTPOSClientNull.o
 Net/SSHConn.h:
 @?(NO_SSH2 == 0)SSHConn.o
 @?(NO_SSH2 > 0)SSHConnNull.o
