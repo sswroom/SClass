@@ -70,7 +70,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRTCPTestForm::ProcessThread(NN<Sync::Thread> thread)
 {
 	NN<SSWR::AVIRead::AVIRTCPTestForm> me = thread->GetUserObj().GetNN<SSWR::AVIRead::AVIRTCPTestForm>();
-	Net::TCPClient *cli = 0;
+	NN<Net::TCPClient> cli;
 //	UInt8 buff[2048];
 //	AnyType reqData;
 	Sync::Interlocked::IncrementU32(me->threadCurrCnt);
@@ -84,11 +84,11 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::ProcessThread(NN<Sync::Thread> th
 		me->connLeftCnt -= 1;
 		mutUsage.EndUse();
 		
-		NEW_CLASS(cli, Net::TCPClient(me->sockf, me->svrIP, me->svrPort, 10000));
+		NEW_CLASSNN(cli, Net::TCPClient(me->sockf, me->svrIP, me->svrPort, 10000));
 		if (cli->IsConnectError())
 		{
 			Sync::Interlocked::IncrementU32(me->failCnt);
-			DEL_CLASS(cli);
+			cli.Delete();
 		}
 		else
 		{
@@ -109,7 +109,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::ProcessThread(NN<Sync::Thread> th
 					break;
 				reqData = cli->BeginRead(buff, 2048, status->evt);
 			}*/
-			DEL_CLASS(cli);
+			cli.Delete();
 		}
 		
 	}

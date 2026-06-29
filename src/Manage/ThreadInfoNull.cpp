@@ -3,13 +3,12 @@
 #include "Manage/Process.h"
 #include "Manage/ThreadInfo.h"
 
-Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UIntOS threadId, UIntOS procId, void *hand)
+Optional<Manage::ThreadContext> Manage::ThreadInfo::GetThreadContextHand(UIntOS threadId, UIntOS procId, Optional<Sync::ThreadHandle> hand)
 {
-	Manage::ThreadContext *outContext = 0;
-	return 0;
+	return nullptr;
 }
 
-Manage::ThreadInfo::ThreadInfo(UIntOS procId, UIntOS threadId, void *hand)
+Manage::ThreadInfo::ThreadInfo(UIntOS procId, UIntOS threadId, Optional<Sync::ThreadHandle> hand)
 {
 	this->threadId = threadId;
 	this->procId = procId;
@@ -20,20 +19,17 @@ Manage::ThreadInfo::ThreadInfo(UIntOS procId, UIntOS threadId)
 {
 	this->threadId = threadId;
 	this->procId = procId;
-	this->hand = (void*)this->threadId;
+	this->hand = (Sync::ThreadHandle*)this->threadId;
 }
 
 Manage::ThreadInfo::~ThreadInfo()
 {
-	if (this->hand)
-	{
-		this->hand = 0;
-	}
+	this->hand = nullptr;
 }
 
-Manage::ThreadContext *Manage::ThreadInfo::GetThreadContext()
+Optional<Manage::ThreadContext> Manage::ThreadInfo::GetThreadContext()
 {
-	return 0;
+	return nullptr;
 }
 
 UInt64 Manage::ThreadInfo::GetStartAddress()
@@ -72,7 +68,7 @@ Bool Manage::ThreadInfo::IsCurrThread()
 	return true;
 }
 
-Manage::ThreadInfo *Manage::ThreadInfo::GetCurrThread()
+Optional<Manage::ThreadInfo> Manage::ThreadInfo::GetCurrThread()
 {
-	return 0;
+	return nullptr;
 }

@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(AnyType userObj)
 	me->txtPort->GetText(sbPort);
 	UInt16 port;
 
-	Net::MySQLTCPClient *conn;
+	NN<Net::MySQLTCPClient> conn;
 	NN<Net::TCPClientFactory> clif = me->core->GetTCPClientFactory();
 	Net::SocketUtil::AddressInfo addr;
 	if (!sbPort.ToUInt16(port))
@@ -32,10 +32,10 @@ void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Error in resolving server host"), CSTR("MySQL Connection"), me);
 		return;
 	}
-	NEW_CLASS(conn, Net::MySQLTCPClient(clif, me->ssl, addr, port, sb2.ToCString(), sb3.ToCString(), sb4.ToCString()));
+	NEW_CLASSNN(conn, Net::MySQLTCPClient(clif, me->ssl, addr, port, sb2.ToCString(), sb3.ToCString(), sb4.ToCString()));
 	if (conn->IsError())
 	{
-		DEL_CLASS(conn);
+		conn.Delete();
 		me->ui->ShowMsgOK(CSTR("Error in opening MySQL connection"), CSTR("MySQL Connection"), me);
 		return;
 	}

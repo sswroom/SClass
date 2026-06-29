@@ -60,14 +60,14 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(AnyType userObj
 		me->ui->ShowMsgOK(CSTR("Unsupported Hash Type"), CSTR("Brute Force"), me);
 		return;
 	}
-	Crypto::Hash::BruteForceAttack *bforce;
-	NEW_CLASS(bforce, Crypto::Hash::BruteForceAttack(validator, (Crypto::Hash::BruteForceAttack::CharEncoding)me->cboEncoding->GetSelectedItem().GetIntOS()));
+	NN<Crypto::Hash::BruteForceAttack> bforce;
+	NEW_CLASSNN(bforce, Crypto::Hash::BruteForceAttack(validator, (Crypto::Hash::BruteForceAttack::CharEncoding)me->cboEncoding->GetSelectedItem().GetIntOS()));
 	bforce->SetCharLimit((Crypto::Hash::BruteForceAttack::CharLimit)me->cboCharType->GetSelectedItem().GetIntOS());
 	me->lastCnt = 0;
 	me->lastTime = Data::DateTimeUtil::GetCurrTimeMillis();
 	if (!bforce->Start(sb.ToString(), sb.GetLength(), minLeng, maxLeng))
 	{
-		DEL_CLASS(bforce);
+		bforce.Delete();
 		me->ui->ShowMsgOK(CSTR("Hash value is not valid for this Hash Type"), CSTR("Brute Force"), me);
 	}
 	else

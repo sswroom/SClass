@@ -921,8 +921,8 @@ void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_VIEW_HEX:
 	{
 		IO::StmData::MemoryDataCopy md(this->asn1->GetASN1Buff(), this->asn1->GetASN1BuffSize());
-		IO::FileAnalyse::ASN1FileAnalyse *analyse;
-		NEW_CLASS(analyse, IO::FileAnalyse::ASN1FileAnalyse(md, this->asn1->CreateNames()));
+		NN<IO::FileAnalyse::ASN1FileAnalyse> analyse;
+		NEW_CLASSNN(analyse, IO::FileAnalyse::ASN1FileAnalyse(md, this->asn1->CreateNames()));
 		this->core->OpenHex(md, analyse);
 		break;
 	}

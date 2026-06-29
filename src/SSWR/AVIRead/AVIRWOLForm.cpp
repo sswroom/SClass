@@ -7,7 +7,7 @@ void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWOLForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWOLForm>();
 	UInt8 macBuff[16];
-	Net::WOLClient *cli;
+	NN<Net::WOLClient> cli;
 	Text::StringBuilderUTF8 sb;
 	UInt32 ip = (UInt32)me->cboAdapter->GetSelectedItem().GetUIntOS();
 	if (ip == 0)
@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(AnyType userObj)
 	me->txtDeviceMac->GetText(sb);
 	if ((sb.GetLength() == 12 && Text::StrHex2BytesS(sb.ToString(), macBuff, 0) == 6) || (sb.GetLength() == 17 && Text::StrHex2BytesS(sb.ToString(), macBuff, sb.v[2]) == 6))
 	{
-		NEW_CLASS(cli, Net::WOLClient(me->core->GetSocketFactory(), ip, me->core->GetLog()));
+		NEW_CLASSNN(cli, Net::WOLClient(me->core->GetSocketFactory(), ip, me->core->GetLog()));
 		if (cli->IsError())
 		{
 			me->ui->ShowMsgOK(CSTR("Error in listening to the port"), CSTR("WOL"), me);
@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(AnyType userObj)
 		{
 			me->ui->ShowMsgOK(CSTR("Packet sent"), CSTR("WOL"), me);
 		}
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 	else
 	{

@@ -114,9 +114,9 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 		{
 			UInt64 totalSize = 0;
 			UIntOS thisSize;
-			IO::Stream *stm = (IO::Stream *)pobj.Ptr();
-			IO::MemoryStream *mstm;
-			NEW_CLASS(mstm, IO::MemoryStream());
+			NN<IO::Stream> stm = NN<IO::Stream>::ConvertFrom(pobj);
+			NN<IO::MemoryStream> mstm;
+			NEW_CLASSNN(mstm, IO::MemoryStream());
 			{
 				Data::ByteBuffer buff(1048576);
 				while (totalSize < 104857600)
@@ -132,12 +132,12 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 			{
 				IO::StmData::MemoryDataCopy data(mstm->GetArray());
 				data.SetFullName(stm->GetSourceNameObj()->ToCString());
-				DEL_CLASS(mstm);
+				mstm.Delete();
 				this->LoadData(data, nullptr);
 			}
 			else
 			{
-				DEL_CLASS(mstm);
+				mstm.Delete();
 			}
 			pobj.Delete();
 			break;

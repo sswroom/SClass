@@ -133,8 +133,11 @@
 #include "SSWR/AVIRead/AVIRWifiCaptureForm.h"
 #include "SSWR/AVIRead/AVIRWMIForm.h"
 #include "SSWR/SHPConv/SHPConvMainForm.h"
+#include "UI/GUIFileDialog.h"
+#include "UI/GUIFolderDialog.h"
 #include "UI/GUITextBox.h"
 //#include "UtilUI/TextViewerForm.h"
+#include "Text/MyStringW.h"
 
 typedef enum
 {
@@ -286,25 +289,25 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::D
 		{
 			Bool valid = false;
 #if defined(WIN32) || defined(_WIN64) || (defined(_MSC_VER) && defined(_WIN32))
-			if (Text::StrEndsWithICase(files[i], (const UTF8Char*)".GDB"))
+			if (files[i]->EndsWithICase(UTF8STRC(".GDB")))
 			{
-				DB::OLEDBConn *conn;
+				NN<DB::OLEDBConn> conn;
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Provider=ESRI.GeoDB.OleDB.1;Data Source="));
 				sb.Append(files[i]);
 				sb.AppendC(UTF8STRC(";Extended Properties=workspacetype=esriDataSourcesGDB.FileGDBWorkspaceFactory.1"));
 				sb.AppendC(UTF8STRC(";Geometry=OBJECT"));
-				const WChar *wptr = Text::StrToWCharNew(sb.ToString());
-				NEW_CLASS(conn, DB::OLEDBConn(wptr, 0));
+				UnsafeArray<const WChar> wptr = Text::StrToWCharNew(sb.ToString());
+				NEW_CLASSNN(conn, DB::OLEDBConn(wptr, me->core->GetLog()));
 				Text::StrDelNew(wptr);
-				if (conn->GetLastError() == 0)
+				if (conn->GetConnError() == DB::OLEDBConn::CE_NONE)
 				{
 					valid = true;
 					me->core->OpenObject(conn);
 				}
 				else
 				{
-					DEL_CLASS(conn);
+					conn.Delete();
 				}
 			}
 #endif
@@ -542,8 +545,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	UTF8Char sbuff2[16];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	Map::TileMap *tileMap;
-	Map::MapDrawLayer *mapLyr;
+	NN<Map::TileMap> tileMap;
+	NN<Map::MapDrawLayer> mapLyr;
 
 	switch (cmdId)
 	{
@@ -594,13 +597,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_MTK_GPS:
 		{
 			NN<IO::SerialPort> port;
-			IO::Device::MTKGPSNMEA *mtk;
+			NN<IO::Device::MTKGPSNMEA> mtk;
 			NN<Map::GPSTrack> trk;
 
 			NEW_CLASSNN(port, IO::SerialPort(IO::Device::MTKGPSNMEA::GetMTKSerialPort(), 115200, IO::SerialPort::PARITY_NONE, true));
 			if (!port->IsError())
 			{
-				NEW_CLASS(mtk, IO::Device::MTKGPSNMEA(port, false));
+				NEW_CLASSNN(mtk, IO::Device::MTKGPSNMEA(port, false));
 				if (mtk->IsMTKDevice())
 				{
 					NEW_CLASSNN(trk, Map::GPSTrack(CSTR("MTK_Tracker"), true, 0, nullptr));
@@ -618,38 +621,38 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				{
 					this->ui->ShowMsgOK(CSTR("MTK Tracker not found"), CSTR("MTK Tracker"), this);
 				}
-				DEL_CLASS(mtk);
+				mtk.Delete();
 				port.Delete();
 			}
 		}
 		break;
 	case MNU_GSM_MODEM:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm frm(nullptr, this->ui, this->core, false, nullptr, this->log);
+			SSWR::AVIRead::AVIRSelStreamForm frm(nullptr, this->ui, this->core, false, nullptr, this->core->GetLog());
 			frm.SetText(CSTR("Select GSM Modem"));
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				this->core->OpenGSMModem(frm.stm);
+				this->core->OpenGSMModem(frm.GetStream());
 			}
 		}
 		break;
 	case MNU_GPS_TRACKER:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this->core, true);
+			SSWR::AVIRead::AVIRSelStreamForm frm(nullptr, this->ui, this->core, true, nullptr, this->core->GetLog());
 			frm.SetText(CSTR("Select GPS Tracker"));
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				SSWR::AVIRead::AVIRGPSTrackerForm *gpsFrm;
-				IO::GPSNMEA *gps;
-				NEW_CLASS(gps, IO::GPSNMEA(frm.stm, true));
-				NEW_CLASS(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
+				NN<SSWR::AVIRead::AVIRGPSTrackerForm> gpsFrm;
+				NN<IO::GPSNMEA> gps;
+				NEW_CLASSNN(gps, IO::GPSNMEA(frm.GetStream(), true));
+				NEW_CLASSNN(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(nullptr, this->ui, this->core, gps, true));
 				this->core->ShowForm(gpsFrm);
 			}
 		}
 		break;
 	case MNU_WIA_DEV:
 		{
-			SSWR::AVIRead::AVIRWIADevForm frm(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRWIADevForm frm(nullptr, this->ui, this->core);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				
@@ -657,96 +660,96 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_OSM_TILE:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTile"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.openstreetmap.org/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.openstreetmap.org/"));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.openstreetmap.org/"));
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
+		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.openstreetmap.org/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), nullptr));
+		NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap)->AddAlternateURL(CSTR("http://b.tile.openstreetmap.org/"));
+		NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap)->AddAlternateURL(CSTR("http://c.tile.openstreetmap.org/"));
+		NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_CYCLE:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMOpenCycleMap"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/cycle/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/cycle/"));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/cycle/"));
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
+		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/cycle/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), nullptr));
+		NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/cycle/"));
+		NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/cycle/"));
+		NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_TRANSP:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTransport"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/transport/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/transport/"));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/transport/"));
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
+		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/transport/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), nullptr));
+		NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/transport/"));
+		NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/transport/"));
+		NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_LANDSCAPE:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMLandscape"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/landscape/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/landscape/"));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/landscape/"));
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
+		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/landscape/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), nullptr));
+		NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/landscape/"));
+		NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/landscape/"));
+		NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_OUTDOORS:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMOutdoors"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/outdoors/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/outdoors/"));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/outdoors/"));
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
+		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/outdoors/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), nullptr));
+		NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/outdoors/"));
+		NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/outdoors/"));
+		NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_TRANSP_DARK:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTransportDark"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/transport-dark/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/transport-dark/"));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/transport-dark/"));
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
+		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/transport-dark/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), nullptr));
+		NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/transport-dark/"));
+		NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/transport-dark/"));
+		NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_SPINAL:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMSpinalMap"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/spinal-map/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/spinal-map/"));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/spinal-map/"));
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
+		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/spinal-map/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), nullptr));
+		NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/spinal-map/"));
+		NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/spinal-map/"));
+		NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_MAPQUEST:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMMapQuest"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://otile1.mqcdn.com/tiles/1.0.0/osm/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://otile2.mqcdn.com/tiles/1.0.0/osm/"));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://otile3.mqcdn.com/tiles/1.0.0/osm/"));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://otile4.mqcdn.com/tiles/1.0.0/osm/"));
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
+		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://otile1.mqcdn.com/tiles/1.0.0/osm/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), nullptr));
+		NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap)->AddAlternateURL(CSTR("http://otile2.mqcdn.com/tiles/1.0.0/osm/"));
+		NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap)->AddAlternateURL(CSTR("http://otile3.mqcdn.com/tiles/1.0.0/osm/"));
+		NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap)->AddAlternateURL(CSTR("http://otile4.mqcdn.com/tiles/1.0.0/osm/"));
+		NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_ESRI_MAP:
 		{
-			SSWR::AVIRead::AVIRESRIMapForm frm(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRESRIMapForm frm(nullptr, this->ui, this->core, nullptr);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Crypto::Hash::CRC32R crc(Crypto::Hash::CRC32::GetPolynormialIEEE());
-				Map::ESRI::ESRITileMap *map;
+				NN<Map::ESRI::ESRITileMap> map;
 				UInt8 crcVal[4];
 				Text::String *url = frm.GetSelectedURL();
 				crc.Calc((UInt8*)url->v, url->leng * sizeof(UTF8Char));
 				crc.GetValue(crcVal);
-				sptr = IO::Path::GetProcessFileName(sbuff);
+				sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 				sptr2 = Text::StrInt32(sbuff2, ReadMInt32(crcVal));
 				sptr = IO::Path::AppendPath(sbuff, sptr, CSTRP(sbuff2, sptr2));
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				*sptr = 0;
-				NEW_CLASS(map, Map::ESRI::ESRITileMap(url, CSTRP(sbuff, sptr), this->core->GetSocketFactory(), 0));
-				NEW_CLASS(mapLyr, Map::TileMapLayer(map, this->core->GetParserList()));
+				NEW_CLASSNN(map, Map::ESRI::ESRITileMap(url, CSTRP(sbuff, sptr), this->core->GetSocketFactory(), nullptr));
+				NEW_CLASSNN(mapLyr, Map::TileMapLayer(map, this->core->GetParserList()));
 				this->core->OpenObject(mapLyr);
 			}
 		}
@@ -759,52 +762,52 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;*/
 	case MNU_NET_INFO:
 		{
-			SSWR::AVIRead::AVIRNetInfoForm frm(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRNetInfoForm frm(nullptr, this->ui, this->core);
 			frm.ShowDialog(this);
 		}
 		break;
 	case MNU_SUDOKU_SOLVER:
 		{
-			SSWR::AVIRead::AVIRSudokuForm frm(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRSudokuForm frm(nullptr, this->ui, this->core);
 			frm.ShowDialog(this);
 		}
 		break;
 	case MNU_OPEN_FILE:
 		{
-			SSWR::AVIRead::AVIROpenFileForm frm(0, this->ui, this->core, IO::ParserType::Unknown);
+			SSWR::AVIRead::AVIROpenFileForm frm(nullptr, this->ui, this->core, IO::ParserType::Unknown);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				Text::String *fname = frm.GetFileName();
+				NN<Text::String> fname = frm.GetFileName();
 				UIntOS i = fname->IndexOf(':');
 				if (i == INVALID_INDEX || i == 1)
 				{
 					if (IO::Path::GetPathType(fname->ToCString()) == IO::Path::PathType::Directory)
 					{
-						IO::DirectoryPackage *dp;
-						NEW_CLASS(dp, IO::DirectoryPackage(fname));
+						NN<IO::DirectoryPackage> dp;
+						NEW_CLASSNN(dp, IO::DirectoryPackage(fname));
 						this->core->OpenObject(dp);	
 					}
 					else
 					{
-						IO::StmData::FileData *fd;
-						NEW_CLASS(fd, IO::StmData::FileData(fname, false));
+						NN<IO::StmData::FileData> fd;
+						NEW_CLASSNN(fd, IO::StmData::FileData(fname, false));
 						if (fd->GetDataSize() == 0)
 						{
-							UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("AVIRead"), this);
+							this->ui->ShowMsgOK(CSTR("Error in loading file"), CSTR("AVIRead"), this);
 						}
 						else
 						{
-							this->core->LoadDataType(fd, 0, frm.GetParserType());
+							this->core->LoadDataType(fd, nullptr, frm.GetParserType());
 						}
-						DEL_CLASS(fd);
+						fd.Delete();
 					}
 				}
 				else
 				{
-					IO::ParsedObject *pobj = Net::URL::OpenObject(fname->ToCString(), nullptr, this->core->GetSocketFactory(), 0);
-					if (pobj == 0)
+					NN<IO::ParsedObject> pobj;
+					if (!Net::URL::OpenObject(fname->ToCString(), nullptr, this->core->GetSocketFactory(), nullptr, 30000, this->core->GetLog()).SetTo(pobj))
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("AVIRead"), this);
+						this->ui->ShowMsgOK(CSTR("Error in loading file"), CSTR("AVIRead"), this);
 					}
 					else
 					{
@@ -816,87 +819,87 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_PLAYLIST:
 		{
-			Media::Playlist *playlist;
-			NEW_CLASS(playlist, Media::Playlist(CSTR("Untitled"), this->core->GetParserList()));
+			NN<Media::Playlist> playlist;
+			NEW_CLASSNN(playlist, Media::Playlist(CSTR("Untitled"), this->core->GetParserList()));
 			this->core->OpenObject(playlist);
 		}
 		break;
 	case MNU_HTTP_SVR:
 		{
-			SSWR::AVIRead::AVIRHTTPSvrForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRHTTPSvrForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRHTTPSvrForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPSvrForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TV_CONTROL:
 		{
-			SSWR::AVIRead::AVIRTVControlForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRTVControlForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRTVControlForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTVControlForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_STMTERM:
 		{
-			SSWR::AVIRead::AVIRStreamTermForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRStreamTermForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRStreamTermForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRStreamTermForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_NTPCLIENT:
 		{
-			SSWR::AVIRead::AVIRNTPClientForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRNTPClientForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRNTPClientForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRNTPClientForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SET_AUDIO:
 		{
-			SSWR::AVIRead::AVIRSetAudioForm frm(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRSetAudioForm frm(nullptr, this->ui, this->core);
 			frm.ShowDialog(this);
 		}
 		break;
 	case MNU_FILE_ANALYSE:
 		{
-			SSWR::AVIRead::AVIRFileAnalyseForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRFileAnalyseForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRFileAnalyseForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFileAnalyseForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_PROC_INFO:
 		{
-			SSWR::AVIRead::AVIRProcInfoForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRProcInfoForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRProcInfoForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRProcInfoForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SET_DPI:
 		{
-			SSWR::AVIRead::AVIRSetDPIForm frm(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRSetDPIForm frm(nullptr, this->ui, this->core);
 			frm.ShowDialog(this);
 		}
 		break;
 	case MNU_DNSCLIENT:
 		{
-			SSWR::AVIRead::AVIRDNSClientForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRDNSClientForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRDNSClientForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDNSClientForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_FILEEX:
 		{
-			SSWR::AVIRead::AVIRFileExForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRFileExForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRFileExForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFileExForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_DNSPROXY:
 		{
-			SSWR::AVIRead::AVIRDNSProxyForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRDNSProxyForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRDNSProxyForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDNSProxyForm(nullptr, this->ui, this->core));
 			if (frm->IsError())
 			{
-				DEL_CLASS(frm);
-				UI::MessageDialog::ShowDialog(CSTR("Error in starting DNS proxy. Port is in use?"), CSTR("Error"), this);
+				frm.Delete();
+				this->ui->ShowMsgOK(CSTR("Error in starting DNS proxy. Port is in use?"), CSTR("Error"), this);
 			}
 			else
 			{
@@ -906,377 +909,377 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_SMTPSERVER:
 		{
-			SSWR::AVIRead::AVIRSMTPServerForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSMTPServerForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIREmailServerForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREmailServerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_AUDIOFILTER:
 		{
-			SSWR::AVIRead::AVIRAudioFilterForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRAudioFilterForm(0, this->ui, this->core, false));
+			NN<SSWR::AVIRead::AVIRAudioFilterForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRAudioFilterForm(nullptr, this->ui, this->core, false));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_NET_PING:
 		{
-			SSWR::AVIRead::AVIRNetPingForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRNetPingForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRNetPingForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRNetPingForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_IMAGE_BATCH:
 		{
-			SSWR::AVIRead::AVIRImageBatchForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRImageBatchForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRImageBatchForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRImageBatchForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_FILE_HASH:
 		{
-			SSWR::AVIRead::AVIRFileHashForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRFileHashForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRFileHashForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFileHashForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_UDP_CAPTURE:
 		{
-			SSWR::AVIRead::AVIRUDPCaptureForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRUDPCaptureForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRUDPCaptureForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRUDPCaptureForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HTTPCLIENT:
 		{
-			SSWR::AVIRead::AVIRHTTPClientForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRHTTPClientForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRHTTPClientForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPClientForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_WHOISCLIENT:
 		{
-			SSWR::AVIRead::AVIRWHOISClientForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRWHOISClientForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRWHOISClientForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWHOISClientForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TCPTEST:
 		{
-			SSWR::AVIRead::AVIRTCPTestForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRTCPTestForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRTCPTestForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTCPTestForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HTTPTEST:
 		{
-			SSWR::AVIRead::AVIRHTTPTestForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRHTTPTestForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRHTTPTestForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPTestForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_PROXYSERVER:
 		{
-			SSWR::AVIRead::AVIRProxyServerForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRProxyServerForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRProxyServerForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRProxyServerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HTTPPROXYCLIENT:
 		{
-			SSWR::AVIRead::AVIRHTTPProxyClientForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRHTTPProxyClientForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRHTTPProxyClientForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPProxyClientForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_PROTODEC:
 		{
-			SSWR::AVIRead::AVIRProtoDecForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRProtoDecForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRProtoDecForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRProtoDecForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_PROF_RESIZER:
 		{
-			SSWR::AVIRead::AVIRProfiledResizerForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRProfiledResizerForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRProfiledResizerForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRProfiledResizerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_LOG_BACKUP:
 		{
-			SSWR::AVIRead::AVIRLogBackupForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRLogBackupForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRLogBackupForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLogBackupForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TEXT_ENCRYPT:
 		{
-			SSWR::AVIRead::AVIREncryptForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIREncryptForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIREncryptForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREncryptForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_STREAM_CONV:
 		{
-			SSWR::AVIRead::AVIRStreamConvForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRStreamConvForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRStreamConvForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRStreamConvForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HQMP3:
 		{
-			SSWR::AVIRead::AVIRHQMPForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRHQMPForm(0, this->ui, this->core, SSWR::AVIRead::AVIRHQMPForm::QM_LQ));
+			NN<SSWR::AVIRead::AVIRHQMPForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHQMPForm(nullptr, this->ui, this->core, SSWR::AVIRead::AVIRHQMPForm::QM_LQ));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HQMP3HQ:
 		{
-			SSWR::AVIRead::AVIRHQMPForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRHQMPForm(0, this->ui, this->core, SSWR::AVIRead::AVIRHQMPForm::QM_HQ));
+			NN<SSWR::AVIRead::AVIRHQMPForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHQMPForm(nullptr, this->ui, this->core, SSWR::AVIRead::AVIRHQMPForm::QM_HQ));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HQMP3UQ:
 		{
-			SSWR::AVIRead::AVIRHQMPForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRHQMPForm(0, this->ui, this->core, SSWR::AVIRead::AVIRHQMPForm::QM_UQ));
+			NN<SSWR::AVIRead::AVIRHQMPForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHQMPForm(nullptr, this->ui, this->core, SSWR::AVIRead::AVIRHQMPForm::QM_UQ));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_CPUINFO:
 		{
-			SSWR::AVIRead::AVIRCPUInfoForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRCPUInfoForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRCPUInfoForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCPUInfoForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_IBUDDY:
 		{
-			SSWR::AVIRead::AVIRIBuddyForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRIBuddyForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRIBuddyForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRIBuddyForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_DWQB30:
 		{
-			SSWR::AVIRead::AVIRDWQB30Form *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRDWQB30Form(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRDWQB30Form> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDWQB30Form(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_ICCINFO:
 		{
-			SSWR::AVIRead::AVIRICCInfoForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRICCInfoForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRICCInfoForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRICCInfoForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_CLIPBOARD_VIEWER:
 		{
-			SSWR::AVIRead::AVIRClipboardViewerForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRClipboardViewerForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRClipboardViewerForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRClipboardViewerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_BENCHMARK:
 		{
-			SSWR::AVIRead::AVIRBenchmarkForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRBenchmarkForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRBenchmarkForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBenchmarkForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_FILE_SIZE_PACK:
 		{
-			SSWR::AVIRead::AVIRFileSizePackForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRFileSizePackForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRFileSizePackForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFileSizePackForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_PAINT_CNT:
 		{
-			SSWR::AVIRead::AVIRPaintCntForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRPaintCntForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRPaintCntForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPaintCntForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_ASM_CONV:
 		{
-			SSWR::AVIRead::AVIRAsmConvForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRAsmConvForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRAsmConvForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRAsmConvForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_COORD_CONV:
 		{
-			SSWR::AVIRead::AVIRCoordConvForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRCoordConvForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRCoordConvForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCoordConvForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_GPSDEV:
 		{
-			SSWR::AVIRead::AVIRGPSDevForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRGPSDevForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRGPSDevForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGPSDevForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HTTPDOWNLOADER:
 		{
-			SSWR::AVIRead::AVIRHTTPDownloaderForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRHTTPDownloaderForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRHTTPDownloaderForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPDownloaderForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_DRAG_DROP:
 		{
-			SSWR::AVIRead::AVIRDragDropViewerForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRDragDropViewerForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRDragDropViewerForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDragDropViewerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_JSTEXT:
 		{
-			SSWR::AVIRead::AVIRJSTextForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRJSTextForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRJSTextForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJSTextForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_UDPTEST:
 		{
-			SSWR::AVIRead::AVIRUDPTestForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRUDPTestForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRUDPTestForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRUDPTestForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_CODEIMAGEGEN:
 		{
-			SSWR::AVIRead::AVIRCodeImageGenForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRCodeImageGenForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRCodeImageGenForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCodeImageGenForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_EDIDVIEWER:
 		{
-			SSWR::AVIRead::AVIREDIDViewerForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIREDIDViewerForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIREDIDViewerForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREDIDViewerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 /*	case MNU_GPUINFO:
 		{
-			SSWR::AVIRead::AVIRGPUInfoForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRGPUInfoForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRGPUInfoForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGPUInfoForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;*/
 	case MNU_WMI:
 #if defined(WIN32) || defined(_WIN64) || (defined(_MSC_VER) && defined(_WIN32))
 		{
-			SSWR::AVIRead::AVIRWMIForm frm(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRWMIForm frm(nullptr, this->ui, this->core);
 			frm.ShowDialog(this);
 		}
 #endif
 		break;
 	case MNU_SNB_DONGLE:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this->core, false);
+			SSWR::AVIRead::AVIRSelStreamForm frm(nullptr, this->ui, this->core, false);
 			frm.SetText(CSTR("Select SNB Dongle"));
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				SSWR::AVIRead::AVIRSNBDongleForm *snbFrm;
-				NEW_CLASS(snbFrm, SSWR::AVIRead::AVIRSNBDongleForm(0, this->ui, this->core, frm.stm));
+				NN<SSWR::AVIRead::AVIRSNBDongleForm> snbFrm;
+				NEW_CLASSNN(snbFrm, SSWR::AVIRead::AVIRSNBDongleForm(nullptr, this->ui, this->core, frm.GetStream()));
 				this->core->ShowForm(snbFrm);
 			}
 		}
 		break;
 	case MNU_CHINESE:
 		{
-			SSWR::AVIRead::AVIRChineseForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRChineseForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRChineseForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRChineseForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_BLUETOOTH:
 		{
-			SSWR::AVIRead::AVIRBluetoothForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRBluetoothForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRBluetoothForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBluetoothForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_OSM_CACHE_SERVER:
 		{
-			SSWR::AVIRead::AVIROSMCacheCfgForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIROSMCacheCfgForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIROSMCacheCfgForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIROSMCacheCfgForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TEST:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMCacheTest"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://127.0.0.1/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
-		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
+		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://127.0.0.1/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
+		NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_IMAGEVIEWER:
 		{
-			SSWR::AVIRead::AVIRImageViewerForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRImageViewerForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRImageViewerForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRImageViewerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_LINECOUNTER:
 		{
-			SSWR::AVIRead::AVIRLineCounterForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRLineCounterForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRLineCounterForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLineCounterForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_OSM_LOCAL_DIR:
 		{
-			UI::FolderDialog dlg(L"SSWR", L"AVIRead", L"OSMLocal");
-			if (dlg.ShowDialog(this->GetHandle()))
+			NN<UI::GUIFolderDialog> dlg = this->ui->NewFolderDialog();//L"SSWR", L"AVIRead", L"OSMLocal");
+			if (dlg->ShowDialog(this->GetHandle()))
 			{
-				IO::DirectoryPackage *pkg;
-				NEW_CLASS(pkg, IO::DirectoryPackage(dlg.GetFolder()));
-				NEW_CLASS(tileMap, Map::OSM::OSMLocalTileMap(pkg));
-				NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
+				NN<IO::DirectoryPackage> pkg;
+				NEW_CLASSNN(pkg, IO::DirectoryPackage(dlg->GetFolder()));
+				NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(pkg));
+				NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 				this->core->OpenObject(mapLyr);
 			}
+			dlg.Delete();
 		}
 		break;
 	case MNU_OSM_LOCAL_FILE:
 		{
-			Parser::ParserList *parsers = this->core->GetParserList();
-			UI::FileDialog dlg(L"SSWR", L"AVIRead", L"OSMLocalFile", false);
-			parsers->PrepareSelector(&dlg, IO::ParserType::PackageFile);
-			if (dlg.ShowDialog(this->GetHandle()))
+			NN<Parser::ParserList> parsers = this->core->GetParserList();
+			NN<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"OSMLocalFile", false);
+			parsers->PrepareSelector(dlg, IO::ParserType::PackageFile);
+			if (dlg->ShowDialog(this->GetHandle()))
 			{
-				IO::StmData::FileData *fd;
-				IO::PackageFile *pkg;
-				NEW_CLASS(fd, IO::StmData::FileData(dlg.GetFileName(), false));
-				pkg = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile);
-				DEL_CLASS(fd);
-				if (pkg)
+				NN<IO::StmData::FileData> fd;
+				NN<IO::PackageFile> pkg;
+				NEW_CLASSNN(fd, IO::StmData::FileData(dlg->GetFileName(), false));
+				if (Optional<IO::PackageFile>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::PackageFile)).SetTo(pkg))
 				{
-					NEW_CLASS(tileMap, Map::OSM::OSMLocalTileMap(pkg));
-					NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, parsers));
+					NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(pkg));
+					NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, parsers));
 					this->core->OpenObject(mapLyr);
 				}
+				fd.Delete();
 			}
 		}
 		break;
 	case MNU_TCPSPDCLI:
 		{
-			SSWR::AVIRead::AVIRTCPSpdCliForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRTCPSpdCliForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRTCPSpdCliForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTCPSpdCliForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TCPSPDSVR:
 		{
-			SSWR::AVIRead::AVIRTCPSpdSvrForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRTCPSpdSvrForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRTCPSpdSvrForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTCPSpdSvrForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
@@ -1286,120 +1289,123 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			IntOS cnt = sensors.GetAccelerometerCnt();
 			if (cnt > 0)
 			{
-				IO::SensorAccelerometer *acc = sensors.CreateAccelerometer(0);
-				if (acc)
+				NN<IO::SensorAccelerometer> acc;
+				if (sensors.CreateAccelerometer(0).SetTo(acc))
 				{
-					SSWR::AVIRead::AVIRAccelerometerForm *frm;
-					NEW_CLASS(frm, SSWR::AVIRead::AVIRAccelerometerForm(0, this->ui, this->core, acc));
+					NN<SSWR::AVIRead::AVIRAccelerometerForm> frm;
+					NEW_CLASSNN(frm, SSWR::AVIRead::AVIRAccelerometerForm(nullptr, this->ui, this->core, acc));
 					this->core->ShowForm(frm);
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog(CSTR("Error in accessing accelerometer"), CSTR("Accelerometer"), this);
+					this->ui->ShowMsgOK(CSTR("Error in accessing accelerometer"), CSTR("Accelerometer"), this);
 				}
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog(CSTR("No accelerometers found"), CSTR("Accelerometer"), this);
+				this->ui->ShowMsgOK(CSTR("No accelerometers found"), CSTR("Accelerometer"), this);
 			}
 		}
 		break;
 	case MNU_WIFICAPTURE:
 		{
-			SSWR::AVIRead::AVIRWifiCaptureForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRWifiCaptureForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRWifiCaptureForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWifiCaptureForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_POWERCONTROL:
 		{
-			SSWR::AVIRead::AVIRPowerForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRPowerForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRPowerForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPowerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TIMETEST:
 		{
-			SSWR::AVIRead::AVIRTimeTestForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRTimeTestForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRTimeTestForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTimeTestForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_IOPINTEST:
 		{
-			SSWR::AVIRead::AVIRSelIOPinForm frm(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRSelIOPinForm frm(nullptr, this->ui, this->core);
 			frm.SetText(CSTR("Select IO Pin"));
-			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
+			NN<IO::IOPin> ioPin;
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.ioPin.SetTo(ioPin))
 			{
-				SSWR::AVIRead::AVIRIOPinTestForm *testFrm;
-				NEW_CLASS(testFrm, SSWR::AVIRead::AVIRIOPinTestForm(0, this->ui, this->core, frm.ioPin));
+				NN<SSWR::AVIRead::AVIRIOPinTestForm> testFrm;
+				NEW_CLASSNN(testFrm, SSWR::AVIRead::AVIRIOPinTestForm(nullptr, this->ui, this->core, ioPin));
 				this->core->ShowForm(testFrm);
 			}
 		}
 		break;
 	case MNU_DHT22:
 		{
-			SSWR::AVIRead::AVIRSelIOPinForm frm(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRSelIOPinForm frm(nullptr, this->ui, this->core);
 			frm.SetText(CSTR("Select DHT22 IO Pin"));
-			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
+			NN<IO::IOPin> ioPin;
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.ioPin.SetTo(ioPin))
 			{
-				SSWR::AVIRead::AVIRDHT22Form *testFrm;
-				NEW_CLASS(testFrm, SSWR::AVIRead::AVIRDHT22Form(0, this->ui, this->core, frm.ioPin));
+				NN<SSWR::AVIRead::AVIRDHT22Form> testFrm;
+				NEW_CLASSNN(testFrm, SSWR::AVIRead::AVIRDHT22Form(nullptr, this->ui, this->core, ioPin));
 				this->core->ShowForm(testFrm);
 			}
 		}
 		break;
 	case MNU_DS18B20:
 		{
-			SSWR::AVIRead::AVIRSelIOPinForm frm(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRSelIOPinForm frm(nullptr, this->ui, this->core);
 			frm.SetText(CSTR("Select DS18B20 IO Pin"));
-			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
+			NN<IO::IOPin> ioPin;
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.ioPin.SetTo(ioPin))
 			{
-				SSWR::AVIRead::AVIRDS18B20Form *testFrm;
-				NEW_CLASS(testFrm, SSWR::AVIRead::AVIRDS18B20Form(0, this->ui, this->core, frm.ioPin));
+				NN<SSWR::AVIRead::AVIRDS18B20Form> testFrm;
+				NEW_CLASSNN(testFrm, SSWR::AVIRead::AVIRDS18B20Form(nullptr, this->ui, this->core, ioPin));
 				this->core->ShowForm(testFrm);
 			}
 		}
 		break;
 	case MNU_TIMEDCAPTURE:
 		{
-			SSWR::AVIRead::AVIRTimedCaptureForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRTimedCaptureForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRTimedCaptureForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTimedCaptureForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_GUIEVENT:
 		{
-			SSWR::AVIRead::AVIRGUIEventForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRGUIEventForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRGUIEventForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGUIEventForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_CALCULATOR1:
 		{
-			SSWR::AVIRead::AVIRCalculator1Form *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRCalculator1Form(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRCalculator1Form> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCalculator1Form(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SETLOCATIONSVC:
 		{
-			SSWR::AVIRead::AVIRSetLocationSvcForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSetLocationSvcForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRSetLocationSvcForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSetLocationSvcForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 /*	case MNU_SCREENCAPTURE:
 		{
-			Media::ScreenCapturer *capturer;
+			NN<Media::ScreenCapturer> capturer;
 			Media::StaticImage *img;
-			NEW_CLASS(capturer, Media::ScreenCapturer(this->core->GetMonitorMgr(), this->core->GetColorManager()));
+			NEW_CLASSNN(capturer, Media::ScreenCapturer(this->core->GetMonitorMgr(), this->core->GetColorManager()));
 			img = capturer->CaptureScreen(this->GetHMonitor());
 			DEL_CLASS(capturer);
 			if (img)
 			{
-				Media::ImageList *imgList;
-				NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"ScreenCapture"));
+				NN<Media::ImageList> imgList;
+				NEW_CLASSNN(imgList, Media::ImageList((const UTF8Char*)"ScreenCapture"));
 				imgList->AddImage(img, 0);
 				this->core->OpenObject(imgList);
 			}
@@ -1407,230 +1413,229 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;*/
 	case MNU_HASHTEST:
 		{
-			SSWR::AVIRead::AVIRHashTestForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRHashTestForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRHashTestForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHashTestForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_THREADSPEED:
 		{
-			SSWR::AVIRead::AVIRThreadSpeedForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRThreadSpeedForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRThreadSpeedForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRThreadSpeedForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_ESCALE:
 		{
-			SSWR::AVIRead::AVIRElectronicScaleForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRElectronicScaleForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRElectronicScaleForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRElectronicScaleForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_VOICEMODEM:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this->core, false);
+			SSWR::AVIRead::AVIRSelStreamForm frm(nullptr, this->ui, this->core, false);
 			frm.SetText(CSTR("Select Voice Modem"));
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				SSWR::AVIRead::AVIRVoiceModemForm *innerFrm;
-				IO::Device::RockwellModemController *modem;
-				IO::ATCommandChannel *channel;
-				NEW_CLASS(channel, IO::ATCommandChannel(frm.stm, false));
-				NEW_CLASS(modem, IO::Device::RockwellModemController(channel, false));
-
-				NEW_CLASS(innerFrm, SSWR::AVIRead::AVIRVoiceModemForm(0, this->ui, this->core, modem, channel, frm.stm));
+				NN<SSWR::AVIRead::AVIRVoiceModemForm> innerFrm;
+				NN<IO::Device::RockwellModemController> modem;
+				NN<IO::ATCommandChannel> channel;
+				NEW_CLASSNN(channel, IO::ATCommandChannel(frm.GetStream(), false));
+				NEW_CLASSNN(modem, IO::Device::RockwellModemController(channel, false));
+				NEW_CLASSNN(innerFrm, SSWR::AVIRead::AVIRVoiceModemForm(nullptr, this->ui, this->core, modem, channel, frm.GetStream()));
 				this->core->ShowForm(innerFrm);
 			}
 		}
 		break;
 	case MNU_PERFORMANCELOG:
 		{
-			SSWR::AVIRead::AVIRPerformanceLogForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRPerformanceLogForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRPerformanceLogForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPerformanceLogForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_JTT808:
 		{
-			SSWR::AVIRead::AVIRJTT808ServerForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRJTT808ServerForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRJTT808ServerForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJTT808ServerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MQTT_BROKER:
 		{
-			SSWR::AVIRead::AVIRMQTTBrokerForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRMQTTBrokerForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRMQTTBrokerForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMQTTBrokerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MQTT_PUBLISH:
 		{
-			SSWR::AVIRead::AVIRMQTTPublishForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRMQTTPublishForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRMQTTPublishForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMQTTPublishForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MQTT_SUBSCRIBE:
 		{
-			SSWR::AVIRead::AVIRMQTTSubscribeForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRMQTTSubscribeForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRMQTTSubscribeForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMQTTSubscribeForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_OLEDB:
 		{
 #if defined(WIN32) || defined(_WIN64) || (defined(_MSC_VER) && defined(_WIN32))
-			SSWR::AVIRead::AVIROLEDBForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIROLEDBForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIROLEDBForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIROLEDBForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 #endif
 		}
 		break;
 	case MNU_PCIDEVICE:
 		{
-			SSWR::AVIRead::AVIRPCIDeviceForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRPCIDeviceForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRPCIDeviceForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPCIDeviceForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_USBDEVICE:
 		{
-			SSWR::AVIRead::AVIRUSBDeviceForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRUSBDeviceForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRUSBDeviceForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRUSBDeviceForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SDCARD:
 		{
-			SSWR::AVIRead::AVIRSDCardForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSDCardForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRSDCardForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSDCardForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SHPCONV:
 		{
-			SSWR::SHPConv::SHPConvMainForm *frm;
-			NEW_CLASS(frm, SSWR::SHPConv::SHPConvMainForm(0, this->ui, this->core->GetDrawEngine(), this->core->GetMonitorMgr()));
+			NN<SSWR::SHPConv::SHPConvMainForm> frm;
+			NEW_CLASSNN(frm, SSWR::SHPConv::SHPConvMainForm(nullptr, this->ui, this->core->GetDrawEngine(), this->core->GetMonitorMgr()));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_LOGMERGE:
 		{
-			SSWR::AVIRead::AVIRLogMergeForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRLogMergeForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRLogMergeForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLogMergeForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_LOGEXTRACT:
 		{
-			SSWR::AVIRead::AVIRLogExtractForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRLogExtractForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRLogExtractForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLogExtractForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_VIDEOINFO:
 		{
-			SSWR::AVIRead::AVIRVideoInfoForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRVideoInfoForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRVideoInfoForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRVideoInfoForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_VIDEOCHECKER:
 		{
-			SSWR::AVIRead::AVIRVideoCheckerForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRVideoCheckerForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRVideoCheckerForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRVideoCheckerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HIDDEVICE:
 		{
-			SSWR::AVIRead::AVIRHIDDeviceForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRHIDDeviceForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRHIDDeviceForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHIDDeviceForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_IMAGE_PSNR:
 		{
-			SSWR::AVIRead::AVIRImagePSNRForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRImagePSNRForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRImagePSNRForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRImagePSNRForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_IMAGE_BATCH_CONV:
 		{
-			SSWR::AVIRead::AVIRImageBatchConvForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRImageBatchConvForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRImageBatchConvForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRImageBatchConvForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MODBUSMASTER:
 		{
-			SSWR::AVIRead::AVIRMODBUSMasterForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRMODBUSMasterForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRMODBUSMasterForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMODBUSMasterForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_STREAMECHO:
 		{
-			SSWR::AVIRead::AVIRStreamEchoForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRStreamEchoForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRStreamEchoForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRStreamEchoForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_STREAMLATENCY:
 		{
-			SSWR::AVIRead::AVIRStreamLatencyForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRStreamLatencyForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRStreamLatencyForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRStreamLatencyForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_EGAUGESVR:
 		{
-			SSWR::AVIRead::AVIReGaugeSvrForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIReGaugeSvrForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIReGaugeSvrForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIReGaugeSvrForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_LOGSERVER:
 		{
-			SSWR::AVIRead::AVIRLogServerForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRLogServerForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRLogServerForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLogServerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_PINGMONITOR:
 		{
-			SSWR::AVIRead::AVIRPingMonitorForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRPingMonitorForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRPingMonitorForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPingMonitorForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MACMANAGER:
 		{
-			SSWR::AVIRead::AVIRMACManagerForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRMACManagerForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMACManagerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_IPSCAN:
 		{
-			SSWR::AVIRead::AVIRIPScanForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRIPScanForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRIPScanForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRIPScanForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_BLUETOOTHLE:
 		{
-			SSWR::AVIRead::AVIRBluetoothLEForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRBluetoothLEForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRBluetoothLEForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBluetoothLEForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_BRUTEFORCE:
 		{
-			SSWR::AVIRead::AVIRBruteForceForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRBruteForceForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRBruteForceForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBruteForceForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

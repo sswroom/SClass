@@ -258,8 +258,8 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnRAWClicked(AnyType userObj)
 	if (me->packetBuff.SetTo(packetBuff) && me->packetSize > 0)
 	{
 		IO::StmData::MemoryDataCopy md(Data::ByteArrayR(packetBuff, me->packetSize));
-		IO::FileAnalyse::SSLFileAnalyse *fileAnalyse;
-		NEW_CLASS(fileAnalyse, IO::FileAnalyse::SSLFileAnalyse(md));
+		NN<IO::FileAnalyse::SSLFileAnalyse> fileAnalyse;
+		NEW_CLASSNN(fileAnalyse, IO::FileAnalyse::SSLFileAnalyse(md));
 		me->core->OpenHex(md, fileAnalyse);
 	}
 }

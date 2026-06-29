@@ -118,8 +118,8 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	UIntOS codeSize;
 	UIntOS i;
 	UIntOS j;
-	Data::ArrayListUInt32 *funcCalls;
-	Data::ArrayListUInt32 *nfuncCalls;
+	NN<Data::ArrayListUInt32> funcCalls;
+	NN<Data::ArrayListUInt32> nfuncCalls;
 	NN<Data::ArrayListNN<Data::ArrayListStringNN>> codesList;
 
 	this->exeFile->GetDOSInitRegs(regs);
@@ -141,8 +141,8 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	parts->Insert(partInd->SortedInsert((eaddr->segm << 16) | eaddr->addr), eaddr);
 	
 	NEW_CLASSNN(dasm, Manage::DasmX86_16());
-	NEW_CLASS(funcCalls, Data::ArrayListUInt32());
-	NEW_CLASS(nfuncCalls, Data::ArrayListUInt32());
+	NEW_CLASSNN(funcCalls, Data::ArrayListUInt32());
+	NEW_CLASSNN(nfuncCalls, Data::ArrayListUInt32());
 	sess = dasm->CreateSess(regs, codePtr, this->exeFile->GetDOSCodeSegm());
 	this->ParseSess16(sess, codes, parts, partInd, eaddr, dasm, codeSize);
 	nfuncCalls->AddAll(sess->callAddrs);
@@ -179,8 +179,8 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 			dasm->DeleteSess(sess);
 		}
 	}
-	DEL_CLASS(funcCalls);
-	DEL_CLASS(nfuncCalls);
+	funcCalls.Delete();
+	nfuncCalls.Delete();
 	dasm.Delete();
 	partInd.Delete();
 	this->parts = parts;

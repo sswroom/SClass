@@ -8,8 +8,8 @@
 #include "Manage/HiResClock.h"
 #include "Text/MyString.h"
 
-Crypto::Hash::HashAlgorithm *hash;
-IO::ConsoleWriter *console;
+NN<Crypto::Hash::HashAlgorithm> hash;
+NN<IO::ConsoleWriter> console;
 UInt64 readSize;
 
 void __stdcall OnDataHdlr(Data::ByteArrayR buff, AnyType userData)
@@ -20,7 +20,7 @@ void __stdcall OnDataHdlr(Data::ByteArrayR buff, AnyType userData)
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	console->WriteLine(CSTR("CRC32R Calculation Test"));
@@ -32,14 +32,14 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 	else
 	{
-		Manage::HiResClock *clk;
+		NN<Manage::HiResClock> clk;
 		NN<IO::FileStream> fs;
-		IO::ActiveStreamReader *reader;
+		NN<IO::ActiveStreamReader> reader;
 		UInt8 hashVal[16];
 		UTF8Char sbuff[40];
 		UnsafeArray<UTF8Char> sptr;
-		NEW_CLASS(hash, Crypto::Hash::CRC32R());
-		NEW_CLASS(clk, Manage::HiResClock());
+		NEW_CLASSNN(hash, Crypto::Hash::CRC32R());
+		NEW_CLASSNN(clk, Manage::HiResClock());
 
 		readSize = 0;
 		NEW_CLASSNN(fs, IO::FileStream(Text::CStringNN::FromPtr(argv[1]), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -51,11 +51,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		{
 			Double t1;
 			Double t2;
-			NEW_CLASS(reader, IO::ActiveStreamReader(OnDataHdlr, 0, 1048576));
+			NEW_CLASSNN(reader, IO::ActiveStreamReader(OnDataHdlr, 0, 1048576));
 			t1 = clk->GetTimeDiff();
 			reader->ReadStream(fs, nullptr);
 			t2 = clk->GetTimeDiff();
-			DEL_CLASS(reader);
+			reader.Delete();
 
 			sptr = Text::StrUInt64(sbuff, readSize);
 			console->Write(CSTR("File Size: "));
@@ -78,9 +78,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 		fs.Delete();
 
-		DEL_CLASS(clk);
-		DEL_CLASS(hash);
+		clk.Delete();
+		hash.Delete();
 	}
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

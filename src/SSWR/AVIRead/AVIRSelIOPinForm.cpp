@@ -22,11 +22,11 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(AnyType userObj)
 			me->ui->ShowMsgOK(CSTR("System does not have GPIO"), CSTR("Select GPIO"), me);
 			return;
 		}
-		IO::GPIOPin *pin;
-		NEW_CLASS(pin, IO::GPIOPin(gpioPin, pinNum));
+		NN<IO::GPIOPin> pin;
+		NEW_CLASSNN(pin, IO::GPIOPin(gpioPin, pinNum));
 		if (pin->IsError())
 		{
-			DEL_CLASS(pin);
+			pin.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in opening the pin"), CSTR("Select GPIO"), me);
 			return;
 		}

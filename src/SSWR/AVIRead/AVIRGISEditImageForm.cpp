@@ -85,11 +85,11 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseDown(AnyTyp
 	me->downType = me->CalcDownType(scnPos);
 	if (me->downType != 0)
 	{
-		Math::Geometry::Polygon *pg;
+		NN<Math::Geometry::Polygon> pg;
 		NN<Math::Geometry::LinearRing> lr;
 		UnsafeArray<Math::Coord2DDbl> ptList;
 		UIntOS nPoints;
-		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
 		ptList = lr->GetPointList(nPoints);
 		NN<Math::CoordinateSystem> lyrCsys = me->lyr->GetCoordinateSystem();
@@ -506,11 +506,11 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 			mapPos = Math::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
 		}
 
-		Math::Geometry::Polygon *pg;
+		NN<Math::Geometry::Polygon> pg;
 		NN<Math::Geometry::LinearRing> lr;
 		UnsafeArray<Math::Coord2DDbl> ptList;
 		UIntOS nPoints;
-		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
 		ptList = lr->GetPointList(nPoints);
 		if (!lyrCsys->Equals(envCsys))
@@ -546,11 +546,11 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 			mapPos = Math::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
 		}
 
-		Math::Geometry::Polygon *pg;
+		NN<Math::Geometry::Polygon> pg;
 		NN<Math::Geometry::LinearRing> lr;
 		UnsafeArray<Math::Coord2DDbl> ptList;
 		UIntOS nPoints;
-		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
 		ptList = lr->GetPointList(nPoints);
 		if (!lyrCsys->Equals(envCsys))
@@ -585,11 +585,11 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 			mapPos = Math::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
 		}
 
-		Math::Geometry::Polygon *pg;
+		NN<Math::Geometry::Polygon> pg;
 		NN<Math::Geometry::LinearRing> lr;
 		UnsafeArray<Math::Coord2DDbl> ptList;
 		UIntOS nPoints;
-		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
 		ptList = lr->GetPointList(nPoints);
 		if (!lyrCsys->Equals(envCsys))
@@ -625,11 +625,11 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 			mapPos = Math::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
 		}
 
-		Math::Geometry::Polygon *pg;
+		NN<Math::Geometry::Polygon> pg;
 		NN<Math::Geometry::LinearRing> lr;
 		UnsafeArray<Math::Coord2DDbl> ptList;
 		UIntOS nPoints;
-		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
 		ptList = lr->GetPointList(nPoints);
 		if (!lyrCsys->Equals(envCsys))
@@ -664,11 +664,11 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 			mapPos = Math::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
 		}
 
-		Math::Geometry::Polygon *pg;
+		NN<Math::Geometry::Polygon> pg;
 		NN<Math::Geometry::LinearRing> lr;
 		UnsafeArray<Math::Coord2DDbl> ptList;
 		UIntOS nPoints;
-		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
 		ptList = lr->GetPointList(nPoints);
 		if (!lyrCsys->Equals(envCsys))
@@ -704,11 +704,11 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 			mapPos = Math::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
 		}
 
-		Math::Geometry::Polygon *pg;
+		NN<Math::Geometry::Polygon> pg;
 		NN<Math::Geometry::LinearRing> lr;
 		UnsafeArray<Math::Coord2DDbl> ptList;
 		UIntOS nPoints;
-		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
 		ptList = lr->GetPointList(nPoints);
 		if (!lyrCsys->Equals(envCsys))
@@ -743,11 +743,11 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 			mapPos = Math::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
 		}
 
-		Math::Geometry::Polygon *pg;
+		NN<Math::Geometry::Polygon> pg;
 		NN<Math::Geometry::LinearRing> lr;
 		UnsafeArray<Math::Coord2DDbl> ptList;
 		UIntOS nPoints;
-		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
 		ptList = lr->GetPointList(nPoints);
 		if (!lyrCsys->Equals(envCsys))
@@ -783,11 +783,11 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 			mapPos = Math::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
 		}
 
-		Math::Geometry::Polygon *pg;
+		NN<Math::Geometry::Polygon> pg;
 		NN<Math::Geometry::LinearRing> lr;
 		UnsafeArray<Math::Coord2DDbl> ptList;
 		UIntOS nPoints;
-		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
 		ptList = lr->GetPointList(nPoints);
 		if (!lyrCsys->Equals(envCsys))
@@ -823,11 +823,11 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 			pt2 = Math::CoordinateSystem::Convert(envCsys, lyrCsys, pt2);
 		}
 
-		Math::Geometry::Polygon *pg;
+		NN<Math::Geometry::Polygon> pg;
 		NN<Math::Geometry::LinearRing> lr;
 		UnsafeArray<Math::Coord2DDbl> ptList;
 		UIntOS nPoints;
-		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
 		ptList = lr->GetPointList(nPoints);
 		if (!lyrCsys->Equals(envCsys))

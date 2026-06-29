@@ -10,16 +10,16 @@ namespace Manage
 	private:
 		UIntOS threadId;
 		UIntOS procId;
-		Sync::ThreadHandle *hand;
+		Optional<Sync::ThreadHandle> hand;
 
 	private:
-		static Manage::ThreadContext *GetThreadContextHand(UIntOS threadId, UIntOS procId, Sync::ThreadHandle *hand);
-		ThreadInfo(UIntOS procId, UIntOS threadId, Sync::ThreadHandle *hand);
+		static Optional<Manage::ThreadContext> GetThreadContextHand(UIntOS threadId, UIntOS procId, Optional<Sync::ThreadHandle> hand);
+		ThreadInfo(UIntOS procId, UIntOS threadId, Optional<Sync::ThreadHandle> hand);
 	public:
 		ThreadInfo(UIntOS procId, UIntOS threadId);
 		~ThreadInfo();
 
-		Manage::ThreadContext *GetThreadContext();
+		Optional<Manage::ThreadContext> GetThreadContext();
 		UInt64 GetStartAddress();
 		Bool WaitForThreadExit(UInt32 waitTimeout); //true = exited
 		UInt32 GetExitCode();
@@ -28,7 +28,7 @@ namespace Manage
 		Bool Suspend();
 		Bool Resume();
 		Bool IsCurrThread();
-		static ThreadInfo *GetCurrThread();
+		static Optional<ThreadInfo> GetCurrThread();
 	};
 };
 #endif

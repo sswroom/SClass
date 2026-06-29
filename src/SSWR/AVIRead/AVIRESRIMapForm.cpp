@@ -34,14 +34,14 @@ SSWR::AVIRead::AVIRESRIMapForm::MapServer SSWR::AVIRead::AVIRESRIMapForm::mapSvr
 void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRESRIMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRESRIMapForm>();
-	Map::ESRI::ESRIMapServer *esriMap = 0;
+	NN<Map::ESRI::ESRIMapServer> esriMap;
 	if (me->radPredefine->IsSelected())
 	{
 		UIntOS i = me->cboPredefine->GetSelectedIndex();
 		NN<MapServer> v;
 		if (me->cboPredefine->GetItem(i).GetOpt<MapServer>().SetTo(v))
 		{
-			NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(Text::CStringNN(v->url, v->urlLen), me->core->GetTCPClientFactory(), me->ssl, false));
+			NEW_CLASSNN(esriMap, Map::ESRI::ESRIMapServer(Text::CStringNN(v->url, v->urlLen), me->core->GetTCPClientFactory(), me->ssl, false));
 		}
 		else
 		{
@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(AnyType userObj)
 		}
 		else
 		{
-			NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(CSTRP(sbuff, sptr), me->core->GetTCPClientFactory(), me->ssl, noResource));
+			NEW_CLASSNN(esriMap, Map::ESRI::ESRIMapServer(CSTRP(sbuff, sptr), me->core->GetTCPClientFactory(), me->ssl, noResource));
 			if (noResource)
 			{
 				esriMap->SetSRID(srid);

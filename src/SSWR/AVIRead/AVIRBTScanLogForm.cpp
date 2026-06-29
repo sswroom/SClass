@@ -57,16 +57,16 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnContentDblClicked(AnyType use
 	}
 	
 /*	const Net::MACInfo::MACEntry *entry = me->macList->GetEntry(log->macInt);
-	SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
+	NN<SSWR::AVIRead::AVIRMACManagerEntryForm> frm;
 	UInt8 mac[8];
 	WriteMUInt64(mac, log->macInt);
 	if (entry)
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, &mac[2], (const UTF8Char*)entry->name));
+		NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(nullptr, me->ui, me->core, &mac[2], (const UTF8Char*)entry->name));
 	}
 	else
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, &mac[2], 0));
+		NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(nullptr, me->ui, me->core, &mac[2], 0));
 	}
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnContentDblClicked(AnyType use
 			i++;
 		}
 	}
-	DEL_CLASS(frm);*/
+	frm.Delete();*/
 }
 
 void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnContentSelChg(AnyType userObj)

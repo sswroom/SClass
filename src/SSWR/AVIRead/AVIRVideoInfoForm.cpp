@@ -161,11 +161,11 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 	NN<Media::NullRenderer> renderer;
 	NN<Media::VideoSource> vdecoder;
 	NN<Sync::Event> evt;
-	Media::Decoder::VideoDecoderFinder *vdecoders;
-	Media::Decoder::AudioDecoderFinder *adecoders;
+	NN<Media::Decoder::VideoDecoderFinder> vdecoders;
+	NN<Media::Decoder::AudioDecoderFinder> adecoders;
 	NEW_CLASSNN(evt, Sync::Event(true));
-	NEW_CLASS(vdecoders, Media::Decoder::VideoDecoderFinder());
-	NEW_CLASS(adecoders, Media::Decoder::AudioDecoderFinder());
+	NEW_CLASSNN(vdecoders, Media::Decoder::VideoDecoderFinder());
+	NEW_CLASSNN(adecoders, Media::Decoder::AudioDecoderFinder());
 	Bool isEnd;
 	UIntOS i = 0;
 	Int32 syncTime;
@@ -257,8 +257,8 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 		status->vdecoder.Delete();
 		status->adecoder.Delete();
 	}
-	DEL_CLASS(adecoders);
-	DEL_CLASS(vdecoders);
+	adecoders.Delete();
+	vdecoders.Delete();
 	evt.Delete();
 
 	me->lblDecode->SetText(CSTR("End Decoding"));

@@ -31,7 +31,7 @@ Bool IO::StreamWriter::Write(Text::CStringNN str)
 	else
 	{
 		UIntOS wnChar = Text::StrUTF8_WCharCntC(str.v, str.leng);
-		WChar *ws = MemAlloc(WChar, wnChar + 1);
+		UnsafeArray<WChar> ws = MemAllocArr(WChar, wnChar + 1);
 		Text::StrUTF8_WCharC(ws, str.v, str.leng, 0);
 
 		UIntOS strSize = 3 * wnChar;
@@ -45,7 +45,7 @@ Bool IO::StreamWriter::Write(Text::CStringNN str)
 			this->buff = MemAllocArr(UInt8, this->buffSize);
 		}
 		UIntOS nChar = enc.WToBytesC(this->buff, ws, wnChar);
-		MemFree(ws);
+		MemFreeArr(ws);
 		return this->stm->Write(Data::ByteArrayR(this->buff, nChar)) == nChar;
 	}
 }
@@ -66,7 +66,7 @@ Bool IO::StreamWriter::WriteLine(Text::CStringNN str)
 	else
 	{
 		UIntOS wnChar = Text::StrUTF8_WCharCntC(str.v, str.leng);
-		WChar *ws = MemAlloc(WChar, wnChar + 2);
+		UnsafeArray<WChar> ws = MemAllocArr(WChar, wnChar + 2);
 		Text::StrUTF8_WCharC(ws, str.v, str.leng, 0);
 		ws[wnChar] = 13;
 		ws[wnChar + 1] = 10;
@@ -82,7 +82,7 @@ Bool IO::StreamWriter::WriteLine(Text::CStringNN str)
 			this->buff = MemAllocArr(UInt8, this->buffSize);
 		}
 		UIntOS nChar = enc.WToBytesC(this->buff, ws, wnChar + 2);
-		MemFree(ws);
+		MemFreeArr(ws);
 		return this->stm->Write(Data::ByteArrayR(this->buff, nChar)) == nChar;
 	}
 }

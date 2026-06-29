@@ -29,7 +29,7 @@ namespace Text
 				Text::StringBuilderW *sb;
 			} ParseStatus;*/
 		private:
-			Text::Cpp::CppEnv *env;
+			NN<Text::Cpp::CppEnv> env;
 			
 			static UnsafeArray<UTF8Char> RemoveSpace(UnsafeArray<UTF8Char> sptr);
 			void LogError(NN<Text::Cpp::CppParseStatus> status, Text::CStringNN errMsg, NN<Data::ArrayListStringNN> errMsgs);
@@ -38,7 +38,7 @@ namespace Text
 			Bool EvalSharpIf(Text::CStringNN cond, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs, OutParam<Bool> result);
 			Bool ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeArray<UTF8Char> lineBuffEnd, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs);
 		public:
-			CppCodeParser(Text::Cpp::CppEnv *env);
+			CppCodeParser(NN<Text::Cpp::CppEnv> env);
 			~CppCodeParser();
 
 			Bool ParseFile(Text::CStringNN fileName, NN<Data::ArrayListStringNN> errMsgs, NN<Text::Cpp::CppParseStatus> parseStatus);

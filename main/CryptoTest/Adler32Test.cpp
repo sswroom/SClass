@@ -10,9 +10,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UInt8 testBlock[] = "Wikipedia";
 	UInt8 hashVal[32];
 	UTF8Char sbuff[65];
-	Crypto::Hash::HashAlgorithm *hash;
-
-	NEW_CLASS(hash, Crypto::Hash::Adler32());
+	NN<Crypto::Hash::HashAlgorithm> hash;
+	
+	NEW_CLASSNN(hash, Crypto::Hash::Adler32());
 
 	hash->GetValue(hashVal);
 	Text::StrHexBytes(sbuff, hashVal, 4, 0);
@@ -25,6 +25,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::Console::PrintStrO(sbuff);
 	IO::Console::PrintStrO(U8STR("\n11E60398\n"));
 
-	DEL_CLASS(hash);
+	hash.Delete();
 	return 0;
 }

@@ -10,8 +10,8 @@ void __stdcall SSWR::AVIRead::AVIRSMBIOSForm::OnHexClicked(AnyType userObj)
 	if (me->smbios.SetTo(smbios))
 	{
 		NN<IO::StreamData> fd = smbios->CreateStreamData();
-		IO::FileAnalyse::SMBIOSFileAnalyse *fileAnalyse;
-		NEW_CLASS(fileAnalyse, IO::FileAnalyse::SMBIOSFileAnalyse(fd));
+		NN<IO::FileAnalyse::SMBIOSFileAnalyse> fileAnalyse;
+		NEW_CLASSNN(fileAnalyse, IO::FileAnalyse::SMBIOSFileAnalyse(fd));
 		me->core->OpenHex(fd, fileAnalyse);
 		fd.Delete();
 	}

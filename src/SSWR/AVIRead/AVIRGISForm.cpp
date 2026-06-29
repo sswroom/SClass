@@ -1514,10 +1514,10 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			NEW_CLASSNN(port, IO::SerialPort(IO::Device::MTKGPSNMEA::GetMTKSerialPort(), 115200, IO::SerialPort::PARITY_NONE, true));
 			if (!port->IsError())
 			{
-				IO::Device::MTKGPSNMEA *mtk;
+				NN<IO::Device::MTKGPSNMEA> mtk;
 				NN<Map::GPSTrack> trk;
 				UnsafeArray<UTF8Char> sptr;
-				NEW_CLASS(mtk, IO::Device::MTKGPSNMEA(port, true));
+				NEW_CLASSNN(mtk, IO::Device::MTKGPSNMEA(port, true));
 				if (mtk->IsMTKDevice())
 				{
 					NEW_CLASSNN(trk, Map::GPSTrack(CSTR("MTK_Tracker"), true, 0, nullptr));
@@ -1552,7 +1552,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				{
 					this->ui->ShowMsgOK(CSTR("MTK Tracker not found"), CSTR("MTK Tracker"), this);
 				}
-				DEL_CLASS(mtk);
+				mtk.Delete();
 			}
 			else
 			{
@@ -1682,14 +1682,14 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_HKO_CYCLONE:
 		{
 			NN<Net::HTTPClient> cli;
-			Text::UTF8Reader *reader;
+			NN<Text::UTF8Reader> reader;
 			Text::StringBuilderUTF8 sb;
 			UnsafeArray<UTF8Char> sptr;
 			UTF8Char sbuff[10];
 			UIntOS i;
 			Data::DateTime dt;
 			cli = Net::HTTPClient::CreateConnect(this->core->GetTCPClientFactory(), this->ssl, CSTR("https://www.weather.gov.hk/wxinfo/currwx/tc_gis_list.xml"), Net::WebUtil::RequestMethod::HTTP_GET, false);
-			NEW_CLASS(reader, Text::UTF8Reader(cli));
+			NEW_CLASSNN(reader, Text::UTF8Reader(cli));
 			reader->ReadLine(sb, 4096);
 			while (true)
 			{
@@ -1722,7 +1722,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					}
 				}
 			}
-			DEL_CLASS(reader);
+			reader.Delete();
 			cli.Delete();
 		}
 		break;
@@ -2301,7 +2301,7 @@ void SSWR::AVIRead::AVIRGISForm::SetKMapEnv(UnsafeArray<const UTF8Char> kmapIP, 
 {
 /*	if (kmapIP != 0 && kmapPort != 0 && lcid != 0)
 	{
-		NEW_CLASS(this->kmap, SP::KMap::KMapConn(this->core->GetSocketFactory(), kmapIP, (::UInt16)kmapPort));
+		NEW_CLASSOPT(this->kmap, SP::KMap::KMapConn(this->core->GetSocketFactory(), kmapIP, (::UInt16)kmapPort));
 		this->lcid = lcid;
 	}*/
 }
@@ -2394,11 +2394,11 @@ Bool SSWR::AVIRead::AVIRGISForm::BeginPrint(NN<Media::PrintDocument> doc)
 Bool SSWR::AVIRead::AVIRGISForm::PrintPage(NN<Media::DrawImage> printPage)
 {
 	NN<Map::MapView> view = this->mapCtrl->CloneMapView();
-	Map::DrawMapRenderer *renderer;
-	NEW_CLASS(renderer, Map::DrawMapRenderer(this->core->GetDrawEngine(), this->env, printPage->GetColorProfile(), nullptr, Map::DrawMapRenderer::DT_VECTORDRAW));
+	NN<Map::DrawMapRenderer> renderer;
+	NEW_CLASSNN(renderer, Map::DrawMapRenderer(this->core->GetDrawEngine(), this->env, printPage->GetColorProfile(), nullptr, Map::DrawMapRenderer::DT_VECTORDRAW));
 	view->SetDestImage(printPage);
 	renderer->DrawMap(printPage, view, 0);
-	DEL_CLASS(renderer);
+	renderer.Delete();
 	view.Delete();
 	return false;
 }

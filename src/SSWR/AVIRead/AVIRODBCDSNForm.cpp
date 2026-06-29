@@ -13,15 +13,15 @@ void __stdcall SSWR::AVIRead::AVIRODBCDSNForm::OnOKClicked(AnyType userObj)
 	me->txtUID->GetText(sb2);
 	me->txtPWD->GetText(sb3);
 
-	DB::ODBCConn *conn;
-	NEW_CLASS(conn, DB::ODBCConn(sb.ToCString(), sb2.ToCString(), sb3.ToCString(), nullptr, me->core->GetLog()));
+	NN<DB::ODBCConn> conn;
+	NEW_CLASSNN(conn, DB::ODBCConn(sb.ToCString(), sb2.ToCString(), sb3.ToCString(), nullptr, me->core->GetLog()));
 	if (conn->GetConnError() != DB::ODBCConn::CE_NONE)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
 		conn->GetLastErrorMsg(sb);
 		me->ui->ShowMsgOK(sb.ToCString(), CSTR("ODBC DSN Connection"), me);
-		DEL_CLASS(conn);
+		conn.Delete();
 		return;
 	}
 	me->conn = conn;

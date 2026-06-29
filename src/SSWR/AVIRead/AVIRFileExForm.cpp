@@ -66,8 +66,8 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(AnyType userObj)
 	UInt64 sizeLeft;
 	UIntOS thisSize;
 	UIntOS readSize;
-	IO::FileStream *srcFS;
-	IO::FileStream *destFS;
+	NN<IO::FileStream> srcFS;
+	NN<IO::FileStream> destFS;
 	me->txtStartOfst->GetText(sb);
 	if (!sb.ToUInt64(startOfst))
 	{
@@ -88,27 +88,27 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(AnyType userObj)
 	}
 	sb.ClearStr();
 	me->txtSrc->GetText(sb);
-	NEW_CLASS(srcFS, IO::FileStream(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+	NEW_CLASSNN(srcFS, IO::FileStream(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	if (srcFS->IsError())
 	{
-		DEL_CLASS(srcFS);
+		srcFS.Delete();
 		me->ui->ShowMsgOK(CSTR("Error in opening source file"), CSTR("Error"), me);
 		return;
 	}
 	fileSize = srcFS->GetLength();
 	if (endOfst > fileSize)
 	{
-		DEL_CLASS(srcFS);
+		srcFS.Delete();
 		me->ui->ShowMsgOK(CSTR("End Offset is out of range"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtDest->GetText(sb);
-	NEW_CLASS(destFS, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(destFS, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (destFS->IsError())
 	{
-		DEL_CLASS(destFS);
-		DEL_CLASS(srcFS);
+		destFS.Delete();
+		srcFS.Delete();
 		me->ui->ShowMsgOK(CSTR("Error in opening dest file"), CSTR("Error"), me);
 		return;
 	}
@@ -128,8 +128,8 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(AnyType userObj)
 		sizeLeft -= readSize;
 	}
 
-	DEL_CLASS(destFS);
-	DEL_CLASS(srcFS);
+	destFS.Delete();
+	srcFS.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRFileExForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)

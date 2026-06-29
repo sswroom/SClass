@@ -54,17 +54,17 @@ Optional<Crypto::Encrypt::Encryption> SSWR::AVIRead::AVIREncryptFileForm::InitCr
 	MemClear(key, keySize);
 	enc->DecodeBin(sb.ToCString(), key);
 	enc.Delete();
-	Crypto::Encrypt::BlockCipher *crypto;
+	NN<Crypto::Encrypt::BlockCipher> crypto;
 	switch (algType)
 	{
 	case 0:
-		NEW_CLASS(crypto, Crypto::Encrypt::AES128(key));
+		NEW_CLASSNN(crypto, Crypto::Encrypt::AES128(key));
 		break;
 	case 1:
-		NEW_CLASS(crypto, Crypto::Encrypt::AES192(key));
+		NEW_CLASSNN(crypto, Crypto::Encrypt::AES192(key));
 		break;
 	case 2:
-		NEW_CLASS(crypto, Crypto::Encrypt::AES256(key));
+		NEW_CLASSNN(crypto, Crypto::Encrypt::AES256(key));
 		break;
 	default:
 		return nullptr;

@@ -5,7 +5,7 @@
 void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnGetTimeClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRNTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNTPClientForm>();
-	Net::NTPClient *cli;
+	NN<Net::NTPClient> cli;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnGetTimeClicked(AnyType userOb
 		Data::Timestamp ts;
 		UInt16 destPort = Net::NTPClient::GetDefaultPort();
 		UIntOS i;
-		NEW_CLASS(cli, Net::NTPClient(me->core->GetSocketFactory(), 0, me->core->GetLog()));
+		NEW_CLASSNN(cli, Net::NTPClient(me->core->GetSocketFactory(), 0, me->core->GetLog()));
 		i = sb.IndexOf(':');
 		if (i != INVALID_INDEX)
 		{
@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnGetTimeClicked(AnyType userOb
 		{
 			me->txtStatus->SetText(CSTR("Error in getting server time"));
 		}
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 }
 
@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(AnyType userO
 {
 	NN<SSWR::AVIRead::AVIRNTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNTPClientForm>();
 	Text::StringBuilderUTF8 sb;
-	Net::NTPClient *cli;
+	NN<Net::NTPClient> cli;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	me->cboServer->GetText(sb);
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(AnyType userO
 		Data::Timestamp ts;
 		UInt16 destPort = Net::NTPClient::GetDefaultPort();
 		UIntOS i;
-		NEW_CLASS(cli, Net::NTPClient(me->core->GetSocketFactory(), 0, me->core->GetLog()));
+		NEW_CLASSNN(cli, Net::NTPClient(me->core->GetSocketFactory(), 0, me->core->GetLog()));
 		i = sb.IndexOf(':');
 		if (i != INVALID_INDEX)
 		{
@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(AnyType userO
 		{
 			me->txtStatus->SetText(CSTR("Error in getting server time"));
 		}
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 }
 

@@ -2300,7 +2300,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 	return parseStatus;
 }
 
-Text::Cpp::CppCodeParser::CppCodeParser(Text::Cpp::CppEnv *env)
+Text::Cpp::CppCodeParser::CppCodeParser(NN<Text::Cpp::CppEnv> env)
 {
 	this->env = env;
 }

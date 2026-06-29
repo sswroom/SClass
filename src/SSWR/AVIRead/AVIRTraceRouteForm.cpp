@@ -24,8 +24,8 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(AnyType userObj
 	if (ip)
 	{
 		Data::ArrayListNative<UInt32> ipList;
-		Net::TraceRoute *tracert;
-		NEW_CLASS(tracert, Net::TraceRoute(me->sockf, ip));
+		NN<Net::TraceRoute> tracert;
+		NEW_CLASSNN(tracert, Net::TraceRoute(me->sockf, ip));
 		if (tracert->IsError())
 		{
 			me->ui->ShowMsgOK(CSTR("Error in creating ICMP socket"), CSTR("Trace Route"), me);
@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(AnyType userObj
 				me->ui->ShowMsgOK(CSTR("Error in tracing to target"), CSTR("Trace Route"), me);
 			}
 		}
-		DEL_CLASS(tracert);
+		tracert.Delete();
 	}
 }
 

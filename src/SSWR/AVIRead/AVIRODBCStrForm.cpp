@@ -55,15 +55,15 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnOKClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRODBCStrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCStrForm>();
 	me->txtConnStr->GetText(sb);
 
-	DB::ODBCConn *conn;
-	NEW_CLASS(conn, DB::ODBCConn(sb.ToCString(), CSTR("ODBC"), me->core->GetLog()));
+	NN<DB::ODBCConn> conn;
+	NEW_CLASSNN(conn, DB::ODBCConn(sb.ToCString(), CSTR("ODBC"), me->core->GetLog()));
 	if (conn->GetConnError() != DB::ODBCConn::CE_NONE)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
 		conn->GetLastErrorMsg(sb);
 		me->ui->ShowMsgOK(sb.ToCString(), CSTR("ODBC String Connection"), me);
-		DEL_CLASS(conn);
+		conn.Delete();
 		return;
 	}
 	me->conn = conn;

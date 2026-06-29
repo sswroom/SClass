@@ -10,13 +10,13 @@ void __stdcall SSWR::AVIRead::AVIROLEDBForm::OnOKClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIROLEDBForm> me = userObj.GetNN<SSWR::AVIRead::AVIROLEDBForm>();
 	me->txtConnStr->GetText(sb);
 
-	DB::OLEDBConn *conn;
+	NN<DB::OLEDBConn> conn;
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(sb.ToString());
-	NEW_CLASS(conn, DB::OLEDBConn(wptr, me->core->GetLog()));
+	NEW_CLASSNN(conn, DB::OLEDBConn(wptr, me->core->GetLog()));
 	Text::StrDelNew(wptr);
 	if (conn->GetConnError() != DB::OLEDBConn::CE_NONE)
 	{
-		DEL_CLASS(conn);
+		conn.Delete();
 		me->ui->ShowMsgOK(CSTR("Error in opening OLEDB connection"), CSTR("OLEDB Connection"), me);
 		return;
 	}

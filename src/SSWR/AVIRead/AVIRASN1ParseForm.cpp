@@ -32,15 +32,15 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(AnyType userObj)
 	UIntOS ofst = Net::ASN1Util::PDUParseLen(buff.Arr(), 1, len, baseLen);
 	if (ofst + baseLen == len)
 	{
-		Crypto::Cert::X509File *x509 = 0;
+		Optional<Crypto::Cert::X509File> x509 = nullptr;
 		NN<Crypto::Cert::X509File> pobj;
 		switch (me->cboType->GetSelectedIndex())
 		{
 		case 0:
-			NEW_CLASS(x509, Crypto::Cert::X509Cert(CSTR("Cert"), buff));
+			NEW_CLASSOPT(x509, Crypto::Cert::X509Cert(CSTR("Cert"), buff));
 			break;
 		}
-		if (pobj.Set(x509))
+		if (x509.SetTo(pobj))
 		{
 			me->core->OpenObject(pobj);
 		}

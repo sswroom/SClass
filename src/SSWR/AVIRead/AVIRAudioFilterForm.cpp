@@ -98,13 +98,13 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(AnyType userOb
 		}
 		else if (me->radInputWaveIn->IsSelected())
 		{
-			Media::WaveInSource *wiSrc;
+			NN<Media::WaveInSource> wiSrc;
 			UTF8Char sbuff[512];
 			Media::WaveInSource::GetDeviceName(sbuff, 0);
-			NEW_CLASS(wiSrc, Media::WaveInSource((UInt32)0, frequency, bitCount, nChannel));
+			NEW_CLASSNN(wiSrc, Media::WaveInSource((UInt32)0, frequency, bitCount, nChannel));
 			if (wiSrc->IsError())
 			{
-				DEL_CLASS(wiSrc);
+				wiSrc.Delete();
 			}
 			else
 			{
@@ -1084,8 +1084,8 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(Optional<UI::GUIClientCo
 	this->pbsSample->SetRect(0, 0, 100, 200, false);
 	this->pbsSample->SetNoBGColor(true);
 	this->pbsSample->SetDockType(UI::GUIControl::DOCK_FILL);
-/*	NEW_CLASS(this->vspSample = ui->NewVSplitter(this->tpVolLevel, 3, false));
-	NEW_CLASS(this->pbsFFT = ui->NewPictureBoxSimple(this->tpVolLevel, this->eng, false));
+/*	this->vspSample = ui->NewVSplitter(this->tpVolLevel, 3, false);
+	this->pbsFFT = ui->NewPictureBoxSimple(this->tpVolLevel, this->eng, false);
 	this->pbsFFT->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbsFFT->SetNoBGColor(true);*/
 

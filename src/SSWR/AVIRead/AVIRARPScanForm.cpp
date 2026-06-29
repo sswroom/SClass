@@ -63,8 +63,8 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(AnyType userObj)
 			me->ui->ShowMsgOK(CSTR("To many ip address"), CSTR("ARP Scan"), me);
 			return;
 		}
-		Net::ARPHandler *arp;
-		NEW_CLASS(arp, Net::ARPHandler(me->core->GetSocketFactory(), adapter->ifName, adapter->hwAddr, adapter->ipAddr, OnARPHandler, me, 1));
+		NN<Net::ARPHandler> arp;
+		NEW_CLASSNN(arp, Net::ARPHandler(me->core->GetSocketFactory(), adapter->ifName, adapter->hwAddr, adapter->ipAddr, OnARPHandler, me, 1));
 		if (arp->IsError())
 		{
 			me->ui->ShowMsgOK(CSTR("Error in listening to ARP data"), CSTR("ARP Scan"), me);
@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(AnyType userObj)
 			mutUsage.EndUse();
 			Sync::SimpleThread::Sleep(3000);
 		}
-		DEL_CLASS(arp);
+		arp.Delete();
 	}
 }
 

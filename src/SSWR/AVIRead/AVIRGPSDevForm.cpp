@@ -83,11 +83,11 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnConnClicked(AnyType userObj)
 		}
 		else
 		{
-			Net::TCPClient *cli;
-			NEW_CLASS(cli, Net::TCPClient(me->core->GetSocketFactory(), addr, port, 30000));
+			NN<Net::TCPClient> cli;
+			NEW_CLASSNN(cli, Net::TCPClient(me->core->GetSocketFactory(), addr, port, 30000));
 			if (cli->IsClosed())
 			{
-				DEL_CLASS(cli);
+				cli.Delete();
 			}
 			else
 			{

@@ -52,8 +52,8 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseDown(AnyT
 				Double dist = me->csys->CalSurfaceDistance(mapPt, me->lastMapPos, Math::Unit::Distance::DU_METER);
 				me->dispDist = dist;
 				me->UpdateDistDisp();
-				Math::Geometry::LineString *pl;
-				NEW_CLASS(pl, Math::Geometry::LineString(me->csys->GetSRID(), pts, 2, nullptr, nullptr));
+				NN<Math::Geometry::LineString> pl;
+				NEW_CLASSNN(pl, Math::Geometry::LineString(me->csys->GetSRID(), pts, 2, nullptr, nullptr));
 				me->navi->SetSelectedVector(pl);
 				me->lastMapPos = Math::Coord2DDbl(0, 0);
 			}
@@ -82,11 +82,11 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(AnyT
 
 		if (me->radTypePath->IsSelected())
 		{
-			Math::Geometry::LineString *pl;
+			NN<Math::Geometry::LineString> pl;
 			UnsafeArray<Math::Coord2DDbl> pts;
 			UIntOS i;
 			UIntOS j;
-			NEW_CLASS(pl, Math::Geometry::LineString(me->csys->GetSRID(), (me->ptList.GetCount() >> 1) + 1, false, false));
+			NEW_CLASSNN(pl, Math::Geometry::LineString(me->csys->GetSRID(), (me->ptList.GetCount() >> 1) + 1, false, false));
 			pts = pl->GetPointList(j);
 			i = 0;
 			j = me->ptList.GetCount() >> 1;
@@ -101,11 +101,11 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(AnyT
 		}
 		else
 		{
-			Math::Geometry::LineString *pl;
+			NN<Math::Geometry::LineString> pl;
 			Math::Coord2DDbl pts[2];
 			pts[0] = mapPt;
 			pts[1] = me->lastMapPos;
-			NEW_CLASS(pl, Math::Geometry::LineString(me->csys->GetSRID(), pts, 2, nullptr, nullptr));
+			NEW_CLASSNN(pl, Math::Geometry::LineString(me->csys->GetSRID(), pts, 2, nullptr, nullptr));
 			me->navi->SetSelectedVector(pl);
 		}
 	}

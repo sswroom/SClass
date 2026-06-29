@@ -33,7 +33,7 @@ SSWR::AVIRead::AVIRFunctionInfoForm::AVIRFunctionInfoForm(Optional<UI::GUIClient
 #if defined(CPU_X86_32)
 	if (proc->GetContextType() == Manage::ThreadContext::ContextType::X86_32)
 	{
-		Manage::DasmX86_32 *dasm;
+		NN<Manage::DasmX86_32> dasm;
 		Text::StringBuilderUTF8 sb;
 		Text::PString sline[2];
 		Text::PString  sarr[2];
@@ -44,9 +44,9 @@ SSWR::AVIRead::AVIRFunctionInfoForm::AVIRFunctionInfoForm(Optional<UI::GUIClient
 		UIntOS i;
 		Data::ArrayListUInt32 callAddrs;
 		Data::ArrayListUInt32 jmpAddrs;
-		NEW_CLASS(dasm, Manage::DasmX86_32());
+		NEW_CLASSNN(dasm, Manage::DasmX86_32());
 		dasm->Disasm32In(sb, symbol, &addr, &callAddrs, &jmpAddrs, &blockStart, &blockEnd, proc);
-		DEL_CLASS(dasm);
+		dasm.Delete();
 
 		sline[1] = sb;
 		while (true)
@@ -64,7 +64,7 @@ SSWR::AVIRead::AVIRFunctionInfoForm::AVIRFunctionInfoForm(Optional<UI::GUIClient
 #elif defined(CPU_X86_64)
 	if (proc->GetContextType() == Manage::ThreadContext::ContextType::X86_64)
 	{
-		Manage::DasmX86_64 *dasm;
+		NN<Manage::DasmX86_64> dasm;
 		Text::StringBuilderUTF8 sb;
 		Text::PString sline[2];
 		Text::PString sarr[2];
@@ -75,9 +75,9 @@ SSWR::AVIRead::AVIRFunctionInfoForm::AVIRFunctionInfoForm(Optional<UI::GUIClient
 		UIntOS i;
 		Data::ArrayListUInt64 callAddrs;
 		Data::ArrayListUInt64 jmpAddrs;
-		NEW_CLASS(dasm, Manage::DasmX86_64());
+		NEW_CLASSNN(dasm, Manage::DasmX86_64());
 		dasm->Disasm64In(sb, symbol, addr, callAddrs, jmpAddrs, blockStart, blockEnd, proc);
-		DEL_CLASS(dasm);
+		dasm.Delete();
 
 		sline[1] = sb;
 		while (true)

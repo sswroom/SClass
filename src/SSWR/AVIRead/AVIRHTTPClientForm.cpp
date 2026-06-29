@@ -597,9 +597,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 			}
 			if (cli->Connect(currURL->ToCString(), currMeth, me->respTimeDNS, me->respTimeConn, false))
 			{
-				IO::MemoryStream *mstm;
+				NN<IO::MemoryStream> mstm;
 				Text::String *contType = 0;
-				NEW_CLASS(mstm, IO::MemoryStream());
+				NEW_CLASSNN(mstm, IO::MemoryStream());
 				cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
 				cli->AddHeaderC(CSTR("Accept-Language"), CSTR("*"));
 				cli->AddHeaderC(CSTR("User-Agent"), me->userAgent->ToCString());
@@ -769,8 +769,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 //							IO::StmData::MemoryDataRef mdata(&respData[i], respSize - i - 8);
 							if (inflate.Write(Data::ByteArrayR(&respData[i], respSize - i - 8)) == respSize - i - 8)
 							{
-								DEL_CLASS(mstm);
-								mstm = mstm2.Ptr();
+								mstm.Delete();
+								mstm = mstm2;
 							}
 							else
 							{

@@ -42,8 +42,8 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnOKClicked(AnyType userObj)
 	Map::DrawLayerType lyrType = lyr->GetLayerType();
 	if (lyrType == Map::DRAW_LAYER_POLYLINE || lyrType == Map::DRAW_LAYER_POLYLINE3D)
 	{
-		Map::HKTrafficLayer *traffic;
-		NEW_CLASS(traffic, Map::HKTrafficLayer(me->core->GetTCPClientFactory(), me->ssl, me->core->GetEncFactory()));
+		NN<Map::HKTrafficLayer> traffic;
+		NEW_CLASSNN(traffic, Map::HKTrafficLayer(me->core->GetTCPClientFactory(), me->ssl, me->core->GetEncFactory()));
 		traffic->AddRoadLayer(lyr);
 		traffic->EndInit();
 		me->lyr = traffic;

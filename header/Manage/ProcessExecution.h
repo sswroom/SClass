@@ -9,7 +9,7 @@ namespace Manage
 	{
 	private:
 		struct ClassData;
-		ClassData *clsData;
+		NN<ClassData> clsData;
 
 		UIntOS NewProcess(Text::CStringNN cmdLine);
 	public:

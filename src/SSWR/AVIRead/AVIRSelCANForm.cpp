@@ -12,8 +12,8 @@ void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANSerialClicked(AnyType userO
 	SSWR::AVIRead::AVIRSelStreamForm dlg(nullptr, me->ui, me->core, false, me->ssl, me->core->GetLog());
 	if (dlg.ShowDialog(me) == DR_OK)
 	{
-		IO::Device::AXCAN *can;
-		NEW_CLASS(can, IO::Device::AXCAN(me->hdlr));
+		NN<IO::Device::AXCAN> can;
+		NEW_CLASSNN(can, IO::Device::AXCAN(me->hdlr));
 		can->OpenStream(dlg.GetStream(), (IO::Device::AXCAN::CANBitRate)me->cboAXCANBitRate->GetSelectedItem().GetIntOS());
 		me->listener = can;
 		me->SetDialogResult(DialogResult::DR_OK);
@@ -29,8 +29,8 @@ void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANFileClicked(AnyType userObj
 	{
 		IO::FileStream fs(dlg->GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Reader reader(fs);
-		IO::Device::AXCAN *can;
-		NEW_CLASS(can, IO::Device::AXCAN(me->hdlr));
+		NN<IO::Device::AXCAN> can;
+		NEW_CLASSNN(can, IO::Device::AXCAN(me->hdlr));
 		can->ParseReader(reader);
 		me->listener = can;
 		me->SetDialogResult(DialogResult::DR_OK);

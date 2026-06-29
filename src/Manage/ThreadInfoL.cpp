@@ -9,13 +9,13 @@
 #include <sys/thr.h>
 #endif
 
-Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UIntOS threadId, UIntOS procId, Sync::ThreadHandle *hand)
+Optional<Manage::ThreadContext> Manage::ThreadInfo::GetThreadContextHand(UIntOS threadId, UIntOS procId, Optional<Sync::ThreadHandle> hand)
 {
 //	Manage::ThreadContext *outContext = 0;
-	return 0;
+	return nullptr;
 }
 
-Manage::ThreadInfo::ThreadInfo(UIntOS procId, UIntOS threadId, Sync::ThreadHandle *hand)
+Manage::ThreadInfo::ThreadInfo(UIntOS procId, UIntOS threadId, Optional<Sync::ThreadHandle> hand)
 {
 	this->threadId = threadId;
 	this->procId = procId;
@@ -26,22 +26,19 @@ Manage::ThreadInfo::ThreadInfo(UIntOS procId, UIntOS threadId)
 {
 	this->threadId = threadId;
 	this->procId = procId;
-	this->hand = 0;
+	this->hand = nullptr;
 }
 
 Manage::ThreadInfo::~ThreadInfo()
 {
-	if (this->hand)
-	{
-		this->hand = 0;
-	}
+	this->hand = nullptr;
 }
 
-Manage::ThreadContext *Manage::ThreadInfo::GetThreadContext()
+Optional<Manage::ThreadContext> Manage::ThreadInfo::GetThreadContext()
 {
 /////////////////////////////////////////
 //	ptrace(PTRACE_GETREGSET, this->threadId, 0, &addr)
-	return 0;
+	return nullptr;
 }
 
 UInt64 Manage::ThreadInfo::GetStartAddress()
@@ -51,15 +48,15 @@ UInt64 Manage::ThreadInfo::GetStartAddress()
 
 Bool Manage::ThreadInfo::WaitForThreadExit(UInt32 waitTimeout)
 {
-	if (this->hand)
-		return pthread_join((pthread_t)this->hand, 0) == 0;
+	if (this->hand.NotNull())
+		return pthread_join((pthread_t)this->hand.OrNull(), 0) == 0;
 	return false;
 }
 
 UInt32 Manage::ThreadInfo::GetExitCode()
 {
 	void *code;
-	if (this->hand && pthread_join((pthread_t)this->hand, &code) == 0)
+	if (this->hand.NotNull() && pthread_join((pthread_t)this->hand.OrNull(), &code) == 0)
 	{
 		return (UInt32)(IntOS)code;
 	}
@@ -76,9 +73,9 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadInfo::GetName(UnsafeArray<UTF8Char> buff)
 {
 #if defined(__GNUC_PREREQ)
 #if __GNUC_PREREQ(2, 12) && !defined(__DEFINED_pid_t) && !defined(__UCLIBC_MAJOR__)
-	if (this->hand)
+	if (this->hand.NotNull())
 	{
-		if (pthread_getname_np((pthread_t)this->hand, (char*)buff.Ptr(), 32) == 0)
+		if (pthread_getname_np((pthread_t)this->hand.OrNull(), (char*)buff.Ptr(), 32) == 0)
 			return buff + Text::StrCharCnt(buff);
 	}
 #endif
@@ -125,15 +122,15 @@ Bool Manage::ThreadInfo::IsCurrThread()
 #endif
 }
 
-Manage::ThreadInfo *Manage::ThreadInfo::GetCurrThread()
+Optional<Manage::ThreadInfo> Manage::ThreadInfo::GetCurrThread()
 {
-	Manage::ThreadInfo *info;
+	NN<Manage::ThreadInfo> info;
 #if defined(__FreeBSD__)
 	long tid;
 	if (thr_self(&tid) != 0) tid = 0;
-	NEW_CLASS(info, Manage::ThreadInfo((UIntOS)getpid(), tid, (Sync::ThreadHandle*)tid));
+	NEW_CLASSNN(info, Manage::ThreadInfo((UIntOS)getpid(), tid, (Sync::ThreadHandle*)tid));
 #else
-	NEW_CLASS(info, Manage::ThreadInfo((UIntOS)getpid(), (UIntOS)pthread_self(), (Sync::ThreadHandle*)pthread_self()));
+	NEW_CLASSNN(info, Manage::ThreadInfo((UIntOS)getpid(), (UIntOS)pthread_self(), (Sync::ThreadHandle*)pthread_self()));
 #endif
 	return info;
 }

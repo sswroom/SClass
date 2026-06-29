@@ -38,7 +38,7 @@ namespace Media
 			UInt32 frameWidth;
 			UInt32 frameHeight;
 			UInt32 frameSize;
-			Manage::HiResClock *clk;
+			Optional<Manage::HiResClock> clk;
 			Media::RealtimeVideoSource::FrameCallback cb;
 			Media::RealtimeVideoSource::FrameChangeCallback fcCb;
 			AnyType ud;
@@ -58,21 +58,18 @@ namespace Media
 				this->frameFCC = 0;
 				if (useSourceTime)
 				{
-					this->clk = 0;
+					this->clk = nullptr;
 				}
 				else
 				{
-					NEW_CLASS(clk, Manage::HiResClock());
+					NEW_CLASSOPT(this->clk, Manage::HiResClock());
 				}
 
 			}
 
 			~DShowVideoFilter()
 			{
-				if (clk)
-				{
-					DEL_CLASS(clk);
-				}
+				this->clk.Delete();
 			}
 
 			virtual HRESULT CheckMediaType(const CMediaType *pmt)
@@ -246,7 +243,8 @@ namespace Media
 					}
 					
 					Int32 t;
-					if (this->clk)
+					NN<Manage::HiResClock> clk;
+					if (this->clk.SetTo(clk))
 					{
 						t = Double2Int32(clk->GetTimeDiff() * 1000);
 					}
@@ -284,9 +282,10 @@ namespace Media
 
 			void BeginCapture()
 			{
-				if (this->clk)
+				NN<Manage::HiResClock> clk;
+				if (this->clk.SetTo(clk))
 				{
-					this->clk->Start();
+					clk->Start();
 				}
 			}
 

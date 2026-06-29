@@ -13,7 +13,7 @@ struct Manage::ProcessExecution::ClassData
 
 UIntOS Manage::ProcessExecution::NewProcess(Text::CStringNN cmdLine)
 {
-	ClassData *clsData = MemAlloc(ClassData, 1);
+	NN<ClassData> clsData = MemAllocNN(ClassData);
 	clsData->in[0] = 0;
 	clsData->in[1] = 0;
 	clsData->out[0] = 0;
@@ -95,7 +95,7 @@ Manage::ProcessExecution::ProcessExecution(Text::CStringNN cmdLine) : Process(Ne
 Manage::ProcessExecution::~ProcessExecution()
 {
 	this->Close();
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Bool Manage::ProcessExecution::IsDown() const

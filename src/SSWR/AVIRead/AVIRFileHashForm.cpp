@@ -84,7 +84,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(AnyType userObj)
 	UnsafeArray<UTF8Char> sptr;
 	UIntOS i;
 	UIntOS j;
-	IO::FileExporter *exporter;
+	Optional<IO::FileExporter> exporter;
+	NN<IO::FileExporter> nnexporter;
 	Crypto::Hash::HashType chkType;
 	me->threadStatus = 1;
 	while (!me->threadToStop)
@@ -136,32 +137,32 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(AnyType userObj)
 				{
 					if (chkType == Crypto::Hash::HashType::CRC32)
 					{
-						NEW_CLASS(exporter, Exporter::SFVExporter());
+						NEW_CLASSOPT(exporter, Exporter::SFVExporter());
 					}
 					else if (chkType == Crypto::Hash::HashType::MD4)
 					{
-						NEW_CLASS(exporter, Exporter::MD4Exporter());
+						NEW_CLASSOPT(exporter, Exporter::MD4Exporter());
 					}
 					else if (chkType == Crypto::Hash::HashType::MD5)
 					{
-						NEW_CLASS(exporter, Exporter::MD5Exporter());
+						NEW_CLASSOPT(exporter, Exporter::MD5Exporter());
 					}
 					else if (chkType == Crypto::Hash::HashType::SHA1)
 					{
-						NEW_CLASS(exporter, Exporter::SHA1Exporter());
+						NEW_CLASSOPT(exporter, Exporter::SHA1Exporter());
 					}
 					else
 					{
-						exporter = 0;
+						exporter = nullptr;
 					}
-					if (exporter)
+					if (exporter.SetTo(nnexporter))
 					{
-						exporter->SetCodePage(me->core->GetCurrCodePage());
+						nnexporter->SetCodePage(me->core->GetCurrCodePage());
 						{
 							IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-							exporter->ExportFile(fs, CSTRP(sbuff, sptr), fchk, nullptr);
+							nnexporter->ExportFile(fs, CSTRP(sbuff, sptr), fchk, nullptr);
 						}
-						DEL_CLASS(exporter);
+						nnexporter.Delete();
 					}
 					nnstatus->status = 2;
 					nnstatus->fchk = fchk.Ptr();

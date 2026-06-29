@@ -35,11 +35,11 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 				return;
 			}
 			IO::SerialPort::ParityType parity = (IO::SerialPort::ParityType)me->cboParity->GetSelectedItem().GetIntOS();
-			IO::SerialPort *port;
-			NEW_CLASS(port, IO::SerialPort(portNum, baudRate, parity, false));
+			NN<IO::SerialPort> port;
+			NEW_CLASSNN(port, IO::SerialPort(portNum, baudRate, parity, false));
 			if (port->IsError())
 			{
-				DEL_CLASS(port);
+				port.Delete();
 				me->ui->ShowMsgOK(CSTR("Error in opening the port"), CSTR("Select Serial Port"), me);
 				return;
 			}
@@ -90,11 +90,11 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 			}
 			if (me->chkBoardcast->IsChecked())
 			{
-				Net::TCPBoardcastStream *stm;
-				NEW_CLASS(stm, Net::TCPBoardcastStream(me->core->GetSocketFactory(), port, me->log));
+				NN<Net::TCPBoardcastStream> stm;
+				NEW_CLASSNN(stm, Net::TCPBoardcastStream(me->core->GetSocketFactory(), port, me->log));
 				if (stm->IsError())
 				{
-					DEL_CLASS(stm);
+					stm.Delete();
 					me->ui->ShowMsgOK(CSTR("Error in listening to the port"), CSTR("Error"), me);
 					return;
 				}
@@ -107,11 +107,11 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 			}
 			else
 			{
-				Net::TCPServerStream *stm;
-				NEW_CLASS(stm, Net::TCPServerStream(me->core->GetSocketFactory(), port, me->log));
+				NN<Net::TCPServerStream> stm;
+				NEW_CLASSNN(stm, Net::TCPServerStream(me->core->GetSocketFactory(), port, me->log));
 				if (stm->IsError())
 				{
-					DEL_CLASS(stm);
+					stm.Delete();
 					me->ui->ShowMsgOK(CSTR("Error in listening to the port"), CSTR("Error"), me);
 					return;
 				}
@@ -147,11 +147,11 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 				me->ui->ShowMsgOK(CSTR("Port is out of range"), CSTR("Error"), me);
 				return;
 			}
-			Net::TCPClient *cli;
-			NEW_CLASS(cli, Net::TCPClient(me->core->GetSocketFactory(), addr, port, NETTIMEOUT));
+			NN<Net::TCPClient> cli;
+			NEW_CLASSNN(cli, Net::TCPClient(me->core->GetSocketFactory(), addr, port, NETTIMEOUT));
 			if (cli->IsConnectError())
 			{
-				DEL_CLASS(cli);
+				cli.Delete();
 				me->ui->ShowMsgOK(CSTR("Error in connect to server"), CSTR("Error"), me);
 				return;
 			}
@@ -213,14 +213,14 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 	case IO::StreamType::File:
 		{
 			Text::StringBuilderUTF8 sb;
-			IO::FileStream *fs;
+			NN<IO::FileStream> fs;
 			me->txtFileName->GetText(sb);
 			if (sb.GetLength() > 0)
 			{
-				NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+				NEW_CLASSNN(fs, IO::FileStream(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 				if (fs->IsError())
 				{
-					DEL_CLASS(fs);
+					fs.Delete();
 					me->ui->ShowMsgOK(CSTR("Error in opening the file"), CSTR("Open Stream"), me);
 				}
 				else
@@ -262,11 +262,11 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 				return;
 			}
 
-			Net::UDPServerStream *stm;
-			NEW_CLASS(stm, Net::UDPServerStream(me->core->GetSocketFactory(), port, me->core->GetLog()));
+			NN<Net::UDPServerStream> stm;
+			NEW_CLASSNN(stm, Net::UDPServerStream(me->core->GetSocketFactory(), port, me->core->GetLog()));
 			if (stm->IsError())
 			{
-				DEL_CLASS(stm);
+				stm.Delete();
 				me->ui->ShowMsgOK(CSTR("Error in listening to the port"), CSTR("Error"), me);
 				return;
 			}
@@ -302,11 +302,11 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 				return;
 			}
 
-			Net::UDPServerStream *stm;
-			NEW_CLASS(stm, Net::UDPServerStream(me->core->GetSocketFactory(), 0, me->core->GetLog()));
+			NN<Net::UDPServerStream> stm;
+			NEW_CLASSNN(stm, Net::UDPServerStream(me->core->GetSocketFactory(), 0, me->core->GetLog()));
 			if (stm->IsError())
 			{
-				DEL_CLASS(stm);
+				stm.Delete();
 				me->ui->ShowMsgOK(CSTR("Error in listening to the port"), CSTR("Error"), me);
 				return;
 			}

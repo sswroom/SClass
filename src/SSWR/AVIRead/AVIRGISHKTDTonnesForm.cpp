@@ -75,8 +75,8 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(AnyType userObj
 			Map::DrawLayerType lyrType = nnlyr->GetLayerType();
 			if (lyrType == Map::DRAW_LAYER_POLYLINE || lyrType == Map::DRAW_LAYER_POLYLINE3D)
 			{
-				Map::HKTDVehRestrict *vehRestrict;
-				NEW_CLASS(vehRestrict, Map::HKTDVehRestrict(nnlyr, nndb));
+				NN<Map::HKTDVehRestrict> vehRestrict;
+				NEW_CLASSNN(vehRestrict, Map::HKTDVehRestrict(nnlyr, nndb));
 				me->lyr = vehRestrict->CreateTonnesSignLayer();
 				if (me->lyr.NotNull())
 				{
@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(AnyType userObj
 				{
 					me->ui->ShowMsgOK(CSTR("Error in creating layer"), CSTR("HK Tonnes Sign"), me);
 				}
-				DEL_CLASS(vehRestrict);
+				vehRestrict.Delete();
 			}
 			else
 			{

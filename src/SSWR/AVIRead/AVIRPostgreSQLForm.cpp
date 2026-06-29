@@ -19,16 +19,16 @@ void __stdcall SSWR::AVIRead::AVIRPostgreSQLForm::OnOKClicked(AnyType userObj)
 	me->txtPort->GetText(sbPort);
 	UInt16 port;
 
-	DB::PostgreSQLConn *conn;
+	NN<DB::PostgreSQLConn> conn;
 	if (!sbPort.ToUInt16(port))
 	{
 		me->ui->ShowMsgOK(CSTR("Port is not valid"), CSTR("PostgreSQL Connection"), me);
 		return;
 	}
-	NEW_CLASS(conn, DB::PostgreSQLConn(sb.ToCString(), port, sb2.ToCString(), sb3.ToCString(), sb4.ToCString(), me->core->GetLog()));
+	NEW_CLASSNN(conn, DB::PostgreSQLConn(sb.ToCString(), port, sb2.ToCString(), sb3.ToCString(), sb4.ToCString(), me->core->GetLog()));
 	if (conn->IsConnError())
 	{
-		DEL_CLASS(conn);
+		conn.Delete();
 		me->ui->ShowMsgOK(CSTR("Error in opening PostgreSQL connection"), CSTR("PostgreSQL Connection"), me);
 		return;
 	}

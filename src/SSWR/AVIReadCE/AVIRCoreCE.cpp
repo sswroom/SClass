@@ -28,24 +28,24 @@ void SSWR::AVIReadCE::AVIRCoreCE::EndLoad()
 	this->batchLoad = false;
 	if (this->batchLyrs.NotNull())
 	{
-/*		AVIRead::AVIRGISForm *gisForm;
-		Map::MapEnv *env;
-		NEW_CLASS(env, Map::MapEnv(L"Untitled", 0xffc0c0ff, this->batchLyrs->GetItem(0)->GetCoordinateSystem()->Clone()));
-		NEW_CLASS(gisForm, AVIRead::AVIRGISForm(this->ui->GetHInst(), 0, this->ui, this, env));
+/*		NN<AVIRead::AVIRGISForm> gisForm;
+		NN<Map::MapEnv> env;
+		NEW_CLASSNN(env, Map::MapEnv(L"Untitled", 0xffc0c0ff, this->batchLyrs->GetItem(0)->GetCoordinateSystem()->Clone()));
+		NEW_CLASSNN(gisForm, AVIRead::AVIRGISForm(this->ui->GetHInst(), 0, this->ui, this, env));
 		gisForm->AddLayers(this->batchLyrs);*/
 		this->batchLyrs.Delete();
 //		InitForm(gisForm);
 	}
 }
 
-void SSWR::AVIReadCE::AVIRCoreCE::OpenObject(IO::ParsedObject *pobj)
+void SSWR::AVIReadCE::AVIRCoreCE::OpenObject(NN<IO::ParsedObject> pobj)
 {
-	UI::GUIForm *frm;
+	NN<UI::GUIForm> frm;
 	IO::ParserType pt = pobj->GetParserType();
 	switch (pt)
 	{
 /*	case IO::ParserType::MapEnv:
-		NEW_CLASS(frm, AVIRead::AVIRGISForm(this->ui->GetHInst(), 0, this->ui, this, (Map::MapEnv*)pobj));
+		NEW_CLASSNN(frm, AVIRead::AVIRGISForm(this->ui->GetHInst(), 0, this->ui, this, (Map::MapEnv*)pobj));
 		InitForm(frm);
 		break;
 	case IO::ParserType::MapLayer:
@@ -53,62 +53,62 @@ void SSWR::AVIReadCE::AVIRCoreCE::OpenObject(IO::ParsedObject *pobj)
 		{
 			if (this->batchLyrs == 0)
 			{
-				NEW_CLASS(this->batchLyrs, Data::ArrayList<Map::MapDrawLayer*>());
+				NEW_CLASSNN(this->batchLyrs, Data::ArrayList<Map::MapDrawLayer*>());
 			}
 			this->batchLyrs->Add((Map::MapDrawLayer *)pobj);
 		}
 		else
 		{
-			Map::MapDrawLayer *lyr = (Map::MapDrawLayer*)pobj;
-			Map::MapEnv *env;
-			NEW_CLASS(env, Map::MapEnv(L"Untitled", 0xffc0c0ff, lyr->GetCoordinateSystem()->Clone()));
-			NEW_CLASS(frm, AVIRead::AVIRGISForm(this->ui->GetHInst(), 0, this->ui, this, env));
+			NN<Map::MapDrawLayer> lyr = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
+			NN<Map::MapEnv> env;
+			NEW_CLASSNN(env, Map::MapEnv(L"Untitled", 0xffc0c0ff, lyr->GetCoordinateSystem()->Clone()));
+			NEW_CLASSNN(frm, AVIRead::AVIRGISForm(this->ui->GetHInst(), 0, this->ui, this, env));
 			((AVIRead::AVIRGISForm*)frm)->AddLayer(lyr);
 			InitForm(frm);
 		}
 		break;
 	case IO::ParserType::MAP_LAYER_COLL:
 		{
-			Map::MapLayerCollection *lyrColl = (Map::MapLayerCollection*)pobj;
-			Map::MapEnv *env;
-			NEW_CLASS(env, Map::MapEnv(L"Untitled", 0xffc0c0ff, lyrColl->GetItem(0)->GetCoordinateSystem()->Clone()));
+			NN<Map::MapLayerCollection> lyrColl = NN<Map::MapLayerCollection>::ConvertFrom(pobj);
+			NN<Map::MapEnv> env;
+			NEW_CLASSNN(env, Map::MapEnv(L"Untitled", 0xffc0c0ff, lyrColl->GetItem(0)->GetCoordinateSystem()->Clone()));
 			env->AddLayerColl(0, lyrColl, true);
-			NEW_CLASS(frm, AVIRead::AVIRGISForm(this->ui->GetHInst(), 0, this->ui, this, env));
+			NEW_CLASSNN(frm, AVIRead::AVIRGISForm(this->ui->GetHInst(), 0, this->ui, this, env));
 			InitForm(frm);
 		}
 		break;
 	case IO::ParserType::ImageList:
-		NEW_CLASS(frm, AVIRead::AVIRImageForm(this->ui->GetHInst(), 0, this->ui, this, (Media::ImageList*)pobj));
+		NEW_CLASSNN(frm, AVIRead::AVIRImageForm(this->ui->GetHInst(), 0, this->ui, this, (Media::ImageList*)pobj));
 		InitForm(frm);
 		frm->Show();
 		break;
 	case IO::ParserType::PackageFile:
-		NEW_CLASS(frm, AVIRead::AVIRPackageForm(this->ui->GetHInst(), 0, this->ui, this, (IO::PackageFile*)pobj));
+		NEW_CLASSNN(frm, AVIRead::AVIRPackageForm(this->ui->GetHInst(), 0, this->ui, this, (IO::PackageFile*)pobj));
 		InitForm(frm);
 		frm->Show();
 		break;
 	case IO::ParserType::MediaFile:
-		NEW_CLASS(frm, AVIRead::AVIRMediaForm(this->ui->GetHInst(), 0, this->ui, this, (Media::MediaFile*)pobj));
+		NEW_CLASSNN(frm, AVIRead::AVIRMediaForm(this->ui->GetHInst(), 0, this->ui, this, (Media::MediaFile*)pobj));
 		InitForm(frm);
 		frm->Show();
 		break;
 	case IO::ParserType::EXEFile:
-		NEW_CLASS(frm, AVIRead::AVIRExeForm(this->ui->GetHInst(), 0, this->ui, this, (IO::EXEFile*)pobj));
+		NEW_CLASSNN(frm, AVIRead::AVIRExeForm(this->ui->GetHInst(), 0, this->ui, this, (IO::EXEFile*)pobj));
 		InitForm(frm);
 		frm->Show();
 		break;
 	case IO::ParserType::ReadingDB:
-		NEW_CLASS(frm, AVIRead::AVIRDBForm(this->ui->GetHInst(), 0, this->ui, this, (DB::ReadingDB*)pobj, true));
+		NEW_CLASSNN(frm, AVIRead::AVIRDBForm(this->ui->GetHInst(), 0, this->ui, this, (DB::ReadingDB*)pobj, true));
 		InitForm(frm);
 		frm->Show();
 		break;
 	case IO::ParserType::FileCheck:
-		NEW_CLASS(frm, AVIRead::AVIRFileChkForm(this->ui->GetHInst(), 0, this->ui, this, (IO::FileCheck*)pobj));
+		NEW_CLASSNN(frm, AVIRead::AVIRFileChkForm(this->ui->GetHInst(), 0, this->ui, this, (IO::FileCheck*)pobj));
 		InitForm(frm);
 		frm->Show();
 		break;
 	case IO::ParserType::LogFile:
-		NEW_CLASS(frm, AVIRead::AVIRLogFileForm(this->ui->GetHInst(), 0, this->ui, this, (IO::LogFile*)pobj));
+		NEW_CLASSNN(frm, AVIRead::AVIRLogFileForm(this->ui->GetHInst(), 0, this->ui, this, (IO::LogFile*)pobj));
 		InitForm(frm);
 		frm->Show();
 		break;
@@ -118,9 +118,9 @@ void SSWR::AVIReadCE::AVIRCoreCE::OpenObject(IO::ParsedObject *pobj)
 			IntOS thisSize;
 			UInt8 *buff;
 			IO::Stream *stm = (IO::Stream *)pobj;
-			IO::StmData::MemoryData2 *data;
-			IO::MemoryStream *mstm;
-			NEW_CLASS(mstm, IO::MemoryStream(L"SSWR.AVIRead.AVIRCore.OpenObject"));
+			NN<IO::StmData::MemoryData2> data;
+			NN<IO::MemoryStream> mstm;
+			NEW_CLASSNN(mstm, IO::MemoryStream(L"SSWR.AVIRead.AVIRCore.OpenObject"));
 			buff = MemAlloc(UInt8, 1048576);
 			while (totalSize < 104857600)
 			{
@@ -130,42 +130,42 @@ void SSWR::AVIReadCE::AVIRCoreCE::OpenObject(IO::ParsedObject *pobj)
 				mstm->Write(buff, thisSize);
 				totalSize += thisSize;
 			}
-			DEL_CLASS(pobj);
+			pobj.Delete();
 			MemFree(buff);
 			buff = mstm->GetBuff(&thisSize);
 			if (thisSize > 0)
 			{
-				NEW_CLASS(data, IO::StmData::MemoryData2(buff, thisSize));
-				DEL_CLASS(mstm);
+				NEW_CLASSNN(data, IO::StmData::MemoryData2(buff, thisSize));
+				mstm.Delete();
 				this->LoadData(data);
-				DEL_CLASS(data);
+				data.Delete();
 			}
 			else
 			{
-				DEL_CLASS(mstm);
+				mstm.Delete();
 			}
 			break;
 		}
 	case IO::ParserType::Playlist:
 		{
-			SSWR::AVIRead::AVIRPlaylistForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRPlaylistForm(this->ui->GetHInst(), 0, this->ui, this, (Media::Playlist*)pobj));
+			NN<SSWR::AVIRead::AVIRPlaylistForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPlaylistForm(this->ui->GetHInst(), 0, this->ui, this, (Media::Playlist*)pobj));
 			InitForm(frm);
 			frm->Show();
 		}
 		break;
 	case IO::ParserType::SectorData:
 		{
-			SSWR::AVIRead::AVIRSectorForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSectorForm(this->ui->GetHInst(), 0, this->ui, this, (IO::SectorData *)pobj));
+			NN<SSWR::AVIRead::AVIRSectorForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSectorForm(this->ui->GetHInst(), 0, this->ui, this, (IO::SectorData *)pobj));
 			InitForm(frm);
 			frm->Show();
 		}
 		break;
 	case IO::ParserType::CodeProject:
 		{
-			SSWR::AVIRead::AVIRCodeProjectForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRCodeProjectForm(this->ui->GetHInst(), 0, this->ui, this, (Text::CodeProject*)pobj));
+			NN<SSWR::AVIRead::AVIRCodeProjectForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCodeProjectForm(this->ui->GetHInst(), 0, this->ui, this, (Text::CodeProject*)pobj));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -174,7 +174,7 @@ void SSWR::AVIReadCE::AVIRCoreCE::OpenObject(IO::ParsedObject *pobj)
 	case IO::ParserType::Workbook:
 	case IO::ParserType::CoordinateSystem:
 	default:
-		DEL_CLASS(pobj);
+		pobj.Delete();
 		break;
 	}
 }
@@ -249,12 +249,12 @@ void SSWR::AVIReadCE::AVIRCoreCE::SaveData(NN<UI::GUIForm> ownerForm, NN<IO::Par
 						}
 						else
 						{
-							NEW_CLASS(fs, IO::FileStream(sfd.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+							NEW_CLASSNN(fs, IO::FileStream(sfd.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 							if (!fileExp->ExportFile(fs, sfd.GetFileName(), pobj, param))
 							{
 								UI::MessageDialog::ShowDialog(L"Error in saving file", L"Save Data");
 							}
-							DEL_CLASS(fs);
+							fs.Delete();
 						}
 					}
 					fileExp->DeleteParam(param);
@@ -264,7 +264,7 @@ void SSWR::AVIReadCE::AVIRCoreCE::SaveData(NN<UI::GUIForm> ownerForm, NN<IO::Par
 			{
 				if (suppType == IO::FileExporter::SupportType::PathOnly)
 				{
-					if (!fileExp->ExportFile(0, sfd->GetFileName()->ToCString(), pobj, 0))
+					if (!fileExp->ExportFile(nullptr, sfd->GetFileName()->ToCString(), pobj, nullptr))
 					{
 						ui->ShowMsgOK(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 					}
@@ -272,7 +272,7 @@ void SSWR::AVIReadCE::AVIRCoreCE::SaveData(NN<UI::GUIForm> ownerForm, NN<IO::Par
 				else
 				{
 					NEW_CLASSNN(fs, IO::FileStream(sfd->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-					if (!fileExp->ExportFile(fs, sfd->GetFileName()->ToCString(), pobj, 0))
+					if (!fileExp->ExportFile(fs, sfd->GetFileName()->ToCString(), pobj, nullptr))
 					{
 						ui->ShowMsgOK(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 					}

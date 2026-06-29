@@ -106,11 +106,11 @@ namespace IO
 		UIntOS interfaceCnt;
 		UInt8 *interfaces;
 		UIntOS fieldsCnt;
-		UInt8 **fields;
+		UnsafeArrayOpt<UnsafeArray<UInt8>> fields;
 		UIntOS methodCnt;
-		UInt8 **methods;
+		UnsafeArrayOpt<UnsafeArray<UInt8>> methods;
 		UIntOS attrCnt;
-		UInt8 **attrs;
+		UnsafeArrayOpt<UnsafeArray<UInt8>> attrs;
 		UInt16 signatureIndex;
 
 		static UnsafeArray<const UInt8> Type2String(UnsafeArray<const UInt8> typeStr, NN<Text::StringBuilderUTF8> sb);

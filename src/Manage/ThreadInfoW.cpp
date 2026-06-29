@@ -15,36 +15,36 @@
 #endif
 #include <windows.h>
 
-Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UIntOS threadId, UIntOS procId, Sync::ThreadHandle *hand)
+Optional<Manage::ThreadContext> Manage::ThreadInfo::GetThreadContextHand(UIntOS threadId, UIntOS procId, Optional<Sync::ThreadHandle> hand)
 {
-	Manage::ThreadContext *outContext = 0;
+	Optional<Manage::ThreadContext> outContext = nullptr;
 #ifdef _WIN32_WCE
 	CONTEXT context;
 	context.ContextFlags = (CONTEXT_FULL);
 	if (::GetThreadContext((HANDLE)hand, &context))
 	{
 #if defined(CPU_ARM)
-		NEW_CLASS(outContext, Manage::ThreadContextARM(procId, threadId, &context));
+		NEW_CLASSOPT(outContext, Manage::ThreadContextARM(procId, threadId, &context));
 #elif defined(_ALPHA_)
-//		NEW_CLASS(outContext, Manage::ThreadContextX86_32(procId, threadId, &context));
+//		NEW_CLASSOPT(outContext, Manage::ThreadContextX86_32(procId, threadId, &context));
 #elif defined(CPU_X86_32)
-//		NEW_CLASS(outContext, Manage::ThreadContextX86_32(procId, threadId, &context));
+//		NEW_CLASSOPT(outContext, Manage::ThreadContextX86_32(procId, threadId, &context));
 #elif defined(_MIPS_)
-//		NEW_CLASS(outContext, Manage::ThreadContextX86_32(procId, threadId, &context));
+//		NEW_CLASSOPT(outContext, Manage::ThreadContextX86_32(procId, threadId, &context));
 #elif defined(_PPC_)
-//		NEW_CLASS(outContext, Manage::ThreadContextX86_32(procId, threadId, &context));
+//		NEW_CLASSOPT(outContext, Manage::ThreadContextX86_32(procId, threadId, &context));
 #elif defined(_MPPC_)
-//		NEW_CLASS(outContext, Manage::ThreadContextX86_32(procId, threadId, &context));
+//		NEW_CLASSOPT(outContext, Manage::ThreadContextX86_32(procId, threadId, &context));
 #elif defined(_IA64_)
-//		NEW_CLASS(outContext, Manage::ThreadContextX86_32(procId, threadId, &context));
+//		NEW_CLASSOPT(outContext, Manage::ThreadContextX86_32(procId, threadId, &context));
 #elif defined(SHx)
-//		NEW_CLASS(outContext, Manage::ThreadContextX86_32(procId, threadId, &context));
+//		NEW_CLASSOPT(outContext, Manage::ThreadContextX86_32(procId, threadId, &context));
 #endif
 		return outContext;
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 #else
 	
@@ -55,14 +55,14 @@ Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UIntOS threadId,
 	{
 		CONTEXT context;
 		context.ContextFlags = (CONTEXT_ALL);
-		if (::GetThreadContext((HANDLE)hand, &context))
+		if (::GetThreadContext((HANDLE)hand.OrNull(), &context))
 		{
-			NEW_CLASS(outContext, Manage::ThreadContextX86_64(procId, threadId, &context));
+			NEW_CLASSOPT(outContext, Manage::ThreadContextX86_64(procId, threadId, &context));
 			return outContext;
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 #if !defined(__CYGWIN__)
@@ -70,74 +70,74 @@ Manage::ThreadContext *Manage::ThreadInfo::GetThreadContextHand(UIntOS threadId,
 	{
 		WOW64_CONTEXT context;
 		context.ContextFlags = (CONTEXT_ALL);
-		if (::Wow64GetThreadContext((HANDLE)hand, &context))
+		if (::Wow64GetThreadContext((HANDLE)hand.OrNull(), &context))
 		{
-			NEW_CLASS(outContext, Manage::ThreadContextX86_32(procId, threadId, &context));
+			NEW_CLASSOPT(outContext, Manage::ThreadContextX86_32(procId, threadId, &context));
 			return outContext;
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 #else
-	return 0;
+	return nullptr;
 #endif
 #elif defined(CPU_X86_32)
 	CONTEXT context;
 	context.ContextFlags = (CONTEXT_ALL);
-	if (::GetThreadContext((HANDLE)hand, &context))
+	if (::GetThreadContext((HANDLE)hand.OrNull(), &context))
 	{
-		NEW_CLASS(outContext, Manage::ThreadContextX86_32(procId, threadId, &context));
+		NEW_CLASSOPT(outContext, Manage::ThreadContextX86_32(procId, threadId, &context));
 		return outContext;
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 #elif defined(CPU_ARM64)
 #if defined(_M_ARM64EC)
 	CONTEXT context;
 	context.ContextFlags = (CONTEXT_ALL);
-	if (::GetThreadContext((HANDLE)hand, &context))
+	if (::GetThreadContext((HANDLE)hand.OrNull(), &context))
 	{
-		NEW_CLASS(outContext, Manage::ThreadContextX86_64(procId, threadId, &context));
+		NEW_CLASSOPT(outContext, Manage::ThreadContextX86_64(procId, threadId, &context));
 		return outContext;
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 #else
 	CONTEXT context;
 	context.ContextFlags = (CONTEXT_ALL);
-	if (::GetThreadContext((HANDLE)hand, &context))
+	if (::GetThreadContext((HANDLE)hand.OrNull(), &context))
 	{
-		NEW_CLASS(outContext, Manage::ThreadContextARM64(procId, threadId, &context));
+		NEW_CLASSOPT(outContext, Manage::ThreadContextARM64(procId, threadId, &context));
 		return outContext;
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 #endif
 #elif defined(CPU_ARM)
 	CONTEXT context;
 	context.ContextFlags = (CONTEXT_ALL);
-	if (::GetThreadContext((HANDLE)hand, &context))
+	if (::GetThreadContext((HANDLE)hand.OrNull(), &context))
 	{
-		NEW_CLASS(outContext, Manage::ThreadContextARM(procId, threadId, &context));
+		NEW_CLASSOPT(outContext, Manage::ThreadContextARM(procId, threadId, &context));
 		return outContext;
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 #endif
 #endif
 }
 
-Manage::ThreadInfo::ThreadInfo(UIntOS procId, UIntOS threadId, Sync::ThreadHandle *hand)
+Manage::ThreadInfo::ThreadInfo(UIntOS procId, UIntOS threadId, Optional<Sync::ThreadHandle> hand)
 {
 	this->threadId = threadId;
 	this->procId = procId;
@@ -149,7 +149,7 @@ Manage::ThreadInfo::ThreadInfo(UIntOS procId, UIntOS threadId)
 	this->threadId = threadId;
 	this->procId = procId;
 #ifdef _WIN32_WCE
-	this->hand = (void*)this->threadId;
+	this->hand = (Sync::ThreadHandle*)this->threadId;
 #else
 	this->hand = (Sync::ThreadHandle*)OpenThread(THREAD_QUERY_INFORMATION | THREAD_GET_CONTEXT | SYNCHRONIZE, false, (DWORD)threadId);
 #endif
@@ -157,27 +157,27 @@ Manage::ThreadInfo::ThreadInfo(UIntOS procId, UIntOS threadId)
 
 Manage::ThreadInfo::~ThreadInfo()
 {
-	if (this->hand)
+	if (this->hand.NotNull())
 	{
 #ifndef _WIN32_WCE
-		CloseHandle(this->hand);
+		CloseHandle((HANDLE)this->hand.OrNull());
 #endif
-		this->hand = 0;
+		this->hand = nullptr;
 	}
 }
 
-Manage::ThreadContext *Manage::ThreadInfo::GetThreadContext()
+Optional<Manage::ThreadContext> Manage::ThreadInfo::GetThreadContext()
 {
-	Manage::ThreadContext *outContext;
+	Optional<Manage::ThreadContext> outContext;
 
 	if (GetCurrentThreadId() ==  this->threadId)
 	{
 		return GetThreadContextHand(threadId, procId, this->hand);
 	}
 
-	SuspendThread((HANDLE)this->hand);
+	SuspendThread((HANDLE)this->hand.OrNull());
 	outContext = GetThreadContextHand(threadId, procId, this->hand);
-	ResumeThread((HANDLE)this->hand);
+	ResumeThread((HANDLE)this->hand.OrNull());
 	return outContext;
 }
 
@@ -197,11 +197,11 @@ UInt64 Manage::ThreadInfo::GetStartAddress()
 	pNtQIT NtQueryInformationThread = (pNtQIT)GetProcAddress(GetModuleHandleA("ntdll.dll"), "NtQueryInformationThread");
 	if (NtQueryInformationThread == NULL) return 0;
 
-	ntStatus = NtQueryInformationThread((HANDLE)this->hand, ThreadQuerySetWin32StartAddress, &startAddress, sizeof(startAddress), NULL);
+	ntStatus = NtQueryInformationThread((HANDLE)this->hand.OrNull(), ThreadQuerySetWin32StartAddress, &startAddress, sizeof(startAddress), NULL);
 	if(ntStatus != STATUS_SUCCESS)
 	{
 		DWORD dwStartAddress;
-		ntStatus = NtQueryInformationThread((HANDLE)this->hand, ThreadQuerySetWin32StartAddress, &dwStartAddress, sizeof(dwStartAddress), NULL);
+		ntStatus = NtQueryInformationThread((HANDLE)this->hand.OrNull(), ThreadQuerySetWin32StartAddress, &dwStartAddress, sizeof(dwStartAddress), NULL);
 		if(ntStatus != STATUS_SUCCESS)
 		{
 			return 0;
@@ -216,7 +216,7 @@ UInt64 Manage::ThreadInfo::GetStartAddress()
 Bool Manage::ThreadInfo::WaitForThreadExit(UInt32 waitTimeout)
 {
 	UInt32 ret;
-	if ((ret = WaitForSingleObject((HANDLE)this->hand, waitTimeout)) == WAIT_TIMEOUT)
+	if ((ret = WaitForSingleObject((HANDLE)this->hand.OrNull(), waitTimeout)) == WAIT_TIMEOUT)
 	{
 		return false;
 	}
@@ -230,7 +230,7 @@ Bool Manage::ThreadInfo::WaitForThreadExit(UInt32 waitTimeout)
 UInt32 Manage::ThreadInfo::GetExitCode()
 {
 	DWORD exitCode;
-	if (GetExitCodeThread((HANDLE)this->hand, &exitCode))
+	if (GetExitCodeThread((HANDLE)this->hand.OrNull(), &exitCode))
 	{
 		return exitCode;
 	}
@@ -250,7 +250,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadInfo::GetName(UnsafeArray<UTF8Char> buff)
 	GetThreadDescriptionFunc GetThreadDescription = (GetThreadDescriptionFunc)GetProcAddress(GetModuleHandleA("Kernel32.dll"), "GetThreadDescription");
 	WChar *sbuff;
 	if (GetThreadDescription == 0) return nullptr; 
-	HRESULT hres = GetThreadDescription((HANDLE)this->hand, &sbuff);
+	HRESULT hres = GetThreadDescription((HANDLE)this->hand.OrNull(), &sbuff);
 	if (SUCCEEDED(hres))
 	{
 		buff = Text::StrWChar_UTF8(buff, sbuff);
@@ -262,12 +262,12 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadInfo::GetName(UnsafeArray<UTF8Char> buff)
 
 Bool Manage::ThreadInfo::Suspend()
 {
-	return SuspendThread((HANDLE)this->hand) == (DWORD)-1;
+	return SuspendThread((HANDLE)this->hand.OrNull()) == (DWORD)-1;
 }
 
 Bool Manage::ThreadInfo::Resume()
 {
-	return ResumeThread((HANDLE)this->hand) == (DWORD)-1;
+	return ResumeThread((HANDLE)this->hand.OrNull()) == (DWORD)-1;
 }
 
 Bool Manage::ThreadInfo::IsCurrThread()
@@ -275,9 +275,9 @@ Bool Manage::ThreadInfo::IsCurrThread()
 	return this->threadId == GetCurrentThreadId();
 }
 
-Manage::ThreadInfo *Manage::ThreadInfo::GetCurrThread()
+Optional<Manage::ThreadInfo> Manage::ThreadInfo::GetCurrThread()
 {
-	Manage::ThreadInfo *info;
-	NEW_CLASS(info, Manage::ThreadInfo(GetCurrentProcessId(), GetCurrentThreadId(), (Sync::ThreadHandle*)GetCurrentThread()));
+	NN<Manage::ThreadInfo> info;
+	NEW_CLASSNN(info, Manage::ThreadInfo(GetCurrentProcessId(), GetCurrentThreadId(), (Sync::ThreadHandle*)GetCurrentThread()));
 	return info;
 }

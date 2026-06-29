@@ -15,9 +15,9 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userOb
 		NN<Text::CodeObject> obj = tvi->GetItemObj().GetNN<Text::CodeObject>();
 		if (obj->GetObjectType() == Text::CodeObject::OT_FILE)
 		{
-			Text::Cpp::CppEnv *env;
+			NN<Text::Cpp::CppEnv> env;
 			NN<Text::Cpp::CppParseStatus> status;
-			Text::Cpp::CppCodeParser *parser;
+			NN<Text::Cpp::CppCodeParser> parser;
 			NN<Text::CodeFile> file = NN<Text::CodeFile>::ConvertFrom(obj);
 			UTF8Char sbuff[512];
 			UnsafeArray<UTF8Char> sptr;
@@ -29,8 +29,8 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userOb
 			{
 				Text::StringBuilderUTF8 sb;
 				Data::ArrayListStringNN errMsgs;
-				NEW_CLASS(env, Text::Cpp::CppEnv(me->proj, cfg));
-				NEW_CLASS(parser, Text::Cpp::CppCodeParser(env));
+				NEW_CLASSNN(env, Text::Cpp::CppEnv(me->proj, cfg));
+				NEW_CLASSNN(parser, Text::Cpp::CppCodeParser(env));
 				NEW_CLASSNN(status, Text::Cpp::CppParseStatus(me->proj->GetSourceNameObj()));
 				env->InitEnvStatus(status);
 				status->AddGlobalDef(CSTR("__STDC__"), CSTR("0"));
@@ -52,15 +52,15 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userOb
 				me->txtMessage->SetText(sb.ToCString());
 				parser->FreeErrMsgs(errMsgs);
 				status.Delete();
-				DEL_CLASS(parser);
-				DEL_CLASS(env);
+				parser.Delete();
+				env.Delete();
 			}
 			else if (Text::StrEndsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC(".C")))
 			{
 				Text::StringBuilderUTF8 sb;
 				Data::ArrayListStringNN errMsgs;
-				NEW_CLASS(env, Text::Cpp::CppEnv(me->proj, cfg));
-				NEW_CLASS(parser, Text::Cpp::CppCodeParser(env));
+				NEW_CLASSNN(env, Text::Cpp::CppEnv(me->proj, cfg));
+				NEW_CLASSNN(parser, Text::Cpp::CppCodeParser(env));
 				NEW_CLASSNN(status, Text::Cpp::CppParseStatus(me->proj->GetSourceNameObj()));
 				env->InitEnvStatus(status);
 				status->AddGlobalDef(CSTR("__STDC__"), CSTR("1"));
@@ -81,8 +81,8 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userOb
 				me->txtMessage->SetText(sb.ToCString());
 				parser->FreeErrMsgs(errMsgs);
 				status.Delete();
-				DEL_CLASS(parser);
-				DEL_CLASS(env);
+				parser.Delete();
+				env.Delete();
 			}
 			else
 			{

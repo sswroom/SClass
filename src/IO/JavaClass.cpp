@@ -4266,10 +4266,15 @@ void IO::JavaClass::AppendCodeClassContent(NN<Text::StringBuilderUTF8> sb, UIntO
 
 void IO::JavaClass::AppendCodeField(NN<Text::StringBuilderUTF8> sb, UIntOS index, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
 {
+	UnsafeArray<UnsafeArray<UInt8>> fields;
+	if (!this->fields.SetTo(fields) || index >= this->fieldsCnt)
+	{
+		return;
+	}
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sbValue;
-	UInt8 *ptr = this->fields[index];
+	UnsafeArray<UInt8> ptr =fields[index];
 	UInt16 accessFlags = ReadMUInt16(ptr);
 	UInt16 nameIndex = ReadMUInt16(&ptr[2]);
 	UInt16 descriptorIndex = ReadMUInt16(&ptr[4]);
@@ -4407,18 +4412,23 @@ void IO::JavaClass::AppendCodeField(NN<Text::StringBuilderUTF8> sb, UIntOS index
 
 void IO::JavaClass::AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UIntOS index, UIntOS lev, Bool disasm, Bool decompile, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
 {
+	UnsafeArray<UnsafeArray<UInt8>> methods;
+	if (!this->methods.SetTo(methods) || index >= this->methodCnt)
+	{
+		return;
+	}
 	Text::StringBuilderUTF8 sbTmp;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UInt8 *ptr = this->methods[index];
+	UnsafeArray<UInt8> ptr = methods[index];
 	UInt16 i;
 	UIntOS j;
 	UTF8Char typeBuff[256];
 	MethodInfo method;
 	MethodParse(method, ptr);
-	UInt16 attrCnt = ReadMUInt16(&this->methods[index][6]);
+	UInt16 attrCnt = ReadMUInt16(&methods[index][6]);
 
-	ptr = &this->methods[index][8];
+	ptr = &methods[index][8];
 	i = 0;
 	while (i < attrCnt)
 	{
@@ -4449,7 +4459,7 @@ void IO::JavaClass::AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UIntOS inde
 		i++;
 	}
 
-	ptr = this->methods[index];
+	ptr = methods[index];
 	this->AppendIndent(sb, lev);
 	if (method.accessFlags & 1)
 	{
@@ -4491,7 +4501,7 @@ void IO::JavaClass::AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UIntOS inde
 	{
 		this->DetailNameType(method.nameIndex, method.descriptorIndex, this->thisClass, nullptr, sb, typeBuff, &method, importList, packageName);
 	}
-	ptr = &this->methods[index][8];
+	ptr = &methods[index][8];
 	i = 0;
 	j = method.exList.GetCount();
 	while (i < j)
@@ -4518,7 +4528,7 @@ void IO::JavaClass::AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UIntOS inde
 		this->AppendIndent(sb, (lev + 1));
 		sb->AppendC(UTF8STRC("/*\r\n"));
 
-		ptr = &this->methods[index][8];
+		ptr = &methods[index][8];
 		i = 0;
 		while (i < attrCnt)
 		{
@@ -4542,7 +4552,7 @@ void IO::JavaClass::AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UIntOS inde
 	}
 	if (decompile)
 	{
-		ptr = &this->methods[index][8];
+		ptr = &methods[index][8];
 		i = 0;
 		while (i < attrCnt)
 		{
@@ -4949,11 +4959,11 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 	this->interfaceCnt = 0;
 	this->interfaces = 0;
 	this->fieldsCnt = 0;
-	this->fields = 0;
+	this->fields = nullptr;
 	this->methodCnt = 0;
-	this->methods = 0;
+	this->methods = nullptr;
 	this->attrCnt = 0;
-	this->attrs = 0;
+	this->attrs = nullptr;
 	this->signatureIndex = 0;
 	if (buff.GetSize() < 26)
 	{
@@ -5160,11 +5170,12 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 	this->fieldsCnt = fields_count;
 	if (this->fieldsCnt > 0)
 	{
-		this->fields = MemAlloc(UInt8*, this->fieldsCnt);
+		UnsafeArray<UnsafeArray<UInt8>> fields;
+		this->fields = fields = MemAllocArr(UnsafeArray<UInt8>, this->fieldsCnt);
 		i = 0;
 		while (i < fields_count)
 		{
-			this->fields[i] = &fileBuff[ofst];
+			fields[i] = &fileBuff[ofst];
 			if (ofst + 8 > this->fileBuffSize)
 			{
 				this->fieldsCnt = i;
@@ -5196,11 +5207,12 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 	this->methodCnt = methods_count;
 	if (this->methodCnt > 0)
 	{
-		this->methods = MemAlloc(UInt8*, this->methodCnt);
+		UnsafeArray<UnsafeArray<UInt8>> methods;
+		this->methods = methods = MemAllocArr(UnsafeArray<UInt8>, this->methodCnt);
 		i = 0;
 		while (i < methods_count)
 		{
-			this->methods[i] = &fileBuff[ofst];
+			methods[i] = &fileBuff[ofst];
 			if (ofst + 8 > this->fileBuffSize)
 			{
 				this->methodCnt = i;
@@ -5234,11 +5246,12 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 	this->attrCnt = attributes_count;
 	if (this->attrCnt > 0)
 	{
-		this->attrs = MemAlloc(UInt8*, this->attrCnt);
+		UnsafeArray<UnsafeArray<UInt8>> attrs;
+		this->attrs = attrs = MemAllocArr(UnsafeArray<UInt8>, this->attrCnt);
 		j = 0;
 		while (j < attributes_count)
 		{
-			this->attrs[j] = &fileBuff[ofst];
+			attrs[j] = &fileBuff[ofst];
 			if (ofst + 6 > this->fileBuffSize)
 			{
 				this->attrCnt = j;
@@ -5283,20 +5296,21 @@ IO::JavaClass::~JavaClass()
 		MemFreeArr(constPool);
 		this->constPool = nullptr;
 	}
-	if (this->fields)
+	UnsafeArray<UnsafeArray<UInt8>> arr;
+	if (this->fields.SetTo(arr))
 	{
-		MemFree(this->fields);
-		this->fields = 0;
+		MemFreeArr(arr);
+		this->fields = nullptr;
 	}
-	if (this->methods)
+	if (this->methods.SetTo(arr))
 	{
-		MemFree(this->methods);
-		this->methods = 0;
+		MemFreeArr(arr);
+		this->methods = nullptr;
 	}
-	if (this->attrs)
+	if (this->attrs.SetTo(arr))
 	{
-		MemFree(this->attrs);
-		this->attrs = 0;
+		MemFreeArr(arr);
+		this->attrs = nullptr;
 	}
 }
 
@@ -5453,88 +5467,100 @@ Bool IO::JavaClass::FileStructDetail(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC("fields_count = "));
 	sb->AppendUIntOS(this->fieldsCnt);
 	sb->AppendC(UTF8STRC("\r\n"));
-	i = 0;
-	while (i < this->fieldsCnt)
+	UnsafeArray<UnsafeArray<UInt8>> fields;
+	if (this->fields.SetTo(fields))
 	{
-		sb->AppendC(UTF8STRC("Field "));
-		sb->AppendUIntOS(i);
-		sb->AppendC(UTF8STRC(" Access Flags = "));
-		DetailAccessFlags(ReadMUInt16(&this->fields[i][0]), sb);
-		sb->AppendC(UTF8STRC("\r\n"));
-		sb->AppendC(UTF8STRC("Field "));
-		sb->AppendUIntOS(i);
-		sb->AppendC(UTF8STRC(" name index = "));
-		sb->AppendU16(ReadMUInt16(&this->fields[i][2]));
-		sb->AppendC(UTF8STRC("\r\n"));
-		sb->AppendC(UTF8STRC("Field "));
-		sb->AppendUIntOS(i);
-		sb->AppendC(UTF8STRC(" descriptor index = "));
-		sb->AppendU16(ReadMUInt16(&this->fields[i][4]));
-		sb->AppendC(UTF8STRC("\r\n"));
-		UInt16 attributes_count = ReadMUInt16(&this->fields[i][6]);
-		sb->AppendC(UTF8STRC("Field "));
-		sb->AppendUIntOS(i);
-		sb->AppendC(UTF8STRC(" attributes count = "));
-		sb->AppendU16(attributes_count);
-		sb->AppendC(UTF8STRC("\r\n"));
-		UnsafeArray<const UInt8> attr = &this->fields[i][8];
-		j = 0;
-		while (j < attributes_count)
+		i = 0;
+		while (i < this->fieldsCnt)
 		{
-			attr = this->DetailAttribute(attr, 1, sb);
-			j++;
+			sb->AppendC(UTF8STRC("Field "));
+			sb->AppendUIntOS(i);
+			sb->AppendC(UTF8STRC(" Access Flags = "));
+			DetailAccessFlags(ReadMUInt16(&fields[i][0]), sb);
+			sb->AppendC(UTF8STRC("\r\n"));
+			sb->AppendC(UTF8STRC("Field "));
+			sb->AppendUIntOS(i);
+			sb->AppendC(UTF8STRC(" name index = "));
+			sb->AppendU16(ReadMUInt16(&fields[i][2]));
+			sb->AppendC(UTF8STRC("\r\n"));
+			sb->AppendC(UTF8STRC("Field "));
+			sb->AppendUIntOS(i);
+			sb->AppendC(UTF8STRC(" descriptor index = "));
+			sb->AppendU16(ReadMUInt16(&fields[i][4]));
+			sb->AppendC(UTF8STRC("\r\n"));
+			UInt16 attributes_count = ReadMUInt16(&fields[i][6]);
+			sb->AppendC(UTF8STRC("Field "));
+			sb->AppendUIntOS(i);
+			sb->AppendC(UTF8STRC(" attributes count = "));
+			sb->AppendU16(attributes_count);
+			sb->AppendC(UTF8STRC("\r\n"));
+			UnsafeArray<const UInt8> attr = &fields[i][8];
+			j = 0;
+			while (j < attributes_count)
+			{
+				attr = this->DetailAttribute(attr, 1, sb);
+				j++;
+			}
+			i++;
 		}
-		i++;
 	}
 	sb->AppendC(UTF8STRC("methods_count = "));
 	sb->AppendUIntOS(this->methodCnt);
 	sb->AppendC(UTF8STRC("\r\n"));
-	i = 0;
-	while (i < this->methodCnt)
+	UnsafeArray<UnsafeArray<UInt8>> methods;
+	if (this->methods.SetTo(methods))
 	{
-		MethodInfo method;
-		this->MethodParse(method, this->methods[i]);
-		sb->AppendC(UTF8STRC("Method "));
-		sb->AppendUIntOS(i);
-		sb->AppendC(UTF8STRC(" Access Flags = "));
-		DetailAccessFlags(accessFlags, sb);
-		sb->AppendC(UTF8STRC("\r\n"));
-		sb->AppendC(UTF8STRC("Method "));
-		sb->AppendUIntOS(i);
-		sb->AppendC(UTF8STRC(" name index = "));
-		sb->AppendU16(ReadMUInt16(&this->methods[i][2]));
-		sb->AppendC(UTF8STRC("\r\n"));
-		sb->AppendC(UTF8STRC("Method "));
-		sb->AppendUIntOS(i);
-		sb->AppendC(UTF8STRC(" descriptor index = "));
-		sb->AppendU16(ReadMUInt16(&this->methods[i][4]));
-		this->DetailNameType(ReadMUInt16(&this->methods[i][2]), ReadMUInt16(&this->methods[i][4]), this->thisClass, (const UTF8Char*)" ", sb, nullptr, &method, nullptr, nullptr);
-		sb->AppendC(UTF8STRC("\r\n"));
-		UInt16 attributes_count = ReadMUInt16(&this->methods[i][6]);
-		sb->AppendC(UTF8STRC("Method "));
-		sb->AppendUIntOS(i);
-		sb->AppendC(UTF8STRC(" attributes count = "));
-		sb->AppendU16(attributes_count);
-		sb->AppendC(UTF8STRC("\r\n"));
-		UnsafeArray<const UInt8> attr = &this->methods[i][8];
-		j = 0;
-		while (j < attributes_count)
+		i = 0;
+		while (i < this->methodCnt)
 		{
-			attr = this->DetailAttribute(attr, 1, sb);
-			j++;
+			MethodInfo method;
+			this->MethodParse(method, methods[i]);
+			sb->AppendC(UTF8STRC("Method "));
+			sb->AppendUIntOS(i);
+			sb->AppendC(UTF8STRC(" Access Flags = "));
+			DetailAccessFlags(accessFlags, sb);
+			sb->AppendC(UTF8STRC("\r\n"));
+			sb->AppendC(UTF8STRC("Method "));
+			sb->AppendUIntOS(i);
+			sb->AppendC(UTF8STRC(" name index = "));
+			sb->AppendU16(ReadMUInt16(&methods[i][2]));
+			sb->AppendC(UTF8STRC("\r\n"));
+			sb->AppendC(UTF8STRC("Method "));
+			sb->AppendUIntOS(i);
+			sb->AppendC(UTF8STRC(" descriptor index = "));
+			sb->AppendU16(ReadMUInt16(&methods[i][4]));
+			this->DetailNameType(ReadMUInt16(&methods[i][2]), ReadMUInt16(&methods[i][4]), this->thisClass, (const UTF8Char*)" ", sb, nullptr, &method, nullptr, nullptr);
+			sb->AppendC(UTF8STRC("\r\n"));
+			UInt16 attributes_count = ReadMUInt16(&methods[i][6]);
+			sb->AppendC(UTF8STRC("Method "));
+			sb->AppendUIntOS(i);
+			sb->AppendC(UTF8STRC(" attributes count = "));
+			sb->AppendU16(attributes_count);
+			sb->AppendC(UTF8STRC("\r\n"));
+			UnsafeArray<const UInt8> attr = &methods[i][8];
+			j = 0;
+			while (j < attributes_count)
+			{
+				attr = this->DetailAttribute(attr, 1, sb);
+				j++;
+			}
+			this->MethodFree(method);
+			i++;
 		}
-		this->MethodFree(method);
-		i++;
 	}
 
 	sb->AppendC(UTF8STRC("attributes_count = "));
 	sb->AppendUIntOS(this->attrCnt);
 	sb->AppendC(UTF8STRC("\r\n"));
-	i = 0;
-	while (i < this->attrCnt)
+	UnsafeArray<UnsafeArray<UInt8>> attrs;
+	if (this->attrs.SetTo(attrs))
 	{
-		this->DetailAttribute(this->attrs[i], 1, sb);
-		i++;
+		i = 0;
+		while (i < this->attrCnt)
+		{
+			this->DetailAttribute(attrs[i], 1, sb);
+			i++;
+		}
 	}
 	return true;
 }
@@ -5561,13 +5587,14 @@ UIntOS IO::JavaClass::MethodsGetCount() const
 
 Bool IO::JavaClass::MethodsGetDecl(UIntOS index, NN<Text::StringBuilderUTF8> sb) const
 {
-	if (index >= this->methodCnt)
+	UnsafeArray<UnsafeArray<UInt8>> methods;
+	if (index >= this->methodCnt || !this->methods.SetTo(methods))
 	{
 		return false;
 	}
 
 	MethodInfo method;
-	this->MethodParse(method, this->methods[index]);
+	this->MethodParse(method, methods[index]);
 	if (method.accessFlags & 1)
 	{
 		sb->AppendC(UTF8STRC("public "));

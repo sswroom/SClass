@@ -13,13 +13,13 @@ void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnDecryptClicked(AnyType userObj)
 	{
 		UnsafeArray<UInt8> res = MemAllocArr(UInt8, sb2.GetLength());
 		UIntOS resSize;
-		Crypto::Encrypt::JasyptEncryptor *enc;
-		NEW_CLASS(enc, Crypto::Encrypt::JasyptEncryptor((Crypto::Encrypt::JasyptEncryptor::KeyAlgorithm)me->cboKeyAlg->GetSelectedItem().GetIntOS(), (Crypto::Encrypt::JasyptEncryptor::CipherAlgorithm)me->cboEncAlg->GetSelectedItem().GetIntOS(), sb.ToByteArray()));
+		NN<Crypto::Encrypt::JasyptEncryptor> enc;
+		NEW_CLASSNN(enc, Crypto::Encrypt::JasyptEncryptor((Crypto::Encrypt::JasyptEncryptor::KeyAlgorithm)me->cboKeyAlg->GetSelectedItem().GetIntOS(), (Crypto::Encrypt::JasyptEncryptor::CipherAlgorithm)me->cboEncAlg->GetSelectedItem().GetIntOS(), sb.ToByteArray()));
 		resSize = enc->DecryptB64(sb2.ToCString(), res);
 		sb.ClearStr();
 		sb.AppendC(res, resSize);
 		me->txtResult->SetText(sb.ToCString());
-		DEL_CLASS(enc);
+		enc.Delete();
 		MemFreeArr(res);
 	}
 }
@@ -33,12 +33,12 @@ void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnEncryptClicked(AnyType userObj)
 	me->txtMessage->GetText(sb2);
 	if (sb.GetLength() > 0 && sb2.GetLength() > 0)
 	{
-		Crypto::Encrypt::JasyptEncryptor *enc;
-		NEW_CLASS(enc, Crypto::Encrypt::JasyptEncryptor((Crypto::Encrypt::JasyptEncryptor::KeyAlgorithm)me->cboKeyAlg->GetSelectedItem().GetIntOS(), (Crypto::Encrypt::JasyptEncryptor::CipherAlgorithm)me->cboEncAlg->GetSelectedItem().GetIntOS(), sb.ToByteArray()));
+		NN<Crypto::Encrypt::JasyptEncryptor> enc;
+		NEW_CLASSNN(enc, Crypto::Encrypt::JasyptEncryptor((Crypto::Encrypt::JasyptEncryptor::KeyAlgorithm)me->cboKeyAlg->GetSelectedItem().GetIntOS(), (Crypto::Encrypt::JasyptEncryptor::CipherAlgorithm)me->cboEncAlg->GetSelectedItem().GetIntOS(), sb.ToByteArray()));
 		sb.ClearStr();
 		enc->EncryptAsB64(sb, sb2.ToByteArray());
 		me->txtResult->SetText(sb.ToCString());
-		DEL_CLASS(enc);
+		enc.Delete();
 	}
 }
 

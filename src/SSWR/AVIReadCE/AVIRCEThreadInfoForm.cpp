@@ -157,15 +157,16 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 	this->lvMyStack->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvMyStack->HandleDblClk(OnMyStackDblClk, this);
 
-	Manage::ThreadInfo *thread;
-	Manage::ThreadContext *context;
+	NN<Manage::ThreadInfo> thread;
+	Optional<Manage::ThreadContext> context;
+	NN<Manage::ThreadContext> nncontext;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UInt64 startAddr;
 	UIntOS i;
 	UIntOS j;
 	NN<Manage::SymbolResolver> nnsymbol;
-	NEW_CLASS(thread, Manage::ThreadInfo(proc->GetProcId(), threadId));
+	NEW_CLASSNN(thread, Manage::ThreadInfo(proc->GetProcId(), threadId));
 
 	startAddr = thread->GetStartAddress();
 	sptr = Text::StrInt32(sbuff, threadId);
@@ -185,12 +186,12 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 	}
 	else
 	{
-		Manage::StackTracer *tracer;
+		NN<Manage::StackTracer> tracer;
 		UInt64 currAddr;
 		UIntOS callLev;
 		thread->Suspend();
 		context = thread->GetThreadContext();
-		NEW_CLASS(tracer, Manage::StackTracer(context));
+		NEW_CLASSNN(tracer, Manage::StackTracer(context));
 		callLev = 0;
 		while (true)
 		{
@@ -209,12 +210,12 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 			if (++callLev > 50)
 				break;
 		}
-		DEL_CLASS(tracer);
+		tracer.Delete();
 
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
-		if (context->GetType() == Manage::ThreadContext::ContextType::X86_32)
+		if (context.SetTo(nncontext) && nncontext->GetType() == Manage::ThreadContext::ContextType::X86_32)
 		{
-			Manage::DasmX86_32 *dasm;
+			NN<Manage::DasmX86_32> dasm;
 			UInt32 eip;
 			UInt32 esp;
 			UInt32 ebp;
@@ -229,10 +230,10 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 
 			NEW_CLASSNN(callAddrs, Data::ArrayListUInt32());
 			NEW_CLASSNN(jmpAddrs, Data::ArrayListUInt32());
-			eip = (UInt32)context->GetInstAddr();
-			esp = (UInt32)context->GetStackAddr();
-			ebp = (UInt32)context->GetFrameAddr();
-			NEW_CLASS(dasm, Manage::DasmX86_32());
+			eip = (UInt32)nncontext->GetInstAddr();
+			esp = (UInt32)nncontext->GetStackAddr();
+			ebp = (UInt32)nncontext->GetFrameAddr();
+			NEW_CLASSNN(dasm, Manage::DasmX86_32());
 
 			callLev = 0;
 			while (true)
@@ -276,7 +277,7 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 				sb.ClearStr();
 				Text::StringBuilderWriter writer(sb);
 				Manage::DasmX86_32::Dasm_Regs regs;
-				((Manage::ThreadContextX86_32*)context)->GetRegs(regs);
+				NN<Manage::ThreadContextX86_32>::ConvertFrom(nncontext)->GetRegs(regs);
 				ret = dasm->Disasm32(writer, symbol, eip, esp, ebp, callAddrs, jmpAddrs, blockStart, blockEnd, regs, proc, true);
 				this->stacks.Add(Text::String::New(sb.ToCString()));
 				if (!ret)
@@ -285,14 +286,14 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 					break;
 			}
 			
-			DEL_CLASS(dasm);
+			dasm.Delete();
 			jmpAddrs.Delete();
 			callAddrs.Delete();
 		}
 #endif
 
 		thread->Resume();
-		if (context)
+		if (context.SetTo(nncontext))
 		{
 			UInt8 buff[16];
 			UTF8Char sbuff[64];
@@ -302,11 +303,11 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 			UIntOS j;
 			UIntOS k;
 			i = 0;
-			j = context->GetRegisterCnt();
+			j = nncontext->GetRegisterCnt();
 			while (i < j)
 			{
 				sbuff[0] = 0;
-				sptr = context->GetRegister(i, sbuff, buff, bitCnt).Or(sbuff);
+				sptr = nncontext->GetRegister(i, sbuff, buff, bitCnt).Or(sbuff);
 				k = this->lvContext->AddItem(CSTRP(sbuff, sptr), 0, 0);
 				if (bitCnt == 8)
 				{
@@ -345,10 +346,10 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 				i++;
 			}
 
-			DEL_CLASS(context);
+			nncontext.Delete();
 		}
 	}
-	DEL_CLASS(thread);
+	thread.Delete();
 }
 
 SSWR::AVIReadCE::AVIRCEThreadInfoForm::~AVIRCEThreadInfoForm()

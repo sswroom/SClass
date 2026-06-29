@@ -17,7 +17,7 @@ struct Manage::ProcessExecution::ClassData
 
 UIntOS Manage::ProcessExecution::NewProcess(Text::CStringNN cmd)
 {
-	ClassData *clsData = MemAlloc(ClassData, 1);
+	NN<ClassData> clsData = MemAllocNN(ClassData);
 	clsData->in[0] = INVALID_HANDLE_VALUE;
 	clsData->in[1] = INVALID_HANDLE_VALUE;
 	clsData->out[0] = INVALID_HANDLE_VALUE;
@@ -25,11 +25,11 @@ UIntOS Manage::ProcessExecution::NewProcess(Text::CStringNN cmd)
 	WChar buff[MAX_PATH];
 	WChar progName[MAX_PATH];
 	UIntOS cmdLen = Text::StrUTF8_WCharCnt(cmd.v);
-	WChar *cmdLine = MemAlloc(WChar, cmdLen + 512);
+	UnsafeArray<WChar> cmdLine = MemAllocArr(WChar, cmdLen + 512);
 	Text::StrUTF8_WChar(cmdLine, cmd.v, 0);
 
-	WChar *cptr = cmdLine;
-	WChar *pptr = progName;
+	UnsafeArray<WChar> cptr = cmdLine;
+	UnsafeArray<WChar> pptr = progName;
 	Bool isQuote = false;
 	WChar c;
 	while ((c = *cptr++) != 0)
@@ -65,9 +65,10 @@ UIntOS Manage::ProcessExecution::NewProcess(Text::CStringNN cmd)
 	startInfo.hStdOutput = clsData->out[1];
 	startInfo.hStdError = startInfo.hStdOutput;
 	startInfo.hStdInput = clsData->in[0];
-	createRet = CreateProcessW(0, cmdLine, 0, 0, true, NORMAL_PRIORITY_CLASS, 0, buff, &startInfo, &procInfo);
+	createRet = CreateProcessW(0, cmdLine.Ptr(), 0, 0, true, NORMAL_PRIORITY_CLASS, 0, buff, &startInfo, &procInfo);
 	CloseHandle(procInfo.hThread);
 	CloseHandle(procInfo.hProcess);
+	MemFreeArr(cmdLine);
 
 	if(createRet)
 	{
@@ -86,7 +87,7 @@ Manage::ProcessExecution::ProcessExecution(Text::CStringNN cmdLine) : Process(Ne
 Manage::ProcessExecution::~ProcessExecution()
 {
 	this->Close();
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 UIntOS Manage::ProcessExecution::Read(const Data::ByteArray &buff)

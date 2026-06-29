@@ -15,12 +15,12 @@ void __stdcall SSWR::AVIRead::AVIRBingMapsForm::OnOKClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Please enter the key"), CSTR("Bing Maps"), me);
 		return;
 	}
-	Map::BingMapsTile *tileMap;
-	NEW_CLASS(tileMap, Map::BingMapsTile(is, sbKey.ToCString(), sb.ToCString(), me->core->GetTCPClientFactory(), me->ssl));
+	NN<Map::BingMapsTile> tileMap;
+	NEW_CLASSNN(tileMap, Map::BingMapsTile(is, sbKey.ToCString(), sb.ToCString(), me->core->GetTCPClientFactory(), me->ssl));
 	if (tileMap->IsError())
 	{
 		me->ui->ShowMsgOK(CSTR("Error in initializing Bing Maps"), CSTR("Bing Maps"), me);
-		DEL_CLASS(tileMap);
+		tileMap.Delete();
 		return;
 	}
 	me->tileMap = tileMap;

@@ -176,8 +176,8 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 	}
 	if (dlg->GetFileName()->EndsWithICase(UTF8STRC(".CSV")))
 	{
-		DB::CSVFile *csv;
-		NEW_CLASS(csv, DB::CSVFile(dlg->GetFileName(), 0));
+		NN<DB::CSVFile> csv;
+		NEW_CLASSNN(csv, DB::CSVFile(dlg->GetFileName(), 0));
 		db = csv;
 	}
 	if (!db.SetTo(nndb))

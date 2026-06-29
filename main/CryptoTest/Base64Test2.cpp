@@ -10,13 +10,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UInt8 obuff[128];
 	UIntOS oSize;
 
-	Crypto::Encrypt::Base64 *b64;
-	NEW_CLASS(b64, Crypto::Encrypt::Base64());
+	NN<Crypto::Encrypt::Base64> b64;
+	NEW_CLASSNN(b64, Crypto::Encrypt::Base64());
 	obuff[oSize = b64->Decrypt((UInt8*)b64str, sizeof(b64str) - 1, obuff)] = 0;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Buff:\r\n"));
 	sb.AppendHexBuff(Data::ByteArrayR(obuff, oSize), ' ', Text::LineBreakType::CRLF);
 	printf("%s\r\n", sb.ToString().Ptr());
-	DEL_CLASS(b64);
+	b64.Delete();
 	return 0;
 }

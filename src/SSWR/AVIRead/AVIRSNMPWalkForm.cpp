@@ -35,8 +35,8 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(Optional<UI::GUIClientControl>
 	this->lvResults->AddColumn(CSTR("ValueType"), 100);
 	this->lvResults->AddColumn(CSTR("Value"), 200);
 
-	Net::SNMPClient *cli;
-	NEW_CLASS(cli, Net::SNMPClient(this->core->GetSocketFactory(), this->core->GetLog()));
+	NN<Net::SNMPClient> cli;
+	NEW_CLASSNN(cli, Net::SNMPClient(this->core->GetSocketFactory(), this->core->GetLog()));
 	if (!cli->IsError())
 	{
 		Data::ArrayListNN<Net::SNMPUtil::BindingItem> itemList;
@@ -75,7 +75,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(Optional<UI::GUIClientControl>
 		}
 		itemList.FreeAll(Net::SNMPUtil::FreeBindingItem);
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 }
 
 SSWR::AVIRead::AVIRSNMPWalkForm::~AVIRSNMPWalkForm()

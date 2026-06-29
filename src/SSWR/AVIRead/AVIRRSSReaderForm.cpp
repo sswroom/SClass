@@ -24,12 +24,12 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(AnyType userOb
 		UIntOS i;
 		UIntOS j;
 		IntOS si;
-		Net::RSS *rss;
+		NN<Net::RSS> rss;
 		NN<Text::String> s;
 		NN<Net::RSSItem> item;
 		Text::CStringNN userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
 		NN<Text::String> ua = Text::String::New(userAgent);
-		NEW_CLASS(rss, Net::RSS(sb.ToCString(), ua.Ptr(), me->core->GetTCPClientFactory(), me->ssl, 30000, me->core->GetLog()));
+		NEW_CLASSNN(rss, Net::RSS(sb.ToCString(), ua.Ptr(), me->core->GetTCPClientFactory(), me->ssl, 30000, me->core->GetLog()));
 		ua->Release();
 		if (!rss->IsError())
 		{
@@ -124,7 +124,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(AnyType userOb
 		}
 		else
 		{
-			DEL_CLASS(rss);
+			rss.Delete();
 		}
 	}
 }

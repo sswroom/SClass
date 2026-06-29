@@ -41,9 +41,9 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(AnyType 
 		me->selPt1 = mapPt1;
 		me->selPt2 = mapPt2;
 
-		Math::Geometry::Polygon *pg;
+		NN<Math::Geometry::Polygon> pg;
 		NN<Math::Geometry::LinearRing> lr;
-		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false));
 		UIntOS nPoints;
 		UnsafeArray<Math::Coord2DDbl> ptList = lr->GetPointList(nPoints);
@@ -84,9 +84,9 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(AnyTyp
 			mapPt2.y = tmpV;
 		}
 
-		Math::Geometry::Polygon *pg;
+		NN<Math::Geometry::Polygon> pg;
 		NN<Math::Geometry::LinearRing> lr;
-		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false));
 		UIntOS nPoints;
 		UnsafeArray<Math::Coord2DDbl> ptList = lr->GetPointList(nPoints);

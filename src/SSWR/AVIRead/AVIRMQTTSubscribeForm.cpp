@@ -345,11 +345,11 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 				if (currTopic->recvCnt < 256)
 				{
 					UIntOS recvCnt = currTopic->recvCnt;
-					Data::ChartPlotter *chart;
-					NEW_CLASS(chart, Data::ChartPlotter(nullptr));
+					NN<Data::ChartPlotter> chart;
+					NEW_CLASSNN(chart, Data::ChartPlotter(nullptr));
 					chart->AddLineChart(currTopic->topic, Data::ChartPlotter::NewData(currTopic->valueList, recvCnt), Data::ChartPlotter::NewDataDate(currTopic->dateList, recvCnt), 0xFFFF0000);
 					chart->Plot(gimg, 0, 0, UIntOS2Double(sz.x), UIntOS2Double(sz.y));
-					DEL_CLASS(chart);
+					chart.Delete();
 				}
 				else
 				{
@@ -369,11 +369,11 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 						MemCopyNO(&valueList[0], currTopic->valueList, sizeof(Double) * 256);
 					}
 					
-					Data::ChartPlotter *chart;
-					NEW_CLASS(chart, Data::ChartPlotter(nullptr));
+					NN<Data::ChartPlotter> chart;
+					NEW_CLASSNN(chart, Data::ChartPlotter(nullptr));
 					chart->AddLineChart(currTopic->topic, Data::ChartPlotter::NewData(currTopic->valueList, 256), Data::ChartPlotter::NewDataDate(currTopic->dateList, 256), 0xFFFF0000);
 					chart->Plot(gimg, 0, 0, UIntOS2Double(sz.x), UIntOS2Double(sz.y));
-					DEL_CLASS(chart);
+					chart.Delete();
 					MemFreeArr(dateList);
 					MemFreeArr(valueList);
 				}

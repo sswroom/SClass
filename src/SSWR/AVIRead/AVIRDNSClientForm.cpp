@@ -10,9 +10,9 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(AnyType userOb
 	Net::SocketUtil::AddressInfo dnsAddr;
 	UInt32 reqIP;
 	Text::StringBuilderUTF8 sb;
-	Net::DNSClient *dnsCli;
+	NN<Net::DNSClient> dnsCli;
 	NN<Net::DNSClient::RequestAnswer> ans;
-	Manage::HiResClock *clk;
+	NN<Manage::HiResClock> clk;
 	UIntOS i;
 	UIntOS j;
 	UIntOS bestInd;
@@ -31,8 +31,8 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(AnyType userOb
 	}
 	reqIP = Net::SocketUtil::GetIPAddr(sb.ToCString());
 
-	NEW_CLASS(dnsCli, Net::DNSClient(me->sockf, dnsAddr, me->core->GetLog()));
-	NEW_CLASS(clk, Manage::HiResClock());
+	NEW_CLASSNN(dnsCli, Net::DNSClient(me->sockf, dnsAddr, me->core->GetLog()));
+	NEW_CLASSNN(clk, Manage::HiResClock());
 	me->lbAnswer->ClearItems();
 	Net::DNSClient::FreeAnswers(me->ansList);
 	Double t;
@@ -75,8 +75,8 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(AnyType userOb
 	sb.ClearStr();
 	sb.AppendDouble(t);
 	me->txtRequestTime->SetText(sb.ToCString());
-	DEL_CLASS(clk);
-	DEL_CLASS(dnsCli);
+	clk.Delete();
+	dnsCli.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnAnswerSelChg(AnyType userObj)

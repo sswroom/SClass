@@ -9,9 +9,10 @@
 void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMyDBMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMyDBMSForm>();
-	if (me->svr)
+	NN<Net::MySQLServer> svr;
+	if (me->svr.NotNull())
 	{
-		DEL_CLASS(me->svr);
+		me->svr.Delete();
 		me->txtPort->SetReadOnly(false);
 		return;
 	}
@@ -27,14 +28,15 @@ void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnStartClicked(AnyType userObj)
 		return;
 	}
 	sb.ClearStr();
-	NEW_CLASS(me->svr, Net::MySQLServer(me->core->GetSocketFactory(), port, MYSQLVERSION));
-	if (me->svr->IsError())
+	NEW_CLASSNN(svr, Net::MySQLServer(me->core->GetSocketFactory(), port, MYSQLVERSION));
+	if (svr->IsError())
 	{
-		SDEL_CLASS(me->svr);
+		svr.Delete();
 	}
 	else
 	{
-		me->svr->UserAdd((const UTF8Char*)"root", (const UTF8Char*)"12345678", (const UTF8Char*)"*");
+		me->svr = svr;
+		svr->UserAdd((const UTF8Char*)"root", (const UTF8Char*)"12345678", (const UTF8Char*)"*");
 		me->txtPort->SetReadOnly(true);
 	}
 }
@@ -63,7 +65,7 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(Optional<UI::GUIClientControl> par
 	this->core = core;
 	this->SetText(CSTR("My DBMS"));
 	this->SetFont(nullptr, 8.25, false);
-	this->svr = 0;
+	this->svr = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlCtrl = ui->NewPanel(*this);
@@ -117,7 +119,7 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(Optional<UI::GUIClientControl> par
 
 SSWR::AVIRead::AVIRMyDBMSForm::~AVIRMyDBMSForm()
 {
-	SDEL_CLASS(this->svr);
+	this->svr.Delete();
 	this->log.Delete();
 	this->logger.Delete();
 }
