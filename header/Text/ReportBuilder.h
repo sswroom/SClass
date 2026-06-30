@@ -79,7 +79,7 @@ namespace Text
 		Bool tableBorders;
 		UnsafeArray<Double> colWidthPts;
 		UnsafeArray<ColType> colTypes;
-		Data::ChartPlotter *chart;
+		Optional<Data::ChartPlotter> chart;
 		Bool paperHori;
 
 		static Text::SpreadSheet::AxisType FromChartDataType(Data::ChartPlotter::DataType dataType);
@@ -92,7 +92,7 @@ namespace Text
 		void SetFontName(NN<Text::String> fontName);
 		void SetFontName(Text::CStringNN fontName);
 		void SetPaperHori(Bool paperHori);
-		void AddChart(Data::ChartPlotter *chart);
+		void AddChart(Optional<Data::ChartPlotter> chart);
 		void AddPreHeader(Text::CStringNN name, Text::CStringNN val);
 		void AddPreHeader(Text::CStringNN name, UIntOS nameCellCnt, Text::CStringNN val, UIntOS valCellCnt, Bool valUnderline, Bool right);
 		void AddHeader(Text::CStringNN name, Text::CStringNN val);

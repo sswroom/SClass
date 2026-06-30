@@ -169,7 +169,7 @@ void IO::LogTool::LogMessage(Text::CStringNN logMsg, LogHandler::LogLevel level)
 void IO::LogTool::LogStackTrace(LogHandler::LogLevel level)
 {
 	NN<Manage::ThreadInfo> thread;
-	if (thread.Set(Manage::ThreadInfo::GetCurrThread()))
+	if (Manage::ThreadInfo::GetCurrThread().SetTo(thread))
 	{
 		Manage::Process proc;
 		Manage::SymbolResolver addrResol(proc);

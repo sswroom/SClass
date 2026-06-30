@@ -273,7 +273,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 		UInt64 currAddr;
 		UIntOS callLev;
 		thread.Suspend();
-		if (context.Set(thread.GetThreadContext()))
+		if (thread.GetThreadContext().SetTo(context))
 		{
 			Manage::StackTracer tracer(context);
 			callLev = 0;

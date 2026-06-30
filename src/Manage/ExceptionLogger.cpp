@@ -437,7 +437,7 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 			if (!thread->IsCurrThread())
 			{
 				thread->Suspend();
-				if (tCont.Set(thread->GetThreadContext()))
+				if (thread->GetThreadContext().SetTo(tCont))
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Curr address 0x"));
@@ -503,7 +503,7 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 				sb.AppendC(UTF8STRC(")"));
 				writer.WriteLine(sb.ToCString());
 
-				if (tCont.Set(thread->GetThreadContext()))
+				if (thread->GetThreadContext().SetTo(tCont))
 				{
 					WriteContext(writer, fs, tCont, symResol);
 					tCont.Delete();

@@ -39,7 +39,7 @@ Text::ReportBuilder::ReportBuilder(Text::CStringNN name, UIntOS colCount, Unsafe
 	this->fontName = Text::String::New(UTF8STRC("Arial"));
 	this->colCount = colCount;
 	this->colWidthPts = MemAllocArr(Double, this->colCount);
-	this->chart = 0;
+	this->chart = nullptr;
 	this->paperHori = false;
 	this->tableBorders = false;
 	this->colTypes = MemAllocArr(ColType, this->colCount);
@@ -123,7 +123,7 @@ Text::ReportBuilder::~ReportBuilder()
 			iconList.Delete();
 		}
 	}
-	SDEL_CLASS(this->chart);
+	this->chart.Delete();
 	MemFreeArr(this->colWidthPts);
 	MemFreeArr(this->colTypes);
 	this->fontName->Release();
@@ -160,9 +160,9 @@ void Text::ReportBuilder::SetPaperHori(Bool paperHori)
 	this->paperHori = paperHori;
 }
 
-void Text::ReportBuilder::AddChart(Data::ChartPlotter *chart)
+void Text::ReportBuilder::AddChart(Optional<Data::ChartPlotter> chart)
 {
-	SDEL_CLASS(this->chart);
+	this->chart.Delete();
 	this->chart = chart;
 }
 
@@ -348,7 +348,7 @@ void Text::ReportBuilder::SetColHAlign(UIntOS index, HAlignment hAlign)
 
 Bool Text::ReportBuilder::HasChart()
 {
-	return this->chart != 0;
+	return this->chart.NotNull();
 }
 
 NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
@@ -371,9 +371,10 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 	NN<Text::ReportBuilder::ColIcon> icon;
 	RowType lastRowType;
 	RowType currRowType;
+	NN<Data::ChartPlotter> chart;
 	Text::SpreadSheet::CellStyle *styleSummary = 0;
 	Text::SpreadSheet::CellStyle *tableStyle = 0;
-	if (this->chart == 0)
+	if (!this->chart.SetTo(chart))
 	{
 		NEW_CLASSNN(wb, Text::SpreadSheet::Workbook());
 		wb->AddDefaultStyles();
@@ -1275,7 +1276,7 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 		}
 		currY += fontHeightPx * 2;
 
-		if (l == 1 && this->chart)
+		if (l == 1 && this->chart.NotNull())
 		{
 
 		}
@@ -1504,9 +1505,10 @@ NN<Media::ImageList> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEng
 		}
 		if (k >= l)
 		{
-			if (this->chart)
+			NN<Data::ChartPlotter> chart;
+			if (this->chart.SetTo(chart))
 			{
-				this->chart->Plot(g, borderPx, currY, drawWidth, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_PIXEL, paperHeightMM) - borderPx - currY);
+				chart->Plot(g, borderPx, currY, drawWidth, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_PIXEL, paperHeightMM) - borderPx - currY);
 			}
 			break;
 		}

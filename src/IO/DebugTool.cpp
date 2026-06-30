@@ -9,7 +9,7 @@
 void IO::DebugTool::PrintStackTrace()
 {
 	NN<Manage::ThreadInfo> thread;
-	if (thread.Set(Manage::ThreadInfo::GetCurrThread()))
+	if (Manage::ThreadInfo::GetCurrThread().SetTo(thread))
 	{
 		Manage::Process proc;
 		Manage::SymbolResolver addrResol(proc);
