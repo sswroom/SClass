@@ -11,7 +11,7 @@
 
 struct IO::GPIOControl::ClassData
 {
-	IO::PhysicalMem *mem;
+	NN<IO::PhysicalMem> mem;
 	volatile UInt32 *gpioPtr;
 };
 
@@ -57,14 +57,14 @@ void GPIOControl_GetPortNum(UInt16 pinNum, IntOS *portNum, IntOS *index)
 IO::GPIOControl::GPIOControl()
 {
 	NN<ClassData> clsData = MemAllocNN(ClassData);
-	NEW_CLASS(clsData->mem, IO::PhysicalMem(GPIO_BASE_MAP, 0x4000));
-	clsData->gpioPtr = (volatile UInt32 *)clsData->mem->GetPointer();
+	NEW_CLASSNN(clsData->mem, IO::PhysicalMem(GPIO_BASE_MAP, 0x4000));
+	clsData->gpioPtr = (volatile UInt32 *)clsData->mem->GetPointer().Ptr();
 	this->clsData = clsData;
 }
 
 IO::GPIOControl::~GPIOControl()
 {
-	DEL_CLASS(this->clsData->mem);
+	this->clsData->mem.Delete();
 	MemFreeNN(this->clsData);
 }
 

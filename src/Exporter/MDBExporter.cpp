@@ -98,13 +98,13 @@ Bool Exporter::MDBExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			DB::SQLGenerator::GenCreateTableCmd(sql, nullptr, tabName->ToCString(), tabDef, false);
 			if (mdb->ExecuteNonQuery(sql.ToCString()) <= -2)
 			{
-/*				IO::FileStream *debugFS;
-				Text::UTF8Writer *debugWriter;
-				NEW_CLASS(debugFS, IO::FileStream(CSTR("I:\\ProgTest\\Debug.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-				NEW_CLASS(debugWriter, Text::UTF8Writer(debugFS));
+/*				NN<IO::FileStream> debugFS;
+				NN<Text::UTF8Writer> debugWriter;
+				NEW_CLASSNN(debugFS, IO::FileStream(CSTR("I:\\ProgTest\\Debug.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASSNN(debugWriter, Text::UTF8Writer(debugFS));
 				debugWriter->WriteLineW(sql.ToString());
-				DEL_CLASS(debugWriter);
-				DEL_CLASS(debugFS);*/
+				debugWriter.Delete();
+				debugFS.Delete();*/
 				succ = false;
 				break;
 			}

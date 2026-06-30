@@ -333,9 +333,9 @@ Optional<DB::TableDef> DB::TextDB::GetTableDef(Text::CString schemaName, Text::C
 	{
 		return nullptr;
 	}
-	DB::TableDef *tab;
+	NN<DB::TableDef> tab;
 	NN<DB::ColDef> colDef;
-	NEW_CLASS(tab, DB::TableDef(schemaName, data->name->ToCString()));
+	NEW_CLASSNN(tab, DB::TableDef(schemaName, data->name->ToCString()));
 	Data::ArrayIterator<NN<Text::String>> it = data->colList.Iterator();
 	while (it.HasNext())
 	{

@@ -303,9 +303,9 @@ Optional<DB::TableDef> DB::WorkbookDB::GetTableDef(Text::CString schemaName, Tex
 	{
 		return nullptr;
 	}
-	DB::TableDef *tabDef;
+	NN<DB::TableDef> tabDef;
 	NN<DB::ColDef> col;
-	NEW_CLASS(tabDef, DB::TableDef(schemaName, sheet->GetName()->ToCString()));
+	NEW_CLASSNN(tabDef, DB::TableDef(schemaName, sheet->GetName()->ToCString()));
 	NN<Text::SpreadSheet::Worksheet::RowData> row;
 	NN<Text::SpreadSheet::Worksheet::CellData> cell;
 	if (sheet->GetItem(0).SetTo(row))

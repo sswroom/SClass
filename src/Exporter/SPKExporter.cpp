@@ -84,7 +84,7 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			if (tileMap->GetTileType() == Map::TileMap::TileType::OSM)
 			{
 				NN<Map::OSM::OSMTileMap> osm = NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
-				IO::SPackageFile *spkg;
+				NN<IO::SPackageFile> spkg;
 				UnsafeArray<UInt8> customBuff = MemAllocArr(UInt8, 2048);
 				UIntOS buffSize = 1;
 				UIntOS i = 0;
@@ -103,8 +103,8 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				}
 				customBuff[0] = (UInt8)i;
 
-				NEW_CLASS(spkg, IO::SPackageFile(stm, false, 1, buffSize, Data::ByteArray(customBuff, 2048)));
-				DEL_CLASS(spkg);
+				NEW_CLASSNN(spkg, IO::SPackageFile(stm, false, 1, buffSize, Data::ByteArray(customBuff, 2048)));
+				spkg.Delete();
 
 				MemFreeArr(customBuff);
 				return true;
@@ -112,7 +112,7 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		}
 		else if (oc == Map::MapDrawLayer::OC_ORUX_DB_LAYER)
 		{
-			IO::SPackageFile *spkg;
+			NN<IO::SPackageFile> spkg;
 			NN<Map::OruxDBLayer> orux = NN<Map::OruxDBLayer>::ConvertFrom(layer);
 			Math::RectAreaDbl bounds;
 			Optional<Map::NameArray> nameArr;
@@ -130,7 +130,7 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			UInt32 i;
 			UInt32 j;
 			UIntOS k;
-			NEW_CLASS(spkg, IO::SPackageFile(stm, false));
+			NEW_CLASSNN(spkg, IO::SPackageFile(stm, false));
 			IO::MemoryStream mstm;
 			i = 0;
 			j = 18;
@@ -163,7 +163,7 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 				i++;
 			}
-			DEL_CLASS(spkg);
+			spkg.Delete();
 			return true;
 		}
 		return false;

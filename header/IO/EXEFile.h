@@ -96,7 +96,7 @@ namespace IO
 		typedef struct
 		{
 			NN<Text::String> moduleName;
-			Data::ArrayListStringNN *funcs;
+			NN<Data::ArrayListStringNN> funcs;
 		} ImportInfo;
 
 		typedef struct

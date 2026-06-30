@@ -971,7 +971,7 @@ Bool DB::DBMS::SysVarGet(NN<Text::StringBuilderUTF8> sb, NN<DB::DBMS::SessionInf
 	return false;
 }
 
-void DB::DBMS::SysVarColumn(DB::DBMSReader *reader, UIntOS colIndex, UnsafeArray<const UTF8Char> varName, Text::CString colName)
+void DB::DBMS::SysVarColumn(NN<DB::DBMSReader> reader, UIntOS colIndex, UnsafeArray<const UTF8Char> varName, Text::CString colName)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -1209,7 +1209,7 @@ Bool DB::DBMS::UserVarGet(NN<Text::StringBuilderUTF8> sb, NN<DB::DBMS::SessionIn
 	return false;
 }
 
-void DB::DBMS::UserVarColumn(DB::DBMSReader *reader, UIntOS colIndex, UnsafeArray<const UTF8Char> varName, Text::CString colName)
+void DB::DBMS::UserVarColumn(NN<DB::DBMSReader> reader, UIntOS colIndex, UnsafeArray<const UTF8Char> varName, Text::CString colName)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -1239,8 +1239,9 @@ Bool DB::DBMS::UserVarSet(NN<DB::DBMS::SessionInfo> sess, Text::CStringNN varNam
 	return true;
 }
 
-Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> valPtr, NN<DB::DBMS::SessionInfo> sess, DB::DBMSReader *reader, UIntOS colIndex, Text::CString colName, OutParam<Bool> valid)
+Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> valPtr, NN<DB::DBMS::SessionInfo> sess, Optional<DB::DBMSReader> reader, UIntOS colIndex, Text::CString colName, OutParam<Bool> valid)
 {
+	NN<DB::DBMSReader> nnreader;
 	UnsafeArray<const UTF8Char> val = valPtr.Get();
 	if (Text::StrStartsWith(val, U8STR("@@")))
 	{
@@ -1280,9 +1281,9 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 			}
 		}
 		valPtr.Set(val);
-		if (reader)
+		if (reader.SetTo(nnreader))
 		{
-			this->SysVarColumn(reader, colIndex, sb2.ToString(), colName);
+			this->SysVarColumn(nnreader, colIndex, sb2.ToString(), colName);
 		}
 		if (this->SysVarGet(sb, sess, sb2.ToCString()) == 0)
 		{
@@ -1302,9 +1303,9 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 	}
 	else if (val[0] == '@')
 	{
-		if (reader)
+		if (reader.SetTo(nnreader))
 		{
-			this->UserVarColumn(reader, colIndex, val + 1, colName);
+			this->UserVarColumn(nnreader, colIndex, val + 1, colName);
 		}
 		Text::StringBuilderUTF8 sb;
 		Text::CStringNN s = Text::CStringNN::FromPtr(val + 1);
@@ -1337,8 +1338,8 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 				{
 					valPtr.Set(val);
 					Text::CStringNN nncolName;
-					if (reader)
-						reader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:sb.ToCString(), DB::DBUtil::CT_VarUTF8Char);
+					if (reader.SetTo(nnreader))
+						nnreader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:sb.ToCString(), DB::DBUtil::CT_VarUTF8Char);
 					return Text::String::New(sb.ToString(), sb.GetLength());
 				}
 			}
@@ -1409,8 +1410,8 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 				{
 					Text::CStringNN nncolName;
 					valPtr.Set(val);
-					if (reader)
-						reader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:sb.ToCString(), DB::DBUtil::CT_VarUTF8Char);
+					if (reader.SetTo(nnreader))
+						nnreader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:sb.ToCString(), DB::DBUtil::CT_VarUTF8Char);
 					return Text::String::New(sb.ToString(), sb.GetLength());
 				}
 			}
@@ -1492,8 +1493,8 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 		if (*sptr == 0 || *sptr == ',')
 		{
 			Text::CStringNN nncolName;
-			if (reader)
-				reader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), isDbl?DB::DBUtil::CT_Double:DB::DBUtil::CT_Int32);
+			if (reader.SetTo(nnreader))
+				nnreader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), isDbl?DB::DBUtil::CT_Double:DB::DBUtil::CT_Int32);
 			valPtr.Set(sptr);
 			return Text::String::New(sb.ToString(), sb.GetLength());
 		}
@@ -1501,7 +1502,7 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 		{
 			sptr++;			
 			while (Text::CharUtil::PtrIsWS(sptr));
-			if (!this->Evals(sptr, sess, 0, 0, nullptr, valid).SetTo(val2))
+			if (!this->Evals(sptr, sess, nullptr, 0, nullptr, valid).SetTo(val2))
 			{
 				valid.Set(false);
 				return nullptr;
@@ -1515,8 +1516,8 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 					sb.ClearStr();
 					sb.AppendI32(iVal);
 					Text::CStringNN nncolName;
-					if (reader)
-						reader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), DB::DBUtil::CT_Int32);
+					if (reader.SetTo(nnreader))
+						nnreader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), DB::DBUtil::CT_Int32);
 					valPtr.Set(sptr);
 					val2->Release();
 					return Text::String::New(sb.ToString(), sb.GetLength());
@@ -1529,8 +1530,8 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 				sb.ClearStr();
 				sb.AppendDouble(dVal);
 				Text::CStringNN nncolName;
-				if (reader)
-					reader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), DB::DBUtil::CT_Double);
+				if (reader.SetTo(nnreader))
+					nnreader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), DB::DBUtil::CT_Double);
 				valPtr.Set(sptr);
 				val2->Release();
 				return Text::String::New(sb.ToString(), sb.GetLength());
@@ -1547,7 +1548,7 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 		{
 			sptr++;			
 			while (Text::CharUtil::PtrIsWS(sptr));
-			if (!this->Evals(sptr, sess, 0, 0, nullptr, valid).SetTo(val2))
+			if (!this->Evals(sptr, sess, reader, 0, nullptr, valid).SetTo(val2))
 			{
 				valid.Set(false);
 				return nullptr;
@@ -1561,8 +1562,8 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 					sb.ClearStr();
 					sb.AppendI32(iVal);
 					Text::CStringNN nncolName;
-					if (reader)
-						reader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), DB::DBUtil::CT_Int32);
+					if (reader.SetTo(nnreader))
+						nnreader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), DB::DBUtil::CT_Int32);
 					valPtr.Set(sptr);
 					val2->Release();
 					return Text::String::New(sb.ToString(), sb.GetLength());
@@ -1575,8 +1576,8 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 				sb.ClearStr();
 				sb.AppendDouble(dVal);
 				Text::CStringNN nncolName;
-				if (reader)
-					reader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), DB::DBUtil::CT_Double);
+				if (reader.SetTo(nnreader))
+					nnreader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), DB::DBUtil::CT_Double);
 				valPtr.Set(sptr);
 				val2->Release();
 				return Text::String::New(sb.ToString(), sb.GetLength());
@@ -1593,7 +1594,7 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 		{
 			sptr++;			
 			while (Text::CharUtil::PtrIsWS(sptr));
-			if (!this->Evals(sptr, sess, 0, 0, nullptr, valid).SetTo(val2))
+			if (!this->Evals(sptr, sess, nullptr, 0, nullptr, valid).SetTo(val2))
 			{
 				valid.Set(false);
 				return nullptr;
@@ -1607,8 +1608,8 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 					sb.ClearStr();
 					sb.AppendI32(iVal);
 					Text::CStringNN nncolName;
-					if (reader)
-						reader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), DB::DBUtil::CT_Int32);
+					if (reader.SetTo(nnreader))
+						nnreader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), DB::DBUtil::CT_Int32);
 					valPtr.Set(sptr);
 					val2->Release();
 					return Text::String::New(sb.ToString(), sb.GetLength());
@@ -1621,8 +1622,8 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 				sb.ClearStr();
 				sb.AppendDouble(dVal);
 				Text::CStringNN nncolName;
-				if (reader)
-					reader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), DB::DBUtil::CT_Double);
+				if (reader.SetTo(nnreader))
+					nnreader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), DB::DBUtil::CT_Double);
 				valPtr.Set(sptr);
 				val2->Release();
 				return Text::String::New(sb.ToString(), sb.GetLength());
@@ -1639,7 +1640,7 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 		{
 			sptr++;			
 			while (Text::CharUtil::PtrIsWS(sptr));
-			if (!this->Evals(sptr, sess, 0, 0, nullptr, valid).SetTo(val2))
+			if (!this->Evals(sptr, sess, nullptr, 0, nullptr, valid).SetTo(val2))
 			{
 				valid.Set(false);
 				return nullptr;
@@ -1653,8 +1654,8 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 					sb.ClearStr();
 					sb.AppendI32(iVal);
 					Text::CStringNN nncolName;
-					if (reader)
-						reader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), DB::DBUtil::CT_Int32);
+					if (reader.SetTo(nnreader))
+						nnreader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), DB::DBUtil::CT_Int32);
 					valPtr.Set(sptr);
 					val2->Release();
 					return Text::String::New(sb.ToString(), sb.GetLength());
@@ -1667,8 +1668,8 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 				sb.ClearStr();
 				sb.AppendDouble(dVal);
 				Text::CStringNN nncolName;
-				if (reader)
-					reader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), DB::DBUtil::CT_Double);
+				if (reader.SetTo(nnreader))
+					nnreader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), DB::DBUtil::CT_Double);
 				valPtr.Set(sptr);
 				val2->Release();
 				return Text::String::New(sb.ToString(), sb.GetLength());
@@ -1726,7 +1727,7 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 						while (true)
 						{
 							while (Text::CharUtil::PtrIsWS(sptr));
-							if (!this->Evals(sptr, sess, 0, 0, nullptr, v).SetTo(sVal) || !v)
+							if (!this->Evals(sptr, sess, nullptr, 0, nullptr, v).SetTo(sVal) || !v)
 							{
 								valid.Set(false);
 								return nullptr;
@@ -1737,8 +1738,8 @@ Optional<Text::String> DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> v
 							if (sptr[0] == ')')
 							{
 								Text::CStringNN nncolName;
-								if (reader)
-									reader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), DB::DBUtil::CT_Double);
+								if (reader.SetTo(nnreader))
+									nnreader->SetColumn(colIndex, (colName.SetTo(nncolName) && nncolName.leng > 0)?nncolName:Text::CStringNN::FromPtr(val), DB::DBUtil::CT_Double);
 								valPtr.Set(sptr + 1);
 								return Text::String::New(sb.ToString(), sb.GetLength());
 							}
@@ -2217,11 +2218,11 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 		else
 		{
 			Bool valid = true;
-			DB::DBMSReader *reader;
+			NN<DB::DBMSReader> reader;
 			Text::StringBuilderUTF8 sb;
 			UnsafeArray<Optional<Text::String>> colVals;
 			UnsafeArray<const UTF8Char> val;
-			NEW_CLASS(reader, DB::DBMSReader(cols.GetCount(), -1));
+			NEW_CLASSNN(reader, DB::DBMSReader(cols.GetCount(), -1));
 			colVals = MemAllocArr(Optional<Text::String>, cols.GetCount());
 			i = 0;
 			j = cols.GetCount();
@@ -2269,7 +2270,7 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 					OPTSTR_DEL(colVals[i]);
 				}
 				MemFreeArr(colVals);
-				DEL_CLASS(reader);
+				reader.Delete();
 				return nullptr;
 			}
 		}
@@ -2371,7 +2372,7 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 					Bool valid = true;
 					NN<Text::String> val;
 					Optional<Text::String> optval;
-					if (!(optval = this->Evals(sptr1, sess, 0, 0, nullptr, valid)).SetTo(val) || !valid)
+					if (!(optval = this->Evals(sptr1, sess, nullptr, 0, nullptr, valid)).SetTo(val) || !valid)
 					{
 						i = cols.GetCount();
 						while (i-- > 0)
@@ -2419,8 +2420,8 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 							MemFreeNN(col);
 						}
 
-						DB::DBMSReader *reader;
-						NEW_CLASS(reader, DB::DBMSReader(0, 0));
+						NN<DB::DBMSReader> reader;
+						NEW_CLASSNN(reader, DB::DBMSReader(0, 0));
 						return reader;
 					}
 				}
@@ -2659,7 +2660,7 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 				if (valid)
 				{
 					while (Text::CharUtil::PtrIsWS(sptr1));
-					Optional<Text::String> val = this->Evals(sptr1, sess, 0, 0, nullptr, valid);
+					Optional<Text::String> val = this->Evals(sptr1, sess, nullptr, 0, nullptr, valid);
 					if (!valid)
 					{
 						i = cols.GetCount();
@@ -2715,8 +2716,8 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 							MemFreeNN(col);
 						}
 
-						DB::DBMSReader *reader;
-						NEW_CLASS(reader, DB::DBMSReader(0, 0));
+						NN<DB::DBMSReader> reader;
+						NEW_CLASSNN(reader, DB::DBMSReader(0, 0));
 						return reader;
 					}
 				}
@@ -2785,7 +2786,7 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 				{
 					while (Text::CharUtil::PtrIsWS(sptr1));
 					Bool valid = true;
-					Optional<Text::String> val = this->Evals(sptr1, sess, 0, 0, nullptr, valid);
+					Optional<Text::String> val = this->Evals(sptr1, sess, nullptr, 0, nullptr, valid);
 					if (!valid)
 					{
 						i = cols.GetCount();
@@ -2916,13 +2917,13 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 			
 			if (sptr1[0] == 0)
 			{
-				DB::DBMSReader *reader;
+				NN<DB::DBMSReader> reader;
 				IntOS i;
 				IntOS j;
 				Optional<Text::String> row[2];
 				NN<Text::String> s;
 				Text::StringBuilderUTF8 sb;
-				NEW_CLASS(reader, DB::DBMSReader(2, -1));
+				NEW_CLASSNN(reader, DB::DBMSReader(2, -1));
 				reader->SetColumn(0, CSTR("Variablename"), DB::DBUtil::CT_VarUTF8Char);
 				reader->SetColumn(1, CSTR("Value"), DB::DBUtil::CT_VarUTF8Char);
 				i = 0;
@@ -2946,7 +2947,7 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 				if (sptr1[0] == '\'')
 				{
 					Bool valid = true;
- 					Optional<Text::String> val = this->Evals(sptr1, sess, 0, 0, nullptr, valid);
+ 					Optional<Text::String> val = this->Evals(sptr1, sess, nullptr, 0, nullptr, valid);
 					if (!valid)
 					{
 						OPTSTR_DEL(val);
@@ -2957,12 +2958,12 @@ Optional<DB::DBReader> DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const U
 					NN<Text::String> s;
 					if (sptr1[0] == 0 && val.SetTo(s))
 					{
-						DB::DBMSReader *reader;
+						NN<DB::DBMSReader> reader;
 						IntOS i;
 						IntOS j;
 						Optional<Text::String> row[2];
 						Text::StringBuilderUTF8 sb;
-						NEW_CLASS(reader, DB::DBMSReader(2, -1));
+						NEW_CLASSNN(reader, DB::DBMSReader(2, -1));
 						reader->SetColumn(0, CSTR("Variablename"), DB::DBUtil::CT_VarUTF8Char);
 						reader->SetColumn(1, CSTR("Value"), DB::DBUtil::CT_VarUTF8Char);
 						i = 0;

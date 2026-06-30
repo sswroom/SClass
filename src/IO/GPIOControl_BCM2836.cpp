@@ -12,21 +12,21 @@
 
 struct IO::GPIOControl::ClassData
 {
-	IO::PhysicalMem *mem;
+	NN<IO::PhysicalMem> mem;
 	volatile UInt32 *memPtr;
 };
 
 IO::GPIOControl::GPIOControl()
 {
 	NN<ClassData> clsData = MemAllocNN(ClassData);
-	NEW_CLASS(clsData->mem, IO::PhysicalMem(IO_BASE_ADDR + 0x200000, BLOCKSIZE));
-	clsData->memPtr = (volatile UInt32 *)clsData->mem->GetPointer();
+	NEW_CLASSNN(clsData->mem, IO::PhysicalMem(IO_BASE_ADDR + 0x200000, BLOCKSIZE));
+	clsData->memPtr = (volatile UInt32 *)clsData->mem->GetPointer().Ptr();
 	this->clsData = clsData;
 }
 
 IO::GPIOControl::~GPIOControl()
 {
-	DEL_CLASS(this->clsData->mem);
+	this->clsData->mem.Delete();
 	MemFreeNN(this->clsData);
 }
 

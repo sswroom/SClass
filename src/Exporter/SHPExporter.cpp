@@ -79,7 +79,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	Math::Coord2DDbl max = Math::Coord2DDbl(0, 0);
 	Double zMin = 0;
 	Double zMax = 0;
-	IO::FileStream *shx;
+	NN<IO::FileStream> shx;
 	Optional<Map::NameArray> nameArr;
 	NN<Map::GetObjectSess> sess;
 	if (layerType != Map::DRAW_LAYER_POINT && layerType != Map::DRAW_LAYER_POINT3D && layerType != Map::DRAW_LAYER_POLYLINE && layerType != Map::DRAW_LAYER_POLYLINE3D && layerType != Map::DRAW_LAYER_POLYGON)
@@ -88,10 +88,10 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	}
 	fileName.ConcatTo(fileName2);
 	sptr = IO::Path::ReplaceExt(fileName2, UTF8STRC("shx"));
-	NEW_CLASS(shx, IO::FileStream(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(shx, IO::FileStream(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (shx->IsError())
 	{
-		DEL_CLASS(shx);
+		shx.Delete();
 		return false;
 	}
 	
@@ -423,7 +423,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	WriteMInt32(&buff[24], (Int32)(50 + (recCnt << 2)));
 	shx->SeekFromBeginning(0);
 	shx->Write(Data::ByteArrayR(buff, 100));
-	DEL_CLASS(shx);
+	shx.Delete();
 
 	sptr = IO::Path::ReplaceExt(fileName2, UTF8STRC("dbf"));
 	{

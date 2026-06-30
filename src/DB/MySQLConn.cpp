@@ -401,17 +401,17 @@ Optional<Text::String> DB::MySQLConn::GetConnPWD()
 
 /*Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log)
 {
-	DB::MySQLConn *conn;
-	DB::DBTool *db;
-	NEW_CLASS(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
+	NN<DB::MySQLConn> conn;
+	NN<DB::DBTool> db;
+	NEW_CLASSNN(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
 	if (!conn->IsConnError())
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, nullptr));
+		NEW_CLASSNN(db, DB::DBTool(conn, true, log, nullptr));
 		return db;
 	}
 	else
 	{
-		DEL_CLASS(conn);
+		conn.Delete();
 		return 0;
 	}
 }*/
@@ -419,11 +419,11 @@ Optional<Text::String> DB::MySQLConn::GetConnPWD()
 Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<DB::MySQLConn> conn;
-	DB::DBTool *db;
+	NN<DB::DBTool> db;
 	NEW_CLASSNN(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
 	if (!conn->IsConnError())
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
+		NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
 		return db;
 	}
 	else
@@ -436,11 +436,11 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif,
 Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif, Text::CStringNN serverName, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<DB::MySQLConn> conn;
-	DB::DBTool *db;
+	NN<DB::DBTool> db;
 	NEW_CLASSNN(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
 	if (!conn->IsConnError())
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
+		NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
 		return db;
 	}
 	else
@@ -452,17 +452,17 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif,
 
 /*Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log, Text::CString logPrefix)
 {
-	DB::MySQLConn *conn;
-	DB::DBTool *db;
-	NEW_CLASS(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
+	NN<DB::MySQLConn> conn;
+	NN<DB::DBTool> db;
+	NEW_CLASSNN(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
 	if (!conn->IsConnError())
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
+		NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
 		return db;
 	}
 	else
 	{
-		DEL_CLASS(conn);
+		conn.Delete();
 		return 0;
 	}
 }*/

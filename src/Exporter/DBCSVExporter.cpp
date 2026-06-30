@@ -71,12 +71,12 @@ UIntOS Exporter::DBCSVExporter::GetParamCnt()
 
 Optional<IO::FileExporter::ParamData> Exporter::DBCSVExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
-	DBParam *param;
-	NEW_CLASS(param, DBParam());
+	NN<DBParam> param;
+	NEW_CLASSNN(param, DBParam());
 	param->db = NN<DB::ReadingDB>::ConvertFrom(pobj);
 	param->db->QueryTableNames(nullptr, param->names);
 	param->tableIndex = 0;
-	return (ParamData*)param;
+	return NN<ParamData>::ConvertFrom(param);
 }
 
 void Exporter::DBCSVExporter::DeleteParam(Optional<ParamData> param)
@@ -84,9 +84,9 @@ void Exporter::DBCSVExporter::DeleteParam(Optional<ParamData> param)
 	NN<ParamData> para;
 	if (param.SetTo(para))
 	{
-		DBParam *dbParam = (DBParam*)para.Ptr();
+		NN<DBParam> dbParam = NN<DBParam>::ConvertFrom(para);
 		dbParam->names.FreeAll();
-		DEL_CLASS(dbParam);
+		dbParam.Delete();
 	}
 }
 

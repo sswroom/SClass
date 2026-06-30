@@ -73,7 +73,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	Text::CString csptr;
 	Text::CStringNN nncsptr;
 	UnsafeArray<const UTF8Char> u8ptr;
-	IO::ZIPBuilder *zip;
+	NN<IO::ZIPBuilder> zip;
 	UIntOS i;
 	UIntOS k;
 	UIntOS l;
@@ -84,7 +84,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	Data::ArrayListNN<Text::String> sharedStrings;
 	Data::FastStringMapNative<UIntOS> stringMap;
 	ts = Data::Timestamp::UtcNow();
-	NEW_CLASS(zip, IO::ZIPBuilder(stm, IO::ZIPOS::MSDOS));
+	NEW_CLASSNN(zip, IO::ZIPBuilder(stm, IO::ZIPOS::MSDOS));
 
 	Bool dirXl = false;
 	Bool dirXlWs = false;
@@ -1250,7 +1250,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	sbContTypes.AppendC(UTF8STRC("\n</Types>"));
 	zip->AddFile(CSTR("[Content_Types].xml"), sbContTypes.ToString(), sbContTypes.GetLength(), ts, ts, ts, Data::Compress::Deflater::CompLevel::BestCompression, 0);
 
-	DEL_CLASS(zip);
+	zip.Delete();
 	return true;
 }
 

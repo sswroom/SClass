@@ -14,8 +14,8 @@
 
 struct IO::GPIOControl::ClassData
 {
-	IO::PhysicalMem *mem;
-	IO::PhysicalMem *memC;
+	NN<IO::PhysicalMem> mem;
+	NN<IO::PhysicalMem> memC;
 	volatile UInt32 *gpioPtr;
 	volatile UInt32 *gpiocPtr;
 };
@@ -23,17 +23,17 @@ struct IO::GPIOControl::ClassData
 IO::GPIOControl::GPIOControl()
 {
 	NN<ClassData> clsData = MemAllocNN(ClassData);
-	NEW_CLASS(clsData->mem, IO::PhysicalMem(GPIOA_BASE, 0x4000));
-	clsData->gpioPtr = (volatile UInt32 *)clsData->mem->GetPointer();
-	NEW_CLASS(clsData->memC, IO::PhysicalMem(GPIOC_BASE, 0x4000));
-	clsData->gpiocPtr = (volatile UInt32 *)clsData->memC->GetPointer();
+	NEW_CLASSNN(clsData->mem, IO::PhysicalMem(GPIOA_BASE, 0x4000));
+	clsData->gpioPtr = (volatile UInt32 *)clsData->mem->GetPointer().Ptr();
+	NEW_CLASSNN(clsData->memC, IO::PhysicalMem(GPIOC_BASE, 0x4000));
+	clsData->gpiocPtr = (volatile UInt32 *)clsData->memC->GetPointer().Ptr();
 	this->clsData = clsData;
 }
 
 IO::GPIOControl::~GPIOControl()
 {
-	DEL_CLASS(this->clsData->mem);
-	DEL_CLASS(this->clsData->memC);
+	this->clsData->mem.Delete();
+	this->clsData->memC.Delete();
 	MemFreeNN(this->clsData);
 }
 

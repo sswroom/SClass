@@ -116,14 +116,14 @@ namespace DB
 
 		Bool SysVarExist(NN<SessionInfo> sess, Text::CStringNN varName, AccessType atype);
 		Bool SysVarGet(NN<Text::StringBuilderUTF8> sb, NN<SessionInfo> sess, Text::CStringNN varName);
-		void SysVarColumn(DB::DBMSReader *reader, UIntOS colIndex, UnsafeArray<const UTF8Char> varName, Text::CString colName);
+		void SysVarColumn(NN<DB::DBMSReader> reader, UIntOS colIndex, UnsafeArray<const UTF8Char> varName, Text::CString colName);
 		Bool SysVarSet(NN<SessionInfo> sess, Bool isGlobal, Text::CStringNN varName, Optional<Text::String> val);
 
 		Bool UserVarGet(NN<Text::StringBuilderUTF8> sb, NN<SessionInfo> sess, Text::CStringNN varName);
-		void UserVarColumn(DB::DBMSReader *reader, UIntOS colIndex, UnsafeArray<const UTF8Char> varName, Text::CString colName);
+		void UserVarColumn(NN<DB::DBMSReader> reader, UIntOS colIndex, UnsafeArray<const UTF8Char> varName, Text::CString colName);
 		Bool UserVarSet(NN<SessionInfo> sess, Text::CStringNN varName, Optional<Text::String> val);
 
-		Optional<Text::String> Evals(InOutParam<UnsafeArray<const UTF8Char>> valPtr, NN<SessionInfo> sess, DB::DBMSReader *reader, UIntOS colIndex, Text::CString colName, OutParam<Bool> valid);
+		Optional<Text::String> Evals(InOutParam<UnsafeArray<const UTF8Char>> valPtr, NN<SessionInfo> sess, Optional<DB::DBMSReader> reader, UIntOS colIndex, Text::CString colName, OutParam<Bool> valid);
 	public:
 		DBMS(Text::CStringNN versionStr, NN<IO::LogTool> log);
 		virtual ~DBMS();

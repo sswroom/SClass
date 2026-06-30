@@ -55,7 +55,8 @@ Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	NN<DB::DBTool> destDB;
 	IO::LogTool log;
 	NN<DB::ReadingDB> sDB;
-	DB::ReadingDBTool *srcDB;
+	Optional<DB::ReadingDBTool> srcDB;
+	NN<DB::ReadingDBTool> nnsrcDB;
 	Optional<DB::DBReader> r;
 	NN<DB::DBReader> nnr;
 	Optional<DB::TableDef> tabDef;
@@ -71,22 +72,22 @@ Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	sDB->QueryTableNames(nullptr, tables);
 	if (sDB->IsFullConn())
 	{
-		NEW_CLASS(srcDB, DB::ReadingDBTool(NN<DB::DBConn>::ConvertFrom(sDB), false, log, CSTR("SDB: ")));
+		NEW_CLASSOPT(srcDB, DB::ReadingDBTool(NN<DB::DBConn>::ConvertFrom(sDB), false, log, CSTR("SDB: ")));
 	}
 	else
 	{
-		srcDB = 0;
+		srcDB = nullptr;
 	}
 	Data::ArrayIterator<NN<Text::String>> it = tables.Iterator();
 	NN<Text::String> tabName;
 	while (it.HasNext())
 	{
 		tabName = it.Next();
-		if (srcDB)
+		if (srcDB.SetTo(nnsrcDB))
 		{
-			if (srcDB->GetTableDef(nullptr, tabName->ToCString()).SetTo(nntabDef))
+			if (nnsrcDB->GetTableDef(nullptr, tabName->ToCString()).SetTo(nntabDef))
 			{
-				r = srcDB->QueryTableData(nullptr, tabName->ToCString(), nullptr, 0, 0, nullptr, nullptr);
+				r = nnsrcDB->QueryTableData(nullptr, tabName->ToCString(), nullptr, 0, 0, nullptr, nullptr);
 				if (r.IsNull())
 				{
 					nntabDef.Delete();
@@ -187,7 +188,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	}
 
 	tables.FreeAll();
-	SDEL_CLASS(srcDB);
+	srcDB.Delete();
 	destDB.Delete();
 	return succ;
 }

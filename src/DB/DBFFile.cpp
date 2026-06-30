@@ -97,10 +97,10 @@ Optional<DB::DBReader> DB::DBFFile::QueryTableData(Text::CString schemaName, Tex
 Optional<DB::TableDef> DB::DBFFile::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	NN<DB::ColDef> col;
-	DB::TableDef *tab;
+	NN<DB::TableDef> tab;
 	UIntOS i;
 	UIntOS j;
-	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
+	NEW_CLASSNN(tab, DB::TableDef(schemaName, tableName));
 	i = 0;
 	j = this->GetColCount();
 	while (i < j)

@@ -43,35 +43,35 @@ Bool Exporter::GUIGIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 #else
 	CLSID   encoderClsid;
 	Gdiplus::Status  stat;
-	Gdiplus::Image*   image;
-	UInt8 *relBuff;
+	NN<Gdiplus::Image>   image;
+	UnsafeArrayOpt<UInt8> relBuff;
+	UnsafeArray<UInt8> nnrelBuff;
 
-	image = (Gdiplus::Image*)ToImage(pobj, relBuff).p;
-	if (image == 0)
+	if (!ToImage(pobj, relBuff).GetOpt<Gdiplus::Image>().SetTo(image))
 	{
 		return false;
 	}
 
 	if (GetEncoderClsid(L"image/gif", &encoderClsid) < 0)
 	{
-		DEL_CLASS(image);
-		if (relBuff)
+		image.Delete();
+		if (relBuff.SetTo(nnrelBuff))
 		{
-			MemFreeA(relBuff);
+			MemFreeAArr(relBuff);
 		}
 		return false;
 	}
 
-	Win32::COMStream *cstm;
-	NEW_CLASS(cstm, Win32::COMStream(stm));
+	NN<Win32::COMStream> cstm;
+	NEW_CLASSNN(cstm, Win32::COMStream(stm));
 
-	stat = image->Save(cstm, &encoderClsid, 0);
+	stat = image->Save(cstm.Ptr(), &encoderClsid, 0);
 
-	DEL_CLASS(cstm);
-	DEL_CLASS(image);
-	if (relBuff)
+	cstm.Delete();
+	image.Delete();
+	if (relBuff.SetTo(nnrelBuff))
 	{
-		MemFreeA(relBuff);
+		MemFreeAArr(nnrelBuff);
 	}
 
 	if(stat == Gdiplus::Ok)

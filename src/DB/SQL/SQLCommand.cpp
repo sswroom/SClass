@@ -21,7 +21,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 #if defined(VERBOSE)
 	printf("SQLCommand: Cmd: %s\r\n", sql);
 #endif
-	DB::SQL::SQLCommand *cmd = 0;
+	Optional<DB::SQL::SQLCommand> cmd = nullptr;
 	Text::StringBuilderUTF8 sb;
 	sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 	if (sb.EqualsICase(UTF8STRC("CREATE")))
@@ -135,7 +135,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 							}
 							else if (sb.Equals(UTF8STRC(")")))
 							{
-								NEW_CLASS(cmd, DB::SQL::CreateTableCommand(tab, true));
+								NEW_CLASSOPT(cmd, DB::SQL::CreateTableCommand(tab, true));
 								tabUsed = true;
 								break;
 							}
@@ -163,7 +163,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 								{
 									if (brkCnt == 0)
 									{
-										NEW_CLASS(cmd, DB::SQL::CreateTableCommand(tab, true));
+										NEW_CLASSOPT(cmd, DB::SQL::CreateTableCommand(tab, true));
 										tabUsed = true;
 										break;
 									}
@@ -376,7 +376,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 								else if (sb.Equals(UTF8STRC(")")))
 								{
 									tab->AddCol(col);
-									NEW_CLASS(cmd, DB::SQL::CreateTableCommand(tab, true));
+									NEW_CLASSOPT(cmd, DB::SQL::CreateTableCommand(tab, true));
 									tabUsed = true;
 									break;
 								}
@@ -416,7 +416,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 		sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 		if (sb.EqualsICase(UTF8STRC("DATABASES")))
 		{
-			NEW_CLASS(cmd, DB::SQL::ShowDatabasesCommand());
+			NEW_CLASSOPT(cmd, DB::SQL::ShowDatabasesCommand());
 			sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 			if (sb.leng == 0)
 			{
@@ -445,7 +445,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 		else
 		{
 			SQLUtil::ParseColumnWord(sb, sqlType);
-			NEW_CLASS(cmd, DB::SQL::UseCommand(sb.ToCString()));
+			NEW_CLASSOPT(cmd, DB::SQL::UseCommand(sb.ToCString()));
 			sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 			if (sb.leng == 0)
 			{

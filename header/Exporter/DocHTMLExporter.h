@@ -22,8 +22,8 @@ namespace Exporter
 		virtual Bool ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param);
 
 	private:
-		static void WriteColor(IO::Writer *writer, UInt32 color);
-		static void WriteItems(IO::Writer *writer, NN<Data::ReadingListNN<Text::Doc::DocItem>> items, Text::CStringNN parentNodeName);
+		static void WriteColor(NN<IO::Writer> writer, UInt32 color);
+		static void WriteItems(NN<IO::Writer> writer, NN<Data::ReadingListNN<Text::Doc::DocItem>> items, Text::CStringNN parentNodeName);
 	};
 }
 #endif

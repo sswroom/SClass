@@ -32,7 +32,7 @@ namespace DB
         ~DBCache();
 
 		IntOS GetRowCount(Text::CStringNN tableName); //-1 = table not found
-		UIntOS QueryTableData(NN<Data::ArrayListNN<DB::DBRow>> outRows, Text::CStringNN tableName, DB::PageRequest *page);
+		UIntOS QueryTableData(NN<Data::ArrayListNN<DB::DBRow>> outRows, Text::CStringNN tableName, NN<DB::PageRequest> page);
 		Optional<DB::DBRow> GetTableItem(Text::CStringNN tableName, Int64 pk);
 		void FreeTableData(NN<Data::ArrayListNN<DB::DBRow>> rows);
 		void FreeTableItem(NN<DB::DBRow> row);

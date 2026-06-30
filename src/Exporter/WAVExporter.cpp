@@ -106,8 +106,8 @@ Bool Exporter::WAVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	stm->Write(Data::ByteArrayR(buff, (UIntOS)headerSize));
 	fileSize = headerSize;
 	UIntOS blockSize;
-	Sync::Event *evt;
-	NEW_CLASS(evt, Sync::Event(true));
+	NN<Sync::Event> evt;
+	NEW_CLASSNN(evt, Sync::Event(true));
 	if (audio->Start(evt, (UIntOS)(1048576 - headerSize)))
 	{
 		while ((blockSize = audio->ReadBlock(Data::ByteArray(&buff[(UIntOS)headerSize], (UIntOS)(1048576 - headerSize)))) > 0)
@@ -117,7 +117,7 @@ Bool Exporter::WAVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		}
 		audio->Stop();
 	}
-	DEL_CLASS(evt);
+	evt.Delete();
 	if (fileSize >= 0x100000000LL)
 	{
 		WriteNInt32(&buff[12], *(Int32*)"ds64");

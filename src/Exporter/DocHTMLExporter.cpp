@@ -56,13 +56,13 @@ Bool Exporter::DocHTMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 	}
 
 	NN<Text::Doc::TextDocument> doc = NN<Text::Doc::TextDocument>::ConvertFrom(pobj);
-	IO::StreamWriter *writer;
+	NN<IO::StreamWriter> writer;
 	UnsafeArray<UTF8Char> lineBuff1;
 	UnsafeArray<UTF8Char> lineBuff2;
 	UnsafeArray<UTF8Char> sptr;
 	UInt32 color;
 
-	NEW_CLASS(writer, IO::StreamWriter(stm, this->codePage));
+	NEW_CLASSNN(writer, IO::StreamWriter(stm, this->codePage));
 
 	lineBuff1 = MemAllocArr(UTF8Char, 65536);
 	lineBuff2 = MemAllocArr(UTF8Char, 65536);
@@ -136,11 +136,11 @@ a:hover {color:#FF00FF;}
 
 	MemFreeArr(lineBuff1);
 	MemFreeArr(lineBuff2);
-	DEL_CLASS(writer);
+	writer.Delete();
 	return true;
 }
 
-void Exporter::DocHTMLExporter::WriteColor(IO::Writer *writer, UInt32 color)
+void Exporter::DocHTMLExporter::WriteColor(NN<IO::Writer> writer, UInt32 color)
 {
 	UTF8Char sbuff[8];
 	UnsafeArray<UTF8Char> sptr;
@@ -149,7 +149,7 @@ void Exporter::DocHTMLExporter::WriteColor(IO::Writer *writer, UInt32 color)
 	writer->Write(CSTRP(sbuff, sptr)); 
 }
 
-void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, NN<Data::ReadingListNN<Text::Doc::DocItem>> items, Text::CStringNN parentNodeName)
+void Exporter::DocHTMLExporter::WriteItems(NN<IO::Writer> writer, NN<Data::ReadingListNN<Text::Doc::DocItem>> items, Text::CStringNN parentNodeName)
 {
 	NN<Text::Doc::DocItem> item;
 	UIntOS i = 0;

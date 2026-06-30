@@ -13,7 +13,7 @@
 #include <stdio.h>
 // https://sqlprotocoldoc.blob.core.windows.net/productionsqlarchives/MS-SSCLRT/%5bMS-SSCLRT%5d.pdf
 
-Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *buffPtr, UIntOS buffSize, OptOut<UInt32> srIdOut)
+Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<const UInt8> buffPtr, UIntOS buffSize, OptOut<UInt32> srIdOut)
 {
 	if (buffSize < 6)
 	{

@@ -733,8 +733,8 @@ Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 		return 0;
 	}
 
-	DB::ODBCReader *r;
-	NEW_CLASS(r, DB::ODBCReader(this, hStmt, this->enableDebug));
+	NN<DB::ODBCReader> r;
+	NEW_CLASSNN(r, DB::ODBCReader(this, hStmt, this->enableDebug));
 	return r;
 }*/
 
@@ -1179,11 +1179,11 @@ Optional<IO::ConfigFile> DB::ODBCConn::GetDriverInfo(Text::CString driverName)
 Optional<DB::DBTool> DB::ODBCConn::CreateDBTool(NN<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<DB::ODBCConn> conn;
-	DB::DBTool *db;
+	NN<DB::DBTool> db;
 	NEW_CLASSNN(conn, DB::ODBCConn(dsn, uid, pwd, schema, log));
 	if (conn->GetConnError() == CE_NONE)
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
+		NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
 		return db;
 	}
 	else
@@ -1196,11 +1196,11 @@ Optional<DB::DBTool> DB::ODBCConn::CreateDBTool(NN<Text::String> dsn, Optional<T
 Optional<DB::DBTool> DB::ODBCConn::CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<DB::ODBCConn> conn;
-	DB::DBTool *db;
+	NN<DB::DBTool> db;
 	NEW_CLASSNN(conn, DB::ODBCConn(dsn, uid, pwd, schema, log));
 	if (conn->GetConnError() == CE_NONE)
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
+		NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
 		return db;
 	}
 	else
@@ -1258,8 +1258,12 @@ DB::ODBCReader::ODBCReader(DB::ODBCConn *conn, void *hStmt, Bool enableDebug, In
 		case DB::DBUtil::CT_VarUTF16Char:
 		case DB::DBUtil::CT_VarUTF32Char:
 		case DB::DBUtil::CT_UUID:
-			NEW_CLASS(this->colDatas[i].colData, Text::StringBuilderUTF8());
+		{
+			NN<Text::StringBuilderUTF8> sb;
+			NEW_CLASSNN(sb, Text::StringBuilderUTF8());
+			this->colDatas[i].colData = sb;
 			break;
+		}
 		case DB::DBUtil::CT_Double:
 		case DB::DBUtil::CT_Float:
 		case DB::DBUtil::CT_Decimal:
@@ -1277,7 +1281,7 @@ DB::ODBCReader::ODBCReader(DB::ODBCConn *conn, void *hStmt, Bool enableDebug, In
 		case DB::DBUtil::CT_DateTimeTZ:
 		case DB::DBUtil::CT_DateTime:
 		case DB::DBUtil::CT_Date:
-			this->colDatas[i].colData = MemAllocArr(Data::Timestamp, 1).Ptr();
+			this->colDatas[i].colData = MemAllocArr(Data::Timestamp, 1);
 			break;
 		case DB::DBUtil::CT_Vector:
 		case DB::DBUtil::CT_Binary:
@@ -1298,8 +1302,9 @@ DB::ODBCReader::~ODBCReader()
 	SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
 
 	UIntOS i;
-	Text::StringBuilderUTF8 *sb;
-	Data::Timestamp *ts;
+	NN<Text::StringBuilderUTF8> sb;
+	UnsafeArray<Data::Timestamp> ts;
+	UnsafeArray<UInt8> byteArr;
 	i = this->colCnt;
 	while (i-- > 0)
 	{
@@ -1312,8 +1317,8 @@ DB::ODBCReader::~ODBCReader()
 		case DB::DBUtil::CT_VarUTF16Char:
 		case DB::DBUtil::CT_VarUTF32Char:
 		case DB::DBUtil::CT_UUID:
-			sb = (Text::StringBuilderUTF8*)this->colDatas[i].colData;
-			DEL_CLASS(sb);
+			sb = this->colDatas[i].colData.GetNN<Text::StringBuilderUTF8>();
+			sb.Delete();
 			break;
 		case DB::DBUtil::CT_Double:
 		case DB::DBUtil::CT_Float:
@@ -1332,13 +1337,13 @@ DB::ODBCReader::~ODBCReader()
 		case DB::DBUtil::CT_DateTimeTZ:
 		case DB::DBUtil::CT_DateTime:
 		case DB::DBUtil::CT_Date:
-			ts = (Data::Timestamp*)this->colDatas[i].colData;
-			MemFree(ts);
+			ts = this->colDatas[i].colData.GetArray<Data::Timestamp>();
+			MemFreeArr(ts);
 			break;
 		case DB::DBUtil::CT_Vector:
 		case DB::DBUtil::CT_Binary:
-			if (this->colDatas[i].colData)
-				MemFree(this->colDatas[i].colData);
+			if (this->colDatas[i].colData.GetArrayOpt<UInt8>().SetTo(byteArr))
+				MemFreeArr(byteArr);
 			break;
 		case DB::DBUtil::CT_Unknown:
 		default:
@@ -1365,8 +1370,8 @@ Bool DB::ODBCReader::ReadNext()
 		i = 0;
 		while (i < this->colCnt)
 		{
-			Text::StringBuilderUTF8 *sb;
-			Data::Timestamp *dt;
+			NN<Text::StringBuilderUTF8> sb;
+			UnsafeArray<Data::Timestamp> dt;
 			UnsafeArray<UTF16Char> sptr;
 			SQLLEN len;
 			SQLRETURN ret;
@@ -1386,7 +1391,7 @@ Bool DB::ODBCReader::ReadNext()
 			case DB::DBUtil::CT_UUID:
 				{
 					len = 256;
-					sb = (Text::StringBuilderUTF8*)this->colDatas[i].colData;
+					sb = this->colDatas[i].colData.GetNN<Text::StringBuilderUTF8>();
 					sb->ClearStr();
 
 #if !defined(_WIN32) && !defined(_WIN64)
@@ -1641,7 +1646,7 @@ Bool DB::ODBCReader::ReadNext()
 			case DB::DBUtil::CT_Date:
 				{
 					TIMESTAMP_STRUCT ts;
-					dt = (Data::Timestamp*)this->colDatas[i].colData;
+					dt = this->colDatas[i].colData.GetArray<Data::Timestamp>();
 					ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_TIMESTAMP, &ts, sizeof(ts), &len);
 					if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO || ret == SQL_NO_DATA)
 					{
@@ -1671,9 +1676,10 @@ Bool DB::ODBCReader::ReadNext()
 			case DB::DBUtil::CT_Vector:
 			case DB::DBUtil::CT_Binary:
 				{
-					if (this->colDatas[i].colData)
+					UnsafeArray<UInt8> byteArr;
+					if (this->colDatas[i].colData.GetArrayOpt<UInt8>().SetTo(byteArr))
 					{
-						MemFree(this->colDatas[i].colData);
+						MemFreeArr(byteArr);
 						this->colDatas[i].colData = 0;
 					}
 					ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_BINARY, &this->colDatas[i].dataVal, 0, &len);
@@ -1686,8 +1692,8 @@ Bool DB::ODBCReader::ReadNext()
 						else
 						{
 							this->colDatas[i].dataVal = len;
-							this->colDatas[i].colData = MemAllocArr(UInt8, (UIntOS)len).Ptr();
-							ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_BINARY, this->colDatas[i].colData, len, &len);
+							this->colDatas[i].colData = byteArr = MemAllocArr(UInt8, (UIntOS)len);
+							ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_BINARY, byteArr.Ptr(), len, &len);
 							if (ret == SQL_SUCCESS_WITH_INFO || ret == SQL_SUCCESS)
 							{
 								this->colDatas[i].isNull = false;
@@ -1755,7 +1761,7 @@ Int32 DB::ODBCReader::GetInt32(UIntOS colIndex)
 	case DB::DBUtil::CT_VarUTF16Char:
 	case DB::DBUtil::CT_VarUTF32Char:
 	case DB::DBUtil::CT_UUID:
-		return Text::StrToInt32(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
+		return this->colDatas[colIndex].colData.GetNN<Text::StringBuilderUTF8>()->ToInt32();
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 	case DB::DBUtil::CT_Decimal:
@@ -1798,7 +1804,7 @@ Int64 DB::ODBCReader::GetInt64(UIntOS colIndex)
 	case DB::DBUtil::CT_VarUTF16Char:
 	case DB::DBUtil::CT_VarUTF32Char:
 	case DB::DBUtil::CT_UUID:
-		return Text::StrToInt64(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
+		return this->colDatas[colIndex].colData.GetNN<Text::StringBuilderUTF8>()->ToInt64();
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 	case DB::DBUtil::CT_Decimal:
@@ -1842,7 +1848,7 @@ UnsafeArrayOpt<WChar> DB::ODBCReader::GetStr(UIntOS colIndex, UnsafeArray<WChar>
 	case DB::DBUtil::CT_VarUTF16Char:
 	case DB::DBUtil::CT_VarUTF32Char:
 	case DB::DBUtil::CT_UUID:
-		return Text::StrUTF8_WChar(buff, ((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString(), 0);
+		return Text::StrUTF8_WChar(buff, this->colDatas[colIndex].colData.GetNN<Text::StringBuilderUTF8>()->ToString(), 0);
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 	case DB::DBUtil::CT_Decimal:
@@ -1859,7 +1865,7 @@ UnsafeArrayOpt<WChar> DB::ODBCReader::GetStr(UIntOS colIndex, UnsafeArray<WChar>
 	case DB::DBUtil::CT_DateTimeTZ:
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_Date:
-		((Data::Timestamp*)this->colDatas[colIndex].colData)->ToString(sbuff);
+		this->colDatas[colIndex].colData.GetArray<Data::Timestamp>()->ToString(sbuff);
 		return Text::StrUTF8_WChar(buff, sbuff, 0);
 	case DB::DBUtil::CT_Binary:
 		return nullptr;
@@ -1897,11 +1903,8 @@ Bool DB::ODBCReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 	case DB::DBUtil::CT_VarUTF32Char:
 	case DB::DBUtil::CT_UUID:
 		{
-			NN<Text::StringBuilderUTF8> colSb;
-			if (colSb.Set((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData))
-			{
-				sb->Append(NN<Text::StringBase<UTF8Char>>(colSb));
-			}
+			NN<Text::StringBuilderUTF8> colSb = this->colDatas[colIndex].colData.GetNN<Text::StringBuilderUTF8>();
+			sb->Append(NN<Text::StringBase<UTF8Char>>(colSb));
 		}
 		return true;
 	case DB::DBUtil::CT_Double:
@@ -1928,7 +1931,7 @@ Bool DB::ODBCReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 	case DB::DBUtil::CT_Date:
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_DateTimeTZ:
-		sb->AppendTSNoZone(*(Data::Timestamp*)this->colDatas[colIndex].colData);
+		sb->AppendTSNoZone(this->colDatas[colIndex].colData.GetArray<Data::Timestamp>()[0]);
 		return true;
 	case DB::DBUtil::CT_Binary:
 		return false;
@@ -1968,8 +1971,8 @@ Optional<Text::String> DB::ODBCReader::GetNewStr(UIntOS colIndex)
 	case DB::DBUtil::CT_VarUTF32Char:
 	case DB::DBUtil::CT_UUID:
 		{
-			Text::StringBuilderUTF8 *sb = (Text::StringBuilderUTF8*)this->colDatas[colIndex].colData;
-			return Text::String::New(sb->ToString(), sb->GetLength());
+			NN<Text::StringBuilderUTF8> sb = this->colDatas[colIndex].colData.GetNN<Text::StringBuilderUTF8>();
+			return Text::String::New(sb->ToCString());
 		}
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
@@ -1995,7 +1998,7 @@ Optional<Text::String> DB::ODBCReader::GetNewStr(UIntOS colIndex)
 	case DB::DBUtil::CT_DateTimeTZ:
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_Date:
-		sptr = ((Data::Timestamp*)this->colDatas[colIndex].colData)->ToString(sbuff);
+		sptr = this->colDatas[colIndex].colData.GetArray<Data::Timestamp>()->ToString(sbuff);
 		return Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
 	case DB::DBUtil::CT_Binary:
 		return nullptr;
@@ -2034,7 +2037,7 @@ UnsafeArrayOpt<UTF8Char> DB::ODBCReader::GetStr(UIntOS colIndex, UnsafeArray<UTF
 	case DB::DBUtil::CT_VarUTF16Char:
 	case DB::DBUtil::CT_VarUTF32Char:
 	case DB::DBUtil::CT_UUID:
-		return Text::StrConcatS(buff, ((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString(), buffSize);
+		return this->colDatas[colIndex].colData.GetNN<Text::StringBuilderUTF8>()->ConcatToS(buff, buffSize);
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 	case DB::DBUtil::CT_Decimal:
@@ -2054,7 +2057,7 @@ UnsafeArrayOpt<UTF8Char> DB::ODBCReader::GetStr(UIntOS colIndex, UnsafeArray<UTF
 	case DB::DBUtil::CT_DateTimeTZ:
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_Date:
-		return ((Data::Timestamp*)this->colDatas[colIndex].colData)->ToString(buff);
+		return this->colDatas[colIndex].colData.GetArray<Data::Timestamp>()->ToString(buff);
 	case DB::DBUtil::CT_Binary:
 		return nullptr;
 	case DB::DBUtil::CT_Vector:
@@ -2093,7 +2096,7 @@ Data::Timestamp DB::ODBCReader::GetTimestamp(UIntOS colIndex)
 	case DB::DBUtil::CT_VarUTF32Char:
 	case DB::DBUtil::CT_UUID:
 		{
-			Text::StringBuilderUTF8 *sb = (Text::StringBuilderUTF8*)this->colDatas[colIndex].colData;
+			NN<Text::StringBuilderUTF8> sb = this->colDatas[colIndex].colData.GetNN<Text::StringBuilderUTF8>();
 			return Data::Timestamp(sb->ToCString(), this->tzQhr);
 		}
 	case DB::DBUtil::CT_Double:
@@ -2112,7 +2115,7 @@ Data::Timestamp DB::ODBCReader::GetTimestamp(UIntOS colIndex)
 	case DB::DBUtil::CT_Date:
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_DateTimeTZ:
-		return *(Data::Timestamp*)this->colDatas[colIndex].colData;
+		return this->colDatas[colIndex].colData.GetArray<Data::Timestamp>()[0];
 	case DB::DBUtil::CT_Vector:
 	case DB::DBUtil::CT_Binary:
 		return Data::Timestamp(nullptr);
@@ -2138,7 +2141,7 @@ Double DB::ODBCReader::GetDblOrNAN(UIntOS colIndex)
 	case DB::DBUtil::CT_VarUTF16Char:
 	case DB::DBUtil::CT_VarUTF32Char:
 	case DB::DBUtil::CT_UUID:
-		return Text::StrToDoubleOrNAN(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
+		return this->colDatas[colIndex].colData.GetNN<Text::StringBuilderUTF8>()->ToDoubleOrNAN();
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 	case DB::DBUtil::CT_Decimal:
@@ -2184,7 +2187,7 @@ Bool DB::ODBCReader::GetBool(UIntOS colIndex)
 	case DB::DBUtil::CT_VarUTF16Char:
 	case DB::DBUtil::CT_VarUTF32Char:
 	case DB::DBUtil::CT_UUID:
-		return Text::StrToInt32(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString()) != 0;
+		return this->colDatas[colIndex].colData.GetNN<Text::StringBuilderUTF8>()->ToInt32() != 0;
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 	case DB::DBUtil::CT_Decimal:
@@ -2290,7 +2293,7 @@ UIntOS DB::ODBCReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 		return 0;
 	case DB::DBUtil::CT_Vector:
 	case DB::DBUtil::CT_Binary:
-		MemCopyNO(buff.Ptr(), this->colDatas[colIndex].colData, (UIntOS)this->colDatas[colIndex].dataVal);
+		MemCopyNO(buff.Ptr(), this->colDatas[colIndex].colData.p, (UIntOS)this->colDatas[colIndex].dataVal);
 		return (UIntOS)(UInt64)this->colDatas[colIndex].dataVal;
 	case DB::DBUtil::CT_Unknown:
 	default:
@@ -2310,7 +2313,11 @@ Optional<Math::Geometry::Vector2D> DB::ODBCReader::GetVector(UIntOS colIndex)
 		if (this->colDatas[colIndex].colType == DB::DBUtil::CT_Binary || this->colDatas[colIndex].colType == DB::DBUtil::CT_Vector)
 		{
 			UIntOS dataSize = (UIntOS)this->colDatas[colIndex].dataVal;
-			UInt8 *buffPtr = (UInt8*)this->colDatas[colIndex].colData;
+			UnsafeArray<UInt8> buffPtr;
+			if (!this->colDatas[colIndex].colData.GetArrayOpt<UInt8>().SetTo(buffPtr))
+			{
+				return nullptr;
+			}
 			UInt32 srId;
 			return Math::MSGeography::ParseBinary(buffPtr, dataSize, srId);
 		}
@@ -2336,7 +2343,7 @@ Bool DB::ODBCReader::GetVariItem(UIntOS colIndex, NN<Data::VariItem> item)
 		item->SetNull();
 		return true;
 	}
-	Text::StringBuilderUTF8 *sb;
+	NN<Text::StringBuilderUTF8> sb;
 	switch (this->colDatas[colIndex].colType)
 	{
 	case DB::DBUtil::CT_UTF8Char:
@@ -2346,7 +2353,7 @@ Bool DB::ODBCReader::GetVariItem(UIntOS colIndex, NN<Data::VariItem> item)
 	case DB::DBUtil::CT_VarUTF16Char:
 	case DB::DBUtil::CT_VarUTF32Char:
 	case DB::DBUtil::CT_UUID:
-		sb = (Text::StringBuilderUTF8*)this->colDatas[colIndex].colData;
+		sb = this->colDatas[colIndex].colData.GetNN<Text::StringBuilderUTF8>();
 		item->SetStr(sb->v, sb->leng);
 		return true;
 	case DB::DBUtil::CT_Double:
@@ -2383,13 +2390,17 @@ Bool DB::ODBCReader::GetVariItem(UIntOS colIndex, NN<Data::VariItem> item)
 	case DB::DBUtil::CT_DateTimeTZ:
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_Date:
-		item->SetDate(*(Data::Timestamp*)this->colDatas[colIndex].colData);
+		item->SetDate(this->colDatas[colIndex].colData.GetArray<Data::Timestamp>()[0]);
 		return true;
 	case DB::DBUtil::CT_Vector:
 		if (this->conn->GetSQLType() == DB::SQLType::MSSQL)
 		{
 			UIntOS dataSize = (UIntOS)this->colDatas[colIndex].dataVal;
-			UInt8 *buffPtr = (UInt8*)this->colDatas[colIndex].colData;
+			UnsafeArray<const UInt8> buffPtr;
+			if (!this->colDatas[colIndex].colData.GetArrayOpt<const UInt8>().SetTo(buffPtr))
+			{
+				return false;
+			}
 			UInt32 srId;
 			NN<Math::Geometry::Vector2D> vec;
 			if (Math::MSGeography::ParseBinary(buffPtr, dataSize, srId).SetTo(vec))
@@ -2402,7 +2413,7 @@ Bool DB::ODBCReader::GetVariItem(UIntOS colIndex, NN<Data::VariItem> item)
 		}
 		return false;
 	case DB::DBUtil::CT_Binary:
-		item->SetByteArr((UInt8*)this->colDatas[colIndex].colData, (UIntOS)this->colDatas[colIndex].dataVal);
+		item->SetByteArr(this->colDatas[colIndex].colData.GetArray<UInt8>(), (UIntOS)this->colDatas[colIndex].dataVal);
 		return true;
 	case DB::DBUtil::CT_Unknown:
 	default:

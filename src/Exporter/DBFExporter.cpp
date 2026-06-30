@@ -92,7 +92,7 @@ Bool Exporter::DBFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UnsafeArray<UIntOS> colMap;
 	UIntOS i;
 	UIntOS j;
-	DB::DBFFixWriter *writer;
+	NN<DB::DBFFixWriter> writer;
 	Data::DateTime dt;
 
 	nCol = r->ColCount();
@@ -138,7 +138,7 @@ Bool Exporter::DBFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		}
 	}
 
-	NEW_CLASS(writer, DB::DBFFixWriter(stm, nOut, colNames, colSize, colDP, colTypes, this->codePage));
+	NEW_CLASSNN(writer, DB::DBFFixWriter(stm, nOut, colNames, colSize, colDP, colTypes, this->codePage));
 	
 	while (r->ReadNext())
 	{
@@ -181,7 +181,7 @@ Bool Exporter::DBFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	}
 	////////////////////////////////////////
 
-	DEL_CLASS(writer);
+	writer.Delete();
 	conn->CloseReader(r);
 
 	i = nOut;

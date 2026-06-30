@@ -23,7 +23,7 @@ namespace Net
 
 			virtual Bool ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
 
-			static DB::PageRequest *ParsePageReq(NN<Net::WebServer::WebRequest> req);
+			static NN<DB::PageRequest> ParsePageReq(NN<Net::WebServer::WebRequest> req);
 		};
 	}
 }

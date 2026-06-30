@@ -107,7 +107,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NN<Net::WebServer::WebReques
 				return true;
 			}
 			tableName = Text::String::New(subReq.v, (UIntOS)i);
-			if (!row.Set(this->dbCache->GetTableItem(tableName->ToCString(), ikey)))
+			if (!this->dbCache->GetTableItem(tableName->ToCString(), ikey).SetTo(row))
 			{
 				tableName->Release();
 				resp->SetStatusCode(Net::WebStatus::SC_NOT_FOUND);
@@ -152,7 +152,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NN<Net::WebServer::WebReques
 			{
 				Text::StringBuilderUTF8 sbURI;
 				Text::StringBuilderUTF8 sb;
-				DB::PageRequest *page = ParsePageReq(req);
+				NN<DB::PageRequest> page = ParsePageReq(req);
 				Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 				Data::ArrayListNN<DB::DBRow> rows;
 				NN<DB::DBRow> row;
@@ -252,7 +252,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NN<Net::WebServer::WebReques
 				json.ObjectEnd();
 
 				json.ObjectEnd();
-				DEL_CLASS(page);
+				page.Delete();
 				return this->ResponseJSONStr(req, resp, 0, json.Build());
 			}
 		}
@@ -280,7 +280,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NN<Net::WebServer::WebReques
 	return false;
 }
 
-DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(NN<Net::WebServer::WebRequest> req)
+NN<DB::PageRequest> Net::WebServer::RESTfulHandler::ParsePageReq(NN<Net::WebServer::WebRequest> req)
 {
 	UInt32 pageNum = 0;
 	UInt32 pageSize = 20;
@@ -290,8 +290,8 @@ DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(NN<Net::WebServer:
 	{
 		pageSize = 20;
 	}
-	DB::PageRequest *page;
-	NEW_CLASS(page, DB::PageRequest(pageNum, pageSize));
+	NN<DB::PageRequest> page;
+	NEW_CLASSNN(page, DB::PageRequest(pageNum, pageSize));
 	NN<Text::String> sort;
 	if (req->GetQueryValue(CSTR("sort")).SetTo(sort))
 	{

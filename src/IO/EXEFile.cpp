@@ -43,7 +43,7 @@ IO::EXEFile::~EXEFile()
 		{
 			OPTSTR_DEL(imp->funcs->GetItem(j));
 		}
-		DEL_CLASS(imp->funcs);
+		imp->funcs.Delete();
 		MemFreeNN(imp);
 	}
 
@@ -98,7 +98,7 @@ UIntOS IO::EXEFile::AddImportModule(Text::CStringNN moduleName)
 {
 	NN<ImportInfo> imp;
 	imp = MemAllocNN(ImportInfo);
-	NEW_CLASS(imp->funcs, Data::ArrayListStringNN());
+	NEW_CLASSNN(imp->funcs, Data::ArrayListStringNN());
 	imp->moduleName = Text::String::New(moduleName);
 	return this->importList.Add(imp);
 }

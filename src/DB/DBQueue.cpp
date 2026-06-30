@@ -197,8 +197,9 @@ DB::DBQueue::~DBQueue()
 	UIntOS k;
 	NN<DB::DBQueue::IDBCmd> c;
 	UnsafeArray<NN<DB::DBQueue::IDBCmd>> carr;
-	IO::FileStream *fs = 0;
-	Text::UTF8Writer *writer = 0;
+	Optional<IO::FileStream> fs = nullptr;
+	Optional<Text::UTF8Writer> writer = nullptr;
+	NN<Text::UTF8Writer> nnwriter;
 	this->dbList.DeleteAll();
 
 	Sync::MutexUsage mutUsage(this->mut);
@@ -212,15 +213,16 @@ DB::DBQueue::~DBQueue()
 			if (c->GetCmdType() == CmdType::SQLCmd)
 			{
 				NN<IO::FileStream> nnfs;
-				if (fs == 0)
+				if (!writer.SetTo(nnwriter))
 				{
 					NEW_CLASSNN(nnfs, IO::FileStream(CSTR("FailSQL.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-					fs = nnfs.Ptr();
-					NEW_CLASS(writer, Text::UTF8Writer(nnfs));
+					fs = nnfs;
+					NEW_CLASSNN(nnwriter, Text::UTF8Writer(nnfs));
+					writer = nnwriter;
 				}
 				NN<Text::String> sql = NN<DB::DBQueue::SQLCmd>::ConvertFrom(c)->GetSQL();
-				writer->Write(sql->ToCString());
-				writer->WriteLine(CSTR(";"));
+				nnwriter->Write(sql->ToCString());
+				nnwriter->WriteLine(CSTR(";"));
 			}
 			c.Delete();
 		}
@@ -236,15 +238,16 @@ DB::DBQueue::~DBQueue()
 				if (c->GetCmdType() == CmdType::SQLCmd)
 				{
 					NN<IO::FileStream> nnfs;
-					if (fs == 0)
+					if (!writer.SetTo(nnwriter))
 					{
 						NEW_CLASSNN(nnfs, IO::FileStream(CSTR("FailSQL.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-						fs = nnfs.Ptr();
-						NEW_CLASS(writer, Text::UTF8Writer(nnfs));
+						fs = nnfs;
+						NEW_CLASSNN(nnwriter, Text::UTF8Writer(nnfs));
+						writer = nnwriter;
 					}
 					NN<Text::String> sql = NN<DB::DBQueue::SQLCmd>::ConvertFrom(c)->GetSQL();
-					writer->Write(sql->ToCString());
-					writer->WriteLine(CSTR(";"));
+					nnwriter->Write(sql->ToCString());
+					nnwriter->WriteLine(CSTR(";"));
 				}
 				c.Delete();
 			}
@@ -252,11 +255,8 @@ DB::DBQueue::~DBQueue()
 		}
 		sqlList2[i].Delete();
 	}
-	if (fs)
-	{
-		DEL_CLASS(writer);
-		DEL_CLASS(fs);
-	}
+	writer.Delete();
+	fs.Delete();
 	mutUsage.EndUse();
 	MemFreeArr(sqlList);
 	MemFreeArr(sqlList2);

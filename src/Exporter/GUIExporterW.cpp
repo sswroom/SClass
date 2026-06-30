@@ -34,22 +34,22 @@ void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
 struct Exporter::GUIExporter::ClassData
 {
 	UInt32 gdiplusToken;
-	Gdiplus::GdiplusStartupInput *gdiplusStartupInput;
+	NN<Gdiplus::GdiplusStartupInput> gdiplusStartupInput;
 };
 
 Exporter::GUIExporter::GUIExporter() : IO::FileExporter()
 {
 	NN<ClassData> data = MemAllocNN(ClassData);
 	this->clsData = data;
-	NEW_CLASS(data->gdiplusStartupInput, Gdiplus::GdiplusStartupInput());
-	Gdiplus::GdiplusStartup((ULONG_PTR*)&data->gdiplusToken, data->gdiplusStartupInput, NULL);
+	NEW_CLASSNN(data->gdiplusStartupInput, Gdiplus::GdiplusStartupInput());
+	Gdiplus::GdiplusStartup((ULONG_PTR*)&data->gdiplusToken, data->gdiplusStartupInput.Ptr(), NULL);
 }
 
 Exporter::GUIExporter::~GUIExporter()
 {
 	NN<ClassData> data = this->clsData;
 	Gdiplus::GdiplusShutdown(data->gdiplusToken);
-	DEL_CLASS((Gdiplus::GdiplusStartupInput*)data->gdiplusStartupInput);
+	data->gdiplusStartupInput.Delete();
 	MemFreeNN(data);
 }
 
@@ -111,9 +111,9 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(NN<IO::Pa
 	}
 }
 
-AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, OutParam<UInt8*> relBuff)
+AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, OutParam<UnsafeArrayOpt<UInt8>> relBuff)
 {
-	relBuff.Set(0);
+	relBuff.Set(nullptr);
 	UnsafeArray<UInt8> nnpal;
 	NN<Media::ImageList> imgList;
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
@@ -128,14 +128,14 @@ AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, OutParam<UInt8
 	rimg = NN<Media::RasterImage>::ConvertFrom(img);
 	if (rimg->info.fourcc != 0)
 		return 0;
-	Gdiplus::Bitmap *gimg;
+	NN<Gdiplus::Bitmap> gimg;
 	Gdiplus::Rect rc(0, 0, (INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y);
 	Gdiplus::BitmapData bd;
 	Gdiplus::ColorPalette *pal;
 	switch (rimg->info.pf)
 	{
 	case Media::PF_B8G8R8A8:
-		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y, PixelFormat32bppARGB));
+		NEW_CLASSNN(gimg, Gdiplus::Bitmap((INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y, PixelFormat32bppARGB));
 		gimg->SetResolution((Gdiplus::REAL)rimg->info.hdpi, (Gdiplus::REAL)rimg->info.vdpi);
 		if (rimg->info.atype == Media::AT_IGNORE_ALPHA || rimg->info.atype == Media::AT_ALPHA_ALL_FF)
 		{
@@ -155,7 +155,7 @@ AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, OutParam<UInt8
 		}
 		return gimg;
 	case Media::PF_B8G8R8:
-		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y, PixelFormat24bppRGB));
+		NEW_CLASSNN(gimg, Gdiplus::Bitmap((INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y, PixelFormat24bppRGB));
 		gimg->SetResolution((Gdiplus::REAL)rimg->info.hdpi, (Gdiplus::REAL)rimg->info.vdpi);
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat24bppRGB, &bd) == Gdiplus::Ok)
 		{
@@ -164,7 +164,7 @@ AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, OutParam<UInt8
 		}
 		return gimg;
 	case Media::PF_LE_R5G6B5:
-		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y, PixelFormat16bppRGB565));
+		NEW_CLASSNN(gimg, Gdiplus::Bitmap((INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y, PixelFormat16bppRGB565));
 		gimg->SetResolution((Gdiplus::REAL)rimg->info.hdpi, (Gdiplus::REAL)rimg->info.vdpi);
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat16bppRGB565, &bd) == Gdiplus::Ok)
 		{
@@ -173,7 +173,7 @@ AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, OutParam<UInt8
 		}
 		return gimg;
 	case Media::PF_PAL_8:
-		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y, PixelFormat8bppIndexed));
+		NEW_CLASSNN(gimg, Gdiplus::Bitmap((INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y, PixelFormat8bppIndexed));
 		gimg->SetResolution((Gdiplus::REAL)rimg->info.hdpi, (Gdiplus::REAL)rimg->info.vdpi);
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat8bppIndexed, &bd) == Gdiplus::Ok)
 		{
@@ -193,7 +193,7 @@ AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, OutParam<UInt8
 
 		return gimg;
 	case Media::PF_PAL_4:
-		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y, PixelFormat4bppIndexed));
+		NEW_CLASSNN(gimg, Gdiplus::Bitmap((INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y, PixelFormat4bppIndexed));
 		gimg->SetResolution((Gdiplus::REAL)rimg->info.hdpi, (Gdiplus::REAL)rimg->info.vdpi);
 
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat4bppIndexed, &bd) == Gdiplus::Ok)
@@ -214,7 +214,7 @@ AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, OutParam<UInt8
 
 		return gimg;
 	case Media::PF_PAL_1:
-		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y, PixelFormat1bppIndexed));
+		NEW_CLASSNN(gimg, Gdiplus::Bitmap((INT)rimg->info.dispSize.x, (INT)rimg->info.dispSize.y, PixelFormat1bppIndexed));
 		gimg->SetResolution((Gdiplus::REAL)rimg->info.hdpi, (Gdiplus::REAL)rimg->info.vdpi);
 
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat1bppIndexed, &bd) == Gdiplus::Ok)

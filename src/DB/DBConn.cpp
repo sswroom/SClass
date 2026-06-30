@@ -50,12 +50,12 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 		if (!tmpr.SetTo(r))
 			return nullptr;
 
-		DB::TableDef *tab;
+		NN<DB::TableDef> tab;
 
 		if (r->ReadNext())
 		{
 			ptr = r->GetStr(0, buff, sizeof(buff)).Or(buff);
-			NEW_CLASS(tab, DB::TableDef(nullptr, CSTRP(buff, ptr)));
+			NEW_CLASSNN(tab, DB::TableDef(nullptr, CSTRP(buff, ptr)));
 			if (r->GetStr(1, buff, sizeof(buff)).SetTo(ptr))
 			{
 				tab->SetEngine(CSTRP(buff, ptr));
@@ -170,8 +170,8 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 		if (!tmpr.SetTo(r))
 			return nullptr;
 
-		DB::TableDef *tab;
-		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
+		NN<DB::TableDef> tab;
+		NEW_CLASSNN(tab, DB::TableDef(schemaName, tableName));
 		tab->SetEngine(nullptr);
 		tab->SetComments(nullptr);
 		tab->SetAttr(nullptr);
@@ -349,14 +349,14 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 			return nullptr;
 		}
 		Data::FastStringMapObj<DB::ColDef*> colMap;
-		DB::TableDef *tab;
+		NN<DB::TableDef> tab;
 		NN<DB::ColDef> col;
 		Bool hasGeometry = false;
 		Optional<Text::String> geometrySchema = nullptr;
 		Optional<Text::String> ops;
 		NN<Text::String> s;
 		UIntOS sizeCol;
-		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
+		NEW_CLASSNN(tab, DB::TableDef(schemaName, tableName));
 		while (r->ReadNext())
 		{
 			ops = r->GetNewStr(0);

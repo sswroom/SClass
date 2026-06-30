@@ -499,8 +499,8 @@ UIntOS DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 		if (SUCCEEDED(hr))
 		{
 			UIntOS tableNameCol = 3;
-			DB::OLEDBReader *rdr;
-			NEW_CLASS(rdr, DB::OLEDBReader(pIRowset, -1, this->clsData->tzQhr));
+			NN<DB::OLEDBReader> rdr;
+			NEW_CLASSNN(rdr, DB::OLEDBReader(pIRowset, -1, this->clsData->tzQhr));
 			i = rdr->ColCount();
 			while (i-- > 0)
 			{
@@ -520,7 +520,7 @@ UIntOS DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 					names->Add(Text::String::NewP(sbuff, sptr));
 				}
 			}
-			DEL_CLASS(rdr);
+			rdr.Delete();
 		}
 		pIDBSchemaRowset->Release();
 	}
@@ -694,15 +694,15 @@ Optional<DB::DBReader> DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 	pICommandText->Release();
 	pIDBCreateCommand->Release();
 
-	DB::DBReader *r;
-	NEW_CLASS(r, DB::OLEDBReader(pIRowset));
+	NN<DB::DBReader> r;
+	NEW_CLASSNN(r, DB::OLEDBReader(pIRowset));
 	return r;
 }*/
 
 void DB::OLEDBConn::CloseReader(NN<DBReader> r)
 {
-	DB::OLEDBReader *reader = (DB::OLEDBReader*)r.Ptr();
-	DEL_CLASS(reader);
+	NN<DB::OLEDBReader> reader = NN<DB::OLEDBReader>::ConvertFrom(r);
+	reader.Delete();
 }
 
 Optional<DB::DBTransaction> DB::OLEDBConn::BeginTransaction()

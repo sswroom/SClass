@@ -94,7 +94,7 @@ IntOS DB::DBCache::GetRowCount(Text::CStringNN tableName)
 	}
 }
 
-UIntOS DB::DBCache::QueryTableData(NN<Data::ArrayListNN<DB::DBRow>> outRows, Text::CStringNN tableName, DB::PageRequest *page)
+UIntOS DB::DBCache::QueryTableData(NN<Data::ArrayListNN<DB::DBRow>> outRows, Text::CStringNN tableName, NN<DB::PageRequest> page)
 {
 	NN<DB::DBCache::TableInfo> tableInfo;
 	if (!this->GetTableInfo(tableName).SetTo(tableInfo))

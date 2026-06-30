@@ -87,7 +87,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 	}
 	NN<Map::TileMap> tileMap = NN<Map::TileMapLayer>::ConvertFrom(layer)->GetTileMap();
 	Map::TileMap::TileType ttype = tileMap->GetTileType();
-	Text::UTF8Writer *writer;
+	NN<Text::UTF8Writer> writer;
 	UIntOS i;
 	UIntOS j;
 	UIntOS level;
@@ -119,13 +119,13 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 
 	if (ttype == Map::TileMap::TileType::OSMLOCAL)
 	{
-		DB::SQLiteFile *db;
+		NN<DB::SQLiteFile> db;
 		s = Text::XML::ToNewXMLText(fileName2);
 		succ = false;
 
 		sptr = fileName.ConcatTo(u8fileName);
 		sptr = IO::Path::AppendPath(u8fileName, sptr, CSTR("OruxMapsImages.db"));
-		NEW_CLASS(db, DB::SQLiteFile(CSTRP(u8fileName, sptr)));
+		NEW_CLASSNN(db, DB::SQLiteFile(CSTRP(u8fileName, sptr)));
 		if (!db->IsError())
 		{
 			Data::ArrayListT<Math::Coord2D<Int32>> imgIds;
@@ -147,7 +147,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 			}
 			succ = true;
 			NN<Map::OSM::OSMLocalTileMap> osm = NN<Map::OSM::OSMLocalTileMap>::ConvertFrom(tileMap);
-			NEW_CLASS(writer, Text::UTF8Writer(stm));
+			NEW_CLASSNN(writer, Text::UTF8Writer(stm));
 			writer->Write(CSTR("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"));
 			writer->Write(CSTR("<OruxTracker xmlns=\"http://oruxtracker.com/app/res/calibration\"\n"));
 			writer->Write(CSTR(" versionCode=\"3.0\">\n"));
@@ -291,9 +291,9 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 			s->Release();
 			writer->Write(CSTR("</MapCalibration>\n"));
 			writer->Write(CSTR("</OruxTracker>\n"));
-			DEL_CLASS(writer);
+			writer.Delete();
 		}
-		DEL_CLASS(db);
+		db.Delete();
 		return succ;
 	}
 	else if (ttype == Map::TileMap::TileType::OSM)
@@ -303,9 +303,9 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 		{
 			return false;
 		}
-		NEW_CLASS(writer, Text::UTF8Writer(stm));
+		NEW_CLASSNN(writer, Text::UTF8Writer(stm));
 		////////////////////////////////////////////
-		DEL_CLASS(writer);
+		writer.Delete();
 		return true;
 	}
 	return false;
