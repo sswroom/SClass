@@ -7,11 +7,11 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Media::MonitorInfo *info;
+	NN<Media::MonitorInfo> info;
 	IO::ConsoleWriter console;
 	Text::StringBuilderUTF8 sb;
 	NN<Text::String> s;
-	NEW_CLASS(info, Media::MonitorInfo(nullptr));
+	NEW_CLASSNN(info, Media::MonitorInfo(nullptr));
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Name = "));
 	sb.Append(info->GetName());
@@ -30,6 +30,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		sb.Append(s);
 		console.WriteLine(sb.ToCString());
 	}
-	DEL_CLASS(info);
+	info.Delete();
 	return 0;
 }

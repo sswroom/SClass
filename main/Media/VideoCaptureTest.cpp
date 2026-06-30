@@ -17,7 +17,7 @@
 Media::FrameInfo info;
 static Optional<Media::CS::CSConverter> converter;
 Int32 frameCnt;
-IO::ConsoleWriter *console;
+NN<IO::ConsoleWriter> console;
 
 void __stdcall FrameChangeHdlr(Media::VideoSource::FrameChange frChg, AnyType userData)
 {
@@ -51,8 +51,8 @@ void __stdcall CaptureTest(Data::Duration frameTime, UInt32 frameNum, UnsafeArra
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Media::VideoCaptureMgr *mgr;
-	Media::ColorManager *colorMgr;
+	NN<Media::VideoCaptureMgr> mgr;
+	NN<Media::ColorManager> colorMgr;
 	NN<Media::ColorManagerSess> colorSess;
 	Data::ArrayListNN<Media::VideoCaptureMgr::DeviceInfo> devList;
 	NN<Media::VideoCaptureMgr::DeviceInfo> devInfo;
@@ -94,9 +94,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	frameCnt = 150;
 	converter = nullptr;
 
-	NEW_CLASS(console, IO::ConsoleWriter());
-	NEW_CLASS(colorMgr, Media::ColorManager());
-	NEW_CLASS(mgr, Media::VideoCaptureMgr());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
+	NEW_CLASSNN(colorMgr, Media::ColorManager());
+	NEW_CLASSNN(mgr, Media::VideoCaptureMgr());
 
 	colorSess = colorMgr->CreateSess(nullptr);
 	cnt = mgr->GetDeviceList(devList);
@@ -360,9 +360,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	mgr->FreeDeviceList(devList);
 	colorMgr->DeleteSess(colorSess);
 
-	DEL_CLASS(mgr);
-	DEL_CLASS(colorMgr);
-	DEL_CLASS(console);
+	mgr.Delete();
+	colorMgr.Delete();
+	console.Delete();
 
 	return 0;
 }

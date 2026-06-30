@@ -8,12 +8,12 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	IO::StreamWriter *writer;
+	NN<IO::StreamWriter> writer;
 	NN<IO::FileStream> fs;
 	NN<Text::Encoding> enc;
 	NEW_CLASSNN(enc, Text::Encoding(65001));
 	NEW_CLASSNN(fs, IO::FileStream(CSTR("Temp.txt"), IO::FileMode::Create, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(writer, IO::StreamWriter(fs, enc));
+	NEW_CLASSNN(writer, IO::StreamWriter(fs, enc));
 	UInt32 i = 0;
 	while (i < 256)
 	{
@@ -30,7 +30,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		i++;
 	}
 
-	DEL_CLASS(writer);
+	writer.Delete();
 	fs.Delete();
 	enc.Delete();
 	return 0;

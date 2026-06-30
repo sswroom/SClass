@@ -13,7 +13,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-IO::ConsoleWriter *console;
+NN<IO::ConsoleWriter> console;
 void __stdcall OnGPSPos(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::LocationService::SateStatus> sates)
 {
 	Text::StringBuilderUTF8 sb;
@@ -38,11 +38,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<IO::GPIOControl> gpio;
 	NN<IO::RS232GPIO> port;
-	IO::GPSNMEA *gps;
+	NN<IO::GPSNMEA> gps;
 	Text::StringBuilderUTF8 sb;
 	UInt16 pinNum = 7;
 	UIntOS argc;
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
@@ -55,14 +55,14 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 	NEW_CLASSNN(gpio, IO::GPIOControl());
 	NEW_CLASSNN(port, IO::RS232GPIO(gpio, pinNum, 255, 9600));
-	NEW_CLASS(gps, IO::GPSNMEA(port, false));
+	NEW_CLASSNN(gps, IO::GPSNMEA(port, false));
 	gps->RegisterLocationHandler(OnGPSPos, 0);
 
 	progCtrl->WaitForExit(progCtrl);
 
-	DEL_CLASS(gps);
+	gps.Delete();
 	port.Delete();
 	gpio.Delete();
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

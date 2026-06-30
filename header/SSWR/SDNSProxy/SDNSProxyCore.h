@@ -37,7 +37,7 @@ namespace SSWR
 			};
 
 		private:
-			IO::Writer *console;
+			NN<IO::Writer> console;
 			NN<Net::DNSProxy> proxy;
 			NN<Net::SocketFactory> sockf;
 			NN<Net::TCPClientFactory> clif;
@@ -56,7 +56,7 @@ namespace SSWR
 			static void __stdcall OnDNSRequest(AnyType userObj, Text::CStringNN reqName, Int32 reqType, Int32 reqClass, NN<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
 
 		public:
-			SDNSProxyCore(NN<IO::ConfigFile> cfg, IO::Writer *console);
+			SDNSProxyCore(NN<IO::ConfigFile> cfg, NN<IO::Writer> console);
 			~SDNSProxyCore();
 
 			Bool IsError();

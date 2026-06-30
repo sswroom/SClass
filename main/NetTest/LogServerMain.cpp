@@ -6,7 +6,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XML.h"
 
-IO::ConsoleWriter *console;
+NN<IO::ConsoleWriter> console;
 
 class MyLogHandler : public IO::LogHandler
 {
@@ -32,12 +32,12 @@ public:
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Net::LogServer *svr;
+	NN<Net::LogServer> svr;
 	NN<Net::SocketFactory> sockf;
 	IO::LogTool log;
 	Text::StringBuilderUTF8 sb;
 	NN<MyLogHandler> logHdlr;
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	UInt16 port = 1234;
 
 	UIntOS argc;
@@ -54,7 +54,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
 	NEW_CLASSNN(logHdlr, MyLogHandler());
 	log.AddLogHandler(logHdlr, IO::LogHandler::LogLevel::Raw);
-	NEW_CLASS(svr, Net::LogServer(sockf, port, CSTR("logs"), log, true, true));
+	NEW_CLASSNN(svr, Net::LogServer(sockf, port, CSTR("logs"), log, true, true));
 	if (!svr->IsError())
 	{
 		progCtrl->WaitForExit(progCtrl);
@@ -63,10 +63,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		console->WriteLine(CSTR("Error in listening port"));
 	}
-	DEL_CLASS(svr);
+	svr.Delete();
 	log.RemoveLogHandler(logHdlr);
 	logHdlr.Delete();
 	sockf.Delete();
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

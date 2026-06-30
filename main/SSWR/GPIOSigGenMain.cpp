@@ -8,8 +8,8 @@
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 
-IO::GPIOPin *pin;
-Sync::Event *evt;
+NN<IO::GPIOPin> pin;
+NN<Sync::Event> evt;
 Bool threadRunning;
 Bool threadToStop;
 
@@ -45,15 +45,15 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			if (pinNum > 0)
 			{
 				IO::GPIOControl gpioCtrl;
-				NEW_CLASS(pin, IO::GPIOPin(gpioCtrl, pinNum));
+				NEW_CLASSNN(pin, IO::GPIOPin(gpioCtrl, pinNum));
 				if (gpioCtrl.IsError() || pin->IsError())
 				{
-					DEL_CLASS(pin);
+					pin.Delete();
 					console.WriteLine(CSTR("Error in opening GPIO pin"));
 				}
 				else
 				{
-					NEW_CLASS(evt, Sync::Event(true));
+					NEW_CLASSNN(evt, Sync::Event(true));
 					threadRunning = false;
 					threadToStop = false;
 					pin->SetPinOutput(true);
@@ -68,8 +68,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 						Sync::SimpleThread::Sleep(1);
 					}
 					pin->SetPinOutput(false);
-					DEL_CLASS(evt);
-					DEL_CLASS(pin);
+					evt.Delete();
+					pin.Delete();
 				}
 			}
 			else

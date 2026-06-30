@@ -35,9 +35,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NEW_CLASSNN(parsers, Parser::FullParserList());
 	eng = Media::DrawEngineFactory::CreateDrawEngine();
 	NEW_CLASSNN(map, Map::OSM::OSMTileMap(CSTR("https://tile.openstreetmap.org/"), CSTR("OSMTile"), 0, 18, clif, ssl));
-//	NEW_CLASS(map, Map::OSM::OSMTileMap(CSTR("http://b.tile.opencyclemap.org/cycle/"), CSTR("OSMOpenCycleMap"), 0, 16, sockf));
-//	NEW_CLASS(map, Map::OSM::OSMTileMap(CSTR("http://b.tile2.opencyclemap.org/transport/"), CSTR("OSMTransport"), 0, 18, sockf));
-//	NEW_CLASS(map, Map::OSM::OSMTileMap(CSTR("http://otile2.mqcdn.com/tiles/1.0.0/osm/"), CSTR("OSMMapQuest"), 0, 18, sockf));
+//	NEW_CLASSNN(map, Map::OSM::OSMTileMap(CSTR("http://b.tile.opencyclemap.org/cycle/"), CSTR("OSMOpenCycleMap"), 0, 16, sockf));
+//	NEW_CLASSNN(map, Map::OSM::OSMTileMap(CSTR("http://b.tile2.opencyclemap.org/transport/"), CSTR("OSMTransport"), 0, 18, sockf));
+//	NEW_CLASSNN(map, Map::OSM::OSMTileMap(CSTR("http://otile2.mqcdn.com/tiles/1.0.0/osm/"), CSTR("OSMMapQuest"), 0, 18, sockf));
 	{
 		Map::MapEnv env(CSTR("TileMapEnv.txt"), 0xffffffff, Math::CoordinateSystemManager::CreateWGS84Csys());
 		NEW_CLASSNN(lyr, Map::TileMapLayer(map, parsers));

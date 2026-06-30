@@ -16,22 +16,22 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UInt32 code;
 	IO::ConsoleWriter console;
 	NN<IO::MemoryStream> mstm;
-	IO::BitReader *reader;
-	IO::BitWriter *writer;
+	NN<IO::BitReader> reader;
+	NN<IO::BitWriter> writer;
 	Double t1;
 	Double t2;
 	Bool succ = true;
-	Manage::HiResClock *clk;
+	NN<Manage::HiResClock> clk;
 
 	UInt32 i;
 	UInt32 endCode = 262144;
 	UInt32 codeSize;
 	UInt32 nextSizeCode;
 
-	NEW_CLASS(clk, Manage::HiResClock());
+	NEW_CLASSNN(clk, Manage::HiResClock());
 	NEW_CLASSNN(mstm, IO::MemoryStream(1048576));
 	clk->Start();
-	NEW_CLASS(writer, IO::BitWriterMSB(mstm));
+	NEW_CLASSNN(writer, IO::BitWriterMSB(mstm));
 	i = 0;
 	nextSizeCode = 2;
 	codeSize = 1;
@@ -45,12 +45,12 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		nextSizeCode = nextSizeCode << 1;
 		codeSize++;
 	}
-	DEL_CLASS(writer);
+	writer.Delete();
 	t1 = clk->GetTimeDiff();
 
 	mstm->SeekFromBeginning(0);
 	clk->Start();
-	NEW_CLASS(reader, IO::BitReaderMSB(mstm));
+	NEW_CLASSNN(reader, IO::BitReaderMSB(mstm));
 	i = 0;
 	nextSizeCode = 2;
 	codeSize = 1;
@@ -104,7 +104,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console.WriteLine(sb.ToCString());
 	}
 
-	DEL_CLASS(reader);
+	reader.Delete();
 	mstm.Delete();
+	clk.Delete();
 	return 0;
 }

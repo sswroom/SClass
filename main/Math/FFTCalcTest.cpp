@@ -23,14 +23,14 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Manage::HiResClock clk;
 	UnsafeArray<UInt8> sampleBuff;
 	UnsafeArray<Double> freq;
-	Math::FFTCalc *fft;
+	NN<Math::FFTCalc> fft;
 	UIntOS n = 1;
 	UIntOS sampleCount;
 	while (n < 26) //26
 	{
 		sampleCount = 1 << n;
 		clk.Start();
-		NEW_CLASS(fft, Math::FFTCalc(sampleCount, Math::FFTCalc::WT_BLACKMANN_HARRIS));
+		NEW_CLASSNN(fft, Math::FFTCalc(sampleCount, Math::FFTCalc::WT_BLACKMANN_HARRIS));
 		t0 = clk.GetTimeDiff();
 
 		sampleBuff = MemAllocArr(UInt8, sizeof(SAMPLETYPE) * sampleCount);
@@ -55,7 +55,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		sb.AppendDouble(t2);
 		console.WriteLine(sb.ToCString());
 
-		DEL_CLASS(fft);
+		fft.Delete();
 		n++;
 	}
 	return 0;

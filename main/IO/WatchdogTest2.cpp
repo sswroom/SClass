@@ -23,9 +23,9 @@ Optional<IO::Watchdog> wd;
 Bool running;
 Bool httpRunning;
 Bool toStop;
-Sync::Event *evt;
-Sync::Event *httpEvt;
-IO::Device::AM2315 *am2315;
+NN<Sync::Event> evt;
+NN<Sync::Event> httpEvt;
+NN<IO::Device::AM2315> am2315;
 NN<Net::SocketFactory> sockf;
 NN<Net::TCPClientFactory> clif;
 Optional<Net::SSLEngine> ssl;
@@ -137,17 +137,16 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console.WriteLine(CSTR("I2C Bus not found"));
 		return 0;
 	}
-	NEW_CLASS(am2315, IO::Device::AM2315(channel, true));
+	NEW_CLASSNN(am2315, IO::Device::AM2315(channel, true));
 	if (am2315->IsError())
 	{
-		DEL_CLASS(am2315);
-		am2315 = 0;
+		am2315.Delete();
 		console.WriteLine(CSTR("AM2315 not found"));
 		return 0;
 	}
 
-	NEW_CLASS(evt, Sync::Event(true));
-	NEW_CLASS(httpEvt, Sync::Event(true));
+	NEW_CLASSNN(evt, Sync::Event(true));
+	NEW_CLASSNN(httpEvt, Sync::Event(true));
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(false));
 	NEW_CLASSNN(clif, Net::TCPClientFactory(sockf));
 	ssl = Net::SSLEngineFactory::Create(clif, true);
@@ -205,12 +204,12 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 		nnwd.Delete();
 	}
-	DEL_CLASS(evt);
-	DEL_CLASS(httpEvt);
+	evt.Delete();
+	httpEvt.Delete();
 	ssl.Delete();
 	clif.Delete();
 	sockf.Delete();
-	DEL_CLASS(am2315);
+	am2315.Delete();
 	return 0;
 }
 

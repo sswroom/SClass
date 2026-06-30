@@ -12,12 +12,12 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IntOS j;
 	Text::String *strArr[10000];
 	NN<Text::String> str;
-	Data::ArrayListString *a;
+	NN<Data::ArrayListString> a;
 	Double t1;
-	Manage::HiResClock *clk;
+	NN<Manage::HiResClock> clk;
 	IO::ConsoleWriter console;
 
-	NEW_CLASS(clk, Manage::HiResClock());
+	NEW_CLASSNN(clk, Manage::HiResClock());
 
 	i = 10000;
 	while (i-- > 0)
@@ -29,14 +29,14 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	j = 9000;
 	while (j-- > 0)
 	{
-		NEW_CLASS(a, Data::ArrayListString(1000));
+		NEW_CLASSNN(a, Data::ArrayListString(1000));
 		i = 1000;
 		while (i-- > 0)
 		{
 			a->Add(strArr[i]);
 		}
 		str = a->JoinString();
-		DEL_CLASS(a);
+		a.Delete();
 		str->Release();
 	}
 	t1 = clk->GetTimeDiff();
@@ -50,6 +50,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		strArr[i]->Release();
 	}
-	DEL_CLASS(clk);
+	clk.Delete();
 	return 0;
 }

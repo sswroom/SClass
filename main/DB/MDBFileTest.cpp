@@ -14,19 +14,19 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Text::CStringNN fileName = CSTR("E:\\myworks\\0_req\\20120925 Macau Layer\\GeoDatabase\\Basemap.mdb");
 	UnsafeArray<const UTF8Char> destPath = U8STR("E:\\myworks\\0_req\\20120925 Macau Layer\\GeoDatabase\\");
-	IO::LogTool *log;
-	IO::ConsoleWriter *console;
+	NN<IO::LogTool> log;
+	NN<IO::ConsoleWriter> console;
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 
-	NEW_CLASS(console, IO::ConsoleWriter());
-	NEW_CLASS(log, IO::LogTool());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
+	NEW_CLASSNN(log, IO::LogTool());
 
-	Parser::FullParserList *parsers;
+	NN<Parser::FullParserList> parsers;
 	NN<IO::ParsedObject> pobj;
-	NEW_CLASS(parsers, Parser::FullParserList());
+	NEW_CLASSNN(parsers, Parser::FullParserList());
 	IO::StmData::FileData fd(fileName, false);
 	if (parsers->ParseFile(fd).SetTo(pobj))
 	{
@@ -55,9 +55,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 		pobj.Delete();
 	}
-	DEL_CLASS(parsers);
+	parsers.Delete();
 
-	DEL_CLASS(log);
-	DEL_CLASS(console);
+	log.Delete();
+	console.Delete();
 	return 0;
 }

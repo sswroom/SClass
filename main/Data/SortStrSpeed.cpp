@@ -21,9 +21,9 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Manage::HiResClock *clk;
-	Data::RandomMT19937 *rand;
-	Data::Sort::ArtificialQuickSort *sort;
+	NN<Manage::HiResClock> clk;
+	NN<Data::RandomMT19937> rand;
+	NN<Data::Sort::ArtificialQuickSort> sort;
 	Text::StringBuilderUTF8 sb;
 	IO::ConsoleWriter console;
 	UnsafeArray<UnsafeArray<WChar>> array1;
@@ -39,9 +39,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		Text::StrToUInt32(argv[1], seed);
 	}
 
-	NEW_CLASS(rand, Data::RandomMT19937(seed));
-	NEW_CLASS(clk, Manage::HiResClock());
-	NEW_CLASS(sort, Data::Sort::ArtificialQuickSort());
+	NEW_CLASSNN(rand, Data::RandomMT19937(seed));
+	NEW_CLASSNN(clk, Manage::HiResClock());
+	NEW_CLASSNN(sort, Data::Sort::ArtificialQuickSort());
 	array1 = MemAllocAArr(UnsafeArray<WChar>, NUM_RECORD);
 	array2 = MemAllocAArr(UnsafeArray<WChar>, NUM_RECORD);
 	array2p = MemAllocAArr(WChar *, NUM_RECORD);
@@ -279,9 +279,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		numberOfRec = numberOfRec << 1;
 	}
 
-	DEL_CLASS(sort);
-	DEL_CLASS(clk);
-	DEL_CLASS(rand);
+	sort.Delete();
+	clk.Delete();
+	rand.Delete();
 	MemFreeArr(arrBuff);
 	MemFreeAArr(array1);
 	MemFreeAArr(array2);

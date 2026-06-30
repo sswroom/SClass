@@ -127,15 +127,15 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		fileName = Text::CStringNN::FromPtr(argv[1]);
 	}
 
-	IO::ConsoleWriter *console;
-	Parser::ParserList *parsers;
-	Media::VideoChecker *checker;
+	NN<IO::ConsoleWriter> console;
+	NN<Parser::ParserList> parsers;
+	NN<Media::VideoChecker> checker;
 	NN<IO::StmData::FileData> fd;
 	Optional<Media::MediaFile> mediaFile;
 
-	NEW_CLASS(console, IO::ConsoleWriter());
-	NEW_CLASS(parsers, Parser::FullParserList());
-	NEW_CLASS(checker, Media::VideoChecker(false));
+	NEW_CLASSNN(console, IO::ConsoleWriter());
+	NEW_CLASSNN(parsers, Parser::FullParserList());
+	NEW_CLASSNN(checker, Media::VideoChecker(false));
 	NEW_CLASSNN(fd, IO::StmData::FileData(fileName, false));
 	mediaFile = Optional<Media::MediaFile>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::MediaFile));
 	fd.Delete();
@@ -158,9 +158,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console->WriteLine(CSTR("Error in parsing file"));
 	}
 	
-
-	DEL_CLASS(checker);
-	DEL_CLASS(parsers);
-	DEL_CLASS(console);
+	checker.Delete();
+	parsers.Delete();
+	console.Delete();
 	return 0;
 }

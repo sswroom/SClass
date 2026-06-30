@@ -19,7 +19,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 
-IO::ConsoleWriter *console;
+NN<IO::ConsoleWriter> console;
 Bool showHelp;
 
 class ProgressHandler : public IO::ProgressHandler
@@ -33,7 +33,7 @@ private:
 
 	Bool threadRunning;
 	Bool threadToStop;
-	Sync::Event *evt;
+	NN<Sync::Event> evt;
 
 	static UInt32 __stdcall CheckThread(AnyType userObj)
 	{
@@ -92,7 +92,7 @@ public:
 
 		this->threadRunning = false;
 		this->threadToStop = false;
-		NEW_CLASS(this->evt, Sync::Event(true));
+		NEW_CLASSNN(this->evt, Sync::Event(true));
 		Sync::ThreadUtil::Create(CheckThread, this);
 		while (!this->threadRunning)
 		{
@@ -108,7 +108,7 @@ public:
 		{
 			Sync::SimpleThread::Sleep(1);
 		}
-		DEL_CLASS(this->evt);
+		this->evt.Delete();
 		OPTSTR_DEL(this->name);
 		this->fileName = nullptr;
 	}
@@ -165,7 +165,7 @@ Bool VerifyMD5(Text::CStringNN fileName, Bool flagCont, Bool flagVerbose, Option
 		j = fileChk->GetCount();
 		while (i < j)
 		{
-			if (!fileChk->CheckEntryHash(i, hash, progress, flagVerbose?console:0))
+			if (!fileChk->CheckEntryHash(i, hash, progress, flagVerbose?console:Optional<IO::Writer>(nullptr)))
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("File validation failed: "));
@@ -198,7 +198,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UnsafeArray<UTF8Char>> cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	showHelp = true;
 	if (cmdCnt >= 2)
 	{
@@ -354,6 +354,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console->WriteLine(CSTR("Options: -c   Continue on verify error"));
 		console->WriteLine(CSTR("         -v   Verbose"));
 	}
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

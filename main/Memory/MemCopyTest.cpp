@@ -17,7 +17,7 @@ void mtest(UIntOS copyCnt)
 {
 	UInt8 *buff1;
 	UInt8 *buff2;
-	Manage::HiResClock *clk;
+	NN<Manage::HiResClock> clk;
 	UIntOS i;
 	Double t1;
 	Double t2;
@@ -26,7 +26,7 @@ void mtest(UIntOS copyCnt)
 
 	buff1 = MemAllocA64(UInt8, copyCnt);
 	buff2 = MemAllocA64(UInt8, copyCnt);
-	NEW_CLASS(clk, Manage::HiResClock());
+	NEW_CLASSNN(clk, Manage::HiResClock());
 	clk->Start();
 	i = LOOPCNT;
 	while (i-- > 0)
@@ -60,7 +60,7 @@ void mtest(UIntOS copyCnt)
 	t4 = clk->GetTimeDiff();
 
 	printf("t1 = %lf, t2 = %lf, t3 = %lf, t4 = %lf\n", t1, t2, t3, t4);
-	DEL_CLASS(clk);
+	clk.Delete();
 	MemFreeA(buff1);
 	MemFreeA(buff2);
 }

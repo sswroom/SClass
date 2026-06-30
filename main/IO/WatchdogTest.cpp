@@ -13,7 +13,7 @@
 Optional<IO::Watchdog> wd;
 Bool running;
 Bool toStop;
-Sync::Event *evt;
+NN<Sync::Event> evt;
 
 UInt32 __stdcall WatchdogThread(AnyType userObj)
 {
@@ -40,7 +40,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UIntOS argc;
 	running = false;
 	toStop = false;
-	NEW_CLASS(evt, Sync::Event(true));
+	NEW_CLASSNN(evt, Sync::Event(true));
 
 	argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2 && Text::StrToInt32(argv[1], wdId))
@@ -113,7 +113,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 		nnwd.Delete();
 	}
-	DEL_CLASS(evt);
+	evt.Delete();
 	return 0;
 }
 

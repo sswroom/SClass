@@ -11,13 +11,13 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	const WChar *srcStr = L"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	IO::ConsoleWriter *console;
+	NN<IO::ConsoleWriter> console;
 	Manage::HiResClock clk;
 	Double t;
 	UIntOS i = 10000000;
 	UIntOS res = 0;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	
 	clk.Start();
 	while (i-- > 0)
@@ -31,6 +31,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	sb.AppendC(UTF8STRC(", t = "));
 	sb.AppendDouble(t);
 	console->WriteLine(sb.ToCString());
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

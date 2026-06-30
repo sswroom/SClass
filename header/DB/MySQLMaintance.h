@@ -8,11 +8,11 @@ namespace DB
 	class MySQLMaintance
 	{
 	private:
-		Net::MySQLTCPClient *cli;
+		NN<Net::MySQLTCPClient> cli;
 		Bool needRelease;
 
 	public:
-		MySQLMaintance(Net::MySQLTCPClient *cli, Bool needRelease);
+		MySQLMaintance(NN<Net::MySQLTCPClient> cli, Bool needRelease);
 		~MySQLMaintance();
 
 		void RepairSchema(UnsafeArray<const UTF8Char> schema, NN<Text::StringBuilderUTF8> sb);

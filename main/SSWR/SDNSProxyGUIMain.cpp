@@ -12,18 +12,18 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<UI::GUICore> ui;
-	SSWR::AVIRead::AVIRDNSProxyForm *frm;
+	NN<SSWR::AVIRead::AVIRDNSProxyForm> frm;
 	NN<SSWR::AVIRead::AVIRCore> core;
-	Manage::ExceptionRecorder *exHdlr;
+	NN<Manage::ExceptionRecorder> exHdlr;
 	NN<IO::ConfigFile> cfg;
 
 //	MemSetBreakPoint(0x014746E8);
 	MemSetLogFile(UTF8STRCPTR("Memory.log"));
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SDNSProxy.log"), Manage::ExceptionRecorder::EA_RESTART));
+	NEW_CLASSNN(exHdlr, Manage::ExceptionRecorder(CSTR("SDNSProxy.log"), Manage::ExceptionRecorder::EA_RESTART));
 	if (Core::ProgControl::CreateGUICore(progCtrl).SetTo(ui))
 	{
 		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRDNSProxyForm(nullptr, ui, core));
+		NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDNSProxyForm(nullptr, ui, core));
 		frm->SetExitOnClose(true);
 		frm->Show();
 		if (IO::IniFile::ParseProgConfig(0).SetTo(cfg))
@@ -79,6 +79,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		core.Delete();
 		ui.Delete();
 	}
-	DEL_CLASS(exHdlr);
+	exHdlr.Delete();
 	return 0;
 }

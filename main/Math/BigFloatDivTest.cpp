@@ -9,8 +9,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[2048];
 	UnsafeArray<UTF8Char> sptr;
-	IO::ConsoleWriter *console;
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NN<IO::ConsoleWriter> console;
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 
 	Math::BigFloat val(512);
 	Math::BigFloat val2(512);
@@ -24,6 +24,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	sptr = val.ToString(sbuff);
 	console->WriteLine(CSTRP(sbuff, sptr));
 
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

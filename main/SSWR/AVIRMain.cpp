@@ -34,7 +34,7 @@ Int32 MyAdd(Int32 a, Int32 b)
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<UI::GUICore> ui;
-	SSWR::AVIRead::AVIRBaseForm *frm;
+	NN<SSWR::AVIRead::AVIRBaseForm> frm;
 	NN<SSWR::AVIRead::AVIRCore> core;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -60,7 +60,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	if (Core::ProgControl::CreateGUICore(progCtrl).SetTo(ui))
 	{
 		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRBaseForm(nullptr, ui, core));
+		NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBaseForm(nullptr, ui, core));
 		frm->SetExitOnClose(true);
 		frm->Show();
 		argv = progCtrl->GetCommandLines(progCtrl, argc);

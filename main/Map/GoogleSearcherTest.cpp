@@ -13,15 +13,15 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NN<Net::TCPClientFactory> clif;
 	Optional<Net::SSLEngine> ssl;
 	IO::ConsoleWriter console;
-	Map::GoogleMap::GoogleSearcher *gooSrch;
+	NN<Map::GoogleMap::GoogleSearcher> gooSrch;
 
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(false));
 	NEW_CLASSNN(clif, Net::TCPClientFactory(sockf));
 	ssl = Net::SSLEngineFactory::Create(clif, false);
-	NEW_CLASS(gooSrch, Map::GoogleMap::GoogleSearcher(clif, ssl, Text::CString(nullptr), nullptr, nullptr, console));
+	NEW_CLASSNN(gooSrch, Map::GoogleMap::GoogleSearcher(clif, ssl, Text::CString(nullptr), nullptr, nullptr, console));
 	gooSrch->SearchName(sbuff, sizeof(sbuff), Math::Coord2DDbl(114.2, 22.4), 0x0409);
 
-	DEL_CLASS(gooSrch);
+	gooSrch.Delete();
 	ssl.Delete();
 	clif.Delete();
 	sockf.Delete();

@@ -9,15 +9,15 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Manage::HiResClock *clk;
+	NN<Manage::HiResClock> clk;
 	UnsafeArray<UInt8> testBlock;
 	UInt8 hashVal[32];
 	Double t;
 	IntOS i;
-	Crypto::Hash::HashAlgorithm *hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 
-	NEW_CLASS(clk, Manage::HiResClock());
-	NEW_CLASS(hash, Crypto::Hash::SuperFastHash(BLOCKSIZE * REPCOUNT));
+	NEW_CLASSNN(clk, Manage::HiResClock());
+	NEW_CLASSNN(hash, Crypto::Hash::SuperFastHash(BLOCKSIZE * REPCOUNT));
 	testBlock = MemAllocArr(UInt8, BLOCKSIZE);
 	clk->Start();
 	i = REPCOUNT;
@@ -28,8 +28,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	hash->GetValue(hashVal);
 	t = REPCOUNT / clk->GetTimeDiff();
 	MemFreeArr(testBlock);
-	DEL_CLASS(hash);
-	DEL_CLASS(clk);
+	hash.Delete();
+	clk.Delete();
 	printf("Speed: %lf (MiB/s)\r\n", t);
 	return 0;
 }

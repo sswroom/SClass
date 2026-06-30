@@ -26,7 +26,7 @@ UInt32 preferedFormat;
 UIntOS preferedWidth;
 UIntOS preferedHeight;
 Optional<Media::CS::CSConverter> csConv;
-Exporter::GUIJPGExporter *exporter;
+Optional<Exporter::GUIJPGExporter> exporter;
 
 void __stdcall OnDetectResult(AnyType userObj, UIntOS objCnt, UnsafeArrayOpt<const Media::OpenCV::OCVObjectDetector::ObjectRect> objRects, NN<Media::FrameInfo> frInfo, UnsafeArray<UnsafeArray<UInt8>> imgData)
 {
@@ -60,9 +60,11 @@ void __stdcall OnDetectResult(AnyType userObj, UIntOS objCnt, UnsafeArrayOpt<con
 			{
 				csConv = Media::CS::CSConverter::NewConverter(frInfo->fourcc, frInfo->storeBPP, frInfo->pf, frInfo->color, 0, 32, Media::PF_B8G8R8A8, srgb, frInfo->yuvType, nullptr);
 			}
-			if (exporter == 0)
+			NN<Exporter::GUIJPGExporter> nnexporter;
+			if (!exporter.SetTo(nnexporter))
 			{
-				NEW_CLASS(exporter, Exporter::GUIJPGExporter());
+				NEW_CLASSNN(nnexporter, Exporter::GUIJPGExporter());
+				exporter = nnexporter;
 			}
 			NN<Media::CS::CSConverter> nncsConv;
 			if (csConv.SetTo(nncsConv))
@@ -88,7 +90,7 @@ void __stdcall OnDetectResult(AnyType userObj, UIntOS objCnt, UnsafeArrayOpt<con
 				sptr = dt.ToString(sptr, "yyyyMMdd_HHmmssfff");
 				sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 				IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				exporter->ExportFile(fs, CSTRP(sbuff, sptr), imgList, nullptr);
+				nnexporter->ExportFile(fs, CSTRP(sbuff, sptr), imgList, nullptr);
 			}		
 		}
 	}
@@ -99,12 +101,12 @@ Optional<Media::VideoCapturer> OpenCapture(UIntOS defIndex)
 {
 	Optional<Media::VideoCapturer> capture = nullptr;
 	NN<Media::VideoCapturer> nncapture;
-	Media::VideoCaptureMgr *videoCap;
+	NN<Media::VideoCaptureMgr> videoCap;
 	Data::ArrayListNN<Media::VideoCaptureMgr::DeviceInfo> devList;
 	UIntOS i;
 	UIntOS j;
 	NN<Media::VideoCaptureMgr::DeviceInfo> dev;
-	NEW_CLASS(videoCap, Media::VideoCaptureMgr());
+	NEW_CLASSNN(videoCap, Media::VideoCaptureMgr());
 	videoCap->GetDeviceList(devList);
 	if (devList.GetCount())
 	{
@@ -158,21 +160,21 @@ Optional<Media::VideoCapturer> OpenCapture(UIntOS defIndex)
 		MemFreeArr(formats);
 	}
 	videoCap->FreeDeviceList(devList);
-	DEL_CLASS(videoCap);
+	videoCap.Delete();
 	return capture;
 }
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<Media::VideoCapturer> capture;
-	IO::ConsoleWriter *console;
+	NN<IO::ConsoleWriter> console;
 	UIntOS defIndex;
 	lastCnt = 0;
 	IntOS frameSkip;
 
 	Media::Decoder::FFMPEGDecoder::Enable();
 
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
@@ -193,7 +195,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	preferedHeight = 0;
 	frameSkip = 0;
 	csConv = nullptr;
-	exporter = 0;
+	exporter = nullptr;
 
 	NN<IO::ConfigFile> cfg;
 	if (IO::IniFile::ParseProgConfig(0).SetTo(cfg))
@@ -250,8 +252,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 		else
 		{
-			Media::OpenCV::OCVFrameFeeder *feeder;
-			NEW_CLASS(feeder, Media::OpenCV::OCVFrameFeeder(objDetect, capture));
+			NN<Media::OpenCV::OCVFrameFeeder> feeder;
+			NEW_CLASSNN(feeder, Media::OpenCV::OCVFrameFeeder(objDetect, capture));
 			feeder->SetFrameSkip(frameSkip);
 			feeder->SetPreferedFormat(preferedFormat, preferedWidth, preferedHeight);
 			objDetect->HandleDetectResult(OnDetectResult, console);
@@ -265,7 +267,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				progCtrl->WaitForExit(progCtrl);
 				console->WriteLine(CSTR("Exiting"));
 			}
-			DEL_CLASS(feeder);
+			feeder.Delete();
 		}
 		objDetect.Delete();
 		capture.Delete();
@@ -275,8 +277,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console->WriteLine(CSTR("Error in opening video capture"));
 	}
 	csConv.Delete();
-	SDEL_CLASS(exporter);
+	exporter.Delete();
 	
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

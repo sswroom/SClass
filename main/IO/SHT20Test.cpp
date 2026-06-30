@@ -11,7 +11,7 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<IO::SerialPort> port;
-	IO::Device::SHT20 *sht20;
+	NN<IO::Device::SHT20> sht20;
 	UInt32 portNum = 33;
 	UInt32 baudRate = 9600;
 	UInt8 addr = 1;
@@ -37,7 +37,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		Double temp;
 		Double rh;
 		IO::MODBUSRTUMaster modbus(port);
-		NEW_CLASS(sht20, IO::Device::SHT20(modbus, addr));
+		NEW_CLASSNN(sht20, IO::Device::SHT20(modbus, addr));
 
 		if (sht20->ReadTempRH(temp, rh))
 		{
@@ -77,7 +77,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			printf("Error in setting Id\r\n");
 		}*/
 
-		DEL_CLASS(sht20);
+		sht20.Delete();
 	}
 	port.Delete();
 	return 0;

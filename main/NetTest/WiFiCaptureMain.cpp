@@ -8,14 +8,14 @@
 #include "Net/WebServer/WebListener.h"
 #include "Net/WebServer/CapturerWebHandler.h"
 
-Net::WiFiCapturer *capturer;
+NN<Net::WiFiCapturer> capturer;
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
-	Net::WebServer::WebListener *listener;
+	NN<Net::WebServer::WebListener> listener;
 	UInt16 webPort = 8080;
-	Manage::ExceptionRecorder *exHdlr;
+	NN<Manage::ExceptionRecorder> exHdlr;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	
@@ -27,8 +27,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Error.txt"));
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_RESTART));
-	NEW_CLASS(capturer, Net::WiFiCapturer());
+	NEW_CLASSNN(exHdlr, Manage::ExceptionRecorder(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_RESTART));
+	NEW_CLASSNN(capturer, Net::WiFiCapturer());
 	if (capturer->IsError())
 	{
 		console.WriteLine(CSTR("Error in initializing WiFi"));
@@ -39,7 +39,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		Net::OSSocketFactory sockf(true);
 		Net::TCPClientFactory clif(sockf);
 		Net::WebServer::CapturerWebHandler webHdlr(capturer, nullptr, nullptr);
-		NEW_CLASS(listener, Net::WebServer::WebListener(clif, nullptr, webHdlr, webPort, 120, 1, 4, CSTR("WiFiCapture/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+		NEW_CLASSNN(listener, Net::WebServer::WebListener(clif, nullptr, webHdlr, webPort, 120, 1, 4, CSTR("WiFiCapture/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (listener->IsError())
 		{
 			sb.AppendC(UTF8STRC("Error in starting web server at port "));
@@ -60,10 +60,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				capturer->Stop();
 			}
 		}
-		DEL_CLASS(listener);
+		listener.Delete();
 	}
 
-	DEL_CLASS(capturer);
-	DEL_CLASS(exHdlr);
+	capturer.Delete();
+	exHdlr.Delete();
 	return 0;
 }

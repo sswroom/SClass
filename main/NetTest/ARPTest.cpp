@@ -7,7 +7,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-IO::ConsoleWriter *console;
+NN<IO::ConsoleWriter> console;
 NN<Net::SocketFactory> sockf;
 
 void __stdcall ARPHandler(UnsafeArray<const UInt8> hwAddr, UInt32 ipv4, AnyType userData)
@@ -26,8 +26,8 @@ void __stdcall ARPHandler(UnsafeArray<const UInt8> hwAddr, UInt32 ipv4, AnyType 
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Net::ARPHandler *arp = 0;
-	NEW_CLASS(console, IO::ConsoleWriter());
+	Optional<Net::ARPHandler> arp = nullptr;
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
 
 	Text::StringBuilderUTF8 sb;
@@ -48,7 +48,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		connInfo = connInfoList.GetItemNoCheck(i);
 		k = 0;
-		while (arp == 0)
+		while (arp.IsNull())
 		{
 			ip = connInfo->GetIPAddress(k);
 			if (ip == 0)
@@ -68,7 +68,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 					sb.AppendUIntOS(connInfo->GetIndex());
 					console->WriteLine(sb.ToCString());
 					connInfo->GetName(sbuff);
-					NEW_CLASS(arp, Net::ARPHandler(sockf, sbuff, hwAddr, ip, ARPHandler, 0, 1));
+					NEW_CLASSOPT(arp, Net::ARPHandler(sockf, sbuff, hwAddr, ip, ARPHandler, 0, 1));
 				}
 			}
 			k++;
@@ -77,21 +77,23 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		i++;
 	}
 
-	if (arp == 0)
+	NN<Net::ARPHandler> nnarp;
+	if (!arp.SetTo(nnarp))
 	{
 		console->WriteLine(CSTR("No adapter detected"));
 	}
-	else if (arp->IsError())
+	else if (nnarp->IsError())
 	{
 		console->WriteLine(CSTR("Error in listening to arp data"));
+		nnarp.Delete();
 	}
 	else
 	{
 		console->WriteLine(CSTR("Waiting for data"));
 		progCtrl->WaitForExit(progCtrl);
-		DEL_CLASS(arp);
+		nnarp.Delete();
 	}
 	sockf.Delete();
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

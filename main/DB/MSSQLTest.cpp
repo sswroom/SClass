@@ -100,7 +100,7 @@ public:
 	Optional<Text::String> GetIoFlight() const;
 	void SetIoFlight(Optional<Text::String> ioFlight);
 
-	Data::NamedClass<AdsbMovementstatistics> *CreateClass() const;
+	NN<Data::NamedClass<AdsbMovementstatistics>> CreateClass() const;
 };
 
 class FlightHoldingsPeriod
@@ -468,10 +468,10 @@ void AdsbMovementstatistics::SetIoFlight(Optional<Text::String> ioFlight)
 	this->ioFlight = Text::String::CopyOrNull(ioFlight);
 }
 
-Data::NamedClass<AdsbMovementstatistics> *AdsbMovementstatistics::CreateClass() const
+NN<Data::NamedClass<AdsbMovementstatistics>> AdsbMovementstatistics::CreateClass() const
 {
-	Data::NamedClass<AdsbMovementstatistics> *cls;
-	NEW_CLASS(cls, Data::NamedClass<AdsbMovementstatistics>(this));
+	NN<Data::NamedClass<AdsbMovementstatistics>> cls;
+	NEW_CLASSNN(cls, Data::NamedClass<AdsbMovementstatistics>(this));
 	CLASS_ADD(cls, uploadId);
 	CLASS_ADD(cls, finalUploadId);
 	CLASS_ADD(cls, adsbDatetime);

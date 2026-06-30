@@ -13,11 +13,11 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	IO::ConsoleWriter *console;
+	NN<IO::ConsoleWriter> console;
 	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	UInt8 buff[2048];
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc <= 1)
 	{
@@ -120,6 +120,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 	}
 
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

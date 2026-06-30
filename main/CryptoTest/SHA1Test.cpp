@@ -10,9 +10,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UInt8 testBlock[] = "The quick brown fox jumps over the lazy dog";
 	UInt8 hashVal[32];
 	UTF8Char sbuff[65];
-	Crypto::Hash::HashAlgorithm *hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 
-	NEW_CLASS(hash, Crypto::Hash::SHA1());
+	NEW_CLASSNN(hash, Crypto::Hash::SHA1());
 
 	hash->GetValue(hashVal);
 	Text::StrHexBytes(sbuff, hashVal, 20, 0);
@@ -25,6 +25,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::Console::PrintStrO(sbuff);
 	IO::Console::PrintStrO(U8STR("\n2FD4E1C67A2D28FCED849EE1BB76E7391B93EB12\n"));
 
-	DEL_CLASS(hash);
+	hash.Delete();
 	return 0;
 }

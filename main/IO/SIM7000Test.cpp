@@ -223,8 +223,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				if (valid)
 				{
 					IO::LogTool log;
-					Net::UDPServer *udp;
-					NEW_CLASS(udp, Net::UDPServer(sockf, nullptr, 0, nullptr, OnUDPData, 0, log, nullptr, 1, false));
+					NN<Net::UDPServer> udp;
+					NEW_CLASSNN(udp, Net::UDPServer(sockf, nullptr, 0, nullptr, OnUDPData, 0, log, nullptr, 1, false));
 					if (udp->IsError())
 					{
 						console->WriteLine(CSTR("Error in listening to UDP port"));
@@ -246,7 +246,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 						udp->SendTo(addr, 10107, (const UInt8*)"Testing", 7);
 						Sync::SimpleThread::Sleep(3000);
 					}				
-					DEL_CLASS(udp);
+					udp.Delete();
 				}
 
 				if (!valid)

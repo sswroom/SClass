@@ -9,7 +9,7 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-IO::ConsoleWriter *console;
+NN<IO::ConsoleWriter> console;
 
 void __stdcall OnScanResult(void *userObj, UInt64 mac, Int32 rssi, const Char *name)
 {
@@ -32,16 +32,16 @@ void __stdcall OnScanResult(void *userObj, UInt64 mac, Int32 rssi, const Char *n
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::BTManager manager;
-	IO::BTController *ctrl;
-	Data::ArrayList<IO::BTController*> ctrlList;
-	NEW_CLASS(console, IO::ConsoleWriter());
-	manager.CreateControllers(&ctrlList);
+	NN<IO::BTController> ctrl;
+	Data::ArrayListNN<IO::BTController> ctrlList;
+	NEW_CLASSNN(console, IO::ConsoleWriter());
+	manager.CreateControllers(ctrlList);
 	UIntOS i;
 	Text::StringBuilderUTF8 sb;
 	i = ctrlList.GetCount();
 	while (i-- > 0)
 	{
-		ctrl = ctrlList.GetItem(i);
+		ctrl = ctrlList.GetItemNoCheck(i);
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Using "));
 		sb.Append(ctrl->GetName());
@@ -53,13 +53,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		ctrl->LEScanHandleResult(OnScanResult, 0);
 		if (ctrl->LEScanBegin())
 		{
-			console->WriteLine(CSTR("Started scanning");
+			console->WriteLine(CSTR("Started scanning"));
 			Sync::SimpleThread::Sleep(10000);
 			ctrl->LEScanEnd();
 		}
-		DEL_CLASS(ctrl);
+		ctrl.Delete();
 	}
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }*/
 
@@ -75,8 +75,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
-	IO::RadioSignalLogger *radioLogger;
-	Net::WebServer::WebListener *listener;
+	NN<IO::RadioSignalLogger> radioLogger;
+	NN<Net::WebServer::WebListener> listener;
 	UInt16 webPort = 8081;
 	NN<IO::BTCapturer> capturer;
 	NEW_CLASSNN(capturer, IO::BTCapturer(true));
@@ -87,13 +87,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		NEW_CLASS(radioLogger, IO::RadioSignalLogger());
+		NEW_CLASSNN(radioLogger, IO::RadioSignalLogger());
 		radioLogger->CaptureBT(capturer);
 		NN<Net::WebServer::CapturerWebHandler> webHdlr;
 		Net::OSSocketFactory sockf(true);
 		Net::TCPClientFactory clif(sockf);
 		NEW_CLASSNN(webHdlr, Net::WebServer::CapturerWebHandler(nullptr, capturer, radioLogger));
-		NEW_CLASS(listener, Net::WebServer::WebListener(clif, nullptr, webHdlr, webPort, 120, 1, 4, CSTR("BLEScanTest/1.0"), false, Net::WebServer::KeepAlive::Default, false));
+		NEW_CLASSNN(listener, Net::WebServer::WebListener(clif, nullptr, webHdlr, webPort, 120, 1, 4, CSTR("BLEScanTest/1.0"), false, Net::WebServer::KeepAlive::Default, false));
 		if (listener->IsError())
 		{
 			sb.AppendC(UTF8STRC("Error in starting web server at port "));
@@ -114,9 +114,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				capturer->Stop();
 			}
 		}
-		DEL_CLASS(listener);
+		listener.Delete();
 		webHdlr.Delete();
-		DEL_CLASS(radioLogger);
+		radioLogger.Delete();
 	}
 
 	capturer.Delete();

@@ -378,7 +378,7 @@ NN<Data::NamedClass<Userfile>> Userfile::CreateClass()
 	return cls;
 }
 
-IO::ConsoleWriter *console;
+NN<IO::ConsoleWriter> console;
 
 void TextReadAll(NN<DB::DBTool> db)
 {
@@ -434,7 +434,7 @@ void TestBinaryRead(NN<DB::DBTool> db)
 	}
 }
 
-void TempTest(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, IO::Writer *console)
+void TempTest(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<IO::Writer> console)
 {
 	Text::CStringNN mysqlServer;
 	Text::CStringNN mysqlDB;
@@ -479,7 +479,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 	IO::LogTool log;
 	NN<DB::DBTool> db;
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	Net::OSSocketFactory sockf(false);
 	Net::TCPClientFactory clif(sockf);
 	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, false);
@@ -495,6 +495,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		console->WriteLine(CSTR("Error in opening database"));
 	}
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

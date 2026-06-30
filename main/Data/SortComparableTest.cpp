@@ -38,15 +38,15 @@ public:
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Manage::HiResClock *clk;
-	Data::RandomOS *rand;
+	NN<Manage::HiResClock> clk;
+	NN<Data::RandomOS> rand;
 	UnsafeArray<NN<Data::Comparable>> arr;
 	Int32 j;
 	Int32 i;
 	Double totalSpd = 0;
 
-	NEW_CLASS(clk, Manage::HiResClock());
-	NEW_CLASS(rand, Data::RandomOS());
+	NEW_CLASSNN(clk, Manage::HiResClock());
+	NEW_CLASSNN(rand, Data::RandomOS());
 	arr = MemAllocArr(NN<Data::Comparable>, ARRCOUNT);
 	compCnt = 0;
 	j = 10;
@@ -82,7 +82,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	printf("Total Time: %lf\n", totalSpd);
 	MemFreeArr(arr);
 	IO::Console::GetChar();
-	DEL_CLASS(rand);
-	DEL_CLASS(clk);
+	rand.Delete();
+	clk.Delete();
 	return 0;
 }

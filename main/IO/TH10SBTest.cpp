@@ -11,7 +11,7 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<IO::SerialPort> port;
-	IO::Device::TH10SB *th10sb;
+	NN<IO::Device::TH10SB> th10sb;
 	UInt32 portNum = 33;
 	UInt32 baudRate = 9600;
 	UInt8 addr = 1;
@@ -38,7 +38,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		Double rh;
 		Int32 iVal;
 		IO::MODBUSRTUMaster modbus(port);
-		NEW_CLASS(th10sb, IO::Device::TH10SB(modbus, addr));
+		NEW_CLASSNN(th10sb, IO::Device::TH10SB(modbus, addr));
 
 		if (th10sb->ReadTempRH(temp, rh))
 		{
@@ -68,7 +68,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			printf("Error in setting Id\r\n");
 		}*/
 
-		DEL_CLASS(th10sb);
+		th10sb.Delete();
 	}
 	port.Delete();
 	return 0;

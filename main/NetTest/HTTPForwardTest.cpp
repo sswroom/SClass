@@ -6,7 +6,7 @@
 #include "Net/WebServer/HTTPForwardHandler.h"
 #include "Net/WebServer/WebListener.h"
 
-IO::ConsoleWriter *console;
+NN<IO::ConsoleWriter> console;
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
@@ -19,7 +19,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	Optional<Net::SSLEngine> ssl;
 	Bool succ = true;
 	Net::OSSocketFactory sockf(false);
@@ -42,9 +42,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	if (succ)
 	{
 		NN<Net::WebServer::HTTPForwardHandler> hdlr;
-		Net::WebServer::WebListener *svr;
+		NN<Net::WebServer::WebListener> svr;
 		NEW_CLASSNN(hdlr, Net::WebServer::HTTPForwardHandler(clif, ssl, fwdUrl, Net::WebServer::HTTPForwardHandler::ForwardType::Normal));
-		NEW_CLASS(svr, Net::WebServer::WebListener(clif, ssl, hdlr, port, 120, 1, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+		NEW_CLASSNN(svr, Net::WebServer::WebListener(clif, ssl, hdlr, port, 120, 1, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (!svr->IsError())
 		{
 			console->WriteLine(CSTR("HTTP Forwarding started"));
@@ -54,10 +54,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		{
 			console->WriteLine(CSTR("Error in listening port"));
 		}
-		DEL_CLASS(svr);
+		svr.Delete();
 		hdlr.Delete();
 	}
 	ssl.Delete();
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

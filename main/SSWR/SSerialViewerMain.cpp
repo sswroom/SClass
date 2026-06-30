@@ -8,8 +8,8 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-IO::ConsoleWriter *console;
-IO::SerialPort *port;
+NN<IO::ConsoleWriter> console;
+NN<IO::SerialPort> port;
 Bool readError;
 Bool toStop;
 Bool running;
@@ -47,7 +47,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	UInt32 baudRate = 115200;
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc <= 1)
 	{
@@ -76,7 +76,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.AppendU32(portNo);
 			sb.AppendC(UTF8STRC(" with baudrate = "));
 			sb.AppendU32(baudRate);
-			NEW_CLASS(port, IO::SerialPort(portNo, baudRate, IO::SerialPort::PARITY_NONE, false));
+			NEW_CLASSNN(port, IO::SerialPort(portNo, baudRate, IO::SerialPort::PARITY_NONE, false));
 			if (port->IsError())
 			{
 				console->WriteLine(CSTR("Error in opening serial port"));
@@ -93,10 +93,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 					Sync::SimpleThread::Sleep(1);
 				}
 			}
-			DEL_CLASS(port);
+			port.Delete();
 		}
 	}
 
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

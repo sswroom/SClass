@@ -12,21 +12,21 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NN<UI::GUICore> ui;
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{
-		SSWR::DownloadMonitor::DownMonCore *core;
-		NEW_CLASS(core, SSWR::DownloadMonitor::DownMonCore());
+		NN<SSWR::DownloadMonitor::DownMonCore> core;
+		NEW_CLASSNN(core, SSWR::DownloadMonitor::DownMonCore());
 		if (core->IsError())
 		{
 			ui->ShowMsgOK(CSTR("Error in initializing the core"), CSTR("Download Monitor"), nullptr);
 		}
 		else
 		{
-			SSWR::DownloadMonitor::DownMonMainForm *frm;
-			NEW_CLASS(frm, SSWR::DownloadMonitor::DownMonMainForm(nullptr, ui, core));
+			NN<SSWR::DownloadMonitor::DownMonMainForm> frm;
+			NEW_CLASSNN(frm, SSWR::DownloadMonitor::DownMonMainForm(nullptr, ui, core));
 			frm->SetExitOnClose(true);
 			frm->Show();
 			ui->Run();
 		}
-		DEL_CLASS(core);
+		core.Delete();
 		ui.Delete();
 	}
 	return 0;

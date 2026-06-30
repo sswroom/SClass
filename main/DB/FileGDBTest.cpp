@@ -993,8 +993,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			
 
 			Data::ArrayListNN<Lamppost> lamppostListCSV;
-			DB::CSVFile *csv;
-			NEW_CLASS(csv, DB::CSVFile(CSTRP(sbuff, sptr), 65001));
+			NN<DB::CSVFile> csv;
+			NEW_CLASSNN(csv, DB::CSVFile(CSTRP(sbuff, sptr), 65001));
 			csv->SetNullIfEmpty(true);
 			if (csv->QueryTableData(nullptr, CSTR("Lamppost"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 			{
@@ -1010,7 +1010,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			{
 				t3 = -1;
 			}
-			DEL_CLASS(csv);
+			csv.Delete();
 			
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("FileGDB count = "));

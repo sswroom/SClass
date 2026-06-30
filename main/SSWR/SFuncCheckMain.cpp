@@ -6,8 +6,8 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	IO::ConsoleWriter *console;
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NN<IO::ConsoleWriter> console;
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 
 	console->WriteLine(CSTR("Default Color"));
 	console->SetTextColor(Text::StandardColor::Red);
@@ -202,6 +202,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 #endif
 
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

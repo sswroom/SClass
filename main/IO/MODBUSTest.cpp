@@ -21,8 +21,8 @@ void __stdcall SetResult(AnyType userObj, UInt8 funcCode, UInt16 startAddr, UInt
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	IO::MODBUSMaster *modbus;
-/*	NEW_CLASS(modbus, IO::MODBUSMaster(0));
+	NN<IO::MODBUSMaster> modbus;
+/*	NEW_CLASSNN(modbus, IO::MODBUSMaster(0));
 	modbus->ReadHoldingRegisters(0x11, 0x6B, 3);
 	printf("Correct: 11 03 00 6B 00 03 76 87\r\n");
 
@@ -37,7 +37,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 	else
 	{
-		NEW_CLASS(modbus, IO::MODBUSRTUMaster(port));
+		NEW_CLASSNN(modbus, IO::MODBUSRTUMaster(port));
 		modbus->HandleReadResult(1, ReadResult, SetResult, 0);
 
 		printf("Reading 0 register\r\n");
@@ -47,7 +47,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		modbus->ReadInputRegisters(1, 6, 2);
 		Sync::SimpleThread::Sleep(1000);
 
-		DEL_CLASS(modbus);
+		modbus.Delete();
 	}
 	port.Delete();
 	return 0;

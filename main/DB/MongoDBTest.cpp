@@ -13,15 +13,15 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UInt16 serverport = 3717;
 	Text::CString database = CSTR("abc");
 
-	DB::MongoDB *mongoDB;
-	IO::LogTool *log;
-	IO::ConsoleWriter *console;
+	NN<DB::MongoDB> mongoDB;
+	NN<IO::LogTool> log;
+	NN<IO::ConsoleWriter> console;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(console, IO::ConsoleWriter());
-	NEW_CLASS(log, IO::LogTool());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
+	NEW_CLASSNN(log, IO::LogTool());
 	sb.ClearStr();
 	DB::MongoDB::BuildURL(sb, username, password, serverhost, serverport);
-	NEW_CLASS(mongoDB, DB::MongoDB(sb.ToCString(), database, log));
+	NEW_CLASSNN(mongoDB, DB::MongoDB(sb.ToCString(), database, log));
 	
 	Data::ArrayListStringNN tableList;
 	Data::ArrayListStringNN dbList;
@@ -55,8 +55,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 	tableList.FreeAll();
 
-	DEL_CLASS(mongoDB);
-	DEL_CLASS(log);
-	DEL_CLASS(console);
+	mongoDB.Delete();
+	log.Delete();
+	console.Delete();
 	return 0;
 }

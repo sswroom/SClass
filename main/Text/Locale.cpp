@@ -5,8 +5,8 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Text::Locale *locale;
-	NEW_CLASS(locale, Text::Locale());
-	DEL_CLASS(locale);
+	NN<Text::Locale> locale;
+	NEW_CLASSNN(locale, Text::Locale());
+	locale.Delete();
 	return 0;
 }

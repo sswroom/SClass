@@ -10,23 +10,23 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Manage::ExceptionRecorder *exHdlr;
+	NN<Manage::ExceptionRecorder> exHdlr;
 	NN<IO::ConfigFile> cfg;
-	IO::ConsoleWriter *console;
-	SSWR::SDNSProxy::SDNSProxyCore *core;
+	NN<IO::ConsoleWriter> console;
+	NN<SSWR::SDNSProxy::SDNSProxyCore> core;
 
 //	MemSetBreakPoint(0x014746E8);
 	MemSetLogFile(UTF8STRCPTR("Memory.log"));
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SDNSProxy.log"), Manage::ExceptionRecorder::EA_RESTART));
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(exHdlr, Manage::ExceptionRecorder(CSTR("SDNSProxy.log"), Manage::ExceptionRecorder::EA_RESTART));
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	if (IO::IniFile::ParseProgConfig(0).SetTo(cfg))
 	{
-		NEW_CLASS(core, SSWR::SDNSProxy::SDNSProxyCore(cfg, console));
+		NEW_CLASSNN(core, SSWR::SDNSProxy::SDNSProxyCore(cfg, console));
 		if (!core->IsError())
 		{
 			core->Run(progCtrl);
 		}
-		DEL_CLASS(core);
+		core.Delete();
 		cfg.Delete();
 	}
 	else
@@ -34,7 +34,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console->WriteLine(CSTR("Error in opening config file"));
 	}
 
-	DEL_CLASS(console);
-	DEL_CLASS(exHdlr);
+	console.Delete();
+	exHdlr.Delete();
 	return 0;
 }

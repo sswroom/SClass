@@ -18,7 +18,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-IO::ConsoleWriter *console;
+NN<IO::ConsoleWriter> console;
 
 class ProgressHandler : public IO::ProgressHandler
 {
@@ -31,7 +31,7 @@ private:
 
 	Bool threadRunning;
 	Bool threadToStop;
-	Sync::Event *evt;
+	NN<Sync::Event> evt;
 
 	static UInt32 __stdcall CheckThread(AnyType userObj)
 	{
@@ -90,7 +90,7 @@ public:
 
 		this->threadRunning = false;
 		this->threadToStop = false;
-		NEW_CLASS(this->evt, Sync::Event(true));
+		NEW_CLASSNN(this->evt, Sync::Event(true));
 		Sync::ThreadUtil::Create(CheckThread, this);
 		while (!this->threadRunning)
 		{
@@ -106,7 +106,7 @@ public:
 		{
 			Sync::SimpleThread::Sleep(1);
 		}
-		DEL_CLASS(this->evt);
+		this->evt.Delete();
 		OPTSTR_DEL(this->name);
 		this->fileName = nullptr;
 	}
@@ -144,7 +144,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Bool showHelp = true;
 	UIntOS cmdCnt;
 	UnsafeArray<UnsafeArray<UTF8Char>> cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	if (cmdCnt == 2)
 	{
 		UIntOS cmdLen = Text::StrCharCnt(cmdLines[1]);
@@ -213,6 +213,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		console->WriteLine(CSTR("Usage: SCRC [File to check]"));
 	}
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

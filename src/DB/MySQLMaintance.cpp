@@ -2,7 +2,7 @@
 #include "DB/MySQLMaintance.h"
 #include "DB/SQLBuilder.h"
 
-DB::MySQLMaintance::MySQLMaintance(Net::MySQLTCPClient *cli, Bool needRelease)
+DB::MySQLMaintance::MySQLMaintance(NN<Net::MySQLTCPClient> cli, Bool needRelease)
 {
 	this->cli = cli;
 	this->needRelease = needRelease;
@@ -12,7 +12,7 @@ DB::MySQLMaintance::~MySQLMaintance()
 {
 	if (this->needRelease)
 	{
-		SDEL_CLASS(this->cli);
+		this->cli.Delete();
 	}
 }
 

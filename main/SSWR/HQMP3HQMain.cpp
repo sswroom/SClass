@@ -11,7 +11,7 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<UI::GUICore> ui;
-	SSWR::AVIRead::AVIRHQMPForm *frm;
+	NN<SSWR::AVIRead::AVIRHQMPForm> frm;
 
 //	MemSetBreakPoint(0x01088d78);
 	Media::Decoder::FFMPEGDecoder::Enable();
@@ -23,7 +23,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{
 		SSWR::AVIRead::AVIRCoreWin core(ui);
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRHQMPForm(nullptr, ui, core, SSWR::AVIRead::AVIRHQMPForm::QM_HQ));
+		NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHQMPForm(nullptr, ui, core, SSWR::AVIRead::AVIRHQMPForm::QM_HQ));
 		frm->SetExitOnClose(true);
 
 		UIntOS argc;

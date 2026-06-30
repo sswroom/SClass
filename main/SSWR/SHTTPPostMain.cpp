@@ -12,11 +12,11 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	IO::ConsoleWriter *console;
+	NN<IO::ConsoleWriter> console;
 	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	UInt8 buff[2048];
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc <= 2)
 	{
@@ -33,8 +33,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		UnsafeArrayOpt<UInt8> optfileBuff = nullptr;
 		UnsafeArray<UInt8> fileBuff;
 		UIntOS fileSize = 0;
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream({file, Text::StrCharCnt(file)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NN<IO::FileStream> fs;
+		NEW_CLASSNN(fs, IO::FileStream({file, Text::StrCharCnt(file)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fileSize = (UIntOS)fs->GetLength();
 		if (fileSize > 0)
 		{
@@ -51,7 +51,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		{
 			console->WriteLine(CSTR("Error in opening file"));
 		}
-		DEL_CLASS(fs);
+		fs.Delete();
 
 		if (Text::StrStartsWithC(url, urlLen, UTF8STRC("http://")) && optfileBuff.SetTo(fileBuff) && fileSize > 0)
 		{
@@ -145,12 +145,12 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 					sb.AppendC(UTF8STRC(" bytes from server"));
 					console->WriteLine(sb.ToCString());
 
-/*					IO::FileStream *fs;
+/*					NN<IO::FileStream> fs;
 					UInt8 *fileBuff;
-					NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASSNN(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					fileBuff = mstm->GetBuff(&argc);
 					argc = fs->Write(fileBuff, argc);
-					DEL_CLASS(fs);
+					fs.Delete();
 					if (argc != mstm->GetLength())
 					{
 						console->WriteLine(CSTR("Error in writing to file"));
@@ -172,6 +172,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 	}
 
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

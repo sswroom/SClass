@@ -15,17 +15,17 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NN<Net::TCPClientFactory> clif;
 	Optional<Net::SSLEngine> ssl;
 	IO::ConsoleWriter console;
-	Data::Random *rand;
+	NN<Data::Random> rand;
 	Int32 i;
 	UTF8Char buff[1024];
 
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(false));
 	NEW_CLASSNN(clif, Net::TCPClientFactory(sockf));
 	ssl = Net::SSLEngineFactory::Create(clif, false);
-	NEW_CLASS(rand, Data::RandomOS());
+	NEW_CLASSNN(rand, Data::RandomOS());
 
-	Map::GoogleMap::GoogleSearcher *goo;
-	NEW_CLASS(goo, Map::GoogleMap::GoogleSearcher(clif, ssl, gooKey, nullptr, nullptr, console));
+	NN<Map::GoogleMap::GoogleSearcher> goo;
+	NEW_CLASSNN(goo, Map::GoogleMap::GoogleSearcher(clif, ssl, gooKey, nullptr, nullptr, console));
 
 	i = 1;
 	while (i-- > 0)
@@ -37,10 +37,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		printf("%s\n", buff);
 	}
 
-	DEL_CLASS(goo);
+	goo.Delete();
 
 
-	DEL_CLASS(rand);
+	rand.Delete();
 	ssl.Delete();
 	clif.Delete();
 	sockf.Delete();

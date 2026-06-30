@@ -5,7 +5,7 @@
 #include "UI/GUIForm.h"
 #include "UI/GUITreeView.h"
 
-UI::GUITreeView *tv;
+NN<UI::GUITreeView> tv;
 
 void __stdcall OnTVDblClick(void *userObj)
 {
@@ -23,7 +23,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		NN<UI::GUIForm> frm;
 		NEW_CLASSNN(frm, UI::GUIForm(nullptr, 640, 480, core));
 		frm->SetText(CSTR("Test 6 - TreeView"));
-		NEW_CLASS(tv, UI::GUITreeView(core, frm));
+		NEW_CLASSNN(tv, UI::GUITreeView(core, frm));
 		tv->SetDockType(UI::GUIControl::DOCK_FILL);
 		tv->SetHasLines(true);
 		tv->SetHasCheckBox(true);

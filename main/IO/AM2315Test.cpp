@@ -14,7 +14,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<IO::GPIOPin> sdaPin;
 	NN<IO::GPIOPin> sclPin;
-	IO::Device::AM2315GPIO *am2315;
+	NN<IO::Device::AM2315GPIO> am2315;
 	IO::ConsoleWriter console;
 	Double temp;
 	Double rh;
@@ -38,7 +38,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::GPIOControl gpioCtrl;
 	NEW_CLASSNN(sdaPin, IO::GPIOPin(gpioCtrl, pinNum1));
 	NEW_CLASSNN(sclPin, IO::GPIOPin(gpioCtrl, pinNum2));
-	NEW_CLASS(am2315, IO::Device::AM2315GPIO(sdaPin, sclPin));
+	NEW_CLASSNN(am2315, IO::Device::AM2315GPIO(sdaPin, sclPin));
 	if (gpioCtrl.IsError() || sdaPin->IsError() || sclPin->IsError())
 	{
 		console.WriteLine(CSTR("Error in opening GPIO, root permission?"));
@@ -74,7 +74,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			Sync::SimpleThread::Sleep(2000);
 		}
 	}
-	DEL_CLASS(am2315);
+	am2315.Delete();
 	sdaPin.Delete();
 	sclPin.Delete();
 	return 0;

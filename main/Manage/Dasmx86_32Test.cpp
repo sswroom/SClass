@@ -10,17 +10,17 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Manage::DasmX86_32 *dasm;
+	NN<Manage::DasmX86_32> dasm;
 	NN<Manage::Process> proc;
-	Manage::SymbolResolver *symbResol;
+	NN<Manage::SymbolResolver> symbResol;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	IO::ConsoleWriter *console;
+	NN<IO::ConsoleWriter> console;
 
 	NEW_CLASSNN(proc, Manage::Process());
-	NEW_CLASS(symbResol, Manage::SymbolResolver(proc));
-	NEW_CLASS(dasm, Manage::DasmX86_32());
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(symbResol, Manage::SymbolResolver(proc));
+	NEW_CLASSNN(dasm, Manage::DasmX86_32());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 
 	UnsafeArray<UInt8> addr = (UInt8*)Sync::ThreadUtil::GetCurrAddr().p;
 	NN<Manage::DasmX86_32::Session> sess = dasm->StartDasm(symbResol, addr, proc);
@@ -47,9 +47,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 	dasm->EndDasm(sess);
 
-	DEL_CLASS(console);
-	DEL_CLASS(dasm);
-	DEL_CLASS(symbResol);
+	console.Delete();
+	dasm.Delete();
+	symbResol.Delete();
 	proc.Delete();
 	return 0;
 }

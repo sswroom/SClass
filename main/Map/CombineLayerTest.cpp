@@ -12,14 +12,14 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UnsafeArray<UTF8Char> sptr2;
 	NN<IO::Path::FindFileSession> sess;
 	NN<Data::ArrayListNN<Map::MapDrawLayer>> layers;
-	Parser::ParserList *parsers;
+	NN<Parser::ParserList> parsers;
 	NN<Map::MapDrawLayer> lyr;
 	IO::ParserType pt;
 	NN<IO::ParsedObject> pobj;
 	NN<IO::StmData::FileData> fd;
 	UIntOS i;
 
-	NEW_CLASS(parsers, Parser::FullParserList());
+	NEW_CLASSNN(parsers, Parser::FullParserList());
 	NEW_CLASSNN(layers, Data::ArrayListNN<Map::MapDrawLayer>());
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("Hiking/HK Island East/"));
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("*.csv"));
@@ -44,7 +44,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 		IO::Path::FindFileClose(sess);
 	}
-	DEL_CLASS(parsers);
+	parsers.Delete();
 
 	if (Optional<Map::MapDrawLayer>(Map::LayerTools::CombineLayers(layers, nullptr)).SetTo(lyr))
 	{

@@ -11,16 +11,16 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Text::CStringNN plFile = CSTR("20111022.csv");
 	NN<IO::StmData::FileData> fd;
-	Parser::ParserList *parsers;
-	Exporter::KMLExporter *exporter;
+	NN<Parser::ParserList> parsers;
+	NN<Exporter::KMLExporter> exporter;
 	IO::ParserType pt;
-	IO::ConsoleWriter *console;
+	NN<IO::ConsoleWriter> console;
 	Double dist;
 
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	NEW_CLASSNN(fd, IO::StmData::FileData(plFile, false));
-	NEW_CLASS(parsers, Parser::FullParserList());
-	NEW_CLASS(exporter, Exporter::KMLExporter());
+	NEW_CLASSNN(parsers, Parser::FullParserList());
+	NEW_CLASSNN(exporter, Exporter::KMLExporter());
 	NN<IO::ParsedObject> pobj;
 	if (parsers->ParseFile(fd).SetTo(pobj))
 	{
@@ -60,9 +60,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 		pobj.Delete();
 	}
-	DEL_CLASS(exporter);
-	DEL_CLASS(parsers);
+	exporter.Delete();
+	parsers.Delete();
 	fd.Delete();
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

@@ -9,9 +9,9 @@
 #include "Map/KMLGenerator.h"
 #include "Text/MyString.h"
 
-Data::ArrayListInt32 *cids;
-Data::ArrayListDbl *lats;
-Data::ArrayListDbl *lons;
+NN<Data::ArrayListInt32> cids;
+NN<Data::ArrayListDbl> lats;
+NN<Data::ArrayListDbl> lons;
 
 void LoadPeopleTxt(Text::CStringNN fileName)
 {
@@ -19,7 +19,7 @@ void LoadPeopleTxt(Text::CStringNN fileName)
 	UnsafeArray<UTF8Char> cols[3];
 	UnsafeArray<UTF8Char> dm[3];
 	NN<IO::FileStream> fs;
-	IO::StreamReader *reader;
+	NN<IO::StreamReader> reader;
 
 	NEW_CLASSNN(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
@@ -27,7 +27,7 @@ void LoadPeopleTxt(Text::CStringNN fileName)
 		fs.Delete();
 		return;
 	}
-	NEW_CLASS(reader, IO::StreamReader(fs, 0));
+	NEW_CLASSNN(reader, IO::StreamReader(fs, 0));
 
 	reader->ReadLine(buff, 512);
 	while (reader->ReadLine(buff, 512).NotNull())
@@ -72,15 +72,15 @@ void LoadPeopleTxt(Text::CStringNN fileName)
 		}
 	}
 
-	DEL_CLASS(reader);
+	reader.Delete();
 	fs.Delete();
 }
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	IO::StreamReader *reader;
+	NN<IO::StreamReader> reader;
 	NN<IO::FileStream> fs;
-	Text::Encoding *enc;
+	NN<Text::Encoding> enc;
 
 	UTF8Char buff[2048];
 	UTF8Char outBuff[1024];
@@ -93,10 +93,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NN<Data::ArrayListDbl> outLats;
 	NN<Data::ArrayListDbl> outLons;
 
-	NEW_CLASS(enc, Text::Encoding(65001));
-	NEW_CLASS(cids, Data::ArrayListInt32());
-	NEW_CLASS(lats, Data::ArrayListDbl());
-	NEW_CLASS(lons, Data::ArrayListDbl());
+	NEW_CLASSNN(enc, Text::Encoding(65001));
+	NEW_CLASSNN(cids, Data::ArrayListInt32());
+	NEW_CLASSNN(lats, Data::ArrayListDbl());
+	NEW_CLASSNN(lons, Data::ArrayListDbl());
 
 	NEW_CLASSNN(outName, Data::ArrayListStringNN());
 	NEW_CLASSNN(outLats, Data::ArrayListDbl());
@@ -105,7 +105,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	LoadPeopleTxt(CSTR("PeopleCSV2KML/All_ladlog_100921.txt"));
 
 	NEW_CLASSNN(fs, IO::FileStream(CSTR("0_req/20100930/maplog.txt"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(reader, IO::StreamReader(fs, 0));
+	NEW_CLASSNN(reader, IO::StreamReader(fs, 0));
 
 	while (reader->ReadLine(buff, 2048).NotNull())
 	{
@@ -128,7 +128,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 	}
 
-	DEL_CLASS(reader);
+	reader.Delete();
 	fs.Delete();
 
 	if (outName->GetCount() > 0)
@@ -143,9 +143,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	outLats.Delete();
 	outName.Delete();
 
-	DEL_CLASS(lons);
-	DEL_CLASS(lats);
-	DEL_CLASS(cids);
-	DEL_CLASS(enc);
+	lons.Delete();
+	lats.Delete();
+	cids.Delete();
+	enc.Delete();
 	return 0;
 }

@@ -9,16 +9,16 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<UI::GUICore> ui;
-	SSWR::AVIRead::AVIRDBManagerForm *frm;
+	NN<SSWR::AVIRead::AVIRDBManagerForm> frm;
 	NN<SSWR::AVIRead::AVIRCore> core;
-	Manage::ExceptionRecorder *exHdlr;
+	NN<Manage::ExceptionRecorder> exHdlr;
 
 	MemSetLogFile(UTF8STRCPTR("Memory.log"));
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SDBManager.log"), Manage::ExceptionRecorder::EA_RESTART));
+	NEW_CLASSNN(exHdlr, Manage::ExceptionRecorder(CSTR("SDBManager.log"), Manage::ExceptionRecorder::EA_RESTART));
 	if (Core::ProgControl::CreateGUICore(progCtrl).SetTo(ui))
 	{
 		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRDBManagerForm(nullptr, ui, core));
+		NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDBManagerForm(nullptr, ui, core));
 		frm->SetExitOnClose(true);
 		frm->Show();
 		ui->Run();
@@ -26,6 +26,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		core.Delete();
 		ui.Delete();
 	}
-	DEL_CLASS(exHdlr);
+	exHdlr.Delete();
 	return 0;
 }

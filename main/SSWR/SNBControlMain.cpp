@@ -26,19 +26,21 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{
 		SSWR::AVIRead::AVIRCoreWin core(ui);
-		SSWR::AVIRead::AVIRSNBDongleForm *snbFrm = 0;
+		Optional<SSWR::AVIRead::AVIRSNBDongleForm> snbFrm = nullptr;
+		NN<SSWR::AVIRead::AVIRSNBDongleForm> nnsnbFrm;
 		IO::LogTool log;
 		{
 			SSWR::AVIRead::AVIRSelStreamForm frm(nullptr, ui, core, false, nullptr, log);
 			frm.SetText(CSTR("Select SNB Dongle"));
 			if (frm.ShowDialog(nullptr) == UI::GUIForm::DR_OK)
 			{
-				NEW_CLASS(snbFrm, SSWR::AVIRead::AVIRSNBDongleForm(nullptr, ui, core, frm.GetStream()));
-				snbFrm->SetExitOnClose(true);
-				snbFrm->Show();
+				NEW_CLASSNN(nnsnbFrm, SSWR::AVIRead::AVIRSNBDongleForm(nullptr, ui, core, frm.GetStream()));
+				snbFrm = nnsnbFrm;
+				nnsnbFrm->SetExitOnClose(true);
+				nnsnbFrm->Show();
 			}
 		}
-		if (snbFrm)
+		if (snbFrm.NotNull())
 		{
 			ui->Run();
 		}

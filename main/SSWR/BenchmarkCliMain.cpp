@@ -36,17 +36,17 @@ UnsafeArray<UTF8Char> ByteDisp(UnsafeArray<UTF8Char> sbuff, UInt64 byteSize)
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Manage::ExceptionRecorder *exHdlr;
-	IO::ConsoleWriter *console;
+	NN<Manage::ExceptionRecorder> exHdlr;
+	NN<IO::ConsoleWriter> console;
 
 	MemSetLogFile(UTF8STRCPTR("Memory.log"));
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SBenchmarkCli.log"), Manage::ExceptionRecorder::EA_CLOSE));
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(exHdlr, Manage::ExceptionRecorder(CSTR("SBenchmarkCli.log"), Manage::ExceptionRecorder::EA_CLOSE));
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 
 	IO::SystemInfo sysInfo;
 	Manage::CPUInfo cpuInfo;
 	NN<IO::FileStream> fs;
-	IO::StreamWriter *writer;
+	NN<IO::StreamWriter> writer;
 	UInt64 memSize;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
@@ -66,7 +66,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 
 	NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(writer, IO::StreamWriter(fs, 65001));
+	NEW_CLASSNN(writer, IO::StreamWriter(fs, 65001));
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Total Memory Size: "));
@@ -299,11 +299,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	MemFreeA64(buff1);
 	MemFreeA64(buff2);
 
-	DEL_CLASS(writer);
+	writer.Delete();
 	fs.Delete();
 
-
-	DEL_CLASS(console);
-	DEL_CLASS(exHdlr);
+	console.Delete();
+	exHdlr.Delete();
 	return 0;
 }

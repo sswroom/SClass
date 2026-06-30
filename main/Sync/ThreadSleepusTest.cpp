@@ -10,12 +10,12 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
-	Manage::HiResClock *clk;
+	NN<Manage::HiResClock> clk;
 	UInt32 i;
 	IntOS j;
 	Double t;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(clk, Manage::HiResClock());
+	NEW_CLASSNN(clk, Manage::HiResClock());
 	i = 1;
 	while (i <= 2048)
 	{
@@ -35,6 +35,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		i = i << 1;
 	}
 
-	DEL_CLASS(clk);
+	clk.Delete();
 	return 0;
 }

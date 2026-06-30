@@ -82,15 +82,15 @@ Optional<IO::Sensor> IO::SensorManager::CreateSensor(UIntOS index)
 	case ASENSOR_TYPE_ACCELEROMETER_UNCALIBRATED:
 #endif
 		{
-			IO::SensorAccelerometerAndroid *sensor;
-			NEW_CLASS(sensor, IO::SensorAccelerometerAndroid((void*)me->sensorList[index], me->mgr, (Int32)index + 1));
+			NN<IO::SensorAccelerometerAndroid> sensor;
+			NEW_CLASSNN(sensor, IO::SensorAccelerometerAndroid((void*)me->sensorList[index], me->mgr, (Int32)index + 1));
 			return sensor;
 		}
 #if __ANDROID_API__ > 16
 	case ASENSOR_TYPE_PRESSURE:
 		{
-			IO::SensorPressureAndroid *sensor;
-			NEW_CLASS(sensor, IO::SensorPressureAndroid((void*)me->sensorList[index], me->mgr, (Int32)index + 1));
+			NN<IO::SensorPressureAndroid> sensor;
+			NEW_CLASSNN(sensor, IO::SensorPressureAndroid((void*)me->sensorList[index], me->mgr, (Int32)index + 1));
 			return sensor;
 		}
 #endif
@@ -99,15 +99,15 @@ Optional<IO::Sensor> IO::SensorManager::CreateSensor(UIntOS index)
 	case ASENSOR_TYPE_MAGNETIC_FIELD_UNCALIBRATED:
 #endif
 		{
-			IO::SensorMagnetometerAndroid *sensor;
-			NEW_CLASS(sensor, IO::SensorMagnetometerAndroid((void*)me->sensorList[index], me->mgr, (Int32)index + 1));
+			NN<IO::SensorMagnetometerAndroid> sensor;
+			NEW_CLASSNN(sensor, IO::SensorMagnetometerAndroid((void*)me->sensorList[index], me->mgr, (Int32)index + 1));
 			return sensor;
 		}
 	default:
 		{
-			IO::SensorUnknownAndroid *sensor;
+			NN<IO::SensorUnknownAndroid> sensor;
 			printf("Sensor Type = %d\r\n", ASensor_getType(me->sensorList[index]));
-			NEW_CLASS(sensor, IO::SensorUnknownAndroid((void*)me->sensorList[index], me->mgr, (Int32)index + 1));
+			NEW_CLASSNN(sensor, IO::SensorUnknownAndroid((void*)me->sensorList[index], me->mgr, (Int32)index + 1));
 			return sensor;
 		}
 	}
@@ -115,7 +115,7 @@ Optional<IO::Sensor> IO::SensorManager::CreateSensor(UIntOS index)
 
 UIntOS IO::SensorManager::GetAccelerometerCnt()
 {
-	ClassData *me = (ClassData*)this->clsData;
+	NN<ClassData> me = this->clsData;
 	if (me->mgr == 0)
 		return 0;
 

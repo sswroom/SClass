@@ -12,10 +12,10 @@
 class GPIOWebHandler : public Net::WebServer::WebStandardHandler
 {
 private:
-	IO::GPIOControl *gpio;
+	NN<IO::GPIOControl> gpio;
 
 public:
-	GPIOWebHandler(IO::GPIOControl *gpio)
+	GPIOWebHandler(NN<IO::GPIOControl> gpio)
 	{
 		this->gpio = gpio;
 	}
@@ -123,17 +123,17 @@ public:
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Net::WebServer::WebListener *listener;
+	NN<Net::WebServer::WebListener> listener;
 	NN<GPIOWebHandler> webHdlr;
-	IO::GPIOControl *gpio;
+	NN<IO::GPIOControl> gpio;
 	Net::OSSocketFactory sockf(false);
 	Net::TCPClientFactory clif(sockf);
-	NEW_CLASS(gpio, IO::GPIOControl());
+	NEW_CLASSNN(gpio, IO::GPIOControl());
 	NEW_CLASSNN(webHdlr, GPIOWebHandler(gpio));
-	NEW_CLASS(listener, Net::WebServer::WebListener(clif, nullptr, webHdlr, PORT, 120, 1, Sync::ThreadUtil::GetThreadCnt(), CSTR("GPIO/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASSNN(listener, Net::WebServer::WebListener(clif, nullptr, webHdlr, PORT, 120, 1, Sync::ThreadUtil::GetThreadCnt(), CSTR("GPIO/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	progCtrl->WaitForExit(progCtrl);
-	DEL_CLASS(listener);
+	listener.Delete();
 	webHdlr.Delete();
-	DEL_CLASS(gpio);
+	gpio.Delete();
 	return 0;
 }

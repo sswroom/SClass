@@ -12,18 +12,18 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	Manage::HiResClock *clk;
+	NN<Manage::HiResClock> clk;
 	UIntOS i;
 	UIntOS j;
-	Data::ArrayListStringNN *strs;
+	NN<Data::ArrayListStringNN> strs;
 	NN<Text::String> s;
 	
-	NEW_CLASS(clk, Manage::HiResClock());
+	NEW_CLASSNN(clk, Manage::HiResClock());
 	clk->Start();
 	i = 1;
 	while (i-- > 0)
 	{
-		NEW_CLASS(strs, Data::ArrayListStringNN());
+		NEW_CLASSNN(strs, Data::ArrayListStringNN());
 		j = 1000;
 		while (j-- > 0)
 		{
@@ -37,15 +37,15 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		{
 			OPTSTR_DEL(strs->GetItem(j));
 		}
-		DEL_CLASS(strs);
+		strs.Delete();
 	}
 	Double t1 = clk->GetTimeDiff();
-	IO::ConsoleWriter *console;
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NN<IO::ConsoleWriter> console;
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, t1), UTF8STRC(" s"));
 	console->WriteLine(CSTRP(sbuff, sptr));
-	DEL_CLASS(console);
+	console.Delete();
 
-	DEL_CLASS(clk);
+	clk.Delete();
 	return 0;
 }

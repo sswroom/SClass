@@ -33,8 +33,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 				if (dr == UI::GUIForm::DR_OK)
 				{
-					SSWR::OrganMgr::OrganMainForm *frm;
-					NEW_CLASS(frm, SSWR::OrganMgr::OrganMainForm(ui, nullptr, env));
+					NN<SSWR::OrganMgr::OrganMainForm> frm;
+					NEW_CLASSNN(frm, SSWR::OrganMgr::OrganMainForm(ui, nullptr, env));
 					frm->SetExitOnClose(true);
 					frm->Show();
 					ui->Run();

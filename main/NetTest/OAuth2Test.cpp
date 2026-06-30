@@ -11,12 +11,12 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::ConsoleWriter console;
 	NN<Net::WebServer::OAuth2Handler> oauth2Hdlr;
 	NN<Net::WebServer::PrintLogWebHandler> hdlr;
-	Net::WebServer::WebListener *listener;
+	NN<Net::WebServer::WebListener> listener;
 	Net::OSSocketFactory sockf(false);
 	Net::TCPClientFactory clif(sockf);
 	NEW_CLASSNN(oauth2Hdlr, Net::WebServer::OAuth2Handler(CSTR("/auth"), CSTR("/token"), CSTR("/userinfo")));
 	NEW_CLASSNN(hdlr, Net::WebServer::PrintLogWebHandler(oauth2Hdlr, console));
-	NEW_CLASS(listener, Net::WebServer::WebListener(clif, nullptr, hdlr, 8889, 30, 1, 4, CSTR("OAuthTest/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASSNN(listener, Net::WebServer::WebListener(clif, nullptr, hdlr, 8889, 30, 1, 4, CSTR("OAuthTest/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (!listener->IsError())
 	{
 		console.WriteLine(CSTR("OAuth2 Test running at port 8889"));
@@ -27,7 +27,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		console.WriteLine(CSTR("Error in listening to port 8889"));
 	}
-	DEL_CLASS(listener);
+	listener.Delete();
 	hdlr.Delete();
 	return 0;
 }

@@ -7,13 +7,13 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	IO::GPIOControl *ctrl;
+	NN<IO::GPIOControl> ctrl;
 	Text::StringBuilderUTF8 sb;
 	IO::ConsoleWriter console;
 	UIntOS i;
 	UIntOS j;
 	console.WriteLine(CSTR("GPIO Pins:"));
-	NEW_CLASS(ctrl, IO::GPIOControl());
+	NEW_CLASSNN(ctrl, IO::GPIOControl());
 	if (ctrl->IsError())
 	{
 		console.WriteLine(CSTR("Error"));
@@ -43,6 +43,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			i++;
 		}
 	}
-	DEL_CLASS(ctrl);
+	ctrl.Delete();
 	return 0;
 }

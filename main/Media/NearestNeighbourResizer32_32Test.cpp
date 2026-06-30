@@ -26,17 +26,17 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
 	IO::ConsoleWriter console;
 	Media::ImageGen::RingsImageGen imgGen;
-	Media::ImageResizer *resizer;
+	NN<Media::ImageResizer> resizer;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	Double t0;
 	Double t1;
 	Double t2;
-//	NEW_CLASS(resizer, Media::Resizer::LanczosResizer8_C8(3, 3, &srgb, &srgb, 0, Media::AT_NO_ALPHA));
-	NEW_CLASS(resizer, Media::Resizer::NearestNeighbourResizer32_32());
-//	NEW_CLASS(resizer, Media::Resizer::NearestNeighbourResizer64_64());
-//	NEW_CLASS(resizer, Media::Resizer::LanczosResizerH8_8(4, 3, Media::AT_NO_ALPHA));
+//	NEW_CLASSNN(resizer, Media::Resizer::LanczosResizer8_C8(3, 3, &srgb, &srgb, 0, Media::AT_NO_ALPHA));
+	NEW_CLASSNN(resizer, Media::Resizer::NearestNeighbourResizer32_32());
+//	NEW_CLASSNN(resizer, Media::Resizer::NearestNeighbourResizer64_64());
+//	NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerH8_8(4, 3, Media::AT_NO_ALPHA));
 
 	Manage::HiResClock clk;
 	resizer->SetTargetSize(Math::Size2D<UIntOS>(dWidth, dHeight));
@@ -76,7 +76,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		t1 = -1;
 		t2 = -1;
 	}
-	DEL_CLASS(resizer);
+	resizer.Delete();
 	sb.AppendC(UTF8STRC("t0 = "));
 	sb.AppendDouble(t0);
 	sb.AppendC(UTF8STRC(", t1 = "));

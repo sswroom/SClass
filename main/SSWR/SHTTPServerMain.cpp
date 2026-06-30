@@ -14,11 +14,11 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XML.h"
 
-IO::Writer *console;
+NN<IO::Writer> console;
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Net::WebServer::WebListener *svr;
+	NN<Net::WebServer::WebListener> svr;
 	Text::StringBuilderUTF8 sb;
 	UInt16 port;
 	Text::CStringNN path;
@@ -26,10 +26,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 #if defined(DEBUGCON)
 	path = CSTR("/");
-	NEW_CLASS(console, IO::DebugWriter());
+	NEW_CLASSNN(console, IO::DebugWriter());
 #else
 	path = CSTR(".");
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 #endif
 
 #if defined(HTTPPORT)
@@ -67,7 +67,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		Parser::FullParserList parsers;
 		NN<Net::WebServer::HTTPDirectoryHandler>::ConvertFrom(hdlr)->ExpandPackageFiles(parsers, CSTR("*.zip"));
 	}
-	NEW_CLASS(svr, Net::WebServer::WebListener(clif, nullptr, hdlr, port, 120, 1, 8, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASSNN(svr, Net::WebServer::WebListener(clif, nullptr, hdlr, port, 120, 1, 8, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (!svr->IsError())
 	{
 		progCtrl->WaitForExit(progCtrl);
@@ -76,9 +76,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		console->WriteLine(CSTR("Error in listening port"));
 	}
-	DEL_CLASS(svr);
+	svr.Delete();
 	hdlr.Delete();
-	DEL_CLASS(console);
+	console.Delete();
 
 	return 0;
 }

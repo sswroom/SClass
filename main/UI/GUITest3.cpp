@@ -9,8 +9,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NN<UI::GUICore> core;
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(core))
 	{
-		UI::GUIForm *frm;
-		NEW_CLASS(frm, UI::GUIForm(nullptr, 640, 480, core));
+		NN<UI::GUIForm> frm;
+		NEW_CLASSNN(frm, UI::GUIForm(nullptr, 640, 480, core));
 		frm->SetText(CSTR("Test 3 - Fix sized form"));
 		frm->SetNoResize(true);
 		frm->SetExitOnClose(true);

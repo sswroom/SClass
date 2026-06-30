@@ -7,10 +7,10 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<UI::GUICore> ui;
-	SSWR::ProcMonForm *frm;
+	NN<SSWR::ProcMonForm> frm;
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{
-		NEW_CLASS(frm, SSWR::ProcMonForm(nullptr, ui));
+		NEW_CLASSNN(frm, SSWR::ProcMonForm(nullptr, ui));
 		frm->SetExitOnClose(true);
 		frm->Show();
 		ui->Run();

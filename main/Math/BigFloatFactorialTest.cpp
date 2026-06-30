@@ -9,13 +9,12 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[2048];
 	UnsafeArray<UTF8Char> sptr;
-	IO::ConsoleWriter *console;
-	Math::BigFloat *val;
+	NN<IO::ConsoleWriter> console;
+	NN<Math::BigFloat> val;
 	UIntOS i = 1;
 
-	NEW_CLASS(console, IO::ConsoleWriter());
-
-	NEW_CLASS(val, Math::BigFloat(512));
+	NEW_CLASSNN(console, IO::ConsoleWriter());
+	NEW_CLASSNN(val, Math::BigFloat(512));
 	while (i < 10)
 	{
 		val->Factorial(i);
@@ -25,8 +24,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console->WriteLine(CSTRP(sbuff, sptr));
 		i++;
 	}
-	DEL_CLASS(val);
-
-	DEL_CLASS(console);
+	val.Delete();
+	console.Delete();
 	return 0;
 }

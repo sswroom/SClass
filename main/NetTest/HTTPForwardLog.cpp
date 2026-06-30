@@ -8,8 +8,8 @@
 #include "Net/WebServer/HTTPForwardHandler.h"
 #include "Net/WebServer/WebListener.h"
 
-IO::ConsoleWriter *console;
-IO::LogTool *logger;
+NN<IO::ConsoleWriter> console;
+NN<IO::LogTool> logger;
 
 void __stdcall OnForwardRequest(AnyType userObj, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
@@ -65,8 +65,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 
-	NEW_CLASS(console, IO::ConsoleWriter());
-	NEW_CLASS(logger, IO::LogTool());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
+	NEW_CLASSNN(logger, IO::LogTool());
 
 	NN<IO::ConfigFile> cfg;
 	if (IO::IniFile::ParseProgConfig(0).SetTo(cfg))
@@ -94,14 +94,14 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				sptr = Text::StrUInt16(sptr, forwardPort);
 			}
 			NN<Net::WebServer::HTTPForwardHandler> hdlr;
-			Net::WebServer::WebListener *svr;
+			NN<Net::WebServer::WebListener> svr;
 			NEW_CLASSNN(hdlr, Net::WebServer::HTTPForwardHandler(clif, nullptr, CSTRP(sbuff, sptr), Net::WebServer::HTTPForwardHandler::ForwardType::Normal));
 			sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("FwdLog"));
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("fwdLog"));
 			logger->AddFileLog(CSTRP(sbuff, sptr), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 			hdlr->HandleForwardRequest(OnForwardRequest, 0);
-			NEW_CLASS(svr, Net::WebServer::WebListener(clif, nullptr, hdlr, listenPort, 120, 1, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+			NEW_CLASSNN(svr, Net::WebServer::WebListener(clif, nullptr, hdlr, listenPort, 120, 1, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 			if (!svr->IsError())
 			{
 				console->WriteLine(CSTR("HTTP Forwarding started"));
@@ -111,12 +111,12 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			{
 				console->WriteLine(CSTR("Error in listening port"));
 			}
-			DEL_CLASS(svr);
+			svr.Delete();
 			hdlr.Delete();
 		}
 		cfg.Delete();
 	}
-	DEL_CLASS(logger);
-	DEL_CLASS(console);
+	logger.Delete();
+	console.Delete();
 	return 0;
 }

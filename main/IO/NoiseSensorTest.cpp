@@ -7,7 +7,7 @@
 #include "Sync/ThreadUtil.h"
 #include <stdio.h>
 
-IO::SerialPort *port;
+NN<IO::SerialPort> port;
 Bool threadRunning;
 Bool threadToStop;
 
@@ -55,7 +55,7 @@ UInt32 __stdcall ReadThread(AnyType userObj)
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	NEW_CLASS(port, IO::SerialPort(33, 115200, IO::SerialPort::PARITY_NONE, false));
+	NEW_CLASSNN(port, IO::SerialPort(33, 115200, IO::SerialPort::PARITY_NONE, false));
 	if (port->IsError())
 	{
 		printf("Error in opeining serial port\r\n");
@@ -73,6 +73,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			Sync::SimpleThread::Sleep(10);
 		}
 	}
-	DEL_CLASS(port);
+	port.Delete();
 	return 0;
 }

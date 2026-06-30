@@ -11,7 +11,7 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<IO::SerialPort> port;
-	IO::Device::SDM120M *sdm120m;
+	NN<IO::Device::SDM120M> sdm120m;
 	Double dval;
 	Int32 ival;
 	UInt32 portNum = 33;
@@ -37,7 +37,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	else
 	{
 		IO::MODBUSRTUMaster modbus(port);
-		NEW_CLASS(sdm120m, IO::Device::SDM120M(modbus, addr));
+		NEW_CLASSNN(sdm120m, IO::Device::SDM120M(modbus, addr));
 
 		if (sdm120m->ReadVoltage(dval))
 		{
@@ -126,7 +126,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			printf("Baud Rate set to 9600\r\n");
 		}*/
 
-		DEL_CLASS(sdm120m);
+		sdm120m.Delete();
 	}
 	port.Delete();
 	return 0;

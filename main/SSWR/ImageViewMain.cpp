@@ -8,7 +8,7 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder exHdlr(CSTR("Error.txt"), Manage::ExceptionRecorder::EA_CLOSE);
-	SSWR::AVIRead::AVIRImageViewerForm *frm;
+	NN<SSWR::AVIRead::AVIRImageViewerForm> frm;
 	NN<SSWR::AVIRead::AVIRCore> core;
 	NN<UI::GUICore> ui;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv;
@@ -18,7 +18,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{
 		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRImageViewerForm(nullptr, ui, core));
+		NEW_CLASSNN(frm, SSWR::AVIRead::AVIRImageViewerForm(nullptr, ui, core));
 		frm->SetExitOnClose(true);
 		frm->Show();
 		argv = progCtrl->GetCommandLines(progCtrl, argc);

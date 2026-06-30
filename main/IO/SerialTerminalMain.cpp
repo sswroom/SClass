@@ -8,8 +8,8 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-IO::ConsoleWriter *console;
-IO::SerialPort *port;
+NN<IO::ConsoleWriter> console;
+NN<IO::SerialPort> port;
 Bool threadToStop;
 Bool threadRunning;
 
@@ -35,7 +35,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 
 	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
@@ -59,7 +59,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		UInt32 baudRate;
 		if (Text::StrToUInt32(argv[1], portNum) && Text::StrToUInt32(argv[2], baudRate))
 		{
-			NEW_CLASS(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, false));
+			NEW_CLASSNN(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, false));
 			if (port->IsError())
 			{
 				console->WriteLine(CSTR("Error in opening serial port"));
@@ -87,13 +87,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 					Sync::SimpleThread::Sleep(1);
 				}
 			}			
-			DEL_CLASS(port);
+			port.Delete();
 		}
 		else
 		{
 			console->WriteLine(CSTR("Parameter error"));
 		}
 	}
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

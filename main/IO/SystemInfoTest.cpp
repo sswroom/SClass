@@ -10,8 +10,8 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	IO::SystemInfo *sysInfo;
-	Manage::CPUInfoDetail *cpuInfo;
+	NN<IO::SystemInfo> sysInfo;
+	NN<Manage::CPUInfoDetail> cpuInfo;
 	IO::ConsoleWriter console;
 	Double temp;
 	UIntOS i;
@@ -19,8 +19,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 
-	NEW_CLASS(sysInfo, IO::SystemInfo());
-	NEW_CLASS(cpuInfo, Manage::CPUInfoDetail());
+	NEW_CLASSNN(sysInfo, IO::SystemInfo());
+	NEW_CLASSNN(cpuInfo, Manage::CPUInfoDetail());
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("CPU Name = "));
 	if (cpuInfo->GetCPUName(sbuff).SetTo(sptr))
@@ -60,7 +60,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		console.WriteLine(CSTR("Error in reading CPU temperature"));
 	}
-	DEL_CLASS(cpuInfo);
-	DEL_CLASS(sysInfo);
+	cpuInfo.Delete();
+	sysInfo.Delete();
 	return 0;
 }

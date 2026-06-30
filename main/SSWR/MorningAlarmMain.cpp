@@ -44,7 +44,7 @@ NN<Net::SocketFactory> sockf;
 NN<Net::TCPClientFactory> clif;
 Optional<Net::SSLEngine> ssl;
 NN<Text::EncodingFactory> encFact;
-Net::NTPClient *timeCli;
+NN<Net::NTPClient> timeCli;
 NN<Data::DateTime> tmpDt;
 
 
@@ -53,7 +53,7 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	Parser::FileParser::WAVParser parser;
-	Media::RefClock *clk;
+	NN<Media::RefClock> clk;
 	Data::DateTime currDt;
 	Data::DateTime updateDt;
 	Data::ArrayListNN<Media::MediaFile> stmList;
@@ -91,7 +91,7 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 		}
 	}
 
-	NEW_CLASS(clk, Media::RefClock());
+	NEW_CLASSNN(clk, Media::RefClock());
 
 	while (!thread->IsStopping())
 	{
@@ -228,7 +228,7 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 	}
 	audRenderer->Stop();
 
-	DEL_CLASS(clk);
+	clk.Delete();
 
 	stmList.DeleteAll();
 }
@@ -248,7 +248,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NEW_CLASSNN(clif, Net::TCPClientFactory(sockf));
 	ssl = Net::SSLEngineFactory::Create(clif, true);
 	NEW_CLASSNN(encFact, Text::EncodingFactory());
-	NEW_CLASS(timeCli, Net::NTPClient(sockf, 14562, log));
+	NEW_CLASSNN(timeCli, Net::NTPClient(sockf, 14562, log));
 	NEW_CLASSNN(tmpDt, Data::DateTime());
 	devCnt = i = Media::AudioDevice::GetDeviceCount();
 	sel = MemAllocArr(NN<Text::String>, devCnt);
@@ -334,7 +334,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 
 	tmpDt.Delete();
-	DEL_CLASS(timeCli);
+	timeCli.Delete();
 	encFact.Delete();
 	ssl.Delete();
 	clif.Delete();

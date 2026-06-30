@@ -12,9 +12,9 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	WChar wbuff[256];
-	Manage::HiResClock *clk;
+	NN<Manage::HiResClock> clk;
 
-	NEW_CLASS(clk, Manage::HiResClock());
+	NEW_CLASSNN(clk, Manage::HiResClock());
 
 	Int64 i;
 	clk->Start();
@@ -49,8 +49,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 	Double t2b = clk->GetTimeDiff();
 
-	IO::ConsoleWriter *console;
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NN<IO::ConsoleWriter> console;
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("t1 = "));
 	sb.AppendDouble(t1);
@@ -61,6 +61,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	sb.AppendC(UTF8STRC(", t2b = "));
 	sb.AppendDouble(t2b);
 	console->WriteLine(sb.ToCString());
-	DEL_CLASS(console);
+	console.Delete();
+	clk.Delete();
 	return 0;
 }

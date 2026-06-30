@@ -8,11 +8,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff2[256];
 	UnsafeArray<UTF8Char> sptr;
-	Manage::HiResClock *clk;
-	Sync::Mutex *mut;
+	NN<Manage::HiResClock> clk;
+	NN<Sync::Mutex> mut;
 
-	NEW_CLASS(clk, Manage::HiResClock());
-	NEW_CLASS(mut, Sync::Mutex());
+	NEW_CLASSNN(clk, Manage::HiResClock());
+	NEW_CLASSNN(mut, Sync::Mutex());
 	clk->Start();
 
 	Int32 i = 10000;
@@ -23,13 +23,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 
 	Double t1 = clk->GetTimeDiff();
-	DEL_CLASS(mut);
-	DEL_CLASS(clk);
+	mut.Delete();
+	clk.Delete();
 
-	IO::ConsoleWriter *console;
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NN<IO::ConsoleWriter> console;
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff2, t1), UTF8STRC(" s"));
 	console->WriteLine(CSTRP(sbuff2, sptr));
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

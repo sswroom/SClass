@@ -8,12 +8,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[2048];
 	UnsafeArray<UTF8Char> sptr;
-	IO::ConsoleWriter *console;
+	NN<IO::ConsoleWriter> console;
 	NN<Math::BigFloat> val;
 	NN<Math::BigFloat> val2;
 
-	NEW_CLASS(console, IO::ConsoleWriter());
-
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	NEW_CLASSNN(val, Math::BigFloat(256));
 	NEW_CLASSNN(val2, Math::BigFloat(256));
 
@@ -41,7 +40,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 	val2.Delete();
 	val.Delete();
-
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

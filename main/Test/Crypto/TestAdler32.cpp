@@ -7,9 +7,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UInt8 testBlock[32];
 	UInt8 hashVal[32];
-	Crypto::Hash::HashAlgorithm *hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 
-	NEW_CLASS(hash, Crypto::Hash::Adler32());
+	NEW_CLASSNN(hash, Crypto::Hash::Adler32());
 
 	UIntOS i = 32;
 	while (i-- > 0)
@@ -21,7 +21,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	hash->GetValue(hashVal);
 	if (ReadMUInt32(hashVal) != 0x00200001)
 	{
-		DEL_CLASS(hash);
+		hash.Delete();
 		return 1;
 	}
 
@@ -35,7 +35,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	hash->GetValue(hashVal);
 	if (ReadMUInt32(hashVal) != 0x0E2E1FE1)
 	{
-		DEL_CLASS(hash);
+		hash.Delete();
 		return 2;
 	}
 
@@ -49,7 +49,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	hash->GetValue(hashVal);
 	if (ReadMUInt32(hashVal) != 0x2AC001F1)
 	{
-		DEL_CLASS(hash);
+		hash.Delete();
 		return 3;
 	}
 
@@ -58,10 +58,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	hash->GetValue(hashVal);
 	if (ReadMUInt32(hashVal) != 0x28CF01F1)
 	{
-		DEL_CLASS(hash);
+		hash.Delete();
 		return 4;
 	}
 
-	DEL_CLASS(hash);
+	hash.Delete();
 	return 0;
 }

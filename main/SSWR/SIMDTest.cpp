@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 Bool failOnly = false;
-IO::ConsoleWriter *console;
+NN<IO::ConsoleWriter> console;
 
 void UInt8x4Cmp(UInt8x4 u8x4, UnsafeArray<const UTF8Char> funcName, UIntOS nameLen, UInt8 val1, UInt8 val2, UInt8 val3, UInt8 val4)
 {
@@ -352,7 +352,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	abuff[29] = 0x22;
 	abuff[30] = 0x11;
 	abuff[31] = 0x00;
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	UInt8x4Cmp(PUInt8x4Clear(), UTF8STRC("PUInt8x4Clear"), 0, 0, 0, 0);
 	UInt8x8Cmp(PUInt8x8Clear(), UTF8STRC("PUInt8x8Clear"), 0, 0, 0, 0, 0, 0, 0, 0);
 	UInt8x16Cmp(PUInt8x16Clear(), UTF8STRC("PUInt8x16Clear"), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -464,7 +464,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 //#define PCONVI8x8_U(v) (v)
 //#define PCONVI8x16_U(v) (v)
 */
-	DEL_CLASS(console);
+	console.Delete();
 	MemFreeAArr(abuff);
 	return 0;
 }

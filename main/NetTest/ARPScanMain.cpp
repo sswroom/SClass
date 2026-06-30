@@ -12,9 +12,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-IO::ConsoleWriter *console;
+NN<IO::ConsoleWriter> console;
 NN<Net::SocketFactory> sockf;
-Data::ArrayListUInt32 *ipList;
+NN<Data::ArrayListUInt32> ipList;
 
 void __stdcall ARPHandler(UnsafeArray<const UInt8> hwAddr, UInt32 ipv4, AnyType userData)
 {
@@ -41,9 +41,9 @@ void __stdcall ARPHandler(UnsafeArray<const UInt8> hwAddr, UInt32 ipv4, AnyType 
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
-	NEW_CLASS(ipList, Data::ArrayListUInt32());
+	NEW_CLASSNN(ipList, Data::ArrayListUInt32());
 
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListNN<Net::ARPInfo> arpList;
@@ -108,7 +108,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				if (connInfo->GetPhysicalAddress(hwAddr, 32) == 6)
 				{
 					UInt8 buff[4];
-					Net::ARPHandler *arpHdlr;
+					NN<Net::ARPHandler> arpHdlr;
 					console->WriteLine();
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Adapter: HW Addr = "));
@@ -124,7 +124,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 					WriteNUInt32(buff, ip);
 					if (buff[0] == 192 && buff[1] == 168)
 					{
-						NEW_CLASS(arpHdlr, Net::ARPHandler(sockf, sbuff, hwAddr, ip, ARPHandler, 0, 1));
+						NEW_CLASSNN(arpHdlr, Net::ARPHandler(sockf, sbuff, hwAddr, ip, ARPHandler, 0, 1));
 						if (arpHdlr->IsError())
 						{
 							console->WriteLine(CSTR("Error in listening arp data"));
@@ -143,7 +143,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 							Sync::SimpleThread::Sleep(3000);
 							
 						}
-						DEL_CLASS(arpHdlr);
+						arpHdlr.Delete();
 					}
 					else
 					{
@@ -157,8 +157,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		i++;
 	}
 
-	DEL_CLASS(ipList);
+	ipList.Delete();
 	sockf.Delete();
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

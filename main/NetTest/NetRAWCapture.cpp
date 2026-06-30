@@ -11,8 +11,8 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Net::RAWAnalyzer *analyzer;
-	IO::Writer *console;
+	NN<Net::RAWAnalyzer> analyzer;
+	NN<IO::Writer> console;
 	UInt16 portNum = 8089;
 	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
@@ -22,13 +22,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 
 #if defined(DEBUGCON)
-	NEW_CLASS(console, IO::DebugWriter());
+	NEW_CLASSNN(console, IO::DebugWriter());
 #else
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 #endif
 	Net::OSSocketFactory sockf(true);
 	Net::TCPClientFactory clif(sockf);
-	NEW_CLASS(analyzer, Net::RAWAnalyzer(clif, portNum, console, Net::EthernetAnalyzer::AT_ALL));
+	NEW_CLASSNN(analyzer, Net::RAWAnalyzer(clif, portNum, console, Net::EthernetAnalyzer::AT_ALL));
 	if (!analyzer->IsError())
 	{
 		console->WriteLine(CSTR("NetRAWCapture Started"));
@@ -39,7 +39,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console->WriteLine(CSTR("Error in listening to the port"));
 	}
 	
-	DEL_CLASS(analyzer);
-	DEL_CLASS(console);
+	analyzer.Delete();
+	console.Delete();
 	return 0;
 }

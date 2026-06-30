@@ -113,11 +113,11 @@ UnsafeArray<UTF8Char> ByteDisp(UnsafeArray<UTF8Char> sbuff, UInt64 byteSize)
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Manage::ExceptionRecorder *exHdlr;
-	IO::ConsoleWriter *console;
+	NN<Manage::ExceptionRecorder> exHdlr;
+	NN<IO::ConsoleWriter> console;
 
 	NN<IO::FileStream> fs;
-	Text::UTF8Writer *writer;
+	NN<Text::UTF8Writer> writer;
 	UInt64 memSize;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -129,13 +129,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UIntOS threadCnt = Sync::ThreadUtil::GetThreadCnt();
 
 	MemSetLogFile(UTF8STRCPTR("Memory.log"));
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SHWInfo.log"), Manage::ExceptionRecorder::EA_CLOSE));
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(exHdlr, Manage::ExceptionRecorder(CSTR("SHWInfo.log"), Manage::ExceptionRecorder::EA_CLOSE));
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("txt"));
 	NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(writer, Text::UTF8Writer(fs));
+	NEW_CLASSNN(writer, Text::UTF8Writer(fs));
 
 	Text::StringBuilderUTF8 sb;
 	{
@@ -562,7 +562,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		if (i > 0)
 		{
 			NN<Text::String> s;
-			Media::Printer *printer;
+			NN<Media::Printer> printer;
 			NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 			Data::ArrayIterator<NN<Text::String>> it = printerList.Iterator();
 			while (it.HasNext())
@@ -575,7 +575,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				console->WriteLine(sb.ToCString());
 				writer->WriteLine(sb.ToCString());
 
-				NEW_CLASS(printer, Media::Printer(s->ToCString()));
+				NEW_CLASSNN(printer, Media::Printer(s->ToCString()));
 				if (printer->IsError())
 				{
 					console->WriteLine(CSTR("Error in opening printer"));
@@ -597,7 +597,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 					}
 					test.Delete();
 				}
-				DEL_CLASS(printer);
+				printer.Delete();
 
 				s->Release();
 			}
@@ -606,7 +606,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 //-------------------------------------------------------------------------------
 	{
-		Media::VideoCaptureMgr *videoMgr;
+		NN<Media::VideoCaptureMgr> videoMgr;
 		Data::ArrayListNN<Media::VideoCaptureMgr::DeviceInfo> devList;
 		NN<Media::VideoCaptureMgr::DeviceInfo> dev;
 		NN<Media::VideoCapturer> capture;
@@ -616,7 +616,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		writer->WriteLine();
 		console->WriteLine(CSTR("Video Capture Info:"));
 		writer->WriteLine(CSTR("Video Capture Info:"));
-		NEW_CLASS(videoMgr, Media::VideoCaptureMgr());
+		NEW_CLASSNN(videoMgr, Media::VideoCaptureMgr());
 		videoMgr->GetDeviceList(devList);
 		i = 0;
 		j = devList.GetCount();
@@ -678,8 +678,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			}
 		}
 		videoMgr->FreeDeviceList(devList);
-
-		DEL_CLASS(videoMgr);
+		videoMgr.Delete();
 	}
 //-------------------------------------------------------------------------------
 	{
@@ -1214,11 +1213,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 	}
 //-------------------------------------------------------------------------------
-	DEL_CLASS(writer);
+	writer.Delete();
 
 	fs.Delete();
 
-	DEL_CLASS(console);
-	DEL_CLASS(exHdlr);
+	console.Delete();
+	exHdlr.Delete();
 	return 0;
 }

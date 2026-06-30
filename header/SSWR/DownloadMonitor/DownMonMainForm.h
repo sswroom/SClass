@@ -17,7 +17,7 @@ namespace SSWR
 		class DownMonMainForm : public UI::GUIForm
 		{
 		private:
-			SSWR::DownloadMonitor::DownMonCore *core;
+			NN<SSWR::DownloadMonitor::DownMonCore> core;
 			SSWR::DownloadMonitor::DownMonCore::CheckStatus currStatus;
 			Sync::Mutex endedMut;
 			Data::ArrayListNative<Int32> endedList;
@@ -51,7 +51,7 @@ namespace SSWR
 			void LoadList();
 			void SaveList();
 		public:
-			DownMonMainForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, SSWR::DownloadMonitor::DownMonCore *core);
+			DownMonMainForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::DownloadMonitor::DownMonCore> core);
 			virtual ~DownMonMainForm();
 		};
 	}

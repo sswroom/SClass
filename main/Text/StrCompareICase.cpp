@@ -14,11 +14,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IntOS i;
 	IntOS val = 0;
 	IntOS val2 = 0;
-	Manage::HiResClock *clk;
+	NN<Manage::HiResClock> clk;
 	Text::StringBuilderUTF8 sb;
 	IO::ConsoleWriter console;
 
-	NEW_CLASS(clk, Manage::HiResClock());
+	NEW_CLASSNN(clk, Manage::HiResClock());
 	i = 10000000;
 	clk->Start();
 	while (i-- > 0)
@@ -47,7 +47,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	sb.AppendDouble(spd2);
 	console.WriteLine(sb.ToCString());
 
-	DEL_CLASS(clk);
+	clk.Delete();
 
 	return 0;
 }

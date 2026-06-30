@@ -67,8 +67,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NN<Text::String> smtpTo;
 	NN<Text::String> smtpUser;
 	NN<Text::String> smtpPassword;
-	Net::MySQLTCPClient *cli;
-	DB::MySQLMaintance *mysql;
+	NN<Net::MySQLTCPClient> cli;
+	NN<DB::MySQLMaintance> mysql;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	UInt16 smtpIPort;
@@ -162,11 +162,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	else
 	{
 		Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, true);
-		NEW_CLASS(cli, Net::MySQLTCPClient(clif, ssl, addr, port, Text::String::OrEmpty(mysqlUser), Text::String::OrEmpty(mysqlPassword), nullptr));
+		NEW_CLASSNN(cli, Net::MySQLTCPClient(clif, ssl, addr, port, Text::String::OrEmpty(mysqlUser), Text::String::OrEmpty(mysqlPassword), nullptr));
 		if (cli->IsError())
 		{
 			console.WriteLine(CSTR("Error in connecting to MySQL server"));
-			DEL_CLASS(cli);
+			cli.Delete();
 			retNum = 7;
 		}
 		else
@@ -176,7 +176,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sbMsg.Append(Text::String::OrEmpty(cfg->GetValue(CSTR("ServerName"))));
 			sbMsg.AppendC(UTF8STRC("\r\n"));
 			sbMsg.AppendC(UTF8STRC("MySQL Check detail:\r\n"));
-			NEW_CLASS(mysql, DB::MySQLMaintance(cli, true));
+			NEW_CLASSNN(mysql, DB::MySQLMaintance(cli, true));
 			sb.ClearStr();
 			sb.Append(mysqlSchemas);
 			sarr[1] = sb.v;
@@ -189,20 +189,20 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 					break;
 				}
 			}
-			DEL_CLASS(mysql);
+			mysql.Delete();
 
 			sb.ClearStr();
 			IO::Path::GetProcessFileName(sb);
 			sb.AppendC(UTF8STRC(".log"));
 			IO::LogTool log;
 			log.AddFileLog(sb.ToCString(), IO::LogHandler::LogType::SingleFile, IO::LogHandler::LogGroup::NoGroup, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", true);
-			IO::LogWriter *writer;
-			NEW_CLASS(writer, IO::LogWriter(log, IO::LogHandler::LogLevel::Command));
+			NN<IO::LogWriter> writer;
+			NEW_CLASSNN(writer, IO::LogWriter(log, IO::LogHandler::LogLevel::Command));
 
-			Net::Email::SMTPClient *smtp;
+			NN<Net::Email::SMTPClient> smtp;
 			Data::DateTime currTime;
 			currTime.SetCurrTime();
-			NEW_CLASS(smtp, Net::Email::SMTPClient(clif, ssl, smtpHost->ToCString(), smtpIPort, connType, writer, 30000));
+			NEW_CLASSNN(smtp, Net::Email::SMTPClient(clif, ssl, smtpHost->ToCString(), smtpIPort, connType, Optional<IO::Writer>(writer), 30000));
 			if (cfg->GetValue(CSTR("SMTPUser")).SetTo(smtpUser) && cfg->GetValue(CSTR("SMTPPassword")).SetTo(smtpPassword) && smtpUser->v[0] && smtpPassword->v[0])
 			{
 				smtp->SetPlainAuth(smtpUser->ToCString(), smtpPassword->ToCString());
@@ -220,8 +220,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			{
 				retNum = 8;
 			}
-			DEL_CLASS(smtp);
-			DEL_CLASS(writer);
+			smtp.Delete();
+			writer.Delete();
 		}
 		ssl.Delete();
 	}

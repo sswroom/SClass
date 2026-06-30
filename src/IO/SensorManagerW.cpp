@@ -155,7 +155,7 @@ Optional<IO::Sensor> IO::SensorManager::CreateSensor(UIntOS index)
 	if (me->mgr == 0 || index < 0)
 		return nullptr;
 
-	IO::Sensor *ret = 0;
+	Optional<IO::Sensor> ret = nullptr;
 	ISensorCollection *pSensorColl;
 	HRESULT hr;
 	hr = me->mgr->GetSensorsByCategory(SENSOR_CATEGORY_ALL, &pSensorColl);
@@ -179,36 +179,36 @@ Optional<IO::Sensor> IO::SensorManager::CreateSensor(UIntOS index)
 //						printf("type = %x, %x\r\n", sType.Data1, sType.Data2);
 						if (sType == SENSOR_TYPE_ACCELEROMETER_3D)
 						{
-							NEW_CLASS(ret, IO::SensorAccelerometerW(pSensor));
+							NEW_CLASSOPT(ret, IO::SensorAccelerometerW(pSensor));
 						}
 						else if (sType == SENSOR_TYPE_ENVIRONMENTAL_ATMOSPHERIC_PRESSURE)
 						{
-							NEW_CLASS(ret, IO::SensorUnknownWin(pSensor));
+							NEW_CLASSOPT(ret, IO::SensorUnknownWin(pSensor));
 						}
 						else if (sType == SENSOR_TYPE_COMPASS_3D)
 						{
-							NEW_CLASS(ret, IO::SensorUnknownWin(pSensor));
+							NEW_CLASSOPT(ret, IO::SensorUnknownWin(pSensor));
 						}
 						else if (sType == SENSOR_TYPE_INCLINOMETER_3D)
 						{
-							NEW_CLASS(ret, IO::SensorOrientationWin(pSensor));
+							NEW_CLASSOPT(ret, IO::SensorOrientationWin(pSensor));
 						}
 						else if (sType == SENSOR_TYPE_LOCATION_OTHER)
 						{
-							NEW_CLASS(ret, IO::SensorLocationWin(pSensor));
+							NEW_CLASSOPT(ret, IO::SensorLocationWin(pSensor));
 						}
 						else if (sType == SENSOR_TYPE_AMBIENT_LIGHT)
 						{
-							NEW_CLASS(ret, IO::SensorLightWin(pSensor));
+							NEW_CLASSOPT(ret, IO::SensorLightWin(pSensor));
 						}
 						else
 						{
-							NEW_CLASS(ret, IO::SensorUnknownWin(pSensor));
+							NEW_CLASSOPT(ret, IO::SensorUnknownWin(pSensor));
 						}
 					}
 					else
 					{
-						NEW_CLASS(ret, IO::SensorUnknownWin(pSensor));
+						NEW_CLASSOPT(ret, IO::SensorUnknownWin(pSensor));
 					}
 				}
 			}
@@ -246,7 +246,7 @@ UIntOS IO::SensorManager::GetAccelerometerCnt()
 
 Optional<IO::SensorAccelerometer> IO::SensorManager::CreateAccelerometer(UIntOS index)
 {
-	IO::SensorAccelerometer *ret = 0;
+	Optional<IO::SensorAccelerometer> ret = nullptr;
 	NN<ClassData> me = this->clsData;
 	if (me->mgr == 0 || index < 0)
 		return nullptr;
@@ -268,7 +268,7 @@ Optional<IO::SensorAccelerometer> IO::SensorManager::CreateAccelerometer(UIntOS 
 				ISensor *pSensor;
 				if (SUCCEEDED(pSensorColl->GetAt((ULONG)index, &pSensor)))
 				{
-					NEW_CLASS(ret, IO::SensorAccelerometerW(pSensor));
+					NEW_CLASSOPT(ret, IO::SensorAccelerometerW(pSensor));
 				}
 			}
 		}

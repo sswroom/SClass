@@ -27,11 +27,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 	if (optsrcBuff.SetTo(srcBuff))
 	{
-		Data::Compress::LZODecompressor *decomp;
+		NN<Data::Compress::LZODecompressor> decomp;
 		UInt64 decSize = 0;
 		Manage::HiResClock clk;
 		destBuff = MemAllocArr(UInt8, fileSize * 3);
-		NEW_CLASS(decomp, Data::Compress::LZODecompressor());
+		NEW_CLASSNN(decomp, Data::Compress::LZODecompressor());
 		clk.Start();
 		if (decomp->Decompress(Data::ByteArray(destBuff, fileSize * 3), decSize, Data::ByteArrayR(srcBuff, fileSize)))
 		{
@@ -88,7 +88,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		{
 			console.WriteLine(CSTR("Error in decompressing"));
 		}
-		DEL_CLASS(decomp);
+		decomp.Delete();
 		MemFreeArr(destBuff);
 		MemFreeArr(srcBuff);
 	}

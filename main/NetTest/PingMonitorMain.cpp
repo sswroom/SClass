@@ -18,12 +18,12 @@
 #include "Text/UTF8Writer.h"
 #include "Text/XML.h"
 
-IO::Writer *console;
+NN<IO::Writer> console;
 Int32 threadCnt;
 Bool threadToStop;
 NN<Socket> rawSock;
 NN<Net::SocketFactory> sockf;
-IO::LogTool *logTool;
+NN<IO::LogTool> logTool;
 
 UInt32 __stdcall RecvThread(AnyType userObj)
 {
@@ -126,15 +126,15 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	threadToStop = false;
 
 #if defined(DEBUGCON)
-	NEW_CLASS(console, IO::DebugWriter());
+	NEW_CLASSNN(console, IO::DebugWriter());
 #else
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 #endif
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
 	console->WriteLine(CSTR("PingMonitor Started"));
 	if (sockf->CreateRAWSocket().SetTo(rawSock))
 	{
-		NEW_CLASS(logTool, IO::LogTool());
+		NEW_CLASSNN(logTool, IO::LogTool());
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("PingLog"));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -153,13 +153,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		{
 			Sync::SimpleThread::Sleep(1);
 		}
-		DEL_CLASS(logTool);
+		logTool.Delete();
 	}
 	else
 	{
 		console->WriteLine(CSTR("Error in creating RAW socket"));
 	}
 	sockf.Delete();
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

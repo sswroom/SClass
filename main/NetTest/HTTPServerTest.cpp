@@ -13,7 +13,7 @@
 
 #define USESSL
 
-IO::ConsoleWriter *console;
+NN<IO::ConsoleWriter> console;
 
 class MyHandler : public Net::WebServer::WebServiceHandler
 {
@@ -59,12 +59,12 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	Net::WebServer::WebListener *svr;
+	NN<Net::WebServer::WebListener> svr;
 	Optional<Net::SSLEngine> ssl;
 	Text::StringBuilderUTF8 sb;
 	UInt16 port = 0;
 	Bool succ = true;
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 
 	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
@@ -118,7 +118,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		NEW_CLASSNN(hdlr, Net::WebServer::HTTPDirectoryHandler(CSTR("wwwroot"), true, 0, true));
 		NEW_CLASSNN(myHdlr, MyHandler());
 		hdlr->HandlePath(CSTR("/api"), myHdlr, true);
-		NEW_CLASS(svr, Net::WebServer::WebListener(clif, ssl, hdlr, port, 120, 1, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+		NEW_CLASSNN(svr, Net::WebServer::WebListener(clif, ssl, hdlr, port, 120, 1, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (!svr->IsError())
 		{
 			progCtrl->WaitForExit(progCtrl);
@@ -127,10 +127,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		{
 			console->WriteLine(CSTR("Error in listening port"));
 		}
-		DEL_CLASS(svr);
+		svr.Delete();
 		hdlr.Delete();
 	}
 	ssl.Delete();
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

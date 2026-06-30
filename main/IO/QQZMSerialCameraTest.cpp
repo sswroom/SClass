@@ -10,7 +10,7 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	IO::ConsoleWriter *console;
+	NN<IO::ConsoleWriter> console;
 	UInt32 portNum = 1;
 	UInt32 baudRate = 115200;
 
@@ -25,7 +25,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		Text::StrToUInt32(argv[2], baudRate);
 	}
 
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	NN<IO::SerialPort> port;
 	NEW_CLASSNN(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, false));
 	if (port->IsError())
@@ -34,8 +34,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 	else
 	{
-		IO::Device::QQZMSerialCamera *camera;
-		NEW_CLASS(camera, IO::Device::QQZMSerialCamera(port, 0, false));
+		NN<IO::Device::QQZMSerialCamera> camera;
+		NEW_CLASSNN(camera, IO::Device::QQZMSerialCamera(port, 0, false));
 		IO::MemoryStream mstm;
 		if (camera->CapturePhoto(mstm))
 		{
@@ -45,9 +45,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		{
 			console->WriteLine(CSTR("Error in capturing image"));
 		}
-		DEL_CLASS(camera);
+		camera.Delete();
 	}
 	port.Delete();
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

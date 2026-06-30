@@ -15,17 +15,17 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	NN<IO::StmData::FileData> fd;
-	Parser::FileParser::CSVParser *parser;
-	Exporter::KMLExporter *exporter;
-	Manage::HiResClock *clk;
+	NN<Parser::FileParser::CSVParser> parser;
+	NN<Exporter::KMLExporter> exporter;
+	NN<Manage::HiResClock> clk;
 	IO::Path::PathType pt;
-	IO::ConsoleWriter *console;
+	NN<IO::ConsoleWriter> console;
 	NN<IO::Path::FindFileSession> sess;
 
-	NEW_CLASS(parser, Parser::FileParser::CSVParser());
-	NEW_CLASS(exporter, Exporter::KMLExporter());
-	NEW_CLASS(clk, Manage::HiResClock());
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(parser, Parser::FileParser::CSVParser());
+	NEW_CLASSNN(exporter, Exporter::KMLExporter());
+	NEW_CLASSNN(clk, Manage::HiResClock());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	
 	exporter->SetCodePage(65001);
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("GPS/"));
@@ -55,9 +55,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	sptr = Text::StrConcatC(Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Time used: ")), Double2Int32(t1 * 1000)), UTF8STRC(" ms"));
 	console->WriteLine(CSTRP(sbuff, sptr));
 
-	DEL_CLASS(console);
-	DEL_CLASS(exporter);
-	DEL_CLASS(parser);
-	DEL_CLASS(clk);
+	console.Delete();
+	exporter.Delete();
+	parser.Delete();
+	clk.Delete();
 	return 0;
 }

@@ -16,18 +16,18 @@
 #include "Text/StringBuilderUTF8.h"
 
 NN<Net::SocketFactory> sockf;
-Manage::HiResClock *clk;
-IO::ConsoleWriter *console;
+NN<Manage::HiResClock> clk;
+NN<IO::ConsoleWriter> console;
 Bool toStop;
 UInt32 procRunning;
 Bool recvRunning;
 Bool dispRunning;
-Sync::Event *mainEvt;
-Sync::Event *procEvt;
-Sync::Event *recvEvt;
-Sync::Event *dispEvt;
+NN<Sync::Event> mainEvt;
+NN<Sync::Event> procEvt;
+NN<Sync::Event> recvEvt;
+NN<Sync::Event> dispEvt;
 NN<Sync::Mutex> cliMut;
-Net::TCPClient *cli;
+Optional<Net::TCPClient> cli;
 UInt64 totalRecvSize;
 UInt64 totalSendSize;
 Double lastTime;
@@ -70,15 +70,16 @@ UInt32 __stdcall ProcThread(AnyType userObj)
 	UnsafeArray<UInt8> sendBuff;
 	UIntOS sendSize;
 	UIntOS sendBuffSize = 9000;
+	NN<Net::TCPClient> c;
 	Sync::Interlocked::IncrementU32(procRunning);
 	mainEvt->Set();
 	sendBuff = MemAllocArr(UInt8, sendBuffSize);
 	while (!toStop)
 	{
 		Sync::MutexUsage mutUsage(cliMut);
-		if (cli)
+		if (cli.SetTo(c))
 		{
-			sendSize = cli->Write(Data::ByteArrayR(sendBuff, sendBuffSize));
+			sendSize = c->Write(Data::ByteArrayR(sendBuff, sendBuffSize));
 			mutUsage.EndUse();
 			if (sendSize > 0)
 			{
@@ -104,15 +105,16 @@ UInt32 __stdcall ProcThread(AnyType userObj)
 UInt32 __stdcall RecvThread(AnyType userObj)
 {
 	UIntOS recvSize;
+	NN<Net::TCPClient> c;
 	recvRunning = true;
 	mainEvt->Set();
 	{
 		Data::ByteBuffer recvBuff(9000);
 		while (!toStop)
 		{
-			if (cli)
+			if (cli.SetTo(c))
 			{
-				recvSize = cli->Read(recvBuff);
+				recvSize = c->Read(recvBuff);
 				if (recvSize > 0)
 				{
 					Sync::Interlocked::AddU64(totalRecvSize, recvSize);
@@ -120,8 +122,7 @@ UInt32 __stdcall RecvThread(AnyType userObj)
 				else
 				{
 					Sync::MutexUsage mutUsage(cliMut);
-					DEL_CLASS(cli);
-					cli = 0;
+					cli.Delete();
 					mutUsage.EndUse();
 					recvEvt->Wait(1000);
 				}
@@ -141,7 +142,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv;
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc <= 2)
 	{
@@ -155,16 +156,16 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		lastTime = 0;
 		lastSendSize = 0;
 		lastRecvSize = 0;
-		cli = 0;
+		cli = nullptr;
 		toStop = false;
 		procRunning = 0;
 		recvRunning = false;
 		NEW_CLASSNN(cliMut, Sync::Mutex());
-		NEW_CLASS(clk, Manage::HiResClock());
-		NEW_CLASS(mainEvt, Sync::Event(true));
-		NEW_CLASS(recvEvt, Sync::Event(true));
-		NEW_CLASS(procEvt, Sync::Event(true));
-		NEW_CLASS(dispEvt, Sync::Event(true));
+		NEW_CLASSNN(clk, Manage::HiResClock());
+		NEW_CLASSNN(mainEvt, Sync::Event(true));
+		NEW_CLASSNN(recvEvt, Sync::Event(true));
+		NEW_CLASSNN(procEvt, Sync::Event(true));
+		NEW_CLASSNN(dispEvt, Sync::Event(true));
 
 		UIntOS threadCnt = Sync::ThreadUtil::GetThreadCnt();
 		UIntOS i;
@@ -184,7 +185,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		Bool valid = true;
 		Net::SocketUtil::AddressInfo addr;
 		UInt16 port;
-		Net::TCPClient *c;
+		NN<Net::TCPClient> c;
 
 		if (!sockf->DNSResolveIP(Text::CStringNN::FromPtr(argv[1]), addr))
 		{
@@ -204,10 +205,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 		if (valid)
 		{
-			NEW_CLASS(c, Net::TCPClient(sockf, addr, port, 10000));
+			NEW_CLASSNN(c, Net::TCPClient(sockf, addr, port, 10000));
 			if (c->IsConnectError())
 			{
-				DEL_CLASS(c);
+				c.Delete();
 				console->WriteLine(CSTR("Error in connect to server"));
 				valid = false;
 			}
@@ -230,9 +231,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			progCtrl->WaitForExit(progCtrl);
 		}
 
-		if (cli)
+		if (cli.SetTo(c))
 		{
-			cli->Close();
+			c->Close();
 		}
 		toStop = true;
 		dispEvt->Set();
@@ -240,15 +241,15 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		{
 			mainEvt->Wait(100);
 		}
-		DEL_CLASS(mainEvt);
-		DEL_CLASS(procEvt);
-		DEL_CLASS(recvEvt);
-		DEL_CLASS(dispEvt);
+		mainEvt.Delete();
+		procEvt.Delete();
+		recvEvt.Delete();
+		dispEvt.Delete();
 		cliMut.Delete();
-		DEL_CLASS(clk);
+		clk.Delete();
 		sockf.Delete();
 	}
 
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

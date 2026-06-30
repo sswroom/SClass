@@ -15,23 +15,23 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NN<Net::TCPClientFactory> clif;
 	Optional<Net::SSLEngine> ssl;
 	UnsafeArray<UInt8> imgBuff;
-	Map::GoogleMap::GoogleStaticMap *map;
+	NN<Map::GoogleMap::GoogleStaticMap> map;
 	UIntOS retSize;
-	IO::FileStream *stm;
+	NN<IO::FileStream> stm;
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(false));
 	NEW_CLASSNN(clif, Net::TCPClientFactory(sockf));
 	ssl = Net::SSLEngineFactory::Create(clif, false);
 	imgBuff = MemAllocArr(UInt8, 10485760);
-	NEW_CLASS(map, Map::GoogleMap::GoogleStaticMap(clif, ssl, nullptr, gooCliId, gooPrivKey));
+	NEW_CLASSNN(map, Map::GoogleMap::GoogleStaticMap(clif, ssl, nullptr, gooCliId, gooPrivKey));
 	retSize = map->GetMap(imgBuff, 22.4, 114.2, 100000, Math::Size2D<UIntOS>(1024, 768), CSTR("en-us"), 0, 0, 0);
 	if (retSize)
 	{
-		NEW_CLASS(stm, IO::FileStream(CSTR("Test.png"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASSNN(stm, IO::FileStream(CSTR("Test.png"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		stm->Write(Data::ByteArray(imgBuff, retSize));
-		DEL_CLASS(stm);
+		stm.Delete();
 	}
-	DEL_CLASS(map);
-
+	map.Delete();
+	
 	MemFreeArr(imgBuff);
 	ssl.Delete();
 	clif.Delete();

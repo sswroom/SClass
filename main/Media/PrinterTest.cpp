@@ -41,17 +41,17 @@ public:
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	IO::ConsoleWriter *console;
+	NN<IO::ConsoleWriter> console;
 	UIntOS i;
 	UIntOS j;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Media::DrawEngine> eng;
-	Media::Printer *printer;
+	NN<Media::Printer> printer;
 	NN<Media::PrintDocument> doc;
 	NN<PrintObj> prtobj;
 
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	console->WriteLine(CSTR("Found Printers:"));
 	i = 0;
 	j = Media::Printer::GetPrinterCount();
@@ -64,7 +64,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		i++;
 	}
 	eng = Media::DrawEngineFactory::CreateDrawEngine();
-	NEW_CLASS(printer, Media::Printer(PRINTERNAME));
+	NEW_CLASSNN(printer, Media::Printer(PRINTERNAME));
 	printer->ShowPrintSettings(nullptr);
 	NEW_CLASSNN(prtobj, PrintObj());
 	if (printer->StartPrint(prtobj, eng).SetTo(doc))
@@ -73,9 +73,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		printer->EndPrint(doc);
 	}
 	prtobj.Delete();
-	DEL_CLASS(printer);
+	printer.Delete();
 	eng.Delete();
 
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

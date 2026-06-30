@@ -8,20 +8,20 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Manage::ExceptionRecorder *exHdlr;
+	NN<Manage::ExceptionRecorder> exHdlr;
 	NN<UI::GUICore> ui;
 
 	MemSetLogFile(UTF8STRCPTR("Memory.log"));
 
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("Error.log"), Manage::ExceptionRecorder::EA_RESTART));
+	NEW_CLASSNN(exHdlr, Manage::ExceptionRecorder(CSTR("Error.log"), Manage::ExceptionRecorder::EA_RESTART));
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{
 		SSWR::DiscDB::DiscDBEnv env;
 
 		if (env.GetErrorType() == SSWR::DiscDB::DiscDBEnv::ERR_NONE)
 		{
-			SSWR::DiscDB::DiscDBMainForm *frm;
-			NEW_CLASS(frm, SSWR::DiscDB::DiscDBMainForm(ui, nullptr, &env));
+			NN<SSWR::DiscDB::DiscDBMainForm> frm;
+			NEW_CLASSNN(frm, SSWR::DiscDB::DiscDBMainForm(ui, nullptr, &env));
 			frm->SetExitOnClose(true);
 			frm->Show();
 			ui->Run();
@@ -40,7 +40,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 		ui.Delete();
 	}
-	DEL_CLASS(exHdlr);
+	exHdlr.Delete();
 
 	return 0;
 }

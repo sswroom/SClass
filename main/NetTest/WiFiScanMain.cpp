@@ -11,8 +11,8 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
-	Net::WirelessLAN *wlan;
-	NEW_CLASS(wlan, Net::WirelessLAN());
+	NN<Net::WirelessLAN> wlan;
+	NEW_CLASSNN(wlan, Net::WirelessLAN());
 	if (wlan->IsError())
 	{
 		console.WriteLine(CSTR("Error in initializing WiFi"));
@@ -175,6 +175,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 	}
 	
-	DEL_CLASS(wlan);
+	wlan.Delete();
 	return 0;
 }

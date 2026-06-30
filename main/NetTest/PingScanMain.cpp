@@ -11,8 +11,8 @@
 #include "Text/StringBuilderUTF8.h"
 
 NN<Net::SocketFactory> sockf;
-IO::ConsoleWriter *console;
-Net::ICMPScanner *scanner;
+NN<IO::ConsoleWriter> console;
+NN<Net::ICMPScanner> scanner;
 
 void PingScan(UInt32 ip)
 {
@@ -58,8 +58,8 @@ void PingScan(UInt32 ip)
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
-	NEW_CLASS(console, IO::ConsoleWriter());
-	NEW_CLASS(scanner, Net::ICMPScanner(sockf));
+	NEW_CLASSNN(console, IO::ConsoleWriter());
+	NEW_CLASSNN(scanner, Net::ICMPScanner(sockf));
 
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
 	NN<Net::ConnectionInfo> connInfo;
@@ -93,8 +93,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		i++;
 	}
 
-	DEL_CLASS(scanner);
-	DEL_CLASS(console);
+	scanner.Delete();
+	console.Delete();
 	sockf.Delete();
 	return 0;
 }

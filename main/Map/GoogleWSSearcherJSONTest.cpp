@@ -10,7 +10,7 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[256];
-	Map::ReverseGeocoder *revGeo;
+	NN<Map::ReverseGeocoder> revGeo;
 	NN<Net::SocketFactory> sockf;
 	NN<Net::TCPClientFactory> clif;
 	Optional<Net::SSLEngine> ssl;
@@ -21,7 +21,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(false));
 	NEW_CLASSNN(clif, Net::TCPClientFactory(sockf));
 	ssl = Net::SSLEngineFactory::Create(clif, false);
-	NEW_CLASS(revGeo, Map::GoogleMap::GoogleWSSearcherJSON(clif, ssl, console, encFact));
+	NEW_CLASSNN(revGeo, Map::GoogleMap::GoogleWSSearcherJSON(clif, ssl, console, encFact));
 
 	IntOS i = 5;
 	while (i-- > 0)
@@ -29,7 +29,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		revGeo->SearchName(sbuff, sizeof(sbuff), Math::Coord2DDbl(151.2204210, -33.82967410), 0x0C04);//L"zh-HK");
 	}
 
-	DEL_CLASS(revGeo);
+	revGeo.Delete();
 	ssl.Delete();
 	clif.Delete();
 	sockf.Delete();

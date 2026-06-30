@@ -13,15 +13,15 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Media::ImageCopy *imgCopy;
-	IO::ConsoleWriter *console;
+	NN<Media::ImageCopy> imgCopy;
+	NN<IO::ConsoleWriter> console;
 	Text::StringBuilderUTF8 sb;
 	Manage::HiResClock clk;
 	UnsafeArray<UInt8> imgBuff1;
 	UnsafeArray<UInt8> imgBuff2;
 	IntOS i;
-	NEW_CLASS(console, IO::ConsoleWriter());
-	NEW_CLASS(imgCopy, Media::ImageCopy());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
+	NEW_CLASSNN(imgCopy, Media::ImageCopy());
 	imgBuff1 = MemAllocAArr(UInt8, WIDTH * HEIGHT * 4);
 	imgBuff2 = MemAllocAArr(UInt8, WIDTH * HEIGHT * 4);
 	clk.Start();
@@ -37,7 +37,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	console->WriteLine(sb.ToCString());
 	MemFreeAArr(imgBuff1);
 	MemFreeAArr(imgBuff2);
-	DEL_CLASS(imgCopy);
-	DEL_CLASS(console);
+	imgCopy.Delete();
+	console.Delete();
 	return 0;
 }

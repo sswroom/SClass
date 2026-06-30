@@ -65,10 +65,10 @@
 #define TEST_IMAGE 1
 #endif
 
-Manage::HiResClock *clk;
+NN<Manage::HiResClock> clk;
 NN<Sync::Mutex> mut;
-Sync::Event *threadEvt;
-Sync::Event *mainEvt;
+NN<Sync::Event> threadEvt;
+NN<Sync::Event> mainEvt;
 Double threadT;
 
 UInt32 __stdcall TestThread(AnyType userObj)
@@ -128,15 +128,15 @@ UInt32 EmptyThread(void *userObj)
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Manage::ExceptionRecorder *exHdlr;
-	IO::ConsoleWriter *console;
+	NN<Manage::ExceptionRecorder> exHdlr;
+	NN<IO::ConsoleWriter> console;
 
 	NN<IO::FileStream> fs;
 #if defined(EXPORT_IMAGE)
-	IO::FileStream *efs;
+	NN<IO::FileStream> efs;
 	Text::CString cstr;
 #endif
-	Text::UTF8Writer *writer;
+	NN<Text::UTF8Writer> writer;
 	IO::SystemInfo sysInfo;
 	UInt64 memSize;
 	Text::StringBuilderUTF8 sb;
@@ -152,17 +152,17 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UIntOS threadCnt = Sync::ThreadUtil::GetThreadCnt();
 
 	MemSetLogFile(UTF8STRCPTR("Memory.log"));
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SBench.log"), Manage::ExceptionRecorder::EA_CLOSE));
-	NEW_CLASS(console, IO::ConsoleWriter());
-	NEW_CLASS(clk, Manage::HiResClock());
+	NEW_CLASSNN(exHdlr, Manage::ExceptionRecorder(CSTR("SBench.log"), Manage::ExceptionRecorder::EA_CLOSE));
+	NEW_CLASSNN(console, IO::ConsoleWriter());
+	NEW_CLASSNN(clk, Manage::HiResClock());
 	NEW_CLASSNN(mut, Sync::Mutex());
-	NEW_CLASS(threadEvt, Sync::Event(true));
-	NEW_CLASS(mainEvt, Sync::Event(true));
+	NEW_CLASSNN(threadEvt, Sync::Event(true));
+	NEW_CLASSNN(mainEvt, Sync::Event(true));
 
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("txt"));
 	NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(writer, Text::UTF8Writer(fs));
+	NEW_CLASSNN(writer, Text::UTF8Writer(fs));
 
 	console->WriteLine(CSTR("SBench Result:"));
 	writer->WriteLine(CSTR("SBench Result:"));
@@ -734,8 +734,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			maxVal = 100000000;
 		}
 		Data::RandomMT19937 rand(0);
-		Data::ArrayListInt32 *arrList;
-		NEW_CLASS(arrList, Data::ArrayListInt32());
+		NN<Data::ArrayListInt32> arrList;
+		NEW_CLASSNN(arrList, Data::ArrayListInt32());
 		clk->Start();
 		i32V = (Int32)maxVal;
 		while (i32V-- > 0)
@@ -778,7 +778,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console->WriteLine(sb.ToCString());
 		writer->WriteLine(sb.ToCString());
 
-		DEL_CLASS(arrList);
+		arrList.Delete();
 	}
 #endif
 
@@ -836,8 +836,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		recordCnt = recordCnt >> 1;
 	}
 
-	Data::RandomMT19937 *rand;
-	NEW_CLASS(rand, Data::RandomMT19937(seed));
+	NN<Data::RandomMT19937> rand;
+	NEW_CLASSNN(rand, Data::RandomMT19937(seed));
 	clk->Start();
 	i = 0;
 	while (i < recordCnt)
@@ -856,7 +856,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	sb.AppendC(UTF8STRC("s"));
 	console->WriteLine(sb.ToCString());
 	writer->WriteLine(sb.ToCString());
-	DEL_CLASS(rand);
+	rand.Delete();
 
 	noOfRec = 128;
 	while (noOfRec <= recordCnt)
@@ -904,8 +904,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 #if defined(TEST_THREAD)
 	if (threadCnt > 1)
 	{
-		Data::Sort::ArtificialQuickSort *aqsort;
-		NEW_CLASS(aqsort, Data::Sort::ArtificialQuickSort());
+		NN<Data::Sort::ArtificialQuickSort> aqsort;
+		NEW_CLASSNN(aqsort, Data::Sort::ArtificialQuickSort());
 		noOfRec = 128;
 		while (noOfRec <= recordCnt)
 		{
@@ -949,7 +949,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			}
 			noOfRec = noOfRec << 1;
 		}
-		DEL_CLASS(aqsort);
+		aqsort.Delete();
 	}
 #endif
 
@@ -1082,8 +1082,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 #if 0 && defined(TEST_THREAD)
 	if (threadCnt > 1)
 	{
-		Data::Sort::BitonicSort *bitsort;
-		NEW_CLASS(bitsort, Data::Sort::BitonicSort());
+		NN<Data::Sort::BitonicSort> bitsort;
+		NEW_CLASSNN(bitsort, Data::Sort::BitonicSort());
 		noOfRec = 128;
 		while (noOfRec <= recordCnt)
 		{
@@ -1127,7 +1127,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			}
 			noOfRec = noOfRec << 1;
 		}
-		DEL_CLASS(bitsort);
+		bitsort.Delete();
 	}
 #endif
 
@@ -1524,8 +1524,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 #if defined(TEST_IMAGE) && defined(TEST_THREAD)
 	{
 		Exporter::TIFFExporter exporter;
-		Media::ImageList *imgList;
-		Media::ImageGen::RingsImageGen *imgGen;
+		NN<Media::ImageList> imgList;
+		NN<Media::ImageGen::RingsImageGen> imgGen;
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 		UIntOS imgWidth;
 		UIntOS imgHeight;
@@ -1533,7 +1533,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		NN<Media::StaticImage> nnsrcImg;
 		NN<Media::StaticImage> newImg;
 		UInt8 *tmpBuff;
-		Media::CS::CSConverter *csconv;
+		NN<Media::CS::CSConverter> csconv;
 
 		console->WriteLine();
 		writer->WriteLine();
@@ -1547,12 +1547,12 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			imgHeight = imgHeight >> 1;
 		}
 
-		NEW_CLASS(imgGen, Media::ImageGen::RingsImageGen());
+		NEW_CLASSNN(imgGen, Media::ImageGen::RingsImageGen());
 
 		clk->Start();
 		srcImg = Optional<Media::StaticImage>::ConvertFrom(imgGen->GenerateImage(color, Math::Size2D<UIntOS>(imgWidth, imgHeight)));
 		t = clk->GetTimeDiff();
-		DEL_CLASS(imgGen);
+		imgGen.Delete();
 		if (!srcImg.SetTo(nnsrcImg))
 		{
 			sb.ClearStr();
@@ -1565,7 +1565,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 		else
 		{
-			Media::ImageResizer *resizer;
+			NN<Media::ImageResizer> resizer;
 			UIntOS cnt;
 
 			sb.ClearStr();
@@ -1581,15 +1581,15 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
 
-			NEW_CLASS(imgList, Media::ImageList(CSTR("Temp")));
+			NEW_CLASSNN(imgList, Media::ImageList(CSTR("Temp")));
 #if defined(EXPORT_IMAGE)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("RingsImage64.tif"));
-			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASSNN(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			imgList->AddImage(nnsrcImg, 0);
 			exporter.ExportFile(efs, cstr, imgList, 0);
 			imgList->RemoveImage(0, false);
-			DEL_CLASS(efs);
+			efs.Delete();
 #endif
 
 			tmpBuff = MemAllocA(UInt8, imgWidth * imgHeight * 8);
@@ -1614,13 +1614,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 /*			i = 100;
 			while (i-- > 0)
 			{
-				NEW_CLASS(resizer, Media::Resizer::LanczosResizer16_C8(4, 3, &color, &color, 0, Media::AT_NO_ALPHA));
-				DEL_CLASS(resizer);
+				NEW_CLASSNN(resizer, Media::Resizer::LanczosResizer16_C8(4, 3, &color, &color, 0, Media::AT_NO_ALPHA));
+				resizer.Delete();
 			}*/
 
 			console->WriteLine(CSTR("Resizer: NearestNeighbourResizer (64->64)"));
 			writer->WriteLine(CSTR("Resizer: NearestNeighbourResizer (64->64)"));
-			NEW_CLASS(resizer, Media::Resizer::NearestNeighbourResizer64_64());
+			NEW_CLASSNN(resizer, Media::Resizer::NearestNeighbourResizer64_64());
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
@@ -1648,18 +1648,18 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.AppendDouble(t);
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
-			DEL_CLASS(resizer);
+			resizer.Delete();
 
 #if defined(EXPORT_IMAGE)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("NNResize64_64.tif"));
-			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASSNN(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			exporter.ExportFile(efs, cstr, imgList, 0);
-			DEL_CLASS(efs);
+			efs.Delete();
 #endif
 
 			clk->Start();
-			DEL_CLASS(imgList);
+			imgList.Delete();
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Delete Image List: t = "));
@@ -1686,12 +1686,12 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
 
-			NEW_CLASS(imgList, Media::ImageList(CSTR("Temp")));
+			NEW_CLASSNN(imgList, Media::ImageList(CSTR("Temp")));
 			imgList->AddImage(newImg, 0);
 
 			console->WriteLine(CSTR("Resizer: LanczosResizer (16->8) H4V3 taps, no alpha"));
 			writer->WriteLine(CSTR("Resizer: LanczosResizer (16->8) H4V3 taps, no alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizer16_C8(4, 3, color, color, nullptr, Media::AT_IGNORE_ALPHA));
+			NEW_CLASSNN(resizer, Media::Resizer::LanczosResizer16_C8(4, 3, color, color, nullptr, Media::AT_IGNORE_ALPHA));
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
@@ -1719,19 +1719,19 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.AppendDouble(t);
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
-			DEL_CLASS(resizer);
+			resizer.Delete();
 
 #if defined(EXPORT_IMAGE)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("LResize16_C8NA.tif"));
-			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASSNN(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			exporter.ExportFile(efs, cstr, imgList, 0);
-			DEL_CLASS(efs);
+			efs.Delete();
 #endif
 
 			console->WriteLine(CSTR("Resizer: LanczosResizer (16->8) H4V3 taps, alpha"));
 			writer->WriteLine(CSTR("Resizer: LanczosResizer (16->8) H4V3 taps, alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizer16_C8(4, 3, color, color, nullptr, Media::AT_ALPHA));
+			NEW_CLASSNN(resizer, Media::Resizer::LanczosResizer16_C8(4, 3, color, color, nullptr, Media::AT_ALPHA));
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
@@ -1759,17 +1759,17 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.AppendDouble(t);
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
-			DEL_CLASS(resizer);
+			resizer.Delete();
 
 #if defined(EXPORT_IMAGE)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("LResize16_C8A.tif"));
-			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASSNN(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			exporter.ExportFile(efs, cstr, imgList, 0);
-			DEL_CLASS(efs);
+			efs.Delete();
 #endif
 
-/*			NEW_CLASS(resizer, Media::Resizer::LanczosResizerH16_8(4, 3));
+/*			NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerH16_8(4, 3));
 			console->WriteLine(CSTR("Resizer: LanczosResizer (16->8 LQ) H4V3 taps");
 			writer->WriteLine(CSTR("Resizer: LanczosResizer (16->8 LQ) H4V3 taps");
 
@@ -1798,17 +1798,17 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.AppendDouble(t);
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
-			DEL_CLASS(resizer);
+			resizer.Delete();
 
 			IO::Path::GetProcessFileName(sbuff);
 			IO::Path::AppendPath(sbuff, csptr = L"LResizeH16_8.tif");
-			NEW_CLASS(efs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASSNN(efs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			exporter.ExportFile(efs, csptr, imgList, 0);
-			DEL_CLASS(efs);*/
+			efs.Delete();*/
 
 			console->WriteLine(CSTR("CSConv: CSRGB16_LRGBC"));
 			writer->WriteLine(CSTR("CSConv: CSRGB16_LRGBC"));
-			NEW_CLASS(csconv, Media::CS::CSRGB16_LRGBC(64, Media::PF_LE_B16G16R16A16, false, color, color, nullptr));
+			NEW_CLASSNN(csconv, Media::CS::CSRGB16_LRGBC(64, Media::PF_LE_B16G16R16A16, false, color, color, nullptr));
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
@@ -1836,7 +1836,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.AppendDouble(t);
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
-			DEL_CLASS(csconv);
+			csconv.Delete();
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("LRGB First Pixel: "));
@@ -1858,7 +1858,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 			console->WriteLine(CSTR("Resizer: LanczosResizer (LR->32) H4V3 taps, alpha"));
 			writer->WriteLine(CSTR("Resizer: LanczosResizer (LR->32) H4V3 taps, alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, color, nullptr, Media::AT_ALPHA, 300, Media::PF_B8G8R8A8));
+			NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, color, nullptr, Media::AT_ALPHA, 300, Media::PF_B8G8R8A8));
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
@@ -1886,20 +1886,20 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.AppendDouble(t);
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
-			DEL_CLASS(resizer);
+			resizer.Delete();
 
 #if defined(EXPORT_IMAGE)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("LResizeLR_C32A.tif"));
 			newImg->info.atype = Media::AT_ALPHA;
-			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASSNN(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			exporter.ExportFile(efs, cstr, imgList, 0);
-			DEL_CLASS(efs);
+			efs.Delete();
 #endif
 
 			console->WriteLine(CSTR("Resizer: LanczosResizer (LR->32) H4V3 taps, no alpha"));
 			writer->WriteLine(CSTR("Resizer: LanczosResizer (LR->32) H4V3 taps, no alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, color, nullptr, Media::AT_IGNORE_ALPHA, 300, Media::PF_B8G8R8A8));
+			NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, color, nullptr, Media::AT_IGNORE_ALPHA, 300, Media::PF_B8G8R8A8));
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
@@ -1927,15 +1927,15 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.AppendDouble(t);
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
-			DEL_CLASS(resizer);
+			resizer.Delete();
 
 #if defined(EXPORT_IMAGE)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("LResizeLR_C32NA.tif"));
 			newImg->info.atype = Media::AT_NO_ALPHA;
-			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASSNN(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			exporter.ExportFile(efs, cstr, imgList, 0);
-			DEL_CLASS(efs);
+			efs.Delete();
 #endif
 
 			clk->Start();
@@ -1954,18 +1954,18 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 #if defined(EXPORT_IMAGE)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("OriImage_32.tif"));
-			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASSNN(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			imgList->RemoveImage(0, false);
 			imgList->AddImage(nnsrcImg, 0);
 			exporter.ExportFile(efs, cstr, imgList, 0);
 			imgList->RemoveImage(0, false);
 			imgList->AddImage(newImg, 0);
-			DEL_CLASS(efs);
+			efs.Delete();
 #endif
 
 			console->WriteLine(CSTR("Resizer: LanczosResizer (8->8) H4V3 taps, no alpha"));
 			writer->WriteLine(CSTR("Resizer: LanczosResizer (8->8) H4V3 taps, no alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color, nullptr, Media::AT_IGNORE_ALPHA));
+			NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color, nullptr, Media::AT_IGNORE_ALPHA));
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
@@ -1993,20 +1993,20 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.AppendDouble(t);
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
-			DEL_CLASS(resizer);
+			resizer.Delete();
 
 #if defined(EXPORT_IMAGE)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("LResize8_C8NA.tif"));
 			newImg->info.atype = Media::AT_NO_ALPHA;
-			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASSNN(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			exporter.ExportFile(efs, cstr, imgList, 0);
-			DEL_CLASS(efs);
+			efs.Delete();
 #endif
 
 			console->WriteLine(CSTR("Resizer: LanczosResizer (8->8) H4V3 taps, alpha"));
 			writer->WriteLine(CSTR("Resizer: LanczosResizer (8->8) H4V3 taps, alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color, nullptr, Media::AT_ALPHA));
+			NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color, nullptr, Media::AT_ALPHA));
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
@@ -2034,20 +2034,20 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.AppendDouble(t);
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
-			DEL_CLASS(resizer);
+			resizer.Delete();
 
 #if defined(EXPORT_IMAGE)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("LResize8_C8A.tif"));
 			newImg->info.atype = Media::AT_ALPHA;
-			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASSNN(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			exporter.ExportFile(efs, cstr, imgList, 0);
-			DEL_CLASS(efs);
+			efs.Delete();
 #endif
 
 			console->WriteLine(CSTR("Resizer: LanczosResizer (8->8 LQ) H4V3 taps"));
 			writer->WriteLine(CSTR("Resizer: LanczosResizer (8->8 LQ) H4V3 taps"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizerH8_8(4, 3, Media::AT_IGNORE_ALPHA));
+			NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerH8_8(4, 3, Media::AT_IGNORE_ALPHA));
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
@@ -2075,20 +2075,20 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.AppendDouble(t);
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
-			DEL_CLASS(resizer);
+			resizer.Delete();
 
 #if defined(EXPORT_IMAGE)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("LResizeH8_8.tif"));
 			newImg->info.atype = Media::AT_NO_ALPHA;
-			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASSNN(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			exporter.ExportFile(efs, cstr, imgList, 0);
-			DEL_CLASS(efs);
+			efs.Delete();
 #endif
 
 			console->WriteLine(CSTR("Resizer: NearestNeighbourResizer (32->32)"));
 			writer->WriteLine(CSTR("Resizer: NearestNeighbourResizer (32->32)"));
-			NEW_CLASS(resizer, Media::Resizer::NearestNeighbourResizer32_32());
+			NEW_CLASSNN(resizer, Media::Resizer::NearestNeighbourResizer32_32());
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
@@ -2116,19 +2116,19 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.AppendDouble(t);
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
-			DEL_CLASS(resizer);
+			resizer.Delete();
 
 #if defined(EXPORT_IMAGE)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("NNResize32_32.tif"));
 			newImg->info.atype = Media::AT_NO_ALPHA;
-			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASSNN(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			exporter.ExportFile(efs, cstr, imgList, 0);
-			DEL_CLASS(efs);
+			efs.Delete();
 #endif
 
 			clk->Start();
-			DEL_CLASS(imgList);
+			imgList.Delete();
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Delete Image List: t = "));
@@ -2158,7 +2158,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 	}
 #endif
-	DEL_CLASS(writer);
+	writer.Delete();
 
 	console->WriteLine();
 	console->WriteLine(CSTR("Do you want to upload result to server? (Y/N)"));
@@ -2221,11 +2221,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 	fs.Delete();
 
-	DEL_CLASS(mainEvt);
-	DEL_CLASS(threadEvt);
+	mainEvt.Delete();
+	threadEvt.Delete();
 	mut.Delete();
-	DEL_CLASS(clk);
-	DEL_CLASS(console);
-	DEL_CLASS(exHdlr);
+	clk.Delete();
+	console.Delete();
+	exHdlr.Delete();
 	return 0;
 }

@@ -13,7 +13,7 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<IO::GPIOPin> pin;
-	IO::Device::DHT22 *dht22;
+	NN<IO::Device::DHT22> dht22;
 	IO::ConsoleWriter console;
 	Double temp;
 	Double rh;
@@ -31,7 +31,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	console.WriteLine(sb.ToCString());
 	IO::GPIOControl gpioCtrl;
 	NEW_CLASSNN(pin, IO::GPIOPin(gpioCtrl, pinNum));
-	NEW_CLASS(dht22, IO::Device::DHT22(pin));
+	NEW_CLASSNN(dht22, IO::Device::DHT22(pin));
 	if (gpioCtrl.IsError() || pin->IsError())
 	{
 		console.WriteLine(CSTR("Error in opening GPIO, root permission?"));
@@ -57,7 +57,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			Sync::SimpleThread::Sleep(2000);
 		}
 	}
-	DEL_CLASS(dht22);
+	dht22.Delete();
 	pin.Delete();
 	return 0;
 }

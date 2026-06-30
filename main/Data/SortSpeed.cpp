@@ -27,11 +27,11 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Manage::HiResClock *clk;
-	Data::RandomMT19937 *rand;
-	Data::Sort::ArtificialQuickSort *sort;
-//	Data::Sort::PigeonholeSort *sort2;
-	Data::Sort::BitonicSort *sort3;
+	NN<Manage::HiResClock> clk;
+	NN<Data::RandomMT19937> rand;
+	NN<Data::Sort::ArtificialQuickSort> sort;
+//	NN<Data::Sort::PigeonholeSort> sort2;
+	NN<Data::Sort::BitonicSort> sort3;
 	Text::StringBuilderUTF8 sb;
 	IO::ConsoleWriter console;
 	UInt32 *array1;
@@ -46,11 +46,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		Text::StrToUInt32(argv[1], seed);
 	}
 
-	NEW_CLASS(rand, Data::RandomMT19937(seed));
-	NEW_CLASS(clk, Manage::HiResClock());
-	NEW_CLASS(sort, Data::Sort::ArtificialQuickSort());
-//	NEW_CLASS(sort2, Data::Sort::PigeonholeSort(0, NUM_RECORD - 1));
-	NEW_CLASS(sort3, Data::Sort::BitonicSort());
+	NEW_CLASSNN(rand, Data::RandomMT19937(seed));
+	NEW_CLASSNN(clk, Manage::HiResClock());
+	NEW_CLASSNN(sort, Data::Sort::ArtificialQuickSort());
+//	NEW_CLASSNN(sort2, Data::Sort::PigeonholeSort(0, NUM_RECORD - 1));
+	NEW_CLASSNN(sort3, Data::Sort::BitonicSort());
 	array1 = 0;
 	array2 = 0;
 	while (true)
@@ -418,11 +418,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Char *cptr;
 	IO::Path::GetProcessFileName(sbuff);
 	IO::Path::AppendPath(sbuff, L"SortResult.txt");
-	IO::FileStream *fs;
-	IO::MemoryStream *mstm;
-	NEW_CLASS(mstm, IO::MemoryStream(L"mstm"));
+	NN<IO::FileStream> fs;
+	NN<IO::MemoryStream> mstm;
+	NEW_CLASSNN(mstm, IO::MemoryStream(L"mstm"));
 	clk->Start();
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+	NEW_CLASSNN(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	if (fs->IsError())
 	{
 		console.WriteLine(CSTR("Error in writing SortResult.txt"));
@@ -448,20 +448,20 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 		succ = true;
 	}
-	DEL_CLASS(fs);
+	fs.Delete();
 	t1 = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("SortResult.txt writen successfully, time = ");
 	sb.Append(t1);
 	sb.AppendC(UTF8STRC("s");
 	console.WriteLine(sb.ToCString());
-	DEL_CLASS(mstm);*/
+	mstm.Delete();*/
 	
-	DEL_CLASS(sort3);
-//	DEL_CLASS(sort2);
-	DEL_CLASS(sort);
-	DEL_CLASS(clk);
-	DEL_CLASS(rand);
+	sort3.Delete();
+//	sort2.Delete();
+	sort.Delete();
+	clk.Delete();
+	rand.Delete();
 	MemFreeA(array1);
 	MemFreeA(array2);
 	return 0;

@@ -7,10 +7,10 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Net::MQTTFailoverClient *cli;
+	NN<Net::MQTTFailoverClient> cli;
 	Net::OSSocketFactory sockf(true);
 	Net::TCPClientFactory clif(sockf);
-	NEW_CLASS(cli, Net::MQTTFailoverClient(Net::FT_MASTER_SLAVE, clif, nullptr, 30));
+	NEW_CLASSNN(cli, Net::MQTTFailoverClient(Net::FT_MASTER_SLAVE, clif, nullptr, 30));
 	cli->AddClient(CSTR("127.0.0.1"), 1883, nullptr, nullptr, false);
 	cli->AddClient(CSTR("127.0.0.1"), 1884, nullptr, nullptr, false);
 	Data::DateTime dt;
@@ -24,6 +24,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		cli->Publish(CSTR("test"), CSTRP(sbuff, sptr), false, 0, false);
 		Sync::SimpleThread::Sleep(1000);
 	}
-	DEL_CLASS(cli);
+	cli.Delete();
 	return 0;
 }

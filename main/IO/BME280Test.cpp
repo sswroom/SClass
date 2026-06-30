@@ -10,7 +10,7 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	IO::Device::BME280 *bme280;
+	NN<IO::Device::BME280> bme280;
 	IO::ConsoleWriter console;
 	NN<IO::I2CChannel> channel;
 	if (!IO::Device::BME280::CreateDefChannel(1).SetTo(channel))
@@ -19,7 +19,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 	else
 	{
-		NEW_CLASS(bme280, IO::Device::BME280(channel, true));
+		NEW_CLASSNN(bme280, IO::Device::BME280(channel, true));
 		if (bme280->IsError())
 		{
 			console.WriteLine(CSTR("BME280 not found"));
@@ -51,7 +51,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				Sync::SimpleThread::Sleep(2000);
 			}
 		}
-		DEL_CLASS(bme280);
+		bme280.Delete();
 	}
 	return 0;
 }

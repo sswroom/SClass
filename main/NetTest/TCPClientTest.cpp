@@ -10,9 +10,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Net::OSSocketFactory sockf(true);
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
-	Net::TCPClient *cli;
-	NEW_CLASS(cli, Net::TCPClient(sockf, CSTR("sswroom.no-ip.org"), 80, 10000));
-	DEL_CLASS(cli);
+	NN<Net::TCPClient> cli;
+	NEW_CLASSNN(cli, Net::TCPClient(sockf, CSTR("sswroom.no-ip.org"), 80, 10000));
+	cli.Delete();
 	Double t = Data::Timestamp::UtcNow().DiffSecDbl(ts);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Time used: "));

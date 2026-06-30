@@ -879,7 +879,7 @@ public:
 	Int32 GetStatus() const;
 	void SetStatus(Int32 status);
 
-	Data::NamedClass<CadRunway> *CreateClass() const;
+	NN<Data::NamedClass<CadRunway>> CreateClass() const;
 };
 
 CadRunway::CadRunway()
@@ -995,10 +995,10 @@ void CadRunway::SetStatus(Int32 status)
 	this->status = status;
 }
 
-Data::NamedClass<CadRunway> *CadRunway::CreateClass() const
+NN<Data::NamedClass<CadRunway>> CadRunway::CreateClass() const
 {
-	Data::NamedClass<CadRunway> *cls;
-	NEW_CLASS(cls, Data::NamedClass<CadRunway>(this));
+	NN<Data::NamedClass<CadRunway>> cls;
+	NEW_CLASSNN(cls, Data::NamedClass<CadRunway>(this));
 	CLASS_ADD(cls, id);
 	CLASS_ADD(cls, code);
 	CLASS_ADD(cls, displayName);
