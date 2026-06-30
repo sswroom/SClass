@@ -2113,6 +2113,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										Math::WKTReader reader(vec1->GetSRID());
 										if (!reader.ParseWKT(s2->v).SetTo(vec2))
 										{
+											printf("Error in parsing WKT: %s\r\n", s2->v.Ptr());
 										}
 										else
 										{

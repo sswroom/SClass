@@ -26,3 +26,28 @@ NN<Math::Geometry::Vector2D> Math::Geometry::MultiPolygon::Clone() const
 	}
 	return newObj;
 }
+
+Bool Math::Geometry::MultiPolygon::FixError()
+{
+	Bool updated = false;
+	NN<Math::Geometry::Polygon> pg;
+	UIntOS i = 0;
+	UIntOS j = this->geometries.GetCount();
+	while (i < j)
+	{
+		pg = this->geometries.GetItemNoCheck(i);
+		if (pg->FixError())
+		{
+			updated = true;
+			if (pg->GetCount() == 0)
+			{
+				this->geometries.RemoveAt(i);
+				i--;
+				j--;
+				pg.Delete();
+			}
+		}
+		i++;
+	}
+	return updated;
+}

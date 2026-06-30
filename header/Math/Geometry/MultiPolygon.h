@@ -15,6 +15,7 @@ namespace Math
 
 			virtual Vector2D::VectorType GetVectorType() const;
 			virtual NN<Vector2D> Clone() const;
+			virtual Bool FixError();
 		};
 	}
 }
