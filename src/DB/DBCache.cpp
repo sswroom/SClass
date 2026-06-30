@@ -136,15 +136,15 @@ UIntOS DB::DBCache::QueryTableData(NN<Data::ArrayListNN<DB::DBRow>> outRows, Tex
 	return ret;
 }
 
-DB::DBRow *DB::DBCache::GetTableItem(Text::CStringNN tableName, Int64 pk)
+Optional<DB::DBRow> DB::DBCache::GetTableItem(Text::CStringNN tableName, Int64 pk)
 {
 	NN<DB::DBCache::TableInfo> tableInfo;
 	if (!this->GetTableInfo(tableName).SetTo(tableInfo))
-		return 0;
+		return nullptr;
 	NN<DB::ColDef> col;
 	if (!tableInfo->def->GetSinglePKCol().SetTo(col))
 	{
-		return 0;
+		return nullptr;
 	}
 	switch (col->GetColType())
 	{
@@ -174,9 +174,10 @@ DB::DBRow *DB::DBCache::GetTableItem(Text::CStringNN tableName, Int64 pk)
 	case DB::DBUtil::CT_Unknown:
 	case DB::DBUtil::CT_UUID:
 	default:
-		return 0;
+		return nullptr;
 	}
-	DB::DBRow *row = 0;
+	Optional<DB::DBRow> row = nullptr;
+	NN<DB::DBRow> nnrow;
 	DB::SQLBuilder sql(this->db);
 	DB::SQLGenerator::GenSelectCmdPage(sql, tableInfo->def, nullptr);
 	sql.AppendCmdC(CSTR(" where "));
@@ -188,8 +189,9 @@ DB::DBRow *DB::DBCache::GetTableItem(Text::CStringNN tableName, Int64 pk)
 	{
 		if (r->ReadNext())
 		{
-			NEW_CLASS(row, DB::DBRow(tableInfo->def));
-			row->SetByReader(r, true);
+			NEW_CLASSNN(nnrow, DB::DBRow(tableInfo->def));
+			row = nnrow;
+			nnrow->SetByReader(r, true);
 		}
 		this->db->CloseReader(r);
 	}

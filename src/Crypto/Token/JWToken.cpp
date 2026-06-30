@@ -189,7 +189,7 @@ Bool Crypto::Token::JWToken::SignatureValid(Optional<Net::SSLEngine> ssl, Unsafe
 	return sign.VerifyHash(sb.v, sb.leng, nnsign, this->signSize);
 }
 
-Optional<Data::StringMapObj<Text::String*>> Crypto::Token::JWToken::ParsePayload(NN<JWTParam> param, Bool keepDefault, Optional<Text::StringBuilderUTF8> sbErr)
+Optional<Data::StringMapObj<Optional<Text::String>>> Crypto::Token::JWToken::ParsePayload(NN<JWTParam> param, Bool keepDefault, Optional<Text::StringBuilderUTF8> sbErr)
 {
 	param->Clear();
 	NN<Text::JSONBase> payloadJson;
@@ -207,8 +207,8 @@ Optional<Data::StringMapObj<Text::String*>> Crypto::Token::JWToken::ParsePayload
 		return nullptr;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::StringMapObj<Text::String *> *retMap;
-	NEW_CLASS(retMap, Data::StringMapObj<Text::String *>());
+	NN<Data::StringMapObj<Optional<Text::String>>> retMap;
+	NEW_CLASSNN(retMap, Data::StringMapObj<Optional<Text::String>>());
 	NN<Text::JSONObject> payloadObj = NN<Text::JSONObject>::ConvertFrom(payloadJson);
 	NN<Text::JSONBase> json;
 	Data::ArrayListNN<Text::String> objNames;
@@ -278,17 +278,17 @@ Optional<Data::StringMapObj<Text::String*>> Crypto::Token::JWToken::ParsePayload
 		{
 			if (!payloadObj->GetObjectValue(name->ToCString()).SetTo(json))
 			{
-				retMap->PutNN(name, 0);
+				retMap->PutNN(name, nullptr);
 			}
 			else if (json->GetType() == Text::JSONType::String)
 			{
-				retMap->PutNN(name, NN<Text::JSONString>::ConvertFrom(json)->GetValue()->Clone().Ptr());
+				retMap->PutNN(name, NN<Text::JSONString>::ConvertFrom(json)->GetValue()->Clone());
 			}
 			else
 			{
 				sb.ClearStr();
 				json->ToJSONString(sb);
-				retMap->PutNN(name, Text::String::New(sb.ToString(), sb.GetLength()).Ptr());
+				retMap->PutNN(name, Text::String::New(sb.ToString(), sb.GetLength()));
 			}
 		}
 	}
@@ -296,10 +296,16 @@ Optional<Data::StringMapObj<Text::String*>> Crypto::Token::JWToken::ParsePayload
 	return retMap;
 }
 
-void Crypto::Token::JWToken::FreeResult(NN<Data::StringMapObj<Text::String*>> result)
+void Crypto::Token::JWToken::FreeResult(NN<Data::StringMapObj<Optional<Text::String>>> result)
 {
-	NN<const Data::ArrayListObj<Text::String*>> vals = result->GetValues();
-	LIST_FREE_STRING_NO_CLEAR(vals);
+	NN<const Data::ArrayListObj<Optional<Text::String>>> vals = result->GetValues();
+	UIntOS i = vals->GetCount();
+	while (i-- > 0)
+	{
+		NN<Text::String> s;
+		if (vals->GetItem(i).SetTo(s))
+			s->Release();
+	}
 	result.Delete();
 }
 
@@ -335,8 +341,8 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Generate(JWSignature::A
 	{
 		return nullptr;
 	}
-	JWToken *token;
-	NEW_CLASS(token, JWToken(alg));
+	NN<JWToken> token;
+	NEW_CLASSNN(token, JWToken(alg));
 	token->SetHeader(CSTRP(sbuff, sptr));
 	token->SetPayload(payload);
 	token->SetSignature(sign.GetSignature(), sign.GetSignatureLen());
@@ -390,8 +396,8 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::GenerateRSA(JWSignature
 	k.Delete();
 	if (!succ)
 		return nullptr;
-	JWToken *token;
-	NEW_CLASS(token, JWToken(alg));
+	NN<JWToken> token;
+	NEW_CLASSNN(token, JWToken(alg));
 	token->SetHeader(sbHeader.ToCString());
 	token->SetPayload(payload);
 	token->SetSignature(signData, signLen);
@@ -488,8 +494,8 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Parse(Text::CStringNN t
 		return nullptr;
 	}
 	json->EndUse();
-	JWToken *jwt;
-	NEW_CLASS(jwt, JWToken(alg));
+	NN<JWToken> jwt;
+	NEW_CLASSNN(jwt, JWToken(alg));
 	jwt->SetHeader(Text::CStringNN(headerBuff, headerSize));
 	jwt->SetPayload(Text::CStringNN(payloadBuff, payloadSize));
 	jwt->SetSignature(signBuff, signSize);

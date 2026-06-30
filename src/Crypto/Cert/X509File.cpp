@@ -2869,15 +2869,15 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509File::PublicKeyGetNew(UnsafeAr
 			{
 				return Crypto::Cert::X509Key::FromECPublicKey(Data::ByteArrayR(bstrPDU + 1, bstrLen - 1), Data::ByteArrayR(paramPDU, paramLen));
 				///////////////////////////////////////
-//				Crypto::Cert::X509Key *key;
-//				NEW_CLASS(key, Crypto::Cert::X509Key(CSTR("public.key"), bstrPDU + 1, bstrLen - 1, keyType));
+//				NN<Crypto::Cert::X509Key> key;
+//				NEW_CLASSNN(key, Crypto::Cert::X509Key(CSTR("public.key"), bstrPDU + 1, bstrLen - 1, keyType));
 //				return key;
 			}
 		}
 		else if (keyType != KeyType::Unknown)
 		{
-			Crypto::Cert::X509Key *key;
-			NEW_CLASS(key, Crypto::Cert::X509Key(CSTR("public.key"), Data::ByteArrayR(bstrPDU + 1, bstrLen - 1), keyType));
+			NN<Crypto::Cert::X509Key> key;
+			NEW_CLASSNN(key, Crypto::Cert::X509Key(CSTR("public.key"), Data::ByteArrayR(bstrPDU + 1, bstrLen - 1), keyType));
 			return key;
 		}
 	}
@@ -3367,21 +3367,22 @@ Optional<Crypto::Cert::X509File> Crypto::Cert::X509File::CreateFromCerts(NN<cons
 	{
 		UIntOS i = 1;
 		UIntOS j = certs->GetCount();
-		Crypto::Cert::X509FileList *certList = 0;
+		Optional<Crypto::Cert::X509FileList> certList = nullptr;
+		NN<Crypto::Cert::X509FileList> nncertList;
 		NN<Crypto::Cert::X509Cert> cert;
 		if (certs->GetItemNoCheck(0)->CreateX509Cert().SetTo(cert))
 		{
-			NEW_CLASS(certList, Crypto::Cert::X509FileList(cert->GetSourceNameObj(), cert));
+			NEW_CLASSOPT(certList, Crypto::Cert::X509FileList(cert->GetSourceNameObj(), cert));
 		}
 		while (i < j)
 		{
 			if (certs->GetItemNoCheck(i)->CreateX509Cert().SetTo(cert))
 			{
-				if (certList)
-					certList->AddFile(cert);
+				if (certList.SetTo(nncertList))
+					nncertList->AddFile(cert);
 				else
 				{
-					NEW_CLASS(certList, Crypto::Cert::X509FileList(cert->GetSourceNameObj(), cert));
+					NEW_CLASSOPT(certList, Crypto::Cert::X509FileList(cert->GetSourceNameObj(), cert));
 				}
 			}
 			i++;

@@ -27,7 +27,7 @@ namespace Data
 		static IntOS Compare(Text::CString val1, Text::CString val2);
 		static IntOS Compare(Text::String *val1, Text::String *val2);
 		static IntOS Compare(NN<Text::String> val1, NN<Text::String> val2);
-		static IntOS Compare(Data::ReadonlyArray<UInt8> *val1, Data::ReadonlyArray<UInt8> *val2);
+		static IntOS Compare(NN<Data::ReadonlyArray<UInt8>> val1, NN<Data::ReadonlyArray<UInt8>> val2);
 
 		static Bool NearlyEquals(Double val1, Double val2);
 	};

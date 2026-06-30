@@ -198,11 +198,11 @@ public:
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
-		Data::ReadonlyArray<UInt8> *arr = item.GetAndRemoveByteArr();
-		if (arr)
+		NN<Data::ReadonlyArray<UInt8>> arr;
+		if (item.GetAndRemoveByteArr().SetTo(arr))
 		{
 			UIntOS ret = arr->GetCount();
-			DEL_CLASS(arr);
+			arr.Delete();
 			return ret;
 		}
 		return 0;
@@ -212,12 +212,12 @@ public:
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
-		Data::ReadonlyArray<UInt8> *arr = item.GetAndRemoveByteArr();
-		if (arr)
+		NN<Data::ReadonlyArray<UInt8>> arr;
+		if (item.GetAndRemoveByteArr().SetTo(arr))
 		{
 			UIntOS ret = arr->GetCount();
-			MemCopyNO(buff.Ptr(), arr->GetArray(), ret);
-			DEL_CLASS(arr);
+			MemCopyNO(buff.Ptr(), arr->GetArray().Ptr(), ret);
+			arr.Delete();
 			return ret;
 		}
 		return 0;
@@ -234,7 +234,14 @@ public:
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
-		return item.GetAndRemoveUUID();
+		NN<Data::UUID> tmpUuid;
+		if (item.GetAndRemoveUUID().SetTo(tmpUuid))
+		{
+			uuid->SetValue(tmpUuid);
+			tmpUuid.Delete();
+			return true;
+		}
+		return false;
 	}
 
 	virtual Bool GetVariItem(UIntOS colIndex, NN<Data::VariItem> item)

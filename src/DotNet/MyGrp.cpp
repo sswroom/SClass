@@ -136,16 +136,16 @@ void DotNet::MyGrp::GrpDelImage(void *img)
 
 void *DotNet::MyGrp::GrpLoadImage32(WChar *fileName, Int32 *width, Int32 *height)
 {
-	::IO::StmData::FileData *fd;
+	NN<::IO::StmData::FileData> fd;
 	::IO::ParserType pt;
-	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
+	NEW_CLASSNN(fd, IO::StmData::FileData(fileName, false));
 	if (fd->GetDataSize() <= 0)
 	{
-		DEL_CLASS(fd);
+		fd.Delete();
 		return false;
 	}
 	IO::ParsedObject *obj = parsers->ParseFile(fd, &pt);
-	DEL_CLASS(fd);
+	fd.Delete();
 	if (obj == 0)
 		return false;
 	if (obj->GetParserType() != IO::ParserType::ImageList)
@@ -241,18 +241,18 @@ void *DotNet::MyGrp::GDIPImageFromNet(System::Drawing::Bitmap *bmp)
 
 void DotNet::MyGrp::Init(Int32 nTap)
 {
-	NEW_CLASS(colorMgr, Media::ColorManager());
-	NEW_CLASS(resizer8, Media::Resizer::LanczosResizer8_C8(14, Media::CS::TRANT_sRGB, Media::CS::TRANT_sRGB, 2.2, colorMgr));
-	//NEW_CLASS(resizer16, Media::Resizer::LanczosResizerH13_8(4));
-	NEW_CLASS(parsers, Parser::FullParserList());
+	NEW_CLASSNN(colorMgr, Media::ColorManager());
+	NEW_CLASSNN(resizer8, Media::Resizer::LanczosResizer8_C8(14, Media::CS::TRANT_sRGB, Media::CS::TRANT_sRGB, 2.2, colorMgr));
+	//NEW_CLASSNN(resizer16, Media::Resizer::LanczosResizerH13_8(4));
+	NEW_CLASSNN(parsers, Parser::FullParserList());
 }
 
 void DotNet::MyGrp::Deinit()
 {
-	DEL_CLASS(resizer8);
-//	DEL_CLASS(resizer16);
-	DEL_CLASS(parsers);
-	DEL_CLASS(colorMgr);
+	resizer8.Delete();
+//	resizer16.Delete();
+	parsers.Delete();
+	colorMgr.Delete();
 }
 
 System::Drawing::Bitmap *DotNet::MyGrp::ResizeBitmap(System::Drawing::Bitmap *bmp, System::Int32 maxWidth, System::Int32 maxHeight, System::Boolean copyExif)
@@ -369,21 +369,21 @@ System::Boolean DotNet::MyGrp::SaveJPGQuality(System::Drawing::Bitmap *bmp, Syst
 		return true;
 	}
 
-	::IO::FileStream *fs;
-	Win32::COMStream *cstm;
+	NN<::IO::FileStream> fs;
+	NN<Win32::COMStream> cstm;
 	System::IntPtr strPtr = System::Runtime::InteropServices::Marshal::StringToHGlobalUni(fileName);
 
-	NEW_CLASS(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileMode::Create, ::IO::FileShare::DenyNone));
+	NEW_CLASSNN(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileMode::Create, ::IO::FileShare::DenyNone));
 	if (fs->IsError())
 	{
-		DEL_CLASS(fs);
+		fs.Delete();
 		delete image;
 
 		return true;
 	}
 	else
 	{
-		NEW_CLASS(cstm, Win32::COMStream(fs));
+		NEW_CLASSNN(cstm, Win32::COMStream(fs));
 
 		Gdiplus::EncoderParameters params;
 		params.Count = 1;
@@ -394,8 +394,8 @@ System::Boolean DotNet::MyGrp::SaveJPGQuality(System::Drawing::Bitmap *bmp, Syst
 		stat = image->Save(cstm, &encoderClsid, &params);
 
 		System::Runtime::InteropServices::Marshal::FreeHGlobal(strPtr);
-		DEL_CLASS(fs);
-		DEL_CLASS(cstm);
+		fs.Delete();
+		cstm.Delete();
 	}
 	delete image;
 
@@ -454,8 +454,8 @@ System::Boolean DotNet::MyGrp::SaveJPGSize(System::Drawing::Bitmap *bmp, System:
 		return true;
 	}
 
-	::IO::FileStream *fs;
-	Win32::COMStream *cstm;
+	NN<::IO::FileStream> fs;
+	NN<Win32::COMStream> cstm;
 	System::IntPtr strPtr = System::Runtime::InteropServices::Marshal::StringToHGlobalUni(fileName);
 
 	Int32 quality;
@@ -467,11 +467,11 @@ System::Boolean DotNet::MyGrp::SaveJPGSize(System::Drawing::Bitmap *bmp, System:
 	params.Parameter[0].Value = &quality;
 
 	quality = 0;
-	NEW_CLASS(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileMode::Create, ::IO::FileShare::DenyNone));
-	NEW_CLASS(cstm, Win32::COMStream(fs));
+	NEW_CLASSNN(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileMode::Create, ::IO::FileShare::DenyNone));
+	NEW_CLASSNN(cstm, Win32::COMStream(fs));
 	stat = image->Save(cstm, &encoderClsid, &params);
-	DEL_CLASS(fs);
-	DEL_CLASS(cstm);
+	fs.Delete();
+	cstm.Delete();
 
 	fi = new System::IO::FileInfo(fileName);
 	jVal = fi->Length;
@@ -483,11 +483,11 @@ System::Boolean DotNet::MyGrp::SaveJPGSize(System::Drawing::Bitmap *bmp, System:
 	}
 
 	quality = 100;
-	NEW_CLASS(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileMode::Create, ::IO::FileShare::DenyNone));
-	NEW_CLASS(cstm, Win32::COMStream(fs));
+	NEW_CLASSNN(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileMode::Create, ::IO::FileShare::DenyNone));
+	NEW_CLASSNN(cstm, Win32::COMStream(fs));
 	stat = image->Save(cstm, &encoderClsid, &params);
-	DEL_CLASS(fs);
-	DEL_CLASS(cstm);
+	fs.Delete();
+	cstm.Delete();
 
 	fi = new System::IO::FileInfo(fileName);
 	kVal = fi->Length;
@@ -504,11 +504,11 @@ System::Boolean DotNet::MyGrp::SaveJPGSize(System::Drawing::Bitmap *bmp, System:
 	{
 		l = (j + k) >> 1;
 		quality = l;
-		NEW_CLASS(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileMode::Create, ::IO::FileShare::DenyNone));
-		NEW_CLASS(cstm, Win32::COMStream(fs));
+		NEW_CLASSNN(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileMode::Create, ::IO::FileShare::DenyNone));
+		NEW_CLASSNN(cstm, Win32::COMStream(fs));
 		stat = image->Save(cstm, &encoderClsid, &params);
-		DEL_CLASS(fs);
-		DEL_CLASS(cstm);
+		fs.Delete();
+		cstm.Delete();
 
 		fi = new System::IO::FileInfo(fileName);
 		lVal = fi->Length;
@@ -617,21 +617,21 @@ System::Boolean DotNet::MyGrp::SaveTIFF(System::Drawing::Bitmap *bmp, System::St
 		return true;
 	}
 
-	::IO::FileStream *fs;
-	Win32::COMStream *cstm;
+	NN<::IO::FileStream> fs;
+	NN<Win32::COMStream> cstm;
 	System::IntPtr strPtr = System::Runtime::InteropServices::Marshal::StringToHGlobalUni(fileName);
 
-	NEW_CLASS(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileMode::Create, ::IO::FileShare::DenyNone));
+	NEW_CLASSNN(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileMode::Create, ::IO::FileShare::DenyNone));
 	if (fs->IsError())
 	{
-		DEL_CLASS(fs);
+		fs.Delete();
 		delete image;
 
 		return true;
 	}
 	else
 	{
-		NEW_CLASS(cstm, Win32::COMStream(fs));
+		NEW_CLASSNN(cstm, Win32::COMStream(fs));
 
 		Gdiplus::EncoderParameters params;
 		Gdiplus::EncoderValue val;
@@ -651,8 +651,8 @@ System::Boolean DotNet::MyGrp::SaveTIFF(System::Drawing::Bitmap *bmp, System::St
 		stat = image->Save(cstm, &encoderClsid, &params);
 
 		System::Runtime::InteropServices::Marshal::FreeHGlobal(strPtr);
-		DEL_CLASS(fs);
-		DEL_CLASS(cstm);
+		fs.Delete();
+		cstm.Delete();
 	}
 	delete image;
 

@@ -17,7 +17,7 @@ namespace DotNet
 		Media::Image *currImage;
 		UnsafeArrayOpt<UInt8> imgBuff;
 		Media::CS::CSConverter *csconv;
-		Media::ImageResizer *resizer;
+		NN<Media::ImageResizer> resizer;
 		DotNet::DNColorManager *dnColorMgr;
 
 		void *hwnd;

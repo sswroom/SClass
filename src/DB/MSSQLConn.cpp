@@ -10,16 +10,16 @@ Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt
 	Text::CStringNN nnpassword;
 	if (IsNative() && userName.SetTo(nnuserName) && password.SetTo(nnpassword))
 	{
-		DB::TDSConn *conn;
-		NEW_CLASS(conn, DB::TDSConn(serverHost, port, encrypt, database, nnuserName, nnpassword, log, errMsg));
+		NN<DB::TDSConn> conn;
+		NEW_CLASSNN(conn, DB::TDSConn(serverHost, port, encrypt, database, nnuserName, nnpassword, log, errMsg));
 		if (continueOnConnError || conn->IsConnected())
 			return conn;
-		DEL_CLASS(conn);
+		conn.Delete();
 		return nullptr;
 	}
 	else
 	{
-		DB::ODBCConn *conn;
+		NN<DB::ODBCConn> conn;
 		NN<Text::String> driverName;
 		if (!GetDriverNameNew().SetTo(driverName))
 		{
@@ -94,7 +94,7 @@ Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt
 			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 		}
 		driverName->Release();
-		NEW_CLASS(conn, DB::ODBCConn(connStr.ToCString(), CSTR("MSSQLConn"), log));
+		NEW_CLASSNN(conn, DB::ODBCConn(connStr.ToCString(), CSTR("MSSQLConn"), log));
 		if (conn->GetConnError() == DB::ODBCConn::CE_NONE || (continueOnConnError && conn->GetConnError() == DB::ODBCConn::CE_CONNECT_ERR))
 		{
 			return conn;
@@ -106,7 +106,7 @@ Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt
 			{
 				conn->GetLastErrorMsg(sb);
 			}
-			DEL_CLASS(conn);
+			conn.Delete();
 			return nullptr;
 		}
 	}

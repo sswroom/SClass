@@ -872,7 +872,7 @@ namespace Net
 				return false;
 			}
 			NN<Data::UUID> itemUUID;
-			if (!itemUUID.Set(item.GetAndRemoveUUID()))
+			if (!item.GetAndRemoveUUID().SetTo(itemUUID))
 			{
 				return false;
 			}

@@ -10,20 +10,20 @@ Data::Compress::Decompressor::~Decompressor()
 
 Optional<Data::Compress::Decompressor> Data::Compress::Decompressor::CreateDecompressor(Data::Compress::Decompressor::CompressMethod compMeth)
 {
-	Data::Compress::Decompressor *decomp;
+	Optional<Data::Compress::Decompressor> decomp;
 	switch (compMeth)
 	{
 	case CM_DEFLATE:
-		NEW_CLASS(decomp, Data::Compress::Inflate(false));
+		NEW_CLASSOPT(decomp, Data::Compress::Inflate(false));
 		break;
 	case CM_LZO:
-		NEW_CLASS(decomp, Data::Compress::LZODecompressor());
+		NEW_CLASSOPT(decomp, Data::Compress::LZODecompressor());
 		break;
 	case CM_UNKNOWN:
 	case CM_UNCOMPRESSED:
 	case CM_MLH:
 	default:
-		decomp = 0;
+		decomp = nullptr;
 		break;
 	}
 	return decomp;

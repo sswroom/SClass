@@ -182,11 +182,11 @@ Bool DB::MDBFileConn::CreateMDBFile(Text::CStringNN fileName)
 Optional<DB::DBTool> DB::MDBFileConn::CreateDBTool(NN<Text::String> fileName, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<DB::MDBFileConn> conn;
-	DB::DBTool *db;
+	NN<DB::DBTool> db;
 	NEW_CLASSNN(conn, DB::MDBFileConn(fileName->ToCString(), log, 0, 0, 0));
 	if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
+		NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
 		return db;
 	}
 	else
@@ -199,11 +199,11 @@ Optional<DB::DBTool> DB::MDBFileConn::CreateDBTool(NN<Text::String> fileName, NN
 Optional<DB::DBTool> DB::MDBFileConn::CreateDBTool(Text::CStringNN fileName, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<DB::MDBFileConn> conn;
-	DB::DBTool *db;
+	NN<DB::DBTool> db;
 	NEW_CLASSNN(conn, DB::MDBFileConn(fileName, log, 0, 0, 0));
 	if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
+		NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
 		return db;
 	}
 	else

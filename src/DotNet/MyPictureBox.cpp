@@ -198,7 +198,7 @@ DotNet::MyPictureBox::MyPictureBox(System::Windows::Forms::Control *formCtrl, Do
 	this->imgBuff = 0;
 	this->currImage = 0;
 	this->csconv = 0;
-	NEW_CLASS(resizer, Media::Resizer::LanczosResizer8_C8(3, Media::CS::TRANodeType::Unknown, Media::CS::TRANT_DISPLAY, 2.2, this->dnColorMgr->GetColorManager()));
+	NEW_CLASSNN(resizer, Media::Resizer::LanczosResizer8_C8(3, Media::CS::TRANodeType::Unknown, Media::CS::TRANT_DISPLAY, 2.2, this->dnColorMgr->GetColorManager()));
 
 	LPDIRECTDRAW7 lpDD;
 	if (DirectDrawCreateEx( NULL, (VOID**)&lpDD, IID_IDirectDraw7, NULL ) != DD_OK )
@@ -249,7 +249,7 @@ DotNet::MyPictureBox::~MyPictureBox()
 		DEL_CLASS(this->csconv);
 		this->csconv = 0;
 	}
-	DEL_CLASS(resizer);
+	this->resizer.Delete();
 	this->dnColorMgr->RemoveHandler(this);
 }
 

@@ -11,10 +11,10 @@ namespace DotNet
 	public __gc class MyGrp
 	{
 	private:
-		static Media::ColorManager *colorMgr;
-		static Media::Resizer::LanczosResizer8_C8 *resizer8;
+		static NN<Media::ColorManager> colorMgr;
+		static NN<Media::Resizer::LanczosResizer8_C8> resizer8;
 //		static Media::Resizer::LanczosResizerH13_8 *resizer16;
-		static Parser::ParserList *parsers;
+		static NN<Parser::ParserList> parsers;
 
 	private:
 		static void GrpAdjustColor64(void *pSrc, void *pDest, long width, long height, long lineW, long bright, long cont);

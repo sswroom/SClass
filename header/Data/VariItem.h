@@ -55,7 +55,7 @@ namespace Data
 			UInt64 u64;
 			Bool boolean;
 			Data::Date date;
-			Data::ReadonlyArray<UInt8> *byteArr;
+			NN<Data::ReadonlyArray<UInt8>> byteArr;
 			NN<Math::Geometry::Vector2D> vector;
 			NN<Data::UUID> uuid;
 			struct { UnsafeArray<const UTF8Char> v; UIntOS leng; } cstr;
@@ -92,7 +92,7 @@ namespace Data
 				}
 				else if (this->itemType == ItemType::ByteArr)
 				{
-					DEL_CLASS(this->val.byteArr);
+					this->val.byteArr.Delete();
 				}
 				else if (this->itemType == ItemType::Vector)
 				{
@@ -143,15 +143,15 @@ namespace Data
 		void GetAsString(NN<Text::StringBuilderUTF8> sb) const;
 		UnsafeArray<UTF8Char> GetAsStringS(UnsafeArray<UTF8Char> buff, UIntOS buffSize) const;
 		Optional<Text::String> GetAsNewString() const;
-		Data::DateTime *GetAsNewDateTime() const;
+		Optional<Data::DateTime> GetAsNewDateTime() const;
 		Data::Timestamp GetAsTimestamp() const;
 		Data::Date GetAsDate() const;
-		Data::ReadonlyArray<UInt8> *GetAsNewByteArr() const;
+		Optional<Data::ReadonlyArray<UInt8>> GetAsNewByteArr() const;
 		Optional<Math::Geometry::Vector2D> GetAsNewVector() const;
-		Data::UUID *GetAsNewUUID() const;
-		Data::ReadonlyArray<UInt8> *GetAndRemoveByteArr();
+		Optional<Data::UUID> GetAsNewUUID() const;
+		Optional<Data::ReadonlyArray<UInt8>> GetAndRemoveByteArr();
 		Optional<Math::Geometry::Vector2D> GetAndRemoveVector();
-		Data::UUID *GetAndRemoveUUID();
+		Optional<Data::UUID> GetAndRemoveUUID();
 		void *GetAsUnk() const;
 
 		void SetNull();
@@ -177,7 +177,7 @@ namespace Data
 		void SetU64(UInt64 val);
 		void SetBool(Bool val);
 		void SetByteArr(UnsafeArray<const UInt8> arr, UIntOS cnt);
-		void SetByteArr(Data::ReadonlyArray<UInt8> *arr);
+		void SetByteArr(NN<Data::ReadonlyArray<UInt8>> arr);
 		void SetVector(NN<Math::Geometry::Vector2D> vec);
 		void SetUUID(NN<Data::UUID> uuid);
 		void SetVectorDirect(NN<Math::Geometry::Vector2D> vec);

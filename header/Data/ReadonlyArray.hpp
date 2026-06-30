@@ -15,11 +15,11 @@ namespace Data
 		~ReadonlyArray();
 
 		UIntOS GetCount() const;
-		const T *GetArray() const;
+		UnsafeArray<const T> GetArray() const;
 		T GetItem(UIntOS index) const;
 		T operator [](UIntOS index) const;
 		NN<ReadonlyArray<T>> Clone() const;
-		Bool Equals(ReadonlyArray<T> *arr2) const;
+		Bool Equals(NN<ReadonlyArray<T>> arr2) const;
 	};
 
 	template <class T> ReadonlyArray<T>::ReadonlyArray(UnsafeArray<const T> arr, UIntOS cnt)
@@ -39,9 +39,9 @@ namespace Data
 		return this->cnt;
 	}
 
-	template <class T> const T *ReadonlyArray<T>::GetArray() const
+	template <class T> UnsafeArray<const T> ReadonlyArray<T>::GetArray() const
 	{
-		return this->arr.Ptr();
+		return this->arr;
 	}
 
 	template <class T> T ReadonlyArray<T>::GetItem(UIntOS index) const
@@ -65,12 +65,8 @@ namespace Data
 		return ret;
 	}
 
-	template <class T> Bool ReadonlyArray<T>::Equals(ReadonlyArray<T> *arr2) const
+	template <class T> Bool ReadonlyArray<T>::Equals(NN<ReadonlyArray<T>> arr2) const
 	{
-		if (arr2 == 0)
-		{
-			return false;
-		}
 		if (this->cnt != arr2->cnt)
 		{
 			return false;

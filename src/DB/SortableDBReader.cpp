@@ -433,8 +433,8 @@ UIntOS DB::SortableDBReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 	NN<Data::VariItem> item;
 	if (this->GetItem(colIndex).SetTo(item) && item->GetItemType() == Data::VariItem::ItemType::ByteArr)
 	{
-		Data::ReadonlyArray<UInt8> *arr = item->GetItemValue().byteArr;
-		MemCopyNO(buff.Ptr(), arr->GetArray(), arr->GetCount());
+		NN<Data::ReadonlyArray<UInt8>> arr = item->GetItemValue().byteArr;
+		MemCopyNO(buff.Ptr(), arr->GetArray().Ptr(), arr->GetCount());
 		return arr->GetCount();
 	}
 	return 0;

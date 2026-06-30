@@ -26,25 +26,25 @@ Crypto::Token::JWSignature::~JWSignature()
 
 Bool Crypto::Token::JWSignature::CalcHash(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 {
-	Crypto::Hash::HashAlgorithm *hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 	switch (alg)
 	{
 	case Algorithm::HS256:
 		{
 			Crypto::Hash::SHA256 ihash;
-			NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
+			NEW_CLASSNN(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
 		}
 		break;
 	case Algorithm::HS384:
 		{
 			Crypto::Hash::SHA384 ihash;
-			NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
+			NEW_CLASSNN(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
 		}
 		break;
 	case Algorithm::HS512:
 		{
 			Crypto::Hash::SHA512 ihash;
-			NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
+			NEW_CLASSNN(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
 		}
 		break;
 	case Algorithm::RS256:
@@ -85,31 +85,31 @@ Bool Crypto::Token::JWSignature::CalcHash(UnsafeArray<const UInt8> buff, UIntOS 
 	hash->Calc(buff.Ptr(), buffSize);
 	hash->GetValue(this->hashVal);
 	this->hashValSize = hash->GetResultSize();
-	DEL_CLASS(hash);
+	hash.Delete();
 	return true;
 }
 
 Bool Crypto::Token::JWSignature::VerifyHash(UnsafeArray<const UInt8> buff, UIntOS buffSize, UnsafeArray<const UInt8> signature, UIntOS signatureSize)
 {
-	Crypto::Hash::HashAlgorithm *hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 	switch (alg)
 	{
 	case Algorithm::HS256:
 		{
 			Crypto::Hash::SHA256 ihash;
-			NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
+			NEW_CLASSNN(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
 		}
 		break;
 	case Algorithm::HS384:
 		{
 			Crypto::Hash::SHA384 ihash;
-			NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
+			NEW_CLASSNN(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
 		}
 		break;
 	case Algorithm::HS512:
 		{
 			Crypto::Hash::SHA512 ihash;
-			NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
+			NEW_CLASSNN(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
 		}
 		break;
 	case Algorithm::RS256:
@@ -149,13 +149,13 @@ Bool Crypto::Token::JWSignature::VerifyHash(UnsafeArray<const UInt8> buff, UIntO
 
 	if (signatureSize != hash->GetResultSize())
 	{
-		DEL_CLASS(hash);
+		hash.Delete();
 		return false;
 	}
 	UInt8 hashVal[256];
 	hash->Calc(buff.Ptr(), buffSize);
 	hash->GetValue(hashVal);
-	DEL_CLASS(hash);
+	hash.Delete();
 	return Text::StrEqualsC(hashVal, signatureSize, signature, signatureSize);
 }
 

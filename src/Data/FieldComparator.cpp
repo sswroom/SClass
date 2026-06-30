@@ -145,9 +145,9 @@ IntOS Data::FieldComparator::Compare(Optional<VariItem> a, Optional<VariItem> b)
 			return Data::DataComparer::Compare(nna->GetItemValue().boolean, nnb->GetItemValue().boolean);
 		case Data::VariItem::ItemType::ByteArr:
 		{
-			Data::ReadonlyArray<UInt8> *arrA = nna->GetItemValue().byteArr;
-			Data::ReadonlyArray<UInt8> *arrB = nnb->GetItemValue().byteArr;
-			return Data::DataComparer::Compare(arrA->GetArray(), arrA->GetCount(), arrB->GetArray(), arrB->GetCount());
+			NN<Data::ReadonlyArray<UInt8>> arrA = nna->GetItemValue().byteArr;
+			NN<Data::ReadonlyArray<UInt8>> arrB = nnb->GetItemValue().byteArr;
+			return Data::DataComparer::Compare(arrA, arrB);
 		}
 		case Data::VariItem::ItemType::Vector:
 			return Data::DataComparer::Compare(nna->GetItemValue().vector.Ptr(), nnb->GetItemValue().vector.Ptr());

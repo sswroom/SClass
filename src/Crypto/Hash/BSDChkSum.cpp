@@ -19,10 +19,10 @@ Crypto::Hash::BSDChkSum::~BSDChkSum()
 {
 }
 
-NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::BSDChkSum::Clone()
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::BSDChkSum::Clone() const
 {
-	Crypto::Hash::BSDChkSum *bsdchksum;
-	NEW_CLASS(bsdchksum, Crypto::Hash::BSDChkSum(*this));
+	NN<Crypto::Hash::BSDChkSum> bsdchksum;
+	NEW_CLASSNN(bsdchksum, Crypto::Hash::BSDChkSum(*this));
 	return bsdchksum;
 }
 
@@ -46,17 +46,17 @@ void Crypto::Hash::BSDChkSum::Calc(UnsafeArray<const UInt8> buff, UIntOS buffSiz
 	this->chksum = chksum;
 }
 
-void Crypto::Hash::BSDChkSum::GetValue(UnsafeArray<UInt8> buff)
+void Crypto::Hash::BSDChkSum::GetValue(UnsafeArray<UInt8> buff) const
 {
 	*(UInt16*)&buff[0] = chksum;
 }
 
-UIntOS Crypto::Hash::BSDChkSum::GetBlockSize()
+UIntOS Crypto::Hash::BSDChkSum::GetBlockSize() const
 {
 	return 1;
 }
 
-UIntOS Crypto::Hash::BSDChkSum::GetResultSize()
+UIntOS Crypto::Hash::BSDChkSum::GetResultSize() const
 {
 	return 2;
 }

@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(AnyType userObj)
 	if (me->token.SetTo(token))
 	{
 		Crypto::Token::JWTParam param;
-		NN<Data::StringMapObj<Text::String*>> result;
+		NN<Data::StringMapObj<Optional<Text::String>>> result;
 		if (token->ParsePayload(param, true, sbErr).SetTo(result))
 		{
 			me->verifyType = token->GetVerifyType(param);

@@ -95,8 +95,8 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509PrivKey::CreateKey() const
 	UnsafeArray<const UInt8> keyData;
 	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.3", keyDataLen, itemType).SetTo(keyData))
 	{
-		Crypto::Cert::X509Key *key;
-		NEW_CLASS(key, Crypto::Cert::X509Key(this->GetSourceNameObj(), Data::ByteArrayR(keyData, keyDataLen), keyType));
+		NN<Crypto::Cert::X509Key> key;
+		NEW_CLASSNN(key, Crypto::Cert::X509Key(this->GetSourceNameObj(), Data::ByteArrayR(keyData, keyDataLen), keyType));
 		return key;
 	}
 	return nullptr;

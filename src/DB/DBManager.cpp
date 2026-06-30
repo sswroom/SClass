@@ -448,18 +448,18 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 				break;
 			}
 		}
-		Net::MySQLTCPClient *cli = 0;
+		Optional<Net::MySQLTCPClient> cli = nullptr;
 		NN<Net::MySQLTCPClient> nncli;
 		NN<Text::String> uidStr;
 		NN<Text::String> pwdStr;
 		if (uid.SetTo(uidStr) && pwd.SetTo(pwdStr))
 		{
-			NEW_CLASS(cli, Net::MySQLTCPClient(clif, ssl, addr, port, uidStr, pwdStr, schema));
+			NEW_CLASSOPT(cli, Net::MySQLTCPClient(clif, ssl, addr, port, uidStr, pwdStr, schema));
 		}
 		OPTSTR_DEL(uid);
 		OPTSTR_DEL(pwd);
 		OPTSTR_DEL(schema);
-		if (!nncli.Set(cli))
+		if (!cli.SetTo(nncli))
 		{
 		}
 		else if (nncli->IsError())
@@ -516,23 +516,23 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 				break;
 			}
 		}
-		DB::PostgreSQLConn *cli;
+		Optional<DB::PostgreSQLConn> cli = nullptr;
 		NN<DB::PostgreSQLConn> nncli;
 		NN<Text::String> serverStr;
 		NN<Text::String> schemaStr;
 		if (server.SetTo(serverStr) && schema.SetTo(schemaStr))
 		{
-			NEW_CLASS(cli, DB::PostgreSQLConn(serverStr, port, uid, pwd, schemaStr, log));
+			NEW_CLASSOPT(cli, DB::PostgreSQLConn(serverStr, port, uid, pwd, schemaStr, log));
 		}
 		else
 		{
-			cli = 0;
+			cli = nullptr;
 		}
 		OPTSTR_DEL(server);
 		OPTSTR_DEL(uid);
 		OPTSTR_DEL(pwd);
 		OPTSTR_DEL(schema);
-		if (!nncli.Set(cli))
+		if (!cli.SetTo(nncli))
 		{
 
 		}
@@ -611,7 +611,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 				break;
 			}
 		}
-		DB::TDSConn *cli = 0;
+		Optional<DB::TDSConn> cli = nullptr;
 		NN<DB::TDSConn> nncli;
 		UInt16 port = 1433;
 		NN<Text::String> serverStr;
@@ -625,18 +625,22 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 				Text::StrToUInt16(&serverStr->v[i + 1], port);
 				serverStr->TrimToLength(i);
 			}
-			NEW_CLASS(cli, DB::TDSConn(serverStr->ToCString(), port, false, OPTSTR_CSTR(schema), uidStr->ToCString(), pwdStr->ToCString(), log, nullptr));
-			if (!cli->IsConnected())
+			NEW_CLASSNN(nncli, DB::TDSConn(serverStr->ToCString(), port, false, OPTSTR_CSTR(schema), uidStr->ToCString(), pwdStr->ToCString(), log, nullptr));
+			if (!nncli->IsConnected())
 			{
-				DEL_CLASS(cli);
-				cli = 0;
+				nncli.Delete();
+				cli = nullptr;
+			}
+			else
+			{
+				cli = nncli;
 			}
 		}
 		OPTSTR_DEL(server);
 		OPTSTR_DEL(uid);
 		OPTSTR_DEL(pwd);
 		OPTSTR_DEL(schema);
-		if (nncli.Set(cli))
+		if (cli.SetTo(nncli))
 		{
 			NEW_CLASSNN(nndb, DB::DBTool(nncli, true, log, DBPREFIX));
 			return nndb;
@@ -824,11 +828,11 @@ void DB::DBManager::GetConnName(Text::CStringNN connStr, NN<Text::StringBuilderU
 
 Bool DB::DBManager::StoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<DB::DBManagerCtrl>> ctrlList)
 {
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NN<IO::FileStream> fs;
+	NEW_CLASSNN(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
-		DEL_CLASS(fs);
+		fs.Delete();
 		return false;
 	}
 
@@ -867,17 +871,17 @@ Bool DB::DBManager::StoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<DB:
 		MemFreeArr(outBuff);
 	}
 
-	DEL_CLASS(fs);
+	fs.Delete();
 	return true;
 }
 
 Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<DB::DBManagerCtrl>> ctrlList, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Parser::ParserList> parsers)
 {
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NN<IO::FileStream> fs;
+	NEW_CLASSNN(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
-		DEL_CLASS(fs);
+		fs.Delete();
 		return false;
 	}
 
@@ -918,6 +922,6 @@ Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<D
 		}
 		MemFreeArr(decBuff);
 	}
-	DEL_CLASS(fs);
+	fs.Delete();
 	return true;
 }

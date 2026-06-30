@@ -52,8 +52,8 @@ namespace Crypto
 			Bool SignatureValid(Optional<Net::SSLEngine> ssl, UnsafeArray<const UInt8> key, UIntOS keyLeng, Crypto::Cert::X509Key::KeyType keyType);
 			void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
-			Optional<Data::StringMapObj<Text::String*>> ParsePayload(NN<JWTParam> param, Bool keepDefault, Optional<Text::StringBuilderUTF8> sbErr);
-			void FreeResult(NN<Data::StringMapObj<Text::String*>> result);
+			Optional<Data::StringMapObj<Optional<Text::String>>> ParsePayload(NN<JWTParam> param, Bool keepDefault, Optional<Text::StringBuilderUTF8> sbErr);
+			void FreeResult(NN<Data::StringMapObj<Optional<Text::String>>> result);
 
 			static Optional<JWToken> Generate(JWSignature::Algorithm alg, Text::CStringNN payload, Optional<Net::SSLEngine> ssl, UnsafeArray<const UInt8> key, UIntOS keyLeng, Crypto::Cert::X509Key::KeyType keyType);
 			static Optional<JWToken> GenerateRSA(JWSignature::Algorithm alg, Text::CStringNN payload, Optional<Net::SSLEngine> ssl, Text::CStringNN keyId, NN<Crypto::Cert::X509PrivKey> key);

@@ -400,8 +400,8 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::SelfSignedCertCreate(NN
 	Text::StringBuilderUTF8 sb;
 	sb.AppendOpt(names->commonName);
 	sb.AppendC(UTF8STRC(".crt"));
-	Crypto::Cert::X509Cert *cert;
-	NEW_CLASS(cert, Crypto::Cert::X509Cert(sb.ToCString(), builder.GetArray()));
+	NN<Crypto::Cert::X509Cert> cert;
+	NEW_CLASSNN(cert, Crypto::Cert::X509Cert(sb.ToCString(), builder.GetArray()));
 	return cert;
 }
 
@@ -489,8 +489,8 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::IssueCert(NN<Net::SSLEn
 	if (!AppendSign(builder, ssl, caKey, Crypto::Hash::HashType::SHA256)) return nullptr;
 	builder.EndLevel();
 	sbFileName.AppendC(UTF8STRC(".crt"));
-	Crypto::Cert::X509Cert *cert;
-	NEW_CLASS(cert, Crypto::Cert::X509Cert(sbFileName.ToCString(), builder.GetArray()));
+	NN<Crypto::Cert::X509Cert> cert;
+	NEW_CLASSNN(cert, Crypto::Cert::X509Cert(sbFileName.ToCString(), builder.GetArray()));
 	return cert;
 }
 

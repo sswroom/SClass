@@ -104,8 +104,8 @@ Optional<DB::DBReader> DB::MongoDB::QueryTableData(Text::CString schemaName, Tex
 Optional<DB::TableDef> DB::MongoDB::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	NN<DB::ColDef> colDef;
-	DB::TableDef *tab;
-	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
+	NN<DB::TableDef> tab;
+	NEW_CLASSNN(tab, DB::TableDef(schemaName, tableName));
 	NEW_CLASSNN(colDef, DB::ColDef(CSTR("Data")));
 	colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 	colDef->SetColSize(65536);

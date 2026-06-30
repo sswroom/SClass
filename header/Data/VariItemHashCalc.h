@@ -60,7 +60,7 @@ namespace Data
 			case VariItem::ItemType::Str:
 				return (iv.str == 0)?0:crc.CalcDirect(iv.str->v, iv.str->leng);
 			case VariItem::ItemType::ByteArr:
-				return (iv.byteArr == 0)?0:crc.CalcDirect(iv.byteArr->GetArray(), iv.byteArr->GetCount());
+				return crc.CalcDirect(iv.byteArr->GetArray(), iv.byteArr->GetCount());
 			case VariItem::ItemType::Vector:
 				return 0;
 			case VariItem::ItemType::UUID:

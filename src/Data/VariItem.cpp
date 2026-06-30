@@ -773,44 +773,44 @@ Optional<Text::String> Data::VariItem::GetAsNewString() const
 	}
 }
 
-Data::DateTime *Data::VariItem::GetAsNewDateTime() const
+Optional<Data::DateTime> Data::VariItem::GetAsNewDateTime() const
 {
-	Data::DateTime *date;
+	NN<Data::DateTime> date;
 	if (this->itemType == ItemType::Timestamp)
 	{
-		NEW_CLASS(date, Data::DateTime(this->val.ts.ToTicks(), this->val.ts.tzQhr));
+		NEW_CLASSNN(date, Data::DateTime(this->val.ts.ToTicks(), this->val.ts.tzQhr));
 		return date;
 	}
 	else if (this->itemType == ItemType::Date)
 	{
-		NEW_CLASS(date, Data::DateTime(this->val.date.ToTicks(), Data::DateTimeUtil::GetLocalTzQhr()));
+		NEW_CLASSNN(date, Data::DateTime(this->val.date.ToTicks(), Data::DateTimeUtil::GetLocalTzQhr()));
 		return date;
 	}
 	else if (this->itemType == ItemType::CStr)
 	{
-		NEW_CLASS(date, Data::DateTime());
+		NEW_CLASSNN(date, Data::DateTime());
 		date->ToLocalTime();
 		if (date->SetValue(Text::CStringNN(this->val.cstr.v, this->val.cstr.leng)))
 		{
 			return date;
 		}
-		DEL_CLASS(date);
-		return 0;
+		date.Delete();
+		return nullptr;
 	}
 	else if (this->itemType == ItemType::Str)
 	{
-		NEW_CLASS(date, Data::DateTime());
+		NEW_CLASSNN(date, Data::DateTime());
 		date->ToLocalTime();
 		if (date->SetValue(this->val.str->ToCString()))
 		{
 			return date;
 		}
-		DEL_CLASS(date);
-		return 0;
+		date.Delete();
+		return nullptr;
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -862,11 +862,11 @@ Data::Date Data::VariItem::GetAsDate() const
 	}
 }
 
-Data::ReadonlyArray<UInt8> *Data::VariItem::GetAsNewByteArr() const
+Optional<Data::ReadonlyArray<UInt8>> Data::VariItem::GetAsNewByteArr() const
 {
 	if (this->itemType != ItemType::ByteArr)
-		return 0;
-	return this->val.byteArr->Clone().Ptr();
+		return nullptr;
+	return this->val.byteArr->Clone();
 }
 
 Optional<Math::Geometry::Vector2D> Data::VariItem::GetAsNewVector() const
@@ -888,17 +888,17 @@ Optional<Math::Geometry::Vector2D> Data::VariItem::GetAsNewVector() const
 	return nullptr;
 }
 
-Data::UUID *Data::VariItem::GetAsNewUUID() const
+Optional<Data::UUID> Data::VariItem::GetAsNewUUID() const
 {
 	if (this->itemType != ItemType::UUID)
-		return 0;
-	return this->val.uuid->Clone().Ptr();
+		return nullptr;
+	return this->val.uuid->Clone();
 }
 
-Data::ReadonlyArray<UInt8> *Data::VariItem::GetAndRemoveByteArr()
+Optional<Data::ReadonlyArray<UInt8>> Data::VariItem::GetAndRemoveByteArr()
 {
 	if (this->itemType != ItemType::ByteArr)
-		return 0;
+		return nullptr;
 	this->itemType = ItemType::Null;
 	return this->val.byteArr;
 }
@@ -911,12 +911,12 @@ Optional<Math::Geometry::Vector2D> Data::VariItem::GetAndRemoveVector()
 	return this->val.vector;
 }
 
-Data::UUID *Data::VariItem::GetAndRemoveUUID()
+Optional<Data::UUID> Data::VariItem::GetAndRemoveUUID()
 {
 	if (this->itemType != ItemType::UUID)
-		return 0;
+		return nullptr;
 	this->itemType = ItemType::Null;
-	return this->val.uuid.Ptr();
+	return this->val.uuid;
 }
 
 void *Data::VariItem::GetAsUnk() const
@@ -1145,14 +1145,14 @@ void Data::VariItem::SetBool(Bool val)
 void Data::VariItem::SetByteArr(UnsafeArray<const UInt8> arr, UIntOS cnt)
 {
 	this->FreeItem();
-	this->val.byteArr = NEW_CLASS_D(Data::ReadonlyArray<UInt8>(arr, cnt)).Ptr();
+	this->val.byteArr = NEW_CLASS_D(Data::ReadonlyArray<UInt8>(arr, cnt));
 	this->itemType = ItemType::ByteArr;
 }
 
-void Data::VariItem::SetByteArr(Data::ReadonlyArray<UInt8> *arr)
+void Data::VariItem::SetByteArr(NN<Data::ReadonlyArray<UInt8>> arr)
 {
 	this->FreeItem();
-	this->val.byteArr = arr->Clone().Ptr();
+	this->val.byteArr = arr->Clone();
 	this->itemType = ItemType::ByteArr;
 }
 
@@ -1245,7 +1245,7 @@ void Data::VariItem::Set(NN<const VariItem> item)
 		this->val.date = item->val.date;
 		break;
 	case ItemType::ByteArr:
-		this->val.byteArr = item->val.byteArr->Clone().Ptr();
+		this->val.byteArr = item->val.byteArr->Clone();
 		break;
 	case ItemType::Vector:
 		this->val.vector = item->val.vector->Clone();
@@ -1316,7 +1316,7 @@ NN<Data::VariItem> Data::VariItem::Clone() const
 		ival.date = this->val.date;
 		break;
 	case ItemType::ByteArr:
-		ival.byteArr = this->val.byteArr->Clone().Ptr();
+		ival.byteArr = this->val.byteArr->Clone();
 		break;
 	case ItemType::Vector:
 		ival.vector = this->val.vector->Clone();
@@ -1684,7 +1684,7 @@ NN<Data::VariItem> Data::VariItem::NewByteArr(UnsafeArrayOpt<const UInt8> arr, U
 	UnsafeArray<const UInt8> nnarr;
 	if (!arr.SetTo(nnarr)) return NewNull();
 	ItemValue ival;
-	NEW_CLASS(ival.byteArr, Data::ReadonlyArray<UInt8>(nnarr, cnt));
+	NEW_CLASSNN(ival.byteArr, Data::ReadonlyArray<UInt8>(nnarr, cnt));
 	NN<Data::VariItem> item;
 	NEW_CLASSNN(item, Data::VariItem(ItemType::ByteArr, ival));
 	return item;
@@ -1694,7 +1694,7 @@ NN<Data::VariItem> Data::VariItem::NewByteArr(Data::ReadonlyArray<UInt8> *arr)
 {
 	if (arr == 0) return NewNull();
 	ItemValue ival;
-	ival.byteArr = arr->Clone().Ptr();
+	ival.byteArr = arr->Clone();
 	NN<Data::VariItem> item;
 	NEW_CLASSNN(item, Data::VariItem(ItemType::ByteArr, ival));
 	return item;
@@ -1857,7 +1857,7 @@ void Data::VariItem::SetFromPtr(NN<Data::VariItem> item, void *ptr, ItemType ite
 		item->SetDate(*(Data::Date*)ptr);
 		return;
 	case ItemType::ByteArr:
-		item->SetByteArr(*(Data::ReadonlyArray<UInt8>**)ptr);
+		item->SetByteArr(*(NN<Data::ReadonlyArray<UInt8>>*)ptr);
 		return;
 	case ItemType::Vector:
 		{
@@ -1978,13 +1978,13 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, NN<VariItem> item)
 		*(Data::Date*)ptr = item->GetAsDate();
 		break;
 	case ItemType::ByteArr:
-		*(Data::ReadonlyArray<UInt8>**)ptr = item->GetAsNewByteArr();
+		*(Data::ReadonlyArray<UInt8>**)ptr = item->GetAsNewByteArr().OrNull();
 		break;
 	case ItemType::Vector:
 		*(Math::Geometry::Vector2D**)ptr = item->GetAsNewVector().OrNull();
 		break;
 	case ItemType::UUID:
-		*(Data::UUID**)ptr = item->GetAsNewUUID();
+		*(Data::UUID**)ptr = item->GetAsNewUUID().OrNull();
 		break;
 	case ItemType::Unknown:
 	default:
@@ -2093,11 +2093,11 @@ void Data::VariItem::SetPtrAndNotKeep(void *ptr, ItemType itemType, NN<VariItem>
 	case ItemType::ByteArr:
 		if (item->GetItemType() == ItemType::ByteArr)
 		{
-			*(Data::ReadonlyArray<UInt8>**)ptr = item->GetAndRemoveByteArr();
+			*(Data::ReadonlyArray<UInt8>**)ptr = item->GetAndRemoveByteArr().OrNull();
 		}
 		else
 		{
-			*(Data::ReadonlyArray<UInt8>**)ptr = item->GetAsNewByteArr();
+			*(Data::ReadonlyArray<UInt8>**)ptr = item->GetAsNewByteArr().OrNull();
 		}
 		break;
 	case ItemType::Vector:
@@ -2113,11 +2113,11 @@ void Data::VariItem::SetPtrAndNotKeep(void *ptr, ItemType itemType, NN<VariItem>
 	case ItemType::UUID:
 		if (item->GetItemType() == ItemType::UUID)
 		{
-			*(Data::UUID**)ptr = item->GetAndRemoveUUID();
+			*(Data::UUID**)ptr = item->GetAndRemoveUUID().OrNull();
 		}
 		else
 		{
-			*(Data::UUID**)ptr = item->GetAsNewUUID();
+			*(Data::UUID**)ptr = item->GetAsNewUUID().OrNull();
 		}
 		break;
 	case ItemType::Unknown:
@@ -2199,15 +2199,16 @@ Bool Data::VariItem::PtrEquals(void *ptr1, void *ptr2, ItemType itemType)
 		{
 			Data::ReadonlyArray<UInt8> *val1 = *(Data::ReadonlyArray<UInt8>**)ptr1;
 			Data::ReadonlyArray<UInt8> *val2 = *(Data::ReadonlyArray<UInt8>**)ptr2;
+			NN<Data::ReadonlyArray<UInt8>> nval2;
 			if (val1 == val2)
 			{
 				return true;
 			}
-			if (val1 == 0 || val2 == 0)
+			if (val1 == 0 || !nval2.Set(val2))
 			{
 				return false;
 			}
-			return val1->Equals(val2);
+			return val1->Equals(nval2);
 		}
 	case ItemType::Vector:
 		{

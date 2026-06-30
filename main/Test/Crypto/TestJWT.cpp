@@ -51,14 +51,14 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		ssl.Delete();
 		return 3;
 	}
-	NN<Data::StringMapObj<Text::String*>> result;
+	NN<Data::StringMapObj<Optional<Text::String>>> result;
 	if (!token->ParsePayload(param, false, nullptr).SetTo(result))
 	{
 		token.Delete();
 		ssl.Delete();
 		return 4;
 	}
-	if (!s.Set(result->Get(CSTR("name"))) || !s->Equals(UTF8STRC("John Doe")))
+	if (!result->Get(CSTR("name")).SetTo(s) || !s->Equals(UTF8STRC("John Doe")))
 	{
 		token->FreeResult(result);
 		token.Delete();

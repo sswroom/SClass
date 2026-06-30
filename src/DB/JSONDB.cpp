@@ -289,10 +289,10 @@ Optional<DB::DBReader> DB::JSONDB::QueryTableData(Text::CString schemaName, Text
 
 Optional<DB::TableDef> DB::JSONDB::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
-	DB::TableDef *tab;
+	NN<DB::TableDef> tab;
 	if (!tableName.Equals(this->layerName->ToCString()))
 		return nullptr;
-	NEW_CLASS(tab, DB::TableDef(schemaName, this->layerName->ToCString()));
+	NEW_CLASSNN(tab, DB::TableDef(schemaName, this->layerName->ToCString()));
 	NN<Text::JSONBase> json;
 	if (this->data->GetArrayValue(0).SetTo(json) && json->GetType() == Text::JSONType::Object)
 	{

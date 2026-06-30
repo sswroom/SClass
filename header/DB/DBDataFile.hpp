@@ -301,9 +301,9 @@ template <class T> void DB::DBDataFile<T>::AddRecord(NN<T> obj)
 			}
 			else
 			{
-				Data::ReadonlyArray<UInt8> *arr = item.GetItemValue().byteArr;
+				NN<Data::ReadonlyArray<UInt8>> arr = item.GetItemValue().byteArr;
 				m = WriteInt(recordBuff, m, arr->GetCount());
-				MemCopyNO(&recordBuff[m], arr->GetArray(), arr->GetCount());
+				MemCopyNO(&recordBuff[m], arr->GetArray().Ptr(), arr->GetCount());
 				m += arr->GetCount();
 			}
 			break;

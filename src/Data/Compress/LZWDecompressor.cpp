@@ -31,14 +31,14 @@ Bool Data::Compress::LZWDecompressor::Decompress(Data::ByteArray destBuff, OutPa
 
 Bool Data::Compress::LZWDecompressor::Decompress(NN<IO::Stream> destStm, NN<IO::StreamData> srcData)
 {
-	IO::StreamDataStream *srcStm;
+	NN<IO::StreamDataStream> srcStm;
 	Data::ByteBuffer tmpBuff(65536);
 	UIntOS thisSize;
-	NEW_CLASS(srcStm, IO::StreamDataStream(srcData));
+	NEW_CLASSNN(srcStm, IO::StreamDataStream(srcData));
 	while ((thisSize = srcStm->Read(tmpBuff)) != 0)
 	{
 		destStm->Write(tmpBuff.WithSize(thisSize));
 	}
-	DEL_CLASS(srcStm);
+	srcStm.Delete();
 	return true;
 }

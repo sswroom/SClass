@@ -233,7 +233,7 @@ IntOS Data::DataComparer::Compare(NN<Text::String> val1, NN<Text::String> val2)
 	return Text::StrCompare(val1->v, val2->v);
 }
 
-IntOS Data::DataComparer::Compare(Data::ReadonlyArray<UInt8> *val1, Data::ReadonlyArray<UInt8> *val2)
+IntOS Data::DataComparer::Compare(NN<Data::ReadonlyArray<UInt8>> val1, NN<Data::ReadonlyArray<UInt8>> val2)
 {
 	return Text::StrCompareFastC(val1->GetArray(), val1->GetCount(), val2->GetArray(), val2->GetCount());
 }

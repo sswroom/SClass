@@ -34,7 +34,7 @@ Optional<Text::String> DB::MySQLConn::GetConnPWD()
 Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<Net::MySQLTCPClient> conn;
-	DB::DBTool *db;
+	NN<DB::DBTool> db;
 	Net::SocketUtil::AddressInfo addr;
 	if (!clif->GetSocketFactory()->DNSResolveIP(serverName->ToCString(), addr))
 	{
@@ -50,7 +50,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif,
 	NEW_CLASSNN(conn, Net::MySQLTCPClient(clif, nullptr, addr, 3306, uid, pwd, dbName));
 	if (!conn->IsError())
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
+		NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
 		return db;
 	}
 	else
@@ -71,7 +71,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif,
 Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif, Text::CStringNN serverName, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<Net::MySQLTCPClient> conn;
-	DB::DBTool *db;
+	NN<DB::DBTool> db;
 	Net::SocketUtil::AddressInfo addr;
 	if (!clif->GetSocketFactory()->DNSResolveIP(serverName, addr))
 	{
@@ -87,7 +87,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif,
 	NEW_CLASSNN(conn, Net::MySQLTCPClient(clif, nullptr, addr, 3306, uid, pwd, dbName));
 	if (!conn->IsError())
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
+		NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
 		return db;
 	}
 	else

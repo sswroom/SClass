@@ -1124,11 +1124,11 @@ UIntOS DB::PostgreSQLTCPReader::GetBinarySize(UIntOS colIndex)
 		return 0;
 	}
 	
-	Data::ReadonlyArray<UInt8>* arr = item.GetAndRemoveByteArr();
-	if (arr)
+	NN<Data::ReadonlyArray<UInt8>> arr;
+	if (item.GetAndRemoveByteArr().SetTo(arr))
 	{
 		UIntOS ret = arr->GetCount();
-		DEL_CLASS(arr);
+		arr.Delete();
 		return ret;
 	}
 	return 0;
@@ -1142,12 +1142,12 @@ UIntOS DB::PostgreSQLTCPReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> bu
 		return 0;
 	}
 	
-	Data::ReadonlyArray<UInt8>* arr = item.GetAndRemoveByteArr();
-	if (arr)
+	NN<Data::ReadonlyArray<UInt8>> arr;
+	if (item.GetAndRemoveByteArr().SetTo(arr))
 	{
 		UIntOS ret = arr->GetCount();
-		MemCopyNO(buff.Ptr(), arr->GetArray(), ret);
-		DEL_CLASS(arr);
+		MemCopyNO(buff.Ptr(), arr->GetArray().Ptr(), ret);
+		arr.Delete();
 		return ret;
 	}
 	return 0;
@@ -1172,7 +1172,14 @@ Bool DB::PostgreSQLTCPReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 		return false;
 	}
 	
-	return item.GetAndRemoveUUID();
+	NN<Data::UUID> nnuuid;
+	if (!item.GetAndRemoveUUID().SetTo(nnuuid))
+	{
+		return false;
+	}
+	uuid->SetValue(nnuuid);
+	nnuuid.Delete();
+	return true;
 }
 
 UnsafeArrayOpt<UTF8Char> DB::PostgreSQLTCPReader::GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)

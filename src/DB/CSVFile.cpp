@@ -151,9 +151,9 @@ Optional<DB::TableDef> DB::CSVFile::GetTableDef(Text::CString schemaName, Text::
 	NN<DB::DBReader> r;
 	if (this->QueryTableData(schemaName, tableName, nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
-		DB::TableDef *tab;
+		NN<DB::TableDef> tab;
 		NN<DB::ColDef> col;
-		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
+		NEW_CLASSNN(tab, DB::TableDef(schemaName, tableName));
 		UIntOS i = 0;
 		UIntOS j = r->ColCount();
 		while (i < j)
