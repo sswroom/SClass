@@ -55,6 +55,9 @@ void Media::VideoRenderer::CalDisplayRect(UIntOS srcWidth, UIntOS srcHeight, Dra
 
 void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, VideoBuff *vbuff2)
 {
+	NN<Media::ImageResizer> resizer;
+	NN<Media::DeinterlacingResizer> dresizer;
+	NN<Media::Deinterlacer> deint;
 	NN<Media::CS::CSConverter> csconv;
 	NN<Media::MonitorSurface> destSurface;
 	UnsafeArray<UInt8> vsrcBuff;
@@ -203,13 +206,13 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 		else if (tstat->resizerSrcRefLuminance != tstat->me->currSrcRefLuminance)
 		{
 			tstat->resizerSrcRefLuminance = tstat->me->currSrcRefLuminance;
-			if (tstat->resizer)
+			if (tstat->resizer.SetTo(resizer))
 			{
-				tstat->resizer->SetSrcRefLuminance(tstat->resizerSrcRefLuminance);
+				resizer->SetSrcRefLuminance(tstat->resizerSrcRefLuminance);
 			}
-			if (tstat->dresizer)
+			if (tstat->dresizer.SetTo(dresizer))
 			{
-				tstat->dresizer->SetDISrcRefLuminance(tstat->resizerSrcRefLuminance);
+				dresizer->SetDISrcRefLuminance(tstat->resizerSrcRefLuminance);
 			}
 		}
 
@@ -217,7 +220,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 		csconv->ConvertV2(&vsrcBuff, lrBuff, tstat->me->videoInfo.dispSize.x, tstat->me->videoInfo.dispSize.y, tstat->me->videoInfo.storeSize.x, tstat->me->videoInfo.storeSize.y, (IntOS)tstat->me->videoInfo.dispSize.x * 8, vbuff->frameType, vbuff->ycOfst);
 		tstat->csTime = clk.GetTimeDiff();
 
-		if (tstat->procType == 1)
+		if (tstat->procType == 1 && tstat->dresizer.SetTo(dresizer))
 		{
 			if (vbuff->frameType == Media::FT_NON_INTERLACE)
 			{
@@ -242,7 +245,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 					UnsafeArray<UInt8> destBuff;
 					if (destSurface->LockSurface(destBpl).SetTo(destBuff))
 					{
-						tstat->dresizer->DeintResize(Media::DeinterlacingResizer::DT_FULL_FRAME, srcBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight), destBuff, (UIntOS)destBpl, vbuff->destSize.x, vbuff->destSize.y, false);
+						dresizer->DeintResize(Media::DeinterlacingResizer::DT_FULL_FRAME, srcBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight), destBuff, (UIntOS)destBpl, vbuff->destSize.x, vbuff->destSize.y, false);
 						destSurface->UnlockSurface();
 					}
 				}
@@ -271,7 +274,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 					UnsafeArray<UInt8> destBuff;
 					if (destSurface->LockSurface(destBpl).SetTo(destBuff))
 					{
-						tstat->dresizer->DeintResize(Media::DeinterlacingResizer::DT_TOP_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight >> 1), destBuff, (UIntOS)destBpl, vbuff->destSize.x, vbuff->destSize.y, false);
+						dresizer->DeintResize(Media::DeinterlacingResizer::DT_TOP_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight >> 1), destBuff, (UIntOS)destBpl, vbuff->destSize.x, vbuff->destSize.y, false);
 						destSurface->UnlockSurface();
 					}
 				}
@@ -299,7 +302,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 					UnsafeArray<UInt8> destBuff;
 					if (destSurface->LockSurface(destBpl).SetTo(destBuff))
 					{
-						tstat->dresizer->DeintResize(Media::DeinterlacingResizer::DT_BOTTOM_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight >> 1), destBuff, (UIntOS)destBpl, vbuff->destSize.x, vbuff->destSize.y, false);
+						dresizer->DeintResize(Media::DeinterlacingResizer::DT_BOTTOM_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight >> 1), destBuff, (UIntOS)destBpl, vbuff->destSize.x, vbuff->destSize.y, false);
 						destSurface->UnlockSurface();
 					}
 				}
@@ -327,7 +330,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 					UnsafeArray<UInt8> destBuff;
 					if (destSurface->LockSurface(destBpl).SetTo(destBuff))
 					{
-						tstat->dresizer->DeintResize(Media::DeinterlacingResizer::DT_TOP_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight >> 1), destBuff, (UIntOS)destBpl, vbuff->destSize.x, vbuff->destSize.y, false);
+						dresizer->DeintResize(Media::DeinterlacingResizer::DT_TOP_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight >> 1), destBuff, (UIntOS)destBpl, vbuff->destSize.x, vbuff->destSize.y, false);
 						destSurface->UnlockSurface();
 					}
 				}
@@ -355,7 +358,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 					UnsafeArray<UInt8> destBuff;
 					if (destSurface->LockSurface(destBpl).SetTo(destBuff))
 					{
-						tstat->dresizer->DeintResize(Media::DeinterlacingResizer::DT_BOTTOM_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight >> 1), destBuff, (UIntOS)destBpl, vbuff->destSize.x, vbuff->destSize.y, false);
+						dresizer->DeintResize(Media::DeinterlacingResizer::DT_BOTTOM_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight >> 1), destBuff, (UIntOS)destBpl, vbuff->destSize.x, vbuff->destSize.y, false);
 						destSurface->UnlockSurface();
 					}
 				}
@@ -383,7 +386,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 					UnsafeArray<UInt8> destBuff;
 					if (destSurface->LockSurface(destBpl).SetTo(destBuff))
 					{
-						tstat->dresizer->DeintResize(Media::DeinterlacingResizer::DT_TOP_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 4, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight >> 1), destBuff, (UIntOS)destBpl, vbuff->destSize.x, vbuff->destSize.y, false);
+						dresizer->DeintResize(Media::DeinterlacingResizer::DT_TOP_FIELD, srcBuff + ((cropDY >> 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 4, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight >> 1), destBuff, (UIntOS)destBpl, vbuff->destSize.x, vbuff->destSize.y, false);
 						destSurface->UnlockSurface();
 					}
 				}
@@ -411,7 +414,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 					UnsafeArray<UInt8> destBuff;
 					if (destSurface->LockSurface(destBpl).SetTo(destBuff))
 					{
-						tstat->dresizer->DeintResize(Media::DeinterlacingResizer::DT_BOTTOM_FIELD, srcBuff + (((cropDY >> 1) + 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 4, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight >> 1), destBuff, (UIntOS)destBpl, vbuff->destSize.x, vbuff->destSize.y, false);
+						dresizer->DeintResize(Media::DeinterlacingResizer::DT_BOTTOM_FIELD, srcBuff + (((cropDY >> 1) + 1) * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 4, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight >> 1), destBuff, (UIntOS)destBpl, vbuff->destSize.x, vbuff->destSize.y, false);
 						destSurface->UnlockSurface();
 					}
 				}
@@ -439,7 +442,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 					UnsafeArray<UInt8> destBuff;
 					if (destSurface->LockSurface(destBpl).SetTo(destBuff))
 					{
-						tstat->dresizer->DeintResize(Media::DeinterlacingResizer::DT_FULL_FRAME, srcBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight), destBuff, (UIntOS)destBpl, vbuff->destSize.x, vbuff->destSize.y, false);
+						dresizer->DeintResize(Media::DeinterlacingResizer::DT_FULL_FRAME, srcBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight), destBuff, (UIntOS)destBpl, vbuff->destSize.x, vbuff->destSize.y, false);
 						destSurface->UnlockSurface();
 					}
 				}
@@ -478,11 +481,11 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 					{
 						if (vbuff2->frameType == Media::FT_INTERLACED_TFF)
 						{
-							tstat->dresizer->DeintResize(Media::DeinterlacingResizer::DT_BOTTOM_FIELD, lrBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight), destBuff, (UIntOS)destBpl, vbuff2->destSize.x, vbuff2->destSize.y, false);
+							dresizer->DeintResize(Media::DeinterlacingResizer::DT_BOTTOM_FIELD, lrBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight), destBuff, (UIntOS)destBpl, vbuff2->destSize.x, vbuff2->destSize.y, false);
 						}
 						else
 						{
-							tstat->dresizer->DeintResize(Media::DeinterlacingResizer::DT_TOP_FIELD, lrBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight), destBuff, (UIntOS)destBpl, vbuff2->destSize.x, vbuff2->destSize.y, false);
+							dresizer->DeintResize(Media::DeinterlacingResizer::DT_TOP_FIELD, lrBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight), destBuff, (UIntOS)destBpl, vbuff2->destSize.x, vbuff2->destSize.y, false);
 						}
 						destSurface->UnlockSurface();
 					}
@@ -502,10 +505,10 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 				tstat->me->dispEvt.Set();
 			}
 
-			tstat->hTime = ((Media::Resizer::DeintResizerLR_C32*)tstat->dresizer)->GetHAvgTime();
-			tstat->vTime = ((Media::Resizer::DeintResizerLR_C32*)tstat->dresizer)->GetVAvgTime();
+			tstat->hTime = NN<Media::Resizer::DeintResizerLR_C32>::ConvertFrom(dresizer)->GetHAvgTime();
+			tstat->vTime = NN<Media::Resizer::DeintResizerLR_C32>::ConvertFrom(dresizer)->GetVAvgTime();
 		}
-		else
+		else if (tstat->resizer.SetTo(resizer))
 		{
 			if (vbuff->frameType == Media::FT_NON_INTERLACE)
 			{
@@ -533,16 +536,17 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 					tstat->diSize = sizeNeeded;
 					tstat->diBuff = diBuff = MemAllocA64(UInt8, sizeNeeded);
 				}
-				if (tstat->deint == 0)
+				if (!tstat->deint.SetTo(deint))
 				{
-					NEW_CLASS(tstat->deint, Media::DeinterlaceLR(srcHeight >> 1, srcWidth << 3));
+					NEW_CLASSNN(deint, Media::DeinterlaceLR(srcHeight >> 1, srcWidth << 3));
+					tstat->deint = deint;
 				}
 				else
 				{
-					tstat->deint->Reinit(srcHeight >> 1, srcWidth << 3);
+					deint->Reinit(srcHeight >> 1, srcWidth << 3);
 				}
 				srcBuff = diBuff;
-				tstat->deint->Deinterlace(lrBuff, diBuff, 0, srcWidth, (IntOS)srcWidth << 3);
+				deint->Deinterlace(lrBuff, diBuff, 0, srcWidth, (IntOS)srcWidth << 3);
 			}
 			else if (vbuff->frameType == Media::FT_FIELD_BF)
 			{
@@ -561,16 +565,17 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 					tstat->diSize = sizeNeeded;
 					tstat->diBuff = diBuff = MemAllocA64(UInt8, sizeNeeded);
 				}
-				if (tstat->deint == 0)
+				if (!tstat->deint.SetTo(deint))
 				{
-					NEW_CLASS(tstat->deint, Media::DeinterlaceLR(srcHeight >> 1, srcWidth << 3));
+					NEW_CLASSNN(deint, Media::DeinterlaceLR(srcHeight >> 1, srcWidth << 3));
+					tstat->deint = deint;
 				}
 				else
 				{
-					tstat->deint->Reinit(srcHeight >> 1, srcWidth << 3);
+					deint->Reinit(srcHeight >> 1, srcWidth << 3);
 				}
 				srcBuff = diBuff;
-				tstat->deint->Deinterlace(lrBuff, diBuff, 1, srcWidth, (IntOS)srcWidth << 3);
+				deint->Deinterlace(lrBuff, diBuff, 1, srcWidth, (IntOS)srcWidth << 3);
 			}
 			else if (vbuff->frameType == Media::FT_MERGED_TF)
 			{
@@ -589,16 +594,17 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 					tstat->diSize = sizeNeeded;
 					tstat->diBuff = diBuff = MemAllocA64(UInt8, sizeNeeded);
 				}
-				if (tstat->deint == 0)
+				if (!tstat->deint.SetTo(deint))
 				{
-					NEW_CLASS(tstat->deint, Media::DeinterlaceLR(srcHeight >> 1, srcWidth << 3));
+					NEW_CLASSNN(deint, Media::DeinterlaceLR(srcHeight >> 1, srcWidth << 3));
+					tstat->deint = deint;
 				}
 				else
 				{
-					tstat->deint->Reinit(srcHeight >> 1, srcWidth << 3);
+					deint->Reinit(srcHeight >> 1, srcWidth << 3);
 				}
 				srcBuff = diBuff;
-				tstat->deint->Deinterlace(lrBuff, diBuff, 0, srcWidth, (IntOS)srcWidth << 3);
+				deint->Deinterlace(lrBuff, diBuff, 0, srcWidth, (IntOS)srcWidth << 3);
 			}
 			else if (vbuff->frameType == Media::FT_MERGED_BF)
 			{
@@ -617,16 +623,17 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 					tstat->diSize = sizeNeeded;
 					tstat->diBuff = diBuff = MemAllocA64(UInt8, sizeNeeded);
 				}
-				if (tstat->deint == 0)
+				if (!tstat->deint.SetTo(deint))
 				{
-					NEW_CLASS(tstat->deint, Media::DeinterlaceLR(srcHeight >> 1, srcWidth << 3));
+					NEW_CLASSNN(deint, Media::DeinterlaceLR(srcHeight >> 1, srcWidth << 3));
+					tstat->deint = deint;
 				}
 				else
 				{
-					tstat->deint->Reinit(srcHeight >> 1, srcWidth << 3);
+					deint->Reinit(srcHeight >> 1, srcWidth << 3);
 				}
 				srcBuff = diBuff;
-				tstat->deint->Deinterlace(lrBuff, diBuff, 1, srcWidth, (IntOS)srcWidth << 3);
+				deint->Deinterlace(lrBuff, diBuff, 1, srcWidth, (IntOS)srcWidth << 3);
 			}
 			else if (vbuff->frameType == Media::FT_INTERLACED_TFF)
 			{
@@ -645,16 +652,17 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 					tstat->diSize = sizeNeeded;
 					tstat->diBuff = diBuff = MemAllocA64(UInt8, sizeNeeded);
 				}
-				if (tstat->deint == 0)
+				if (!tstat->deint.SetTo(deint))
 				{
-					NEW_CLASS(tstat->deint, Media::DeinterlaceLR(srcHeight >> 1, srcWidth << 4));
+					NEW_CLASSNN(deint, Media::DeinterlaceLR(srcHeight >> 1, srcWidth << 4));
+					tstat->deint = deint;
 				}
 				else
 				{
-					tstat->deint->Reinit(srcHeight >> 1, srcWidth << 4);
+					deint->Reinit(srcHeight >> 1, srcWidth << 4);
 				}
 				srcBuff = diBuff;
-				tstat->deint->Deinterlace(lrBuff, diBuff, 0, srcWidth, (IntOS)srcWidth << 3);
+				deint->Deinterlace(lrBuff, diBuff, 0, srcWidth, (IntOS)srcWidth << 3);
 			}
 			else if (vbuff->frameType == Media::FT_INTERLACED_BFF)
 			{
@@ -673,16 +681,17 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 					tstat->diSize = sizeNeeded;
 					tstat->diBuff = diBuff = MemAllocA64(UInt8, sizeNeeded);
 				}
-				if (tstat->deint == 0)
+				if (!tstat->deint.SetTo(deint))
 				{
-					NEW_CLASS(tstat->deint, Media::DeinterlaceLR(srcHeight >> 1, srcWidth << 4));
+					NEW_CLASSNN(deint, Media::DeinterlaceLR(srcHeight >> 1, srcWidth << 4));
+					tstat->deint = deint;
 				}
 				else
 				{
-					tstat->deint->Reinit(srcHeight >> 1, srcWidth << 4);
+					deint->Reinit(srcHeight >> 1, srcWidth << 4);
 				}
 				srcBuff = diBuff;
-				tstat->deint->Deinterlace(lrBuff + (srcWidth * 8), diBuff, 1, srcWidth, (IntOS)srcWidth << 3);
+				deint->Deinterlace(lrBuff + (srcWidth * 8), diBuff, 1, srcWidth, (IntOS)srcWidth << 3);
 			}
 			else if (vbuff->frameType == Media::FT_INTERLACED_NODEINT)
 			{
@@ -717,7 +726,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 				UnsafeArray<UInt8> destBuff;
 				if (destSurface->LockSurface(destBpl).SetTo(destBuff))
 				{
-					tstat->resizer->Resize(srcBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), (IntOS)srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight), 0, 0, destBuff, destBpl, vbuff->destSize.x, vbuff->destSize.y);
+					resizer->Resize(srcBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), (IntOS)srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight), 0, 0, destBuff, destBpl, vbuff->destSize.x, vbuff->destSize.y);
 					destSurface->UnlockSurface();
 				}
 			}
@@ -741,13 +750,16 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 				mutUsage.EndUse();
 				tstat->me->dispEvt.Set();
 
-				if (vbuff2->frameType == Media::FT_INTERLACED_TFF)
+				if (tstat->deint.SetTo(deint))
 				{
-					tstat->deint->Deinterlace(lrBuff + (srcWidth * 8), diBuff, 1, srcWidth, (IntOS)srcWidth << 3);
-				}
-				else
-				{
-					tstat->deint->Deinterlace(lrBuff, diBuff, 0, srcWidth, (IntOS)srcWidth << 3);
+					if (vbuff2->frameType == Media::FT_INTERLACED_TFF)
+					{
+						deint->Deinterlace(lrBuff + (srcWidth * 8), diBuff, 1, srcWidth, (IntOS)srcWidth << 3);
+					}
+					else
+					{
+						deint->Deinterlace(lrBuff, diBuff, 0, srcWidth, (IntOS)srcWidth << 3);
+					}
 				}
 				if (vbuff2->destSurface.SetTo(destSurface))
 				{
@@ -755,7 +767,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 					UnsafeArray<UInt8> destBuff;
 					if (destSurface->LockSurface(destBpl).SetTo(destBuff))
 					{
-						tstat->resizer->Resize(diBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), (IntOS)srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight), 0, 0, destBuff, destBpl, vbuff2->destSize.x, vbuff2->destSize.y);
+						resizer->Resize(diBuff + (cropDY * srcWidth << 3) + (tstat->me->cropLeft << 3), (IntOS)srcWidth << 3, UIntOS2Double(cropWidth), UIntOS2Double(cropHeight), 0, 0, destBuff, destBpl, vbuff2->destSize.x, vbuff2->destSize.y);
 						destSurface->UnlockSurface();
 					}
 				}
@@ -864,25 +876,25 @@ void Media::VideoRenderer::CreateCSConv(NN<ThreadStat> tstat, Media::FrameInfo *
 
 void Media::VideoRenderer::CreateThreadResizer(NN<ThreadStat> tstat)
 {
-	SDEL_CLASS(tstat->resizer);
-	SDEL_CLASS(tstat->dresizer);
+	tstat->resizer.Delete();
+	tstat->dresizer.Delete();
 	Media::ColorProfile destColor(Media::ColorProfile::CPT_VDISPLAY);
 
 	if (this->outputBpp == 16)
 	{
-		NEW_CLASS(tstat->resizer, Media::Resizer::LanczosResizerLR_C16(4, 3, destColor, colorSess, Media::AT_IGNORE_ALPHA, tstat->resizerSrcRefLuminance));
+		NEW_CLASSOPT(tstat->resizer, Media::Resizer::LanczosResizerLR_C16(4, 3, destColor, colorSess, Media::AT_IGNORE_ALPHA, tstat->resizerSrcRefLuminance));
 		tstat->procType = 0;
 		tstat->resizerBitDepth = 16;
 	}
 	else if (this->curr10Bit)
 	{
-		NEW_CLASS(tstat->dresizer, Media::Resizer::DeintResizerLR_C32(0, 0, destColor, colorSess, Media::AT_IGNORE_ALPHA, tstat->resizerSrcRefLuminance, Media::PF_LE_A2B10G10R10));
+		NEW_CLASSOPT(tstat->dresizer, Media::Resizer::DeintResizerLR_C32(0, 0, destColor, colorSess, Media::AT_IGNORE_ALPHA, tstat->resizerSrcRefLuminance, Media::PF_LE_A2B10G10R10));
 		tstat->procType = 1;
 		tstat->resizerBitDepth = 32;
 	}
 	else
 	{
-		NEW_CLASS(tstat->dresizer, Media::Resizer::DeintResizerLR_C32(0, 0, destColor, colorSess, Media::AT_IGNORE_ALPHA, tstat->resizerSrcRefLuminance, this->outputPf));
+		NEW_CLASSOPT(tstat->dresizer, Media::Resizer::DeintResizerLR_C32(0, 0, destColor, colorSess, Media::AT_IGNORE_ALPHA, tstat->resizerSrcRefLuminance, this->outputPf));
 		tstat->procType = 1;
 		tstat->resizerBitDepth = 32;
 	}
@@ -1906,15 +1918,15 @@ Media::VideoRenderer::VideoRenderer(NN<Media::ColorManagerSess> colorSess, NN<Me
 	while (i-- > 0)
 	{
 		this->tstats[i].status = 0;
-		this->tstats[i].resizer = 0;
-		this->tstats[i].dresizer = 0;
+		this->tstats[i].resizer = nullptr;
+		this->tstats[i].dresizer = nullptr;
 		this->tstats[i].procType = 0;
 		this->tstats[i].csconv = nullptr;
 		this->tstats[i].lrBuff = nullptr;
 		this->tstats[i].lrSize = 0;
 		this->tstats[i].diBuff = nullptr;
 		this->tstats[i].diSize = 0;
-		this->tstats[i].deint = 0;
+		this->tstats[i].deint = nullptr;
 		this->tstats[i].hTime = 0;
 		this->tstats[i].vTime = 0;
 		this->tstats[i].csTime = 0;
@@ -1967,8 +1979,8 @@ Media::VideoRenderer::~VideoRenderer()
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
-		SDEL_CLASS(this->tstats[i].resizer);
-		SDEL_CLASS(this->tstats[i].dresizer);
+		this->tstats[i].resizer.Delete();
+		this->tstats[i].dresizer.Delete();
 		this->tstats[i].csconv.Delete();
 		DEL_CLASS(this->tstats[i].evt);
 		if (this->tstats[i].lrBuff.SetTo(lrBuff))
@@ -1981,10 +1993,7 @@ Media::VideoRenderer::~VideoRenderer()
 			MemFreeAArr(diBuff);
 			this->tstats[i].diBuff = nullptr;
 		}
-		if (this->tstats[i].deint)
-		{
-			DEL_CLASS(this->tstats[i].deint);
-		}
+		this->tstats[i].deint.Delete();
 	}
 	MemFreeArr(this->tstats);
 

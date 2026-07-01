@@ -13,8 +13,8 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-void *IO::Registry::thisRegistryFile = nullptr;
-void *IO::Registry::allRegistryFile = nullptr;
+AnyType IO::Registry::thisRegistryFile = nullptr;
+AnyType IO::Registry::allRegistryFile = nullptr;
 
 struct Registry_File
 {
@@ -28,27 +28,27 @@ struct Registry_File
 
 struct Registry_Param
 {
-	Registry_File *reg;
+	NN<Registry_File> reg;
 	Text::CStringNN currCate;
 };
 
 struct IO::Registry::ClassData
 {
-	Registry_File *reg;
+	NN<Registry_File> reg;
 	NN<Text::String> cate;
 };
 
-void *IO::Registry::OpenUserType(RegistryUser usr)
+AnyType IO::Registry::OpenUserType(RegistryUser usr)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	Registry_File *reg;
+	NN<Registry_File> reg;
 	switch (usr)
 	{
 	case IO::Registry::REG_USER_ALL:
-		if (allRegistryFile)
+		if (allRegistryFile.NotNull())
 		{
-			Sync::Interlocked::IncrementU32(((Registry_File*)allRegistryFile)->useCnt);
+			Sync::Interlocked::IncrementU32(allRegistryFile.GetNN<Registry_File>()->useCnt);
 			return allRegistryFile;
 		}
 		if (!IO::Path::GetUserHome(sbuff).SetTo(sptr))
@@ -58,7 +58,7 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 		sptr = Text::StrConcatC(sptr, UTF8STRC("/.sswr"));
 		IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 		sptr = Text::StrConcatC(sptr, UTF8STRC("/alluser.reg"));
-		NEW_CLASS(reg, Registry_File());
+		NEW_CLASSNN(reg, Registry_File());
 		allRegistryFile = reg;
 		reg->useCnt = 1;
 		reg->usr = usr;
@@ -67,9 +67,9 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 		reg->modified = false;
 		return reg;
 	case IO::Registry::REG_USER_THIS:
-		if (thisRegistryFile)
+		if (thisRegistryFile.NotNull())
 		{
-			Sync::Interlocked::IncrementU32(((Registry_File*)thisRegistryFile)->useCnt);
+			Sync::Interlocked::IncrementU32(thisRegistryFile.GetNN<Registry_File>()->useCnt);
 			return thisRegistryFile;
 		}
 		if (!IO::Path::GetUserHome(sbuff).SetTo(sptr))
@@ -80,7 +80,7 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 		IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 		sptr = Text::StrConcatC(sptr, UTF8STRC("/thisuser.reg"));
 
-		NEW_CLASS(reg, Registry_File());
+		NEW_CLASSNN(reg, Registry_File());
 		thisRegistryFile = reg;
 		reg->useCnt = 1;
 		reg->usr = usr;
@@ -93,9 +93,9 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 	}
 }
 
-void IO::Registry::CloseInternal(void *data)
+void IO::Registry::CloseInternal(AnyType data)
 {
-	Registry_File *reg = (Registry_File*)data;
+	NN<Registry_File> reg = data.GetNN<Registry_File>();
 	NN<IO::ConfigFile> cfg;
 	if (Sync::Interlocked::DecrementU32(reg->useCnt) == 0)
 	{
@@ -118,15 +118,14 @@ void IO::Registry::CloseInternal(void *data)
 		{
 			thisRegistryFile = 0;
 		}
-		DEL_CLASS(reg);
+		reg.Delete();
 	}
 }
 
 Optional<IO::Registry> IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, UnsafeArray<const WChar> compName, UnsafeArray<const WChar> appName)
 {
 	Registry_Param param; 
-	param.reg = (Registry_File*)OpenUserType(usr);
-	if (param.reg == 0)
+	if (!OpenUserType(usr).GetOpt<Registry_File>().SetTo(param.reg))
 	{
 		return nullptr;
 	}
@@ -140,16 +139,15 @@ Optional<IO::Registry> IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr
 	sb.Append(s);
 	s->Release();
 	param.currCate = {sb.ToString(), sb.GetLength()};
-	IO::Registry *reg;
-	NEW_CLASS(reg, IO::Registry(&param));
+	NN<IO::Registry> reg;
+	NEW_CLASSNN(reg, IO::Registry(&param));
 	return reg;
 }
 
 Optional<IO::Registry> IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, UnsafeArray<const WChar> compName)
 {
 	Registry_Param param; 
-	param.reg = (Registry_File*)OpenUserType(usr);
-	if (param.reg == 0)
+	if (!OpenUserType(usr).GetOpt<Registry_File>().SetTo(param.reg))
 	{
 		return nullptr;
 	}
@@ -159,8 +157,8 @@ Optional<IO::Registry> IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr
 	sb.Append(s);
 	s->Release();
 	param.currCate = {sb.ToString(), sb.GetLength()};
-	IO::Registry *reg;
-	NEW_CLASS(reg, IO::Registry(&param));
+	NN<IO::Registry> reg;
+	NEW_CLASSNN(reg, IO::Registry(&param));
 	return reg;
 }
 
@@ -168,28 +166,26 @@ Optional<IO::Registry> IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr
 Optional<IO::Registry> IO::Registry::OpenLocalHardware()
 {
 	Registry_Param param; 
-	param.reg = (Registry_File*)OpenUserType(REG_USER_ALL);
-	if (param.reg == 0)
+	if (!OpenUserType(REG_USER_ALL).GetOpt<Registry_File>().SetTo(param.reg))
 	{
 		return nullptr;
 	}
 	param.currCate = CSTR("Hardware");
-	IO::Registry *reg;
-	NEW_CLASS(reg, IO::Registry(&param));
+	NN<IO::Registry> reg;
+	NEW_CLASSNN(reg, IO::Registry(&param));
 	return reg;
 }
 
 Optional<IO::Registry> IO::Registry::OpenLocalSoftware(UnsafeArray<const WChar> softwareName)
 {
 	Registry_Param param; 
-	param.reg = (Registry_File*)OpenUserType(REG_USER_ALL);
-	if (param.reg == 0)
+	if (!OpenUserType(REG_USER_ALL).GetOpt<Registry_File>().SetTo(param.reg))
 	{
 		return nullptr;
 	}
 	param.currCate = CSTR("Software");
-	IO::Registry *reg;
-	NEW_CLASS(reg, IO::Registry(&param));
+	NN<IO::Registry> reg;
+	NEW_CLASSNN(reg, IO::Registry(&param));
 	return reg;
 }
 
@@ -202,7 +198,7 @@ void IO::Registry::CloseRegistry(NN<IO::Registry> reg)
 IO::Registry::Registry(void *hand)
 {
 	Registry_Param *param = (Registry_Param *)hand;
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->reg = param->reg;
 	this->clsData->cate = Text::String::New(param->currCate.v, param->currCate.leng);
 }
@@ -211,7 +207,7 @@ IO::Registry::~Registry()
 {
 	this->CloseInternal(this->clsData->reg);
 	this->clsData->cate->Release();
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Optional<IO::Registry> IO::Registry::OpenSubReg(UnsafeArray<const WChar> name)
@@ -226,8 +222,8 @@ Optional<IO::Registry> IO::Registry::OpenSubReg(UnsafeArray<const WChar> name)
 	s->Release();
 	param.currCate = {sb.ToString(), sb.GetLength()};
 	Sync::Interlocked::IncrementU32(param.reg->useCnt);
-	IO::Registry *reg;
-	NEW_CLASS(reg, IO::Registry(&param));
+	NN<IO::Registry> reg;
+	NEW_CLASSNN(reg, IO::Registry(&param));
 	return reg;
 }
 

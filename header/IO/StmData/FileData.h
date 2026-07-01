@@ -14,7 +14,7 @@ namespace IO
 		private:
 			struct FILEDATAHANDLE
 			{
-				IO::FileStream *file;
+				NN<IO::FileStream> file;
 				UInt64 fileLength;
 				UInt64 currentOffset;
 				Text::CString fileName;
@@ -35,14 +35,14 @@ namespace IO
 			} FILEDATANAME;
 
 		private:
-			FILEDATAHANDLE *fdh;
-			FILEDATANAME *fdn;
+			Optional<FILEDATAHANDLE> fdh;
+			Optional<FILEDATANAME> fdn;
 			UInt64 dataOffset;
 			UInt64 dataLength;
 
 			void ReopenFile();
 		public:
-			FileData(const FileData *fd, UInt64 offset, UInt64 length);
+			FileData(NN<const FileData> fd, UInt64 offset, UInt64 length);
 			FileData(NN<Text::String> fileName, Bool deleteOnClose);
 			FileData(Text::CStringNN fileName, Bool deleteOnClose);
 			virtual ~FileData();
@@ -60,7 +60,7 @@ namespace IO
 			virtual Bool IsLoading() const;
 			virtual UIntOS GetSeekCount() const;
 
-			IO::FileStream *GetFileStream();
+			Optional<IO::FileStream> GetFileStream();
 			Bool IsError();
 		private:
 			void Close();

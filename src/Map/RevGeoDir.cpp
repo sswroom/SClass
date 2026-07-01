@@ -33,10 +33,10 @@ Map::RevGeoDir::RevGeoDir(Text::CStringNN cfgDir, UInt32 defLCID, NN<IO::Writer>
 			errWriter->Write(CSTRP(sptr, sptr2));
 			errWriter->Write(CSTR("..."));
 			
-			Map::RevGeoCfg *revGeo;
+			NN<Map::RevGeoCfg> revGeo;
 			NN<RevGeoFile> file;
 			UIntOS i;
-			NEW_CLASS(revGeo, Map::RevGeoCfg(CSTRP(sbuff, sptr2), &this->mapSrchMgr));
+			NEW_CLASSNN(revGeo, Map::RevGeoCfg(CSTRP(sbuff, sptr2), &this->mapSrchMgr));
 			file = MemAllocNN(RevGeoFile);
 			file->cfg = revGeo;
 			i = Text::StrIndexOfChar(sptr, '.');
@@ -65,7 +65,7 @@ Map::RevGeoDir::~RevGeoDir()
 	while (i-- > 0)
 	{
 		file = this->files.GetItemNoCheck(i);
-		DEL_CLASS(file->cfg);
+		file->cfg.Delete();
 		MemFreeNN(file);
 	}
 }

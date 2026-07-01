@@ -56,7 +56,7 @@ Map::DBAssistedRReverseGeocoder::~DBAssistedRReverseGeocoder()
 
 UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
-	DB::SQLBuilder *sql;
+	NN<DB::SQLBuilder> sql;
 	NN<DB::DBReader> r;
 	UnsafeArrayOpt<UTF8Char> sptr = nullptr;
 	IntOS i;
@@ -73,7 +73,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::SearchName(UnsafeArray
 	Int32 yind = Double2Int32(pos.y * 5000);
 
 	Sync::MutexUsage mutUsage(this->mut);
-	NEW_CLASS(sql, DB::SQLBuilder(conn));
+	NEW_CLASSNN(sql, DB::SQLBuilder(conn));
 	sql->AppendCmdC(CSTR("select name from mapaddr where lang = "));
 	sql->AppendInt32(lang);
 	sql->AppendCmdC(CSTR(" and xind = "));
@@ -86,7 +86,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::SearchName(UnsafeArray
 		{
 			sptr = r->GetStr(0, buff, buffSize);
 			conn->CloseReader(r);
-			DEL_CLASS(sql);
+			sql.Delete();
 			return sptr;
 		}
 		conn->CloseReader(r);
@@ -124,19 +124,19 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::SearchName(UnsafeArray
 		sql->AppendCmdC(CSTR(")"));
 		conn->ExecuteNonQuery(sql->ToCString());
 
-		DEL_CLASS(sql);
+		sql.Delete();
 		return sptr;
 	}
 	else
 	{
-		DEL_CLASS(sql);
+		sql.Delete();
 		return nullptr;
 	}
 }
 
 UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::CacheName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
-	DB::SQLBuilder *sql;
+	NN<DB::SQLBuilder> sql;
 	NN<DB::DBReader> r;
 	UnsafeArrayOpt<UTF8Char> sptr = nullptr;
 	NN<DB::DBTool> conn;
@@ -153,7 +153,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::CacheName(UnsafeArray<
 	Int32 yind = Double2Int32(pos.y * 5000);
 
 	Sync::MutexUsage mutUsage(this->mut);
-	NEW_CLASS(sql, DB::SQLBuilder(conn));
+	NEW_CLASSNN(sql, DB::SQLBuilder(conn));
 	sql->AppendCmdC(CSTR("select name from mapaddr where lang = "));
 	sql->AppendInt32(lang);
 	sql->AppendCmdC(CSTR(" and xind = "));
@@ -166,7 +166,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::CacheName(UnsafeArray<
 		{
 			sptr = r->GetStr(0, buff, buffSize);
 			conn->CloseReader(r);
-			DEL_CLASS(sql);
+			sql.Delete();
 			return sptr;
 		}
 		conn->CloseReader(r);
@@ -203,12 +203,12 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedRReverseGeocoder::CacheName(UnsafeArray<
 		sql->AppendCmdC(CSTR(")"));
 		conn->ExecuteNonQuery(sql->ToCString());
 
-		DEL_CLASS(sql);
+		sql.Delete();
 		return sptr;
 	}
 	else
 	{
-		DEL_CLASS(sql);
+		sql.Delete();
 		return nullptr;
 	}
 }

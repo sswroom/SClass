@@ -11,29 +11,33 @@
 struct IO::RAWBTScanner::ClassData
 {
 	UIntOS devCnt;
-	IO::RAWBTMonitor *btMon;
+	Optional<IO::RAWBTMonitor> btMon;
 	RecordHandler hdlr;
 	AnyType hdlrObj;
 	Bool noCtrl;
-	IO::ProgCtrl::BluetoothCtlProgCtrl *btCtrl;
+	Optional<IO::ProgCtrl::BluetoothCtlProgCtrl> btCtrl;
 };
 
 void __stdcall IO::RAWBTScanner::RecvThread(NN<Sync::Thread> thread)
 {
 	NN<IO::RAWBTScanner> me = thread->GetUserObj().GetNN<IO::RAWBTScanner>();
-	UInt8 *buff;
+	NN<IO::RAWBTMonitor> btMon;
+	UnsafeArray<UInt8> buff;
 	UIntOS packetSize;
 	Int64 timeTicks;
-	buff = MemAlloc(UInt8, me->clsData->btMon->GetMTU());
-	while (!thread->IsStopping())
+	if (me->clsData->btMon.SetTo(btMon))
 	{
-		packetSize = me->clsData->btMon->NextPacket(buff, timeTicks);
-		if (packetSize > 0)
+		buff = MemAllocArr(UInt8, btMon->GetMTU());
+		while (!thread->IsStopping())
 		{
-			me->OnPacket(timeTicks, Data::ByteArrayR(buff, packetSize));
+			packetSize = btMon->NextPacket(buff, timeTicks);
+			if (packetSize > 0)
+			{
+				me->OnPacket(timeTicks, Data::ByteArrayR(buff, packetSize));
+			}
 		}
+		MemFreeArr(buff);
 	}
-	MemFree(buff);
 }
 
 void IO::RAWBTScanner::FreeRec(NN<IO::BTScanLog::ScanRecord3> rec)
@@ -46,18 +50,22 @@ IO::RAWBTScanner::RAWBTScanner(Bool noCtrl) : thread(RecvThread, this, CSTR("RAW
 {
 	this->clsData = MemAllocNN(ClassData);
 	this->clsData->noCtrl = noCtrl;
-	this->clsData->btMon = 0;
+	this->clsData->btMon = nullptr;
 	this->clsData->hdlr = 0;
 	this->clsData->hdlrObj = 0;
-	this->clsData->btCtrl = 0;
+	this->clsData->btCtrl = nullptr;
 	this->clsData->devCnt = IO::RAWBTMonitor::GetDevCount();
 	if (this->clsData->devCnt > 0 && !this->clsData->noCtrl)
 	{
-		NEW_CLASS(this->clsData->btCtrl, IO::ProgCtrl::BluetoothCtlProgCtrl());
-		if (!this->clsData->btCtrl->WaitForCmdReady())
+		NN<IO::ProgCtrl::BluetoothCtlProgCtrl> btCtrl;
+		NEW_CLASSNN(btCtrl, IO::ProgCtrl::BluetoothCtlProgCtrl());
+		if (!btCtrl->WaitForCmdReady())
 		{
-			DEL_CLASS(this->clsData->btCtrl);
-			this->clsData->btCtrl = 0;
+			btCtrl.Delete();
+		}
+		else
+		{
+			this->clsData->btCtrl = btCtrl;
 		}
 	}
 }
@@ -66,7 +74,7 @@ IO::RAWBTScanner::~RAWBTScanner()
 {
 	this->ScanOff();
 	this->Close();
-	SDEL_CLASS(this->clsData->btCtrl);
+	this->clsData->btCtrl.Delete();
 	MemFreeNN(this->clsData);
 	this->pubRecMap.FreeAll(FreeRec);
 	this->randRecMap.FreeAll(FreeRec);
@@ -74,7 +82,7 @@ IO::RAWBTScanner::~RAWBTScanner()
 
 Bool IO::RAWBTScanner::IsError()
 {
-	return this->clsData->devCnt == 0 || (!this->clsData->noCtrl && this->clsData->btCtrl == 0);
+	return this->clsData->devCnt == 0 || (!this->clsData->noCtrl && this->clsData->btCtrl.IsNull());
 }
 
 void IO::RAWBTScanner::HandleRecordUpdate(RecordHandler hdlr, AnyType userObj)
@@ -85,67 +93,72 @@ void IO::RAWBTScanner::HandleRecordUpdate(RecordHandler hdlr, AnyType userObj)
 
 Bool IO::RAWBTScanner::IsScanOn()
 {
-	return this->clsData->btCtrl != 0 && this->clsData->btCtrl->IsScanOn();
+	NN<IO::ProgCtrl::BluetoothCtlProgCtrl> btCtrl;
+	return this->clsData->btCtrl.SetTo(btCtrl) && btCtrl->IsScanOn();
 }
 
 void IO::RAWBTScanner::ScanOn()
 {
-	if (this->clsData->devCnt == 0 || (!this->clsData->noCtrl && this->clsData->btCtrl == 0) || this->thread.IsRunning())
+	if (this->clsData->devCnt == 0 || (!this->clsData->noCtrl && this->clsData->btCtrl.IsNull()) || this->thread.IsRunning())
 	{
 		return;
 	}
-	NEW_CLASS(this->clsData->btMon, IO::RAWBTMonitor(0));
-	if (this->clsData->btMon->IsError())
+	NN<IO::RAWBTMonitor> btMon;
+	NEW_CLASSNN(btMon, IO::RAWBTMonitor(0));
+	if (btMon->IsError())
 	{
-		DEL_CLASS(this->clsData->btMon);
-		this->clsData->btMon = 0;
+		btMon.Delete();
 		return;
 	}
+	this->clsData->btMon = btMon;
+	NN<IO::ProgCtrl::BluetoothCtlProgCtrl> btCtrl;
 	if (this->thread.Start())
 	{
-		if (this->clsData->btCtrl)
-			this->clsData->btCtrl->ScanOn();
+		if (this->clsData->btCtrl.SetTo(btCtrl))
+			btCtrl->ScanOn();
 	}
 	else
 	{
-		DEL_CLASS(this->clsData->btMon);
-		this->clsData->btMon = 0;
+		this->clsData->btMon.Delete();
 	}
 }
 
 void IO::RAWBTScanner::ScanOff()
 {
-	if (this->thread.IsRunning())
+	NN<IO::RAWBTMonitor> btMon;
+	NN<IO::ProgCtrl::BluetoothCtlProgCtrl> btCtrl;
+	if (this->thread.IsRunning() && this->clsData->btMon.SetTo(btMon))
 	{
 		this->thread.BeginStop();
 		//printf("RAWBT scan off\r\n");
-		this->clsData->btMon->Close();
+		btMon->Close();
 		//printf("RAWBT btMon closed\r\n");
-		if (this->clsData->btCtrl)
-			this->clsData->btCtrl->ScanOff();
+		if (this->clsData->btCtrl.SetTo(btCtrl))
+			btCtrl->ScanOff();
 		//printf("RAWBT ctrl off\r\n");
 		this->thread.WaitForEnd();
 		//printf("RAWBT thread stopped\r\n");
-		DEL_CLASS(this->clsData->btMon);
+		this->clsData->btMon.Delete();
 		//printf("RAWBT released\r\n");
-		this->clsData->btMon = 0;
 	}
 }
 
 void IO::RAWBTScanner::Close()
 {
 	this->ScanOff();
-	if (this->clsData->btCtrl)
+	NN<IO::ProgCtrl::BluetoothCtlProgCtrl> btCtrl;
+	if (this->clsData->btCtrl.SetTo(btCtrl))
 	{
-		this->clsData->btCtrl->Close();
+		btCtrl->Close();
 	}
 }
 
 Bool IO::RAWBTScanner::SetScanMode(ScanMode scanMode)
 {
-	if (this->clsData->btCtrl)
+	NN<IO::ProgCtrl::BluetoothCtlProgCtrl> btCtrl;
+	if (this->clsData->btCtrl.SetTo(btCtrl))
 	{
-		return this->clsData->btCtrl->SetScanMode(scanMode);
+		return btCtrl->SetScanMode(scanMode);
 	}
 	return false;
 }

@@ -15,13 +15,13 @@ Optional<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>> 
 	this->currDB = currDB = this->conn->UseConn(mutUsage);
 	if (currDB->QueryTableData(nullptr, this->tableName->ToCString(), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
-		Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>> *nameArr;
+		NN<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> nameArr;
 		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> names;
 		UIntOS colCnt = this->colNames.GetCount();
 		UIntOS i;
 		Int32 objId;
 
-		NEW_CLASS(nameArr, Data::Int32FastMapObj<UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>());
+		NEW_CLASSNN(nameArr, Data::Int32FastMapObj<UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>());
 		while (r->ReadNext())
 		{
 			objId = r->GetInt32(this->objIdCol);

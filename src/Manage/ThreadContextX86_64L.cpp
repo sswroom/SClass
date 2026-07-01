@@ -212,10 +212,10 @@ void Manage::ThreadContextX86_64::SetFrameAddr(IntOS frameAddr)
 	((ucontext_t*)this->context)->uc_mcontext.mc_rbp = frameAddr;
 }
 
-Manage::ThreadContext *Manage::ThreadContextX86_64::Clone()
+NN<Manage::ThreadContext> Manage::ThreadContextX86_64::Clone()
 {
-	Manage::ThreadContextX86_64 *ret;
-	NEW_CLASS(ret, Manage::ThreadContextX86_64(this->procId, this->threadId, this->context));
+	NN<Manage::ThreadContextX86_64> ret;
+	NEW_CLASSNN(ret, Manage::ThreadContextX86_64(this->procId, this->threadId, this->context));
 	return ret;
 }
 
@@ -255,10 +255,10 @@ Bool Manage::ThreadContextX86_64::GetRegs(Manage::Dasm::Dasm_Regs *regs)
 	return true;
 }
 
-Manage::Dasm *Manage::ThreadContextX86_64::CreateDasm()
+Optional<Manage::Dasm> Manage::ThreadContextX86_64::CreateDasm()
 {
-	Manage::DasmX86_64 *dasm;
-	NEW_CLASS(dasm, Manage::DasmX86_64());
+	NN<Manage::DasmX86_64> dasm;
+	NEW_CLASSNN(dasm, Manage::DasmX86_64());
 	return dasm;
 }
 
@@ -624,10 +624,10 @@ void Manage::ThreadContextX86_64::SetFrameAddr(UIntOS frameAddr)
 	((ucontext_t*)this->context)->uc_mcontext->__ss.__rbp = frameAddr;
 }
 
-Manage::ThreadContext *Manage::ThreadContextX86_64::Clone()
+NN<Manage::ThreadContext> Manage::ThreadContextX86_64::Clone()
 {
-	Manage::ThreadContextX86_64 *ret;
-	NEW_CLASS(ret, Manage::ThreadContextX86_64(this->procId, this->threadId, this->context));
+	NN<Manage::ThreadContextX86_64> ret;
+	NEW_CLASSNN(ret, Manage::ThreadContextX86_64(this->procId, this->threadId, this->context));
 	return ret;
 }
 
@@ -667,10 +667,10 @@ Bool Manage::ThreadContextX86_64::GetRegs(Manage::Dasm::Dasm_Regs *regs)
 	return true;
 }
 
-Manage::Dasm *Manage::ThreadContextX86_64::CreateDasm()
+Optional<Manage::Dasm> Manage::ThreadContextX86_64::CreateDasm()
 {
-	Manage::DasmX86_64 *dasm;
-	NEW_CLASS(dasm, Manage::DasmX86_64());
+	NN<Manage::DasmX86_64> dasm;
+	NEW_CLASSNN(dasm, Manage::DasmX86_64());
 	return dasm;
 }
 
@@ -1238,8 +1238,8 @@ Bool Manage::ThreadContextX86_64::GetRegs(NN<Manage::Dasm::Dasm_Regs> regs) cons
 
 Optional<Manage::Dasm> Manage::ThreadContextX86_64::CreateDasm() const
 {
-	Manage::DasmX86_64 *dasm;
-	NEW_CLASS(dasm, Manage::DasmX86_64());
+	NN<Manage::DasmX86_64> dasm;
+	NEW_CLASSNN(dasm, Manage::DasmX86_64());
 	return dasm;
 }
 

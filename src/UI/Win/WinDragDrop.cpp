@@ -12,7 +12,9 @@ void UI::Win::WinDropData::LoadData()
 	FORMATETC *newFmt;
 	IEnumFORMATETC *enumFmt;
 
-	NEW_CLASS(this->dataMap, Data::StringUTF8Map<FORMATETC *>());
+	NN<Data::StringUTF8Map<FORMATETC *>> nndataMap;
+	NEW_CLASSNN(nndataMap, Data::StringUTF8Map<FORMATETC *>());
+	this->dataMap = nndataMap;
 
 	if (pDataObj->EnumFormatEtc(DATADIR_GET, &enumFmt) == S_OK)
 	{
@@ -21,7 +23,7 @@ void UI::Win::WinDropData::LoadData()
 			newFmt = MemAlloc(FORMATETC, 1);
 			MemCopyNO(newFmt, &fmt, sizeof(fmt));
 			UI::Clipboard::GetFormatName(fmt.cfFormat, sbuff, 512);
-			this->dataMap->Put(sbuff, newFmt);
+			nndataMap->Put(sbuff, newFmt);
 		}
 		enumFmt->Release();
 	}
@@ -30,22 +32,23 @@ void UI::Win::WinDropData::LoadData()
 UI::Win::WinDropData::WinDropData(IDataObject *pDataObj)
 {
 	this->pDataObj = pDataObj;
-	this->dataMap = 0;
+	this->dataMap = nullptr;
 }
 
 UI::Win::WinDropData::~WinDropData()
 {
-	if (this->dataMap)
+	NN<Data::StringUTF8Map<FORMATETC *>> nndataMap;
+	if (this->dataMap.SetTo(nndataMap))
 	{
 		FORMATETC *fmt;
-		NN<const Data::ArrayListObj<FORMATETC *>> fmtList = this->dataMap->GetValues();
+		NN<const Data::ArrayListObj<FORMATETC *>> fmtList = nndataMap->GetValues();
 		UIntOS i = fmtList->GetCount();
 		while (i-- > 0)
 		{
 			fmt = fmtList->GetItem(i);
 			MemFree(fmt);
 		}
-		DEL_CLASS(this->dataMap);
+		this->dataMap.Delete();
 	}
 }
 
@@ -97,7 +100,7 @@ Bool UI::Win::WinDropData::GetDataText(UnsafeArray<const UTF8Char> name, NN<Text
 	}
 }
 
-IO::Stream *UI::Win::WinDropData::GetDataStream(UnsafeArray<const UTF8Char> name)
+Optional<IO::Stream> UI::Win::WinDropData::GetDataStream(UnsafeArray<const UTF8Char> name)
 {
 	if (this->dataMap == 0)
 	{
@@ -107,14 +110,14 @@ IO::Stream *UI::Win::WinDropData::GetDataStream(UnsafeArray<const UTF8Char> name
 	HRESULT hres;
 	STGMEDIUM med;
 	if (fmt == 0)
-		return 0;
+		return nullptr;
 
 	if ((hres = this->pDataObj->GetData(fmt, &med)) == S_OK)
 	{
-		Win32::StreamCOM *stm = 0;
+		Optional<Win32::StreamCOM> stm = nullptr;
 		if (med.tymed == TYMED_ISTREAM)
 		{
-			NEW_CLASS(stm, Win32::StreamCOM(med.pstm, true));
+			NEW_CLASSOPT(stm, Win32::StreamCOM(med.pstm, true));
 			med.pstm = 0;
 		}
 		ReleaseStgMedium(&med);
@@ -122,7 +125,7 @@ IO::Stream *UI::Win::WinDropData::GetDataStream(UnsafeArray<const UTF8Char> name
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 

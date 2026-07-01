@@ -8,7 +8,8 @@ namespace IO
 	class BTManager
 	{
 	private:
-		void *internalData;
+		struct ClassData;
+		NN<ClassData> internalData;
 	public:
 		BTManager();
 		~BTManager();

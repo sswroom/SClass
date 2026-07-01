@@ -9079,8 +9079,8 @@ Optional<IO::JavaClass> IO::JavaClass::ParseBuff(NN<Text::String> sourceName, Da
 	{
 		return nullptr;
 	}
-	IO::JavaClass *cls;
-	NEW_CLASS(cls, IO::JavaClass(sourceName, buff));
+	NN<IO::JavaClass> cls;
+	NEW_CLASSNN(cls, IO::JavaClass(sourceName, buff));
 	return cls;
 }
 
@@ -9094,8 +9094,8 @@ Optional<IO::JavaClass> IO::JavaClass::ParseBuff(Text::CStringNN sourceName, Dat
 	{
 		return nullptr;
 	}
-	IO::JavaClass *cls;
-	NEW_CLASS(cls, IO::JavaClass(sourceName, buff));
+	NN<IO::JavaClass> cls;
+	NEW_CLASSNN(cls, IO::JavaClass(sourceName, buff));
 	return cls;
 }
 

@@ -14,7 +14,6 @@
 IO::ConsoleWriter::ConsoleWriter()
 {
 	setbuf(stdout, 0);
-	this->clsData = 0;
 	this->bgColor = Text::StandardColor::Black;
 }
 

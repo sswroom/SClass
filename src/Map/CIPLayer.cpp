@@ -26,7 +26,7 @@ Map::CIPLayer::CIPLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	NN<IO::FileStream> file;
-	IO::BufferedInputStream *bstm;
+	NN<IO::BufferedInputStream> bstm;
 	sptr = layerName.ConcatTo(fname);
 	UInt32 i;
 	UnsafeArray<Int32> currIds;
@@ -47,7 +47,7 @@ Map::CIPLayer::CIPLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 	UnsafeArray<CIPBlock> blks;
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".blk"));
 	NEW_CLASSNN(file, IO::FileStream(CSTRP(fname, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
+	NEW_CLASSNN(bstm, IO::BufferedInputStream(file, 65536));
 	if (!file->IsError())
 	{
 		bstm->Read(Data::ByteArray((UInt8*)&this->nblks, 4));
@@ -81,7 +81,7 @@ Map::CIPLayer::CIPLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 	{
 		i = file->GetErrCode();
 	}
-	DEL_CLASS(bstm);
+	bstm.Delete();
 	file.Delete();
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".cix"));
@@ -113,7 +113,7 @@ Map::CIPLayer::CIPLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 
 		sptr2 = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
 		NEW_CLASSNN(file, IO::FileStream(CSTRP(fname, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
+		NEW_CLASSNN(bstm, IO::BufferedInputStream(file, 65536));
 		if (!file->IsError())
 		{
 			Int32 buff[4];
@@ -142,7 +142,7 @@ Map::CIPLayer::CIPLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 		{
 			missFile = true;
 		}
-		DEL_CLASS(bstm);
+		bstm.Delete();
 		file.Delete();
 	}
 }
@@ -221,15 +221,15 @@ UIntOS Map::CIPLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Op
 	if (nameArr.IsNotNull())
 	{
 		Text::Encoding enc(65001);
-		Data::Int64FastMapObj<UnsafeArrayOpt<UTF16Char>> *tmpArr;
-		NEW_CLASS(tmpArr, Data::Int64FastMapObj<UnsafeArrayOpt<UTF16Char>>());
-		nameArr.SetNoCheck((NameArray*)tmpArr);
+		NN<Data::Int64FastMapObj<UnsafeArrayOpt<UTF16Char>>> tmpArr;
+		NEW_CLASSNN(tmpArr, Data::Int64FastMapObj<UnsafeArrayOpt<UTF16Char>>());
+		nameArr.SetNoCheck((NameArray*)tmpArr.Ptr());
 		UTF8Char fileName[256];
 		UnsafeArray<UTF8Char> sptr;
-		IO::FileStream *cis;
+		NN<IO::FileStream> cis;
 		sptr = this->layerName->ConcatTo(fileName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
-		NEW_CLASS(cis, IO::FileStream(CSTRP(fileName, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASSNN(cis, IO::FileStream(CSTRP(fileName, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		
 		k = 0;
 		while (k < this->nblks)
@@ -270,7 +270,7 @@ UIntOS Map::CIPLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Op
 			}
 			k++;
 		}
-		DEL_CLASS(cis);
+		cis.Delete();
 		tmpArr->AddKeysTo(outArr);
 	}
 	else
@@ -378,25 +378,25 @@ UIntOS Map::CIPLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optio
 	l = 0;
 	if (nameArr.IsNotNull())
 	{
-		Data::Int64FastMapObj<UnsafeArrayOpt<WChar>> *tmpArr;
-		NEW_CLASS(tmpArr, Data::Int64FastMapObj<UnsafeArrayOpt<WChar>>());
-		nameArr.SetNoCheck((NameArray*)tmpArr);
+		NN<Data::Int64FastMapObj<UnsafeArrayOpt<WChar>>> tmpArr;
+		NEW_CLASSNN(tmpArr, Data::Int64FastMapObj<UnsafeArrayOpt<WChar>>());
+		nameArr.SetNoCheck((NameArray*)tmpArr.Ptr());
 		UTF8Char fileName[256];
 		UnsafeArray<UTF8Char> sptr;
-		IO::FileStream *fs = 0;
-		IO::SeekableStream *cis;
+		Optional<IO::FileStream> fs = nullptr;
+		NN<IO::SeekableStream> cis;
 		sptr = this->layerName->ConcatTo(fileName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
 		if (this->nblks > 500)
 		{
-//			NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-//			NEW_CLASS(cis, IO::BufferedInputStream(fs, 8192));
+//			NEW_CLASSNN(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+//			NEW_CLASSNN(cis, IO::BufferedInputStream(fs, 8192));
 
-			NEW_CLASS(cis, IO::FileViewStream(CSTRP(fileName, sptr)));
+			NEW_CLASSNN(cis, IO::FileViewStream(CSTRP(fileName, sptr)));
 		}
 		else
 		{
-			NEW_CLASS(cis, IO::FileStream(CSTRP(fileName, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASSNN(cis, IO::FileStream(CSTRP(fileName, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		}
 		
 		while (k < (IntOS)this->nblks)
@@ -446,17 +446,14 @@ UIntOS Map::CIPLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optio
 			}
 			k++;
 		}
-		DEL_CLASS(cis);
-		if (fs)
-		{
-			DEL_CLASS(fs);
-		}
+		cis.Delete();
+		fs.Delete();
 		tmpArr->AddKeysTo(outArr);
 	}
 	else
 	{
-		Data::ArrayListInt32 *tmpArr;
-		NEW_CLASS(tmpArr, Data::ArrayListInt32());
+		NN<Data::ArrayListInt32> tmpArr;
+		NEW_CLASSNN(tmpArr, Data::ArrayListInt32());
 		while (k < (IntOS)this->nblks)
 		{
 			if (blks[k].xblk > rightBlk)
@@ -491,7 +488,7 @@ UIntOS Map::CIPLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optio
 				k++;
 			}
 		}
-		DEL_CLASS(tmpArr);
+		tmpArr.Delete();
 	}
 	Double t = clk.GetTimeDiff();
 	if (t > .1)
@@ -733,7 +730,7 @@ NN<Map::GetObjectSess> Map::CIPLayer::BeginGetObject()
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".cip"));
 	this->mut.Lock();
 	NEW_CLASSNN(cip, IO::FileStream(CSTRP(fileName, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	//NEW_CLASS(cip, IO::FileViewStream(fileName));
+	//NEW_CLASSNN(cip, IO::FileViewStream(fileName));
 	return NN<Map::GetObjectSess>::ConvertFrom(cip);
 }
 
@@ -760,8 +757,8 @@ Optional<Math::Geometry::Vector2D> Map::CIPLayer::GetNewVectorById(NN<GetObjectS
 	Double r = 1 / 200000.0;
 	if (this->lyrType == Map::DRAW_LAYER_POINT || this->lyrType == Map::DRAW_LAYER_POINT3D)
 	{
-		Math::Geometry::Point *pt;
-		NEW_CLASS(pt, Math::Geometry::Point(4326, fobj->points[0] * r, fobj->points[1] * r));
+		NN<Math::Geometry::Point> pt;
+		NEW_CLASSNN(pt, Math::Geometry::Point(4326, fobj->points[0] * r, fobj->points[1] * r));
 		return pt;
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYLINE3D || this->lyrType == Map::DRAW_LAYER_POLYLINE)

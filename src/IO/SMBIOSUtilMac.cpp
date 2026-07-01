@@ -16,9 +16,9 @@
 #define UTF16Char UTF16Ch
 #define UTF32Char UTF32Ch
 
-IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
+Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 {
-	IO::SMBIOS *smbios;
+	NN<IO::SMBIOS> smbios;
 	CFMutableDictionaryRef	myMatchingDictionary;
 	kern_return_t result;
 	io_object_t foundService;
@@ -27,7 +27,7 @@ IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
 	foundService = IOServiceGetMatchingService( kIOMainPortDefault, myMatchingDictionary );
 
 	if (foundService == 0) {
-		return 0;
+		return nullptr;
 	}
 	
 	CFMutableDictionaryRef properties = NULL;
@@ -38,16 +38,16 @@ IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
 											   kCFAllocatorDefault,
 											   kNilOptions );
 	if (result != kIOReturnSuccess) {
-		return 0;
+		return nullptr;
 	}
 	
 	result = CFDictionaryGetValueIfPresent( properties,
 										   CFSTR("SMBIOS"),
 										   (const void **)&smbiosdata );
 	if (result != true) {
-		return 0;
+		return nullptr;
 	}
 	
-	NEW_CLASS(smbios, IO::SMBIOS((const UInt8*)smbiosdata, (UIntOS)CFDataGetLength(smbiosdata), 0));
+	NEW_CLASSNN(smbios, IO::SMBIOS((const UInt8*)smbiosdata, (UIntOS)CFDataGetLength(smbiosdata), 0));
 	return smbios;
 }

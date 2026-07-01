@@ -1027,7 +1027,8 @@ void Math::GeometryTool::CalcHVAngleDeg(Math::Coord2DDbl ptCurr, Math::Coord2DDb
 
 Optional<Math::Geometry::Polygon> Math::GeometryTool::CreateCircularPolygonWGS84(Math::Coord2DDbl pt, Double radiusMeter, UIntOS nPoints)
 {
-	Math::Geometry::Polygon *pg = 0;
+	Optional<Math::Geometry::Polygon> pg = nullptr;
+	NN<Math::Geometry::Polygon> nnpg;
 	NN<Math::CoordinateSystem> csys4326;
 	NN<Math::CoordinateSystem> csys3857;
 	if (Math::CoordinateSystemManager::SRCreateCSys(4326).SetTo(csys4326))
@@ -1051,9 +1052,10 @@ Optional<Math::Geometry::Polygon> Math::GeometryTool::CreateCircularPolygonWGS84
 				i++;
 			}
 			ptArr[nPoints] = ptArr[0];
-			NEW_CLASS(pg, Math::Geometry::Polygon(3857));
-			pg->AddGeometry(lr);
-			pg->Convert(converter);
+			NEW_CLASSNN(nnpg, Math::Geometry::Polygon(3857));
+			nnpg->AddGeometry(lr);
+			nnpg->Convert(converter);
+			pg = nnpg;
 			csys3857.Delete();
 		}
 		csys4326.Delete();

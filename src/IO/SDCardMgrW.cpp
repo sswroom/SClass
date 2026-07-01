@@ -91,7 +91,7 @@ IO::SDCardInfo *SDCardMgr_ReadInfo(const WChar *path)
 	UInt8 cid[16];
 	UInt8 csd[16];
 	Bool valid = true;
-	IO::SDCardInfo *sdcard = 0;
+	Optional<IO::SDCardInfo> sdcard = nullptr;
 
 	HANDLE hDevice = CreateFileW(path, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_DELETE | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hDevice == INVALID_HANDLE_VALUE)
@@ -171,7 +171,7 @@ IO::SDCardInfo *SDCardMgr_ReadInfo(const WChar *path)
 	if (valid)
 	{
 		NN<Text::String> s = Text::String::NewNotNull(path);
-		NEW_CLASS(sdcard, IO::SDCardInfo(s->ToCString(), cid, csd));
+		NEW_CLASSOPT(sdcard, IO::SDCardInfo(s->ToCString(), cid, csd));
 		s->Release();
 	}
 

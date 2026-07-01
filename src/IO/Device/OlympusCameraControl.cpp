@@ -89,7 +89,7 @@ void IO::Device::OlympusCameraControl::GetImageList()
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
 		NN<Net::HTTPClient> cli;
-		Text::UTF8Reader *reader;
+		NN<Text::UTF8Reader> reader;
 		Text::StringBuilderUTF8 sb;
 		NN<IO::CameraControl::FileInfo> file;
 		Text::PString sarr[7];
@@ -100,7 +100,7 @@ void IO::Device::OlympusCameraControl::GetImageList()
 		sptr = Net::SocketUtil::GetAddrName(sptr, this->addr).Or(sptr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC("/get_imglist.cgi?DIR=/DCIM/100OLYMP"));
 		cli = Net::HTTPClient::CreateConnect(this->clif, nullptr, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
-		NEW_CLASS(reader, Text::UTF8Reader(cli));
+		NEW_CLASSNN(reader, Text::UTF8Reader(cli));
 		while (true)
 		{
 			sb.ClearStr();
@@ -132,7 +132,7 @@ void IO::Device::OlympusCameraControl::GetImageList()
 				fileList->Add(file);
 			}
 		}
-		DEL_CLASS(reader);
+		reader.Delete();
 		cli.Delete();
 	}
 }
@@ -147,7 +147,7 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Net::HTTPClient> cli;
-	Text::UTF8Reader *reader;
+	NN<Text::UTF8Reader> reader;
 	Text::StringBuilderUTF8 sb;
 	NN<IO::CameraControl::FileInfo> file;
 	Text::PString sarr[11];
@@ -157,7 +157,7 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr).Or(sptr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/get_gpsloglist.cgi"));
 	cli = Net::HTTPClient::CreateConnect(this->clif, nullptr, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	NEW_CLASS(reader, Text::UTF8Reader(cli));
+	NEW_CLASSNN(reader, Text::UTF8Reader(cli));
 	while (true)
 	{
 		sb.ClearStr();
@@ -184,7 +184,7 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 			}
 		}
 	}
-	DEL_CLASS(reader);
+	reader.Delete();
 	cli.Delete();
 }
 
@@ -199,7 +199,7 @@ void IO::Device::OlympusCameraControl::GetSNSLogList()
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Net::HTTPClient> cli;
-	Text::UTF8Reader *reader;
+	NN<Text::UTF8Reader> reader;
 	Text::StringBuilderUTF8 sb;
 	NN<IO::CameraControl::FileInfo> file;
 	Text::PString sarr[11];
@@ -209,7 +209,7 @@ void IO::Device::OlympusCameraControl::GetSNSLogList()
 	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr).Or(sptr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/get_snsloglist.cgi"));
 	cli = Net::HTTPClient::CreateConnect(this->clif, nullptr, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
-	NEW_CLASS(reader, Text::UTF8Reader(cli));
+	NEW_CLASSNN(reader, Text::UTF8Reader(cli));
 	while (true)
 	{
 		sb.ClearStr();
@@ -236,7 +236,7 @@ void IO::Device::OlympusCameraControl::GetSNSLogList()
 			}
 		}
 	}
-	DEL_CLASS(reader);
+	reader.Delete();
 	cli.Delete();
 }
 
@@ -448,8 +448,8 @@ Optional<IO::Device::OlympusCameraControl> IO::Device::OlympusCameraControl::Cre
 	{
 		Net::SocketUtil::AddressInfo addr;
 		Net::SocketUtil::SetAddrInfoV4(addr, ip);
-		IO::Device::OlympusCameraControl *ctrl;
-		NEW_CLASS(ctrl, IO::Device::OlympusCameraControl(clif, encFact, addr));
+		NN<IO::Device::OlympusCameraControl> ctrl;
+		NEW_CLASSNN(ctrl, IO::Device::OlympusCameraControl(clif, encFact, addr));
 		return ctrl;
 	}
 	return nullptr;

@@ -555,8 +555,8 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 		if (geometry->GetValue(CSTR("rings")).SetTo(o) && o->GetType() == Text::JSONType::Array)
 		{
 			NN<Math::Geometry::LinearRing> lr;
-			Math::Geometry::Polygon *pg;
-			NEW_CLASS(pg, Math::Geometry::Polygon(srid));
+			NN<Math::Geometry::Polygon> pg;
+			NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
 			Data::ArrayListA<Math::Coord2DDbl> ptArr;
 			NN<Text::JSONArray> rings = NN<Text::JSONArray>::ConvertFrom(o);
 			UIntOS i = 0;
@@ -590,7 +590,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 			{
 				return pg;
 			}
-			DEL_CLASS(pg);
+			pg.Delete();
 		}
 	}
 	else if (geometryType->Equals(UTF8STRC("esriGeometryPolyline")))
@@ -624,8 +624,8 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 			}
 			if (ptArr.GetCount() > 0)
 			{
-				Math::Geometry::Polyline *pl;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+				NN<Math::Geometry::Polyline> pl;
+				NEW_CLASSNN(pl, Math::Geometry::Polyline(srid));
 				pl->AddFromPtOfst(ptOfstArr.Arr().Ptr(), ptOfstArr.GetCount(), ptArr.Arr().Ptr(), ptArr.GetCount(), nullptr, nullptr);
 				return pl;
 			}
@@ -639,14 +639,14 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 		if (geometry->GetValue(CSTR("x")).SetTo(x) && geometry->GetValue(CSTR("y")).SetTo(y) &&
 			x->GetType() == Text::JSONType::Number && y->GetType() == Text::JSONType::Number)
 		{
-			Math::Geometry::Point *pt;
+			NN<Math::Geometry::Point> pt;
 			if (geometry->GetValue(CSTR("z")).SetTo(z) && z->GetType() == Text::JSONType::Number)
 			{
-				NEW_CLASS(pt, Math::Geometry::PointZ(srid, x->GetAsDoubleOrNAN(), y->GetAsDoubleOrNAN(), z->GetAsDoubleOrNAN()));
+				NEW_CLASSNN(pt, Math::Geometry::PointZ(srid, x->GetAsDoubleOrNAN(), y->GetAsDoubleOrNAN(), z->GetAsDoubleOrNAN()));
 			}
 			else
 			{
-				NEW_CLASS(pt, Math::Geometry::Point(srid, Math::Coord2DDbl(x->GetAsDoubleOrNAN(), y->GetAsDoubleOrNAN())));
+				NEW_CLASSNN(pt, Math::Geometry::Point(srid, Math::Coord2DDbl(x->GetAsDoubleOrNAN(), y->GetAsDoubleOrNAN())));
 			}
 			return pt;
 		}

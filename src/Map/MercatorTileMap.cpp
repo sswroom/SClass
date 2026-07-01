@@ -249,11 +249,12 @@ Optional<Media::ImageList> Map::MercatorTileMap::LoadTileImage(UIntOS level, Mat
 		if (IO::Path::GetPathType(CSTRP(filePathU, sptru)) == IO::Path::PathType::File)
 		{
 			NN<IO::StmData::FileData> fd;
+			NN<IO::FileStream> fs;
 			NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UIntOS)(sptru - filePathU)}, false));
-			if (fd->GetDataSize() > 0)
+			if (fd->GetDataSize() > 0 && fd->GetFileStream().SetTo(fs))
 			{
 				currTS = Data::Timestamp::UtcNow().AddDay(-7);
-				ts = fd->GetFileStream()->GetCreateTime();
+				ts = fs->GetCreateTime();
 				if (ts > currTS)
 				{
 					IO::StmData::BufferedStreamData bsd(fd);
@@ -476,12 +477,13 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UIntOS level, M
 			sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 			break;
 		}
+		NN<IO::FileStream> fs;
 		NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UIntOS)(sptru - filePathU)}, false));
-		if (fd->GetDataSize() > 0)
+		if (fd->GetDataSize() > 0 && NN<IO::StmData::FileData>::ConvertFrom(fd)->GetFileStream().SetTo(fs))
 		{
 			currTime.SetCurrTimeUTC();
 			currTime.AddDay(-7);
-			NN<IO::StmData::FileData>::ConvertFrom(fd)->GetFileStream()->GetFileTimes(&dt, nullptr, nullptr);
+			fs->GetFileTimes(&dt, nullptr, nullptr);
 			if (dt.CompareTo(currTime) > 0)
 			{
 				format.Set(tileFormat);

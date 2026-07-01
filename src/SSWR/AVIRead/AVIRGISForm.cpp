@@ -718,7 +718,7 @@ void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CStringNN url, UInt32 codePage, T
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
 		NN<Map::MapDrawLayer> lyr;
-		if (lyr.Set(Map::CSVMapParser::ParseAsPoint(cli, codePage, name, nameCol, latCol, lonCol, Math::CoordinateSystemManager::CreateWGS84Csys())))
+		if (Map::CSVMapParser::ParseAsPoint(cli, codePage, name, nameCol, latCol, lonCol, Math::CoordinateSystemManager::CreateWGS84Csys()).SetTo(lyr))
 		{
 			this->AddLayer(lyr);
 		}

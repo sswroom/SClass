@@ -16,7 +16,7 @@ typedef void (__stdcall *RdmsrFunc)(UInt32 ecx, UInt32 *eax, UInt32 *edx);
 
 struct Manage::CPUInfo::ClassData
 {
-	IO::Library *winRing0;
+	Optional<IO::Library> winRing0;
 	NoRetFunc InitializeOls;
 	UInt32RetFunc GetDllStatus;
 	RdmsrFunc Rdmsr;
@@ -39,42 +39,44 @@ struct Manage::CPUInfo::ClassData
 Manage::CPUInfo::CPUInfo()
 {
 	Int32 cpuInfo[4];
+	NN<IO::Library> winRing0;
 
 #if defined(WIN32) || defined(_WIN64)
 	NN<ClassData> info = MemAllocNN(ClassData);
-	info->winRing0 = 0;
+	info->winRing0 = nullptr;
 	info->InitializeOls = 0;
 	info->GetDllStatus = 0;
 	info->Rdmsr = 0;
 	info->DeinitializeOls = 0;
 #ifdef _WIN64
-	NEW_CLASS(info->winRing0, IO::Library((const UTF8Char*)"WinRing0x64.dll"));
+	NEW_CLASSNN(winRing0, IO::Library((const UTF8Char*)"WinRing0x64.dll"));
 #else
-	NEW_CLASS(info->winRing0, IO::Library((const UTF8Char*)"WinRing0.dll"));
+	NEW_CLASSNN(winRing0, IO::Library((const UTF8Char*)"WinRing0.dll"));
 #endif
-	if (info->winRing0->IsError())
+	info->winRing0 = winRing0;
+	if (winRing0->IsError())
 	{
-		DEL_CLASS(info->winRing0);
-		info->winRing0 = 0;
+		winRing0.Delete();
+		info->winRing0 = nullptr;
 	}
 	else
 	{
-		info->InitializeOls = (NoRetFunc)info->winRing0->GetFunc("InitializeOls");
-		info->GetDllStatus = (UInt32RetFunc)info->winRing0->GetFunc("GetDllStatus");
-		info->Rdmsr = (RdmsrFunc)info->winRing0->GetFunc("Rdmsr");
-		info->DeinitializeOls = (NoRetFunc)info->winRing0->GetFunc("DeinitializeOls");
+		info->InitializeOls = (NoRetFunc)winRing0->GetFunc("InitializeOls");
+		info->GetDllStatus = (UInt32RetFunc)winRing0->GetFunc("GetDllStatus");
+		info->Rdmsr = (RdmsrFunc)winRing0->GetFunc("Rdmsr");
+		info->DeinitializeOls = (NoRetFunc)winRing0->GetFunc("DeinitializeOls");
 		if (info->InitializeOls == 0 || info->GetDllStatus == 0 || info->Rdmsr == 0 || info->DeinitializeOls == 0)
 		{
-			DEL_CLASS(info->winRing0);
-			info->winRing0 = 0;
+			winRing0.Delete();
+			info->winRing0 = nullptr;
 		}
 		else
 		{
 			info->InitializeOls();
 			if (info->GetDllStatus() != 0)
 			{
-				DEL_CLASS(info->winRing0);
-				info->winRing0 = 0;
+				winRing0.Delete();
+				info->winRing0 = nullptr;
 			}
 		}
 	}
@@ -426,10 +428,11 @@ Manage::CPUInfo::~CPUInfo()
 {
 #if defined(WIN32) || defined(_WIN64)
 	NN<ClassData> info = this->clsData;
-	if (info->winRing0)
+	NN<IO::Library> winRing0;
+	if (info->winRing0.SetTo(winRing0))
 	{
 		info->DeinitializeOls();
-		DEL_CLASS(info->winRing0);
+		winRing0.Delete();
 	}
 	MemFreeNN(info);
 #else
@@ -522,7 +525,7 @@ UnsafeArrayOpt<UTF8Char> Manage::CPUInfo::GetCPUName(UnsafeArray<UTF8Char> sbuff
 Bool Manage::CPUInfo::GetCPURatio(OutParam<Int32> ratio)
 {
 	NN<ClassData> info = this->clsData;
-	if (info->winRing0 == 0)
+	if (info->winRing0.IsNull())
 		return false;
 
 	if (this->brand == Manage::CPUVendor::CB_INTEL)
@@ -541,7 +544,7 @@ Bool Manage::CPUInfo::GetCPURatio(OutParam<Int32> ratio)
 Bool Manage::CPUInfo::GetCPUTurboRatio(OutParam<Int32> ratio)
 {
 	NN<ClassData> info = this->clsData;
-	if (info->winRing0 == 0)
+	if (info->winRing0.IsNull())
 		return false;
 
 	if (this->brand == Manage::CPUVendor::CB_INTEL)
@@ -560,7 +563,7 @@ Bool Manage::CPUInfo::GetCPUTurboRatio(OutParam<Int32> ratio)
 Bool Manage::CPUInfo::GetCPUTCC(OutParam<Double> temp)
 {
 	NN<ClassData> info = this->clsData;
-	if (info->winRing0 == 0)
+	if (info->winRing0.IsNull())
 		return false;
 
 	if (this->brand == Manage::CPUVendor::CB_INTEL && this->SupportIntelDTS())

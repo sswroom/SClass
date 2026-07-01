@@ -21,7 +21,8 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 	Data::ArrayListArr<const UTF8Char> nameList;
 	Data::ArrayListObj<Optional<Text::String>> valList;
 	Text::StringBuilderUTF8 sb;
-	Map::VectorLayer *lyr = 0;
+	Optional<Map::VectorLayer> lyr = nullptr;
+	NN<Map::VectorLayer> nnlyr;
 	Map::DrawLayerType layerType = Map::DRAW_LAYER_UNKNOWN;
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> ccols;
 	UIntOS i;
@@ -184,7 +185,7 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 				}
 				if (vec.SetTo(nnvec))
 				{
-					if (lyr == 0)
+					if (!lyr.SetTo(nnlyr))
 					{
 						colCnt = nameList.GetCount();
 						ccols = UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(nameList.Arr());
@@ -193,14 +194,15 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 						{
 							csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 						}
-						NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, csys, 0, nullptr));
+						NEW_CLASSNN(nnlyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, csys, 0, nullptr));
+						lyr = nnlyr;
 					}
 
 					if (colCnt == valList.GetCount())
 					{
 						UnsafeArray<Optional<Text::String>> scols;
 						scols = valList.Arr();
-						lyr->AddVector2(nnvec, scols.Ptr());
+						nnlyr->AddVector2(nnvec, scols.Ptr());
 					}
 					else
 					{
@@ -227,9 +229,9 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 				valList.Clear();
 
 				NN<Text::String> nntableName;
-				if (lyr && tableName.SetTo(nntableName))
+				if (lyr.SetTo(nnlyr) && tableName.SetTo(nntableName))
 				{
-					lyr->SetTableName(nntableName);
+					nnlyr->SetTableName(nntableName);
 				}
 				OPTSTR_DEL(tableName);
 			}
@@ -338,7 +340,7 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 	UnsafeArray<UTF8Char> sarr[4];
 	UnsafeArray<UTF8Char> sarr2[4];
 	UIntOS sarr2Cnt;
-	Math::Geometry::Vector2D *vec = 0;
+	Optional<Math::Geometry::Vector2D> vec = nullptr;
 	UIntOS i;
 	UIntOS j;
 	NN<Text::XMLAttrib> attr;
@@ -372,7 +374,7 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 		Double y;
 		Data::ArrayListDbl xPts;
 		Data::ArrayListDbl yPts;
-		Math::Geometry::Point *pt;
+		NN<Math::Geometry::Point> pt;
 		Text::StringBuilderUTF8 sb;
 		while (reader->NextElementName().SetTo(nodeName))
 		{
@@ -408,8 +410,8 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 
 					if (xPts.GetCount() == 1)
 					{
-						NEW_CLASS(pt, Math::Geometry::Point(env->srid, xPts.GetItem(0), yPts.GetItem(0)));
-						SDEL_CLASS(vec);
+						NEW_CLASSNN(pt, Math::Geometry::Point(env->srid, xPts.GetItem(0), yPts.GetItem(0)));
+						vec.Delete();
 						vec = pt;
 					}
 				}
@@ -447,13 +449,13 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 					{
 						if (zPts.GetCount() == 1)
 						{
-							NEW_CLASS(pt, Math::Geometry::PointZ(env->srid, xPts.GetItem(0), yPts.GetItem(0), zPts.GetItem(0)));
+							NEW_CLASSNN(pt, Math::Geometry::PointZ(env->srid, xPts.GetItem(0), yPts.GetItem(0), zPts.GetItem(0)));
 						}
 						else
 						{
-							NEW_CLASS(pt, Math::Geometry::Point(env->srid, xPts.GetItem(0), yPts.GetItem(0)));
+							NEW_CLASSNN(pt, Math::Geometry::Point(env->srid, xPts.GetItem(0), yPts.GetItem(0)));
 						}
-						SDEL_CLASS(vec);
+						vec.Delete();
 						vec = pt;
 					}
 				}
@@ -469,7 +471,7 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 		Data::ArrayListDbl xPts;
 		Data::ArrayListDbl yPts;
 		Data::ArrayListDbl zPts;
-		Math::Geometry::Polygon *pg;
+		NN<Math::Geometry::Polygon> pg;
 		NN<Math::Geometry::LinearRing> lr;
 		UnsafeArray<Math::Coord2DDbl> ptList;
 		Text::StringBuilderUTF8 sb;
@@ -481,7 +483,7 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 				{
 					if (nodeName->Equals(UTF8STRC("gml:PolygonPatch")))
 					{
-						NEW_CLASS(pg, Math::Geometry::Polygon(env->srid));
+						NEW_CLASSNN(pg, Math::Geometry::Polygon(env->srid));
 						while (reader->NextElementName().SetTo(nodeName))
 						{
 							if (nodeName->Equals(UTF8STRC("gml:exterior")))
@@ -573,12 +575,12 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 						}
 						if (pg->GetCount() > 0)
 						{
-							SDEL_CLASS(vec);
+							vec.Delete();
 							vec = pg;
 						}
 						else
 						{
-							DEL_CLASS(pg);
+							pg.Delete();
 						}
 					}
 					else
@@ -597,7 +599,7 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 	{
 		Data::ArrayListDbl xPts;
 		Data::ArrayListDbl yPts;
-		Math::Geometry::LineString *pl;
+		NN<Math::Geometry::LineString> pl;
 		UnsafeArray<Math::Coord2DDbl> ptList;
 		Text::StringBuilderUTF8 sb;
 		while (reader->NextElementName().SetTo(nodeName))
@@ -624,13 +626,13 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 
 					if (xPts.GetCount() > 0)
 					{
-						NEW_CLASS(pl, Math::Geometry::LineString(env->srid, xPts.GetCount(), false, false));
+						NEW_CLASSNN(pl, Math::Geometry::LineString(env->srid, xPts.GetCount(), false, false));
 						ptList = pl->GetPointList(i);
 						while (i-- > 0)
 						{
 							ptList[i] = Math::Coord2DDbl(yPts.GetItem(i), xPts.GetItem(i));
 						}
-						SDEL_CLASS(vec);
+						vec.Delete();
 						vec = pl;
 					}
 				}
@@ -655,7 +657,7 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 
 					if (xPts.GetCount() > 0)
 					{
-						NEW_CLASS(pl, Math::Geometry::LineString(env->srid, xPts.GetCount(), true, false));
+						NEW_CLASSNN(pl, Math::Geometry::LineString(env->srid, xPts.GetCount(), true, false));
 						ptList = pl->GetPointList(i);
 						if (pl->GetZList(i).SetTo(hList))
 						{
@@ -665,12 +667,12 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 								ptList[i].y = xPts.GetItem(i);
 								ptList[i].x = yPts.GetItem(i);
 							}
-							SDEL_CLASS(vec);
+							vec.Delete();
 							vec = pl;
 						}
 						else
 						{
-							DEL_CLASS(pl);
+							pl.Delete();
 						}
 					}
 				}
@@ -683,7 +685,8 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 	}
 	else if (nodeName->Equals(UTF8STRC("gml:MultiPolygon")))
 	{
-		Math::Geometry::MultiPolygon *mpg = 0;
+		Optional<Math::Geometry::MultiPolygon> mpg = nullptr;
+		NN<Math::Geometry::MultiPolygon> nnmpg;
 		NN<Math::Geometry::Vector2D> newVec;
 		while (reader->NextElementName().SetTo(nodeName))
 		{
@@ -695,13 +698,14 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 					{
 						if (newVec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 						{
-							if (mpg == 0)
+							if (!mpg.SetTo(nnmpg))
 							{
-								NEW_CLASS(mpg, Math::Geometry::MultiPolygon(env->srid));
-								SDEL_CLASS(vec);
+								NEW_CLASSNN(nnmpg, Math::Geometry::MultiPolygon(env->srid));
+								mpg = nnmpg;
+								vec.Delete();
 								vec = mpg;
 							}
-							mpg->AddGeometry(NN<Math::Geometry::Polygon>::ConvertFrom(newVec));
+							nnmpg->AddGeometry(NN<Math::Geometry::Polygon>::ConvertFrom(newVec));
 						}
 						else
 						{
@@ -721,11 +725,11 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 		Data::ArrayListDbl xPts;
 		Data::ArrayListDbl yPts;
 		Data::ArrayListDbl zPts;
-		Math::Geometry::Polygon *pg;
+		NN<Math::Geometry::Polygon> pg;
 		NN<Math::Geometry::LinearRing> lr;
 		UnsafeArray<Math::Coord2DDbl> ptList;
 		Text::StringBuilderUTF8 sb;
-		NEW_CLASS(pg, Math::Geometry::Polygon(env->srid));
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(env->srid));
 		while (reader->NextElementName().SetTo(nodeName))
 		{
 			if (nodeName->Equals(UTF8STRC("gml:outerBoundaryIs")) || nodeName->Equals(UTF8STRC("gml:exterior")) || nodeName->Equals(UTF8STRC("gml:innerBoundaryIs")))
@@ -835,12 +839,12 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 		}
 		if (pg->GetCount() > 0)
 		{
-			SDEL_CLASS(vec);
+			vec.Delete();
 			vec = pg;
 		}
 		else
 		{
-			DEL_CLASS(pg);
+			pg.Delete();
 		}
 	}
 	else

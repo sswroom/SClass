@@ -5,19 +5,19 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
 
-IO::ConfigFile *IO::WSConfigFile::Parse(Text::CStringNN fileName)
+Optional<IO::ConfigFile> IO::WSConfigFile::Parse(Text::CStringNN fileName)
 {
-	IO::ConfigFile *cfg;
+	NN<IO::ConfigFile> cfg;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
 	{
-		return 0;
+		return nullptr;
 	}
 	Text::StringBuilderUTF8 sb;
 	UIntOS i;
 	Text::PString sarr[2];
 	Text::UTF8Reader reader(fs);
-	NEW_CLASS(cfg, IO::ConfigFile());
+	NEW_CLASSNN(cfg, IO::ConfigFile());
 	while (reader.ReadLine(sb, 4096))
 	{
 		i = sb.IndexOf('#');

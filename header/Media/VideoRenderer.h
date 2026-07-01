@@ -93,8 +93,8 @@ namespace Media
 		{
 			Int32 status; //0 = not running, 1 = idle
 			Int32 procType;
-			Media::ImageResizer *resizer;
-			Media::DeinterlacingResizer *dresizer;
+			Optional<Media::ImageResizer> resizer;
+			Optional<Media::DeinterlacingResizer> dresizer;
 			UInt32 resizerBitDepth;
 			Bool resizer10Bit;
 			Optional<Media::CS::CSConverter> csconv;
@@ -102,7 +102,7 @@ namespace Media
 			UIntOS lrSize;
 			UnsafeArrayOpt<UInt8> diBuff;
 			UIntOS diSize;
-			Media::Deinterlacer *deint;
+			Optional<Media::Deinterlacer> deint;
 			VideoRenderer *me;
 			Bool srcChanged;
 			Double hTime;

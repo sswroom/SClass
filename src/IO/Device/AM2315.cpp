@@ -116,14 +116,14 @@ Bool IO::Device::AM2315::ReadRH(OutParam<Single> rh)
 
 Optional<IO::I2CChannel> IO::Device::AM2315::CreateDefChannel(Int32 i2cBusNum)
 {
-	IO::I2CChannel *channel;
-	NEW_CLASS(channel, IO::I2CChannelOS(i2cBusNum, 0x5c));
+	NN<IO::I2CChannel> channel;
+	NEW_CLASSNN(channel, IO::I2CChannelOS(i2cBusNum, 0x5c));
 	if (channel->IsError())
 	{
 #if defined(_DEBUG)
 		printf("Error in opening i2c device");
 #endif
-		DEL_CLASS(channel);
+		channel.Delete();
 		return nullptr;
 	}
 	return channel;

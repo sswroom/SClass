@@ -84,7 +84,8 @@ Optional<IO::VBoxVMInfo> IO::VBoxManager::GetVMInfo(NN<VMId> vm) const
 	Manage::Process::ExecuteProcess(sb.ToCString(), sbResult);
 	UIntOS lineCnt;
 	Text::PString sarr[2];
-	VBoxVMInfo *info = 0;
+	Optional<VBoxVMInfo> info = nullptr;
+	NN<VBoxVMInfo> nninfo;
 	Text::CStringNN name;
 	Text::CStringNN value;
 	UIntOS i;
@@ -98,23 +99,24 @@ Optional<IO::VBoxVMInfo> IO::VBoxManager::GetVMInfo(NN<VMId> vm) const
 			value = sarr[0].ToCString().Substring(i + 2).LTrim();
 			sarr[0].TrimToLength(i);
 			name = sarr[0].ToCString();
-			if (name.Equals(UTF8STRC("Name")) && info == 0)
+			if (name.Equals(UTF8STRC("Name")) && info.IsNull())
 			{
-				NEW_CLASS(info, VBoxVMInfo(value));
+				NEW_CLASSNN(nninfo, VBoxVMInfo(value));
+				info = nninfo;
 				if (vm->name->Equals(UTF8STRC("<inaccessible>")))
 				{
 					vm->name->Release();
-					vm->name = info->GetName()->Clone();
+					vm->name = nninfo->GetName()->Clone();
 				}
 			}
-			else if (info)
+			else if (info.SetTo(nninfo))
 			{
 				if (name.Equals(UTF8STRC("State")))
 				{
 					if (value.StartsWith(UTF8STRC("powered off (since ")))
 					{
-						info->SetState(VBoxVMInfo::State::PoweredOff);
-						info->SetStateSince(Data::Timestamp::FromStr(Text::CStringNN(&value.v[19], value.leng - 20), 0));
+						nninfo->SetState(VBoxVMInfo::State::PoweredOff);
+						nninfo->SetStateSince(Data::Timestamp::FromStr(Text::CStringNN(&value.v[19], value.leng - 20), 0));
 					}
 					else
 					{

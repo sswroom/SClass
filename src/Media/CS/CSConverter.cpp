@@ -112,92 +112,92 @@ Bool Media::CS::CSConverter::IsSupported(UInt32 fourcc)
 
 Optional<Media::CS::CSConverter> Media::CS::CSConverter::NewConverter(UInt32 srcFormat, UIntOS srcNBits, Media::PixelFormat srcPF, NN<const Media::ColorProfile> srcProfile, UInt32 destFormat, UIntOS destNBits, Media::PixelFormat destPF, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess)
 {
-	Media::CS::CSConverter *conv;
+	NN<Media::CS::CSConverter> conv;
 	if (destFormat == *(UInt32*)"LRGB")
 	{
 		if (srcFormat == 0 && (srcPF == Media::PF_LE_FB32G32R32A32 || srcPF == Media::PF_LE_FB32G32R32 || srcPF == Media::PF_LE_FW32A32 || srcPF == Media::PF_LE_FW32))
 		{
-			NEW_CLASS(conv, Media::CS::CSRGBF_LRGBC(srcNBits, srcPF, false, srcProfile, destProfile, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSRGBF_LRGBC(srcNBits, srcPF, false, srcProfile, destProfile, colorSess));
 			return conv;
 		}
 		else if (srcFormat == 0 && srcNBits <= 32 && srcPF != Media::PF_LE_W16 && srcPF != Media::PF_LE_W16A16 && srcPF != Media::PF_LE_A2B10G10R10)
 		{
-			NEW_CLASS(conv, Media::CS::CSRGB8_LRGBC(srcNBits, srcPF, false, srcProfile, destProfile, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSRGB8_LRGBC(srcNBits, srcPF, false, srcProfile, destProfile, colorSess));
 			return conv;
 		}
 		else if (srcFormat == 0 && srcNBits <= 64)
 		{
-			NEW_CLASS(conv, Media::CS::CSRGB16_LRGBC(srcNBits, srcPF, false, srcProfile, destProfile, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSRGB16_LRGBC(srcNBits, srcPF, false, srcProfile, destProfile, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"DIBS" && srcNBits <= 32 && srcPF != Media::PF_LE_W16 && srcPF != Media::PF_LE_W16A16 && srcPF != Media::PF_LE_A2B10G10R10)
 		{
-			NEW_CLASS(conv, Media::CS::CSRGB8_LRGBC(srcNBits, srcPF, true, srcProfile, destProfile, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSRGB8_LRGBC(srcNBits, srcPF, true, srcProfile, destProfile, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"DIBS" && srcNBits <= 64)
 		{
-			NEW_CLASS(conv, Media::CS::CSRGB16_LRGBC(srcNBits, srcPF, true, srcProfile, destProfile, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSRGB16_LRGBC(srcNBits, srcPF, true, srcProfile, destProfile, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"YUY2" || srcFormat == *(UInt32*)"YUYV")
 		{
-			NEW_CLASS(conv, Media::CS::CSYUY2_LRGBC(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSYUY2_LRGBC(srcProfile, destProfile, yuvType, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"UYVY" || srcFormat == *(UInt32*)"Y422" || srcFormat == *(UInt32*)"UYNV" || srcFormat == *(UInt32*)"HDYC")
 		{
-			NEW_CLASS(conv, Media::CS::CSUYVY_LRGBC(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSUYVY_LRGBC(srcProfile, destProfile, yuvType, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"I420")
 		{
-			NEW_CLASS(conv, Media::CS::CSI420_LRGBC(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSI420_LRGBC(srcProfile, destProfile, yuvType, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"BI42") //I420 in broadcom capture
 		{
-			NEW_CLASS(conv, Media::CS::CSBI42_LRGBC(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSBI42_LRGBC(srcProfile, destProfile, yuvType, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"YV12")
 		{
-			NEW_CLASS(conv, Media::CS::CSYV12_LRGBC(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSYV12_LRGBC(srcProfile, destProfile, yuvType, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"NV12")
 		{
-			NEW_CLASS(conv, Media::CS::CSNV12_LRGBC(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSNV12_LRGBC(srcProfile, destProfile, yuvType, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"P010" || srcFormat == *(UInt32*)"P016")
 		{
-			NEW_CLASS(conv, Media::CS::CSP016_LRGBC(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSP016_LRGBC(srcProfile, destProfile, yuvType, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"P210" || srcFormat == *(UInt32*)"P216")
 		{
-			NEW_CLASS(conv, Media::CS::CSP216_LRGBC(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSP216_LRGBC(srcProfile, destProfile, yuvType, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"Y416")
 		{
-			NEW_CLASS(conv, Media::CS::CSY416_LRGBC(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSY416_LRGBC(srcProfile, destProfile, yuvType, colorSess));
 			return conv;
 		}
 		else if (srcFormat == FFMT_YUV420P8)
 		{
-			NEW_CLASS(conv, Media::CS::CSYUV420P8_LRGBC(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSYUV420P8_LRGBC(srcProfile, destProfile, yuvType, colorSess));
 			return conv;
 		}
 		else if (srcFormat == FFMT_AYUV444_10)
 		{
-			NEW_CLASS(conv, Media::CS::CSAYUV444_10_LRGBC(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSAYUV444_10_LRGBC(srcProfile, destProfile, yuvType, colorSess));
 			return conv;
 		}
 		else if (srcFormat == FFMT_YUV444P10LEP)
 		{
-			NEW_CLASS(conv, Media::CS::CSYUV444P10LEP_LRGBC(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSYUV444P10LEP_LRGBC(srcProfile, destProfile, yuvType, colorSess));
 			return conv;
 		}
 	}
@@ -205,22 +205,22 @@ Optional<Media::CS::CSConverter> Media::CS::CSConverter::NewConverter(UInt32 src
 	{
 		if (srcFormat == 0 && srcNBits <= 32 && srcPF != Media::PF_LE_W16 && srcPF != Media::PF_LE_W16A16 && srcPF != Media::PF_LE_A2B10G10R10)
 		{
-			NEW_CLASS(conv, Media::CS::CSRGB8_RGB8(srcNBits, srcPF, destNBits, destPF, true, srcProfile, destProfile, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSRGB8_RGB8(srcNBits, srcPF, destNBits, destPF, true, srcProfile, destProfile, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"DIBS" && srcNBits <= 32 && srcPF != Media::PF_LE_W16 && srcPF != Media::PF_LE_W16A16 && srcPF != Media::PF_LE_A2B10G10R10)
 		{
-			NEW_CLASS(conv, Media::CS::CSRGB8_RGB8(srcNBits, srcPF, destNBits, destPF, false, srcProfile, destProfile, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSRGB8_RGB8(srcNBits, srcPF, destNBits, destPF, false, srcProfile, destProfile, colorSess));
 			return conv;
 		}
 		else if (srcFormat == 0 && srcNBits <= 64)
 		{
-			NEW_CLASS(conv, Media::CS::CSRGB16_RGB8(srcNBits, srcPF, destNBits, destPF, true, srcProfile, destProfile, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSRGB16_RGB8(srcNBits, srcPF, destNBits, destPF, true, srcProfile, destProfile, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"DIBS" && srcNBits <= 64)
 		{
-			NEW_CLASS(conv, Media::CS::CSRGB16_RGB8(srcNBits, srcPF, destNBits, destPF, false, srcProfile, destProfile, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSRGB16_RGB8(srcNBits, srcPF, destNBits, destPF, false, srcProfile, destProfile, colorSess));
 			return conv;
 		}
 	}
@@ -228,95 +228,95 @@ Optional<Media::CS::CSConverter> Media::CS::CSConverter::NewConverter(UInt32 src
 	{
 		if (srcFormat == 0 && srcNBits <= 32 && srcPF != Media::PF_LE_W16 && srcPF != Media::PF_LE_W16A16 && srcPF != Media::PF_LE_A2B10G10R10)
 		{
-			NEW_CLASS(conv, Media::CS::CSRGB8_RGB8(srcNBits, srcPF, destNBits, destPF, false, srcProfile, destProfile, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSRGB8_RGB8(srcNBits, srcPF, destNBits, destPF, false, srcProfile, destProfile, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"DIBS" && srcNBits <= 32 && srcPF != Media::PF_LE_W16 && srcPF != Media::PF_LE_W16A16 && srcPF != Media::PF_LE_A2B10G10R10)
 		{
-			NEW_CLASS(conv, Media::CS::CSRGB8_RGB8(srcNBits, srcPF, destNBits, destPF, true, srcProfile, destProfile, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSRGB8_RGB8(srcNBits, srcPF, destNBits, destPF, true, srcProfile, destProfile, colorSess));
 			return conv;
 		}
 		else if (srcFormat == 0 && srcNBits <= 64)
 		{
-			NEW_CLASS(conv, Media::CS::CSRGB16_RGB8(srcNBits, srcPF, destNBits, destPF, false, srcProfile, destProfile, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSRGB16_RGB8(srcNBits, srcPF, destNBits, destPF, false, srcProfile, destProfile, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"DIBS" && srcNBits <= 64)
 		{
-			NEW_CLASS(conv, Media::CS::CSRGB16_RGB8(srcNBits, srcPF, destNBits, destPF, true, srcProfile, destProfile, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSRGB16_RGB8(srcNBits, srcPF, destNBits, destPF, true, srcProfile, destProfile, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"YUY2" || srcFormat == *(UInt32*)"YUYV")
 		{
-			NEW_CLASS(conv, Media::CS::CSYUY2_RGB8(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSYUY2_RGB8(srcProfile, destProfile, yuvType, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"UYVY" || srcFormat == *(UInt32*)"Y422" || srcFormat == *(UInt32*)"UYNV" || srcFormat == *(UInt32*)"HDYC")
 		{
-			NEW_CLASS(conv, Media::CS::CSUYVY_RGB8(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSUYVY_RGB8(srcProfile, destProfile, yuvType, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"I420")
 		{
-			NEW_CLASS(conv, Media::CS::CSI420_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF));
+			NEW_CLASSNN(conv, Media::CS::CSI420_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"BI42") //I420 in broadcom capture
 		{
-			NEW_CLASS(conv, Media::CS::CSBI42_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF));
+			NEW_CLASSNN(conv, Media::CS::CSBI42_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"YV12")
 		{
-			NEW_CLASS(conv, Media::CS::CSYV12_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF));
-//			NEW_CLASS(conv, Media::CS::CSYV12_RGB8(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSYV12_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF));
+//			NEW_CLASSNN(conv, Media::CS::CSYV12_RGB8(srcProfile, destProfile, yuvType, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"NV12")
 		{
-			//NEW_CLASS(conv, Media::CS::CSNV12_RGB8(srcProfile, destProfile, yuvType, colorSess));
-			NEW_CLASS(conv, Media::CS::CSNV12_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF));
+			//NEW_CLASSNN(conv, Media::CS::CSNV12_RGB8(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSNV12_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"YVU9")
 		{
-			NEW_CLASS(conv, Media::CS::CSYVU9_RGB8(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSYVU9_RGB8(srcProfile, destProfile, yuvType, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"AYUV")
 		{
-			NEW_CLASS(conv, Media::CS::CSAYUV_RGB8(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSAYUV_RGB8(srcProfile, destProfile, yuvType, colorSess));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"P010" || srcFormat == *(UInt32*)"P016")
 		{
-			NEW_CLASS(conv, Media::CS::CSP016_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF));
+			NEW_CLASSNN(conv, Media::CS::CSP016_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF));
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"P210" || srcFormat == *(UInt32*)"P216")
 		{
-			NEW_CLASS(conv, Media::CS::CSP010_RGB8(srcProfile, destProfile, yuvType, colorSess));
+			NEW_CLASSNN(conv, Media::CS::CSP010_RGB8(srcProfile, destProfile, yuvType, colorSess));
 			////////////////////////////////////////
 			return conv;
 		}
 		else if (srcFormat == *(UInt32*)"Y416")
 		{
-			NEW_CLASS(conv, Media::CS::CSY416_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF));
+			NEW_CLASSNN(conv, Media::CS::CSY416_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF));
 			return conv;
 		}
 		else if (srcFormat == FFMT_YUV420P8)
 		{
-			NEW_CLASS(conv, Media::CS::CSYUV420P8_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF));
+			NEW_CLASSNN(conv, Media::CS::CSYUV420P8_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF));
 			return conv;
 		}
 		else if (srcFormat == FFMT_AYUV444_10)
 		{
-			NEW_CLASS(conv, Media::CS::CSAYUV444_10_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF));
+			NEW_CLASSNN(conv, Media::CS::CSAYUV444_10_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF));
 			return conv;
 		}
 		else if (srcFormat == FFMT_YUV444P10LEP)
 		{
-			NEW_CLASS(conv, Media::CS::CSYUV444P10LEP_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF));
+			NEW_CLASSNN(conv, Media::CS::CSYUV444P10LEP_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF));
 			return conv;
 		}
 	}
@@ -324,7 +324,7 @@ Optional<Media::CS::CSConverter> Media::CS::CSConverter::NewConverter(UInt32 src
 	{
 		if (Media::CS::CSYUV_Y8::IsSupported(srcFormat))
 		{
-			NEW_CLASS(conv, Media::CS::CSYUV_Y8(srcFormat));
+			NEW_CLASSNN(conv, Media::CS::CSYUV_Y8(srcFormat));
 			return conv;
 		}
 	}

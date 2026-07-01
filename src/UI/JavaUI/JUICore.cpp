@@ -101,7 +101,7 @@ void UI::JavaUI::JUICore::Exit()
 NN<Media::DrawEngine> UI::JavaUI::JUICore::CreateDrawEngine()
 {
 //	NN<Media::DrawEngine> deng = 0;
-//	NEW_CLASS(deng, Media::GTKDrawEngine());
+//	NEW_CLASSNN(deng, Media::GTKDrawEngine());
 	return Media::DrawEngineFactory::CreateDrawEngine();
 }
 

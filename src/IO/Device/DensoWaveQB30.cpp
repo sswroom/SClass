@@ -250,7 +250,7 @@ IO::Device::DensoWaveQB30::DensoWaveQB30(NN<IO::Stream> stm) : IO::CodeScanner(C
 {
 	this->stm = stm;
 	this->scanDelay = 1000;
-//	NEW_CLASS(this->nextTime, Data::DateTime());
+//	NEW_CLASSNN(this->nextTime, Data::DateTime());
 //	this->nextTime->SetCurrTimeUTC();
 
 	this->recvBuff = MemAllocArr(UInt8, RECVBUFFSIZE);
@@ -267,7 +267,7 @@ IO::Device::DensoWaveQB30::~DensoWaveQB30()
 	this->thread.BeginStop();
 	this->stm->Close();
 	this->thread.WaitForEnd();
-//	DEL_CLASS(this->nextTime);
+//	this->nextTime.Delete();
 	MemFreeArr(this->recvBuff);
 	this->stm.Delete();
 }

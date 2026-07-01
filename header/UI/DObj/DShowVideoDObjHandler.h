@@ -20,7 +20,7 @@ namespace UI
 			NN<Text::String> videoFileName;
 			Media::Decoder::VideoDecoderFinder vdecoders;
 			Media::VideoSource *decoder;
-			Media::ImageResizer *resizer;
+			NN<Media::ImageResizer> resizer;
 			Sync::Mutex frameMut;
 			Optional<Media::DrawImage> frameImg;
 

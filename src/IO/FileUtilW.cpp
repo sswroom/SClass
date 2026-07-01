@@ -179,7 +179,7 @@ Bool IO::FileUtil::IsSamePartition(UnsafeArray<const UTF8Char> file1, UnsafeArra
 
 typedef struct
 {
-	IO::FileStream *destStm;
+	NN<IO::FileStream> destStm;
 	UInt64 writeSize;
 	Optional<IO::ProgressHandler> progHdlr;
 	UInt64 fileSize;
@@ -187,8 +187,8 @@ typedef struct
 
 Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileExistAction fea, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
-	IO::FileStream *fs2;
-	IO::ActiveStreamReader *asr;
+	NN<IO::FileStream> fs2;
+	NN<IO::ActiveStreamReader> asr;
 	WChar wfile2[MAX_PATH];
 	Text::StrUTF8_WChar(wfile2, file2.v, 0);
 	if (fea == IO::FileUtil::FileExistAction::Fail)
@@ -206,15 +206,15 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 		}
 		if (fea == IO::FileUtil::FileExistAction::Continue)
 		{
-			NEW_CLASS(fs2, IO::FileStream(file2, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASSNN(fs2, IO::FileStream(file2, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 		}
 		else
 		{
-			NEW_CLASS(fs2, IO::FileStream(file2, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASSNN(fs2, IO::FileStream(file2, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 		}
 		if (fs2->IsError())
 		{
-			DEL_CLASS(fs2);
+			fs2.Delete();
 			return false;
 		}
 		fileSize = fs1.GetLength();
@@ -226,12 +226,12 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 			UInt64 destPos = fs2->GetPosition();
 			if (destPos > fileSize)
 			{
-				DEL_CLASS(fs2);
+				fs2.Delete();
 				return false;
 			}
 			else if (destPos == fileSize)
 			{
-				DEL_CLASS(fs2);
+				fs2.Delete();
 				return true;
 			}
 			else if (destPos > 0)
@@ -311,14 +311,14 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 			csess.progHdlr = progHdlr;
 			csess.fileSize = fileSize;
 
-			NEW_CLASS(asr, IO::ActiveStreamReader(IO::FileUtil::CopyHdlr, &csess, 1048576));
+			NEW_CLASSNN(asr, IO::ActiveStreamReader(IO::FileUtil::CopyHdlr, &csess, 1048576));
 			asr->ReadStream(fs1, bnt);
-			DEL_CLASS(asr);
+			asr.Delete();
 			writeSize = csess.writeSize;
 			fs1.GetFileTimes(ts1, ts2, ts3);
 			fs2->SetFileTimes(ts1, ts2, ts3);
 		}
-		DEL_CLASS(fs2);
+		fs2.Delete();
 	}
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(file1.v);
 	UInt32 attr = GetFileAttributesW(wptr.Ptr());

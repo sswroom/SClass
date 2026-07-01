@@ -34,23 +34,21 @@ namespace IO
 
 Optional<IO::Watchdog> IO::Watchdog::Create()
 {
-	IO::Watchdog *wd;
-	NEW_CLASS(wd, IO::WatchdogLinux());
+	NN<IO::Watchdog> wd;
+	NEW_CLASSNN(wd, IO::WatchdogLinux());
 	if (!wd->IsError())
 		return wd;
-	DEL_CLASS(wd);
-
-	return nullptr;
+	wd.Delete();
+		return nullptr;
 }
 
 Optional<IO::Watchdog> IO::Watchdog::Create(Int32 devNum)
 {
-	IO::Watchdog *wd;
-	NEW_CLASS(wd, IO::WatchdogLinux(devNum));
+	NN<IO::Watchdog> wd;
+	NEW_CLASSNN(wd, IO::WatchdogLinux(devNum));
 	if (!wd->IsError())
 		return wd;
-	DEL_CLASS(wd);
-
+	wd.Delete();
 	return nullptr;
 }
 

@@ -893,7 +893,7 @@ Text::CString Manage::CPUDB::X86CPUNameToModel(Text::CStringNN x86CPUName)
 
 Text::CString Manage::CPUDB::ParseCPUInfo(NN<IO::Stream> stm)
 {
-	Text::UTF8Reader *reader;
+	NN<Text::UTF8Reader> reader;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbHW;
 	Text::StringBuilderUTF8 sbVID;
@@ -906,7 +906,7 @@ Text::CString Manage::CPUDB::ParseCPUInfo(NN<IO::Stream> stm)
 	Int32 cpuModel = 0;
 	Int32 cpuStepping = 0;
 	UIntOS i;
-	NEW_CLASS(reader, Text::UTF8Reader(stm));
+	NEW_CLASSNN(reader, Text::UTF8Reader(stm));
 	while (true)
 	{
 		sb.ClearStr();
@@ -968,7 +968,7 @@ Text::CString Manage::CPUDB::ParseCPUInfo(NN<IO::Stream> stm)
 			sbModelName.AppendC(sb.ToString() + 13, sb.GetLength() - 13);
 		}
 	}
-	DEL_CLASS(reader);
+	reader.Delete();
 
 	if (sbVID.GetLength() > 0 && cpuFamily != 0 && cpuModel != 0 && cpuStepping != 0)
 	{

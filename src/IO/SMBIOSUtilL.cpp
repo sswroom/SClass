@@ -9,7 +9,7 @@
 
 Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 {
-	IO::SMBIOS *smbios;
+	NN<IO::SMBIOS> smbios;
 	UnsafeArrayOpt<UInt8> optdataBuff = nullptr;
 	UnsafeArray<UInt8> dataBuff;
 	UIntOS buffSize = 0;
@@ -113,7 +113,7 @@ Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 	}
 	if (optdataBuff.SetTo(dataBuff))
 	{
-		NEW_CLASS(smbios, IO::SMBIOS(dataBuff, buffSize, dataBuff));
+		NEW_CLASSNN(smbios, IO::SMBIOS(dataBuff, buffSize, dataBuff));
 		return smbios;
 	}
 

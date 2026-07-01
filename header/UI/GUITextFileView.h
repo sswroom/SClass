@@ -26,7 +26,7 @@ namespace UI
 		};
 
 		Data::ArrayListObj<Data::CallbackStorage<TextPosEvent>> textPosUpdHdlr;
-		IO::SeekableStream *fs;
+		Optional<IO::SeekableStream> fs;
 		UInt32 codePage;
 //		AnyType drawFont;
 		UIntOS lastLineCnt;
@@ -68,7 +68,7 @@ namespace UI
 		void UpdateCaretSel(Bool noRedraw);
 		void CopySelected();
 		UIntOS GetLineCharCnt(UIntOS lineNum);
-		void GetPosFromByteOfst(UInt64 byteOfst, UInt32 *txtPosX, UIntOS *txtPosY);
+		void GetPosFromByteOfst(UInt64 byteOfst, OutParam<UInt32> txtPosX, OutParam<UIntOS> txtPosY);
 
 		void EventTextPosUpdated();
 		void ClearFileStatus();

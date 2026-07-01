@@ -201,7 +201,7 @@ Optional<Math::Geometry::Polyline> Math::Geometry::Polyline::SplitByPoint(Math::
 	UIntOS minId = (UIntOS)this->GetPointNo(pt, isPoint, calPt, calZ, calM);
 
 	NN<Math::Geometry::LineString> lineString;
-	Math::Geometry::Polyline *newPL;
+	NN<Math::Geometry::Polyline> newPL;
 	
 	if (minId == (UIntOS)-1)
 		return nullptr;
@@ -215,7 +215,7 @@ Optional<Math::Geometry::Polyline> Math::Geometry::Polyline::SplitByPoint(Math::
 		{
 			if (i == 0)
 				return nullptr;
-			NEW_CLASS(newPL, Math::Geometry::Polyline(this->srid));
+			NEW_CLASSNN(newPL, Math::Geometry::Polyline(this->srid));
 			while (this->geometries.RemoveAt(i).SetTo(lineString))
 			{
 				newPL->AddGeometry(lineString);
@@ -226,7 +226,7 @@ Optional<Math::Geometry::Polyline> Math::Geometry::Polyline::SplitByPoint(Math::
 		{
 			if (i + 1 == this->geometries.GetCount())
 				return nullptr;
-			NEW_CLASS(newPL, Math::Geometry::Polyline(this->srid));
+			NEW_CLASSNN(newPL, Math::Geometry::Polyline(this->srid));
 			while (this->geometries.RemoveAt(i + 1).SetTo(lineString))
 			{
 				newPL->AddGeometry(lineString);
@@ -235,7 +235,7 @@ Optional<Math::Geometry::Polyline> Math::Geometry::Polyline::SplitByPoint(Math::
 		}
 		else if (minId < nPoint)
 		{
-			NEW_CLASS(newPL, Math::Geometry::Polyline(this->srid));
+			NEW_CLASSNN(newPL, Math::Geometry::Polyline(this->srid));
 			if (lineString->SplitByPoint(pt).SetTo(lineString))
 			{
 				newPL->AddGeometry(lineString);
@@ -607,7 +607,7 @@ IntOS Math::Geometry::Polyline::GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isP
 	if (this->nPtOfst > 1)
 		return 0;
 
-	Data::ArrayListDbl *outPoints;
+	NN<Data::ArrayListDbl> outPoints;
 	Double lastPtX = 0;
 	Double lastPtY = 0;
 	Double thisPtX = 0;
@@ -618,7 +618,7 @@ IntOS Math::Geometry::Polyline::GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isP
 	Double t2;
 	Double deg;
 	UIntOS i;
-	NEW_CLASS(outPoints, Data::ArrayListDbl());
+	NEW_CLASSNN(outPoints, Data::ArrayListDbl());
 
 	deg = Math_ArcTan2(this->pointArr[1].x - this->pointArr[0].x, this->pointArr[1].y - this->pointArr[0].y);
 	lastPtX = -Math_Cos(deg) * dist + this->pointArr[0].x;
@@ -724,10 +724,10 @@ IntOS Math::Geometry::Polyline::GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isP
 	outPoints->Add(lastPtX);
 	outPoints->Add(lastPtY);
 
-	Math::Geometry::Polygon *pg;
+	NN<Math::Geometry::Polygon> pg;
 	UIntOS nPoints;
 	Math::Coord2DDbl *pts;
-	NEW_CLASS(pg, Math::Geometry::Polygon(this->srid, 1, outPoints->GetCount() >> 1, false, false));
+	NEW_CLASSNN(pg, Math::Geometry::Polygon(this->srid, 1, outPoints->GetCount() >> 1, false, false));
 	pts = pg->GetPointList(nPoints);
 	i = 0;
 	while (i < nPoints)
@@ -736,6 +736,6 @@ IntOS Math::Geometry::Polyline::GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isP
 		pts[i].y = outPoints->GetItem((i << 1) + 1);
 		i++;
 	}
-	DEL_CLASS(outPoints);
+	outPoints.Delete();
 	return pg;
 }*/

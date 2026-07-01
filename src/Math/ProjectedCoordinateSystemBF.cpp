@@ -120,10 +120,10 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Ma
 	return totalDist;
 }
 
-Math::CoordinateSystem *Math::ProjectedCoordinateSystem::Clone()
+NN<Math::CoordinateSystem> Math::ProjectedCoordinateSystem::Clone()
 {
-	Math::CoordinateSystem *csys;
-	NEW_CLASS(csys, Math::ProjectedCoordinateSystem(this->sourceName, this->falseEasting, this->falseNorthing, this->centralMeridian, this->latitudeOfOrigin, this->scaleFactor, (Math::GeographicCoordinateSystem*)this->gcs->Clone()));
+	NN<Math::CoordinateSystem> csys;
+	NEW_CLASSNN(csys, Math::ProjectedCoordinateSystem(this->sourceName, this->falseEasting, this->falseNorthing, this->centralMeridian, this->latitudeOfOrigin, this->scaleFactor, (Math::GeographicCoordinateSystem*)this->gcs->Clone()));
 	return csys;
 }
 
@@ -254,22 +254,22 @@ Bool Math::ProjectedCoordinateSystemBF::SameProjection(NN<Math::ProjectedCoordin
 
 Optional<Math::ProjectedCoordinateSystemBF> Math::ProjectedCoordinateSystemBF::CreateCoordinateSystem(Math::CoordinateSystemManager::ProjCoordSysType pcst)
 {
-//	Math::ProjectedCoordinateSystemBF *csys;
-//	Math::GeographicCoordinateSystemBF *gcs;
+//	NN<Math::ProjectedCoordinateSystemBF> csys;
+//	NN<Math::GeographicCoordinateSystemBF> gcs;
 /*	switch (pcst)
 	{
 	case Math::ProjectedCoordinateSystem::PCST_HK80:
 		gcs = Math::GeographicCoordinateSystemBF::CreateCoordinateSystem(Math::GeographicCoordinateSystem::GCST_INTL1924);
-		NEW_CLASS(csys, Math::ProjectedCoordinateSystemBF(L"HK 1980 Grid", 836694.05, 819069.80, 114.17855555555555555555555555556, 22.312133333333333333333333333333, 1, -0.00152777777777778, 0.00244444444444444, gcs));
+		NEW_CLASSNN(csys, Math::ProjectedCoordinateSystemBF(L"HK 1980 Grid", 836694.05, 819069.80, 114.17855555555555555555555555556, 22.312133333333333333333333333333, 1, -0.00152777777777778, 0.00244444444444444, gcs));
 		return csys;
 	case Math::ProjectedCoordinateSystem::PCST_UK_NATIONAL_GRID:
 		gcs = Math::GeographicCoordinateSystemBF::CreateCoordinateSystem(Math::GeographicCoordinateSystem::GCST_AIRY1830);
-		NEW_CLASS(csys, Math::ProjectedCoordinateSystemBF(L"National Grid", 400000, -100000, -2, 49, 0.9996012717, 0, 0, gcs));
+		NEW_CLASSNN(csys, Math::ProjectedCoordinateSystemBF(L"National Grid", 400000, -100000, -2, 49, 0.9996012717, 0, 0, gcs));
 		return csys;
 	case Math::ProjectedCoordinateSystem::PCST_IRISH_NATIONAL_GRID:
 		gcs = Math::GeographicCoordinateSystemBF::CreateCoordinateSystem(Math::GeographicCoordinateSystem::GCST_AIRY1830M);
-		NEW_CLASS(csys, Math::ProjectedCoordinateSystemBF(L"Irish National Grid", 200000, 250000, -8, 53.5, 1.000035, 0, 0, gcs));
+		NEW_CLASSNN(csys, Math::ProjectedCoordinateSystemBF(L"Irish National Grid", 200000, 250000, -8, 53.5, 1.000035, 0, 0, gcs));
 		return csys;
 	}*/
-	return 0;
+	return nullptr;
 }

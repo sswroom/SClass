@@ -20,7 +20,7 @@ struct UI::GUIListView::ClassData
 	GtkWidget *treeView;
 	UIntOS colCnt;
 	Double *colSizes;
-	Data::ArrayListNN<MyRow> *rows;
+	NN<Data::ArrayListNN<MyRow>> rows;
 	UI::ListViewStyle lvstyle;
 	Bool noChgEvt;
 };
@@ -122,7 +122,7 @@ UI::GUIListView::GUIListView(NN<GUICore> ui, NN<GUIClientControl> parent, ListVi
 		g_signal_connect(tickRenderer, "toggled", G_CALLBACK(GUIListView_Toggled), this);
 	}
 	data->colCnt = colCount;
-	NEW_CLASS(data->rows, Data::ArrayListNN<MyRow>());
+	NEW_CLASSNN(data->rows, Data::ArrayListNN<MyRow>());
 	data->lvstyle = lvstyle;
 	this->clsData = data;
 	this->colCnt = 0;
@@ -148,7 +148,7 @@ UI::GUIListView::~GUIListView()
 		MemFreeNN(row);
 	}
 	MemFree(data->colSizes);
-	DEL_CLASS(data->rows);
+	data->rows.Delete();
 	MemFreeNN(data);
 }
 

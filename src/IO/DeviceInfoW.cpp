@@ -38,7 +38,7 @@ Text::String *IO::DeviceInfo::GetName()
 
 Optional<IO::Stream> IO::DeviceInfo::CreateStream()
 {
-	IO::DeviceStream *stm;
-	NEW_CLASS(stm, IO::DeviceStream(this->name->ToCString()));
+	NN<IO::DeviceStream> stm;
+	NEW_CLASSNN(stm, IO::DeviceStream(this->name->ToCString()));
 	return stm;
 }

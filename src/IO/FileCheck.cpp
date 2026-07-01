@@ -20,7 +20,8 @@ Optional<IO::FileCheck> IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto:
 	UTF8Char sbuff[1024];
 	UInt8 hashBuff[32];
 	NN<Crypto::Hash::HashAlgorithm> hash;
-	IO::FileCheck *fchk;
+	Optional<IO::FileCheck> fchk;
+	NN<IO::FileCheck> nnfchk;
 	IO::Path::PathType pt;
 	UInt64 fileSize;
 	ReadSess readSess;
@@ -37,12 +38,12 @@ Optional<IO::FileCheck> IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto:
 	pt = IO::Path::GetPathType(path);
 	if (pt == IO::Path::PathType::File)
 	{
-		NEW_CLASS(fchk, IO::FileCheck(path, chkType));
-
+		NEW_CLASSNN(nnfchk, IO::FileCheck(path, chkType));
+		fchk = nnfchk;
 		NEW_CLASSNN(fs, IO::FileStream(path, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
 		if (fs->IsError())
 		{
-			DEL_CLASS(fchk);
+			nnfchk.Delete();
 			fs.Delete();
 			hash.Delete();
 			return nullptr;
@@ -65,7 +66,7 @@ Optional<IO::FileCheck> IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto:
 			{
 				UIntOS i = path.LastIndexOf(IO::Path::PATH_SEPERATOR);
 				hash->GetValue(hashBuff);
-				fchk->AddEntry(path.Substring(i + 1), hashBuff);
+				nnfchk->AddEntry(path.Substring(i + 1), hashBuff);
 			}
 			else if (!skipError)
 			{
@@ -74,7 +75,7 @@ Optional<IO::FileCheck> IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto:
 				{
 					nnprogress->ProgressEnd();
 				}
-				DEL_CLASS(fchk);
+				nnfchk.Delete();
 				hash.Delete();
 				return nullptr;
 			}
@@ -87,7 +88,8 @@ Optional<IO::FileCheck> IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto:
 	}
 	else if (pt == IO::Path::PathType::Directory)
 	{
-		NEW_CLASS(fchk, IO::FileCheck(path, chkType));
+		NEW_CLASSNN(nnfchk, IO::FileCheck(path, chkType));
+		fchk = nnfchk;
 		UIntOS i = (UIntOS)(path.ConcatTo(&sbuff[2]) - sbuff);
 		sbuff[0] = '.';
 		sbuff[1] = IO::Path::PATH_SEPERATOR;
@@ -100,18 +102,16 @@ Optional<IO::FileCheck> IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto:
 		i = Text::StrLastIndexOfCharC(sbuff, i, IO::Path::PATH_SEPERATOR);
 		if (i < 2)
 		{
-			if (CheckDir(reader, sbuff, &sbuff[i + 1], hash, fchk, progress, skipError))
+			if (CheckDir(reader, sbuff, &sbuff[i + 1], hash, nnfchk, progress, skipError))
 			{
-				DEL_CLASS(fchk);
-				fchk = 0;
+				fchk.Delete();
 			}
 		}
 		else
 		{
-			if (CheckDir(reader, &sbuff[2], &sbuff[i + 1], hash, fchk, progress, skipError))
+			if (CheckDir(reader, &sbuff[2], &sbuff[i + 1], hash, nnfchk, progress, skipError))
 			{
-				DEL_CLASS(fchk);
-				fchk = 0;
+				fchk.Delete();
 			}
 		}
 		if (progress.SetTo(nnprogress))
@@ -121,7 +121,7 @@ Optional<IO::FileCheck> IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto:
 	}
 	else
 	{
-		fchk = 0;
+		fchk = nullptr;
 	}
 	hash.Delete();
 	return fchk;
@@ -139,7 +139,7 @@ void __stdcall IO::FileCheck::CheckData(Data::ByteArrayR buff, AnyType userData)
 	}
 }
 
-Bool IO::FileCheck::CheckDir(NN<IO::ActiveStreamReader> reader, UnsafeArray<UTF8Char> fullPath, UnsafeArray<UTF8Char> hashPath, NN<Crypto::Hash::HashAlgorithm> hash, IO::FileCheck *fchk, Optional<IO::ProgressHandler> progress, Bool skipError)
+Bool IO::FileCheck::CheckDir(NN<IO::ActiveStreamReader> reader, UnsafeArray<UTF8Char> fullPath, UnsafeArray<UTF8Char> hashPath, NN<Crypto::Hash::HashAlgorithm> hash, NN<IO::FileCheck> fchk, Optional<IO::ProgressHandler> progress, Bool skipError)
 {
 	UnsafeArray<UTF8Char> sptr = &hashPath[Text::StrCharCnt(hashPath)];
 	UnsafeArray<UTF8Char> sptr2;

@@ -10,7 +10,7 @@ UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Optional<Media::D
 	this->bmp = bmp;
 	this->imgList = nullptr;
 	this->frameDelay = 500;
-	this->clk = 0;
+	this->clk = nullptr;
 }
 
 UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<IntOS> tl, NN<Parser::ParserList> parsers) : DirectObject(tl)
@@ -18,7 +18,7 @@ UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Text::CString fil
 	this->deng = deng;
 	this->noRelease = false;
 	this->bmp = nullptr;
-	this->clk = 0;
+	this->clk = nullptr;
 	if (fileName.leng == 0)
 	{
 		this->imgList = nullptr;
@@ -30,7 +30,7 @@ UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Text::CString fil
 		this->frameDelay = 500;
 		this->startTime = 0;
 		this->lastFrameNum = -1;
-		NEW_CLASS(this->clk, Manage::HiResClock());
+		NEW_CLASSOPT(this->clk, Manage::HiResClock());
 	}
 }
 
@@ -49,17 +49,18 @@ UI::DObj::OverlayDObj::~OverlayDObj()
 	{
 		this->imgList.Delete();
 	}
-	SDEL_CLASS(this->clk);
+	this->clk.Delete();
 }
 
 Bool UI::DObj::OverlayDObj::IsChanged()
 {
+	NN<Manage::HiResClock> clk;
 	NN<Media::ImageList> imgList;
 	if (this->bmp.NotNull())
 	{
 		return false;
 	}
-	else if (this->imgList.SetTo(imgList))
+	else if (this->imgList.SetTo(imgList) && this->clk.SetTo(clk))
 	{
 		if (imgList->GetCount() <= 1)
 			return false;
@@ -84,12 +85,13 @@ void UI::DObj::OverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 {
 	NN<Media::DrawImage> bmp;
 	NN<Media::ImageList> imgList;
+	NN<Manage::HiResClock> clk;
 	if (this->bmp.SetTo(bmp))
 	{
 		Math::Coord2DDbl tl = GetCurrPos().ToDouble();
 		dimg->DrawImagePt(bmp, tl);
 	}
-	else if (this->imgList.SetTo(imgList))
+	else if (this->imgList.SetTo(imgList) && this->clk.SetTo(clk))
 	{
 		UIntOS frameNum;
 		if (imgList->GetCount() <= 1)

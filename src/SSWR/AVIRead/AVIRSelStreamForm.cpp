@@ -527,7 +527,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 		UInt16 ver3;
 		UInt16 ver4;
 
-		if (siLabDriver->GetDLLVersion(&ver1, &ver2, &ver3, &ver4))
+		if (siLabDriver->GetDLLVersion(ver1, ver2, ver3, ver4))
 		{
 			sb.ClearStr();
 			sb.AppendU32(ver1);
@@ -539,7 +539,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 			sb.AppendU32(ver4);
 			this->txtDLLVer->SetText(sb.ToCString());
 		}
-		if (siLabDriver->GetDriverVersion(&ver1, &ver2, &ver3, &ver4))
+		if (siLabDriver->GetDriverVersion(ver1, ver2, ver3, ver4))
 		{
 			sb.ClearStr();
 			sb.AppendU32(ver1);
@@ -561,12 +561,12 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 			sptr = Text::StrUIntOS(sbuff, i);
 			k = this->lvSLPort->AddItem(CSTRP(sbuff, sptr), (void*)(IntOS)i);
 			v = 0;
-			if (siLabDriver->GetDeviceVID((UInt32)i, &v))
+			if (siLabDriver->GetDeviceVID((UInt32)i, v))
 			{
 				sptr = Text::StrHexVal16(sbuff, (UInt16)v);
 				this->lvSLPort->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 			}
-			if (siLabDriver->GetDevicePID((UInt32)i, &v))
+			if (siLabDriver->GetDevicePID((UInt32)i,   v))
 			{
 				sptr = Text::StrHexVal16(sbuff, (UInt16)v);
 				this->lvSLPort->SetSubItem(k, 2, CSTRP(sbuff, sptr));

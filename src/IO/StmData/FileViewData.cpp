@@ -7,17 +7,19 @@
 IO::StmData::FileViewData::FileViewData(UnsafeArray<const UTF8Char> fname)
 {
 	fdh = 0;
-	IO::ViewFileBuffer *file;
-	NEW_CLASS(file, IO::ViewFileBuffer(fname));
+	NN<IO::ViewFileBuffer> file;
+	NEW_CLASSNN(file, IO::ViewFileBuffer(fname));
 	if (file->GetPointer().IsNull())
 	{
-		DEL_CLASS(file);
+		file.Delete();
 		this->dataLength = 0;
 		this->dataOffset = 0;
 	}
 	else
 	{
-		NEW_CLASS(fdh, IO::StmData::FileViewData::FILEVIEWDATAHANDLE());
+		NN<FILEVIEWDATAHANDLE> fdh;
+		NEW_CLASSNN(fdh, IO::StmData::FileViewData::FILEVIEWDATAHANDLE());
+		this->fdh = fdh;
 		fdh->file = file;
 		dataLength = fdh->fileLength = file->GetLength();
 		fdh->currentOffset = 0;
@@ -43,6 +45,7 @@ IO::StmData::FileViewData::FileViewData(UnsafeArray<const UTF8Char> fname)
 
 IO::StmData::FileViewData::FileViewData(NN<const IO::StmData::FileViewData> fd, UInt64 offset, UInt64 length)
 {
+	this->fdh = nullptr;
 	dataOffset = offset + fd->dataOffset;
 	UInt64 endOffset = fd->dataOffset + fd->dataLength;
 	dataLength = length;
@@ -55,8 +58,12 @@ IO::StmData::FileViewData::FileViewData(NN<const IO::StmData::FileViewData> fd, 
 	{
 		dataLength = endOffset - dataOffset;
 	}
-	fdh = fd->fdh;
-	fdh->objectCnt++;
+	NN<FILEVIEWDATAHANDLE> fdh;
+	if (fd->fdh.SetTo(fdh))
+	{
+		this->fdh = fdh;
+		fdh->objectCnt++;
+	}
 }
 
 IO::StmData::FileViewData::~FileViewData()
@@ -66,7 +73,8 @@ IO::StmData::FileViewData::~FileViewData()
 
 UIntOS IO::StmData::FileViewData::GetRealData(UInt64 offset, UIntOS length, Data::ByteArray buffer)
 {
-	if (fdh == 0)
+	NN<FILEVIEWDATAHANDLE> fdh;
+	if (!this->fdh.SetTo(fdh))
 		return 0;
 	Sync::MutexUsage mutUsage(fdh->mut);
 	UInt64 startOfst = dataOffset + offset;
@@ -93,21 +101,24 @@ UInt64 IO::StmData::FileViewData::GetDataSize() const
 
 Text::CString IO::StmData::FileViewData::GetShortName() const
 {
-	if (fdh == 0)
+	NN<FILEVIEWDATAHANDLE> fdh;
+	if (!this->fdh.SetTo(fdh))
 		return nullptr;
 	return fdh->fileName;
 }
 
 NN<Text::String> IO::StmData::FileViewData::GetFullName() const
 {
-	if (fdh == 0)
+	NN<FILEVIEWDATAHANDLE> fdh;
+	if (!this->fdh.SetTo(fdh))
 		return Text::String::NewEmpty();
 	return fdh->fullName;
 }
 
 UnsafeArrayOpt<const UInt8> IO::StmData::FileViewData::GetPointer() const
 {
-	if (fdh == 0)
+	NN<FILEVIEWDATAHANDLE> fdh;
+	if (!this->fdh.SetTo(fdh))
 		return nullptr;
 	return &fdh->fptr[this->dataOffset];
 }
@@ -136,14 +147,15 @@ UIntOS IO::StmData::FileViewData::GetSeekCount() const
 
 void IO::StmData::FileViewData::Close()
 {
-	if (fdh)
+	NN<FILEVIEWDATAHANDLE> fdh;
+	if (this->fdh.SetTo(fdh))
 	{
 		if (--(fdh->objectCnt) == 0)
 		{
-			DEL_CLASS(fdh->file);
+			fdh->file.Delete();
 			fdh->fullName->Release();
-			DEL_CLASS(fdh);
+			fdh.Delete();
 		}
 	}
-	fdh = 0;
+	this->fdh = nullptr;
 }

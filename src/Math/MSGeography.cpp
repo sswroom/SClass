@@ -29,8 +29,8 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 			{
 				return nullptr;
 			}
-			Math::Geometry::Point *pt;
-			NEW_CLASS(pt, Math::Geometry::Point(srid, ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14])));
+			NN<Math::Geometry::Point> pt;
+			NEW_CLASSNN(pt, Math::Geometry::Point(srid, ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14])));
 			return pt;
 		}
 		else if (buffPtr[5] == 0x0D) //Point Z
@@ -39,8 +39,8 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 			{
 				return nullptr;
 			}
-			Math::Geometry::Point *pt;
-			NEW_CLASS(pt, Math::Geometry::PointZ(srid, ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14]), ReadDouble(&buffPtr[22])));
+			NN<Math::Geometry::PointZ> pt;
+			NEW_CLASSNN(pt, Math::Geometry::PointZ(srid, ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14]), ReadDouble(&buffPtr[22])));
 			return pt;
 		}
 		else if (buffPtr[5] == 4 || buffPtr[5] == 0) //Shape 2D
@@ -93,8 +93,8 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 					printf("MSGeography: Type 4-1 must be single point\r\n");
 					return nullptr;
 				}
-				Math::Geometry::Point *pt;
-				NEW_CLASS(pt, Math::Geometry::Point(srid, ReadDouble(&pointPtr[0]), ReadDouble(&pointPtr[8])));
+				NN<Math::Geometry::Point> pt;
+				NEW_CLASSNN(pt, Math::Geometry::Point(srid, ReadDouble(&pointPtr[0]), ReadDouble(&pointPtr[8])));
 				return pt;
 			}
 			else if (shapePtr[8] == 2)
@@ -104,14 +104,14 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 					printf("MSGeography: Type 4-2 must be single shape\r\n");
 					return nullptr;
 				}
-				Math::Geometry::Polyline *pl;
+				NN<Math::Geometry::Polyline> pl;
 				NN<Math::Geometry::LineString> lineString;
 				UIntOS i;
 				UIntOS j;
 				UIntOS k;
 				UIntOS l;
 				UnsafeArray<Math::Coord2DDbl> points;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+				NEW_CLASSNN(pl, Math::Geometry::Polyline(srid));
 				if (nFigures <= 1)
 				{
 					NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, nPoints, false, false));
@@ -160,13 +160,13 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 					printf("MSGeography: Type 4-3 must be single shape\r\n");
 					return nullptr;
 				}
-				Math::Geometry::Polygon *pg;
+				NN<Math::Geometry::Polygon> pg;
 				NN<Math::Geometry::LinearRing> lr;
 				UIntOS i;
 				UIntOS j;
 				UIntOS k;
 				UIntOS l;
-				NEW_CLASS(pg, Math::Geometry::Polygon(srid));
+				NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
 				j = 0;
 				i = 0;
 				while (i < nFigures)
@@ -191,14 +191,14 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 			}
 			else if (shapePtr[8] == 5) //Multilinestring
 			{
-				Math::Geometry::Polyline *pl;
+				NN<Math::Geometry::Polyline> pl;
 				NN<Math::Geometry::LineString> lineString;
 				UIntOS i;
 				UIntOS j;
 				UIntOS k;
 				UIntOS l;
 				UnsafeArray<Math::Coord2DDbl> points;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+				NEW_CLASSNN(pl, Math::Geometry::Polyline(srid));
 				if (nFigures <= 1)
 				{
 					NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, nPoints, false, false));
@@ -242,14 +242,14 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 			}
 			else if (shapePtr[8] == 6) //MultiPolygon
 			{
-				Math::Geometry::MultiPolygon *mpg;
+				NN<Math::Geometry::MultiPolygon> mpg;
 				NN<Math::Geometry::Polygon> pg;
 				NN<Math::Geometry::LinearRing> lr;
 				UIntOS i;
 				UIntOS j;
 				UIntOS k;
 				UIntOS l;
-				NEW_CLASS(mpg, Math::Geometry::MultiPolygon(srid));
+				NEW_CLASSNN(mpg, Math::Geometry::MultiPolygon(srid));
 				if (nFigures == 0)
 					nFigures = 1;
 				i = 0;
@@ -339,10 +339,10 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 					printf("MSGeography: Type 5-2, Multi shape not supported\r\n");
 					return nullptr;
 				}
-				Math::Geometry::LineString *pl;
+				NN<Math::Geometry::LineString> pl;
 				UIntOS i;
 				UIntOS j;
-				NEW_CLASS(pl, Math::Geometry::LineString(srid, nPoints, true, false));
+				NEW_CLASSNN(pl, Math::Geometry::LineString(srid, nPoints, true, false));
 				UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(j);
 				UnsafeArray<Double> zList;
 				i = 0;
@@ -374,7 +374,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 					printf("MSGeography: Type 5-3, Multi shape not supported\r\n");
 					return nullptr;
 				}
-				Math::Geometry::Polygon *pg;
+				NN<Math::Geometry::Polygon> pg;
 				NN<Math::Geometry::LinearRing> lr;
 				UIntOS i;
 				UIntOS j;
@@ -383,7 +383,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 				const UInt8 *zPtr = pointPtr + nPoints * 16;
 				if (nFigures == 0)
 					nFigures = 1;
-				NEW_CLASS(pg, Math::Geometry::Polygon(srid));
+				NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
 				i = 0;
 				j = 0;
 				while (i < nFigures)
@@ -414,7 +414,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 			else if (shapePtr[8] == 5)
 			{
 				const UInt8 *zPtr = pointPtr + nPoints * 16;
-				Math::Geometry::Polyline *pl;
+				NN<Math::Geometry::Polyline> pl;
 				NN<Math::Geometry::LineString> lineString;
 				UIntOS i;
 				UIntOS j;
@@ -422,7 +422,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 				UIntOS l;
 				UnsafeArray<Math::Coord2DDbl> points;
 				UnsafeArray<Double> zArr;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+				NEW_CLASSNN(pl, Math::Geometry::Polyline(srid));
 				if (nFigures <= 1)
 				{
 					NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, nPoints, true, false));
@@ -474,8 +474,8 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 			}
 			else if (shapePtr[8] == 6)
 			{
-				Math::Geometry::MultiPolygon *mpg;
-				NEW_CLASS(mpg, Math::Geometry::MultiPolygon(srid));
+				NN<Math::Geometry::MultiPolygon> mpg;
+				NEW_CLASSNN(mpg, Math::Geometry::MultiPolygon(srid));
 				shapePtr += 9;
 				UIntOS thisFigure;
 				UIntOS nextFigure = ReadUInt32(&shapePtr[4]);
@@ -581,10 +581,10 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 					printf("MSGeography: Type 7-2, Multi shape not supported\r\n");
 					return nullptr;
 				}
-				Math::Geometry::LineString *pl;
+				NN<Math::Geometry::LineString> pl;
 				UIntOS i;
 				UIntOS j;
-				NEW_CLASS(pl, Math::Geometry::LineString(srid, nPoints, true, true));
+				NEW_CLASSNN(pl, Math::Geometry::LineString(srid, nPoints, true, true));
 				UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(j);
 				UnsafeArray<Double> zList;
 				UnsafeArray<Double> mList;
@@ -630,10 +630,10 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 					printf("MSGeography: Type 7: shape buff: %s\r\n", sb.ToString());
 					return 0;
 				}
-				Math::Geometry::Polygon *pg;
+				NN<Math::Geometry::Polygon> pg;
 				UIntOS i;
 				UIntOS j;
-				NEW_CLASS(pg, Math::Geometry::Polygon(srid, nFigures, nPoints, true, false));
+				NEW_CLASSNN(pg, Math::Geometry::Polygon(srid, nFigures, nPoints, true, false));
 				Math::Coord2DDbl *points = pg->GetPointList(&j);
 				Double *zList = pg->GetZList(&j);
 				i = 0;
@@ -665,7 +665,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 			{
 				const UInt8 *zPtr = pointPtr + nPoints * 16;
 				const UInt8 *mPtr = zPtr + nPoints * 8;
-				Math::Geometry::Polyline *pl;
+				NN<Math::Geometry::Polyline> pl;
 				NN<Math::Geometry::LineString> lineString;
 				UIntOS i;
 				UIntOS j;
@@ -674,7 +674,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 				UnsafeArray<Math::Coord2DDbl> points;
 				UnsafeArray<Double> zArr;
 				UnsafeArray<Double> mArr;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+				NEW_CLASSNN(pl, Math::Geometry::Polyline(srid));
 				if (nFigures <= 1)
 				{
 					NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, nPoints, true, true));
@@ -738,8 +738,8 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 				printf("MSGeography: Type 20, buffSize too short: %d\r\n", (UInt32)buffSize);
 				return nullptr;
 			}
-			Math::Geometry::LineString *pl;
-			NEW_CLASS(pl, Math::Geometry::LineString(srid, 2, false, false));
+			NN<Math::Geometry::LineString> pl;
+			NEW_CLASSNN(pl, Math::Geometry::LineString(srid, 2, false, false));
 			UIntOS j;
 			UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(j);
 			points[0] = Math::Coord2DDbl(ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14]));
@@ -752,8 +752,8 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 			{
 				return nullptr;
 			}
-			Math::Geometry::LineString *pl;
-			NEW_CLASS(pl, Math::Geometry::LineString(srid, 2, true, false));
+			NN<Math::Geometry::LineString> pl;
+			NEW_CLASSNN(pl, Math::Geometry::LineString(srid, 2, true, false));
 			UIntOS j;
 			UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(j);
 			UnsafeArray<Double> zList;
@@ -767,7 +767,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 			}
 			else
 			{
-				DEL_CLASS(pl);
+				pl.Delete();
 				return nullptr;
 			}
 		}
@@ -777,8 +777,8 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 			{
 				return nullptr;
 			}
-			Math::Geometry::LineString *pl;
-			NEW_CLASS(pl, Math::Geometry::LineString(srid, 2, true, true));
+			NN<Math::Geometry::LineString> pl;
+			NEW_CLASSNN(pl, Math::Geometry::LineString(srid, 2, true, true));
 			UIntOS j;
 			UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(j);
 			UnsafeArray<Double> zList;
@@ -795,7 +795,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(UnsafeArray<co
 			}
 			else
 			{
-				DEL_CLASS(pl);
+				pl.Delete();
 				return nullptr;
 			}
 		}

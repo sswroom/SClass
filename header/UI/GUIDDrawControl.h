@@ -27,14 +27,14 @@ namespace UI
 
 		NN<ClassData> clsData;
 		Optional<UI::GUIForm> rootForm;
-		Media::ImageCopy *imgCopy;
+		Optional<Media::ImageCopy> imgCopy;
 
 		Sync::Event drawEvt;
 		Optional<MonitorHandle> surfaceMon;
 		Optional<Media::MonitorSurface> primarySurface;
 		Optional<Media::MonitorSurface> buffSurface;
-		IO::Stream *debugFS;
-		IO::Writer *debugWriter;
+		Optional<IO::Stream> debugFS;
+		Optional<IO::Writer> debugWriter;
 		UInt32 joystickId;
 		UInt32 jsLastButtons;
 		Bool focusing;

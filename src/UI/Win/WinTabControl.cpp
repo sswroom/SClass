@@ -111,7 +111,7 @@ NN<UI::GUITabPage> UI::Win::WinTabControl::AddTabPage(NN<Text::String> tabName)
 	index = (UIntOS)SendMessageW((HWND)this->hwnd.OrNull(), TCM_INSERTITEMW, this->tabPages.GetCount(), (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
 	NN<UI::GUITabPage> page;
-//		NEW_CLASS(page, UI::GUITabPage(this, index));
+//		NEW_CLASSNN(page, UI::GUITabPage(this, index));
 	NEW_CLASSNN(page, UI::GUITabPage(this->ui, nullptr, *this, index));
 	page->SetDPI(this->hdpi, this->ddpi);
 	this->tabPages.Add(page);
@@ -134,7 +134,7 @@ NN<UI::GUITabPage> UI::Win::WinTabControl::AddTabPage(Text::CStringNN tabName)
 	index = (UIntOS)SendMessageW((HWND)this->hwnd.OrNull(), TCM_INSERTITEMW, this->tabPages.GetCount(), (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
 	NN<UI::GUITabPage> page;
-//		NEW_CLASS(page, UI::GUITabPage(this, index));
+//		NEW_CLASSNN(page, UI::GUITabPage(this, index));
 	NEW_CLASSNN(page, UI::GUITabPage(this->ui, nullptr, *this, index));
 	page->SetDPI(this->hdpi, this->ddpi);
 	this->tabPages.Add(page);

@@ -15,13 +15,13 @@ Optional<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>
 	NN<DB::DBReader> r;
 	if (currDB->QueryTableData(nullptr, tableName->ToCString(), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
-		Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>> *nameArr;
+		NN<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> nameArr;
 		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> names;
 		UIntOS colCnt = this->colNames.GetCount();
 		UIntOS i;
 		Int32 objId;
 
-		NEW_CLASS(nameArr, Data::Int32FastMapObj<UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>());
+		NEW_CLASSNN(nameArr, Data::Int32FastMapObj<UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>());
 		while (r->ReadNext())
 		{
 			objId = r->GetInt32(this->objIdCol);
@@ -390,8 +390,8 @@ Optional<DB::DBReader> Map::FileGDBLayer::QueryTableData(Text::CString schemaNam
 	NN<DB::DBReader> rdr;
 	if (currDB->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition).SetTo(rdr))
 	{
-		Map::FileGDBLReader *r;
-		NEW_CLASS(r, Map::FileGDBLReader(currDB, rdr, mutUsage));
+		NN<Map::FileGDBLReader> r;
+		NEW_CLASSNN(r, Map::FileGDBLReader(currDB, rdr, mutUsage));
 		return r;
 	}
 	mutUsage.Delete();

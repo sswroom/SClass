@@ -41,7 +41,7 @@ namespace IO
 	private:
 		ZIPBuilder zip;
 		UIntOS threadCnt;
-		Sync::Thread **threads;
+		UnsafeArray<NN<Sync::Thread>> threads;
 		Bool toStop;
 		Sync::Event mainEvt;
 		Data::SyncLinkedList taskList;

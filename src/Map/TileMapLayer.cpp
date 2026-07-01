@@ -505,7 +505,7 @@ void Map::TileMapLayer::EndGetObject(NN<GetObjectSess> session)
 Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	NN<CachedImage> cimg;
-	Math::Geometry::VectorImage *vimg;
+	NN<Math::Geometry::VectorImage> vimg;
 	IntOS i;
 	UIntOS k;
 	Optional<Media::ImageList> imgList;
@@ -531,7 +531,7 @@ Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObj
 			return nullptr;
 		}
 		sptr = this->tileMap->GetTileImageURL(sbuff, cimg->level, tileId).Or(sbuff);
-		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, cimg->tl, cimg->br, cimg->br - cimg->tl, false, {sbuff, (UIntOS)(sptr - sbuff)}, 0, 0));
+		NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, cimg->tl, cimg->br, cimg->br - cimg->tl, false, {sbuff, (UIntOS)(sptr - sbuff)}, 0, 0));
 		return vimg;
 	}
 
@@ -559,7 +559,7 @@ Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObj
 		mutUsage.EndUse();
 
 		sptr = this->tileMap->GetTileImageURL(sbuff, level, tileId).Or(sbuff);
-		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, cimg->tl, cimg->br, cimg->br - cimg->tl, false, {sbuff, (UIntOS)(sptr - sbuff)}, 0, 0));
+		NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, cimg->tl, cimg->br, cimg->br - cimg->tl, false, {sbuff, (UIntOS)(sptr - sbuff)}, 0, 0));
 		return vimg;
 	}
 	else

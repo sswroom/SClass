@@ -1,14 +1,16 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListNN.hpp"
-#include "Sync/Event.h"
-#include "Sync/Mutex.h"
-#include "Text/MyString.h"
-#include "Text/Encoding.h"
-#include "IO/Stream.h"
 #include "IO/FileStream.h"
+#include "IO/Stream.h"
 #include "IO/StreamReader.h"
 #include "Map/MapLayer.h"
+#include "Sync/Event.h"
+#include "Sync/Mutex.h"
+#include "Text/Encoding.h"
+#include "Text/MyString.h"
+#include "Text/MyStringW.h"
+
 namespace Map
 {
 	typedef struct
@@ -44,29 +46,29 @@ Int32 Map::MapLayer::Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Do
 	WChar *baseDir;
 	WChar *strs[10];
 	WChar *wptr;
-	IO::FileStream *fstm;
-	IO::StreamReader *rdr;
+	NN<IO::FileStream> fstm;
+	NN<IO::StreamReader> rdr;
 	Int32 maxScale;
 	Int32 minScale;
 	Int32 thisLine;
 	Int32 i;
 	Int32 lastLine = -1;
-	Data::ArrayListNN<MAP_LINE_STYLE> *lastLines;
+	NN<Data::ArrayListNN<MAP_LINE_STYLE>> lastLines;
 	Int32 lastFont = -1;
-	Data::ArrayListNN<MAP_FONT_STYLE> *lastFonts;
+	NN<Data::ArrayListNN<MAP_FONT_STYLE>> lastFonts;
 	NN<MAP_LINE_STYLE> currLine;
 	MAP_FONT_STYLE *currFont;
 	Bool drawn = false;
 
-	NEW_CLASS(lastLines, Data::ArrayListNN<MAP_LINE_STYLE>());
-	NEW_CLASS(lastFonts, Data::ArrayListNN<MAP_FONT_STYLE>());
+	NEW_CLASSNN(lastLines, Data::ArrayListNN<MAP_LINE_STYLE>());
+	NEW_CLASSNN(lastFonts, Data::ArrayListNN<MAP_FONT_STYLE>());
 
 
 	wptr = Text::StrConcat(fileName, L"MapLayer_");
 	wptr = Text::StrConcat(wptr, lang);
 	wptr = Text::StrConcat(wptr, L".txt");
 //	debugMut->Lock();
-	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone));
+	NEW_CLASSNN(fstm, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone));
 	if (fstm->IsError())
 	{
 	}
@@ -78,7 +80,7 @@ Int32 Map::MapLayer::Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Do
 		Double spd;
 
 		void *map;
-		NEW_CLASS(rdr, IO::StreamReader(fstm));
+		NEW_CLASSNN(rdr, IO::StreamReader(fstm));
 		while (rdr->ReadLine(lineBuff))
 		{
 			IntOS strCnt;

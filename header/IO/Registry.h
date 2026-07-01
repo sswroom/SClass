@@ -1,5 +1,6 @@
 #ifndef _SM_IO_REGISTRY
 #define _SM_IO_REGISTRY
+#include "AnyType.h"
 
 namespace IO
 {
@@ -15,12 +16,12 @@ namespace IO
 	private:
 		struct ClassData;
 	
-		static void *thisRegistryFile;
-		static void *allRegistryFile;
-		ClassData *clsData;
+		static AnyType thisRegistryFile;
+		static AnyType allRegistryFile;
+		NN<ClassData> clsData;
 
-		static void *OpenUserType(RegistryUser usr);
-		static void CloseInternal(void *reg);
+		static AnyType OpenUserType(RegistryUser usr);
+		static void CloseInternal(AnyType reg);
 	public:
 		static Optional<Registry> OpenSoftware(RegistryUser usr, UnsafeArray<const WChar> compName, UnsafeArray<const WChar> appName);
 		static Optional<Registry> OpenSoftware(RegistryUser usr, UnsafeArray<const WChar> compName);

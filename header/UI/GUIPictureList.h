@@ -17,7 +17,7 @@ namespace UI
 		static Int32 useCnt;
 		Data::ArrayListNN<Media::DrawImage> imgList;
 		UIntOS selectedIndex;
-		Media::ImageResizer *resizer;
+		NN<Media::ImageResizer> resizer;
 		Math::Size2D<UIntOS> iconSize;
 		Bool hasBorder;
 

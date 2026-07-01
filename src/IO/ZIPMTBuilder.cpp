@@ -88,12 +88,12 @@ IO::ZIPMTBuilder::ZIPMTBuilder(NN<IO::SeekableStream> stm, IO::ZIPOS os) : zip(s
 	UnsafeArray<UTF8Char> sptr;
 	this->toStop = false;
 	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
-	this->threads = MemAlloc(Sync::Thread*, this->threadCnt);
+	this->threads = MemAllocArr(NN<Sync::Thread>, this->threadCnt);
 	UIntOS i = this->threadCnt;
 	while (i-- > 0)
 	{
 		sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("ZIPMTBuilder")), i);
-		NEW_CLASS(this->threads[i], Sync::Thread(ThreadProc, this, CSTRP(sbuff, sptr)));
+		NEW_CLASSNN(this->threads[i], Sync::Thread(ThreadProc, this, CSTRP(sbuff, sptr)));
 		this->threads[i]->Start();
 	}
 }
@@ -110,9 +110,9 @@ IO::ZIPMTBuilder::~ZIPMTBuilder()
 	while (i-- > 0)
 	{
 		this->threads[i]->WaitForEnd();
-		DEL_CLASS(this->threads[i]);
+		this->threads[i].Delete();
 	}
-	MemFree(this->threads);
+	MemFreeArr(this->threads);
 }
 
 Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NN<IO::SeekableStream> stm, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Deflater::CompLevel compLevel, UInt32 unixAttr)

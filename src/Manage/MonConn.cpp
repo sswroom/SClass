@@ -127,7 +127,10 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(AnyType conn)
 	NN<Manage::MonConn> me = conn.GetNN<Manage::MonConn>();
 	UIntOS buffSize;
 	NN<Net::TCPClient> cli;
+	NN<Sync::Event> connREvt;
+	NN<Sync::Event> connTEvt;
 	me->ConnRRunning = true;
+	if (me->connREvt.SetTo(connREvt) && me->connTEvt.SetTo(connTEvt))
 	{
 		Data::ByteBuffer dataBuff(3000);
 
@@ -174,7 +177,7 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(AnyType conn)
 										me->cmdList.RemoveAt(0);
 										MemFreeArr(lastCmd);
 										me->requesting = false;
-										me->connTEvt->Set();
+										connTEvt->Set();
 
 
 										if (cmdType == 0x8000)
@@ -207,7 +210,7 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(AnyType conn)
 			}
 			else
 			{
-				me->connREvt->Wait(1000);
+				connREvt->Wait(1000);
 			}
 		}
 		me->cli.Delete();
@@ -222,51 +225,56 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(AnyType conn)
 	NN<Manage::MonConn> me = conn.GetNN<Manage::MonConn>();
 	UnsafeArray<UInt8> data;
 	NN<Net::TCPClient> cli;
+	NN<Sync::Event> connTEvt;
 	me->ConnTRunning = true;
-	while (true)
+	if (me->connTEvt.SetTo(connTEvt))
 	{
-		if (me->ToStop)
+		while (true)
 		{
-			if (me->cmdList.GetCount() == 0)
-				break;
-		}
-
-		if (me->cli.SetTo(cli) && !me->cliErr)
-		{
-			Data::DateTime currTime;
-			currTime.SetCurrTimeUTC();
-			if (me->requesting)
+			if (me->ToStop)
 			{
-				if (currTime.DiffMS(me->lastReqTime) > 60000)//3000
+				if (me->cmdList.GetCount() == 0)
+					break;
+			}
+
+			if (me->cli.SetTo(cli) && !me->cliErr)
+			{
+				Data::DateTime currTime;
+				currTime.SetCurrTimeUTC();
+				if (me->requesting)
 				{
-					me->requesting = false;
+					if (currTime.DiffMS(me->lastReqTime) > 60000)//3000
+					{
+						me->requesting = false;
+					}
+				}
+				else
+				{
+					if (currTime.DiffMS(me->lastKATime) > 60000)
+					{
+						UIntOS procId = Manage::Process::GetCurrProcId();
+						me->AddCommand((UInt8*)&procId, 4, 5);
+						me->lastKATime.SetCurrTimeUTC();
+					}
+
+					if (me->cmdList.GetCount() && me->cmdList.GetItem(0).SetTo(data))
+					{
+						me->requesting = true;
+						me->lastReqTime.SetCurrTimeUTC();
+						cli->Write(Data::ByteArrayR(data, ReadUInt16(&data[2])));
+					}
 				}
 			}
-			else
-			{
-				if (currTime.DiffMS(me->lastKATime) > 60000)
-				{
-					UIntOS procId = Manage::Process::GetCurrProcId();
-					me->AddCommand((UInt8*)&procId, 4, 5);
-					me->lastKATime.SetCurrTimeUTC();
-				}
-
-				if (me->cmdList.GetCount() && me->cmdList.GetItem(0).SetTo(data))
-				{
-					me->requesting = true;
-					me->lastReqTime.SetCurrTimeUTC();
-					cli->Write(Data::ByteArrayR(data, ReadUInt16(&data[2])));
-				}
-			}
+			connTEvt->Wait(500);
 		}
-		me->connTEvt->Wait(500);
 	}
 	if (me->cli.SetTo(cli))
 	{
 		cli->Close();
 	}
-	if (me->connREvt)
-		me->connREvt->Set();
+	NN<Sync::Event> connREvt;
+	if (me->connREvt.SetTo(connREvt))
+		connREvt->Set();
 	me->ConnTRunning = false;
 	me->msgWriter->WriteLine(CSTR("MonConn TThread Stopped"));
 	return 0;
@@ -279,7 +287,9 @@ void Manage::MonConn::AddCommand(UnsafeArray<UInt8> data, UIntOS dataSize, UInt1
 	Manage::MonConn::BuildPacket(buff, data, dataSize, cmdType, cmdSeq++);
 	mutUsage.EndUse();
 	this->cmdList.Add(buff);
-	connTEvt->Set();
+	NN<Sync::Event> connTEvt;
+	if (this->connTEvt.SetTo(connTEvt))
+		connTEvt->Set();
 }
 
 Manage::MonConn::MonConn(EventHandler hdlr, AnyType userObj, NN<Net::TCPClientFactory> clif, NN<IO::Writer> msgWriter, Data::Duration timeout)
@@ -299,8 +309,8 @@ Manage::MonConn::MonConn(EventHandler hdlr, AnyType userObj, NN<Net::TCPClientFa
 	this->port = 0;
 	this->cli = nullptr;
 	this->cmdSeq = 0;
-	this->connREvt = 0;
-	this->connTEvt = 0;
+	this->connREvt = nullptr;
+	this->connTEvt = nullptr;
 #if defined(_WIN32) || defined(_WIN64)
 	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOALIGNMENTFAULTEXCEPT | SEM_NOGPFAULTERRORBOX);
 #endif
@@ -315,8 +325,8 @@ Manage::MonConn::MonConn(EventHandler hdlr, AnyType userObj, NN<Net::TCPClientFa
 	}
 	if (this->port)
 	{
-		NEW_CLASS(this->connREvt, Sync::Event());
-		NEW_CLASS(this->connTEvt, Sync::Event());
+		NEW_CLASSOPT(this->connREvt, Sync::Event());
+		NEW_CLASSOPT(this->connTEvt, Sync::Event());
 		Sync::ThreadUtil::Create(ConnRThread, this);
 		Sync::ThreadUtil::Create(ConnTThread, this);
 		while (!this->ConnTRunning || !this->ConnRRunning)
@@ -333,9 +343,10 @@ Manage::MonConn::MonConn(EventHandler hdlr, AnyType userObj, NN<Net::TCPClientFa
 
 Manage::MonConn::~MonConn()
 {
+	NN<Sync::Event> connTEvt;
 	this->ToStop = true;
-	if (this->connTEvt)
-		this->connTEvt->Set();
+	if (this->connTEvt.SetTo(connTEvt))
+		connTEvt->Set();
 
 	while (this->ConnRRunning)
 	{
@@ -345,16 +356,8 @@ Manage::MonConn::~MonConn()
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	if (this->connREvt)
-	{
-		DEL_CLASS(this->connREvt);
-		this->connREvt = 0;
-	}
-	if (this->connTEvt)
-	{
-		DEL_CLASS(this->connTEvt);
-		this->connTEvt = 0;
-	}
+	this->connREvt.Delete();
+	this->connTEvt.Delete();
 	UnsafeArray<UInt8> data;
 	UIntOS i = this->cmdList.GetCount();
 	while (i-- > 0)

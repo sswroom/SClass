@@ -12,7 +12,7 @@ namespace Map
 	private:
 		typedef struct
 		{
-			Map::RevGeoCfg *cfg;
+			NN<Map::RevGeoCfg> cfg;
 			UInt32 lcid;
 		} RevGeoFile;
 

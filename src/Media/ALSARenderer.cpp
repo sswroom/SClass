@@ -595,8 +595,8 @@ Media::ALSARenderer::ALSARenderer(UnsafeArrayOpt<const UTF8Char> devName) : thre
 	if (!devName.SetTo(nndevName))
 	{
 		this->devName = nullptr;
-		IO::ConfigFile *cfg = IO::WSConfigFile::Parse(CSTR("/etc/asound.conf"));
-		if (cfg)
+		NN<IO::ConfigFile> cfg;
+		if (IO::WSConfigFile::Parse(CSTR("/etc/asound.conf")).SetTo(cfg))
 		{
 			NN<Text::String> s;
 			if (cfg->GetValue(CSTR("defaults.pcm.card")).SetTo(s))
@@ -606,7 +606,7 @@ Media::ALSARenderer::ALSARenderer(UnsafeArrayOpt<const UTF8Char> devName) : thre
 				sptr = s->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("hw:")));
 				this->devName = Text::StrCopyNewC(sbuff, (UIntOS)(sptr - sbuff));
 			}
-			DEL_CLASS(cfg);
+			cfg.Delete();
 		}
 		if (this->devName.IsNull())
 		{

@@ -180,7 +180,7 @@ Bool IO::CEControl::CreateDirectory(const WChar *ceDir)
 	return CeCreateDirectory(wbuff, 0) != 0;
 }
 
-IO::FileStream *IO::CEControl::OpenFile(const WChar *fileName, IO::FileMode mode, IO::FileShare share)
+Optional<IO::FileStream> IO::CEControl::OpenFile(const WChar *fileName, IO::FileMode mode, IO::FileShare share)
 {
 	Int32 shflag;
 	Int64 currPos;
@@ -234,10 +234,10 @@ IO::FileStream *IO::CEControl::OpenFile(const WChar *fileName, IO::FileMode mode
 	}
 	if (handle == INVALID_HANDLE_VALUE)
 	{
-		return 0;
+		return nullptr;
 	}
-	IO::FileStream *stm;
-	NEW_CLASS(stm, CEFileStream(handle, currPos));
+	NN<IO::FileStream> stm;
+	NEW_CLASSNN(stm, CEFileStream(handle, currPos));
 	return stm;
 }
 

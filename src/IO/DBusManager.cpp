@@ -92,9 +92,9 @@ struct IO::DBusManager::GenericData
 	UIntOS refcount;
 	NN<IO::DBusManager> me;
 	UnsafeArray<const UTF8Char> path;
-	Data::ArrayListNN<InterfaceData> *interfaces;
-	Data::ArrayListNN<GenericData> *objects;
-	Data::ArrayListNN<InterfaceData> *added;
+	NN<Data::ArrayListNN<InterfaceData>> interfaces;
+	NN<Data::ArrayListNN<GenericData>> objects;
+	NN<Data::ArrayListNN<InterfaceData>> added;
 	Data::ArrayListArr<const UTF8Char> *removed;
 	UInt32 processId;
 	Bool pendingProp;
@@ -144,10 +144,10 @@ struct IO::DBusManager::ClassData
 	Optional<IO::DBusManager::GenericData> root;
 	Data::ArrayListNN<IO::DBusManager::Listener> *listeners;
 	UIntOS listenerId;
-	Data::ArrayListNN<IO::DBusManager::GenericData> *pending;
+	NN<Data::ArrayListNN<IO::DBusManager::GenericData>> pending;
 	IO::DBusManager::PropertyFlags globalFlags;
 	UInt32 nextPending;
-	Data::ArrayListNN<IO::DBusManager::SecurityData> *pendingSecurity;
+	NN<Data::ArrayListNN<IO::DBusManager::SecurityData>> pendingSecurity;
 	const IO::DBusManager::SecurityTable *securityTable;
 };
 
@@ -545,9 +545,9 @@ IO::DBusManager::DBusManager(DBusType dbType, const Char *name)
 			break;
 	}
 	data->conn = dbus_bus_get(type, 0);
-	NEW_CLASS(data->pending, Data::ArrayListNN<GenericData>());
+	NEW_CLASSNN(data->pending, Data::ArrayListNN<GenericData>());
 	data->nextPending = 1;
-	NEW_CLASS(data->pendingSecurity, Data::ArrayListNN<IO::DBusManager::SecurityData>());
+	NEW_CLASSNN(data->pendingSecurity, Data::ArrayListNN<IO::DBusManager::SecurityData>());
 	data->securityTable = 0;
 
 	if (data->conn == 0)
@@ -570,8 +570,8 @@ IO::DBusManager::~DBusManager()
 	{
 		dbus_connection_unref(data->conn);
 	}
-	DEL_CLASS(data->pending);
-	DEL_CLASS(data->pendingSecurity);
+	data->pending.Delete();
+	data->pendingSecurity.Delete();
 	MemFreeNN(data);
 }
 
@@ -961,16 +961,15 @@ Optional<IO::DBusManager::GenericData> IO::DBusManager::ObjectPathRef(UnsafeArra
 	data->path = Text::StrCopyNew(path);
 	data->refcount = 1;
 	data->introspect = Text::StrCopyNew(CSTR(DBUS_INTROSPECT_1_0_XML_DOCTYPE_DECL_NODE "<node></node>").v);
+	NEW_CLASSNN(data->objects, Data::ArrayListNN<GenericData>());
+	NEW_CLASSNN(data->added, Data::ArrayListNN<InterfaceData>());
+	NEW_CLASSNN(data->interfaces, Data::ArrayListNN<InterfaceData>());
 
 	if (!dbus_connection_register_object_path(clsData->conn, (const Char*)path.Ptr(), &DBusManager_genericTable, data.Ptr()))
 	{
 		GenericDataFree(data);
 		return nullptr;
 	}
-	NEW_CLASS(data->objects, Data::ArrayListNN<GenericData>());
-	NEW_CLASS(data->added, Data::ArrayListNN<InterfaceData>());
-	NEW_CLASS(data->interfaces, Data::ArrayListNN<InterfaceData>());
-
 	this->InvalidateParentData(path);
 
 	this->AddInterface(data, CSTR(DBUS_INTERFACE_INTROSPECTABLE).v, introspectMethods, nullptr, nullptr, data, NULL);
@@ -994,9 +993,9 @@ Bool IO::DBusManager::AttachObjectManager()
 
 void IO::DBusManager::GenericDataFree(NN<GenericData> data)
 {
-	SDEL_CLASS(data->objects);
-	SDEL_CLASS(data->interfaces);
-	SDEL_CLASS(data->added);
+	data->objects.Delete();
+	data->interfaces.Delete();
+	data->added.Delete();
 	Text::StrDelNew(data->path);
 	SDEL_TEXT(data->introspect);
 	MemFreeNN(data);
@@ -1472,14 +1471,11 @@ void IO::DBusManager::ProcessPropertyChanges(NN<GenericData> data)
 {
 	NN<InterfaceData> iface;
 	data->pendingProp = FALSE;
-	if (data->interfaces)
+	UIntOS i = data->interfaces->GetCount();
+	while (i-- > 0)
 	{
-		UIntOS i = data->interfaces->GetCount();
-		while (i-- > 0)
-		{
-			iface = data->interfaces->GetItemNoCheck(i);
-			this->ProcessPropertiesFromInterface(data, iface);
-		}
+		iface = data->interfaces->GetItemNoCheck(i);
+		this->ProcessPropertiesFromInterface(data, iface);
 	}
 }
 
@@ -1575,7 +1571,7 @@ void IO::DBusManager::EmitInterfacesAdded(NN<GenericData> data)
 	{
 		this->AppendInterface(data->added->GetItemNoCheck(i), &array);
 	}
-	SDEL_CLASS(data->added);
+	data->added->Clear();
 
 	dbus_message_iter_close_container(&iter, &array);
 
@@ -1648,7 +1644,7 @@ Bool IO::DBusManager::ProcessChanges(void *userData)
 
 	NN<IO::DBusManager> me = data->me;
 	me->RemovePending(data);
-	if (data->added != NULL)
+	if (data->added->GetCount() > 0)
 		me->EmitInterfacesAdded(data);
 	if (data->pendingProp)
 		me->ProcessPropertyChanges(data);

@@ -48,17 +48,17 @@ Optional<IO::Stream> Map::HKTrafficLayer2::OpenURLStream()
 {
 	if (this->url->StartsWithICase(UTF8STRC("FILE:///")))
 	{
-		IO::FileStream *fs;
+		NN<IO::FileStream> fs;
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
 		sbuff[0] = 0;
 		sptr = Text::URLString::GetURLFilePath(sbuff, this->url->v, this->url->leng).Or(sbuff);
-		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
+		NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 		if (!fs->IsError())
 		{
 			return fs;
 		}
-		DEL_CLASS(fs);
+		fs.Delete();
 		return nullptr;
 	}
 	else

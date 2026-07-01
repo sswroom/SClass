@@ -6,38 +6,33 @@
 #include "Manage/ThreadContextX86_64.h"
 #include "Text/Encoding.h"
 
-Manage::StackTracer::StackTracer(Manage::ThreadContext *context)
+Manage::StackTracer::StackTracer(Optional<Manage::ThreadContext> context)
 {
 	this->context = context;
-	this->addrArr = 0;
 	this->stackFrame = 0;
-	NEW_CLASS(this->addrArr, Data::ArrayListInt64());
+	NEW_CLASSNN(this->addrArr, Data::ArrayListUInt64());
 }
 
 Manage::StackTracer::~StackTracer()
 {
-	SDEL_CLASS(this->addrArr);
+	this->addrArr.Delete();
 }
 
 Bool Manage::StackTracer::IsSupported()
 {
-	return this->addrArr != 0 && this->addrArr->GetCount() > 0;
+	return this->addrArr->GetCount() > 0;
 }
 
 UInt64 Manage::StackTracer::GetCurrentAddr()
 {
-	if (this->addrArr == 0)
-		return 0;
-	return this->addrArr->GetItem((IntOS)this->stackFrame);
+	return this->addrArr->GetItem((UIntOS)this->stackFrame);
 }
 
 Bool Manage::StackTracer::GoToNextLevel()
 {
-	if (this->addrArr == 0)
+	if ((UIntOS)this->stackFrame >= this->addrArr->GetCount() - 1)
 		return false;
-	if ((IntOS)this->stackFrame >= this->addrArr->GetCount() - 1)
-		return false;
-	this->stackFrame = (void*)(1 + (IntOS)this->stackFrame);
+	this->stackFrame = (void*)(1 + (UIntOS)this->stackFrame);
 	return true;
 }
 

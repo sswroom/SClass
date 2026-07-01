@@ -26,7 +26,7 @@ Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerNa
 	UTF8Char fname[256];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	IO::BufferedInputStream *bstm;
+	NN<IO::BufferedInputStream> bstm;
 	sptr = layerName.ConcatTo(fname);
 	if (layerName.EndsWithICase(UTF8STRC(".CIP")))
 	{
@@ -53,7 +53,7 @@ Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerNa
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".blk"));
 	{
 		IO::FileStream file({fname, (UIntOS)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
+		NEW_CLASSNN(bstm, IO::BufferedInputStream(file, 65536));
 		if (!file.IsError())
 		{
 			bstm->Read(Data::ByteArray((UInt8*)&this->nblks, 4));
@@ -86,7 +86,7 @@ Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerNa
 		else
 		{
 		}
-		DEL_CLASS(bstm);
+		bstm.Delete();
 	}
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".cix"));
@@ -223,9 +223,9 @@ UIntOS Map::CIPLayer2::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<O
 	
 	if (nameArr.IsNotNull())
 	{
-		Data::FastMapObj<Int32, UnsafeArrayOpt<UTF16Char>> *tmpArr;
-		NEW_CLASS(tmpArr, Data::Int32FastMapObj<UnsafeArrayOpt<UTF16Char>>());
-		nameArr.SetNoCheck((NameArray*)tmpArr);
+		NN<Data::Int32FastMapObj<UnsafeArrayOpt<UTF16Char>>> tmpArr;
+		NEW_CLASSNN(tmpArr, Data::Int32FastMapObj<UnsafeArrayOpt<UTF16Char>>());
+		nameArr.SetNoCheck((NameArray*)tmpArr.Ptr());
 		UTF8Char fileName[256];
 		UnsafeArray<UTF8Char> sptr;
 		sptr = this->layerName->ConcatTo(fileName);
@@ -375,15 +375,15 @@ UIntOS Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Opti
 	l = 0;
 	if (nameArr.IsNotNull())
 	{
-		Data::FastMapObj<Int32, UnsafeArrayOpt<UTF16Char>> *tmpArr;
-		NEW_CLASS(tmpArr, Data::Int32FastMapObj<UnsafeArrayOpt<UTF16Char>>());
-		nameArr.SetNoCheck((NameArray*)tmpArr);
+		NN<Data::Int32FastMapObj<UnsafeArrayOpt<UTF16Char>>> tmpArr;
+		NEW_CLASSNN(tmpArr, Data::Int32FastMapObj<UnsafeArrayOpt<UTF16Char>>());
+		nameArr.SetNoCheck((NameArray*)tmpArr.Ptr());
 		UTF8Char fileName[256];
 		UnsafeArray<UTF8Char> sptr;
-		IO::FileStream *cis;
+		NN<IO::FileStream> cis;
 		sptr = this->layerName->ConcatTo(fileName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
-		NEW_CLASS(cis, IO::FileStream({fileName, (UIntOS)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASSNN(cis, IO::FileStream({fileName, (UIntOS)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		
 		while ((UIntOS)k < this->nblks)
 		{
@@ -434,12 +434,12 @@ UIntOS Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Opti
 			}
 			k++;
 		}
-		DEL_CLASS(cis);
+		cis.Delete();
 	}
 	else
 	{
-		Data::ArrayListInt32 *tmpArr;
-		NEW_CLASS(tmpArr, Data::ArrayListInt32());
+		NN<Data::ArrayListInt32> tmpArr;
+		NEW_CLASSNN(tmpArr, Data::ArrayListInt32());
 		while ((UIntOS)k < this->nblks)
 		{
 			if (blks[k].blk.x > rightBlk)
@@ -475,7 +475,7 @@ UIntOS Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Opti
 				k++;
 			}
 		}
-		DEL_CLASS(tmpArr);
+		tmpArr.Delete();
 	}
 	return l;
 }
@@ -738,8 +738,8 @@ Optional<Math::Geometry::Vector2D> Map::CIPLayer2::GetNewVectorById(NN<GetObject
 	}
 	if (this->lyrType == Map::DRAW_LAYER_POINT)
 	{
-		Math::Geometry::Point *pt;
-		NEW_CLASS(pt, Math::Geometry::Point(4326, fobj->pointArr[0] / 200000.0, fobj->pointArr[1] / 200000.0));
+		NN<Math::Geometry::Point> pt;
+		NEW_CLASSNN(pt, Math::Geometry::Point(4326, fobj->pointArr[0] / 200000.0, fobj->pointArr[1] / 200000.0));
 		return pt;
 	}
 	else if (!fobj->ptOfstArr.SetTo(ptOfstArr))
@@ -748,9 +748,9 @@ Optional<Math::Geometry::Vector2D> Map::CIPLayer2::GetNewVectorById(NN<GetObject
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYLINE)
 	{
-		Math::Geometry::Polyline *pl;
+		NN<Math::Geometry::Polyline> pl;
 		NN<Math::Geometry::LineString> lineString;
-		NEW_CLASS(pl, Math::Geometry::Polyline(4326));
+		NEW_CLASSNN(pl, Math::Geometry::Polyline(4326));
 		UIntOS i = 0;
 		UIntOS j;
 		UIntOS k;
@@ -780,14 +780,14 @@ Optional<Math::Geometry::Vector2D> Map::CIPLayer2::GetNewVectorById(NN<GetObject
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYGON)
 	{
-		Math::Geometry::Polygon *pg = 0;
+		NN<Math::Geometry::Polygon> pg;
 		NN<Math::Geometry::LinearRing> lr;
 		UnsafeArray<Math::Coord2DDbl> tmpPoints;
 		UIntOS i;
 		UIntOS j;
 		UIntOS k;
 		UIntOS l;
-		NEW_CLASS(pg, Math::Geometry::Polygon(4326));
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(4326));
 		j = 0;
 		i = 0;
 		while (i < fobj->nPtOfst)

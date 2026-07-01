@@ -75,7 +75,7 @@ Optional<Map::VectorLayer> Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<M
 		i++;
 	}
 
-	Map::VectorLayer *newLyr;
+	NN<Map::VectorLayer> newLyr;
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> namesArr;
 	UIntOS *ofsts;
 	DB::DBUtil::ColType *colTypes;
@@ -96,7 +96,7 @@ Optional<Map::VectorLayer> Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<M
 		colSizes[i] = nameSizes.GetItem((UIntOS)si);
 		colDPs[i] = nameDPs.GetItem((UIntOS)si);
 	}
-	NEW_CLASS(newLyr, Map::VectorLayer(lyrType, sourceName, names.GetCount(), namesArr, csys->Clone(), colTypes, colSizes, colDPs, nameCol, lyrName));
+	NEW_CLASSNN(newLyr, Map::VectorLayer(lyrType, sourceName, names.GetCount(), namesArr, csys->Clone(), colTypes, colSizes, colDPs, nameCol, lyrName));
 	MemFree(colTypes);
 	MemFree(colSizes);
 

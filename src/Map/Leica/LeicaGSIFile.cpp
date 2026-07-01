@@ -21,9 +21,9 @@ Optional<Map::Leica::LeicaGSIFile> Map::Leica::LeicaGSIFile::Parse(NN<IO::Stream
 	Text::PString sarr[10];
 	IntOS colCount;
 	IntOS i;
-	Optional<Map::Leica::LeicaGSIFile> retFile = 0;
-	IO::StreamReader *reader;
-	NEW_CLASS(reader, IO::StreamReader(fs, 65001));
+	Optional<Map::Leica::LeicaGSIFile> retFile = nullptr;
+	NN<IO::StreamReader> reader;
+	NEW_CLASSNN(reader, IO::StreamReader(fs, 65001));
 	if (reader->ReadLine(sbuff, 511).SetTo(sptr))
 	{
 		colCount = Text::StrSplitP(sarr, 10, Text::PString(sbuff, (UIntOS)(sptr - sbuff)), ' ');
@@ -108,7 +108,7 @@ Optional<Map::Leica::LeicaGSIFile> Map::Leica::LeicaGSIFile::Parse(NN<IO::Stream
 			}
 		}
 	}
-	DEL_CLASS(reader);
+	reader.Delete();
 	return retFile;
 }
 

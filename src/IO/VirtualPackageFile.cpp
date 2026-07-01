@@ -573,9 +573,9 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NN<const Pac
 		}
 		else
 		{
-			IO::StmData::FileData *fd;
+			NN<IO::StmData::FileData> fd;
 			Text::StringBuilderUTF8 sb;
-			NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), true));
+			NEW_CLASSNN(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), true));
 			sb.Append(this->sourceName);
 			sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 			sb.Append(item->name);
@@ -825,14 +825,15 @@ Bool IO::VirtualPackageFile::CopyFrom(Text::CStringNN fileName, Optional<IO::Pro
 		UIntOS i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		Text::CStringNN fName = fileName.Substring(i + 1);
 		IO::StmData::FileData fd(fileName, false);
-		if (fd.IsError())
+		NN<IO::FileStream> fs;
+		if (fd.IsError() || !fd.GetFileStream().SetTo(fs))
 		{
 			return false;
 		}
 		Data::Timestamp modTime = nullptr;
 		Data::Timestamp createTime = nullptr;
 		Data::Timestamp accTime = nullptr;
-		fd.GetFileStream()->GetFileTimes(createTime, accTime, modTime);
+		fs->GetFileTimes(createTime, accTime, modTime);
 		UInt32 unixAttr = IO::Path::GetFileUnixAttr(fileName);
 		return this->AddOrReplaceData(fd, 0, fd.GetDataSize(), PackFileItem::HeaderType::No, fName, modTime, accTime, createTime, unixAttr);
 	}

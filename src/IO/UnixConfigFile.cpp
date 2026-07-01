@@ -28,9 +28,9 @@ Optional<IO::ConfigFile> IO::UnixConfigFile::ParseReader(NN<Text::UTF8Reader> re
 	UnsafeArray<UTF8Char> valueEnd;
 	UnsafeArray<UTF8Char> src;
 	UTF8Char c;
-	IO::ConfigFile *cfg;
+	NN<IO::ConfigFile> cfg;
 	UIntOS i;
-	NEW_CLASS(cfg, IO::ConfigFile());
+	NEW_CLASSNN(cfg, IO::ConfigFile());
 	while (reader->ReadLine(buff, 1023).SetTo(valueEnd))
 	{
 		while (valueEnd > buff)
@@ -89,7 +89,7 @@ Optional<IO::ConfigFile> IO::UnixConfigFile::ParseReader(NN<Text::UTF8Reader> re
 	}
 	if (cfg->GetCateCount() == 0)
 	{
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		return nullptr;
 	}
 	return cfg;

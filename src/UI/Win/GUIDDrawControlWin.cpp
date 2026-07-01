@@ -233,7 +233,8 @@ void __stdcall UI::GUIDDrawControl::OnResized(AnyType userObj)
 		me->CreateSubSurface();
 		mutUsage.EndUse();
 
-		if (me->debugWriter)
+		NN<IO::Writer> debugWriter;
+		if (me->debugWriter.SetTo(debugWriter))
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Surface size changed to "));
@@ -242,7 +243,7 @@ void __stdcall UI::GUIDDrawControl::OnResized(AnyType userObj)
 			sb.AppendUIntOS(me->dispSize.y);
 			sb.AppendC(UTF8STRC(", hMon="));
 			sb.AppendIntOS((IntOS)me->GetHMonitor().OrNull());
-			me->debugWriter->WriteLine(sb.ToCString());
+			debugWriter->WriteLine(sb.ToCString());
 		}
 		if (me->inited)
 		{
@@ -294,9 +295,10 @@ Bool UI::GUIDDrawControl::CreateSurface()
 	this->ReleaseSurface();
 	this->ReleaseSubSurface();
 
-	if (this->debugWriter)
+	NN<IO::Writer> debugWriter;
+	if (this->debugWriter.SetTo(debugWriter))
 	{
-		this->debugWriter->WriteLine(CSTR("Create Surface"));
+		debugWriter->WriteLine(CSTR("Create Surface"));
 	}
 
 	if (this->currScnMode == SM_FS)
@@ -336,7 +338,8 @@ Bool UI::GUIDDrawControl::CreateSurface()
 		if (this->primarySurface.SetTo(primarySurface))
 		{
 			primarySurface->info.rotateType = this->rotType;
-			if (this->debugWriter)
+			NN<IO::Writer> debugWriter;
+			if (this->debugWriter.SetTo(debugWriter))
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Primary surface desc: Size = "));
@@ -349,7 +352,7 @@ Bool UI::GUIDDrawControl::CreateSurface()
 				sb.AppendIntOS((IntOS)this->surfaceMon.OrNull());
 				sb.AppendC(UTF8STRC(", hWnd = "));
 				sb.AppendIntOS((IntOS)hWnd.OrNull());
-				this->debugWriter->WriteLine(sb.ToCString());
+				debugWriter->WriteLine(sb.ToCString());
 			}
 			this->bitDepth = primarySurface->info.storeBPP;
 			this->scnW = primarySurface->info.dispSize.x;
@@ -373,11 +376,12 @@ void UI::GUIDDrawControl::ReleaseSurface()
 void UI::GUIDDrawControl::CreateSubSurface()
 {
 	NN<Media::MonitorSurface> primarySurface;
+	NN<IO::Writer> debugWriter;
 	RECT rc;
 	GetDrawingRect(&rc);
-	if (this->debugWriter)
+	if (this->debugWriter.SetTo(debugWriter))
 	{
-		this->debugWriter->WriteLine(CSTR("Create Subsurface"));
+		debugWriter->WriteLine(CSTR("Create Subsurface"));
 	}
 
 	if (rc.right <= rc.left || rc.bottom <= rc.top)
@@ -389,14 +393,14 @@ void UI::GUIDDrawControl::CreateSubSurface()
 		UInt32 h = (UInt32)(rc.bottom - rc.top);
 		if (this->dispSize.x != w || this->dispSize.y != h)
 		{
-			if (this->debugWriter)
+			if (this->debugWriter.SetTo(debugWriter))
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("(CreateSubSurface) Surface size changed to "));
 				sb.AppendU32(w);
 				sb.AppendC(UTF8STRC(" x "));
 				sb.AppendU32(h);
-				this->debugWriter->WriteLine(sb.ToCString());
+				debugWriter->WriteLine(sb.ToCString());
 			}
 			this->dispSize = Math::Size2D<UIntOS>(w, h);
 		}
@@ -469,7 +473,7 @@ UI::GUIDDrawControl::GUIDDrawControl(NN<GUICore> ui, NN<UI::GUIClientControl> pa
 	this->inited = false;
 	this->primarySurface = nullptr;
 	this->buffSurface = nullptr;
-	this->imgCopy = 0;
+	this->imgCopy = nullptr;
 	this->joystickId = 0;
 	this->jsLastButtons = 0;
 	this->focusing = false;
@@ -477,15 +481,15 @@ UI::GUIDDrawControl::GUIDDrawControl(NN<GUICore> ui, NN<UI::GUIClientControl> pa
 	this->fullScnMode = SM_WINDOWED;
 	this->directMode = directMode;
 	this->switching = false;
-	this->debugFS = 0;
-	this->debugWriter = 0;
+	this->debugFS = nullptr;
+	this->debugWriter = nullptr;
 	NEW_CLASSNN(this->lib, IO::Library((const UTF8Char*)"User32.dll"));
 #if defined(_DEBUG)
 	{
 		NN<IO::FileStream> fs;
 		NEW_CLASSNN(fs, IO::FileStream(CSTR("Ddraw.log"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		this->debugFS = fs.Ptr();
-		NEW_CLASS(this->debugWriter, Text::UTF8Writer(fs));
+		this->debugFS = fs;
+		NEW_CLASSOPT(this->debugWriter, Text::UTF8Writer(fs));
 	}
 #endif
 
@@ -560,15 +564,14 @@ UI::GUIDDrawControl::~GUIDDrawControl()
 	this->ReleaseSubSurface();
 
 	this->surfaceMgr.Delete();
-	SDEL_CLASS(this->imgCopy);
-	if (this->debugWriter)
+	this->imgCopy.Delete();
+	NN<IO::Writer> debugWriter;
+	if (this->debugWriter.SetTo(debugWriter))
 	{
-		this->debugWriter->WriteLine(CSTR("Release DDraw"));
-		DEL_CLASS(this->debugWriter);
-		DEL_CLASS(this->debugFS);
-		this->debugFS = 0;
-		this->debugWriter = 0;
+		debugWriter->WriteLine(CSTR("Release DDraw"));
 	}
+	this->debugWriter.Delete();
+	this->debugFS.Delete();
 	this->lib.Delete();
 }
 
@@ -581,13 +584,14 @@ void UI::GUIDDrawControl::DrawToScreen()
 {
 	NN<Media::MonitorSurface> primarySurface;
 	NN<Media::MonitorSurface> buffSurface;
+	NN<IO::Writer> debugWriter;
 	Sync::MutexUsage mutUsage(this->surfaceMut);
-	if (this->debugWriter)
+	if (this->debugWriter.SetTo(debugWriter))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("DrawToScreen "));
 		sb.AppendTSNoZone(Data::Timestamp::Now());
-		this->debugWriter->WriteLine(sb.ToCString());
+		debugWriter->WriteLine(sb.ToCString());
 	}
 	if (this->currScnMode == SM_FS)
 	{
@@ -602,19 +606,19 @@ void UI::GUIDDrawControl::DrawToScreen()
 		{
 			if (!primarySurface->DrawFromSurface(buffSurface, true))
 			{
-				if (this->debugWriter)
+				if (this->debugWriter.SetTo(debugWriter))
 				{
-					this->debugWriter->WriteLine(CSTR("DrawToScreen: failed"));
+					debugWriter->WriteLine(CSTR("DrawToScreen: failed"));
 				}
 			}
 		}
 		else
 		{
-			if (this->debugWriter)
+			if (this->debugWriter.SetTo(debugWriter))
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("DrawToScreen: surface not found: "));
-				this->debugWriter->WriteLine(sb.ToCString());
+				debugWriter->WriteLine(sb.ToCString());
 			}
 		}
 	}
@@ -635,11 +639,11 @@ void UI::GUIDDrawControl::DrawToScreen()
 			}
 			else
 			{
-				if (this->debugWriter)
+				if (this->debugWriter.SetTo(debugWriter))
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("DrawToScreen: Surface not found wind: "));
-					this->debugWriter->WriteLine(sb.ToCString());
+					debugWriter->WriteLine(sb.ToCString());
 				}
 			}
 //			ValidateRect((HWND)this->hwnd, &rcSrc);
@@ -658,7 +662,8 @@ void UI::GUIDDrawControl::DisplayFromSurface(NN<Media::MonitorSurface> surface, 
 
 void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 {
-	if (this->debugWriter)
+	NN<IO::Writer> debugWriter;
+	if (this->debugWriter.SetTo(debugWriter))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("SwitchFullScreen "));
@@ -666,7 +671,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		sb.AppendI32(vfs?1:0);
 		sb.AppendC(UTF8STRC(", hMon="));
 		sb.AppendIntOS((IntOS)this->GetHMonitor().OrNull());
-		this->debugWriter->WriteLine(sb.ToCString());
+		debugWriter->WriteLine(sb.ToCString());
 	}
 	if (fullScn)
 	{
@@ -730,13 +735,15 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 	{
 		this->BeginUpdateSize();
 		if (this->surfaceMon.NotNull()) this->surfaceMgr->SetFSMode(this->surfaceMon, rootForm->GetHandle(), false);
-		if (this->imgCopy == 0)
+		NN<Media::IamgeCopy> imgCopy;
+		if (this->imgCopy.IsNull())
 		{
-			NEW_CLASS(this->imgCopy, Media::ImageCopy());
-			this->imgCopy->SetThreadPriority(Sync::ThreadUtil::TP_HIGHEST);
+			NEW_CLASSNN(imgCopy, Media::ImageCopy());
+			this->imgCopy = imgCopy;
+			imgCopy->SetThreadPriority(Sync::ThreadUtil::TP_HIGHEST);
 		}
 		this->surfaceMgr->SetFSMode(this->GetHMonitor(), rootForm->GetHandle(), false);
-		if (this->debugWriter)
+		if (this->debugWriter.SetTo(debugWriter))
 		{
 			Text::StringBuilderUTF8 sb;
 			RECT rc;
@@ -751,7 +758,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 			sb.AppendI32(rc.right);
 			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(rc.bottom);
-			this->debugWriter->WriteLine(sb.ToCString());
+			debugWriter->WriteLine(sb.ToCString());
 			rootForm->ToFullScn();
 			this->currScnMode = SM_VFS;
 			GetClientRect((HWND)this->hwnd.OrNull(), &rc);
@@ -766,7 +773,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 			sb.AppendI32(rc.right);
 			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(rc.bottom);
-			this->debugWriter->WriteLine(sb.ToCString());
+			debugWriter->WriteLine(sb.ToCString());
 			rootForm->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 			GetClientRect((HWND)this->hwnd.OrNull(), &rc);
 			ClientToScreen((HWND)this->hwnd.OrNull(), (POINT*)&rc.left);
@@ -780,7 +787,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 			sb.AppendI32(rc.right);
 			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(rc.bottom);
-			this->debugWriter->WriteLine(sb.ToCString());
+			debugWriter->WriteLine(sb.ToCString());
 		}
 		else
 		{

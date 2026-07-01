@@ -214,14 +214,14 @@ void Math::Geometry::Polygon::SplitByJunction(Data::ArrayList<Math::Geometry::Po
 {
 	UIntOS i;
 	UIntOS j;
-	Math::Geometry::Polygon *tmpPG;
+	NN<Math::Geometry::Polygon> tmpPG;
 	Math::Coord2DDbl *points;
 	Double *zArr;
 	Double *mArr;
 	UIntOS nPoints;
-	Data::ArrayListDbl *junctionX;
-	Data::ArrayListDbl *junctionY;
-	Data::ArrayListInt32 *junctionPtNum;
+	NN<Data::ArrayListDbl> junctionX;
+	NN<Data::ArrayListDbl> junctionY;
+	NN<Data::ArrayListInt32> junctionPtNum;
 	Double lastPtX;
 	Double lastPtY;
 	Double thisPtX;
@@ -242,7 +242,7 @@ void Math::Geometry::Polygon::SplitByJunction(Data::ArrayList<Math::Geometry::Po
 	{
 		this->nPtOfst--;
 		j = this->ptOfstArr[this->nPtOfst];
-		NEW_CLASS(tmpPG, Math::Geometry::Polygon(this->srid, 1, i - j, this->zArr != 0, this->mArr != 0));
+		NEW_CLASSNN(tmpPG, Math::Geometry::Polygon(this->srid, 1, i - j, this->zArr != 0, this->mArr != 0));
 		points = tmpPG->GetPointList(nPoints);
 		MemCopyAC(points, &this->pointArr[j], sizeof(Math::Coord2DDbl) * (i - j));
 		if (this->zArr)
@@ -261,9 +261,9 @@ void Math::Geometry::Polygon::SplitByJunction(Data::ArrayList<Math::Geometry::Po
 		i = j;
 	}
 
-	NEW_CLASS(junctionX, Data::ArrayListDbl());
-	NEW_CLASS(junctionY, Data::ArrayListDbl());
-	NEW_CLASS(junctionPtNum, Data::ArrayListInt32());
+	NEW_CLASSNN(junctionX, Data::ArrayListDbl());
+	NEW_CLASSNN(junctionY, Data::ArrayListDbl());
+	NEW_CLASSNN(junctionPtNum, Data::ArrayListInt32());
 
 	i = this->nPoint;
 	lastPtX = this->pointArr[0].x;
@@ -333,7 +333,7 @@ void Math::Geometry::Polygon::SplitByJunction(Data::ArrayList<Math::Geometry::Po
 								junctionX->Add(intX);
 								junctionY->Add(intY);
 								junctionPtNum->Add((Int32)j);
-								junctionX->Add(intY);
+								junctionX->Add(intX);
 								junctionY->Add(intY);
 								junctionPtNum->Add((Int32)i);
 							}
@@ -355,9 +355,9 @@ void Math::Geometry::Polygon::SplitByJunction(Data::ArrayList<Math::Geometry::Po
 //	IntOS junctionCnt = junctionPtNum->GetCount();
 	///////////////////////////////////////////////////////
 
-	DEL_CLASS(junctionPtNum);
-	DEL_CLASS(junctionY);
-	DEL_CLASS(junctionX);
+	junctionPtNum.Delete();
+	junctionY.Delete();
+	junctionX.Delete();
 
 	results->Add(this);
 }*/

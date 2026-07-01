@@ -570,8 +570,8 @@ Optional<Math::Geometry::Vector2D> Map::WebImageLayer::GetNewVectorById(NN<GetOb
 	{
 		if (stat->simg.SetTo(shimg))
 		{
-			Math::Geometry::VectorImage *img;
-			NEW_CLASS(img, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, Math::Coord2DDbl(stat->x1, stat->y1), Math::Coord2DDbl(stat->x2, stat->y2), Math::Coord2DDbl(stat->sizeX, stat->sizeY), stat->isScreen, stat->url.Ptr(), stat->timeStart, stat->timeEnd));
+			NN<Math::Geometry::VectorImage> img;
+			NEW_CLASSNN(img, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, Math::Coord2DDbl(stat->x1, stat->y1), Math::Coord2DDbl(stat->x2, stat->y2), Math::Coord2DDbl(stat->sizeX, stat->sizeY), stat->isScreen, stat->url.Ptr(), stat->timeStart, stat->timeEnd));
 			if (stat->hasAltitude)
 			{
 				img->SetHeight(stat->altitude);

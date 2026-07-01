@@ -21,8 +21,8 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 	case 1: //Point
 		if (buffSize >= 20)
 		{
-			Math::Geometry::Point *pt;
-			NEW_CLASS(pt, Math::Geometry::Point(srid, ReadDouble(&buff[4]), ReadDouble(&buff[12])));
+			NN<Math::Geometry::Point> pt;
+			NEW_CLASSNN(pt, Math::Geometry::Point(srid, ReadDouble(&buff[4]), ReadDouble(&buff[12])));
 			return pt;
 		}
 		return nullptr;
@@ -31,7 +31,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 		{
 			UInt32 nPtOfst;
 			UInt32 nPoint;
-			Math::Geometry::Polyline *pl;
+			NN<Math::Geometry::Polyline> pl;
 			/*
 			xMin = ReadDouble(&buff[4]);
 			yMin = ReadDouble(&buff[12]);
@@ -48,7 +48,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				UnsafeArray<UInt32> ptOfsts;
 				UnsafeArray<Math::Coord2DDbl> points;
 				NN<Math::Geometry::LineString> lineString;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+				NEW_CLASSNN(pl, Math::Geometry::Polyline(srid));
 				ptOfsts = MemAllocArr(UInt32, nPtOfst);
 				buff += 44;
 				i = 0;
@@ -92,7 +92,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 		{
 			UInt32 nPtOfst;
 			UInt32 nPoint;
-			Math::Geometry::Polygon *pg;
+			NN<Math::Geometry::Polygon> pg;
 			NN<Math::Geometry::LinearRing> lr;
 			/*
 			xMin = ReadDouble(&buff[4]);
@@ -113,7 +113,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				buff += 44;
 				ptOfsts = buff;
 				buff += nPtOfst * 4;
-				NEW_CLASS(pg, Math::Geometry::Polygon(srid));
+				NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
 				while (i < nPtOfst)
 				{
 					i++;
@@ -157,8 +157,8 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 	case 9: //PointZ
 		if (buffSize >= 28)
 		{
-			Math::Geometry::PointZ *pt;
-			NEW_CLASS(pt, Math::Geometry::PointZ(srid, ReadDouble(&buff[4]), ReadDouble(&buff[12]), ReadDouble(&buff[20])));
+			NN<Math::Geometry::PointZ> pt;
+			NEW_CLASSNN(pt, Math::Geometry::PointZ(srid, ReadDouble(&buff[4]), ReadDouble(&buff[12]), ReadDouble(&buff[20])));
 			return pt;
 		}
 		return nullptr;
@@ -167,7 +167,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 		{
 			UInt32 nPtOfst;
 			UInt32 nPoint;
-			Math::Geometry::Polyline *pl;
+			NN<Math::Geometry::Polyline> pl;
 			/*
 			xMin = ReadDouble(&buff[4]);
 			yMin = ReadDouble(&buff[12]);
@@ -185,7 +185,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				NN<Math::Geometry::LineString> lineString;
 				UnsafeArray<Math::Coord2DDbl> points;
 				UnsafeArray<Double> alts;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+				NEW_CLASSNN(pl, Math::Geometry::Polyline(srid));
 				ptOfsts = MemAllocArr(UInt32, nPtOfst);
 				buff += 44;
 				i = 0;
@@ -242,8 +242,8 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 	case 11: //PointZM
 		if (buffSize >= 36)
 		{
-			Math::Geometry::PointZM *pt;
-			NEW_CLASS(pt, Math::Geometry::PointZM(srid, ReadDouble(&buff[4]), ReadDouble(&buff[12]), ReadDouble(&buff[20]), ReadDouble(&buff[28])));
+			NN<Math::Geometry::PointZM> pt;
+			NEW_CLASSNN(pt, Math::Geometry::PointZM(srid, ReadDouble(&buff[4]), ReadDouble(&buff[12]), ReadDouble(&buff[20]), ReadDouble(&buff[28])));
 			return pt;
 		}
 		return nullptr;
@@ -252,7 +252,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 		{
 			UInt32 nPtOfst;
 			UInt32 nPoint;
-			Math::Geometry::Polyline *pl;
+			NN<Math::Geometry::Polyline> pl;
 			/*
 			xMin = ReadDouble(&buff[4]);
 			yMin = ReadDouble(&buff[12]);
@@ -270,7 +270,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				NN<Math::Geometry::LineString> lineString;
 				UnsafeArray<Math::Coord2DDbl> points;
 				UnsafeArray<Double> dArr;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+				NEW_CLASSNN(pl, Math::Geometry::Polyline(srid));
 				ptOfsts = MemAllocArr(UInt32, nPtOfst);
 				buff += 44;
 				i = 0;
@@ -344,7 +344,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 		{
 			UInt32 nPtOfst;
 			UInt32 nPoint;
-			Math::Geometry::Polygon *pg;
+			NN<Math::Geometry::Polygon> pg;
 			/*
 			xMin = ReadDouble(&buff[4]);
 			yMin = ReadDouble(&buff[12]);
@@ -360,7 +360,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				UnsafeArray<Math::Coord2DDbl> points = MemAllocAArr(Math::Coord2DDbl, nPoint);
 				UnsafeArray<Double> zArr = MemAllocArr(Double, nPoint);
 				UnsafeArray<Double> mArr = MemAllocArr(Double, nPoint);
-				NEW_CLASS(pg, Math::Geometry::Polygon(srid));
+				NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
 				buff += 44;
 				i = 0;
 				while (i < nPtOfst)
@@ -407,7 +407,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 		{
 			UInt32 nPtOfst;
 			UInt32 nPoint;
-			Math::Geometry::Polygon *pg;
+			NN<Math::Geometry::Polygon> pg;
 			/*
 			xMin = ReadDouble(&buff[4]);
 			yMin = ReadDouble(&buff[12]);
@@ -422,7 +422,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				UnsafeArray<UInt32> ptOfsts = MemAllocArr(UInt32, nPtOfst);
 				UnsafeArray<Math::Coord2DDbl> points = MemAllocAArr(Math::Coord2DDbl, nPoint);
 				UnsafeArray<Double> zArr = MemAllocArr(Double, nPoint);
-				NEW_CLASS(pg, Math::Geometry::Polygon(srid));
+				NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
 				buff += 44;
 				i = 0;
 				while (i < nPtOfst)
@@ -459,8 +459,8 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 	case 21: //PointM
 		if (buffSize >= 28)
 		{
-			Math::Geometry::PointM *pt;
-			NEW_CLASS(pt, Math::Geometry::PointM(srid, ReadDouble(&buff[4]), ReadDouble(&buff[12]), ReadDouble(&buff[20])));
+			NN<Math::Geometry::PointM> pt;
+			NEW_CLASSNN(pt, Math::Geometry::PointM(srid, ReadDouble(&buff[4]), ReadDouble(&buff[12]), ReadDouble(&buff[20])));
 			// measure = ReadDouble(&buff[20]);
 			return pt;
 		}
@@ -470,7 +470,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 		{
 			UInt32 nPtOfst;
 			UInt32 nPoint;
-			Math::Geometry::Polyline *pl;
+			NN<Math::Geometry::Polyline> pl;
 			/*
 			xMin = ReadDouble(&buff[4]);
 			yMin = ReadDouble(&buff[12]);
@@ -488,7 +488,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				NN<Math::Geometry::LineString> lineString;
 				UnsafeArray<Math::Coord2DDbl> points;
 				UnsafeArray<Double> mArr;
-				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+				NEW_CLASSNN(pl, Math::Geometry::Polyline(srid));
 				ptOfsts = MemAllocArr(UInt32, nPtOfst);
 				buff += 44;
 				i = 0;
@@ -547,7 +547,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 		{
 			UInt32 nPtOfst;
 			UInt32 nPoint;
-			Math::Geometry::Polygon *pg;
+			NN<Math::Geometry::Polygon> pg;
 			/*
 			xMin = ReadDouble(&buff[4]);
 			yMin = ReadDouble(&buff[12]);
@@ -562,7 +562,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				UnsafeArray<UInt32> ptOfsts = MemAllocArr(UInt32, nPtOfst);
 				UnsafeArray<Math::Coord2DDbl> points = MemAllocAArr(Math::Coord2DDbl, nPoint);
 				UnsafeArray<Double> mArr = MemAllocArr(Double, nPoint);
-				NEW_CLASS(pg, Math::Geometry::Polygon(srid));
+				NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
 				buff += 44;
 				i = 0;
 				while (i < nPtOfst)

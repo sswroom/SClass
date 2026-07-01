@@ -98,9 +98,9 @@ Optional<DB::TableDef> Math::TSPFile::GetTableDef(Text::CString schemaName, Text
 {
 	UIntOS i;
 	UIntOS j;
-	DB::TableDef *tab;
+	NN<DB::TableDef> tab;
 	NN<DB::ColDef> col;
-	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
+	NEW_CLASSNN(tab, DB::TableDef(schemaName, tableName));
 	if (tableName.Equals(UTF8STRC("StationSetup")))
 	{
 		i = 0;
@@ -484,8 +484,8 @@ Optional<Math::Geometry::Vector2D> Math::TSPReader::GetVector(UIntOS colIndex)
 		return nullptr;
 	if (colIndex != 1)
 		return nullptr;
-	Math::Geometry::PointZ *pt;
-	NEW_CLASS(pt, Math::Geometry::PointZ(4326, ReadDouble(&this->currRowPtr[0]), ReadDouble(&this->currRowPtr[8]), ReadDouble(&this->currRowPtr[16])));
+	NN<Math::Geometry::PointZ> pt;
+	NEW_CLASSNN(pt, Math::Geometry::PointZ(4326, ReadDouble(&this->currRowPtr[0]), ReadDouble(&this->currRowPtr[8]), ReadDouble(&this->currRowPtr[16])));
 	return pt;
 }
 

@@ -583,8 +583,8 @@ Optional<IO::FileStream> IO::FileStream::CreateNamedPipe(UnsafeArray<const UTF8C
 	{
 		return nullptr;
 	}
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream());
+	NN<IO::FileStream> fs;
+	NEW_CLASSNN(fs, IO::FileStream());
 	fs->handle = hand;
 	fs->currPos = 0;
 	return fs;
@@ -610,11 +610,11 @@ Optional<IO::FileStream> IO::FileStream::OpenNamedPipe(UnsafeArrayOpt<const UTF8
 	}
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\\pipe\\"));
 	sptr = Text::StrConcat(sptr, pipeName);
-	IO::FileStream *outStm;
-	NEW_CLASS(outStm, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Device, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
+	NN<IO::FileStream> outStm;
+	NEW_CLASSNN(outStm, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Device, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 	if (outStm->IsError())
 	{
-		DEL_CLASS(outStm);
+		outStm.Delete();
 		return nullptr;
 	}
 	return outStm;

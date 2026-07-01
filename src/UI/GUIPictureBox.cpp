@@ -10,14 +10,14 @@ UI::GUIPictureBox::GUIPictureBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> pa
 	this->currImage = nullptr;
 	this->noBGColor = false;
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color, nullptr, Media::AT_ALPHA_ALL_FF));
+	NEW_CLASSNN(this->resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color, nullptr, Media::AT_ALPHA_ALL_FF));
 	this->resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
 	this->resizer->SetTargetSize(Math::Size2D<UIntOS>(200, 200));
 }
 
 UI::GUIPictureBox::~GUIPictureBox()
 {
-	DEL_CLASS(this->resizer);
+	this->resizer.Delete();
 }
 
 Text::CStringNN UI::GUIPictureBox::GetObjectClass() const

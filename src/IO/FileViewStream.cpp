@@ -4,10 +4,12 @@
 
 IO::FileViewStream::FileViewStream(Text::CStringNN fileName) : IO::SeekableStream(fileName)
 {
-	NEW_CLASS(this->vfb, IO::ViewFileBuffer(fileName.v));
-	this->length = this->vfb->GetLength();
+	NN<IO::ViewFileBuffer> vfb;
+	NEW_CLASSNN(vfb, IO::ViewFileBuffer(fileName.v));
+	this->vfb = vfb;
+	this->length = vfb->GetLength();
 	this->currPos = 0;
-	this->fptr = this->vfb->GetPointer();
+	this->fptr = vfb->GetPointer();
 }
 
 IO::FileViewStream::~FileViewStream()
@@ -17,7 +19,7 @@ IO::FileViewStream::~FileViewStream()
 
 Bool IO::FileViewStream::IsDown() const
 {
-	return this->vfb == 0 || this->fptr.IsNull();
+	return this->fptr.IsNull();
 }
 
 UIntOS IO::FileViewStream::Read(const Data::ByteArray &buff)
@@ -54,11 +56,7 @@ Int32 IO::FileViewStream::Flush()
 void IO::FileViewStream::Close()
 {
 	this->fptr = nullptr;
-	if (this->vfb)
-	{
-		DEL_CLASS(this->vfb);
-		this->vfb = 0;
-	}
+	this->vfb.Delete();
 }
 
 Bool IO::FileViewStream::Recover()
@@ -114,7 +112,7 @@ UInt64 IO::FileViewStream::GetLength()
 
 Bool IO::FileViewStream::IsError()
 {
-	if (this->vfb == 0 || this->fptr.IsNull())
+	if (this->vfb.IsNull() || this->fptr.IsNull())
 		return true;
 	return false;
 }

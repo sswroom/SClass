@@ -12,11 +12,11 @@
 #include <bthsdpdef.h>
 #include <bluetoothapis.h>
 
-typedef struct
+struct IO::BTManager::ClassData
 {
-	IO::Library *lib;
+	NN<IO::Library> lib;
 	Int32 useCnt;
-} InternalData;
+};
 
 typedef HBLUETOOTH_RADIO_FIND (__stdcall *BluetoothFindFirstRadioFunc)(BLUETOOTH_FIND_RADIO_PARAMS *pbtfrp, HANDLE *phRadio);
 typedef BOOL (__stdcall *BluetoothFindNextRadioFunc)(HBLUETOOTH_RADIO_FIND hFind, HANDLE *phRadio);
@@ -24,25 +24,25 @@ typedef BOOL (__stdcall *BluetoothFindRadioCloseFunc)(HBLUETOOTH_RADIO_FIND hFin
 
 IO::BTManager::BTManager()
 {
-	NN<InternalData> me = MemAllocNN(InternalData);
-	this->internalData = me.Ptr();
-	NEW_CLASS(me->lib, IO::Library((const UTF8Char*)"Bthprops.cpl"));
+	NN<ClassData> me = MemAllocNN(ClassData);
+	this->internalData = me;
+	NEW_CLASSNN(me->lib, IO::Library((const UTF8Char*)"Bthprops.cpl"));
 	me->useCnt = 1;
 }
 
 IO::BTManager::~BTManager()
 {
-	NN<InternalData> me;
-	if (me.Set((InternalData*)this->internalData) && Sync::Interlocked::DecrementI32(me->useCnt) <= 0)
+	NN<ClassData> me = this->internalData;
+	if (Sync::Interlocked::DecrementI32(me->useCnt) <= 0)
 	{
-		DEL_CLASS(me->lib);
+		me->lib.Delete();
 		MemFreeNN(me);
 	}
 }
 
 UIntOS IO::BTManager::CreateControllers(NN<Data::ArrayListNN<IO::BTController>> ctrlList)
 {
-	InternalData *me = (InternalData*)this->internalData;
+	NN<ClassData> me = this->internalData;
 	BluetoothFindFirstRadioFunc FindFirst = (BluetoothFindFirstRadioFunc)me->lib->GetFunc("BluetoothFindFirstRadio");
 	BluetoothFindNextRadioFunc FindNext = (BluetoothFindNextRadioFunc)me->lib->GetFunc("BluetoothFindNextRadio");
 	BluetoothFindRadioCloseFunc FindClose = (BluetoothFindRadioCloseFunc)me->lib->GetFunc("BluetoothFindRadioClose");
@@ -61,7 +61,7 @@ UIntOS IO::BTManager::CreateControllers(NN<Data::ArrayListNN<IO::BTController>> 
 	}
 	while (true)
 	{
-		NEW_CLASSNN(btCtrl, IO::BTController(me, hand));
+		NEW_CLASSNN(btCtrl, IO::BTController(me.Ptr(), hand));
 		ctrlList->Add(btCtrl);
 		ret++;
 		if (!FindNext(hSrch, &hand))

@@ -8,8 +8,8 @@ namespace IO
 	class BTManagerDBus
 	{
 	private:
-		IO::DBusClient *client;
-		IO::DBusManager *dbusMgr;
+		Optional<IO::DBusClient> client;
+		NN<IO::DBusManager> dbusMgr;
 	public:
 		BTManagerDBus();
 		~BTManagerDBus();

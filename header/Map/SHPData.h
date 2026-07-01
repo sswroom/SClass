@@ -25,15 +25,15 @@ namespace Map
 			UInt32 endOfst;
 		} RecHdr;
 
-		DB::DBFFile *dbf;
+		Optional<DB::DBFFile> dbf;
 		Optional<IO::StreamData> shpData;
 
 		Map::DrawLayerType layerType;
-		Data::ArrayListDbl *ptX;
-		Data::ArrayListDbl *ptY;
-		Data::ArrayListDbl *ptZ;
-		Sync::Mutex *recsMut;
-		Data::ArrayListObj<Optional<RecHdr>> *recs;
+		Optional<Data::ArrayListDbl> ptX;
+		Optional<Data::ArrayListDbl> ptY;
+		Optional<Data::ArrayListDbl> ptZ;
+		Optional<Sync::Mutex> recsMut;
+		Optional<Data::ArrayListObj<Optional<RecHdr>>> recs;
 
 		Bool isPoint;
 		Math::Coord2DDbl max;

@@ -247,14 +247,14 @@ UIntOS IO::AMDGPUManager::GetGPUCount()
 
 Optional<IO::GPUControl> IO::AMDGPUManager::CreateGPUControl(UIntOS index)
 {
-	IO::AMDGPUControl *gpuCtrl;
+	NN<IO::AMDGPUControl> gpuCtrl;
 	NN<Data::ArrayListArr<UInt8>> adapterList;
 	if (!this->adapterList.SetTo(adapterList))
 		return nullptr;
 	AdapterInfo *adapter = (AdapterInfo*)adapterList->GetItem(index).Ptr();
 	if (adapter == 0)
 		return nullptr;
-	NEW_CLASS(gpuCtrl, IO::AMDGPUControl(*this, adapter));
+	NEW_CLASSNN(gpuCtrl, IO::AMDGPUControl(*this, adapter));
 	return gpuCtrl;
 }
 

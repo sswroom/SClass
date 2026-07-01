@@ -17,7 +17,7 @@ namespace UI
 			Optional<Media::DrawImage> bmpClicked;
 			Double alpha;
 			Double a;
-			Data::RandomOS *rnd;
+			NN<Data::RandomOS> rnd;
 			Bool isMouseDown;
 			Bool isMouseUp;
 			Bool isMouseClick;

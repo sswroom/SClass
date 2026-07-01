@@ -15,11 +15,10 @@ int backtrace(void **addrArr, int cnt)
 Manage::StackTracer::StackTracer(Optional<Manage::ThreadContext> context)
 {
 	this->context = context;
-	this->addrArr = 0;
 	this->stackFrame = 0;
 	void *addrArr[50];
 	int cnt;
-	NEW_CLASS(this->addrArr, Data::ArrayListUInt64());
+	NEW_CLASSNN(this->addrArr, Data::ArrayListUInt64());
 	cnt = backtrace(addrArr, 50);
 	IntOS i = 0;
 	while (i < cnt)
@@ -31,26 +30,22 @@ Manage::StackTracer::StackTracer(Optional<Manage::ThreadContext> context)
 
 Manage::StackTracer::~StackTracer()
 {
-	SDEL_CLASS(this->addrArr);
+	this->addrArr.Delete();
 }
 
 Bool Manage::StackTracer::IsSupported()
 {
-	return this->addrArr != 0 && this->addrArr->GetCount() > 0;
+	return this->addrArr->GetCount() > 0;
 }
 
 UInt64 Manage::StackTracer::GetCurrentAddr()
 {
-	if (this->addrArr == 0)
-		return 0;
 	return this->addrArr->GetItem((UIntOS)this->stackFrame);
 }
 
 Bool Manage::StackTracer::GoToNextLevel()
 {
-	if (this->addrArr == 0)
-		return false;
-	if ((UIntOS)this->stackFrame >= this->addrArr->GetCount() - 1)
+	if ((UIntOS)this->stackFrame + 1 >= this->addrArr->GetCount())
 		return false;
 	this->stackFrame = (void*)(1 + (IntOS)this->stackFrame);
 	return true;

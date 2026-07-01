@@ -12,7 +12,7 @@ Optional<Math::Geometry::LineString> Map::GoogleMap::GoogleMapsUtil::ParsePolyli
 	Int32 v2;
 	UTF8Char c;
 	Bool isX;
-	Math::Geometry::LineString *pl;
+	NN<Math::Geometry::LineString> pl;
 	UIntOS i;
 	UIntOS j;
 	UnsafeArray<Math::Coord2DDbl> ptList;
@@ -62,7 +62,7 @@ Optional<Math::Geometry::LineString> Map::GoogleMap::GoogleMapsUtil::ParsePolyli
 	if (isX)
 		return nullptr;
 	j = pointList.GetCount() >> 1;
-	NEW_CLASS(pl, Math::Geometry::LineString(4326, j, false, false));
+	NEW_CLASSNN(pl, Math::Geometry::LineString(4326, j, false, false));
 	ptList = pl->GetPointList(i);
 	i = 0;
 	while (i < j)

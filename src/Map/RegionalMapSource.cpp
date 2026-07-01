@@ -280,7 +280,7 @@ UnsafeArray<const Map::RegionalMapSource::MapInfo> Map::RegionalMapSource::GetMa
 
 Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> map, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Parser::ParserList> parsers, NN<Net::WebBrowser> browser, NN<Math::CoordinateSystem> envCSys)
 {
-	Map::MapDrawLayer *layer;
+	NN<Map::MapDrawLayer> layer;
 	switch (map->mapType)
 	{
 	case MapType::TMS:
@@ -296,7 +296,7 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 		{
 			tms->SetConcurrentCount(map->mapTypeParam);
 		}
-		NEW_CLASS(layer, Map::TileMapLayer(tms, parsers));
+		NEW_CLASSNN(layer, Map::TileMapLayer(tms, parsers));
 		return layer;
 	}
 	case MapType::File:
@@ -334,7 +334,7 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 		NEW_CLASSNN(tileMap, Map::CustomTileMap(Text::CStringNN(map->url, map->urlLen), CSTRP(sbuff, sptr), map->minLevel, map->maxLevel, clif, ssl));
 		tileMap->SetName(Text::CStringNN(map->name, map->nameLen));
 		tileMap->SetBounds(Math::RectAreaDbl(Math::Coord2DDbl(map->boundsX1, map->boundsY1), Math::Coord2DDbl(map->boundsX2, map->boundsY2)));
-		NEW_CLASS(layer, Map::TileMapLayer(tileMap, parsers));
+		NEW_CLASSNN(layer, Map::TileMapLayer(tileMap, parsers));
 		return layer;
 	}
 	case MapType::ESRIMap:
@@ -345,7 +345,7 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 		{
 			esriMap->SetSRID((UInt32)map->mapTypeParam);
 		}
-		NEW_CLASS(layer, Map::DrawMapServiceLayer(esriMap));
+		NEW_CLASSNN(layer, Map::DrawMapServiceLayer(esriMap));
 		return layer;
 	}
 	case MapType::WMS:
@@ -358,7 +358,7 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 			wms.Delete();
 			return nullptr;
 		}
-		NEW_CLASS(layer, Map::DrawMapServiceLayer(wms));
+		NEW_CLASSNN(layer, Map::DrawMapServiceLayer(wms));
 		return layer;
 	}
 	case MapType::WFS:

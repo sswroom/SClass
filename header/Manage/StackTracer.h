@@ -13,7 +13,7 @@ namespace Manage
 		void *hThread;
 		Manage::ThreadContext *winContext;
 		Optional<Manage::ThreadContext> context;
-		Data::ArrayListUInt64 *addrArr;
+		NN<Data::ArrayListUInt64> addrArr;
 		void *stackFrame;
 
 	public:

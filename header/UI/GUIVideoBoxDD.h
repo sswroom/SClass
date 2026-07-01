@@ -19,10 +19,10 @@ namespace UI
 		} MouseAction;
 		typedef void (CALLBACKFUNC MouseActionHandler)(AnyType userObj, MouseAction ma, Math::Coord2D<IntOS> pos);
 	protected:
-		IO::Writer *debugLog;
-		IO::Stream *debugFS;
-		IO::Writer *debugLog2;
-		IO::Stream *debugFS2;
+		Optional<IO::Writer> debugLog;
+		Optional<IO::Stream> debugFS;
+		Optional<IO::Writer> debugLog2;
+		Optional<IO::Stream> debugFS2;
 
 		MouseActionHandler maHdlr;
 		AnyType maHdlrObj;

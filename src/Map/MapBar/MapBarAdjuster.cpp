@@ -24,8 +24,8 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 	UnsafeArray<UInt8> buff;
 	UnsafeArray<UInt8> xmlBuff;
 	NN<Net::HTTPClient> cli;
-	IO::MemoryStream *mstm;
-	Text::XMLDocument *xmlDoc;
+	NN<IO::MemoryStream> mstm;
+	NN<Text::XMLDocument> xmlDoc;
 	Text::EncodingFactory encFact;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
@@ -41,7 +41,7 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 	Bool valid;
 
 	buff = MemAllocArr(UInt8, 2048);
-	NEW_CLASS(mstm, IO::MemoryStream());
+	NEW_CLASSNN(mstm, IO::MemoryStream());
 	currPoint = 0;
 	while (currPoint < nPoints)
 	{
@@ -83,7 +83,7 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 
 		xmlBuff = mstm->GetBuff(readSize);
 		valid = false;
-		NEW_CLASS(xmlDoc, Text::XMLDocument());
+		NEW_CLASSNN(xmlDoc, Text::XMLDocument());
 		if (xmlDoc->ParseBuff(encFact, xmlBuff, readSize))
 		{
 			xmlNodes = xmlDoc->SearchNode(CSTR("/result/pois/item"), objCnt);
@@ -132,7 +132,7 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 			}
 			xmlDoc->ReleaseSearch(xmlNodes);
 		}
-		DEL_CLASS(xmlDoc);
+		xmlDoc.Delete();
 
 		if (!valid)
 		{
@@ -141,7 +141,7 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 
 		currPoint = nextPoint;
 	}
-	DEL_CLASS(mstm);
+	mstm.Delete();
 	MemFreeArr(buff);
 
 	return true;

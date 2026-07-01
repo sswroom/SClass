@@ -797,16 +797,16 @@ Optional<IO::Stream> Map::HKTrafficLayer::OpenURLStream()
 {
 	if (this->url->StartsWithICase(UTF8STRC("FILE:///")))
 	{
-		IO::FileStream *fs;
+		NN<IO::FileStream> fs;
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::URLString::GetURLFilePath(sbuff, this->url->v, this->url->leng).Or(sbuff);
-		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
+		NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 		if (!fs->IsError())
 		{
 			return fs;
 		}
-		DEL_CLASS(fs);
+		fs.Delete();
 		return nullptr;
 	}
 	else
@@ -1276,7 +1276,7 @@ Map::MapDrawLayer::ObjectClass Map::HKTrafficLayer::GetObjectClass() const
 
 Optional<Map::MapDrawLayer> Map::HKTrafficLayer::GetNodePoints()
 {
-	Map::VectorLayer *layer;
+	NN<Map::VectorLayer> layer;
 	UTF8Char sbuff[32];
 	UnsafeArrayOpt<const UTF8Char> sptr = sbuff;
 	UnsafeArrayOpt<const UTF8Char> col = (const UTF8Char*)"id";
@@ -1284,7 +1284,7 @@ Optional<Map::MapDrawLayer> Map::HKTrafficLayer::GetNodePoints()
 	NN<Math::CoordinateSystem> csys;
 	if (!Optional<Math::CoordinateSystem>(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80)).SetTo(csys))
 		return nullptr;
-	NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, CSTR("HKTrafficNode"), 1, &col, csys, 0, CSTR("HKTrafficNode")));
+	NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, CSTR("HKTrafficNode"), 1, &col, csys, 0, CSTR("HKTrafficNode")));
 	IntOS i = 0;
 	IntOS j = sizeof(nodeTable) / sizeof(nodeTable[0]);
 	while (i < j)

@@ -38,8 +38,8 @@ namespace Manage
 		NN<Net::TCPClientFactory> clif;
 		Optional<Net::TCPClient> cli;
 		Bool cliErr;
-		Sync::Event *connREvt;
-		Sync::Event *connTEvt;
+		Optional<Sync::Event> connREvt;
+		Optional<Sync::Event> connTEvt;
 		Bool requesting;
 		Data::DateTime lastReqTime;
 		Data::DateTime lastKATime;

@@ -13,8 +13,8 @@ namespace UI
 	public:
 		typedef void (CALLBACKFUNC OffsetChgHandler)(AnyType userObj, UInt64 offset);
 	private:
-		IO::FileStream *fs;
-		IO::StreamData *fd;
+		Optional<IO::FileStream> fs;
+		Optional<IO::StreamData> fd;
 		Optional<IO::FileAnalyse::FileAnalyser> analyse;
 		Optional<IO::FileAnalyse::FrameDetail> frame;
 		UInt64 fileSize;

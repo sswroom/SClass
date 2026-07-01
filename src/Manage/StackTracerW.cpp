@@ -25,14 +25,13 @@ Manage::StackTracer::StackTracer(Manage::ThreadContext *context)
 {
 	IO::Library lib((const UTF8Char*)"coredll.dll");
 	this->context = context;
-	this->addrArr = 0;
 	this->stackFrame = 0;
+	NEW_CLASSNN(this->addrArr, Data::ArrayListUInt64());
 	GETTHREADCALLSTACK pGetThreadCallStack = (GETTHREADCALLSTACK)lib.GetFunc("GetThreadCallStack");
 	if (pGetThreadCallStack)
 	{
 		CallSnapshotEx  lpFrames[MAX_FRAMES];
 		DWORD dwCnt = pGetThreadCallStack((HANDLE)context->GetThreadId(), MAX_FRAMES, (void**)lpFrames, STACKSNAP_EXTENDED_INFO, 0);
-		NEW_CLASS(this->addrArr, Data::ArrayListInt64());
 		DWORD i = 0;
 		while (i < dwCnt)
 		{
@@ -44,20 +43,17 @@ Manage::StackTracer::StackTracer(Manage::ThreadContext *context)
 
 Manage::StackTracer::~StackTracer()
 {
-	SDEL_CLASS(this->addrArr);
+	this->addrArr.Delete();
 }
 
 Bool Manage::StackTracer::IsSupported()
 {
-	return this->addrArr != 0 && this->addrArr->GetCount() > 0;
+	return this->addrArr->GetCount() > 0;
 }
 
 UInt64 Manage::StackTracer::GetCurrentAddr()
 {
-	if (this->addrArr == 0)
-		return 0;
 	return this->addrArr->GetItem((IntOS)this->stackFrame);
-	return 0;
 }
 
 Bool Manage::StackTracer::GoToNextLevel()
@@ -71,7 +67,7 @@ Manage::StackTracer::StackTracer(Optional<Manage::ThreadContext> context)
 {
 	this->context = context;
 	this->winContext = 0;
-	NEW_CLASS(addrArr, Data::ArrayListUInt64());
+	NEW_CLASSNN(this->addrArr, Data::ArrayListUInt64());
 	STACKFRAME64 *sf = MemAlloc(STACKFRAME64, 1);
 	this->stackFrame = sf;
 	ZeroMemory(sf, sizeof(STACKFRAME64));
@@ -117,7 +113,7 @@ Manage::StackTracer::~StackTracer()
 		CloseHandle(hThread);
 		hThread = 0;
 	}
-	DEL_CLASS(addrArr);
+	this->addrArr.Delete();
 }
 
 Bool Manage::StackTracer::IsSupported()

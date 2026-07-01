@@ -4,8 +4,8 @@
 
 IO::BTManagerDBus::BTManagerDBus()
 {
-	this->client = 0;
-	NEW_CLASS(this->dbusMgr, IO::DBusManager(IO::DBusManager::DBT_SYSTEM, 0));
+	this->client = nullptr;
+	NEW_CLASSNN(this->dbusMgr, IO::DBusManager(IO::DBusManager::DBT_SYSTEM, 0));
 	if (!this->dbusMgr->IsError())
 	{
 		this->dbusMgr->AttachObjectManager();
@@ -14,6 +14,6 @@ IO::BTManagerDBus::BTManagerDBus()
 
 IO::BTManagerDBus::~BTManagerDBus()
 {
-	SDEL_CLASS(this->client);
-	DEL_CLASS(this->dbusMgr);
+	this->client.Delete();
+	this->dbusMgr.Delete();
 }

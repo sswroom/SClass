@@ -783,7 +783,7 @@ Optional<Math::Geometry::LineString> Math::Geometry::LineString::SplitByPoint(Ma
 	UnsafeArrayOpt<Double> newM;
 	UnsafeArray<Double> oldArr;
 	UnsafeArray<Double> newArr;
-	Math::Geometry::LineString *newPL;
+	NN<Math::Geometry::LineString> newPL;
 	if (isPoint)
 	{
 		if (minId == this->nPoint - 1 || minId == 0 || minId == (UIntOS)-1)
@@ -823,7 +823,7 @@ Optional<Math::Geometry::LineString> Math::Geometry::LineString::SplitByPoint(Ma
 		this->pointArr = newPoints;
 		this->zArr = newZ;
 		this->mArr = newM;
-		NEW_CLASS(newPL, Math::Geometry::LineString(this->srid, this->nPoint - minId, this->zArr.NotNull(), this->mArr.NotNull()));
+		NEW_CLASSNN(newPL, Math::Geometry::LineString(this->srid, this->nPoint - minId, this->zArr.NotNull(), this->mArr.NotNull()));
 		newPoints = newPL->GetPointList(l);
 		l = this->nPoint;
 		while (l-- > minId)
@@ -890,7 +890,7 @@ Optional<Math::Geometry::LineString> Math::Geometry::LineString::SplitByPoint(Ma
 		this->pointArr = newPoints;
 		this->zArr = newZ;
 		this->mArr = newM;
-		NEW_CLASS(newPL, Math::Geometry::LineString(this->srid, this->nPoint - minId, oldZ.NotNull(), oldM.NotNull()));
+		NEW_CLASSNN(newPL, Math::Geometry::LineString(this->srid, this->nPoint - minId, oldZ.NotNull(), oldM.NotNull()));
 
 		newPoints = newPL->GetPointList(l);
 		l = this->nPoint;
@@ -1221,11 +1221,11 @@ Optional<Math::Geometry::Polygon> Math::Geometry::LineString::CreatePolygonByDis
 	outPoints.Add(lastPtX);
 	outPoints.Add(lastPtY);
 
-	Math::Geometry::Polygon *pg;
+	NN<Math::Geometry::Polygon> pg;
 	NN<Math::Geometry::LinearRing> lr;
 	UIntOS nPoints;
 	UnsafeArray<Math::Coord2DDbl> pts;
-	NEW_CLASS(pg, Math::Geometry::Polygon(this->srid));
+	NEW_CLASSNN(pg, Math::Geometry::Polygon(this->srid));
 	NEW_CLASSNN(lr, Math::Geometry::LinearRing(this->srid, outPoints.GetCount() >> 1, false, false));
 	pts = lr->GetPointList(nPoints);
 	i = 0;

@@ -46,7 +46,7 @@ namespace IO
 		DBusClient(NN<IO::DBusManager> dbusMgr, UnsafeArray<const UTF8Char> service, UnsafeArrayOpt<const UTF8Char> path, UnsafeArrayOpt<const UTF8Char> rootPath);
 		~DBusClient();
 
-		DBusClient *Ref();
+		Optional<DBusClient> Ref();
 		void Unref();
 
 		IO::DBusManager::HandlerResult MessageFilter(NN<IO::DBusManager::Message> message);

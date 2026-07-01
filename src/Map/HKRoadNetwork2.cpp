@@ -84,8 +84,8 @@ Optional<Map::MapDrawLayer> Map::HKRoadNetwork2::CreateTonnesSignLayer()
 	DB::DBUtil::ColType colTypes[] = {DB::DBUtil::CT_Int32, DB::DBUtil::CT_Double, DB::DBUtil::CT_VarUTF8Char};
 	UIntOS colSize[] = {11, 32, 255};
 	UIntOS colDP[] = {0, 10, 0};
-	Map::VectorLayer *lyr = 0;
-	NEW_CLASS(lyr, Map::VectorLayer(layerType, CSTR("HKRoadNetwork2"), 3, colNames, this->CreateCoordinateSystem(), colTypes, colSize, colDP, 0, CSTR("VehRestrict")));
+	NN<Map::VectorLayer> lyr;
+	NEW_CLASSNN(lyr, Map::VectorLayer(layerType, CSTR("HKRoadNetwork2"), 3, colNames, this->CreateCoordinateSystem(), colTypes, colSize, colDP, 0, CSTR("VehRestrict")));
 	
 	NN<DB::DBReader> r;
 	if (fgdb->QueryTableData(nullptr, CSTR("VEHICLE_RESTRICTION"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))

@@ -796,26 +796,26 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UIntOS co
 		{
 		case 0:
 			{
-				Math::Geometry::Point *pt;
-				NEW_CLASS(pt, Math::Geometry::Point(srid, x, y));
+				NN<Math::Geometry::Point> pt;
+				NEW_CLASSNN(pt, Math::Geometry::Point(srid, x, y));
 				return pt;
 			}
 		case 0x40:
 			{
-				Math::Geometry::PointM *pt;
-				NEW_CLASS(pt, Math::Geometry::PointM(srid, x, y, m));
+				NN<Math::Geometry::PointM> pt;
+				NEW_CLASSNN(pt, Math::Geometry::PointM(srid, x, y, m));
 				return pt;
 			}
 		case 0x80:
 			{
-				Math::Geometry::PointZ *pt;
-				NEW_CLASS(pt, Math::Geometry::PointZ(srid, x, y, z));
+				NN<Math::Geometry::PointZ> pt;
+				NEW_CLASSNN(pt, Math::Geometry::PointZ(srid, x, y, z));
 				return pt;
 			}
 		case 0xC0:
 			{
-				Math::Geometry::PointZM *pt;
-				NEW_CLASS(pt, Math::Geometry::PointZM(srid, x, y, z, m));
+				NN<Math::Geometry::PointZM> pt;
+				NEW_CLASSNN(pt, Math::Geometry::PointZM(srid, x, y, z, m));
 				return pt;
 			}
 		}
@@ -838,7 +838,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UIntOS co
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymin
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmax
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymax
-			Math::Geometry::Polyline *pl;
+			NN<Math::Geometry::Polyline> pl;
 			srid = 0;
 			if (this->tableInfo->csys.SetTo(csys))
 			{
@@ -852,7 +852,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UIntOS co
 			UnsafeArray<Math::Coord2DDbl> points;
 			UnsafeArray<Double> zArr;
 			UnsafeArray<Double> mArr;
-			NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+			NEW_CLASSNN(pl, Math::Geometry::Polyline(srid));
 			//, (UIntOS)nParts, (UIntOS)nPoints, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0
 			ptOfstList = MemAllocArr(UInt32, (UIntOS)nParts);
 			ptOfstList[0] = 0;

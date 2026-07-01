@@ -15,7 +15,7 @@ namespace UI
 			Optional<Media::DrawImage> bmp2;
 			Double alpha;
 			Double a;
-			Data::Random *rnd;
+			NN<Data::Random> rnd;
 		public:
 			DynamicOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName1, Text::CString fileName2, Math::Coord2D<IntOS> tl);
 			virtual ~DynamicOverlayDObj();

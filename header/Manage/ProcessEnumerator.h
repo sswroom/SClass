@@ -18,9 +18,9 @@ namespace Manage
 		UInt32 GetProcId();
 		UInt32 GetParentProcId();
 		UInt32 GetThreadCnt();
-		WChar *GetFileName(WChar *buff);
+		UnsafeArray<WChar> GetFileName(UnsafeArray<WChar> buff);
 
-		static ProcessEnumerator *EnumAllProcesses();
+		static Optional<ProcessEnumerator> EnumAllProcesses();
 	};
 };
 #endif

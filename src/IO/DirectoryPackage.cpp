@@ -165,8 +165,8 @@ Optional<IO::StreamData> IO::DirectoryPackage::GetItemStmDataNew(UIntOS index) c
 	IO::Path::PathType pt = IO::Path::GetPathType(fileName->ToCString());
 	if (pt == IO::Path::PathType::File)
 	{
-		IO::StmData::FileData *fd;
-		NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
+		NN<IO::StmData::FileData> fd;
+		NEW_CLASSNN(fd, IO::StmData::FileData(fileName, false));
 		return fd;
 	}
 	else
@@ -183,8 +183,8 @@ Optional<IO::PackageFile> IO::DirectoryPackage::GetItemPack(UIntOS index, OutPar
 	IO::Path::PathType pt = IO::Path::GetPathType(fileName->ToCString());
 	if (pt == IO::Path::PathType::Directory)
 	{
-		IO::DirectoryPackage *pkg;
-		NEW_CLASS(pkg, IO::DirectoryPackage(fileName));
+		NN<IO::DirectoryPackage> pkg;
+		NEW_CLASSNN(pkg, IO::DirectoryPackage(fileName));
 		pkg->SetParent(this->parent);
 		needDelete.Set(true);
 		return pkg;

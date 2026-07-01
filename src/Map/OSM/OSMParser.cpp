@@ -24,7 +24,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 	NN<OSMNodeInfo> node;
 	Data::ArrayListNative<Double> latList;
 	Data::ArrayListNative<Double> lonList;
-	Map::VectorLayer *layers[OSMTYPECNT];
+	Optional<Map::VectorLayer> layers[OSMTYPECNT];
 	UnsafeArrayOpt<const UTF8Char> colName[2] = {(const UTF8Char*)"Name", (const UTF8Char*)"Elevation"};
 	UnsafeArrayOpt<const UTF8Char> pgName[2] = {(const UTF8Char*)"Name", (const UTF8Char*)"Type"};
 	static Text::CString layerNames[OSMTYPECNT] = {
@@ -102,7 +102,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 	i = OSMTYPECNT;
 	while (i-- > 0)
 	{
-		layers[i] = 0;
+		layers[i] = nullptr;
 	}
 	while (reader->NextElementName().SetTo(nodeText))
 	{
@@ -650,18 +650,20 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 					}
 					if (elemType > 0)
 					{
-						if (layers[elemType - 1] == 0)
+						NN<Map::VectorLayer> layer;
+						if (!layers[elemType - 1].SetTo(layer))
 						{
 							UIntOS colCnt = 1;
 							if (elemType == 38)
 							{
 								colCnt = 2;
 							}
-							NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POINT, fileName, colCnt, colName, Math::CoordinateSystemManager::CreateWGS84Csys(), 0, layerNames[elemType - 1]));
+							NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, fileName, colCnt, colName, Math::CoordinateSystemManager::CreateWGS84Csys(), 0, layerNames[elemType - 1]));
+							layers[elemType - 1] = layer;
 						}
 						NN<Math::Geometry::Point> pt;
 						NEW_CLASSNN(pt, Math::Geometry::Point(4326, lon, lat));
-						layers[elemType - 1]->AddVector2(pt, names);
+						layer->AddVector2(pt, names);
 					}
 					OPTSTR_DEL(names[0]);
 					OPTSTR_DEL(names[1]);
@@ -1305,16 +1307,18 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 			}
 			if (elemType > 0 && !isErr)
 			{
+				NN<Map::VectorLayer> layer;
 				if (isPG)
 				{
-					if (layers[elemType - 1] == 0)
+					if (!layers[elemType - 1].SetTo(layer))
 					{
 						UIntOS colCnt = 1;
 						if (elemType == 6)
 						{
 							colCnt = 2;
 						}
-						NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYGON, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateWGS84Csys(), 0, layerNames[elemType - 1]));
+						NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateWGS84Csys(), 0, layerNames[elemType - 1]));
+						layers[elemType - 1] = layer;
 					}
 					NN<Math::Geometry::Polygon> pg;
 					NN<Math::Geometry::LinearRing> lr;
@@ -1327,18 +1331,19 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 						points[i].y = latList.GetItem(i);
 					}
 					pg->AddGeometry(lr);
-					layers[elemType - 1]->AddVector2(pg, names);
+					layer->AddVector2(pg, names);
 				}
 				else
 				{
-					if (layers[elemType - 1] == 0)
+					if (!layers[elemType - 1].SetTo(layer))
 					{
 						UIntOS colCnt = 1;
 						if (elemType == 6)
 						{
 							colCnt = 2;
 						}
-						NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateWGS84Csys(), 0, layerNames[elemType - 1]));
+						NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateWGS84Csys(), 0, layerNames[elemType - 1]));
+						layers[elemType - 1] = layer;
 					}
 					NN<Math::Geometry::LineString> pl;
 					NEW_CLASSNN(pl, Math::Geometry::LineString(4326, latList.GetCount(), false, false));
@@ -1348,7 +1353,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 						points[i].x = lonList.GetItem(i);
 						points[i].y = latList.GetItem(i);
 					}
-					layers[elemType - 1]->AddVector2(pl, names);
+					layer->AddVector2(pl, names);
 				}
 			}
 			OPTSTR_DEL(names[0]);
@@ -1369,12 +1374,12 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 		MemFreeNN(nodeMap.GetItemNoCheck(i));
 	}
 	NN<Map::MapLayerCollection> layerList;
-	NN<Map::MapDrawLayer> layer;
+	NN<Map::VectorLayer> layer;
 	NEW_CLASSNN(layerList, Map::MapLayerCollection(fileName, CSTR("OSM")));
 	i = 0;
 	while (i < OSMTYPECNT)
 	{
-		if (layer.Set(layers[i]))
+		if (layers[i].SetTo(layer))
 		{
 			layerList->Add(layer);
 		}

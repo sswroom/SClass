@@ -434,10 +434,10 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 			frame->AddUInt(i + 2, 1, CSTR("Additional flags"), tagData[i + 2]);
 			frame->AddHex32(tag->size - 8, CSTR("Check value"), ReadMUInt32(&tagData[tag->size - 8]));
 
-/*			IO::MemoryStream *mstm;
+/*			NN<IO::MemoryStream> mstm;
 			NN<IO::StreamData> stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
 			Data::Compress::Inflate comp;
-			NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"IO.FileAnalyse.PNGFileAnalyse"));
+			NEW_CLASSNN(mstm, IO::MemoryStream((const UTF8Char*)"IO.FileAnalyse.PNGFileAnalyse"));
 			if (!comp.Decompress(mstm, stmData))
 			{
 				UIntOS iccSize;
@@ -450,8 +450,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 					DEL_CLASS(icc);
 				}
 			}
-			DEL_CLASS(mstm);
-			DEL_CLASS(stmData);*/
+			mstm.Delete();
+			stmData.Delete();*/
 		}
 	}
 	else if (tag->tagType == *(Int32*)"PLTE")

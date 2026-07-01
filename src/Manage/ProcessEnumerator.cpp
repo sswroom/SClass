@@ -1,9 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #include "Manage/ProcessEnumerator.h"
 #include <windows.h>
-#include <Tlhelp32.h>
+#include <tlhelp32.h>
 
 Manage::ProcessEnumerator::ProcessEnumerator(void *hand)
 {
@@ -52,18 +53,18 @@ UInt32 Manage::ProcessEnumerator::GetThreadCnt()
 	return ((PROCESSENTRY32W*)this->procEntry)->cntThreads;
 }
 
-WChar *Manage::ProcessEnumerator::GetFileName(WChar *buff)
+UnsafeArray<WChar> Manage::ProcessEnumerator::GetFileName(UnsafeArray<WChar> buff)
 {
 	return Text::StrConcat(buff, ((PROCESSENTRY32W*)this->procEntry)->szExeFile);
 }
 
-Manage::ProcessEnumerator *Manage::ProcessEnumerator::EnumAllProcesses()
+Optional<Manage::ProcessEnumerator> Manage::ProcessEnumerator::EnumAllProcesses()
 {
 	HANDLE hand = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (hand == INVALID_HANDLE_VALUE)
-		return 0;
-	Manage::ProcessEnumerator *penum;
-	NEW_CLASS(penum, Manage::ProcessEnumerator(hand));
+		return nullptr;
+	NN<Manage::ProcessEnumerator> penum;
+	NEW_CLASSNN(penum, Manage::ProcessEnumerator(hand));
 	return penum;
 }
 

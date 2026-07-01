@@ -359,8 +359,8 @@ Bool Manage::ThreadContextX86_64::GetRegs(NN<Manage::Dasm::Dasm_Regs> regs) cons
 
 Optional<Manage::Dasm> Manage::ThreadContextX86_64::CreateDasm() const
 {
-	Manage::DasmX86_64 *dasm;
-	NEW_CLASS(dasm, Manage::DasmX86_64());
+	NN<Manage::DasmX86_64> dasm;
+	NEW_CLASSNN(dasm, Manage::DasmX86_64());
 	return dasm;
 }
 

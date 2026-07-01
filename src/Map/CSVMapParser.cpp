@@ -5,7 +5,7 @@
 #include "Math/Geometry/Point.h"
 #include "Text/UTF8Reader.h"
 
-Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NN<IO::Stream> stm, UInt32 codePage, Text::CStringNN layerName, Text::CStringNN nameCol, Text::CStringNN latCol, Text::CStringNN lonCol, NN<Math::CoordinateSystem> csys)
+Optional<Map::MapDrawLayer> Map::CSVMapParser::ParseAsPoint(NN<IO::Stream> stm, UInt32 codePage, Text::CStringNN layerName, Text::CStringNN nameCol, Text::CStringNN latCol, Text::CStringNN lonCol, NN<Math::CoordinateSystem> csys)
 {
 	Text::PString tmpArr[2];
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> tmpcArr2;
@@ -52,7 +52,7 @@ Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NN<IO::Stream> stm, UInt32 co
 
 	if (latIndex != INVALID_INDEX && lonIndex != INVALID_INDEX)
 	{
-		Map::VectorLayer *lyr;
+		NN<Map::VectorLayer> lyr;
 		NN<Math::Geometry::Point> pt;
 		UIntOS i;
 
@@ -62,7 +62,7 @@ Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NN<IO::Stream> stm, UInt32 co
 		{
 			tmpcArr2[i] = colNames.GetItem(i);
 		}
-		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, layerName, totalCnt, tmpcArr2, csys, nameIndex, layerName));
+		NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, layerName, totalCnt, tmpcArr2, csys, nameIndex, layerName));
 		
 		UnsafeArray<UnsafeArray<UTF8Char>> tmpUArr2 = UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(tmpcArr2);
 		while (reader->ReadLine(sbuff, 2048).NotNull())
@@ -80,5 +80,5 @@ Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NN<IO::Stream> stm, UInt32 co
 	}
 	csys.Delete();
 	reader.Delete();
-	return 0;
+	return nullptr;
 }

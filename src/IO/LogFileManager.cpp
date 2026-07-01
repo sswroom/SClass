@@ -88,11 +88,11 @@ Optional<IO::Stream> IO::LogFileManager::OpenLogFile(UInt32 date)
 	sptr = this->logPath->ToCString().Substring(i).ConcatTo(sptr);
 	sptr = Text::StrUInt32(sptr, date);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".log"));
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NN<IO::FileStream> fs;
+	NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
-		DEL_CLASS(fs);
+		fs.Delete();
 		return nullptr;
 	}
 	return fs;

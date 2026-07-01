@@ -6,8 +6,9 @@
 
 IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_GetNumDevices(UInt32 *NumDevices)
 {
-	void *fPtr = this->driver->GetFunc("SI_GetNumDevices");
-	if (fPtr == 0)
+	NN<IO::Library> driver;
+	void *fPtr;
+	if (!this->driver.SetTo(driver) || (fPtr = driver->GetFunc("SI_GetNumDevices")) == 0)
 	{
 		return SI_FUNC_NOT_FOUND;
 	}
@@ -16,8 +17,9 @@ IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_GetNumDevices(UInt32 *NumDevices)
 
 IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_GetProductString(UInt32 DeviceNum, void *DeviceString, SI_RETURN Options)
 {
-	void *fPtr = this->driver->GetFunc("SI_GetProductString");
-	if (fPtr == 0)
+	NN<IO::Library> driver;
+	void *fPtr;
+	if (!this->driver.SetTo(driver) || (fPtr = driver->GetFunc("SI_GetProductString")) == 0)
 	{
 		return SI_FUNC_NOT_FOUND;
 	}
@@ -26,8 +28,9 @@ IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_GetProductString(UInt32 DeviceNum
 
 IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_Open(UInt32 DeviceNum, void **Handle)
 {
-	void *fPtr = this->driver->GetFunc("SI_Open");
-	if (fPtr == 0)
+	NN<IO::Library> driver;
+	void *fPtr;
+	if (!this->driver.SetTo(driver) || (fPtr = driver->GetFunc("SI_Open")) == 0)
 	{
 		return SI_FUNC_NOT_FOUND;
 	}
@@ -36,8 +39,9 @@ IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_Open(UInt32 DeviceNum, void **Han
 
 IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_Close(void *Handle)
 {
-	void *fPtr = this->driver->GetFunc("SI_Close");
-	if (fPtr == 0)
+	NN<IO::Library> driver;
+	void *fPtr;
+	if (!this->driver.SetTo(driver) || (fPtr = driver->GetFunc("SI_Close")) == 0)
 	{
 		return SI_FUNC_NOT_FOUND;
 	}
@@ -46,8 +50,9 @@ IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_Close(void *Handle)
 
 IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_Read(void *Handle, void *Buffer, UInt32 NumBytesToRead, UInt32 *NumBytesReturned, void* o)
 {
-	void *fPtr = this->driver->GetFunc("SI_Read");
-	if (fPtr == 0)
+	NN<IO::Library> driver;
+	void *fPtr;
+	if (!this->driver.SetTo(driver) || (fPtr = driver->GetFunc("SI_Read")) == 0)
 	{
 		return SI_FUNC_NOT_FOUND;
 	}
@@ -56,8 +61,9 @@ IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_Read(void *Handle, void *Buffer, 
 
 IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_Write(void *Handle, void *Buffer, UInt32 NumBytesToWrite, UInt32 *NumBytesWritten, void* o)
 {
-	void *fPtr = this->driver->GetFunc("SI_Write");
-	if (fPtr == 0)
+	NN<IO::Library> driver;
+	void *fPtr;
+	if (!this->driver.SetTo(driver) || (fPtr = driver->GetFunc("SI_Write")) == 0)
 	{
 		return SI_FUNC_NOT_FOUND;
 	}
@@ -66,8 +72,9 @@ IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_Write(void *Handle, void *Buffer,
 
 IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_CancelIo(void *Handle)
 {
-	void *fPtr = this->driver->GetFunc("SI_CancelIo");
-	if (fPtr == 0)
+	NN<IO::Library> driver;
+	void *fPtr;
+	if (!this->driver.SetTo(driver) || (fPtr = driver->GetFunc("SI_CancelIo")) == 0)
 	{
 		return SI_FUNC_NOT_FOUND;
 	}
@@ -76,8 +83,9 @@ IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_CancelIo(void *Handle)
 
 IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_FlushBuffers(void *Handle, UInt8 FlushTransmit, UInt8 FlushReceive)
 {
-	void *fPtr = this->driver->GetFunc("SI_FlushBuffers");
-	if (fPtr == 0)
+	NN<IO::Library> driver;
+	void *fPtr;
+	if (!this->driver.SetTo(driver) || (fPtr = driver->GetFunc("SI_FlushBuffers")) == 0)
 	{
 		return SI_FUNC_NOT_FOUND;
 	}
@@ -86,8 +94,9 @@ IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_FlushBuffers(void *Handle, UInt8 
 
 IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_SetBaudRate(void *Handle, UInt32 dwBaudRate)
 {
-	void *fPtr = this->driver->GetFunc("SI_SetBaudRate");
-	if (fPtr == 0)
+	NN<IO::Library> driver;
+	void *fPtr;
+	if (!this->driver.SetTo(driver) || (fPtr = driver->GetFunc("SI_SetBaudRate")) == 0)
 	{
 		return SI_FUNC_NOT_FOUND;
 	}
@@ -96,8 +105,9 @@ IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_SetBaudRate(void *Handle, UInt32 
 
 IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_GetDLLVersion(UInt32* HighVersion, UInt32* LowVersion)
 {
-	void *fPtr = this->driver->GetFunc("SI_GetDLLVersion");
-	if (fPtr == 0)
+	NN<IO::Library> driver;
+	void *fPtr;
+	if (!this->driver.SetTo(driver) || (fPtr = driver->GetFunc("SI_GetDLLVersion")) == 0)
 	{
 		return SI_FUNC_NOT_FOUND;
 	}
@@ -106,8 +116,9 @@ IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_GetDLLVersion(UInt32* HighVersion
 
 IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_GetDriverVersion(UInt32* HighVersion, UInt32* LowVersion)
 {
-	void *fPtr = this->driver->GetFunc("SI_GetDriverVersion");
-	if (fPtr == 0)
+	NN<IO::Library> driver;
+	void *fPtr;
+	if (!this->driver.SetTo(driver) || (fPtr = driver->GetFunc("SI_GetDriverVersion")) == 0)
 	{
 		return SI_FUNC_NOT_FOUND;
 	}
@@ -116,53 +127,58 @@ IO::SiLabDriver::SI_STATUS IO::SiLabDriver::SI_GetDriverVersion(UInt32* HighVers
 
 IO::SiLabDriver::SiLabDriver()
 {
+	NN<IO::Library> driver;
 #ifdef _WIN32
-	NEW_CLASS(this->driver, IO::Library((const UTF8Char*)"SiUSBXP.dll"));
+	NEW_CLASSNN(driver, IO::Library((const UTF8Char*)"SiUSBXP.dll"));
 #else
-	NEW_CLASS(this->driver, IO::Library((const UTF8Char*)"SiUSBXP.so"));
+	NEW_CLASSNN(driver, IO::Library((const UTF8Char*)"SiUSBXP.so"));
 #endif
-	if (this->driver->IsError())
+	if (driver->IsError())
 	{
-		DEL_CLASS(this->driver);
-		this->driver = 0;
+		driver.Delete();
+		this->driver = nullptr;
+	}
+	else
+	{
+		this->driver = driver;
 	}
 }
 
 IO::SiLabDriver::~SiLabDriver()
 {
-	SDEL_CLASS(this->driver);
+	this->driver.Delete();
 }
 
 Bool IO::SiLabDriver::IsError()
 {
-	return this->driver == 0;
+	return this->driver.IsNull();
 }
 
-Bool IO::SiLabDriver::GetDLLVersion(UInt16 *ver1, UInt16 *ver2, UInt16 *ver3, UInt16 *ver4)
+Bool IO::SiLabDriver::GetDLLVersion(OutParam<UInt16> ver1, OutParam<UInt16> ver2, OutParam<UInt16> ver3, OutParam<UInt16> ver4)
 {
 	UInt32 hiVer;
 	UInt32 loVer;
 	if (SI_GetDLLVersion(&hiVer, &loVer) == SI_SUCCESS)
 	{
-		*ver1 = (UInt16)(hiVer >> 16);
-		*ver2 = (UInt16)(hiVer & 0xffff);
-		*ver3 = (UInt16)(loVer >> 16);
-		*ver4 = (UInt16)(loVer & 0xffff);
+		ver1.Set((UInt16)(hiVer >> 16));
+		ver2.Set((UInt16)(hiVer & 0xffff));
+		ver3.Set((UInt16)(loVer >> 16));
+		ver4.Set((UInt16)(loVer & 0xffff));
 		return true;
 	}
 	return false;
 }
 
-Bool IO::SiLabDriver::GetDriverVersion(UInt16 *ver1, UInt16 *ver2, UInt16 *ver3, UInt16 *ver4)
+Bool IO::SiLabDriver::GetDriverVersion(OutParam<UInt16> ver1, OutParam<UInt16> ver2, OutParam<UInt16> ver3, OutParam<UInt16> ver4)
 {
 	UInt32 hiVer;
 	UInt32 loVer;
 	if (SI_GetDriverVersion(&hiVer, &loVer) == SI_SUCCESS)
 	{
-		*ver1 = (UInt16)(hiVer >> 16);
-		*ver2 = (UInt16)(hiVer & 0xffff);
-		*ver3 = (UInt16)(loVer >> 16);
-		*ver4 = (UInt16)(loVer & 0xffff);
+		ver1.Set((UInt16)(hiVer >> 16));
+		ver2.Set((UInt16)(hiVer & 0xffff));
+		ver3.Set((UInt16)(loVer >> 16));
+		ver4.Set((UInt16)(loVer & 0xffff));
 		return true;
 	}
 	return false;
@@ -176,23 +192,23 @@ UInt32 IO::SiLabDriver::GetNumDevices()
 	return 0;
 }
 
-Bool IO::SiLabDriver::GetDeviceVID(UInt32 devId, UInt32 *vid)
+Bool IO::SiLabDriver::GetDeviceVID(UInt32 devId, OutParam<UInt32> vid)
 {
 	Char buff[32];
 	if (this->SI_GetProductString(devId, buff, IO::SiLabDriver::SI_RETURN_VID) == SI_SUCCESS)
 	{
-		*vid = Text::StrHex2UInt32ChC(buff);
+		vid.Set(Text::StrHex2UInt32ChC(buff));
 		return true;
 	}
 	return false;
 }
 
-Bool IO::SiLabDriver::GetDevicePID(UInt32 devId, UInt32 *pid)
+Bool IO::SiLabDriver::GetDevicePID(UInt32 devId, OutParam<UInt32> pid)
 {
 	Char buff[32];
 	if (this->SI_GetProductString(devId, buff, IO::SiLabDriver::SI_RETURN_PID) == SI_SUCCESS)
 	{
-		*pid = Text::StrHex2UInt32ChC(buff);
+		pid.Set(Text::StrHex2UInt32ChC(buff));
 		return true;
 	}
 	return false;
@@ -228,17 +244,17 @@ UnsafeArrayOpt<UTF8Char> IO::SiLabDriver::GetDeviceLink(UInt32 devId, UnsafeArra
 	return nullptr;
 }
 
-IO::Stream *IO::SiLabDriver::OpenPort(UInt32 devId, UInt32 baudRate)
+Optional<IO::Stream> IO::SiLabDriver::OpenPort(UInt32 devId, UInt32 baudRate)
 {
-	IO::SiLabSerialPort *port;
+	NN<IO::SiLabSerialPort> port;
 	void *hand;
 	if (this->SI_Open(devId, &hand) != SI_SUCCESS)
-		return 0;
+		return nullptr;
 	if (this->SI_SetBaudRate(hand, baudRate) != SI_SUCCESS)
 	{
 		this->SI_Close(hand);
-		return 0;
+		return nullptr;
 	}
-	NEW_CLASS(port, IO::SiLabSerialPort(hand, this));
+	NEW_CLASSNN(port, IO::SiLabSerialPort(hand, this));
 	return port;
 }

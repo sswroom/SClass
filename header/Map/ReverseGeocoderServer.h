@@ -20,7 +20,7 @@ namespace Map
 		} ClientStatus;
 
 	private:
-		Net::TCPServerController *ctrl;
+		NN<Net::TCPServerController> ctrl;
 		IO::ProtoHdlr::ProtoRevGeoHandler protocol;
 
 		Sync::Mutex reqMut;

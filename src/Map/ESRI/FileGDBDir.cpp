@@ -89,9 +89,9 @@ Optional<DB::TableDef> Map::ESRI::FileGDBDir::GetTableDef(Text::CString schemaNa
 	{
 		return nullptr;
 	}
-	DB::TableDef *tab;
+	NN<DB::TableDef> tab;
 	NN<DB::DBReader> r;
-	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
+	NEW_CLASSNN(tab, DB::TableDef(schemaName, tableName));
 	if (table->OpenReader(nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		tab->ColFromReader(r);
@@ -100,7 +100,7 @@ Optional<DB::TableDef> Map::ESRI::FileGDBDir::GetTableDef(Text::CString schemaNa
 	}
 	else
 	{
-		DEL_CLASS(tab);
+		tab.Delete();
 		return nullptr;
 	}
 }

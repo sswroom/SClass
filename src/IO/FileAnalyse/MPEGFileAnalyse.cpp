@@ -1223,11 +1223,11 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 	NN<IO::StreamData> fd;
 	if (!this->fd.SetTo(fd))
 		return false;
-	IO::FileStream *dfs;
-	NEW_CLASS(dfs, IO::FileStream(outputFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NN<IO::FileStream> dfs;
+	NEW_CLASSNN(dfs, IO::FileStream(outputFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (dfs->IsError())
 	{
-		DEL_CLASS(dfs);
+		dfs.Delete();
 		return false;
 	}
 	Data::ByteBuffer readBuff(1048576);
@@ -1317,6 +1317,6 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 			}
 		}
 	}
-	DEL_CLASS(dfs);
+	dfs.Delete();
 	return valid;
 }

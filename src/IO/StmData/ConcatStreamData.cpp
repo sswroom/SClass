@@ -4,7 +4,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-IO::StmData::ConcatStreamData::ConcatStreamData(IO::StmData::ConcatStreamData::CONCATDATABASE *cdb, UInt64 dataOffset, UInt64 dataLength)
+IO::StmData::ConcatStreamData::ConcatStreamData(NN<IO::StmData::ConcatStreamData::CONCATDATABASE> cdb, UInt64 dataOffset, UInt64 dataLength)
 {
 	this->cdb = cdb;
 	this->dataOffset = dataOffset;
@@ -15,7 +15,7 @@ IO::StmData::ConcatStreamData::ConcatStreamData(IO::StmData::ConcatStreamData::C
 
 IO::StmData::ConcatStreamData::ConcatStreamData(NN<Text::String> fileName)
 {
-	NEW_CLASS(this->cdb, CONCATDATABASE());
+	NEW_CLASSNN(this->cdb, CONCATDATABASE());
 	this->cdb->fileName = fileName->Clone();
 	this->cdb->objectCnt = 1;
 	this->cdb->totalSize = 0;
@@ -25,7 +25,7 @@ IO::StmData::ConcatStreamData::ConcatStreamData(NN<Text::String> fileName)
 
 IO::StmData::ConcatStreamData::ConcatStreamData(Text::CStringNN fileName)
 {
-	NEW_CLASS(this->cdb, CONCATDATABASE());
+	NEW_CLASSNN(this->cdb, CONCATDATABASE());
 	this->cdb->fileName = Text::String::New(fileName);
 	this->cdb->objectCnt = 1;
 	this->cdb->totalSize = 0;
@@ -48,7 +48,7 @@ IO::StmData::ConcatStreamData::~ConcatStreamData()
 			this->cdb->dataList.GetItem(i).Delete();
 		}
 		this->cdb->fileName->Release();
-		DEL_CLASS(this->cdb);
+		this->cdb.Delete();
 	}
 }
 

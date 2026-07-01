@@ -171,8 +171,8 @@ Optional<DB::DBReader> Map::MapDrawLayer::QueryTableData(Text::CString schemaNam
 
 Optional<DB::TableDef> Map::MapDrawLayer::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
-	DB::TableDef *tab;
-	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
+	NN<DB::TableDef> tab;
+	NEW_CLASSNN(tab, DB::TableDef(schemaName, tableName));
 	NN<DB::ColDef> col;
 	if (this->GetGeomCol() == INVALID_INDEX)
 	{
@@ -741,12 +741,12 @@ Optional<Text::SearchIndexer> Map::MapDrawLayer::CreateSearchIndexer(NN<Text::Te
 	if (strIndex >= this->GetColumnCnt())
 		return nullptr;
 
-	Text::SearchIndexer *searching;
+	NN<Text::SearchIndexer> searching;
 	Data::ArrayListInt64 objIds;
 	Optional<NameArray> nameArr;
 	UIntOS i;
 
-	NEW_CLASS(searching, Text::SearchIndexer(ta));
+	NEW_CLASSNN(searching, Text::SearchIndexer(ta));
 	this->GetAllObjectIds(objIds, nameArr);
 	Text::StringBuilderUTF8 sb;
 	i = objIds.GetCount();

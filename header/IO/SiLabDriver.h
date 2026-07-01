@@ -39,7 +39,7 @@ namespace IO
 		} SI_RETURN;
 
 	private:
-		IO::Library *driver;
+		Optional<IO::Library> driver;
 
 	public:
 		SI_STATUS SI_GetNumDevices(UInt32 *NumDevices);
@@ -72,15 +72,15 @@ namespace IO
 
 		Bool IsError();
 
-		Bool GetDLLVersion(UInt16 *ver1, UInt16 *ver2, UInt16 *ver3, UInt16 *ver4);
-		Bool GetDriverVersion(UInt16 *ver1, UInt16 *ver2, UInt16 *ver3, UInt16 *ver4);
+		Bool GetDLLVersion(OutParam<UInt16> ver1, OutParam<UInt16> ver2, OutParam<UInt16> ver3, OutParam<UInt16> ver4);
+		Bool GetDriverVersion(OutParam<UInt16> ver1, OutParam<UInt16> ver2, OutParam<UInt16> ver3, OutParam<UInt16> ver4);
 		UInt32 GetNumDevices();
-		Bool GetDeviceVID(UInt32 devId, UInt32 *vid);
-		Bool GetDevicePID(UInt32 devId, UInt32 *pid);
+		Bool GetDeviceVID(UInt32 devId, OutParam<UInt32> vid);
+		Bool GetDevicePID(UInt32 devId, OutParam<UInt32> pid);
 		UnsafeArrayOpt<UTF8Char> GetDeviceSN(UInt32 devId, UnsafeArray<UTF8Char> buff);
 		UnsafeArrayOpt<UTF8Char> GetDeviceDesc(UInt32 devId, UnsafeArray<UTF8Char> buff);
 		UnsafeArrayOpt<UTF8Char> GetDeviceLink(UInt32 devId, UnsafeArray<UTF8Char> buff);
-		IO::Stream *OpenPort(UInt32 devId, UInt32 baudRate);
+		Optional<IO::Stream> OpenPort(UInt32 devId, UInt32 baudRate);
 	};
 }
 #endif

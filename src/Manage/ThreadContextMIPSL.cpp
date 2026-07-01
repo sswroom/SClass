@@ -289,8 +289,8 @@ Bool Manage::ThreadContextMIPS::GetRegs(NN<Manage::Dasm::Dasm_Regs> regs) const
 
 Optional<Manage::Dasm> Manage::ThreadContextMIPS::CreateDasm() const
 {
-	Manage::DasmMIPS *dasm;
-	NEW_CLASS(dasm, Manage::DasmMIPS());
+	NN<Manage::DasmMIPS> dasm;
+	NEW_CLASSNN(dasm, Manage::DasmMIPS());
 	return dasm;
 }
 

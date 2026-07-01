@@ -87,8 +87,8 @@ Optional<IO::FileVersion> IO::FileVersion::Open(UnsafeArrayOpt<const UTF8Char> f
 		buff = MemAllocArr(UInt8, dwSize);
 		if (GetFileVersionInfoW(fileName.Ptr(), 0, dwSize, buff.Ptr()) != 0)
 		{
-			IO::FileVersion *ver;
-			NEW_CLASS(ver, IO::FileVersion(buff, dwSize));
+			NN<IO::FileVersion> ver;
+			NEW_CLASSNN(ver, IO::FileVersion(buff, dwSize));
 			Text::StrDelNew(fileName);
 			return ver;
 		}

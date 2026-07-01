@@ -25,7 +25,7 @@ struct IO::DBusClient::ProxyData
 	NN<IO::DBusClient> client;
 	const Char *objPath;
 	const Char *interface;
-	Data::StringMapNN<PropInfo> *propList;
+	NN<Data::StringMapNN<PropInfo>> propList;
 	UIntOS watch;
 	PropertyFunction propFunc;
 	void *propData;
@@ -62,7 +62,7 @@ struct IO::DBusClient::ClassData
 	void *readyData;
 	IO::DBusClient::PropertyFunction propertyChanged;
 	void *userData;
-	Data::ArrayListNN<IO::DBusClient::ProxyData> *proxyList;
+	NN<Data::ArrayListNN<IO::DBusClient::ProxyData>> proxyList;
 };
 
 static DBusHandlerResult DBusClient_MessageFilter(DBusConnection *connection, DBusMessage *message, void *userData)
@@ -221,10 +221,10 @@ Bool IO::DBusClient::OnPropertiesChanged(NN<IO::DBusManager> dbusManager, NN<IO:
 		proxy->propList->RemoveC(Text::CStringNN::FromPtr((const UTF8Char*)name));
 
 		if (proxy->propFunc)
-			proxy->propFunc(proxy, name, NULL, proxy->propData);
+			proxy->propFunc(proxy, (const UTF8Char*)name, NULL, proxy->propData);
 
 		if (client->propertyChanged)
-			client->propertyChanged(proxy, name, NULL, client->userData);
+			client->propertyChanged(proxy, (const UTF8Char*)name, NULL, client->userData);
 
 		dbus_message_iter_next(&entry);
 	}
@@ -565,7 +565,7 @@ Optional<IO::DBusClient::ProxyData> IO::DBusClient::ProxyNew(const Char *path, c
 	proxy->objPath = Text::StrCopyNew(path);
 	proxy->interface = Text::StrCopyNew(interface);
 
-	NEW_CLASS(proxy->propList, Data::StringMapNN<PropInfo>());
+	NEW_CLASSNN(proxy->propList, Data::StringMapNN<PropInfo>());
 	proxy->watch = client->dbusMgr->AddPropertiesWatch(client->serviceName, proxy->objPath, proxy->interface, OnPropertiesChanged, proxy.Ptr(), NULL);
 	proxy->pending = TRUE;
 	
@@ -719,7 +719,7 @@ IO::DBusClient::DBusClient(NN<IO::DBusManager> dbusMgr, UnsafeArray<const UTF8Ch
 	client->rootPath = SCOPY_TEXT(rootPath);
 	client->connected = false;
 
-	NEW_CLASS(client->matchRules, Data::ArrayList<const Char*>());
+	NEW_CLASSNN(client->matchRules, Data::ArrayListArr<const Char>());
 
 	client->watch = client->dbusMgr->AddServiceWatch(service, OnServiceConnect, OnServiceDisconnect, this, 0);
 
@@ -747,7 +747,7 @@ IO::DBusClient::DBusClient(NN<IO::DBusManager> dbusMgr, UnsafeArray<const UTF8Ch
 		this->ModifyMatch("AddMatch", client->matchRules->GetItem(i));
 		i++;
 	}
-	NEW_CLASS(client->proxyList, Data::ArrayList<ProxyData*>());
+	NEW_CLASSNN(client->proxyList, Data::ArrayListNN<ProxyData>());
 
 	this->Ref();
 }
@@ -802,7 +802,7 @@ IO::DBusClient::~DBusClient()
 	}
 }
 
-IO::DBusClient *IO::DBusClient::Ref()
+Optional<IO::DBusClient> IO::DBusClient::Ref()
 {
 	NN<ClassData> data;
 	if (this->clsData.SetTo(data))

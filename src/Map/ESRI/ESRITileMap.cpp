@@ -265,7 +265,7 @@ Optional<IO::StreamData> Map::ESRI::ESRITileMap::LoadTileImageData(UIntOS level,
 {
 	UTF8Char filePath[512];
 	UnsafeArray<UTF8Char> sptr;
-	IO::StmData::FileData *fd;
+	NN<IO::StmData::FileData> fd;
 	Double resol = this->esriMap->TileGetLevelResolution(level);
 	if (resol == 0)
 		return nullptr;
@@ -292,24 +292,24 @@ Optional<IO::StreamData> Map::ESRI::ESRITileMap::LoadTileImageData(UIntOS level,
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, tileId.x);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".dat"));
-	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UIntOS)(sptr - filePath)}, false));
+	NEW_CLASSNN(fd, IO::StmData::FileData({filePath, (UIntOS)(sptr - filePath)}, false));
 	if (fd->GetDataSize() > 0)
 	{
 		format.Set(TileFormat::PNG);
 		return fd;
 	}
-	DEL_CLASS(fd);
+	fd.Delete();
 
 	if (localOnly)
 		return nullptr;
 
 	this->esriMap->TileLoadToFile(CSTRP(filePath, sptr), level, tileId.x, tileId.y);
-	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UIntOS)(sptr - filePath)}, false));
+	NEW_CLASSNN(fd, IO::StmData::FileData({filePath, (UIntOS)(sptr - filePath)}, false));
 	if (fd->GetDataSize() > 0)
 	{
 		format.Set(TileFormat::PNG);
 		return fd;
 	}
-	DEL_CLASS(fd);
+	fd.Delete();
 	return nullptr;
 }

@@ -40,8 +40,9 @@ Optional<IO::SeekableStream> Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, I
 		mutUsage->ReplaceMutex(ioMut);
 	}
 
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NN<IO::FileStream> fs;
+	Optional<IO::FileStream> optfs = nullptr;
+	NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		Sync::Interlocked::IncrementI32(this->status.localCnt);
@@ -56,8 +57,7 @@ Optional<IO::SeekableStream> Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, I
 
 		return fs;
 	}
-	DEL_CLASS(fs);
-	fs = 0;
+	fs.Delete();
 	mutUsage->EndUse();
 
 	NN<Text::String> thisUrl;
@@ -116,7 +116,8 @@ Optional<IO::SeekableStream> Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, I
 				{
 					mutUsage->ReplaceMutex(ioMut);
 				}
-				NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyRead, IO::FileStream::BufferType::NoWriteBuffer));
+				NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyRead, IO::FileStream::BufferType::NoWriteBuffer));
+				optfs = fs;
 				fs->Write(imgBuff);
 				if (cli->GetLastModified(dt))
 				{
@@ -148,7 +149,7 @@ Optional<IO::SeekableStream> Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, I
 		}
 	}
 	cli.Delete();
-	return fs;
+	return optfs;
 }
 
 Map::OSM::OSMCacheHandler::OSMCacheHandler(Text::CString url, Text::CStringNN cacheDir, Int32 maxLevel, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl)

@@ -452,11 +452,11 @@ void UI::GUIPictureBoxDD::ChangeMonitor(Optional<MonitorHandle> hMon)
 {
 	this->currMon = hMon;
 
-	Media::MonitorInfo *monInfo;
-	NEW_CLASS(monInfo, Media::MonitorInfo(hMon));
+	NN<Media::MonitorInfo> monInfo;
+	NEW_CLASSNN(monInfo, Media::MonitorInfo(hMon));
 	this->scnX = monInfo->GetLeft();
 	this->scnY = monInfo->GetTop();
-	DEL_CLASS(monInfo);
+	monInfo.Delete();
 
 	if (this->currScnMode == SM_WINDOWED_DIR)
 	{
@@ -1137,15 +1137,15 @@ Optional<Media::StaticImage> UI::GUIPictureBoxDD::CreatePreviewImage(NN<const Me
 		MemFreeAArr(prevImgData);
 		return nullptr;
 	}
-	Media::Resizer::LanczosResizerLR_C32 *resizer;
+	NN<Media::Resizer::LanczosResizerLR_C32> resizer;
 	Media::PixelFormat pf = Media::PF_B8G8R8A8;
-	NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 4, image->info.color, this->colorSess.Ptr(), Media::AT_IGNORE_ALPHA, Media::CS::TransferFunc::GetRefLuminance(image->info.color.rtransfer), pf));
+	NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerLR_C32(4, 4, image->info.color, this->colorSess.Ptr(), Media::AT_IGNORE_ALPHA, Media::CS::TransferFunc::GetRefLuminance(image->info.color.rtransfer), pf));
 	csConv->ConvertV2(&image->data, prevImgData, image->info.dispSize.x, image->info.dispSize.y, image->info.storeSize.x, image->info.storeSize.y, (IntOS)image->info.dispSize.x * 8, Media::FT_NON_INTERLACE, Media::YCOFST_C_TOP_LEFT);
 
 	NEW_CLASSNN(outImage, Media::StaticImage(image->info.dispSize, 0, 32, pf, 0, image->info.color, Media::ColorProfile::YUVT_UNKNOWN, image->info.atype, image->info.ycOfst));
 	resizer->Resize(prevImgData, (IntOS)image->info.dispSize.x * 8, UIntOS2Double(image->info.dispSize.x), UIntOS2Double(image->info.dispSize.y), 0, 0, outImage->data.Ptr(), (IntOS)outImage->GetDataBpl(), outImage->info.dispSize.x, outImage->info.dispSize.y);
 
-	DEL_CLASS(resizer);
+	resizer.Delete();
 	csConv.Delete();
 	MemFreeAArr(prevImgData);
 	return outImage;

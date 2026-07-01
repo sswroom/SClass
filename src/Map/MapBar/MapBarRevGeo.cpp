@@ -47,8 +47,8 @@ UnsafeArrayOpt<UTF8Char> Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UnsafeArr
 	UnsafeArray<UInt8> dataBbuff;
 	UnsafeArray<UInt8>xmlBuff;
 	UIntOS buffSize;
-	IO::FileStream *fs;
-	Text::XMLDocument *xmlDoc;
+	NN<IO::FileStream> fs;
+	NN<Text::XMLDocument> xmlDoc;
 	NN<Text::XMLNode> resultNode;
 	NN<Text::XMLNode> node;
 	Text::EncodingFactory encFact;
@@ -76,12 +76,12 @@ UnsafeArrayOpt<UTF8Char> Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UnsafeArr
 	}
 	cli.Delete();
 	xmlBuff = mstm.GetBuff(buffSize);
-	NEW_CLASS(fs, IO::FileStream(CSTR("MapBarRevGeo.xml"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(fs, IO::FileStream(CSTR("MapBarRevGeo.xml"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	fs->Write(Data::ByteArrayR(xmlBuff, buffSize));
-	DEL_CLASS(fs);
+	fs.Delete();
 
 	*buff = 0;
-	NEW_CLASS(xmlDoc, Text::XMLDocument());
+	NEW_CLASSNN(xmlDoc, Text::XMLDocument());
 	xmlDoc->ParseBuff(encFact, xmlBuff, buffSize);
 	if (xmlDoc->SearchFirstNode(CSTR("/result")).SetTo(resultNode))
 	{
@@ -159,7 +159,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UnsafeArr
 			}
 		}
 	}
-	DEL_CLASS(xmlDoc);
+	xmlDoc.Delete();
 
 	MemFreeArr(dataBbuff);
 	return buff;

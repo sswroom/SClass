@@ -736,8 +736,8 @@ Optional<Media::MonitorInfo> UI::GUIControl::GetMonitorInfo()
 	HMONITOR hMon = MonitorFromWindow((HWND)this->hwnd.OrNull(), MONITOR_DEFAULTTONEAREST);
 	if (hMon)
 	{
-		Media::MonitorInfo *info;
-		NEW_CLASS(info, Media::MonitorInfo((MonitorHandle*)hMon));
+		NN<Media::MonitorInfo> info;
+		NEW_CLASSNN(info, Media::MonitorInfo((MonitorHandle*)hMon));
 		return info;
 	}
 	else
@@ -776,7 +776,7 @@ Optional<Media::DrawFont> UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> im
 	void *f = this->GetFont();
 	if (f == 0)
 		return nullptr;
-	Media::GDIFont *fnt;
+	NN<Media::GDIFont> fnt;
 	NN<Text::String> fontName;
 	if (!this->fontName.SetTo(fontName))
 	{
@@ -785,12 +785,12 @@ Optional<Media::DrawFont> UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> im
 		SelectObject(hdc, (HFONT)f);
 		GetTextFaceW(hdc, 256, wbuff);
 		ReleaseDC((HWND)this->hwnd.OrNull(), hdc);
-		NEW_CLASS(fnt, Media::GDIFont(((Media::GDIImage*)img.Ptr())->hdcBmp, wbuff, this->fontHeightPt * this->hdpi / this->ddpi / 0.75 * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, img, 0));
+		NEW_CLASSNN(fnt, Media::GDIFont(((Media::GDIImage*)img.Ptr())->hdcBmp, wbuff, this->fontHeightPt * this->hdpi / this->ddpi / 0.75 * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, img, 0));
 	}
 	else
 	{
 		UnsafeArray<const WChar> wptr = Text::StrToWCharNew(fontName->v);
-		NEW_CLASS(fnt, Media::GDIFont(((Media::GDIImage*)img.Ptr())->hdcBmp, wptr, this->fontHeightPt * this->hdpi / this->ddpi / 0.75 * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, img, 0));
+		NEW_CLASSNN(fnt, Media::GDIFont(((Media::GDIImage*)img.Ptr())->hdcBmp, wptr, this->fontHeightPt * this->hdpi / this->ddpi / 0.75 * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, img, 0));
 		Text::StrDelNew(wptr);
 	}
 	return fnt;
@@ -1612,8 +1612,8 @@ UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(NN<UI::GUIDropHan
 	}
 	else
 	{
-		UI::Win::WinDragDrop *dragDrop;
-		NEW_CLASS(dragDrop, UI::Win::WinDragDrop(this->GetHandle(), hdlr));
+		NN<UI::Win::WinDragDrop> dragDrop;
+		NEW_CLASSNN(dragDrop, UI::Win::WinDragDrop(this->GetHandle(), hdlr));
 
 		UI::GUIControl::DragErrorType errType;
 #if !defined(_WIN32_WCE)
@@ -1622,11 +1622,11 @@ UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(NN<UI::GUIDropHan
 		if (hRes == S_OK)
 		{
 			errType = UI::GUIControl::DET_NOERROR;
-			this->dropHdlr = dragDrop;
+			this->dropHdlr = dragDrop.Ptr();
 		}
 		else
 		{
-			DEL_CLASS(dragDrop);
+			dragDrop.Delete();
 			if (hRes == DRAGDROP_E_INVALIDHWND)
 			{
 				errType = UI::GUIControl::DET_INVALIDCONTROL;

@@ -224,7 +224,8 @@ void __stdcall UI::GUIDDrawControl::OnResized(AnyType userObj)
 		data->me->CreateSubSurface();
 		mutUsage.EndUse();
 
-		if (data->me->debugWriter)
+		NN<IO::Writer> debugWriter;
+		if (data->me->debugWriter.SetTo(debugWriter))
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Display size changed to "));
@@ -233,7 +234,7 @@ void __stdcall UI::GUIDDrawControl::OnResized(AnyType userObj)
 			sb.AppendUIntOS(data->me->dispSize.y);
 			sb.AppendC(UTF8STRC(", hMon="));
 			sb.AppendIntOS((IntOS)data->me->GetHMonitor().OrNull());
-			data->me->debugWriter->WriteLine(sb.ToCString());
+			debugWriter->WriteLine(sb.ToCString());
 		}
 		if (data->me->inited)
 		{
@@ -465,15 +466,15 @@ UI::GUIDDrawControl::GUIDDrawControl(NN<GUICore> ui, NN<UI::GUIClientControl> pa
 	this->buffSurface = nullptr;
 	this->dispSize = Math::Size2D<UIntOS>(0, 0);
 	this->bkBuffSize = Math::Size2D<UIntOS>(0, 0);
-	this->imgCopy = 0;
+	this->imgCopy = nullptr;
 	this->joystickId = 0;
 	this->jsLastButtons = 0;
 	this->rootForm = parent->GetRootForm();
 	this->fullScnMode = SM_WINDOWED;
 	this->directMode = directMode;
 	this->switching = false;
-	this->debugFS = 0;
-	this->debugWriter = 0;
+	this->debugFS = nullptr;
+	this->debugWriter = nullptr;
 	this->bitDepth = 32;
 	this->rotType = Media::RotateType::None;
 	this->currScnMode = SM_WINDOWED;
@@ -502,15 +503,14 @@ UI::GUIDDrawControl::~GUIDDrawControl()
 	this->clsData->imgCtrl = 0;
 	this->ReleaseSubSurface();
 
-	SDEL_CLASS(this->imgCopy);
-	if (this->debugWriter)
+	this->imgCopy.Delete();
+	NN<IO::Writer> debugWriter;
+	if (this->debugWriter.SetTo(debugWriter))
 	{
-		this->debugWriter->WriteLine(CSTR("Release DDraw"));
-		DEL_CLASS(this->debugWriter);
-		DEL_CLASS(this->debugFS);
-		this->debugFS = 0;
-		this->debugWriter = 0;
+		debugWriter->WriteLine(CSTR("Release DDraw"));
 	}
+	this->debugWriter.Delete();
+	this->debugFS.Delete();
 	this->surfaceMgr.Delete();
 	MemFreeNN(this->clsData);
 }

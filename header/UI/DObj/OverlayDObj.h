@@ -17,7 +17,7 @@ namespace UI
 			Optional<Media::ImageList> imgList;
 			Bool noRelease;
 			IntOS frameDelay;
-			Manage::HiResClock *clk;
+			Optional<Manage::HiResClock> clk;
 			Double startTime;
 			IntOS lastFrameNum;
 

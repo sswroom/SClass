@@ -25,11 +25,11 @@ namespace IO
 
 
 		private:
-			CONCATDATABASE *cdb;
+			NN<CONCATDATABASE> cdb;
 			UInt64 dataOffset;
 			UInt64 dataLength;
 
-			ConcatStreamData(CONCATDATABASE *cdb, UInt64 dataOffset, UInt64 dataLength);
+			ConcatStreamData(NN<CONCATDATABASE> cdb, UInt64 dataOffset, UInt64 dataLength);
 		public:
 			ConcatStreamData(NN<Text::String> fileName);
 			ConcatStreamData(Text::CStringNN fileName);

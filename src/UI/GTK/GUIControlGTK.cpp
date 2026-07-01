@@ -795,8 +795,8 @@ Optional<Media::MonitorInfo> UI::GUIControl::GetMonitorInfo()
 	GdkDisplay *display = gtk_widget_get_display((GtkWidget*)this->hwnd.OrNull());
 	if (display)
 	{
-		Media::MonitorInfo *info;
-		NEW_CLASS(info, Media::MonitorInfo(nullptr));
+		NN<Media::MonitorInfo> info;
+		NEW_CLASSNN(info, Media::MonitorInfo(nullptr));
 		return info;
 	}
 	else
@@ -848,9 +848,9 @@ Optional<Media::DrawFont> UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> im
 		{
 			family = "Arial";
 		}
-		Media::DrawFont *font;
+		NN<Media::DrawFont> font;
 		NN<Text::String> fntName = Text::String::NewNotNullSlow((const UTF8Char*)family);
-		NEW_CLASS(font, Media::GTKDrawFont(fntName.Ptr(), height, (IntOS)((style & PANGO_STYLE_ITALIC)?CAIRO_FONT_SLANT_ITALIC:CAIRO_FONT_SLANT_NORMAL), (weight < PANGO_WEIGHT_BOLD)?0:1));
+		NEW_CLASSNN(font, Media::GTKDrawFont(fntName.Ptr(), height, (IntOS)((style & PANGO_STYLE_ITALIC)?CAIRO_FONT_SLANT_ITALIC:CAIRO_FONT_SLANT_NORMAL), (weight < PANGO_WEIGHT_BOLD)?0:1));
 		fntName->Release();
 		pango_font_description_free(fnt);
 		return font;
@@ -1647,9 +1647,9 @@ UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(NN<UI::GUIDropHan
 	}
 	else
 	{
-		UI::GTK::GTKDragDrop *dragDrop;
-		NEW_CLASS(dragDrop, UI::GTK::GTKDragDrop(this->hwnd, hdlr));
-		this->dropHdlr = dragDrop;
+		NN<UI::GTK::GTKDragDrop> dragDrop;
+		NEW_CLASSNN(dragDrop, UI::GTK::GTKDragDrop(this->hwnd, hdlr));
+		this->dropHdlr = dragDrop.Ptr();
 	}
 	return UI::GUIControl::DET_NOERROR;
 }

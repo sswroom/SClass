@@ -54,12 +54,12 @@ Net::TCPClient *Map::ReverseGeocoderServer::GetLatestClient(UIntOS retryCnt)
 
 Map::ReverseGeocoderServer::ReverseGeocoderServer(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log, UInt16 port) : protocol(*this)
 {
-	NEW_CLASS(this->ctrl, Net::TCPServerController(sockf, log, port, CSTR("RGS: "), 4096, this, 8, 240, true));
+	NEW_CLASSNN(this->ctrl, Net::TCPServerController(sockf, log, port, CSTR("RGS: "), 4096, this, 8, 240, true));
 }
 
 Map::ReverseGeocoderServer::~ReverseGeocoderServer()
 {
-	DEL_CLASS(this->ctrl);
+	this->ctrl.Delete();
 }
 
 UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::SearchName(UnsafeArray<UTF8Char> buff, UIntOS buffSize, Math::Coord2DDbl pos, UInt32 lcid)

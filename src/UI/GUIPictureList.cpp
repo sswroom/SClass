@@ -16,7 +16,7 @@ UI::GUIPictureList::GUIPictureList(NN<UI::GUICore> ui, NN<UI::GUIClientControl> 
 	this->selectedIndex = INVALID_INDEX;
 
 	Media::ColorProfile rgbColor(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, rgbColor, rgbColor, nullptr, Media::AT_ALPHA_ALL_FF));
+	NEW_CLASSNN(this->resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, rgbColor, rgbColor, nullptr, Media::AT_ALPHA_ALL_FF));
 	this->resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
 	this->resizer->SetTargetSize(iconSize);
 }
@@ -24,7 +24,7 @@ UI::GUIPictureList::GUIPictureList(NN<UI::GUICore> ui, NN<UI::GUIClientControl> 
 UI::GUIPictureList::~GUIPictureList()
 {
 	this->Clear();
-	DEL_CLASS(this->resizer);
+	this->resizer.Delete();
 }
 
 void UI::GUIPictureList::OnDraw(NN<Media::DrawImage> img)

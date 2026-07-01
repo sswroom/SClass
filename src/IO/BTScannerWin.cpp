@@ -7,7 +7,7 @@
 
 Optional<IO::BTScanner> IO::BTScanner::CreateScanner()
 {
-	Win32::WindowsBTScanner *bt;
-	NEW_CLASS(bt, Win32::WindowsBTScanner());
+	NN<Win32::WindowsBTScanner> bt;
+	NEW_CLASSNN(bt, Win32::WindowsBTScanner());
 	return bt;
 }

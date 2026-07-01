@@ -161,7 +161,7 @@ Bool IO::FileUtil::IsSamePartition(UnsafeArray<const UTF8Char> file1, UnsafeArra
 
 typedef struct
 {
-	IO::FileStream *destStm;
+	NN<IO::FileStream> destStm;
 	UInt64 writeSize;
 	Optional<IO::ProgressHandler> progHdlr;
 	UInt64 fileSize;
@@ -169,8 +169,8 @@ typedef struct
 
 Bool IO::FileUtil::CopyFile(Text::CStringNN srcFile, Text::CStringNN destFile, FileExistAction fea, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
-	IO::FileStream *fs2;
-	IO::ActiveStreamReader *asr;
+	NN<IO::FileStream> fs2;
+	NN<IO::ActiveStreamReader> asr;
 	if (fea == FileExistAction::Fail)
 	{
 		if (IO::Path::GetPathType(destFile) != IO::Path::PathType::Unknown)
@@ -183,15 +183,15 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN srcFile, Text::CStringNN destFile, F
 	}
 	if (fea == FileExistAction::Continue)
 	{
-		NEW_CLASS(fs2, IO::FileStream(destFile, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+		NEW_CLASSNN(fs2, IO::FileStream(destFile, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	}
 	else
 	{
-		NEW_CLASS(fs2, IO::FileStream(destFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+		NEW_CLASSNN(fs2, IO::FileStream(destFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	}
 	if (fs2->IsError())
 	{
-		DEL_CLASS(fs2);
+		fs2.Delete();
 		return false;
 	}
 	UInt64 fileSize = fs1.GetLength();
@@ -205,12 +205,12 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN srcFile, Text::CStringNN destFile, F
 		UInt64 destPos = fs2->GetPosition();
 		if (destPos > fileSize)
 		{
-			DEL_CLASS(fs2);
+			fs2.Delete();
 			return false;
 		}
 		else if (destPos == fileSize)
 		{
-			DEL_CLASS(fs2);
+			fs2.Delete();
 			return true;
 		}
 		else if (destPos > 0)
@@ -288,14 +288,14 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN srcFile, Text::CStringNN destFile, F
 		csess.progHdlr = progHdlr;
 		csess.fileSize = fileSize;
 
-		NEW_CLASS(asr, IO::ActiveStreamReader(CopyHdlr, &csess, 1048576));
+		NEW_CLASSNN(asr, IO::ActiveStreamReader(CopyHdlr, &csess, 1048576));
 		asr->ReadStream(fs1, bnt);
-		DEL_CLASS(asr);
+		asr.Delete();
 		writeSize = csess.writeSize;
 		fs1.GetFileTimes(ts1, ts2, ts3);
 		fs2->SetFileTimes(ts1, ts2, ts3);
 	}
-	DEL_CLASS(fs2);
+	fs2.Delete();
 //	SetFileAttributesW(file2, GetFileAttributesW(file1));
 	return writeSize == fileSize;
 }

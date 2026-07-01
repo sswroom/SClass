@@ -44,8 +44,8 @@
 class MapLogger
 {
 private:
-	Text::UTF8Writer *writer;
-	IO::FileStream *fs;
+	Optional<Text::UTF8Writer> writer;
+	Optional<IO::FileStream> fs;
 	Double scnW;
 	Double scnH;
 public:
@@ -55,14 +55,16 @@ public:
 		{
 			NN<IO::FileStream> fs;
 			NEW_CLASSNN(fs, IO::FileStream(fileName.OrEmpty(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			this->fs = fs.Ptr();
-			NEW_CLASS(writer, Text::UTF8Writer(fs));
+			this->fs = fs;
+			NN<Text::UTF8Writer> writer;
+			NEW_CLASSNN(writer, Text::UTF8Writer(fs));
+			this->writer = writer;
 			writer->WriteSignature();
 		}
 		else
 		{
-			fs = 0;
-			writer = 0;
+			fs = nullptr;
+			writer = nullptr;
 		}
 		scnW = view->GetScnWidth();
 		scnH = view->GetScnHeight();
@@ -70,18 +72,16 @@ public:
 
 	~MapLogger()
 	{
-		if (writer)
-		{
-			DEL_CLASS(writer);
-			DEL_CLASS(fs);
-		}
+		this->writer.Delete();
+		this->fs.Delete();
 	}
 
 	void AddString(UnsafeArray<const UTF8Char> label, Double x, Double y, Double scaleW, Double scaleH, UInt32 fontStyle, Bool isAlign, const Math::RectAreaDbl *bounds)
 	{
+		NN<Text::UTF8Writer> writer;
 		UTF8Char sbuff[256];
 		UnsafeArray<UTF8Char> sptr;
-		if (this->writer == 0 || x < -scnW || x > scnW * 2 || y < -scnH || y > scnH * 2)
+		if (!this->writer.SetTo(writer) || x < -scnW || x > scnW * 2 || y < -scnH || y > scnH * 2)
 		{
 			return;
 		}
@@ -114,15 +114,16 @@ public:
 		{
 			sptr = Text::StrConcatC(sptr, UTF8STRC("0"));
 		}
-		this->writer->WriteLine(CSTRP(sbuff, sptr));
+		writer->WriteLine(CSTRP(sbuff, sptr));
 	}
 
 	void AddStringL(UnsafeArray<const UTF8Char> label, UnsafeArray<Math::Coord2DDbl> mapPts, UnsafeArray<Math::Coord2DDbl> scnPts, UIntOS nPoints, UInt32 thisPt, Double scaleN, Double scaleD, UInt32 fontStyle, Bool isAlign, const Math::RectAreaDbl *bounds)
 	{
 		UTF8Char sbuff[256];
 		UnsafeArray<UTF8Char> sptr;
+		NN<Text::UTF8Writer> writer;
 		UIntOS i;
-		if (this->writer == 0 || bounds->max.x < -scnW || bounds->min.x > scnW * 2 || bounds->max.y < -scnH || bounds->min.y > scnH * 2)
+		if (!this->writer.SetTo(writer) || bounds->max.x < -scnW || bounds->min.x > scnW * 2 || bounds->max.y < -scnH || bounds->min.y > scnH * 2)
 		{
 			return;
 		}
@@ -160,7 +161,7 @@ public:
 		{
 			sptr = Text::StrConcatC(sptr, UTF8STRC("0"));
 		}
-		this->writer->Write(CSTRP(sbuff, sptr));
+		writer->Write(CSTRP(sbuff, sptr));
 		i = 0;
 		while (i < nPoints)
 		{
@@ -175,11 +176,11 @@ public:
 			sptr = Text::StrConcatC(sptr, UTF8STRC("}"));
 			mapPts += 1;
 			scnPts += 1;
-			this->writer->Write(CSTRP(sbuff, sptr));
+			writer->Write(CSTRP(sbuff, sptr));
 			i++;
 		}
 
-		this->writer->WriteLine();
+		writer->WriteLine();
 	}
 };
 
@@ -4094,8 +4095,8 @@ void Map::MapConfig2TGen::DrawLabels(NN<Media::DrawImage> img, UnsafeArray<MapLa
 
 void Map::MapConfig2TGen::LoadLabels(NN<Media::DrawImage> img, UnsafeArray<MapLabels2> labels, UIntOS maxLabel, UnsafeArray<UIntOS> labelCnt, NN<Map::MapView> view, UnsafeArray<Optional<Data::ArrayListNN<MapFontStyle>>> fonts, NN<Media::DrawEngine> drawEng, UnsafeArray<Math::RectAreaDbl> objBounds, InOutParam<UIntOS> objCnt, Text::CStringNN fileName, Int32 xId, Int32 yId, Double xOfst, Double yOfst, Optional<IO::Stream> dbStream)
 {
-	IO::FileStream *fs = 0;
-	IO::StreamReader *reader;
+	Optional<IO::FileStream> fs = nullptr;
+	NN<IO::StreamReader> reader;
 	UTF8Char c;
 	UTF8Char sbuff[512];
 	Text::PString strs[15];
@@ -4105,7 +4106,7 @@ void Map::MapConfig2TGen::LoadLabels(NN<Media::DrawImage> img, UnsafeArray<MapLa
 	NN<IO::Stream> stm;
 	if (dbStream.SetTo(stm))
 	{
-		NEW_CLASS(reader, IO::StreamReader(stm));
+		NEW_CLASSNN(reader, IO::StreamReader(stm));
 	}
 	else
 	{
@@ -4133,7 +4134,7 @@ void Map::MapConfig2TGen::LoadLabels(NN<Media::DrawImage> img, UnsafeArray<MapLa
 			return;
 		}
 		fs = nnfs.Ptr();
-		NEW_CLASS(reader, IO::StreamReader(nnfs));
+		NEW_CLASSNN(reader, IO::StreamReader(nnfs));
 	}
 
 	while (reader->ReadLine(sbuff, 255).NotNull())
@@ -4336,11 +4337,8 @@ void Map::MapConfig2TGen::LoadLabels(NN<Media::DrawImage> img, UnsafeArray<MapLa
 			err = true;
 		}
 	}
-	DEL_CLASS(reader);
-	if (fs)
-	{
-		DEL_CLASS(fs);
-	}
+	reader.Delete();
+	fs.Delete();
 }
 
 Map::MapConfig2TGen::MapConfig2TGen(Text::CStringNN fileName, NN<Media::DrawEngine> eng, NN<Data::ArrayListNN<Map::MapDrawLayer>> layerList, NN<Parser::ParserList> parserList, UnsafeArrayOpt<const UTF8Char> forceBase, NN<IO::Writer> errWriter, Int32 maxScale, Int32 minScale)
@@ -4992,8 +4990,8 @@ Bool Map::MapConfig2TGen::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> vie
 				if ((i = arr.GetCount()) > 0)
 				{
 #ifdef NOSCH
-					Data::ArrayList *drawArr;
-					NEW_CLASS(drawArr, Data::ArrayList());
+					NN<Data::ArrayList> drawArr;
+					NEW_CLASSNN(drawArr, Data::ArrayList());
 #else
 					mapSch->SetDrawType(lyr, pen = CreatePen(img, lyrs->style, 0), brush = img->NewBrushARGB(lyrs->bkColor), nullptr, 0, 0, isLayerEmpty);
 #endif
@@ -5070,7 +5068,7 @@ Bool Map::MapConfig2TGen::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> vie
 						dobj = (DrawObject*)drawArr->RemoveAt(i);
 						lyr->ReleaseObject(session, dobj);
 					}
-					DEL_CLASS(drawArr);
+					drawArr.Delete();
 #else
 
 					if (!pen.IsNull())
@@ -5095,8 +5093,8 @@ Bool Map::MapConfig2TGen::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> vie
 				if ((i = arr.GetCount()) > 0)
 				{
 #ifdef NOSCH
-					Data::ArrayList *drawArr;
-					NEW_CLASS(drawArr, Data::ArrayList());
+					NN<Data::ArrayList> drawArr;
+					NEW_CLASSNN(drawArr, Data::ArrayList());
 #else
 					mapSch->SetDrawType(lyr, pen = CreatePen(img, lyrs->style, 0), nullptr, nullptr, 0, 0, isLayerEmpty);
 #endif
@@ -5151,7 +5149,7 @@ Bool Map::MapConfig2TGen::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> vie
 						dobj = (DrawObject*)drawArr->RemoveAt(i);
 						lyr->ReleaseObject(session, dobj);
 					}
-					DEL_CLASS(drawArr);
+					drawArr.Delete();
 #else
 					if (!pen.IsNull())
 					{

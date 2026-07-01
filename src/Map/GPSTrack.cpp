@@ -378,9 +378,9 @@ Optional<Math::Geometry::Vector2D> Map::GPSTrack::GetNewVectorById(NN<Map::GetOb
 			lastAlt = 0;
 			if (this->hasAltitude)
 			{
-				Math::Geometry::LineString *pl;
+				NN<Math::Geometry::LineString> pl;
 
-				NEW_CLASS(pl, Math::Geometry::LineString(4326, j = this->currRecs.GetCount(), true, false));
+				NEW_CLASSNN(pl, Math::Geometry::LineString(4326, j = this->currRecs.GetCount(), true, false));
 				ptPtr = pl->GetPointList(j);
 				if (pl->GetZList(j).SetTo(altList))
 				{
@@ -407,8 +407,8 @@ Optional<Math::Geometry::Vector2D> Map::GPSTrack::GetNewVectorById(NN<Map::GetOb
 			}
 			else
 			{
-				Math::Geometry::LineString *pl;
-				NEW_CLASS(pl, Math::Geometry::LineString(4326, j = this->currRecs.GetCount(), false, false));
+				NN<Math::Geometry::LineString> pl;
+				NEW_CLASSNN(pl, Math::Geometry::LineString(4326, j = this->currRecs.GetCount(), false, false));
 				ptPtr = pl->GetPointList(j);
 				i = 0;
 				while (i < j)
@@ -444,9 +444,9 @@ Optional<Math::Geometry::Vector2D> Map::GPSTrack::GetNewVectorById(NN<Map::GetOb
 		track = this->currTracks.GetItemNoCheck((UIntOS)id);
 		if (this->hasAltitude)
 		{
-			Math::Geometry::LineString *pl;
+			NN<Math::Geometry::LineString> pl;
 
-			NEW_CLASS(pl, Math::Geometry::LineString(4326, track->nRecords, true, false));
+			NEW_CLASSNN(pl, Math::Geometry::LineString(4326, track->nRecords, true, false));
 			ptPtr = pl->GetPointList(j);
 			if (pl->GetZList(j).SetTo(altList))
 			{
@@ -472,9 +472,9 @@ Optional<Math::Geometry::Vector2D> Map::GPSTrack::GetNewVectorById(NN<Map::GetOb
 		}
 		else
 		{
-			Math::Geometry::LineString *pl;
+			NN<Math::Geometry::LineString> pl;
 
-			NEW_CLASS(pl, Math::Geometry::LineString(4326, track->nRecords, false, false));
+			NEW_CLASSNN(pl, Math::Geometry::LineString(4326, track->nRecords, false, false));
 			ptPtr = pl->GetPointList(j);
 			i = 0;
 			while (i < j)
@@ -552,7 +552,7 @@ Optional<DB::TableDef> Map::GPSTrack::GetTableDef(Text::CString schemaName, Text
 	UIntOS i = 0;
 	UIntOS j;
 	NN<DB::ColDef> col;
-	DB::TableDef *tab = 0;
+	NN<DB::TableDef> tab;
 	if (tableName.Equals(UTF8STRC("GPSData")))
 	{
 		if (this->hasAltitude)
@@ -563,7 +563,7 @@ Optional<DB::TableDef> Map::GPSTrack::GetTableDef(Text::CString schemaName, Text
 		{
 			j = 16;
 		}
-		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
+		NEW_CLASSNN(tab, DB::TableDef(schemaName, tableName));
 		while (i < j)
 		{
 			NEW_CLASSNN(col, DB::ColDef(Text::String::NewEmpty()));
@@ -575,7 +575,7 @@ Optional<DB::TableDef> Map::GPSTrack::GetTableDef(Text::CString schemaName, Text
 	else
 	{
 		j = 4;
-		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
+		NEW_CLASSNN(tab, DB::TableDef(schemaName, tableName));
 		while (i < j)
 		{
 			NEW_CLASSNN(col, DB::ColDef(Text::String::NewEmpty()));
@@ -1405,14 +1405,14 @@ Optional<Math::Geometry::Vector2D> Map::GPSDataReader::GetVector(UIntOS colIndex
 		return nullptr;
 	if (colIndex != 1)
 		return nullptr;
-	Math::Geometry::Point *pt;
+	NN<Math::Geometry::Point> pt;
 	if (this->gps->GetHasAltitude())
 	{
-		NEW_CLASS(pt, Math::Geometry::PointZ(4326, currRec->pos.x, currRec->pos.y, currRec->altitude));
+		NEW_CLASSNN(pt, Math::Geometry::PointZ(4326, currRec->pos.x, currRec->pos.y, currRec->altitude));
 	}
 	else
 	{
-		NEW_CLASS(pt, Math::Geometry::Point(4326, currRec->pos.x, currRec->pos.y));
+		NEW_CLASSNN(pt, Math::Geometry::Point(4326, currRec->pos.x, currRec->pos.y));
 	}
 	return pt;
 }

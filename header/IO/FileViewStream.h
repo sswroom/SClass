@@ -8,7 +8,7 @@ namespace IO
 	class FileViewStream : public SeekableStream
 	{
 	private:
-		IO::ViewFileBuffer *vfb;
+		Optional<IO::ViewFileBuffer> vfb;
 		UInt64 length;
 		UInt64 currPos;
 		UnsafeArrayOpt<UInt8> fptr;

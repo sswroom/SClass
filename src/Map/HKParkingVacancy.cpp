@@ -566,8 +566,8 @@ Optional<Math::Geometry::Vector2D> Map::HKParkingVacancy::GetNewVectorById(NN<Ge
 	NN<ParkingInfo> parking;
 	if (this->parkingMap.GetItem((UIntOS)id).SetTo(parking))
 	{
-		Math::Geometry::Point *pt;
-		NEW_CLASS(pt, Math::Geometry::Point(4326, parking->parkingLongitude, parking->parkingLatitude));
+		NN<Math::Geometry::Point> pt;
+		NEW_CLASSNN(pt, Math::Geometry::Point(4326, parking->parkingLongitude, parking->parkingLatitude));
 		return pt;
 	}
 	return nullptr;

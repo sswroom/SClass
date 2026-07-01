@@ -1032,9 +1032,9 @@ UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(NN<UI::GUIDropHan
 	}
 	else
 	{
-		UI::GUIDragDropGTK *dragDrop;
-		NEW_CLASS(dragDrop, UI::GUIDragDropGTK(this->hwnd, hdlr));
-		this->dropHdlr = dragDrop;
+		NN<UI::GUIDragDropGTK> dragDrop;
+		NEW_CLASSNN(dragDrop, UI::GUIDragDropGTK(this->hwnd, hdlr));
+		this->dropHdlr = dragDrop.Ptr();
 	}*/
 	return UI::GUIControl::DET_NOERROR;
 }

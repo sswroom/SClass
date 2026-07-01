@@ -869,11 +869,11 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::TrimPadding(Text::CStringNN outputFile)
 	IntOS frameSize;
 	Int64 readOfst;
 	Bool valid = true;
-	IO::FileStream *dfs;
-	NEW_CLASS(dfs, IO::FileStream(outputFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NN<IO::FileStream> dfs;
+	NEW_CLASSNN(dfs, IO::FileStream(outputFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (dfs->IsError())
 	{
-		DEL_CLASS(dfs);
+		dfs.Delete();
 		return false;
 	}
 	readBuff = MemAllocArr(UInt8, 1048576);
@@ -965,7 +965,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::TrimPadding(Text::CStringNN outputFile)
 	}
 
 	MemFreeArr(readBuff);
-	DEL_CLASS(dfs);
+	dfs.Delete();
 	return valid;*/
 	return false;
 }

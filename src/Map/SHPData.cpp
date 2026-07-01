@@ -26,6 +26,10 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 //	Int32 shpType;
 	UIntOS i;
 	NN<Map::SHPData::RecHdr> rec;
+	NN<Data::ArrayListDbl> ptX;
+	NN<Data::ArrayListDbl> ptY;
+	NN<Data::ArrayListDbl> ptZ;
+	NN<Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>> recs;
 
 	this->dbf = nullptr;
 	this->shpData = nullptr;
@@ -122,8 +126,10 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 	if (*(Int32*)&shpHdr[32] == 1)
 	{
 		this->layerType = Map::DRAW_LAYER_POINT;
-		NEW_CLASS(this->ptX, Data::ArrayListDbl());
-		NEW_CLASS(this->ptY, Data::ArrayListDbl());
+		NEW_CLASSNN(ptX, Data::ArrayListDbl());
+		NEW_CLASSNN(ptY, Data::ArrayListDbl());
+		this->ptX = ptX;
+		this->ptY = ptY;
 		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
 			currOfst += 8;
@@ -147,8 +153,9 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 	else if (*(Int32*)&shpHdr[32] == 3)
 	{
 		this->layerType = Map::DRAW_LAYER_POLYLINE;
-		NEW_CLASS(this->recs, Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>());
-		NEW_CLASS(this->recsMut, Sync::Mutex());
+		NEW_CLASSNN(recs, Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>());
+		NEW_CLASSOPT(this->recsMut, Sync::Mutex());
+		this->recs = recs;
 		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
 			currOfst += 8;
@@ -169,26 +176,27 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
 					rec->endOfst = (UInt32)currOfst + (fileLen << 1);
-					this->recs->Add(rec);
+					recs->Add(rec);
 				}
 				else
 				{
-					this->recs->Add(nullptr);
+					recs->Add(nullptr);
 				}
 				currOfst += fileLen << 1;
 			}
 			else
 			{
 				currOfst += fileLen << 1;
-				this->recs->Add(nullptr);
+				recs->Add(nullptr);
 			}
 		}		
 	}
 	else if (*(Int32*)&shpHdr[32] == 5)
 	{
 		this->layerType = Map::DRAW_LAYER_POLYGON;
-		NEW_CLASS(this->recs, Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>());
-		NEW_CLASS(this->recsMut, Sync::Mutex());
+		NEW_CLASSNN(recs, Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>());
+		NEW_CLASSOPT(this->recsMut, Sync::Mutex());
+		this->recs = recs;
 		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
 			currOfst += 8;
@@ -209,27 +217,30 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
 					rec->endOfst = (UInt32)currOfst + (fileLen << 1);
-					this->recs->Add(rec);
+					recs->Add(rec);
 				}
 				else
 				{
-					this->recs->Add(nullptr);
+					recs->Add(nullptr);
 				}
 				currOfst += fileLen << 1;
 			}
 			else
 			{
 				currOfst += fileLen << 1;
-				this->recs->Add(nullptr);
+				recs->Add(nullptr);
 			}
 		}		
 	}
 	else if (*(Int32*)&shpHdr[32] == 11)
 	{
 		this->layerType = Map::DRAW_LAYER_POINT3D;
-		NEW_CLASS(ptX, Data::ArrayListDbl());
-		NEW_CLASS(ptY, Data::ArrayListDbl());
-		NEW_CLASS(ptZ, Data::ArrayListDbl());
+		NEW_CLASSNN(ptX, Data::ArrayListDbl());
+		NEW_CLASSNN(ptY, Data::ArrayListDbl());
+		NEW_CLASSNN(ptZ, Data::ArrayListDbl());
+		this->ptX = ptX;
+		this->ptY = ptY;
+		this->ptZ = ptZ;
 		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
 			currOfst += 8;
@@ -255,8 +266,9 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 	else if (*(Int32*)&shpHdr[32] == 13)
 	{
 		this->layerType = Map::DRAW_LAYER_POLYLINE3D;
-		NEW_CLASS(this->recs, Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>());
-		NEW_CLASS(this->recsMut, Sync::Mutex());
+		NEW_CLASSNN(recs, Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>());
+		NEW_CLASSOPT(this->recsMut, Sync::Mutex());
+		this->recs = recs;
 		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
 			currOfst += 8;
@@ -277,26 +289,27 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
 					rec->endOfst = (UInt32)currOfst + (fileLen << 1);
-					this->recs->Add(rec);
+					recs->Add(rec);
 				}
 				else
 				{
-					this->recs->Add(nullptr);
+					recs->Add(nullptr);
 				}
 				currOfst += fileLen << 1;
 			}
 			else
 			{
 				currOfst += fileLen << 1;
-				this->recs->Add(nullptr);
+				recs->Add(nullptr);
 			}
 		}		
 	}
 	else if (*(Int32*)&shpHdr[32] == 15)
 	{
 		this->layerType = Map::DRAW_LAYER_POLYGON;
-		NEW_CLASS(this->recs, Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>());
-		NEW_CLASS(this->recsMut, Sync::Mutex());
+		NEW_CLASSNN(recs, Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>());
+		NEW_CLASSOPT(this->recsMut, Sync::Mutex());
+		this->recs = recs;
 		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
 			currOfst += 8;
@@ -317,18 +330,18 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
 					rec->endOfst = (UInt32)currOfst + (fileLen << 1);
-					this->recs->Add(rec);
+					recs->Add(rec);
 				}
 				else
 				{
-					this->recs->Add(nullptr);
+					recs->Add(nullptr);
 				}
 				currOfst += fileLen << 1;
 			}
 			else
 			{
 				currOfst += fileLen << 1;
-				this->recs->Add(nullptr);
+				recs->Add(nullptr);
 			}
 		}		
 	}
@@ -341,19 +354,20 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 	IO::StmData::FileData dbfData({sbuff, (UIntOS)(sptr - sbuff)}, false);
 	if (dbfData.GetDataSize() > 0)
 	{
-		NEW_CLASS(this->dbf, DB::DBFFile(dbfData, codePage));
-		if (this->dbf->IsError())
+		NN<DB::DBFFile> dbf;
+		NEW_CLASSNN(dbf, DB::DBFFile(dbfData, codePage));
+		if (dbf->IsError())
 		{
-			DEL_CLASS(this->dbf);
-			this->dbf = 0;
+			dbf.Delete();
 		}
 		else
 		{
+			this->dbf = dbf;
 			UIntOS nameCol = 0;
-			i = this->dbf->GetColCount();
+			i = dbf->GetColCount();
 			while (i-- > 0)
 			{
-				if (this->dbf->GetColumnName(i, sbuff).SetTo(sptr) && Text::StrEndsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("NAME")))
+				if (dbf->GetColumnName(i, sbuff).SetTo(sptr) && Text::StrEndsWithICaseC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("NAME")))
 				{
 					nameCol = i;
 				}
@@ -365,32 +379,32 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 
 Map::SHPData::~SHPData()
 {
-	SDEL_CLASS(this->dbf);
+	this->dbf.Delete();
 	this->shpData.Delete();
-	SDEL_CLASS(this->ptX);
-	SDEL_CLASS(this->ptY);
-	SDEL_CLASS(this->ptZ);
-	if (this->recs)
+	this->ptX.Delete();
+	this->ptY.Delete();
+	this->ptZ.Delete();
+	NN<Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>> recs;
+	if (this->recs.SetTo(recs))
 	{
-		UIntOS i = this->recs->GetCount();
+		UIntOS i = recs->GetCount();
 		while (i-- > 0)
 		{
 			NN<RecHdr> obj;
-			if (this->recs->RemoveAt(i).SetTo(obj))
+			if (recs->RemoveAt(i).SetTo(obj))
 			{
 				obj->vec.Delete();
 				MemFreeNN(obj);
 			}
 		}
-		DEL_CLASS(this->recs);
-		this->recs = 0;
+		this->recs.Delete();
 	}
-	SDEL_CLASS(this->recsMut);
+	this->recsMut.Delete();
 }
 
 Bool Map::SHPData::IsError() const
 {
-	return dbf == 0 ;
+	return this->dbf.IsNull();
 }
 
 void Map::SHPData::LatLon2XY(Double lat, Double lon, OutParam<Int32> x, OutParam<Int32> y)
@@ -408,10 +422,12 @@ UIntOS Map::SHPData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Opt
 {
 	UIntOS i;
 	UIntOS j;
-	if (this->layerType == Map::DRAW_LAYER_POINT || this->layerType == Map::DRAW_LAYER_POINT3D)
+	NN<Data::ArrayListDbl> ptX;
+	NN<Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>> recs;
+	if (this->ptX.SetTo(ptX) && (this->layerType == Map::DRAW_LAYER_POINT || this->layerType == Map::DRAW_LAYER_POINT3D))
 	{
 		i = 0;
-		j = this->ptX->GetCount();
+		j = ptX->GetCount();
 		while (i < j)
 		{
 			outArr->Add((Int64)i + 1);
@@ -419,9 +435,9 @@ UIntOS Map::SHPData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Opt
 		}
 		return j;
 	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE || this->layerType == Map::DRAW_LAYER_POLYLINE3D)
+	else if (this->recs.SetTo(recs) && (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE || this->layerType == Map::DRAW_LAYER_POLYLINE3D))
 	{
-		j = this->recs->GetCount();
+		j = recs->GetCount();
 		i = 0;
 		while (i < j)
 		{
@@ -446,15 +462,18 @@ UIntOS Map::SHPData::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<O
 	UIntOS retCnt = 0;
 	UIntOS i = 0;
 	UIntOS j;
-	if (this->layerType == Map::DRAW_LAYER_POINT || this->layerType == Map::DRAW_LAYER_POINT3D)
+	NN<Data::ArrayListDbl> ptX;
+	NN<Data::ArrayListDbl> ptY;
+	NN<Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>> recs;
+	if (this->ptX.SetTo(ptX) && this->ptY.SetTo(ptY) && (this->layerType == Map::DRAW_LAYER_POINT || this->layerType == Map::DRAW_LAYER_POINT3D))
 	{
 		Double x;
 		Double y;
-		j = this->ptX->GetCount();
+		j = ptX->GetCount();
 		while (i < j)
 		{
-			x = this->ptX->GetItem(i);
-			y = this->ptY->GetItem(i);
+			x = ptX->GetItem(i);
+			y = ptY->GetItem(i);
 			if (rect.ContainPt(x, y))
 			{
 				outArr->Add((Int64)i + 1);
@@ -464,13 +483,13 @@ UIntOS Map::SHPData::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<O
 		}
 		return retCnt;
 	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE || this->layerType == Map::DRAW_LAYER_POLYLINE3D)
+	else if (this->recs.SetTo(recs) && (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE || this->layerType == Map::DRAW_LAYER_POLYLINE3D))
 	{
 		NN<Map::SHPData::RecHdr> rec;
-		j = this->recs->GetCount();
+		j = recs->GetCount();
 		while (i < j)
 		{
-			if (this->recs->GetItem(i).SetTo(rec))
+			if (recs->GetItem(i).SetTo(rec))
 			{
 				if (rec->x2 >= rect.min.x && rec->x1 <= rect.max.x && rec->y2 >= rect.min.y && rec->y1 <= rect.max.y)
 				{
@@ -490,13 +509,15 @@ UIntOS Map::SHPData::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<O
 
 Int64 Map::SHPData::GetObjectIdMax() const
 {
-	if (this->layerType == Map::DRAW_LAYER_POINT || this->layerType == Map::DRAW_LAYER_POINT3D)
+	NN<Data::ArrayListDbl> ptX;
+	NN<Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>> recs;
+	if (this->ptX.SetTo(ptX) && (this->layerType == Map::DRAW_LAYER_POINT || this->layerType == Map::DRAW_LAYER_POINT3D))
 	{
-		return (Int64)this->ptX->GetCount();
+		return (Int64)ptX->GetCount();
 	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE || this->layerType == Map::DRAW_LAYER_POLYLINE3D)
+	else if (this->recs.SetTo(recs) && (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE || this->layerType == Map::DRAW_LAYER_POLYLINE3D))
 	{
-		return (Int64)this->recs->GetCount();
+		return (Int64)recs->GetCount();
 	}
 	else
 	{
@@ -506,13 +527,15 @@ Int64 Map::SHPData::GetObjectIdMax() const
 
 UIntOS Map::SHPData::GetRecordCnt() const
 {
-	if (this->layerType == Map::DRAW_LAYER_POINT || this->layerType == Map::DRAW_LAYER_POINT3D)
+	NN<Data::ArrayListDbl> ptX;
+	NN<Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>> recs;
+	if (this->ptX.SetTo(ptX) && (this->layerType == Map::DRAW_LAYER_POINT || this->layerType == Map::DRAW_LAYER_POINT3D))
 	{
-		return this->ptX->GetCount();
+		return ptX->GetCount();
 	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE || this->layerType == Map::DRAW_LAYER_POLYLINE3D)
+	else if (this->recs.SetTo(recs) && (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE || this->layerType == Map::DRAW_LAYER_POLYLINE3D))
 	{
-		return this->recs->GetCount();
+		return recs->GetCount();
 	}
 	else
 	{
@@ -539,21 +562,36 @@ Bool Map::SHPData::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray>
 		}
 		return false;
 	}
-	Bool ret = this->dbf->GetRecord(sb, (UIntOS)id - 1, colIndex - 1);
+	NN<DB::DBFFile> dbf;
+	if (!this->dbf.SetTo(dbf))
+	{
+		return false;
+	}
+	Bool ret = dbf->GetRecord(sb, (UIntOS)id - 1, colIndex - 1);
 	sb->TrimSp();
 	return ret;
 }
 
 UIntOS Map::SHPData::GetColumnCnt() const
 {
-	return this->dbf->GetColCount() + 1;
+	NN<DB::DBFFile> dbf;
+	if (!this->dbf.SetTo(dbf))
+	{
+		return 1;
+	}
+	return dbf->GetColCount() + 1;
 }
 
 UnsafeArrayOpt<UTF8Char> Map::SHPData::GetColumnName(UnsafeArray<UTF8Char> buff, UIntOS colIndex) const
 {
 	if (colIndex == 0)
 		return Text::StrConcatC(buff, UTF8STRC("Shape"));
-	return this->dbf->GetColumnName(colIndex - 1, buff);
+	NN<DB::DBFFile> dbf;
+	if (!this->dbf.SetTo(dbf))
+	{
+		return nullptr;
+	}
+	return dbf->GetColumnName(colIndex - 1, buff);
 }
 
 DB::DBUtil::ColType Map::SHPData::GetColumnType(UIntOS colIndex, OptOut<UIntOS> colSize) const
@@ -563,7 +601,12 @@ DB::DBUtil::ColType Map::SHPData::GetColumnType(UIntOS colIndex, OptOut<UIntOS> 
 		colSize.Set(Map::MapLayerReader::GetShapeColSize(this->layerType));
 		return DB::DBUtil::CT_Vector;
 	}
-	return this->dbf->GetColumnType(colIndex - 1, colSize);
+	NN<DB::DBFFile> dbf;
+	if (!this->dbf.SetTo(dbf))
+	{
+		return DB::DBUtil::CT_Unknown;
+	}
+	return dbf->GetColumnType(colIndex - 1, colSize);
 }
 
 Bool Map::SHPData::GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const
@@ -573,12 +616,22 @@ Bool Map::SHPData::GetColumnDef(UIntOS colIndex, NN<DB::ColDef> colDef) const
 		Map::MapLayerReader::GetShapeColDef(colDef, *this);
 		return true;
 	}
-	return this->dbf->GetColumnDef(colIndex - 1, colDef);
+	NN<DB::DBFFile> dbf;
+	if (!this->dbf.SetTo(dbf))
+	{
+		return false;
+	}
+	return dbf->GetColumnDef(colIndex - 1, colDef);
 }
 
 UInt32 Map::SHPData::GetCodePage() const
 {
-	return this->dbf->GetCodePage();
+	NN<DB::DBFFile> dbf;
+	if (!this->dbf.SetTo(dbf))
+	{
+		return 0;
+	}
+	return dbf->GetCodePage();
 }
 
 Bool Map::SHPData::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
@@ -607,35 +660,39 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 		return nullptr;
 	}
 
+	NN<Data::ArrayListDbl> ptX;
+	NN<Data::ArrayListDbl> ptY;
+	NN<Data::ArrayListDbl> ptZ;
+	NN<Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>> recs;
 	UInt32 srid = this->csys->GetSRID();
-	if (this->layerType == Map::DRAW_LAYER_POINT)
+	if (this->layerType == Map::DRAW_LAYER_POINT && this->ptX.SetTo(ptX) && this->ptY.SetTo(ptY))
 	{
-		Math::Geometry::Point *pt;
-		if (id <= 0 || (UInt64)id > this->ptX->GetCount())
+		NN<Math::Geometry::Point> pt;
+		if (id <= 0 || (UInt64)id > ptX->GetCount())
 		{
 			return nullptr;
 		}
-		NEW_CLASS(pt, Math::Geometry::Point(srid, this->ptX->GetItem((UIntOS)id - 1), this->ptY->GetItem((UIntOS)id - 1)));
+		NEW_CLASSNN(pt, Math::Geometry::Point(srid, ptX->GetItem((UIntOS)id - 1), ptY->GetItem((UIntOS)id - 1)));
 		return pt;
 	}
-	else if (this->layerType == Map::DRAW_LAYER_POINT3D)
+	else if (this->layerType == Map::DRAW_LAYER_POINT3D && this->ptX.SetTo(ptX) && this->ptY.SetTo(ptY) && this->ptZ.SetTo(ptZ))
 	{
-		Math::Geometry::PointZ *pt;
-		if (id <= 0 || (UInt64)id > this->ptX->GetCount())
+		NN<Math::Geometry::PointZ> pt;
+		if (id <= 0 || (UInt64)id > ptX->GetCount())
 		{
 			return nullptr;
 		}
-		NEW_CLASS(pt, Math::Geometry::PointZ(srid, this->ptX->GetItem((UIntOS)id - 1), this->ptY->GetItem((UIntOS)id - 1), this->ptZ->GetItem((UIntOS)id - 1)));
+		NEW_CLASSNN(pt, Math::Geometry::PointZ(srid, ptX->GetItem((UIntOS)id - 1), ptY->GetItem((UIntOS)id - 1), ptZ->GetItem((UIntOS)id - 1)));
 		return pt;
 	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYGON && mut.Set(this->recsMut))
+	else if (this->layerType == Map::DRAW_LAYER_POLYGON && this->recsMut.SetTo(mut) && this->recs.SetTo(recs))
 	{
-		Math::Geometry::Polygon *pg;
+		NN<Math::Geometry::Polygon> pg;
 		Sync::MutexUsage mutUsage(mut);
-		if (!this->recs->GetItem((UIntOS)id - 1).SetTo(rec))
+		if (!recs->GetItem((UIntOS)id - 1).SetTo(rec))
 			return nullptr;
 		if (rec->vec.SetTo(vec)) return vec->Clone();
-		NEW_CLASS(pg, Math::Geometry::Polygon(srid));
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
 		UnsafeArray<UInt32> ptOfstList = MemAllocArr(UInt32, rec->nPtOfst);
 		UnsafeArray<Math::Coord2DDbl> pointList = MemAllocAArr(Math::Coord2DDbl, rec->nPoint);
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(ptOfstList), rec->nPtOfst << 2));
@@ -646,14 +703,14 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 		rec->vec = pg->Clone();
 		return pg;
 	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYLINE && mut.Set(this->recsMut))
+	else if (this->layerType == Map::DRAW_LAYER_POLYLINE && this->recsMut.SetTo(mut) && this->recs.SetTo(recs))
 	{
-		Math::Geometry::Polyline *pl;
+		NN<Math::Geometry::Polyline> pl;
 		Sync::MutexUsage mutUsage(mut);
-		if (!this->recs->GetItem((UIntOS)id - 1).SetTo(rec))
+		if (!recs->GetItem((UIntOS)id - 1).SetTo(rec))
 			return nullptr;
 		if (rec->vec.SetTo(vec)) return vec->Clone();
-		NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+		NEW_CLASSNN(pl, Math::Geometry::Polyline(srid));
 		UnsafeArray<UInt32> ptOfstList = MemAllocArr(UInt32, rec->nPtOfst);
 		UnsafeArray<Math::Coord2DDbl> pointList = MemAllocAArr(Math::Coord2DDbl, rec->nPoint);
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(ptOfstList), rec->nPtOfst << 2));
@@ -664,14 +721,14 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 		rec->vec = pl->Clone();
 		return pl;
 	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYLINE3D && mut.Set(this->recsMut))
+	else if (this->layerType == Map::DRAW_LAYER_POLYLINE3D && this->recsMut.SetTo(mut) && this->recs.SetTo(recs))
 	{
-		Math::Geometry::Polyline *pl;
+		NN<Math::Geometry::Polyline> pl;
 		Sync::MutexUsage mutUsage(mut);
-		if (!this->recs->GetItem((UIntOS)id - 1).SetTo(rec))
+		if (!recs->GetItem((UIntOS)id - 1).SetTo(rec))
 			return nullptr;
 		if (rec->vec.SetTo(vec)) return vec->Clone();
-		NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+		NEW_CLASSNN(pl, Math::Geometry::Polyline(srid));
 		UnsafeArray<UInt32> ptOfstList = MemAllocArr(UInt32, rec->nPtOfst);
 		UnsafeArray<Math::Coord2DDbl> pointList = MemAllocAArr(Math::Coord2DDbl, rec->nPoint);
 		UnsafeArray<Double> zList = MemAllocArr(Double, rec->nPoint);
@@ -698,7 +755,12 @@ Map::MapDrawLayer::FailReason Map::SHPData::GetFailReason() const
 
 UIntOS Map::SHPData::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
-	return this->dbf->QueryTableNames(schemaName, names);
+	NN<DB::DBFFile> dbf;
+	if (!this->dbf.SetTo(dbf))
+	{
+		return 0;
+	}
+	return dbf->QueryTableNames(schemaName, names);
 }
 
 //Optional<DB::DBReader> Map::SHPData::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
@@ -716,18 +778,33 @@ Optional<DB::TableDef> Map::SHPData::GetTableDef(Text::CString schemaName, Text:
 
 void Map::SHPData::CloseReader(NN<DB::DBReader> r)
 {
-	this->dbf->CloseReader(r);
+	NN<DB::DBFFile> dbf;
+	if (!this->dbf.SetTo(dbf))
+	{
+		return;
+	}
+	dbf->CloseReader(r);
 }
 
 void Map::SHPData::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
-	this->dbf->GetLastErrorMsg(str);
+	NN<DB::DBFFile> dbf;
+	if (!this->dbf.SetTo(dbf))
+	{
+		return;
+	}
+	dbf->GetLastErrorMsg(str);
 
 }
 
 void Map::SHPData::Reconnect()
 {
-	return this->dbf->Reconnect();
+	NN<DB::DBFFile> dbf;
+	if (!this->dbf.SetTo(dbf))
+	{
+		return;
+	}
+	dbf->Reconnect();
 }
 
 UIntOS Map::SHPData::GetGeomCol() const

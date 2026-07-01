@@ -187,7 +187,7 @@ IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 UIntOS IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
 	UIntOS retCnt = 0;
-	Win32::WMIQuery *db;
+	NN<Win32::WMIQuery> db;
 	NN<RAMInfo> ram;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -259,7 +259,7 @@ UIntOS IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 	}
 
 
-	NEW_CLASS(db, Win32::WMIQuery(L"ROOT\\CIMV2"));
+	NEW_CLASSNN(db, Win32::WMIQuery(L"ROOT\\CIMV2"));
 //	r = db->ExecuteReader(L"select DeviceLocator, Manufacturer, PartNumber, SerialNumber, Speed from CIM_PhysicalMemory");
 	if (db->ExecuteReaderW(L"select * from CIM_PhysicalMemory").SetTo(r))
 	{
@@ -329,7 +329,7 @@ UIntOS IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 		db->CloseReader(r);
 	}
 
-	DEL_CLASS(db);
+	db.Delete();
 	return retCnt;
 }
 

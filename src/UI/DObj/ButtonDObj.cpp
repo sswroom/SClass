@@ -32,7 +32,7 @@ UI::DObj::ButtonDObj::ButtonDObj(NN<Media::DrawEngine> deng, Text::CString fileN
 		this->bmpClicked = this->deng->LoadImage(fileNameClicked.OrEmpty());
 	}
 	this->isVisible = true;
-	NEW_CLASS(this->rnd, Data::RandomOS());
+	NEW_CLASSNN(this->rnd, Data::RandomOS());
 	this->alpha = this->rnd->NextDouble() * 0.5 + 0.5;
 	this->a = 0;
 	this->clkHdlr = clkHdlr;
@@ -55,7 +55,7 @@ UI::DObj::ButtonDObj::~ButtonDObj()
 		this->deng->DeleteImage(img);
 		this->bmpClicked = nullptr;
 	}
-	DEL_CLASS(this->rnd);
+	this->rnd.Delete();
 }
 
 void UI::DObj::ButtonDObj::SetRectMode(Bool rectMode)

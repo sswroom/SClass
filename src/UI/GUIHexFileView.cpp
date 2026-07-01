@@ -8,8 +8,8 @@
 
 UI::GUIHexFileView::GUIHexFileView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng, Optional<Media::ColorSess> colorSess) : UI::GUITextView(ui, parent, deng, colorSess)
 {
-	this->fs = 0;
-	this->fd = 0;
+	this->fs = nullptr;
+	this->fd = nullptr;
 	this->analyse = nullptr;
 	this->frame = nullptr;
 	this->fileSize = 0;
@@ -29,8 +29,8 @@ UI::GUIHexFileView::GUIHexFileView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> 
 
 UI::GUIHexFileView::~GUIHexFileView()
 {
-	SDEL_CLASS(this->fs);
-	SDEL_CLASS(this->fd);
+	this->fs.Delete();
+	this->fd.Delete();
 	this->analyse.Delete();
 	this->frame.Delete();
 }
@@ -156,9 +156,10 @@ void UI::GUIHexFileView::EventMouseMove(IntOS scnX, IntOS scnY)
 
 void UI::GUIHexFileView::EventTimerTick()
 {
-	if (this->fs)
+	NN<IO::FileStream> fs;
+	if (this->fs.SetTo(fs))
 	{
-		UInt64 fileLen = this->fs->GetLength();
+		UInt64 fileLen = fs->GetLength();
 		if (fileLen != this->fileSize)
 		{
 			this->fileSize = fileLen;
@@ -395,16 +396,16 @@ Bool UI::GUIHexFileView::LoadFile(Text::CStringNN fileName, Bool dynamicSize)
 {
 	if (dynamicSize)
 	{
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NN<IO::FileStream> fs;
+		NEW_CLASSNN(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (fs->IsError())
 		{
-			DEL_CLASS(fs);
+			fs.Delete();
 			return false;
 		}
 		this->analyse.Delete();
-		SDEL_CLASS(this->fs);
-		SDEL_CLASS(this->fd);
+		this->fs.Delete();
+		this->fd.Delete();
 		this->frame.Delete();
 		this->fs = fs;
 		this->fileSize = 0;
@@ -420,12 +421,12 @@ Bool UI::GUIHexFileView::LoadFile(Text::CStringNN fileName, Bool dynamicSize)
 			return false;
 		}
 		this->analyse.Delete();
-		SDEL_CLASS(this->fs);
-		SDEL_CLASS(this->fd);
+		this->fs.Delete();
+		this->fd.Delete();
 		this->frame.Delete();
-		this->fd = fd.Ptr();
+		this->fd = fd;
 		this->analyse = IO::FileAnalyse::FileAnalyser::AnalyseFile(fd);
-		this->fileSize = this->fd->GetDataSize();
+		this->fileSize = fd->GetDataSize();
 		this->currOfst = 0;
 		this->SetScrollVRange(0, (UIntOS)(this->fileSize >> 4));
 		this->GoToOffset(0);
@@ -437,10 +438,10 @@ Bool UI::GUIHexFileView::LoadFile(Text::CStringNN fileName, Bool dynamicSize)
 Bool UI::GUIHexFileView::LoadData(NN<IO::StreamData> data, Optional<IO::FileAnalyse::FileAnalyser> fileAnalyse)
 {
 	this->analyse.Delete();
-	SDEL_CLASS(this->fs);
-	SDEL_CLASS(this->fd);
+	this->fs.Delete();
+	this->fd.Delete();
 	this->frame.Delete();
-	this->fd = data.Ptr();
+	this->fd = data;
 	NN<IO::FileAnalyse::FileAnalyser> nnfileAnalyse;
 	if (fileAnalyse.SetTo(nnfileAnalyse))
 	{
@@ -450,7 +451,7 @@ Bool UI::GUIHexFileView::LoadData(NN<IO::StreamData> data, Optional<IO::FileAnal
 	{
 		this->analyse = IO::FileAnalyse::FileAnalyser::AnalyseFile(data);
 	}
-	this->fileSize = this->fd->GetDataSize();
+	this->fileSize = data->GetDataSize();
 	this->currOfst = 0;
 	this->SetScrollVRange(0, (UIntOS)(this->fileSize >> 4));
 	this->GoToOffset(0);
@@ -558,14 +559,16 @@ UInt64 UI::GUIHexFileView::GetFileSize()
 
 UIntOS UI::GUIHexFileView::GetFileData(UInt64 ofst, UIntOS size, Data::ByteArray outBuff)
 {
-	if (this->fd)
+	NN<IO::StreamData> fd;
+	NN<IO::FileStream> fs;
+	if (this->fd.SetTo(fd))
 	{
-		return this->fd->GetRealData(ofst, size, outBuff);
+		return fd->GetRealData(ofst, size, outBuff);
 	}
-	else if (this->fs)
+	else if (this->fs.SetTo(fs))
 	{
-		this->fs->SeekFromBeginning(ofst);
-		return this->fs->Read(outBuff.WithSize(size));
+		fs->SeekFromBeginning(ofst);
+		return fs->Read(outBuff.WithSize(size));
 	}
 	else
 	{

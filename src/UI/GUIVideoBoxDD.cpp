@@ -85,10 +85,10 @@ void UI::GUIVideoBoxDD::EndUpdateSize()
 UI::GUIVideoBoxDD::GUIVideoBoxDD(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::ColorManagerSess> colorSess, UIntOS buffCnt, UIntOS threadCnt) : UI::GUIDDrawControl(ui, parent, false, colorSess), Media::VideoRenderer(colorSess, this->UI::GUIDDrawControl::surfaceMgr, buffCnt, threadCnt)
 {
 	this->UpdateRefreshRate(this->GetRefreshRate());
-	this->debugLog = 0;
-	this->debugFS = 0;
-	this->debugLog2 = 0;
-	this->debugFS2 = 0;
+	this->debugLog = nullptr;
+	this->debugFS = nullptr;
+	this->debugLog2 = nullptr;
+	this->debugFS2 = nullptr;
 
 	this->colorSess->AddHandler(*this);
 	this->maHdlr = 0;
@@ -100,11 +100,11 @@ UI::GUIVideoBoxDD::GUIVideoBoxDD(NN<UI::GUICore> ui, NN<UI::GUIClientControl> pa
 #ifdef _DEBUG
 	NN<IO::FileStream> fs;
 	NEW_CLASSNN(fs, IO::FileStream(CSTR("videoProc.log"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	this->debugFS = fs.Ptr();
-	NEW_CLASS(this->debugLog, Text::UTF8Writer(fs));
+	this->debugFS = fs;
+	NEW_CLASSOPT(this->debugLog, Text::UTF8Writer(fs));
 	NEW_CLASSNN(fs, IO::FileStream(CSTR("videoDisp.log"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	this->debugFS2 = fs.Ptr();
-	NEW_CLASS(this->debugLog2, Text::UTF8Writer(fs));
+	this->debugFS2 = fs;
+	NEW_CLASSOPT(this->debugLog2, Text::UTF8Writer(fs));
 #endif
 	this->OnMonitorChanged();
 }
@@ -114,10 +114,10 @@ UI::GUIVideoBoxDD::~GUIVideoBoxDD()
 	this->colorSess->RemoveHandler(*this);
 
 #ifdef _DEBUG
-	SDEL_CLASS(this->debugLog);
-	SDEL_CLASS(this->debugFS);
-	SDEL_CLASS(this->debugLog2);
-	SDEL_CLASS(this->debugFS2);
+	this->debugLog.Delete();
+	this->debugFS.Delete();
+	this->debugLog2.Delete();
+	this->debugFS2.Delete();
 #endif
 }
 

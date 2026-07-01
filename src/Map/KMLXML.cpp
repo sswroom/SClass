@@ -57,7 +57,8 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 	Data::ArrayListNN<Map::MapDrawLayer> layers;
 	NN<Text::String> nns;
 
-	Map::WebImageLayer *imgLyr = 0;
+	Optional<Map::WebImageLayer> imgLyr = nullptr;
+	NN<Map::WebImageLayer> nnimgLyr;
 	Text::StringBuilderUTF8 containerNameSb;
 	containerNameSb.Append(sourceName);
 	NN<Map::MapDrawLayer> lyr;
@@ -498,9 +499,10 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 		{
 			if (browser.SetTo(nnbrowser) && parsers.SetTo(nnparsers))
 			{
-				if (imgLyr == 0)
+				if (!imgLyr.SetTo(nnimgLyr))
 				{
-					NEW_CLASS(imgLyr, Map::WebImageLayer(nnbrowser, nnparsers, sourceName, Math::CoordinateSystemManager::CreateWGS84Csys(), containerNameSb.ToCString()));
+					NEW_CLASSNN(nnimgLyr, Map::WebImageLayer(nnbrowser, nnparsers, sourceName, Math::CoordinateSystemManager::CreateWGS84Csys(), containerNameSb.ToCString()));
+					imgLyr = nnimgLyr;
 				}
 
 				NN<Text::String> name = Text::String::NewEmpty();
@@ -548,7 +550,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 							{
 								sb.ClearStr();
 								reader->ReadNodeText(sb);
-								sbuffEnd = imgLyr->GetSourceName(sbuff);
+								sbuffEnd = nnimgLyr->GetSourceName(sbuff);
 								sbuffEnd = Text::URLString::AppendURLPath(sbuff, sbuffEnd, sb.ToCString()).Or(sbuff);
 							}
 							else
@@ -655,7 +657,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 				}
 				if (sbuff[0] != 0)
 				{
-					imgLyr->AddImage(name->ToCString(), CSTRP(sbuff, sbuffEnd), zIndex, minX, minY, oX, oY, sizeX, sizeY, true, timeStart, timeEnd, ((color >> 24) & 0xff) / 255.0, hasAltitude, altitude);
+					nnimgLyr->AddImage(name->ToCString(), CSTRP(sbuff, sbuffEnd), zIndex, minX, minY, oX, oY, sizeX, sizeY, true, timeStart, timeEnd, ((color >> 24) & 0xff) / 255.0, hasAltitude, altitude);
 				}
 				name->Release();
 			}
@@ -668,9 +670,10 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 		{
 			if (browser.SetTo(nnbrowser) && parsers.SetTo(nnparsers))
 			{
-				if (imgLyr == 0)
+				if (!imgLyr.SetTo(nnimgLyr))
 				{
-					NEW_CLASS(imgLyr, Map::WebImageLayer(nnbrowser, nnparsers, sourceName, Math::CoordinateSystemManager::CreateWGS84Csys(), containerNameSb.ToCString()));
+					NEW_CLASSNN(nnimgLyr, Map::WebImageLayer(nnbrowser, nnparsers, sourceName, Math::CoordinateSystemManager::CreateWGS84Csys(), containerNameSb.ToCString()));
+					imgLyr = nnimgLyr;
 				}
 
 				NN<Text::String> name = Text::String::NewEmpty();
@@ -715,7 +718,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 							{
 								sb.ClearStr();
 								reader->ReadNodeText(sb);
-								sbuffEnd = imgLyr->GetSourceName(sbuff);
+								sbuffEnd = nnimgLyr->GetSourceName(sbuff);
 								sbuffEnd = Text::URLString::AppendURLPath(sbuff, sbuffEnd, sb.ToCString()).Or(sbuff);
 							}
 							else
@@ -806,7 +809,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 				}
 				if (sbuff[0] != 0)
 				{
-					imgLyr->AddImage(name->ToCString(), CSTRP(sbuff, sbuffEnd), zIndex, minX, minY, maxX, maxY, 0, 0, false, timeStart, timeEnd, alpha, hasAltitude, altitude);
+					nnimgLyr->AddImage(name->ToCString(), CSTRP(sbuff, sbuffEnd), zIndex, minX, minY, maxX, maxY, 0, 0, false, timeStart, timeEnd, alpha, hasAltitude, altitude);
 				}
 				name->Release();
 			}
@@ -854,9 +857,9 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 		}
 	}
 
-	if (lyr.Set(imgLyr))
+	if (imgLyr.SetTo(nnimgLyr))
 	{
-		layers.Add(lyr);
+		layers.Add(nnimgLyr);
 	}
 	if (layers.GetCount() <= 0)
 	{
@@ -868,8 +871,8 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 	}
 	else
 	{
-		Map::MapLayerCollection *lyrColl;
-		NEW_CLASS(lyrColl, Map::MapLayerCollection(sourceName, containerNameSb.ToCString()));
+		NN<Map::MapLayerCollection> lyrColl;
+		NEW_CLASSNN(lyrColl, Map::MapLayerCollection(sourceName, containerNameSb.ToCString()));
 		Data::ArrayIterator<NN<Map::MapDrawLayer>> it = layers.Iterator();
 		while (it.HasNext())
 		{

@@ -20,7 +20,7 @@ struct RawSMBIOSData
 
 Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 {
-	IO::SMBIOS *smbios;
+	NN<IO::SMBIOS> smbios;
 	IO::Library lib((const UTF8Char*)"kernel32.dll");
 	UnsafeArray<UInt8> dataBuff;
 	UnsafeArrayOpt<UInt8> optdataBuff = nullptr;
@@ -34,15 +34,15 @@ Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 			dataBuff = MemAllocArr(UInt8, buffSize);
 			func(*(UInt32*)"BMSR", 0, dataBuff.Ptr(), buffSize);
 			UnsafeArray<const RawSMBIOSData> pDMIData = UnsafeArray<RawSMBIOSData>::ConvertFrom(dataBuff);
-			NEW_CLASS(smbios, IO::SMBIOS(&pDMIData->SMBIOSTableData[0], pDMIData->Length, dataBuff));
+			NEW_CLASSNN(smbios, IO::SMBIOS(&pDMIData->SMBIOSTableData[0], pDMIData->Length, dataBuff));
 			return smbios;
 		}
 	}
 
 	UTF8Char sbuff[128];
-	Win32::WMIQuery *db;
+	NN<Win32::WMIQuery> db;
 	NN<DB::DBReader> r;
-	NEW_CLASS(db, Win32::WMIQuery(L"ROOT\\WMI"));
+	NEW_CLASSNN(db, Win32::WMIQuery(L"ROOT\\WMI"));
 	if (db->ExecuteReaderW(L"select * from MSSMBios_RawSMBiosTables").SetTo(r))
 	{
 		UIntOS i;
@@ -71,10 +71,10 @@ Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 		}
 		db->CloseReader(r);
 	}
-	DEL_CLASS(db);
+	db.Delete();
 	if (optdataBuff.SetTo(dataBuff))
 	{
-		NEW_CLASS(smbios, IO::SMBIOS(dataBuff, buffSize, dataBuff));
+		NEW_CLASSNN(smbios, IO::SMBIOS(dataBuff, buffSize, dataBuff));
 		return smbios;
 	}
 

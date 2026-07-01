@@ -457,7 +457,7 @@ UIntOS Manage::Process::GetModules(NN<Data::ArrayListNN<Manage::ModuleInfo>> mod
 {
 #ifdef _WIN32_WCE
 	MODULEENTRY32 moduleInfo;
-	Manage::ModuleInfo *mod;
+	NN<Manage::ModuleInfo> mod;
 	HANDLE hSnapShot;
 	UIntOS i;
 	hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, 0);
@@ -469,7 +469,7 @@ UIntOS Manage::Process::GetModules(NN<Data::ArrayListNN<Manage::ModuleInfo>> mod
 		{
 			if (moduleInfo.th32ProcessID == this->procId)
 			{
-				NEW_CLASS(mod, Manage::ModuleInfo(this->handle, moduleInfo.hModule));
+				NEW_CLASSNN(mod, Manage::ModuleInfo(this->handle, moduleInfo.hModule));
 				modList->Add(mod);
 				i++;
 			}

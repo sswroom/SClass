@@ -8,22 +8,21 @@ namespace Math
 	class ProjectionConvert
 	{
 	private:
-		Math::BigFloat *originNorthing;
-		Math::BigFloat *originEasting;
-		Math::BigFloat *originLatitude;
-		Math::BigFloat *originLongitude;
-		Math::BigFloat *meridianScale;
-		Math::BigFloat *meridianOrigin;
-		Math::BigFloat *curvPrimeVertical;
-		Math::BigFloat *curvMerdian;
-		Math::BigFloat *refEllipsoid;
-		Math::BigFloat *eccentricity;
-
+		NN<Math::BigFloat> originNorthing;
+		NN<Math::BigFloat> originEasting;
+		NN<Math::BigFloat> originLatitude;
+		NN<Math::BigFloat> originLongitude;
+		NN<Math::BigFloat> meridianScale;
+		NN<Math::BigFloat> meridianOrigin;
+		NN<Math::BigFloat> curvPrimeVertical;
+		NN<Math::BigFloat> curvMerdian;
+		NN<Math::BigFloat> refEllipsoid;
+		NN<Math::BigFloat> eccentricity;
 	public:
 		ProjectionConvert();
 		~ProjectionConvert();
 
-		Math::BigFloat *CalMeridian(Math::BigFloat *meridianDist, Math::BigFloat *latitude);
+		NN<Math::BigFloat> CalMeridian(NN<Math::BigFloat> meridianDist, NN<Math::BigFloat> latitude);
 	};
 }
 #endif

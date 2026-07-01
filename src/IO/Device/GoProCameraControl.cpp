@@ -10,9 +10,11 @@
 
 void IO::Device::GoProCameraControl::GetMediaList()
 {
-	if (this->fileList == 0)
+	NN<Data::ArrayListNN<IO::CameraControl::FileInfo>> fileList;
+	if (this->fileList.IsNull())
 	{
-		NEW_CLASS(this->fileList, Data::ArrayListNN<IO::CameraControl::FileInfo>());
+		NEW_CLASSNN(fileList, Data::ArrayListNN<IO::CameraControl::FileInfo>());
+		this->fileList = fileList;
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
 		
@@ -102,7 +104,7 @@ void IO::Device::GoProCameraControl::GetMediaList()
 											{
 												file->fileTimeTicks = s->ToInt64() * 1000 + timeDiff;
 											}
-											this->fileList->Add(file);
+											fileList->Add(file);
 										}
 									}
 									k++;
@@ -184,22 +186,23 @@ IO::Device::GoProCameraControl::GoProCameraControl(NN<Net::TCPClientFactory> cli
 {
 	this->addr = *addr;
 	this->clif = clif;
-	this->fileList = 0;
+	this->fileList = nullptr;
 }
 
 IO::Device::GoProCameraControl::~GoProCameraControl()
 {
+	NN<Data::ArrayListNN<IO::CameraControl::FileInfo>> fileList;
 	UIntOS i;
-	if (this->fileList)
+	if (this->fileList.SetTo(fileList))
 	{
 		NN<IO::CameraControl::FileInfo> file;
-		i = this->fileList->GetCount();
+		i = fileList->GetCount();
 		while (i-- > 0)
 		{
-			file = this->fileList->GetItemNoCheck(i);
+			file = fileList->GetItemNoCheck(i);
 			MemFreeNN(file);
 		}
-		DEL_CLASS(this->fileList);
+		this->fileList.Delete();
 	}
 }
 
@@ -219,12 +222,12 @@ void IO::Device::GoProCameraControl::FreeInfoList(NN<Data::ArrayListStringNN> na
 
 UIntOS IO::Device::GoProCameraControl::GetFileList(NN<Data::ArrayListNN<IO::CameraControl::FileInfo>> fileList)
 {
-	if (this->fileList == 0)
+	if (this->fileList.IsNull())
 	{
 		this->GetMediaList();
 	}
 	NN<Data::ArrayListNN<IO::CameraControl::FileInfo>> nnfileList;
-	if (nnfileList.Set(this->fileList))
+	if (this->fileList.SetTo(nnfileList))
 	{
 		fileList->AddAll(nnfileList);
 		return nnfileList->GetCount();
@@ -303,8 +306,8 @@ Optional<IO::Device::GoProCameraControl> IO::Device::GoProCameraControl::CreateC
 	{
 		Net::SocketUtil::AddressInfo addr;
 		Net::SocketUtil::SetAddrInfoV4(addr, ip);
-		IO::Device::GoProCameraControl *ctrl;
-		NEW_CLASS(ctrl, IO::Device::GoProCameraControl(clif, &addr));
+		NN<IO::Device::GoProCameraControl> ctrl;
+		NEW_CLASSNN(ctrl, IO::Device::GoProCameraControl(clif, &addr));
 		return ctrl;
 	}
 	return nullptr;

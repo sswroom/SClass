@@ -8,7 +8,7 @@
 UInt32 __stdcall IO::RS232GPIO::ReadThread(AnyType userObj)
 {
 	NN<IO::RS232GPIO> me = userObj.GetNN<IO::RS232GPIO>();
-	Manage::HiResClock *clk;
+	NN<Manage::HiResClock> clk;
 	UInt8 readBuff[12];
 	UInt32 fullClk = 1000000 / me->baudRate;
 	UInt32 halfClk = fullClk >> 1;
@@ -20,7 +20,7 @@ UInt32 __stdcall IO::RS232GPIO::ReadThread(AnyType userObj)
 	started  = false;
 
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
-	NEW_CLASS(clk, Manage::HiResClock());
+	NEW_CLASSNN(clk, Manage::HiResClock());
 	me->running = true;
 	while (!me->toStop)
 	{
@@ -98,7 +98,7 @@ UInt32 __stdcall IO::RS232GPIO::ReadThread(AnyType userObj)
 			}
 		}
 	}
-	DEL_CLASS(clk);
+	clk.Delete();
 	me->running = false;
 	return 0;
 }

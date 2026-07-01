@@ -10,7 +10,7 @@ namespace UI
 	class GUIPictureBox : public GUIControl
 	{
 	protected:
-		Media::ImageResizer *resizer;
+		NN<Media::ImageResizer> resizer;
 		Optional<Media::StaticImage> currImage;
 		Bool hasBorder;
 		Bool allowResize;

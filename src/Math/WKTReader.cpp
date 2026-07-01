@@ -99,8 +99,8 @@ Optional<Math::Geometry::Point> Math::WKTReader::ParsePoint(UnsafeArray<const UT
 	}
 	if (wkt[0] == ')')
 	{
-		Math::Geometry::Point *pt;
-		NEW_CLASS(pt, Math::Geometry::Point(this->srid, x, y));
+		NN<Math::Geometry::Point> pt;
+		NEW_CLASSNN(pt, Math::Geometry::Point(this->srid, x, y));
 		wktEnd.Set(wkt + 1);
 		return pt;
 	}
@@ -115,8 +115,8 @@ Optional<Math::Geometry::Point> Math::WKTReader::ParsePoint(UnsafeArray<const UT
 	}
 	if (wkt[0] == ')' && wkt[1] == 0)
 	{
-		Math::Geometry::PointZ *pt;
-		NEW_CLASS(pt, Math::Geometry::PointZ(this->srid, x, y, z));
+		NN<Math::Geometry::PointZ> pt;
+		NEW_CLASSNN(pt, Math::Geometry::PointZ(this->srid, x, y, z));
 		wktEnd.Set(wkt + 1);
 		return pt;
 	}
@@ -175,7 +175,7 @@ Optional<Math::Geometry::LineString> Math::WKTReader::ParseLineString(UnsafeArra
 			return nullptr;
 		}
 	}
-	Math::Geometry::LineString *pl;
+	NN<Math::Geometry::LineString> pl;
 	Bool hasM = false;
 	Bool hasZ = false;
 	if (zList.GetCount() == ptList.GetCount())
@@ -189,11 +189,11 @@ Optional<Math::Geometry::LineString> Math::WKTReader::ParseLineString(UnsafeArra
 	}
 	if (curve)
 	{
-		NEW_CLASS(pl, Math::Geometry::CircularString(this->srid, ptList.GetCount() >> 1, hasZ, hasM));
+		NEW_CLASSNN(pl, Math::Geometry::CircularString(this->srid, ptList.GetCount() >> 1, hasZ, hasM));
 	}
 	else
 	{
-		NEW_CLASS(pl, Math::Geometry::LineString(this->srid, ptList.GetCount() >> 1, hasZ, hasM));
+		NEW_CLASSNN(pl, Math::Geometry::LineString(this->srid, ptList.GetCount() >> 1, hasZ, hasM));
 	}
 	UIntOS i;
 	UnsafeArray<Math::Coord2DDbl> ptArr = pl->GetPointList(i);
@@ -271,7 +271,7 @@ Optional<Math::Geometry::LinearRing> Math::WKTReader::ParseLinearRing(UnsafeArra
 			return nullptr;
 		}
 	}
-	Math::Geometry::LinearRing *lr;
+	NN<Math::Geometry::LinearRing> lr;
 	Bool hasM = false;
 	Bool hasZ = false;
 	if (zList.GetCount() == ptList.GetCount())
@@ -283,7 +283,7 @@ Optional<Math::Geometry::LinearRing> Math::WKTReader::ParseLinearRing(UnsafeArra
 	{
 		hasZ = true;
 	}
-	NEW_CLASS(lr, Math::Geometry::LinearRing(this->srid, ptList.GetCount() >> 1, hasZ, hasM));
+	NEW_CLASSNN(lr, Math::Geometry::LinearRing(this->srid, ptList.GetCount() >> 1, hasZ, hasM));
 	UIntOS i;
 	UnsafeArray<Math::Coord2DDbl> ptArr = lr->GetPointList(i);
 	MemCopyNO(ptArr.Ptr(), ptList.Arr().Ptr(), ptList.GetCount() * sizeof(Double));
@@ -616,7 +616,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 		Double x;
 		Double y;
 		Double z;
-		Math::Geometry::Polyline *pl;
+		NN<Math::Geometry::Polyline> pl;
 		NN<Math::Geometry::LineString> lineString;
 		wkt += 15;
 		while (*wkt == ' ')
@@ -627,13 +627,13 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 		{
 			return nullptr;
 		}
-		NEW_CLASS(pl, Math::Geometry::Polyline(this->srid));
+		NEW_CLASSNN(pl, Math::Geometry::Polyline(this->srid));
 		while (true)
 		{
 			while (*++wkt == ' ');
 			if (*wkt != '(')
 			{
-				DEL_CLASS(pl);
+				pl.Delete();
 				return nullptr;
 			}
 			ptList.Clear();
@@ -643,13 +643,13 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 				while (*++wkt == ' ');
 				if (!NextDouble(wkt, x).SetTo(wkt) || *wkt != ' ')
 				{
-					DEL_CLASS(pl);
+					pl.Delete();
 					return nullptr;
 				}
 				while (*++wkt == ' ');
 				if (!NextDouble(wkt, y).SetTo(wkt))
 				{
-					DEL_CLASS(pl);
+					pl.Delete();
 					return nullptr;
 				}
 				while (*wkt == ' ')
@@ -657,7 +657,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 					while (*++wkt == ' ');
 					if (!NextDouble(wkt, z).SetTo(wkt))
 					{
-						DEL_CLASS(pl);
+						pl.Delete();
 						return nullptr;
 					}
 					zList.Add(z);
@@ -675,7 +675,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 				}
 				else
 				{
-					DEL_CLASS(pl);
+					pl.Delete();
 					return nullptr;
 				}
 			}
@@ -725,13 +725,13 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 			}
 			else
 			{
-				DEL_CLASS(pl);
+				pl.Delete();
 				return nullptr;
 			}
 		}
 		if (*wkt != 0)
 		{
-			DEL_CLASS(pl);
+			pl.Delete();
 			return nullptr;
 		}
 		return pl;

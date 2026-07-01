@@ -13,7 +13,7 @@ namespace IO
 		private:
 			struct FILEVIEWDATAHANDLE
 			{
-				IO::ViewFileBuffer *file;
+				NN<IO::ViewFileBuffer> file;
 				UInt64 fileLength;
 				UInt64 currentOffset;
 				Text::CStringNN fileName;
@@ -25,7 +25,7 @@ namespace IO
 			};
 
 		private:
-			FILEVIEWDATAHANDLE *fdh;
+			Optional<FILEVIEWDATAHANDLE> fdh;
 			UInt64 dataOffset;
 			UInt64 dataLength;
 

@@ -547,11 +547,12 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UIntOS lev
 	*sptru++ = '.';
 	sptru = Text::String::OrEmpty(this->tileExt)->ConcatTo(sptru);
 	NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UIntOS)(sptru - filePathU)}, false));
-	if (fd->GetDataSize() > 0)
+	NN<IO::FileStream> fs;
+	if (fd->GetDataSize() > 0 && NN<IO::StmData::FileData>::ConvertFrom(fd)->GetFileStream().SetTo(fs))
 	{
 		currTime.SetCurrTimeUTC();
 		currTime.AddDay(-7);
-		((IO::StmData::FileData*)fd.Ptr())->GetFileStream()->GetFileTimes(&dt, nullptr, nullptr);
+		fs->GetFileTimes(&dt, nullptr, nullptr);
 		if (dt.CompareTo(currTime) > 0)
 			{
 				format.Set(this->tileFormat);

@@ -522,8 +522,8 @@ Optional<UI::GUIForm> UI::GUIForm::FindForm(NN<UI::GUICore> ui, Text::CStringNN 
 	Text::StrDelNew(wptr);
 	if (hWnd == 0)
 		return nullptr;
-	UI::GUIForm *frm;
-	NEW_CLASS(frm, UI::GUIForm(ui, (ControlHandle*)hWnd));
+	NN<UI::GUIForm> frm;
+	NEW_CLASSNN(frm, UI::GUIForm(ui, (ControlHandle*)hWnd));
 	return frm;
 }
 

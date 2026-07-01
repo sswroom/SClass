@@ -16,12 +16,12 @@ Optional<IO::ParsedObject> IO::FileParser::ParseFile(NN<IO::StreamData> fd, Opti
 
 Optional<IO::ParsedObject> IO::FileParser::ParseFilePath(Text::CStringNN filePath)
 {
-	IO::PackageFile *pkg = 0;
+	Optional<IO::PackageFile> pkg = nullptr;
 	UIntOS i = filePath.LastIndexOf(IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
 		NN<Text::String> dir = Text::String::New(filePath.v, i);
-		NEW_CLASS(pkg, IO::DirectoryPackage(dir));
+		NEW_CLASSOPT(pkg, IO::DirectoryPackage(dir));
 		dir->Release();
 	}
 	Optional<IO::ParsedObject> pobj;
@@ -29,7 +29,7 @@ Optional<IO::ParsedObject> IO::FileParser::ParseFilePath(Text::CStringNN filePat
 		IO::StmData::FileData fd(filePath, false);	
 		pobj = this->ParseFile(fd, pkg, IO::ParserType::Unknown);
 	}
-	SDEL_CLASS(pkg);
+	pkg.Delete();
 	return pobj;
 }
 

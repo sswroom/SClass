@@ -38,9 +38,9 @@ Optional<IO::ConfigFile> IO::JavaProperties::ParseReader(NN<Text::UTF8Reader> re
 	UnsafeArray<UTF8Char> nameEnd;
 	UnsafeArray<UTF8Char> value;
 	UnsafeArray<UTF8Char> valueEnd;
-	IO::ConfigFile *cfg;
+	NN<IO::ConfigFile> cfg;
 	UIntOS i;
-	NEW_CLASS(cfg, IO::ConfigFile());
+	NEW_CLASSNN(cfg, IO::ConfigFile());
 	while (reader->ReadLine(buff, 1023).SetTo(valueEnd))
 	{
 		i = 0;

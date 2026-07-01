@@ -18,7 +18,7 @@
 struct IO::ConsoleWriter::ClassData
 {
 	HANDLE hand;
-	Text::Encoding *enc;
+	Optional<Text::Encoding> enc;
 	Sync::Mutex mut;
 	Bool autoFlush;
 	Bool fileOutput;
@@ -26,13 +26,13 @@ struct IO::ConsoleWriter::ClassData
 
 IO::ConsoleWriter::ConsoleWriter()
 {
-	NEW_CLASS(this->clsData, ClassData());
+	NEW_CLASSNN(this->clsData, ClassData());
 #ifdef _WIN32_WCE
 	this->clsData->hand = CreateFile(L"CON0", GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 #else
 	this->clsData->hand = GetStdHandle(STD_OUTPUT_HANDLE);
 #endif
-	this->clsData->enc = 0;
+	this->clsData->enc = nullptr;
 	this->clsData->autoFlush = false;
 	this->clsData->fileOutput = false;
 	this->bgColor = Text::StandardColor::Black;
@@ -42,29 +42,26 @@ IO::ConsoleWriter::ConsoleWriter()
 	if (ret == 0)
 	{
 		this->clsData->fileOutput = true;
-		NEW_CLASS(this->clsData->enc, Text::Encoding());
+		NEW_CLASSOPT(this->clsData->enc, Text::Encoding());
 	}
 #endif
 }
 
 IO::ConsoleWriter::~ConsoleWriter()
 {
-	if (this->clsData->enc)
-	{
-		DEL_CLASS(this->clsData->enc);
-		this->clsData->enc = 0;
-	}
+	this->clsData->enc.Delete();
 #ifdef _WIN32_WCE
 	CloseHandle(this->clsData->hand);
 #endif
-	DEL_CLASS(this->clsData);
+	this->clsData.Delete();
 }
 
 Bool IO::ConsoleWriter::Write(Text::CStringNN s)
 {
 	UInt32 outChars = 0;
 	UInt32 nChar;
-	if (this->clsData->enc == 0)
+	NN<Text::Encoding> enc;
+	if (!this->clsData->enc.SetTo(enc))
 	{
 		UIntOS strLen = Text::StrUTF8_WCharCntC(s.v, s.leng);
 		UnsafeArray<WChar> str = MemAllocArr(WChar, strLen + 1);
@@ -86,9 +83,9 @@ Bool IO::ConsoleWriter::Write(Text::CStringNN s)
 		UIntOS nBytes;
 		UnsafeArray<UInt8> tmpBuff;
 		nChar = (UInt32)s.leng;
-		nBytes = this->clsData->enc->UTF8CountBytesC(s.v, nChar);
+		nBytes = enc->UTF8CountBytesC(s.v, nChar);
 		tmpBuff = MemAllocArr(UInt8, nBytes + 1);
-		this->clsData->enc->UTF8ToBytesC(tmpBuff, s.v, nChar);
+		enc->UTF8ToBytesC(tmpBuff, s.v, nChar);
 		if (this->clsData->fileOutput)
 		{
 			WriteFile(this->clsData->hand, tmpBuff.Ptr(), (UInt32)nBytes, (LPDWORD)&outChars, 0);
@@ -114,7 +111,8 @@ Bool IO::ConsoleWriter::WriteLine(Text::CStringNN s)
 {
 	UInt32 outChars = 0;
 	UInt32 nChar;
-	if (this->clsData->enc == 0)
+	NN<Text::Encoding> enc;
+	if (!this->clsData->enc.SetTo(enc))
 	{
 		UIntOS strLen = Text::StrUTF8_WCharCntC(s.v, s.leng);
 		UnsafeArray<WChar> str = MemAllocArr(WChar, strLen + 2);
@@ -143,9 +141,9 @@ Bool IO::ConsoleWriter::WriteLine(Text::CStringNN s)
 		UIntOS nBytes;
 		UnsafeArray<UInt8> tmpBuff;
 		nChar = (UInt32)s.leng;
-		nBytes = this->clsData->enc->UTF8CountBytesC(s.v, nChar) + 1;
+		nBytes = enc->UTF8CountBytesC(s.v, nChar) + 1;
 		tmpBuff = MemAllocArr(UInt8, nBytes + 2);
-		this->clsData->enc->UTF8ToBytesC(tmpBuff, s.v, nChar);
+		enc->UTF8ToBytesC(tmpBuff, s.v, nChar);
 		if (this->clsData->fileOutput)
 		{
 			tmpBuff[nBytes - 1] = '\r';
@@ -303,18 +301,14 @@ void IO::ConsoleWriter::EnableCPFix(Bool isEnable)
 #ifndef _WIN32_WCE
 	if (isEnable || this->clsData->fileOutput)
 	{
-		if (this->clsData->enc == 0)
+		if (this->clsData->enc.IsNull())
 		{
-			NEW_CLASS(this->clsData->enc, Text::Encoding(GetConsoleOutputCP()));
+			NEW_CLASSOPT(this->clsData->enc, Text::Encoding(GetConsoleOutputCP()));
 		}
 	}
 	else
 	{
-		if (this->clsData->enc)
-		{
-			DEL_CLASS(this->clsData->enc);
-			this->clsData->enc = 0;
-		}
+		this->clsData->enc.Delete();
 	}
 #endif
 }
@@ -361,7 +355,7 @@ Bool IO::ConsoleWriter::IsFileOutput()
 
 void IO::ConsoleWriter::FixWrite(const WChar *str, UIntOS displayWidth)
 {
-	if (this->clsData->fileOutput || this->clsData->enc == 0)
+	if (this->clsData->fileOutput || this->clsData->enc.IsNull())
 	{
 		return;
 	}
@@ -425,7 +419,7 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, UIntOS displayWidth)
 
 UIntOS IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
 {
-	if (this->clsData->fileOutput || this->clsData->enc == 0)
+	if (this->clsData->fileOutput || this->clsData->enc.IsNull())
 	{
 		return Text::StrCharCnt(str);
 	}
@@ -441,8 +435,13 @@ UIntOS IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
 
 UIntOS IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
 {
+	NN<Text::Encoding> enc;
+	if (!this->clsData->enc.SetTo(enc))
+	{
+		return 1;
+	}
 	UInt8 buff[4];
-	UIntOS size = this->clsData->enc->WToBytesC(buff, &c, 1);
+	UIntOS size = enc->WToBytesC(buff, &c, 1);
 	if (size == 1 && buff[0] < 128)
 		return 1;
 

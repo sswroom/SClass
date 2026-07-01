@@ -35,14 +35,14 @@ Bool IO::TVControl::GetTVInfo(TVType tvType, TVInfo *info)
 
 Optional<IO::TVControl> IO::TVControl::CreateTVControl(NN<IO::Stream> stm, TVType tvType, Int32 monId)
 {
-	IO::TVControl *tvCtrl;
+	NN<IO::TVControl> tvCtrl;
 	switch (tvType)
 	{
 	case TVT_MDT701S:
-		NEW_CLASS(tvCtrl, IO::TVCtrl::MDT701STVControl(stm, monId));
+		NEW_CLASSNN(tvCtrl, IO::TVCtrl::MDT701STVControl(stm, monId));
 		return tvCtrl;
 	case TVT_NEC:
-		NEW_CLASS(tvCtrl, IO::TVCtrl::NECTVControl(stm, monId));
+		NEW_CLASSNN(tvCtrl, IO::TVCtrl::NECTVControl(stm, monId));
 		return tvCtrl;
 	default:
 		return nullptr;

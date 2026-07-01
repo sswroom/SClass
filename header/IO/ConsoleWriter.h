@@ -28,7 +28,7 @@ namespace IO
 
 		struct ClassData;
 	private:
-		ClassData *clsData;
+		NN<ClassData> clsData;
 		Text::StandardColor bgColor;
 
 	public:

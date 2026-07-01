@@ -1,16 +1,17 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "MyMemory.h"
-#include "Text/MyString.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/WindowZIP.h"
-#include "Sync/ThreadUtil.h"
 #include "Manage/Process.h"
 #include "Manage/ThreadInfo.h"
+#include "Sync/ThreadUtil.h"
+#include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #include <windows.h>
-#include <Shldisp.h>
+#include <shldisp.h>
 
-IO::WindowZIP::WindowZIP(const WChar *zipFile)
+IO::WindowZIP::WindowZIP(UnsafeArray<const WChar> zipFile)
 {
 	IO::Path::PathType pt = IO::Path::GetPathTypeW(zipFile);
 	this->error = true;
@@ -26,8 +27,10 @@ IO::WindowZIP::WindowZIP(const WChar *zipFile)
 	else
 	{
 		UInt8 buff[] = {80,75,5,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-		IO::FileStream fs(zipFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		if (fs.Write(buff, 22) == 22)
+		NN<Text::String> fileName = Text::String::NewNotNullSlow(zipFile);
+		IO::FileStream fs(fileName->ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		fileName->Release();
+		if (fs.Write(Data::ByteArrayR(buff, 22)) == 22)
 			this->error = false;
 	}
 	CoInitialize(0);
@@ -35,17 +38,14 @@ IO::WindowZIP::WindowZIP(const WChar *zipFile)
 
 IO::WindowZIP::~WindowZIP()
 {
-	if (this->filePath)
-	{
-		Text::StrDelNew(this->filePath);
-	}
+	Text::StrDelNew(this->filePath);
 	if (!this->error)
 	{
 		CoUninitialize();
 	}
 }
 
-Bool IO::WindowZIP::AddFile(const WChar *sourceFile)
+Bool IO::WindowZIP::AddFile(UnsafeArray<const WChar> sourceFile)
 {
 	if (this->error)
 		return false;
@@ -66,23 +66,23 @@ Bool IO::WindowZIP::AddFile(const WChar *sourceFile)
 
 	VariantInit(&vDir);
 	vDir.vt = VT_BSTR;
-	vDir.bstrVal = (BSTR)this->filePath;
+	vDir.bstrVal = (BSTR)this->filePath.Ptr();
 	hResult = pISD->NameSpace(vDir, &pToFolder);
 	if (SUCCEEDED(hResult))
 	{
 		VariantInit(&vFile);
 		vFile.vt = VT_BSTR;
-		vFile.bstrVal = (BSTR)sourceFile;
+		vFile.bstrVal = (BSTR)sourceFile.Ptr();
 
 		VariantInit(&vOpt);
 		vOpt.vt = VT_I4;
 		vOpt.lVal = 4;
 
 		Manage::Process proc;
-		Data::ArrayList<UInt32> *currThreads;
-		Data::ArrayList<UInt32> *newThreads;
-		NEW_CLASS(currThreads, Data::ArrayList<UInt32>());
-		NEW_CLASS(newThreads, Data::ArrayList<UInt32>());
+		NN<Data::ArrayListNative<UInt32>> currThreads;
+		NN<Data::ArrayListNative<UInt32>> newThreads;
+		NEW_CLASSNN(currThreads, Data::ArrayListNative<UInt32>());
+		NEW_CLASSNN(newThreads, Data::ArrayListNative<UInt32>());
 		proc.GetThreadIds(currThreads);
 		hResult = pToFolder->CopyHere(vFile, vOpt);
 		if (SUCCEEDED(hResult))
@@ -107,8 +107,9 @@ Bool IO::WindowZIP::AddFile(const WChar *sourceFile)
 					}
 				}
 			}
-
 		}
+		currThreads.Delete();
+		newThreads.Delete();
 
 		pToFolder->Release();
 	}
@@ -116,7 +117,7 @@ Bool IO::WindowZIP::AddFile(const WChar *sourceFile)
 	return succ;
 }
 
-IntOS IO::WindowZIP::GetFileList(Data::ArrayList<const WChar *> *fileList)
+IntOS IO::WindowZIP::GetFileList(NN<Data::ArrayListArr<const WChar>> fileList)
 {
 	if (this->error)
 		return false;
@@ -139,7 +140,7 @@ IntOS IO::WindowZIP::GetFileList(Data::ArrayList<const WChar *> *fileList)
 
 	VariantInit(&vDir);
 	vDir.vt = VT_BSTR;
-	vDir.bstrVal = (BSTR)this->filePath;
+	vDir.bstrVal = (BSTR)this->filePath.Ptr();
 	hResult = pISD->NameSpace(vDir, &pToFolder);
 	if (SUCCEEDED(hResult))
 	{
@@ -161,7 +162,7 @@ IntOS IO::WindowZIP::GetFileList(Data::ArrayList<const WChar *> *fileList)
 					{
 						if (SUCCEEDED(item->get_Path(&fname)))
 						{
-							k = Text::StrLastIndexOfChar(fname, '\\');
+							k = Text::StrLastIndexOfCharW(fname, '\\');
 							fileList->Add(Text::StrCopyNew(&fname[k + 1]));
 							retCnt++;
 						}
@@ -180,16 +181,16 @@ IntOS IO::WindowZIP::GetFileList(Data::ArrayList<const WChar *> *fileList)
 	return retCnt;
 }
 
-void IO::WindowZIP::FreeFileList(Data::ArrayList<const WChar *> *fileList)
+void IO::WindowZIP::FreeFileList(NN<Data::ArrayListArr<const WChar>> fileList)
 {
-	IntOS i = fileList->GetCount();
+	UIntOS i = fileList->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(fileList->RemoveAt(i));
+		Text::StrDelNew(fileList->GetItemNoCheck(i));
 	}
 }
 
-Bool IO::WindowZIP::ExtractFile(const WChar *fileName, const WChar *destPath)
+Bool IO::WindowZIP::ExtractFile(UnsafeArray<const WChar> fileName, UnsafeArray<const WChar> destPath)
 {
 	if (this->error)
 		return false;
@@ -212,16 +213,16 @@ Bool IO::WindowZIP::ExtractFile(const WChar *fileName, const WChar *destPath)
 
 	VariantInit(&vDir);
 	vDir.vt = VT_BSTR;
-	vDir.bstrVal = (BSTR)this->filePath;
+	vDir.bstrVal = (BSTR)this->filePath.Ptr();
 	hResult = pISD->NameSpace(vDir, &pToFolder);
 	if (SUCCEEDED(hResult))
 	{
 		vDir.vt = VT_BSTR;
-		vDir.bstrVal = (BSTR)destPath;
+		vDir.bstrVal = (BSTR)destPath.Ptr();
 		hResult = pISD->NameSpace(vDir, &pDestFolder);
 		if (SUCCEEDED(hResult))
 		{
-			if (SUCCEEDED(pToFolder->ParseName((BSTR)fileName, &item)))
+			if (SUCCEEDED(pToFolder->ParseName((BSTR)fileName.Ptr(), &item)))
 			{
 				VariantInit(&vOpt);
 				vOpt.vt = VT_I4;
@@ -232,10 +233,10 @@ Bool IO::WindowZIP::ExtractFile(const WChar *fileName, const WChar *destPath)
 				vFile.pdispVal = item;
 
 				Manage::Process proc;
-				Data::ArrayList<UInt32> *currThreads;
-				Data::ArrayList<UInt32> *newThreads;
-				NEW_CLASS(currThreads, Data::ArrayList<UInt32>());
-				NEW_CLASS(newThreads, Data::ArrayList<UInt32>());
+				NN<Data::ArrayListNative<UInt32>> currThreads;
+				NN<Data::ArrayListNative<UInt32>> newThreads;
+				NEW_CLASSNN(currThreads, Data::ArrayListNative<UInt32>());
+				NEW_CLASSNN(newThreads, Data::ArrayListNative<UInt32>());
 				proc.GetThreadIds(currThreads);
 				hResult = pDestFolder->CopyHere(vFile, vOpt);
 				if (SUCCEEDED(hResult))
@@ -257,8 +258,8 @@ Bool IO::WindowZIP::ExtractFile(const WChar *fileName, const WChar *destPath)
 
 					succ = true;
 				}
-				DEL_CLASS(currThreads);
-				DEL_CLASS(newThreads);
+				currThreads.Delete();
+				newThreads.Delete();
 				if (item)
 				{
 					item->Release();

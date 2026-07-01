@@ -24,7 +24,7 @@ UI::DObj::DynamicOverlayDObj::DynamicOverlayDObj(NN<Media::DrawEngine> deng, Tex
 	{
 		this->bmp2 = this->deng->LoadImage(fileName2.OrEmpty());
 	}
-	NEW_CLASS(this->rnd, Data::RandomOS());
+	NEW_CLASSNN(this->rnd, Data::RandomOS());
 	this->alpha = this->rnd->NextDouble();
 	this->a = 0;
 }
@@ -42,6 +42,7 @@ UI::DObj::DynamicOverlayDObj::~DynamicOverlayDObj()
 		this->deng->DeleteImage(img);
 		this->bmp2 = nullptr;
 	}
+	this->rnd.Delete();
 }
 
 Bool UI::DObj::DynamicOverlayDObj::IsChanged()

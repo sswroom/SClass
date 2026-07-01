@@ -178,10 +178,10 @@ void Manage::ThreadContextARM::SetFrameAddr(UIntOS frameAddr)
 	((CONTEXT_TYPE*)this->context)->Lr = frameAddr;
 }
 
-Manage::ThreadContext *Manage::ThreadContextARM::Clone()
+NN<Manage::ThreadContext> Manage::ThreadContextARM::Clone()
 {
-	Manage::ThreadContextARM *ctx;
-	NEW_CLASS(ctx, Manage::ThreadContextARM(this->procId, this->threadId, this->context));
+	NN<Manage::ThreadContextARM> ctx;
+	NEW_CLASSNN(ctx, Manage::ThreadContextARM(this->procId, this->threadId, this->context));
 	return ctx;
 }
 

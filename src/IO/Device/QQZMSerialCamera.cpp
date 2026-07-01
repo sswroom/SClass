@@ -13,7 +13,7 @@
 UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(AnyType userObj)
 {
 	NN<IO::Device::QQZMSerialCamera> me = userObj.GetNN<IO::Device::QQZMSerialCamera>();
-	Data::DateTime *dt;
+	NN<Data::DateTime> dt;
 	UInt8 cmdBuff[10];
 	UInt8 buff[2048];
 	UIntOS buffSize = 0;
@@ -21,7 +21,7 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(AnyType userObj)
 	UIntOS i;
 	UnsafeArray<UInt8> imgBuff;
 	me->threadRunning = true;
-	NEW_CLASS(dt, Data::DateTime());
+	NEW_CLASSNN(dt, Data::DateTime());
 	while (!me->threadToStop)
 	{
 		recvSize = me->stm->Read(Data::ByteArray(&buff[buffSize], 2048 - buffSize));
@@ -167,7 +167,7 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(AnyType userObj)
 			}
 		}
 	}
-	DEL_CLASS(dt);
+	dt.Delete();
 	me->threadRunning = false;
 	return 0;
 }

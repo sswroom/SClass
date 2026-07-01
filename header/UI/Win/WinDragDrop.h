@@ -13,7 +13,7 @@ namespace UI
 		{
 		private:
 			IDataObject *pDataObj;
-			Data::StringUTF8Map<FORMATETC *> *dataMap;
+			Optional<Data::StringUTF8Map<FORMATETC *>> dataMap;
 
 			void LoadData();
 		public:
@@ -23,7 +23,7 @@ namespace UI
 			virtual UIntOS GetCount();
 			virtual UnsafeArrayOpt<const UTF8Char> GetName(UIntOS index);
 			virtual Bool GetDataText(UnsafeArray<const UTF8Char> name, NN<Text::StringBuilderUTF8> sb);
-			virtual IO::Stream *GetDataStream(UnsafeArray<const UTF8Char> name);
+			virtual Optional<IO::Stream> GetDataStream(UnsafeArray<const UTF8Char> name);
 		};
 
 		class WinDragDrop : public IDropTarget

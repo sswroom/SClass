@@ -59,10 +59,10 @@ Text::CString IO::USBInfo::GetDispName()
 	return this->clsData->dispName;
 }
 
-UIntOS USBInfo_AppendDevices(NN<Data::ArrayList<IO::USBInfo*>> usbList, const Char *clsName)
+UIntOS USBInfo_AppendDevices(NN<Data::ArrayListNN<IO::USBInfo>> usbList, const Char *clsName)
 {
 	IO::USBInfo::ClassData clsData;
-	IO::USBInfo *usb;
+	NN<IO::USBInfo> usb;
 //	Text::StringBuilderUTF8 sb;
 	UIntOS ret = 0;
 
@@ -108,7 +108,7 @@ UIntOS USBInfo_AppendDevices(NN<Data::ArrayList<IO::USBInfo*>> usbList, const Ch
 					clsData.idVendor = (UInt16)Data::MacNumber((CFNumberRef)idVendor).GetInt32();
 					clsData.idProduct = (UInt16)Data::MacNumber((CFNumberRef)idProduct).GetInt32();
 					clsData.bcdDevice = (UInt16)Data::MacNumber((CFNumberRef)bcdDevice).GetInt32();
-					NEW_CLASS(usb, IO::USBInfo(&clsData));
+					NEW_CLASSNN(usb, IO::USBInfo(clsData));
 					usbList->Add(usb);
 					ret++;
 				}
@@ -122,7 +122,7 @@ UIntOS USBInfo_AppendDevices(NN<Data::ArrayList<IO::USBInfo*>> usbList, const Ch
 	return ret;
 }
 
-UIntOS IO::USBInfo::GetUSBList(NN<Data::ArrayList<USBInfo*>> usbList)
+UIntOS IO::USBInfo::GetUSBList(NN<Data::ArrayListNN<USBInfo>> usbList)
 {
 	UIntOS ret = 0;
 	ret += USBInfo_AppendDevices(usbList, kIOUSBDeviceClassName);

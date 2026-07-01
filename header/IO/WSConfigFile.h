@@ -7,7 +7,7 @@ namespace IO
 	class WSConfigFile
 	{
 	public:
-		static IO::ConfigFile *Parse(Text::CStringNN fileName);
+		static Optional<IO::ConfigFile> Parse(Text::CStringNN fileName);
 	};
 }
 #endif

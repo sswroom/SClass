@@ -14,7 +14,7 @@ namespace IO
 		private:
 			Net::SocketUtil::AddressInfo addr;
 			NN<Net::TCPClientFactory> clif;
-			Data::ArrayListNN<IO::CameraControl::FileInfo> *fileList;
+			Optional<Data::ArrayListNN<IO::CameraControl::FileInfo>> fileList;
 
 			void GetMediaList();
 			Bool GetInfo(NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListStringNN> valueList);			

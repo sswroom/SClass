@@ -8,26 +8,28 @@
 
 void IO::StmData::FileData::ReopenFile()
 {
-	if (fdh == 0)
+	NN<FILEDATAHANDLE> fdh;
+	if (!this->fdh.SetTo(fdh))
 		return;
 	Sync::MutexUsage mutUsage(fdh->mut);
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fdh->filePath->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NN<IO::FileStream> fs;
+	NEW_CLASSNN(fs, IO::FileStream(fdh->filePath->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
-		DEL_CLASS(fs);
+		fs.Delete();
 	}
 	else
 	{
-		DEL_CLASS(fdh->file);
+		fdh->file.Delete();
 		fdh->file = fs;
 		fdh->currentOffset = fs->GetPosition();
 	}
 	mutUsage.EndUse();
 }
 
-IO::StmData::FileData::FileData(const IO::StmData::FileData *fd, UInt64 offset, UInt64 length)
+IO::StmData::FileData::FileData(NN<const IO::StmData::FileData> fd, UInt64 offset, UInt64 length)
 {
+	this->fdh = nullptr;
 	dataOffset = offset + fd->dataOffset;
 	UInt64 endOffset = fd->dataOffset + fd->dataLength;
 	dataLength = length;
@@ -40,30 +42,37 @@ IO::StmData::FileData::FileData(const IO::StmData::FileData *fd, UInt64 offset, 
 	{
 		dataLength = endOffset - dataOffset;
 	}
-	fdh = fd->fdh;
-	fdh->objectCnt++;
-	this->fdn = fd->fdn;
-	if (this->fdn)
+	NN<FILEDATAHANDLE> fdh;
+	if (fd->fdh.SetTo(fdh))
 	{
-		Sync::Interlocked::IncrementU32(this->fdn->objectCnt);
+		this->fdh = fdh;
+		fdh->objectCnt++;
+	}
+	this->fdn = fd->fdn;
+	NN<FILEDATANAME> fdn;
+	if (this->fdn.SetTo(fdn))
+	{
+		Sync::Interlocked::IncrementU32(fdn->objectCnt);
 	}
 }
 
 IO::StmData::FileData::FileData(NN<Text::String> fname, Bool deleteOnClose)
 {
-	fdh = 0;
-	IO::FileStream *fs;
-	this->fdn = 0;
-	NEW_CLASS(fs, IO::FileStream(fname->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	this->fdh = nullptr;
+	NN<IO::FileStream> fs;
+	this->fdn = nullptr;
+	NEW_CLASSNN(fs, IO::FileStream(fname->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
-		DEL_CLASS(fs);
+		fs.Delete();
 		this->dataLength = 0;
 		this->dataOffset = 0;
 	}
 	else
 	{
-		NEW_CLASS(fdh, IO::StmData::FileData::FILEDATAHANDLE());
+		NN<FILEDATAHANDLE> fdh;
+		NEW_CLASSNN(fdh, IO::StmData::FileData::FILEDATAHANDLE());
+		this->fdh = fdh;
 		fdh->file = fs;
 		fdh->filePath = fname->Clone();
 		dataLength = fdh->fileLength = fs->GetLength();
@@ -80,19 +89,21 @@ IO::StmData::FileData::FileData(NN<Text::String> fname, Bool deleteOnClose)
 
 IO::StmData::FileData::FileData(Text::CStringNN fname, Bool deleteOnClose)
 {
-	fdh = 0;
-	IO::FileStream *fs;
-	this->fdn = 0;
-	NEW_CLASS(fs, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	this->fdh = nullptr;
+	NN<IO::FileStream> fs;
+	this->fdn = nullptr;
+	NEW_CLASSNN(fs, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
-		DEL_CLASS(fs);
+		fs.Delete();
 		this->dataLength = 0;
 		this->dataOffset = 0;
 	}
 	else
 	{
-		NEW_CLASS(fdh, IO::StmData::FileData::FILEDATAHANDLE());
+		NN<FILEDATAHANDLE> fdh;
+		NEW_CLASSNN(fdh, IO::StmData::FileData::FILEDATAHANDLE());
+		this->fdh = fdh;
 		fdh->file = fs;
 		fdh->filePath = Text::String::New(fname.v, fname.leng);
 		dataLength = fdh->fileLength = fs->GetLength();
@@ -115,7 +126,8 @@ IO::StmData::FileData::~FileData()
 
 UIntOS IO::StmData::FileData::GetRealData(UInt64 offset, UIntOS length, Data::ByteArray buffer)
 {
-	if (fdh == 0)
+	NN<FILEDATAHANDLE> fdh;
+	if (!this->fdh.SetTo(fdh))
 		return 0;
 	Sync::MutexUsage mutUsage(fdh->mut);
 	if (fdh->currentOffset != dataOffset + offset)
@@ -155,42 +167,47 @@ UInt64 IO::StmData::FileData::GetDataSize() const
 
 Text::CString IO::StmData::FileData::GetShortName() const
 {
-	if (this->fdn)
-		return this->fdn->fileName;
-	if (this->fdh)
-		return this->fdh->fileName;
+	NN<FILEDATANAME> fdn;
+	if (this->fdn.SetTo(fdn))
+		return fdn->fileName;
+	NN<FILEDATAHANDLE> fdh;
+	if (this->fdh.SetTo(fdh))
+		return fdh->fileName;
 	return nullptr;
 }
 
 NN<Text::String> IO::StmData::FileData::GetFullName() const
 {
-	if (this->fdn)
-		return this->fdn->fullName;
-	if (this->fdh)
-		return this->fdh->fullName;
+	NN<FILEDATANAME> fdn;
+	if (this->fdn.SetTo(fdn))
+		return fdn->fullName;
+	NN<FILEDATAHANDLE> fdh;
+	if (this->fdh.SetTo(fdh))
+		return fdh->fullName;
 	return Text::String::NewEmpty();
 }
 
 void IO::StmData::FileData::SetFullName(Text::CStringNN fullName)
 {
-	if (this->fdn)
+	NN<FILEDATANAME> fdn;
+	if (this->fdn.SetTo(fdn))
 	{
-		if (Sync::Interlocked::DecrementU32(this->fdn->objectCnt) == 0)
+		if (Sync::Interlocked::DecrementU32(fdn->objectCnt) == 0)
 		{
-			this->fdn->fullName->Release();
-			MemFree(this->fdn);
+			fdn->fullName->Release();
+			MemFreeNN(fdn);
 		}
-		this->fdn = 0;
+		this->fdn = nullptr;
 	}
 	if (fullName.leng > 0)
 	{
 		UIntOS i;
-		this->fdn = MemAlloc(FILEDATANAME, 1);
-		this->fdn->objectCnt = 1;
-		this->fdn->fullName = Text::String::New(fullName);
-		i = this->fdn->fullName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-		this->fdn->fileName.v = &this->fdn->fullName->v[i + 1];
-		this->fdn->fileName.leng = (UIntOS)(this->fdn->fullName->GetEndPtr() - this->fdn->fileName.v.Ptr());
+		this->fdn = fdn = MemAllocNN(FILEDATANAME);
+		fdn->objectCnt = 1;
+		fdn->fullName = Text::String::New(fullName);
+		i = fdn->fullName->LastIndexOf(IO::Path::PATH_SEPERATOR);
+		fdn->fileName.v = &fdn->fullName->v[i + 1];
+		fdn->fileName.leng = (UIntOS)(fdn->fullName->GetEndPtr() - fdn->fileName.v.Ptr());
 	}
 }
 
@@ -202,7 +219,7 @@ UnsafeArrayOpt<const UInt8> IO::StmData::FileData::GetPointer() const
 NN<IO::StreamData> IO::StmData::FileData::GetPartialData(UInt64 offset, UInt64 length)
 {
 	NN<IO::StmData::FileData> data;
-	NEW_CLASSNN(data, IO::StmData::FileData(this, offset, length));
+	NEW_CLASSNN(data, IO::StmData::FileData(*this, offset, length));
 	return data;
 }
 
@@ -213,8 +230,9 @@ Bool IO::StmData::FileData::IsFullFile() const
 
 NN<Text::String> IO::StmData::FileData::GetFullFileName() const
 {
-	if (this->fdh)
-		return this->fdh->fullName;
+	NN<FILEDATAHANDLE> fdh;
+	if (this->fdh.SetTo(fdh))
+		return fdh->fullName;
 	return Text::String::NewEmpty();
 }
 
@@ -225,40 +243,43 @@ Bool IO::StmData::FileData::IsLoading() const
 
 UIntOS IO::StmData::FileData::GetSeekCount() const
 {
-	if (this->fdh)
-		return this->fdh->seekCnt;
+	NN<FILEDATAHANDLE> fdh;
+	if (this->fdh.SetTo(fdh))
+		return fdh->seekCnt;
 	return 0;
 }
 
-IO::FileStream *IO::StmData::FileData::GetFileStream()
+Optional<IO::FileStream> IO::StmData::FileData::GetFileStream()
 {
-	if (fdh)
+	NN<FILEDATAHANDLE> fdh;
+	if (this->fdh.SetTo(fdh))
 	{
 		return fdh->file;
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool IO::StmData::FileData::IsError()
 {
-	return fdh == 0;
+	return this->fdh.IsNull();
 }
 
 void IO::StmData::FileData::Close()
 {
-	if (fdh)
+	NN<FILEDATAHANDLE> fdh;
+	if (this->fdh.SetTo(fdh))
 	{
 		if (--(fdh->objectCnt) == 0)
 		{
-			DEL_CLASS(fdh->file);
+			fdh->file.Delete();
 			if (fdh->deleteOnClose)
 			{
 				IO::Path::DeleteFile(fdh->fullName->v);
 			}
 			fdh->fullName->Release();
 			fdh->filePath->Release();
-			DEL_CLASS(fdh);
+			fdh.Delete();
 		}
 	}
-	fdh = 0;
+	this->fdh = nullptr;
 }

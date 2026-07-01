@@ -670,7 +670,7 @@ void IO::SPackageFile::PauseCommit(Bool pauseCommit)
 
 Optional<IO::StreamData> IO::SPackageFile::CreateStreamData(Text::CStringNN fileName)
 {
-	IO::StreamData *fd = 0;
+	NN<IO::StreamData> fd;
 	Sync::MutexUsage mutUsage(this->mut);
 	NN<FileInfo> file;
 	if (this->fileMap.Get(fileName).SetTo(file))
@@ -679,7 +679,8 @@ Optional<IO::StreamData> IO::SPackageFile::CreateStreamData(Text::CStringNN file
 		this->writeMode = false;
 		this->stm->SeekFromBeginning(file->ofst);
 		this->stm->Read(fileBuff);
-		NEW_CLASS(fd, IO::StmData::MemoryDataCopy(fileBuff));
+		NEW_CLASSNN(fd, IO::StmData::MemoryDataCopy(fileBuff));
+		return fd;
 	}
-	return fd;
+	return nullptr;
 }

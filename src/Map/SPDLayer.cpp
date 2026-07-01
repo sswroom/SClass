@@ -24,7 +24,7 @@ Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 	UTF8Char fname[256];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	IO::BufferedInputStream *bstm;
+	NN<IO::BufferedInputStream> bstm;
 	sptr = layerName.ConcatTo(fname);
 	if (Text::StrEqualsICaseC(&sptr[-4], 4, UTF8STRC(".SPD")))
 	{
@@ -45,7 +45,7 @@ Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".spb"));
 	{
 		IO::FileStream file({fname, (UIntOS)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
+		NEW_CLASSNN(bstm, IO::BufferedInputStream(file, 65536));
 		if (!file.IsError())
 		{
 			bstm->Read(Data::ByteArray((UInt8*)&this->nblks, 4));
@@ -64,7 +64,7 @@ Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 		{
 			i = (UIntOS)file.GetErrCode();
 		}
-		DEL_CLASS(bstm);
+		bstm.Delete();
 	}
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".spi"));
@@ -99,7 +99,7 @@ Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 		sptr2 = Text::StrConcatC(sptr, UTF8STRC(".sps"));
 		{
 			IO::FileStream file({fname, (UIntOS)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
-			NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
+			NEW_CLASSNN(bstm, IO::BufferedInputStream(file, 65536));
 			if (!file.IsError())
 			{
 				UInt32 buff[4];
@@ -116,7 +116,7 @@ Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 			{
 				missFile = true;
 			}
-			DEL_CLASS(bstm);
+			bstm.Delete();
 		}
 	}
 }
@@ -174,15 +174,15 @@ UIntOS Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Op
 	l = 0;
 	if (nameArr.IsNotNull())
 	{
-		Data::ArrayListObj<UTF16Char *> *tmpArr;
-		NEW_CLASS(tmpArr, Data::ArrayListObj<UTF16Char *>());
-		nameArr.SetNoCheck((NameArray*)tmpArr);
+		NN<Data::ArrayListObj<UTF16Char *>> tmpArr;
+		NEW_CLASSNN(tmpArr, Data::ArrayListObj<UTF16Char *>());
+		nameArr.SetNoCheck((NameArray*)tmpArr.Ptr());
 		UTF8Char fileName[256];
 		UnsafeArray<UTF8Char> sptr;
-		IO::FileStream *cis;
+		NN<IO::FileStream> cis;
 		sptr = Text::StrConcat(fileName, this->layerName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".sps"));
-		NEW_CLASS(cis, IO::FileStream({fileName, (UIntOS)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASSNN(cis, IO::FileStream({fileName, (UIntOS)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		
 		while (k < this->nblks)
 		{
@@ -215,7 +215,7 @@ UIntOS Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Op
 			}
 			k++;
 		}
-		DEL_CLASS(cis);
+		cis.Delete();
 	}
 	else
 	{
@@ -294,15 +294,15 @@ UIntOS Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optio
 	l = 0;
 	if (nameArr.IsNotNull())
 	{
-		Data::ArrayListObj<UTF16Char *> *tmpArr;
-		NEW_CLASS(tmpArr, Data::ArrayListObj<UTF16Char *>());
-		nameArr.SetNoCheck((NameArray*)tmpArr);
+		NN<Data::ArrayListObj<UTF16Char *>> tmpArr;
+		NEW_CLASSNN(tmpArr, Data::ArrayListObj<UTF16Char *>());
+		nameArr.SetNoCheck((NameArray*)tmpArr.Ptr());
 		UTF8Char fileName[256];
 		UnsafeArray<UTF8Char> sptr;
-		IO::FileStream *cis;
+		NN<IO::FileStream> cis;
 		sptr = Text::StrConcat(fileName, this->layerName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".sps"));
-		NEW_CLASS(cis, IO::FileStream({fileName, (UIntOS)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASSNN(cis, IO::FileStream({fileName, (UIntOS)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		
 		while ((UIntOS)k < this->nblks)
 		{
@@ -344,7 +344,7 @@ UIntOS Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optio
 			}
 			k++;
 		}
-		DEL_CLASS(cis);
+		cis.Delete();
 	}
 	else
 	{
@@ -556,8 +556,8 @@ Optional<Math::Geometry::Vector2D> Map::SPDLayer::GetNewVectorById(NN<Map::GetOb
 
 	if (this->lyrType == Map::DRAW_LAYER_POINT)
 	{
-		Math::Geometry::Point *pt;
-		NEW_CLASS(pt, Math::Geometry::Point(4326, points[0] / 200000.0, points[1] / 200000.0));
+		NN<Math::Geometry::Point> pt;
+		NEW_CLASSNN(pt, Math::Geometry::Point(4326, points[0] / 200000.0, points[1] / 200000.0));
 		if (ptOfsts)
 		{
 			MemFree(ptOfsts);
@@ -570,9 +570,9 @@ Optional<Math::Geometry::Vector2D> Map::SPDLayer::GetNewVectorById(NN<Map::GetOb
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYLINE)
 	{
-		Math::Geometry::Polyline *pl;
+		NN<Math::Geometry::Polyline> pl;
 		NN<Math::Geometry::LineString> lineString;
-		NEW_CLASS(pl, Math::Geometry::Polyline(4326));
+		NEW_CLASSNN(pl, Math::Geometry::Polyline(4326));
 		UIntOS i = 0;
 		UIntOS j;
 		UIntOS k;
@@ -604,9 +604,9 @@ Optional<Math::Geometry::Vector2D> Map::SPDLayer::GetNewVectorById(NN<Map::GetOb
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYGON)
 	{
-		Math::Geometry::Polygon *pg;
+		NN<Math::Geometry::Polygon> pg;
 		NN<Math::Geometry::LinearRing> lr;
-		NEW_CLASS(pg, Math::Geometry::Polygon(4326));
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(4326));
 		UIntOS i = 0;
 		UIntOS j;
 		UIntOS k;

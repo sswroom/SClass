@@ -15,7 +15,7 @@ UIntOS IO::DeviceManager::QueryHIDDevices(NN<Data::ArrayListNN<IO::DeviceInfo>> 
 	UIntOS retCnt = 0;
 /*	UInt8 hidGuid[] = {0xb2, 0x55, 0x1e, 0x4d, 0x6f, 0xf1, 0xcf, 0x11, 0x88, 0xcb, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30};
 	HDEVINFO devInfo = SetupDiGetClassDevs((GUID*)hidGuid, 0, 0, DIGCF_DEVICEINTERFACE | DIGCF_PRESENT);
-	IO::DeviceInfo *dev;
+	NN<IO::DeviceInfo> dev;
 
 	if (devInfo)
 	{
@@ -26,7 +26,7 @@ UIntOS IO::DeviceManager::QueryHIDDevices(NN<Data::ArrayListNN<IO::DeviceInfo>> 
 			data.cbSize = sizeof(data);
 			if (SetupDiEnumDeviceInterfaces(devInfo, 0, (GUID*)hidGuid, i, &data))
 			{
-				NEW_CLASS(dev, IO::DeviceInfo(devInfo, &data));
+				NEW_CLASSNN(dev, IO::DeviceInfo(devInfo, &data));
 				devList->Add(dev);
 				retCnt++;
 				i++;
