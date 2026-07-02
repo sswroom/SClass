@@ -8,7 +8,7 @@ namespace Net
 	class NTPClient
 	{
 	private:
-		Net::UDPServer *svr;
+		NN<Net::UDPServer> svr;
 		NN<Net::SocketFactory> sockf;
 		Sync::Mutex mut;
 		Sync::Event evt;

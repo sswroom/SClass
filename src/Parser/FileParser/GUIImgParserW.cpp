@@ -38,14 +38,14 @@ struct Parser::FileParser::GUIImgParser::ClassData
 
 Parser::FileParser::GUIImgParser::GUIImgParser()
 {
-	NEW_CLASS(this->clsData, ClassData());
+	NEW_CLASSNN(this->clsData, ClassData());
 	Gdiplus::GdiplusStartup((ULONG_PTR*)&this->clsData->gdip, &this->clsData->gdiplusStartupInput, NULL);
 }
 
 Parser::FileParser::GUIImgParser::~GUIImgParser()
 {
 	Gdiplus::GdiplusShutdown(this->clsData->gdip);
-	DEL_CLASS(this->clsData);
+	this->clsData.Delete();
 }
 
 Int32 Parser::FileParser::GUIImgParser::GetName()
@@ -79,7 +79,7 @@ IO::ParserType Parser::FileParser::GUIImgParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	NN<IO::StreamDataStream> stm;
-	Win32::COMStream *cstm;
+	NN<Win32::COMStream> cstm;
 	Int32 isImage = 0;
 	if (ReadUInt32(&hdr[0]) == 0x474e5089 && ReadUInt32(&hdr[4]) == 0x0a1a0a0d)
 	{
@@ -100,13 +100,13 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 	if (isImage == 0)
 		return nullptr;
 
-	Media::ImageList *imgList = 0;
+	Optional<Media::ImageList> imgList = nullptr;
 	NN<Media::ImageList> nnimgList;
 
 	Sync::MutexUsage mutUsage(this->clsData->mut);
 	NEW_CLASSNN(stm, IO::StreamDataStream(fd));
-	NEW_CLASS(cstm, Win32::COMStream(stm));
-	Gdiplus::Bitmap *bmp = Gdiplus::Bitmap::FromStream(cstm, 0);
+	NEW_CLASSNN(cstm, Win32::COMStream(stm));
+	Gdiplus::Bitmap *bmp = Gdiplus::Bitmap::FromStream(cstm.Ptr(), 0);
 	if (bmp)
 	{
 		Gdiplus::BitmapData bmpd;
@@ -211,8 +211,9 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 					MemCopyNO(nnpal.Ptr(), &pal->Entries, pal->Count * 4);
 				}
 				MemFree(pal);
-				NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
-				imgList->AddImage(img, 0);
+				NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
+				imgList = nnimgList;
+				nnimgList->AddImage(img, 0);
 				img->info.hdpi = bmp->GetHorizontalResolution();
 				img->info.vdpi = bmp->GetVerticalResolution();
 			}
@@ -236,10 +237,10 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 				{
 					Media::JPEGFile::ParseJPEGHeader(fd, img, nnimgList, this->parsers);
 				}
-				imgList = nnimgList.Ptr();
+				imgList = nnimgList;
 			}
 		}
-		if (isImage == 3)
+		if (isImage == 3 && imgList.SetTo(nnimgList))
 		{
 			GUID guids[10];
 			UInt32 cnt = bmp->GetFrameDimensionsCount();
@@ -262,7 +263,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 					UnsafeArray<UInt8> imgDest = img->data;
 					ImageCopy_ImgCopy(imgSrc, imgDest.Ptr(), bmpd.Width << 2, bmpd.Height, bmpd.Stride, bmpd.Width << 2);
 					bmp->UnlockBits(&bmpd);
-					imgList->AddImage(img, 500);
+					nnimgList->AddImage(img, 500);
 					img->info.hdpi = bmp->GetHorizontalResolution();
 					img->info.vdpi = bmp->GetVerticalResolution();
 				}
@@ -271,12 +272,12 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 		}
 		delete bmp;
 	}
-	DEL_CLASS(cstm);
+	cstm.Delete();
 	stm.Delete();
 	mutUsage.EndUse();
 
 	NN<Media::StaticImage> img;
-	if (targetType != IO::ParserType::ImageList && nnimgList.Set(imgList) && imgList->GetCount() == 1 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage2(0, 0)).SetTo(img))
+	if (targetType != IO::ParserType::ImageList && imgList.SetTo(nnimgList) && nnimgList->GetCount() == 1 && Optional<Media::StaticImage>::ConvertFrom(nnimgList->GetImage2(0, 0)).SetTo(img))
 	{
 		Math::Coord2DDbl min;
 		Math::Coord2DDbl max;
@@ -284,7 +285,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 		NN<Media::EXIFData> exif;
 		if (img->exif.SetTo(exif) && exif->GetGeoBounds(img->info.dispSize, srid, min.x, min.y, max.x, max.y))
 		{
-			Map::VectorLayer *lyr;
+			NN<Map::VectorLayer> lyr;
 			NN<Math::Geometry::VectorImage> vimg;
 			NN<Math::CoordinateSystem> csys;
 			if (srid == 0)
@@ -296,7 +297,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			{
 				csys = Math::CoordinateSystemManager::SRCreateCSysOrDef(srid);
 			}
-			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, nullptr));
+			NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, nullptr));
 			Data::ArrayListNN<Media::StaticImage> prevList;
 			Media::ImagePreviewTool::CreatePreviews(nnimgList, prevList, 640);
 			Media::SharedImage simg(nnimgList, prevList);
@@ -413,12 +414,12 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 		}
 		if (valid && rotX == 0 && rotY == 0)
 		{
-			Map::VectorLayer *lyr;
+			NN<Map::VectorLayer> lyr;
 			NN<Math::Geometry::VectorImage> vimg;
 			NN<Media::SharedImage> simg;
 			NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl(xCoord + xPxSize * UIntOS2Double(img->info.dispSize.x) * 0.5, yCoord + yPxSize * UIntOS2Double(img->info.dispSize.y) * 0.5));
 			
-			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, nullptr));
+			NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, nullptr));
 			Data::ArrayListNN<Media::StaticImage> prevList;
 			Media::ImagePreviewTool::CreatePreviews(nnimgList, prevList, 640);
 			NEW_CLASSNN(simg, Media::SharedImage(nnimgList, prevList));

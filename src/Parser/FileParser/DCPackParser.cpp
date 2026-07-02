@@ -51,10 +51,10 @@ Optional<IO::ParsedObject> Parser::FileParser::DCPackParser::ParseFileHdr(NN<IO:
 	hdrEnd = ReadUInt32(&hdr[56]) << 6;
 	fileOfst = 0;
 	hdrOfst = 64;
-	IO::VirtualPackageFile *pf;
+	NN<IO::VirtualPackageFile> pf;
 	UInt8 buff[64];
 	Text::Encoding enc(932);
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 
 	while (hdrOfst < hdrEnd)
 	{
@@ -63,7 +63,7 @@ Optional<IO::ParsedObject> Parser::FileParser::DCPackParser::ParseFileHdr(NN<IO:
 		thisSize = ReadUInt32(&buff[56]);
 		if (thisOfst != fileOfst || thisOfst != ReadUInt32(&buff[52]))
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(name, buff, 48, 0);

@@ -174,6 +174,11 @@ Int64 Net::Email::FileEmailStore::NextEmailId()
 
 Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NN<const Net::Email::SMTPServer::MailStatus> mail)
 {
+	NN<IO::MemoryStream> dataStm;
+	if (!mail->dataStm.SetTo(dataStm))
+	{
+		return false;
+	}
 	Data::DateTime currTime;
 	NN<EmailInfo> email;
 	UIntOS i;
@@ -190,7 +195,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 	email->fromAddr = Text::String::OrEmpty(mail->mailFrom)->Clone();
 	email->recvTime = Data::DateTimeUtil::GetCurrTimeMillis();
 	email->isDeleted = false;
-	email->fileSize = (UIntOS)mail->dataStm->GetLength();
+	email->fileSize = (UIntOS)dataStm->GetLength();
 
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -245,7 +250,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 		UIntOS buffSize;
 		UnsafeArray<UInt8> buff;
 		IO::FileStream fs(file->fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		buff = mail->dataStm->GetBuff(buffSize);
+		buff = dataStm->GetBuff(buffSize);
 		fs.Write(sb.ToByteArray());
 		fs.Write(Data::ByteArrayR(buff, buffSize));
 	}

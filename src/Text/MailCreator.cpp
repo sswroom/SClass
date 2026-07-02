@@ -179,8 +179,8 @@ Optional<Text::MIMEObject> Text::MailCreator::ParseContentHTML(UnsafeArray<const
 	}
 	else
 	{
-		Text::MIMEObj::MultipartMIMEObj *mpart;
-		NEW_CLASS(mpart, Text::MIMEObj::MultipartMIMEObj(CSTR("multipart/related"), nullptr));
+		NN<Text::MIMEObj::MultipartMIMEObj> mpart;
+		NEW_CLASSNN(mpart, Text::MIMEObj::MultipartMIMEObj(CSTR("multipart/related"), nullptr));
 		NEW_CLASSNN(obj, Text::MIMEObj::HTMLMIMEObj(sbc.ToString(), sbc.GetLength(), 65001));
 		i = mpart->AddPart(obj);
 		Text::CStringNN contType = obj->GetContentType();
@@ -518,7 +518,7 @@ NN<Text::MIMEObj::MailMessage> Text::MailCreator::CreateMail()
 	}
 	if (this->attachName.GetCount() > 0)
 	{
-		Text::MIMEObj::MultipartMIMEObj *mpart;
+		NN<Text::MIMEObj::MultipartMIMEObj> mpart;
 		NN<Text::MIMEObject> obj;
 		Text::StringBuilderUTF8 sbc;
 		Text::CStringNN contType;
@@ -527,7 +527,7 @@ NN<Text::MIMEObj::MailMessage> Text::MailCreator::CreateMail()
 		UIntOS k;
 		UIntOS l;
 		NN<Text::String> fname;
-		NEW_CLASS(mpart, Text::MIMEObj::MultipartMIMEObj(CSTR("multipart/mixed"), CSTR("This is a multi-part message in MIME format.")));
+		NEW_CLASSNN(mpart, Text::MIMEObj::MultipartMIMEObj(CSTR("multipart/mixed"), CSTR("This is a multi-part message in MIME format.")));
 		if (this->content.SetTo(obj))
 		{
 			i = mpart->AddPart(obj->Clone());

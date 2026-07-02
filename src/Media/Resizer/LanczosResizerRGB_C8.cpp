@@ -1231,7 +1231,7 @@ Bool Media::Resizer::LanczosResizerRGB_C8::IsSupported(NN<const Media::FrameInfo
 Optional<Media::StaticImage> Media::Resizer::LanczosResizerRGB_C8::ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
-	Media::StaticImage *newImage;
+	NN<Media::StaticImage> newImage;
 	if (srcImage->GetImageClass() != Media::RasterImage::ImageClass::StaticImage || !IsSupported(srcImage->info))
 	{
 		return nullptr;
@@ -1267,7 +1267,7 @@ Optional<Media::StaticImage> Media::Resizer::LanczosResizerRGB_C8::ProcessToNewP
 		destInfo.pf = Media::PF_B8G8R8A8;
 		destInfo.storeBPP = 32;
 	}
-	NEW_CLASS(newImage, Media::StaticImage(destInfo));
+	NEW_CLASSNN(newImage, Media::StaticImage(destInfo));
 	Int32 tlx = (Int32)srcTL.x;
 	Int32 tly = (Int32)srcTL.y;
 	IntOS bpp = srcImage->info.storeBPP >> 3;

@@ -19,26 +19,27 @@
 
 Optional<Net::SNS::SNSControl> Net::SNS::SNSManager::CreateControl(Net::SNS::SNSControl::SNSType type, Text::CStringNN channelId)
 {
-	Net::SNS::SNSControl *ctrl = 0;
+	Optional<Net::SNS::SNSControl> ctrl = nullptr;
+	NN<Net::SNS::SNSControl> nnctrl;
 	if (type == Net::SNS::SNSControl::ST_TWITTER)
 	{
-		NEW_CLASS(ctrl, Net::SNS::SNSTwitter(this->clif, this->ssl, this->encFact, this->userAgent, channelId));
+		NEW_CLASSOPT(ctrl, Net::SNS::SNSTwitter(this->clif, this->ssl, this->encFact, this->userAgent, channelId));
 	}
 	else if (type == Net::SNS::SNSControl::ST_RSS)
 	{
-		NEW_CLASS(ctrl, Net::SNS::SNSRSS(this->clif, this->ssl, this->encFact, this->userAgent, channelId, this->log));
+		NEW_CLASSOPT(ctrl, Net::SNS::SNSRSS(this->clif, this->ssl, this->encFact, this->userAgent, channelId, this->log));
 	}
 	else if (type == Net::SNS::SNSControl::ST_7GOGO)
 	{
-		NEW_CLASS(ctrl, Net::SNS::SNS7gogo(this->clif, this->ssl, this->encFact, this->userAgent, channelId));
+		NEW_CLASSOPT(ctrl, Net::SNS::SNS7gogo(this->clif, this->ssl, this->encFact, this->userAgent, channelId));
 	}
 	else if (type == Net::SNS::SNSControl::ST_INSTAGRAM)
 	{
-		NEW_CLASS(ctrl, Net::SNS::SNSInstagram(this->clif, this->ssl, this->encFact, this->userAgent, channelId));
+		NEW_CLASSOPT(ctrl, Net::SNS::SNSInstagram(this->clif, this->ssl, this->encFact, this->userAgent, channelId));
 	}
-	if (ctrl && ctrl->IsError())
+	if (ctrl.SetTo(nnctrl) && nnctrl->IsError())
 	{
-		DEL_CLASS(ctrl);
+		ctrl.Delete();
 		return nullptr;
 	}
 	return ctrl;

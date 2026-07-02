@@ -57,7 +57,7 @@ namespace Net
 			WorkerState state;
 			Bool toStop;
 			Bool isPrimary;
-			Sync::Event *evt;
+			NN<Sync::Event> evt;
 			NN<TCPClientMgr> me;
 		} WorkerStatus;
 
@@ -83,7 +83,7 @@ namespace Net
 		UIntOS workerCnt;
 		Data::SyncCircularBuffNN<TCPClientStatus> workerTasks;
 
-		IO::SMTCWriter *logWriter;
+		Optional<IO::SMTCWriter> logWriter;
 
 		static UInt32 __stdcall ClientThread(AnyType o);
 		static UInt32 __stdcall WorkerThread(AnyType o);
@@ -103,7 +103,7 @@ namespace Net
 		UIntOS GetClientCount() const;
 		void ExtendTimeout(NN<Net::TCPClient> cli);
 		Optional<Net::TCPClient> GetClient(UIntOS index, OutParam<AnyType> cliData);
-		IO::SMTCWriter *GetLogWriter() const;
+		Optional<IO::SMTCWriter> GetLogWriter() const;
 	};
 }
 #endif

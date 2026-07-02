@@ -25,9 +25,9 @@ Media::StaticEngine::~StaticEngine()
 
 Optional<Media::DrawImage> Media::StaticEngine::CreateImage32(Math::Size2D<UIntOS> size, Media::AlphaType atype)
 {
-//	Media::StaticDrawImage *simg;
+//	NN<Media::StaticDrawImage> simg;
 //	Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
-//	NEW_CLASS(simg, Media::StaticDrawImage(width, height, 0, 32, Media::PF_B8G8R8A8, width * height * 4, &color, Media::ColorProfile::YUVT_UNKNOWN, atype, Media::YCOFST_C_CENTER_LEFT));
+//	NEW_CLASSNN(simg, Media::StaticDrawImage(width, height, 0, 32, Media::PF_B8G8R8A8, width * height * 4, &color, Media::ColorProfile::YUVT_UNKNOWN, atype, Media::YCOFST_C_CENTER_LEFT));
 //	return simg;
 	return nullptr;
 }
@@ -46,10 +46,10 @@ Optional<Media::DrawImage> Media::StaticEngine::LoadImage(Text::CStringNN fileNa
 	}
 
 	Optional<Media::StaticDrawImage> simg = nullptr;
-	NN<Media::RasterImage> img;
+	NN<Media::Image> img;
 	if (imgList.SetTo(nnimgList))
 	{
-		if (nnimgList->GetImage(0, 0).SetTo(img))
+		if (nnimgList->GetImage2(0, 0).SetTo(img))
 		{
 			simg = Optional<Media::StaticDrawImage>::ConvertFrom(this->ConvImage(img, nullptr));
 		}
@@ -76,8 +76,8 @@ Optional<Media::DrawImage> Media::StaticEngine::LoadImageW(UnsafeArray<const WCh
 	Optional<Media::StaticDrawImage> simg = nullptr;
 	if (imgList.SetTo(nnimgList))
 	{
-		NN<Media::RasterImage> img;
-		if (nnimgList->GetImage(0, 0).SetTo(img))
+		NN<Media::Image> img;
+		if (nnimgList->GetImage2(0, 0).SetTo(img))
 		{
 			simg = Optional<Media::StaticDrawImage>::ConvertFrom(this->ConvImage(img, nullptr));
 		}

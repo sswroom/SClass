@@ -106,20 +106,21 @@ Bool Net::Email::GCISClient::SendMessage(Bool intranetChannel, Text::CString cha
 	else
 	{
 		NN<Crypto::Cert::X509Cert> cert;
-		Crypto::Cert::X509FileList *certList = 0;
+		Optional<Crypto::Cert::X509FileList> certList = nullptr;
+		NN<Crypto::Cert::X509FileList> nncertList;
 		UIntOS i = 0;
 		UIntOS j = svrCert->GetCount();
 		while (i < j)
 		{
 			if (svrCert->GetItemNoCheck(i)->CreateX509Cert().SetTo(cert))
 			{
-				if (certList == 0)
+				if (!certList.SetTo(nncertList))
 				{
-					NEW_CLASS(certList, Crypto::Cert::X509FileList(CSTR("ServerCert.crt"), cert));
+					NEW_CLASSOPT(certList, Crypto::Cert::X509FileList(CSTR("ServerCert.crt"), cert));
 				}
 				else
 				{
-					certList->AddFile(cert);
+					nncertList->AddFile(cert);
 				}
 			}
 			i++;

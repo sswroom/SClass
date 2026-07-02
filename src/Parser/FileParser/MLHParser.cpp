@@ -61,8 +61,8 @@ Optional<IO::ParsedObject> Parser::FileParser::MLHParser::ParseFileHdr(NN<IO::St
 //	isUncompress = ReadUInt32(&hdr[44]);
 
 	Text::Encoding enc(932);
-	IO::VirtualPackageFile *pf;
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NN<IO::VirtualPackageFile> pf;
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 
 	fileInfo = MemAlloc(MLHFileInfo, fileCnt);
 	fd->GetRealData(fileOfst, fileCnt * sizeof(MLHFileInfo), Data::ByteArray((UInt8*)fileInfo, fileCnt * sizeof(MLHFileInfo)));

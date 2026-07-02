@@ -17,7 +17,7 @@ namespace Net
 		NN<Net::SocketFactory> sockf;
 		Optional<Net::UDPServer> svr;
 		NN<IO::LogTool> log;
-		Media::AudioFormat *format;
+		Optional<Media::AudioFormat> format;
 		Bool started;
 		Sync::Mutex readMut;
 		Sync::Event *readEvt;
@@ -52,7 +52,7 @@ namespace Net
 		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 		virtual Bool CanSeek();
 		virtual Data::Duration GetStreamTime();
-		virtual void GetFormat(Media::AudioFormat *format);
+		virtual void GetFormat(NN<Media::AudioFormat> format);
 
 		virtual Data::Duration SeekToTime(Data::Duration time);
 		virtual Bool Start(Sync::Event *evt, Int32 blkSize);

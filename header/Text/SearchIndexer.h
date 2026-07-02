@@ -10,7 +10,7 @@ namespace Text
 	class SearchIndexer
 	{
 	private:
-		Data::ICaseBTreeStringMapObj<Data::ArrayListInt64*> strIndex;
+		Data::ICaseBTreeStringMapObj<Optional<Data::ArrayListInt64>> strIndex;
 		NN<Text::TextAnalyzer> ta;
 
 	public:

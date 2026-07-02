@@ -76,13 +76,13 @@ Optional<IO::ParsedObject> Net::URL::OpenObject(Text::CStringNN url, Text::CStri
 			return nullptr;
 		if (Text::StrSplitP(sarr2, 2, sarr[1], ',') != 2)
 			return nullptr;
-		IO::MemoryStream *mstm;
+		NN<IO::MemoryStream> mstm;
 		if (sarr2[0].Equals(UTF8STRC("base64")))
 		{
 			Text::TextBinEnc::Base64Enc b64;
 			UnsafeArray<UInt8> tmpData = MemAllocArr(UInt8, sarr2[1].leng);
 			UIntOS dataLen = b64.DecodeBin(sarr2[1].ToCString(), tmpData);
-			NEW_CLASS(mstm, IO::MemoryStream(dataLen));
+			NEW_CLASSNN(mstm, IO::MemoryStream(dataLen));
 			mstm->Write(Data::ByteArrayR(tmpData, dataLen));
 			MemFreeArr(tmpData);
 			mstm->SeekFromBeginning(0);

@@ -127,7 +127,7 @@ Optional<Media::DrawImage> Media::GDIEngine::CreateImage32(Math::Size2D<UIntOS> 
 	hBmp = CreateDIBSection((HDC)this->hdc, &bInfo, 0, &bmpBits, 0, 0);
 	if (hBmp)
 	{
-		GDIImage *img;
+		Optional<GDIImage> img;
 		HDC hdcBmp;
 		Int32 i = 10;
 		Sync::MutexUsage mutUsage(this->gdiMut);
@@ -143,11 +143,11 @@ Optional<Media::DrawImage> Media::GDIEngine::CreateImage32(Math::Size2D<UIntOS> 
 		if (hdcBmp)
 		{
 			SelectObject(hdcBmp, hBmp);
-			NEW_CLASS(img, GDIImage(*this, Math::Coord2D<IntOS>(0, 0), size, 32, (void *)hBmp, bmpBits, (void *)hdcBmp, atype));
+			NEW_CLASSOPT(img, GDIImage(*this, Math::Coord2D<IntOS>(0, 0), size, 32, (void *)hBmp, bmpBits, (void *)hdcBmp, atype));
 		}
 		else
 		{
-			img = 0;
+			img = nullptr;
 		}
 		return img;
 	}
@@ -172,7 +172,7 @@ Optional<Media::GDIImage> Media::GDIEngine::CreateImage24(Math::Size2D<UIntOS> s
 	hBmp = CreateDIBSection((HDC)this->hdc, &bInfo, 0, &bmpBits, 0, 0);
 	if (hBmp)
 	{
-		GDIImage *img;
+		Optional<GDIImage> img;
 		HDC hdcBmp;
 		Int32 i = 10;
 		while ((hdcBmp = CreateCompatibleDC((HDC)this->hdcScreen)) == 0)
@@ -184,11 +184,11 @@ Optional<Media::GDIImage> Media::GDIEngine::CreateImage24(Math::Size2D<UIntOS> s
 		if (hdcBmp)
 		{
 			SelectObject(hdcBmp, hBmp);
-			NEW_CLASS(img, GDIImage(*this, Math::Coord2D<IntOS>(0, 0), size, 24, (void *)hBmp, bmpBits, (void *)hdcBmp, Media::AT_IGNORE_ALPHA));
+			NEW_CLASSOPT(img, GDIImage(*this, Math::Coord2D<IntOS>(0, 0), size, 24, (void *)hBmp, bmpBits, (void *)hdcBmp, Media::AT_IGNORE_ALPHA));
 		}
 		else
 		{
-			img = 0;
+			img = nullptr;
 		}
 		return img;
 	}
@@ -225,21 +225,21 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 	UInt8 hdr[54];
 	UInt8 pal[1024];
 	BITMAPINFO bmi;
-	DrawImage *img = 0;
+	Optional<DrawImage> img = nullptr;
 
 	fstm->Read(BYTEARR(hdr));
 	if (*(Int16*)hdr != *(Int16*)"BM")
 	{
 #ifdef HAS_GDIPLUS
 		Gdiplus::Bitmap *gimg;
-		Win32::COMStream *comStm;
+		NN<Win32::COMStream> comStm;
 		fstm->SeekFromBeginning(0);
-		NEW_CLASS(comStm, Win32::COMStream(fstm));
-		gimg = Gdiplus::Bitmap::FromStream(comStm, false);
+		NEW_CLASSNN(comStm, Win32::COMStream(fstm));
+		gimg = Gdiplus::Bitmap::FromStream(comStm.Ptr(), false);
 
 		if (gimg == 0)
 		{
-			DEL_CLASS(comStm);
+			comStm.Delete();
 			return nullptr;
 		}
 		Gdiplus::BitmapData bmpd;
@@ -282,7 +282,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 				if (hdcBmp)
 				{
 					SelectObject(hdcBmp, hBmp);
-					NEW_CLASS(img, GDIImage(*this, Math::Coord2D<IntOS>(0, 0), Math::Size2D<UIntOS>((UIntOS)bmi.bmiHeader.biWidth, (UIntOS)bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_ALPHA));
+					NEW_CLASSOPT(img, GDIImage(*this, Math::Coord2D<IntOS>(0, 0), Math::Size2D<UIntOS>((UIntOS)bmi.bmiHeader.biWidth, (UIntOS)bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_ALPHA));
 				}
 				else
 				{
@@ -291,10 +291,10 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 			gimg->UnlockBits(&bmpd);
 		}
 		delete gimg;
-		DEL_CLASS(comStm);
+		comStm.Delete();
 		return img;
 #else
-		return 0;
+		return nullptr;
 #endif
 	}
 	bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
@@ -372,7 +372,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 				if (hdcBmp)
 				{
 					SelectObject(hdcBmp, hBmp);
-					NEW_CLASS(img, GDIImage(*this, Math::Coord2D<IntOS>(0, 0), Math::Size2D<UIntOS>(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_IGNORE_ALPHA));
+					NEW_CLASSOPT(img, GDIImage(*this, Math::Coord2D<IntOS>(0, 0), Math::Size2D<UIntOS>(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_IGNORE_ALPHA));
 				}
 				else
 				{
@@ -392,7 +392,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 				if (hdcBmp)
 				{
 					SelectObject(hdcBmp, hBmp);
-					NEW_CLASS(img, GDIImage(*this, Math::Coord2D<IntOS>(0, 0), Math::Size2D<UIntOS>(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_IGNORE_ALPHA));
+					NEW_CLASSOPT(img, GDIImage(*this, Math::Coord2D<IntOS>(0, 0), Math::Size2D<UIntOS>(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_IGNORE_ALPHA));
 				}
 				else
 				{
@@ -430,7 +430,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 				if (hdcBmp)
 				{
 					SelectObject(hdcBmp, hBmp);
-					NEW_CLASS(img, GDIImage(*this, Math::Coord2D<IntOS>(0, 0), Math::Size2D<UIntOS>((ULONG)bmi.bmiHeader.biWidth, (ULONG)bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_IGNORE_ALPHA));
+					NEW_CLASSOPT(img, GDIImage(*this, Math::Coord2D<IntOS>(0, 0), Math::Size2D<UIntOS>((ULONG)bmi.bmiHeader.biWidth, (ULONG)bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_IGNORE_ALPHA));
 				}
 				else
 				{
@@ -448,7 +448,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 				if (hdcBmp)
 				{
 					SelectObject(hdcBmp, hBmp);
-					NEW_CLASS(img, GDIImage(*this, Math::Coord2D<IntOS>(0, 0), Math::Size2D<UIntOS>(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_ALPHA));
+					NEW_CLASSOPT(img, GDIImage(*this, Math::Coord2D<IntOS>(0, 0), Math::Size2D<UIntOS>(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_ALPHA));
 				}
 				else
 				{
@@ -457,13 +457,13 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 			break;
 		default:
 			DeleteObject(hBmp);
-			img = 0;
+			img = nullptr;
 			break;
 		}
 	}
 	else
 	{
-		img = 0;
+		img = nullptr;
 	}
 	return img;
 }
@@ -2980,12 +2980,12 @@ UIntOS Media::GDIImage::SavePng(NN<IO::SeekableStream> stm)
 		return 3;
 	}
 
-	Win32::COMStream *cstm;
-	NEW_CLASS(cstm, Win32::COMStream(stm));
+	NN<Win32::COMStream> cstm;
+	NEW_CLASSNN(cstm, Win32::COMStream(stm));
 
-	stat = image->Save(cstm, &encoderClsid, NULL);
+	stat = image->Save(cstm.Ptr(), &encoderClsid, NULL);
 
-	DEL_CLASS(cstm);
+	cstm.Delete();
 	delete image;
 
 	if(stat == Gdiplus::Ok)
@@ -3058,12 +3058,12 @@ UIntOS Media::GDIImage::SaveGIF(NN<IO::SeekableStream> stm)
 		return 3;
 	}
 
-	Win32::COMStream *cstm;
-	NEW_CLASS(cstm, Win32::COMStream(stm));
+	NN<Win32::COMStream> cstm;
+	NEW_CLASSNN(cstm, Win32::COMStream(stm));
 
-	stat = newBmp->Save(cstm, &encoderClsid, NULL);
+	stat = newBmp->Save(cstm.Ptr(), &encoderClsid, NULL);
 
-	DEL_CLASS(cstm);
+	cstm.Delete();
 	DEL_CLASS(newBmp);
 	DEL_CLASS(image);
 
@@ -3096,12 +3096,12 @@ UIntOS Media::GDIImage::SaveJPG(NN<IO::SeekableStream> stm)
 		return 3;
 	}
 
-	Win32::COMStream *cstm;
-	NEW_CLASS(cstm, Win32::COMStream(stm));
+	NN<Win32::COMStream> cstm;
+	NEW_CLASSNN(cstm, Win32::COMStream(stm));
 
-	stat = image->Save(cstm, &encoderClsid, NULL);
+	stat = image->Save(cstm.Ptr(), &encoderClsid, NULL);
 
-	DEL_CLASS(cstm);
+	cstm.Delete();
 	DEL_CLASS(image);
 
 

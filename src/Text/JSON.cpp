@@ -782,10 +782,10 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 	}
 	else if (c == '{')
 	{
-		Text::JSONObject *jobj;
+		NN<Text::JSONObject> jobj;
 
 		jsonStr++;
-		NEW_CLASS(jobj, Text::JSONObject());
+		NEW_CLASSNN(jobj, Text::JSONObject());
 
 		jsonStr = ClearWS(jsonStr);
 		c = *jsonStr;
@@ -863,12 +863,12 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 	}
 	else if (c == '[')
 	{
-		Text::JSONArray *arr;
+		NN<Text::JSONArray> arr;
 		Optional<Text::JSONBase> obj;
 		NN<Text::JSONBase> nnobj;
 
 		jsonStr++;
-		NEW_CLASS(arr, Text::JSONArray());
+		NEW_CLASSNN(arr, Text::JSONArray());
 		jsonStr = ClearWS(jsonStr);
 		if (*jsonStr == ']')
 		{
@@ -930,9 +930,9 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 			jsonStrEndOut.Set(nullptr);
 			return nullptr;
 		}
-		Text::JSONString *s;
+		NN<Text::JSONString> s;
 		jsonStrEndOut.Set(endPtr);
-		NEW_CLASS(s, Text::JSONString(sbEnv->ToCString()));
+		NEW_CLASSNN(s, Text::JSONString(sbEnv->ToCString()));
 		return s;
 	}
 	else if (c == '-' || (c >= '0' && c <= '9'))
@@ -948,22 +948,22 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 		{
 			if (noDecimal && val >= -0x80000000 && val <= 0x7fffffff)
 			{
-				Text::JSONInt32 *num;
-				NEW_CLASS(num, Text::JSONInt32(Double2Int32(val)));
+				NN<Text::JSONInt32> num;
+				NEW_CLASSNN(num, Text::JSONInt32(Double2Int32(val)));
 				jsonStrEndOut.Set(jsonStr);
 				return num;
 			}
 			else if (noDecimal && val >= -0x8000000000000000LL && (Int64)val <= 0x7fffffffffffffffLL)
 			{
-				Text::JSONInt64 *num;
-				NEW_CLASS(num, Text::JSONInt64((Int64)val));
+				NN<Text::JSONInt64> num;
+				NEW_CLASSNN(num, Text::JSONInt64((Int64)val));
 				jsonStrEndOut.Set(jsonStr);
 				return num;
 			}
 			else
 			{
-				Text::JSONNumber *num;
-				NEW_CLASS(num, Text::JSONNumber(val));
+				NN<Text::JSONNumber> num;
+				NEW_CLASSNN(num, Text::JSONNumber(val));
 				jsonStrEndOut.Set(jsonStr);
 				return num;
 			}
@@ -973,9 +973,9 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 	{
 		if (Text::StrStartsWithC(jsonStr, (UIntOS)(jsonStrEnd - jsonStr), UTF8STRC("true")))
 		{
-			Text::JSONBool *b;
+			NN<Text::JSONBool> b;
 			jsonStrEndOut.Set(&jsonStr[4]);
-			NEW_CLASS(b, Text::JSONBool(true));
+			NEW_CLASSNN(b, Text::JSONBool(true));
 			return b;
 		}
 		else
@@ -988,9 +988,9 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 	{
 		if (Text::StrStartsWithC(jsonStr, (UIntOS)(jsonStrEnd - jsonStr), UTF8STRC("false")))
 		{
-			Text::JSONBool *b;
+			NN<Text::JSONBool> b;
 			jsonStrEndOut.Set(&jsonStr[5]);
-			NEW_CLASS(b, Text::JSONBool(false));
+			NEW_CLASSNN(b, Text::JSONBool(false));
 			return b;
 		}
 		else
@@ -1003,9 +1003,9 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 	{
 		if (Text::StrStartsWithC(jsonStr, (UIntOS)(jsonStrEnd - jsonStr), UTF8STRC("null")))
 		{
-			Text::JSONNull *n;
+			NN<Text::JSONNull> n;
 			jsonStrEndOut.Set(&jsonStr[4]);
-			NEW_CLASS(n, Text::JSONNull());
+			NEW_CLASSNN(n, Text::JSONNull());
 			return n;
 		}
 		else

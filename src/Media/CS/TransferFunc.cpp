@@ -25,7 +25,7 @@
 
 Media::CS::TransferParam::TransferParam()
 {
-	this->lut = 0;
+	this->lut = nullptr;
 	this->tranType = Media::CS::TRANT_sRGB;
 	this->gamma = 2.2;
 	this->params = 0;
@@ -34,13 +34,14 @@ Media::CS::TransferParam::TransferParam()
 
 Media::CS::TransferParam::TransferParam(NN<const TransferParam> tran)
 {
-	if (tran->lut)
+	NN<Media::LUT> lut;
+	if (tran->lut.SetTo(lut))
 	{
-		this->lut = tran->lut->Clone();
+		this->lut = lut->Clone();
 	}
 	else
 	{
-		this->lut = 0;
+		this->lut = nullptr;
 	}
 	this->tranType = tran->tranType;
 	this->gamma = tran->gamma;
@@ -55,7 +56,7 @@ Media::CS::TransferParam::TransferParam(NN<const TransferParam> tran)
 
 Media::CS::TransferParam::TransferParam(TransferType tranType, Double gamma)
 {
-	this->lut = 0;
+	this->lut = nullptr;
 	this->tranType = tranType;
 	this->gamma = gamma;
 	this->params = 0;
@@ -73,7 +74,7 @@ Media::CS::TransferParam::TransferParam(NN<const Media::LUT> lut)
 
 Media::CS::TransferParam::~TransferParam()
 {
-	SDEL_CLASS(this->lut);
+	this->lut.Delete();
 	if (this->params)
 	{
 		MemFree(this->params);
@@ -84,7 +85,7 @@ void Media::CS::TransferParam::Set(TransferType tranType, Double gamma)
 {
 	this->tranType = tranType;
 	this->gamma = gamma;
-	SDEL_CLASS(this->lut);
+	this->lut.Delete();
 	if (this->params)
 	{
 		MemFree(this->params);
@@ -96,7 +97,7 @@ void Media::CS::TransferParam::Set(TransferType tranType, Double *params, UIntOS
 {
 	this->tranType = tranType;
 	this->gamma = 2.2;
-	SDEL_CLASS(this->lut);
+	this->lut.Delete();
 	if (this->params)
 	{
 		MemFree(this->params);
@@ -109,7 +110,7 @@ void Media::CS::TransferParam::Set(TransferType tranType, Double *params, UIntOS
 
 void Media::CS::TransferParam::Set(NN<Media::LUT> lut)
 {
-	SDEL_CLASS(this->lut);
+	this->lut.Delete();
 	if (this->params)
 	{
 		MemFree(this->params);
@@ -121,15 +122,16 @@ void Media::CS::TransferParam::Set(NN<Media::LUT> lut)
 
 void Media::CS::TransferParam::Set(NN<const TransferParam> tran)
 {
-	SDEL_CLASS(this->lut);
+	this->lut.Delete();
 	if (this->params)
 	{
 		MemFree(this->params);
 		this->params = 0;
 	}
-	if (tran->lut)
+	NN<Media::LUT> lut;
+	if (tran->lut.SetTo(lut))
 	{
-		this->lut = tran->lut->Clone();
+		this->lut = lut->Clone();
 	}
 	if (tran->params)
 	{
@@ -151,9 +153,11 @@ Bool Media::CS::TransferParam::Equals(NN<const TransferParam> tran) const
 	}
 	else if (this->tranType == Media::CS::TRANT_LUT)
 	{
-		if ((this->lut == 0) || (tran->lut == 0))
+		NN<Media::LUT> lut;
+		NN<Media::LUT> lut2;
+		if (!this->lut.SetTo(lut) || !tran->lut.SetTo(lut2))
 			return false;
-		return this->lut->Equals(tran->lut);
+		return lut->Equals(lut2);
 	}
 	else if (this->tranType == Media::CS::TRANT_PARAM1)
 	{
@@ -313,7 +317,7 @@ NN<Media::CS::TransferFunc> Media::CS::TransferFunc::CreateFunc(NN<const Media::
 	case Media::CS::TRANT_LUT:
 	{
 		NN<const Media::LUT> lut;
-		if (lut.Set(param->GetLUTRead()))
+		if (param->GetLUTRead().SetTo(lut))
 		{
 			NEW_CLASSNN(func, Media::CS::TransferFuncLUT(lut));
 			return func;

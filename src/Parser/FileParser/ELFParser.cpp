@@ -78,12 +78,12 @@ Optional<IO::ParsedObject> Parser::FileParser::ELFParser::ParseFileHdr(NN<IO::St
 	UTF8Char sbuff2[512];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	IO::EXEFile *exef;
+	NN<IO::EXEFile> exef;
 	if (hdr[4] != 1 && hdr[4] != 2)
 	{
 		return nullptr;
 	}
-	NEW_CLASS(exef, IO::EXEFile(fd->GetFullName()));
+	NEW_CLASSNN(exef, IO::EXEFile(fd->GetFullName()));
 	if (hdr[4] == 1)
 	{
 		exef->AddProp(CSTR("File Format"), CSTR("ELF32"));

@@ -7,7 +7,7 @@ namespace Media
 	typedef struct
 	{
 		Int32 status; // 0 = not running, 1 = waiting, 2 = to exit, 3 = rotating, 4 = end rotating
-		Sync::Event *evt;
+		NN<Sync::Event> evt;
 		Single srcWidth;
 		Single srcHeight;
 		Int32 srcIWidth;

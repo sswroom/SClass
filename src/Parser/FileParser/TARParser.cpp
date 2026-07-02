@@ -60,18 +60,18 @@ Optional<IO::ParsedObject> Parser::FileParser::TARParser::ParseFileHdr(NN<IO::St
 	}
 
 	currOfst = 0;
-	IO::VirtualPackageFile *pf;
-	IO::VirtualPackageFile *pf2;
+	NN<IO::VirtualPackageFile> pf;
+	NN<IO::VirtualPackageFile> pf2;
 	NN<IO::PackageFile> pf3;
 	Text::StringBuilderUTF8 sb;
 	Text::Encoding enc(this->codePage);
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 
 	while (true)
 	{
 		if (currOfst >= fileSize)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		fd->GetRealData(currOfst, 512, BYTEARR(buff));
@@ -103,7 +103,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TARParser::ParseFileHdr(NN<IO::St
 							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(sb.ToCString()));
 							pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(t * 1000LL, 0), nullptr, nullptr, 0);
 						}
-						pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
+						pf2 = NN<IO::VirtualPackageFile>::ConvertFrom(pf3);
 						sptr = &sptr[i + 1];
 					}
 					else 
@@ -123,7 +123,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TARParser::ParseFileHdr(NN<IO::St
 				}
 				continue;
 			}
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		pf2 = pf;
@@ -143,7 +143,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TARParser::ParseFileHdr(NN<IO::St
 					NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(sb.ToCString()));
 					pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(t * 1000LL, 0), nullptr, nullptr, 0);
 				}
-				pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
+				pf2 = NN<IO::VirtualPackageFile>::ConvertFrom(pf3);
 				sptr = &sptr[i + 1];
 			}
 			else

@@ -26,7 +26,7 @@ namespace Net
 				Data::ArrayListNN<Text::String> rcptTo;
 				Bool dataMode;
 				Int32 loginMode;
-				IO::MemoryStream *dataStm;
+				Optional<IO::MemoryStream> dataStm;
 				Text::LineBreakType lastLBT;
 				Bool login;
 				Optional<Text::String> userName;

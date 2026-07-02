@@ -42,7 +42,6 @@ Optional<IO::ParsedObject> Parser::FileParser::WPTParser::ParseFileHdr(NN<IO::St
 	UTF8Char sbuff[1024];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> tmpArr[16];
-	Map::VectorLayer *lyr = 0;
 	NN<Math::Geometry::PointZ> pt;
 	Bool valid;
 
@@ -67,6 +66,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WPTParser::ParseFileHdr(NN<IO::St
 	}
 	if (valid)
 	{
+		NN<Map::VectorLayer> lyr;
 		UnsafeArrayOpt<const UTF8Char> colNames[] = {U8STR("Name"), U8STR("Description")};
 		DB::DBUtil::ColType colTypes[] = {DB::DBUtil::CT_VarUTF8Char, DB::DBUtil::CT_VarUTF8Char};
 		UIntOS colSizes[] = {14, 40};
@@ -74,7 +74,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WPTParser::ParseFileHdr(NN<IO::St
 		reader.ReadLine(sbuff, 1024);
 		UnsafeArray<UTF8Char> cols[2];
 
-		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), 2, colNames, Math::CoordinateSystemManager::CreateWGS84Csys(), colTypes, colSizes, colDPs, 0, nullptr));
+		NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), 2, colNames, Math::CoordinateSystemManager::CreateWGS84Csys(), colTypes, colSizes, colDPs, 0, nullptr));
 		while (reader.ReadLine(sbuff, 1024).NotNull())
 		{
 			if (Text::StrSplitTrim(tmpArr, 16, sbuff, ',') == 16)
@@ -85,6 +85,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WPTParser::ParseFileHdr(NN<IO::St
 				lyr->AddVector2(pt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(UARR(cols)));
 			}
 		}
+		return lyr;
 	}
-	return lyr;
+	return nullptr;
 }

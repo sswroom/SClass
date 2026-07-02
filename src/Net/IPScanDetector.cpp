@@ -14,8 +14,9 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(AnyType obj)
 {
 	NN<Net::IPScanDetector::ThreadStat> stat = obj.GetNN<Net::IPScanDetector::ThreadStat>();
 	UInt8 macBuff[8];
+	NN<Sync::Event> ctrlEvt;
 	stat->threadRunning = true;
-	stat->me->ctrlEvt->Set();
+	if (stat->me->ctrlEvt.SetTo(ctrlEvt)) ctrlEvt->Set();
 	NN<Socket> soc;
 	if (stat->me->soc.SetTo(soc))
 	{
@@ -131,7 +132,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(AnyType obj)
 		MemFreeArr(buff);
 	}
 	stat->threadRunning = false;
-	stat->me->ctrlEvt->Set();
+	if (stat->me->ctrlEvt.SetTo(ctrlEvt)) ctrlEvt->Set();
 	return 0;
 }
 
@@ -142,7 +143,7 @@ Net::IPScanDetector::IPScanDetector(NN<Net::SocketFactory> sockf, IPScanHandler 
 	this->sockf = sockf;
 	this->hdlr = hdlr;
 	this->userData = userData;
-	this->ctrlEvt = 0;
+	this->ctrlEvt = nullptr;
 	this->soc = this->sockf->CreateARPSocket();
 	this->threadStats = nullptr;
 
@@ -150,7 +151,9 @@ Net::IPScanDetector::IPScanDetector(NN<Net::SocketFactory> sockf, IPScanHandler 
 	NN<Socket> soc;
 	if (this->soc.SetTo(soc))
 	{
-		NEW_CLASS(this->ctrlEvt, Sync::Event(true));
+		NN<Sync::Event> ctrlEvt;
+		NEW_CLASSNN(ctrlEvt, Sync::Event(true));
+		this->ctrlEvt = ctrlEvt;
 
 		this->threadStats = threadStats = MemAllocArr(Net::IPScanDetector::ThreadStat, this->threadCnt);
 
@@ -159,8 +162,8 @@ Net::IPScanDetector::IPScanDetector(NN<Net::SocketFactory> sockf, IPScanHandler 
 		{
 			threadStats[i].toStop = false;
 			threadStats[i].threadRunning = false;
-			NEW_CLASS(threadStats[i].evt, Sync::Event(true));
-			threadStats[i].me = this;
+			NEW_CLASSNN(threadStats[i].evt, Sync::Event(true));
+			threadStats[i].me = *this;
 			Sync::ThreadUtil::Create(DataThread, &threadStats[i]);
 		}
 		Bool running;
@@ -178,7 +181,7 @@ Net::IPScanDetector::IPScanDetector(NN<Net::SocketFactory> sockf, IPScanHandler 
 			}
 			if (running)
 				break;
-			this->ctrlEvt->Wait(10);
+			ctrlEvt->Wait(10);
 		}
 	}
 }
@@ -187,6 +190,7 @@ Net::IPScanDetector::~IPScanDetector()
 {
 	UIntOS i;
 	NN<Socket> soc;
+	NN<Sync::Event> ctrlEvt;
 	UnsafeArray<ThreadStat> threadStats;
 	if (this->threadStats.SetTo(threadStats))
 	{
@@ -223,13 +227,13 @@ Net::IPScanDetector::~IPScanDetector()
 			}
 			if (!threadRunning)
 				break;
-			this->ctrlEvt->Wait(10);
+			if (this->ctrlEvt.SetTo(ctrlEvt)) ctrlEvt->Wait(10);
 		}
 
 		i = this->threadCnt;
 		while (i-- > 0)
 		{
-			DEL_CLASS(threadStats[i].evt);
+			threadStats[i].evt.Delete();
 		}
 		MemFreeArr(threadStats);
 	}
@@ -242,7 +246,7 @@ Net::IPScanDetector::~IPScanDetector()
 		adapter = this->adapterMap.GetItemNoCheck(i);
 		adapter.Delete();
 	}
-	SDEL_CLASS(this->ctrlEvt);
+	this->ctrlEvt.Delete();
 }
 
 Bool Net::IPScanDetector::IsError()

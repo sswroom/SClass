@@ -9,12 +9,12 @@
 void __stdcall Net::Email::SMTPServer::ClientReady(NN<Net::TCPClient> cli, AnyType userObj)
 {
 	NN<Net::Email::SMTPServer> me = userObj.GetNN<Net::Email::SMTPServer>();
-	MailStatus *cliStatus;
-	NEW_CLASS(cliStatus, MailStatus());
+	NN<MailStatus> cliStatus;
+	NEW_CLASSNN(cliStatus, MailStatus());
 	cliStatus->buffSize = 0;
 	cliStatus->cliName = nullptr;
 	cliStatus->mailFrom = nullptr;
-	cliStatus->dataStm = 0;
+	cliStatus->dataStm = nullptr;
 	cliStatus->dataMode = false;
 	cliStatus->loginMode = 0;
 	cliStatus->login = false;
@@ -60,10 +60,7 @@ void __stdcall Net::Email::SMTPServer::ClientEvent(NN<Net::TCPClient> cli, AnyTy
 		{
 			cliStatus->rcptTo.GetItemNoCheck(i)->Release();
 		}
-		if (cliStatus->dataStm)
-		{
-			DEL_CLASS(cliStatus->dataStm);
-		}
+		cliStatus->dataStm.Delete();
 		cliStatus.Delete();
 		cli.Delete();
 	}
@@ -227,6 +224,7 @@ UIntOS Net::Email::SMTPServer::WriteMessage(NN<Net::TCPClient> cli, Int32 status
 
 void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMTPServer::MailStatus> cliStatus, UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen, Text::LineBreakType lbt)
 {
+	NN<IO::MemoryStream> dataStm;
 	NN<Text::String> nnuserName;
 	if (cliStatus->loginMode)
 	{
@@ -318,26 +316,27 @@ void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMT
 		}
 		else
 		{
-			if (cliStatus->dataStm == 0)
+			if (!cliStatus->dataStm.SetTo(dataStm))
 			{
-				NEW_CLASS(cliStatus->dataStm, IO::MemoryStream());
+				NEW_CLASSNN(dataStm, IO::MemoryStream());
+				cliStatus->dataStm = dataStm;
 			}
 			else
 			{
 				if (cliStatus->lastLBT == Text::LineBreakType::CRLF)
 				{
-					cliStatus->dataStm->Write(CSTR("\r\n").ToByteArray());
+					dataStm->Write(CSTR("\r\n").ToByteArray());
 				}
 				else if (cliStatus->lastLBT == Text::LineBreakType::CR)
 				{
-					cliStatus->dataStm->Write(CSTR("\r").ToByteArray());
+					dataStm->Write(CSTR("\r").ToByteArray());
 				}
 				else if (cliStatus->lastLBT == Text::LineBreakType::LF)
 				{
-					cliStatus->dataStm->Write(CSTR("\n").ToByteArray());
+					dataStm->Write(CSTR("\n").ToByteArray());
 				}
 			}
-			cliStatus->dataStm->Write(Data::ByteArrayR(cmd, cmdLen));
+			dataStm->Write(Data::ByteArrayR(cmd, cmdLen));
 			cliStatus->lastLBT = lbt;
 		}
 	}

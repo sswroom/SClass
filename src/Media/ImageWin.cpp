@@ -20,7 +20,7 @@ Optional<Media::RasterImage> Media::ImageWin::CreateImage(HBITMAP hbmp)
 {
 	HDC hdc;
 	BITMAPINFO bmi;
-	Media::StaticImage *img;
+	NN<Media::StaticImage> img;
 	Char *imgBuff;
 
 	Char *imgPtr;
@@ -38,7 +38,7 @@ Optional<Media::RasterImage> Media::ImageWin::CreateImage(HBITMAP hbmp)
 		imgBuff = MemAlloc(Char, bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight * 3);
 		GetDIBits(hdc, hbmp, 0, bmi.bmiHeader.biHeight, imgBuff, &bmi, 0);
 
-		NEW_CLASS(img, Media::StaticImage(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 0, 24, 0, Media::CS::TRANodeType::Unknown, Media::ColorHandler::YUVT_UNKNOWN, 2.2, Media::AT_NO_ALPHA));
+		NEW_CLASSNN(img, Media::StaticImage(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 0, 24, 0, Media::CS::TRANodeType::Unknown, Media::ColorHandler::YUVT_UNKNOWN, 2.2, Media::AT_NO_ALPHA));
 
 		i = bmi.bmiHeader.biHeight;
 		lineDiff = bmi.bmiHeader.biWidth * 3;
@@ -61,7 +61,7 @@ Optional<Media::RasterImage> Media::ImageWin::CreateImage(HBITMAP hbmp)
 		imgBuff = MemAlloc(Char, bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight * 3);
 		GetDIBits(hdc, hbmp, 0, bmi.bmiHeader.biHeight, imgBuff, &bmi, 0);
 
-		NEW_CLASS(img, Media::StaticImage(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 0, 24, 0, Media::CS::TRANodeType::Unknown, Media::ColorHandler::YUVT_UNKNOWN, 2.2, Media::AT_ALPHA));
+		NEW_CLASSNN(img, Media::StaticImage(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 0, 24, 0, Media::CS::TRANodeType::Unknown, Media::ColorHandler::YUVT_UNKNOWN, 2.2, Media::AT_ALPHA));
 
 		i = bmi.bmiHeader.biHeight;
 		lineDiff = bmi.bmiHeader.biWidth * 3;
@@ -70,7 +70,7 @@ Optional<Media::RasterImage> Media::ImageWin::CreateImage(HBITMAP hbmp)
 		while (i-- > 0)
 		{
 			imgPtr = imgPtr - lineDiff;
-			MemCopy(outPtr, imgPtr, lineDiff);
+			MemCopyNO(outPtr, imgPtr, lineDiff);
 
 			outPtr = outPtr + lineDiff;
 		}
@@ -82,7 +82,7 @@ Optional<Media::RasterImage> Media::ImageWin::CreateImage(HBITMAP hbmp)
 	else
 	{
 		ReleaseDC(0, hdc);
-		return 0;
+		return nullptr;
 	}
 }
 

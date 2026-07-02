@@ -10,7 +10,7 @@ namespace Text
 		class CodePageTextBinEnc : public Text::TextBinEnc::TextBinEnc
 		{
 		private:
-			Text::Encoding *enc;
+			NN<Text::Encoding> enc;
 		public:
 			CodePageTextBinEnc(UInt32 codePage);
 			virtual ~CodePageTextBinEnc();

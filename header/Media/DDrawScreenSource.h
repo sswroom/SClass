@@ -9,7 +9,7 @@ namespace Media
 	private:
 		Bool captureRunning;
 		Bool captureToStop;
-		Sync::Event *captureEvt;
+		NN<Sync::Event> captureEvt;
 		FrameCallback captureCb;
 		void *captureCbData;
 		UInt8 *scnBuff;

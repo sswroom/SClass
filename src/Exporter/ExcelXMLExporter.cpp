@@ -73,7 +73,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 	UInt32 v;
 	UnsafeArray<const UTF8Char> text;
 	NN<Text::String> s;
-	Data::DateTime *dt;
+	NN<Data::DateTime> dt;
 	Double ver;
 	Text::StringBuilderUTF8 sb;
 
@@ -119,8 +119,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			s->Release();
 			writer.WriteLine(sb.ToCString());
 		}
-		dt = wb->GetCreateTime();
-		if (dt)
+		if (wb->GetCreateTime().SetTo(dt))
 		{
 			sptr = dt->ToString(sbuff, "yyyy-MM-ddTHH:mm:ssZ");
 			sb.ClearStr();
@@ -129,8 +128,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			sb.AppendC(UTF8STRC("</Created>"));
 			writer.WriteLine(sb.ToCString());
 		}
-		dt = wb->GetModifyTime();
-		if (dt)
+		if (wb->GetModifyTime().SetTo(dt))
 		{
 			sptr = dt->ToString(sbuff, "yyyy-MM-ddTHH:mm:ssZ");
 			sb.ClearStr();

@@ -22,7 +22,7 @@ namespace UI
 		virtual UIntOS GetCount() = 0;
 		virtual UnsafeArrayOpt<const UTF8Char> GetName(UIntOS index) = 0;
 		virtual Bool GetDataText(UnsafeArray<const UTF8Char> name, NN<Text::StringBuilderUTF8> sb) = 0;
-		virtual IO::Stream *GetDataStream(UnsafeArray<const UTF8Char> name) = 0;
+		virtual Optional<IO::Stream> GetDataStream(UnsafeArray<const UTF8Char> name) = 0;
 	};
 
 	class GUIDropHandler

@@ -16,8 +16,8 @@ Media::ConsoleMediaPlayer::ConsoleMediaPlayer(NN<Media::MonitorMgr> monMgr, NN<M
 	NEW_CLASSNN(this->renderer, Media::ConsoleVideoRenderer(this->surfaceMgr, this->colorSess));
 	if (!this->renderer->IsError())
 	{
-		Media::MediaPlayer *player;
-		NEW_CLASS(player, Media::MediaPlayer(this->renderer, audioDev));
+		NN<Media::MediaPlayer> player;
+		NEW_CLASSNN(player, Media::MediaPlayer(this->renderer, audioDev));
 		this->SetPlayer(player);
 	}
 }

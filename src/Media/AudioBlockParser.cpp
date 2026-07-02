@@ -16,22 +16,22 @@ Media::AudioBlockParser::~AudioBlockParser()
 Optional<Media::AudioBlockParser> Media::AudioBlockParser::CreateParser(NN<IO::StreamData> stmData)
 {
 	UInt8 buff[256];
-	Media::AudioBlockParser *parser;
+	NN<Media::AudioBlockParser> parser;
 
 	stmData->GetRealData(0, 256, BYTEARR(buff));
 	if (buff[0] == 0x0b && buff[1] == 0x77) //AC3
 	{
-		NEW_CLASS(parser, Media::BlockParser::AC3BlockParser());
+		NEW_CLASSNN(parser, Media::BlockParser::AC3BlockParser());
 		return parser;
 	}
 	else if (buff[0] == 0xff && (buff[1] & 0xfe) == 0xfa) //MP3
 	{
-		NEW_CLASS(parser, Media::BlockParser::MP3BlockParser());
+		NEW_CLASSNN(parser, Media::BlockParser::MP3BlockParser());
 		return parser;
 	}
 	else if (buff[0] == 0xff && (buff[1] & 0xfe) == 0xfc) //MP2
 	{
-		NEW_CLASS(parser, Media::BlockParser::MP2BlockParser());
+		NEW_CLASSNN(parser, Media::BlockParser::MP2BlockParser());
 		return parser;
 	}
 	return nullptr;

@@ -111,7 +111,8 @@ Optional<IO::Registry> IO::Registry::OpenLocalSoftware(UnsafeArray<const WChar> 
 
 void IO::Registry::CloseRegistry(NN<IO::Registry> reg)
 {
-	reg.Delete();
+	IO::Registry *regPtr = reg.Ptr();
+	DEL_CLASS(regPtr);
 }
 
 IO::Registry::Registry(void *hand)

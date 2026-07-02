@@ -6,24 +6,24 @@
 UInt32 __stdcall Net::RSSReader::RSSThread(AnyType userObj)
 {
 	NN<Net::RSSReader> me = userObj.GetNN<Net::RSSReader>();
-	Net::RSS *rss;
+	NN<Net::RSS> rss;
 	NN<RSSStatus> status;
-	Data::DateTime *dt;
+	NN<Data::DateTime> dt;
 	UIntOS i;
 	UIntOS cnt;
 	NN<Text::String> id;
 
 	me->threadRunning = true;
-	NEW_CLASS(dt, Data::DateTime());
+	NEW_CLASSNN(dt, Data::DateTime());
 	while (!me->threadToStop)
 	{
 		dt->SetCurrTimeUTC();
 		if (dt->CompareTo(me->nextDT) > 0)
 		{
-			NEW_CLASS(rss, Net::RSS(me->url->ToCString(), nullptr, me->clif, me->ssl, me->timeout, me->log));
+			NEW_CLASSNN(rss, Net::RSS(me->url->ToCString(), nullptr, me->clif, me->ssl, me->timeout, me->log));
 			if (rss->IsError())
 			{
-				DEL_CLASS(rss);
+				rss.Delete();
 				me->nextDT.SetCurrTimeUTC();
 				me->nextDT.AddSecond(300);
 			}
@@ -79,7 +79,7 @@ UInt32 __stdcall Net::RSSReader::RSSThread(AnyType userObj)
 
 		me->threadEvt.Wait(1000);
 	}
-	DEL_CLASS(dt);
+	dt.Delete();
 	me->threadRunning = false;
 	return false;
 }

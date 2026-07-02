@@ -62,9 +62,9 @@ Optional<IO::ParsedObject> Parser::FileParser::ZWEIParser::ParseFileHdr(NN<IO::S
 	UInt32 recCnt;
 	UInt32 fileSize;
 
-	IO::VirtualPackageFile *pf;
+	NN<IO::VirtualPackageFile> pf;
 	Text::Encoding enc(932);
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 
 	fileOfst = extOfst;
 	i = 0;
@@ -83,14 +83,14 @@ Optional<IO::ParsedObject> Parser::FileParser::ZWEIParser::ParseFileHdr(NN<IO::S
 
 		if (ReadUInt32(&extHdrs[buffOfst + 4]) != extOfst)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 
 		recCnt = ReadUInt32(&extHdrs[buffOfst + 8]);
 		if (recCnt <= 0 || recCnt > 65536)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		Data::ByteBuffer recHdrs(recCnt << 4);
@@ -102,7 +102,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZWEIParser::ParseFileHdr(NN<IO::S
 		{
 			if (ReadUInt32(&recHdrs[recOfst + 12]) != fileOfst)
 			{
-				DEL_CLASS(pf);
+				pf.Delete();
 				return nullptr;
 			}
 			

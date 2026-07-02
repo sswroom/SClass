@@ -51,8 +51,8 @@ namespace Net
 		typedef void (CALLBACKFUNC DNSProxyRequest)(AnyType userObj, Text::CStringNN reqName, Int32 reqType, Int32 reqClass, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
 	private:
 		NN<Net::SocketFactory> sockf;
-		Net::UDPServer *cli;
-		Net::DNSServer *svr;
+		NN<Net::UDPServer> cli;
+		NN<Net::DNSServer> svr;
 
 		UInt32 currServerIP;
 		UIntOS currServerIndex;
@@ -73,8 +73,8 @@ namespace Net
 		Data::ICaseStringMapNN<RequestResult> reqothMap;
 		Bool reqothUpdated;
 
-		Sync::Mutex *targetMut;
-		Data::FastMapNN<UInt32, TargetInfo> *targetMap;
+		Optional<Sync::Mutex> targetMut;
+		Optional<Data::FastMapNN<UInt32, TargetInfo>> targetMap;
 		Bool targetUpdated;
 
 		Sync::Mutex lastIdMut;

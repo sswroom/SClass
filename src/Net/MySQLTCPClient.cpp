@@ -2902,14 +2902,14 @@ UInt16 Net::MySQLTCPClient::GetDefaultPort()
 Optional<DB::DBTool> Net::MySQLTCPClient::CreateDBTool(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<Net::MySQLTCPClient> conn;
-	DB::DBTool *db;
+	NN<DB::DBTool> db;
 	Net::SocketUtil::AddressInfo addr;
 	if (clif->GetSocketFactory()->DNSResolveIP(serverName->ToCString(), addr))
 	{
 		NEW_CLASSNN(conn, Net::MySQLTCPClient(clif, ssl, addr, 3306, uid, pwd, dbName));
 		if (conn->IsError() == 0)
 		{
-			NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
+			NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
 			return db;
 		}
 		else
@@ -2927,14 +2927,14 @@ Optional<DB::DBTool> Net::MySQLTCPClient::CreateDBTool(NN<Net::TCPClientFactory>
 Optional<DB::DBTool> Net::MySQLTCPClient::CreateDBTool(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN serverName, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<Net::MySQLTCPClient> conn;
-	DB::DBTool *db;
+	NN<DB::DBTool> db;
 	Net::SocketUtil::AddressInfo addr;
 	if (clif->GetSocketFactory()->DNSResolveIP(serverName, addr))
 	{
 		NEW_CLASSNN(conn, Net::MySQLTCPClient(clif, ssl, addr, 3306, uid, pwd, dbName));
 		if (conn->IsError() == 0)
 		{
-			NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
+			NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
 			return db;
 		}
 		else

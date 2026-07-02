@@ -19,7 +19,7 @@ struct Media::MMALVideoCapture::ClassData
 	MMAL_COMPONENT_T *camera;
 	MMAL_PORT_T *port;
 	MMAL_POOL_T *buffPool;
-	Manage::HiResClock *clk;
+	NN<Manage::HiResClock> clk;
 	UInt32 frameNum;
 
 	Bool photoMode;
@@ -77,7 +77,7 @@ Media::MMALVideoCapture::MMALVideoCapture(Bool photoMode)
 	NN<ClassData> info = MemAllocNN(ClassData);
 	MMAL_STATUS_T status;
 	this->classData = info;
-	NEW_CLASS(info->clk, Manage::HiResClock());
+	NEW_CLASSNN(info->clk, Manage::HiResClock());
 	info->frameNum = 0;
 	info->camera = 0;
 	info->port = 0;
@@ -173,8 +173,8 @@ Media::MMALVideoCapture::~MMALVideoCapture()
 		mmal_component_destroy(info->camera);
 		info->camera = 0;
 	}
-	DEL_CLASS(info->clk);
-	MemFree(info);
+	info->clk.Delete();
+	MemFreeNN(info);
 }
 
 UnsafeArrayOpt<UTF8Char> Media::MMALVideoCapture::GetSourceName(UnsafeArray<UTF8Char> buff)

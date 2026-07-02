@@ -69,42 +69,39 @@ void __stdcall Net::TCPServerController::TimeoutHdlr(NN<Net::TCPClient> cli, Any
 
 Net::TCPServerController::TCPServerController(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log, UInt16 port, Text::CString prefix, UIntOS maxBuffSize, Net::TCPServerController::TCPServerHandler *hdlr, UIntOS workerCnt, Int32 timeoutSec, Bool autoStart)
 {
-	this->cliMgr = 0;
 	this->sockf = sockf;
 	this->maxBuffSize = maxBuffSize;
 	this->hdlr = hdlr;
-	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(timeoutSec, EventHdlr, DataHdlr, this, workerCnt, TimeoutHdlr));
-	NEW_CLASS(this->svr, Net::TCPServer(sockf, nullptr, port, log, ConnHdlr, this, prefix, autoStart));
-	if (this->svr->IsV4Error())
+	NEW_CLASSNN(this->cliMgr, Net::TCPClientMgr(timeoutSec, EventHdlr, DataHdlr, this, workerCnt, TimeoutHdlr));
+	NN<Net::TCPServer> svr;
+	NEW_CLASSNN(svr, Net::TCPServer(sockf, nullptr, port, log, ConnHdlr, this, prefix, autoStart));
+	if (svr->IsV4Error())
 	{
-		DEL_CLASS(this->svr);
-		this->svr = 0;
+		svr.Delete();
+		this->svr = nullptr;
 		return;
+	}
+	else
+	{
+		this->svr = svr;
 	}
 }
 
 Net::TCPServerController::~TCPServerController()
 {
-	if (this->svr)
-	{
-		DEL_CLASS(this->svr);
-		this->svr = 0;
-	}
-	if (this->cliMgr)
-	{
-		DEL_CLASS(this->cliMgr);
-		this->cliMgr = 0;
-	}
+	this->svr.Delete();
+	this->cliMgr.Delete();
 }
 
 Bool Net::TCPServerController::Start()
 {
-	return this->maxBuffSize > 0 && this->svr != 0 && this->svr->Start();
+	NN<Net::TCPServer> svr;
+	return this->maxBuffSize > 0 && this->svr.SetTo(svr) && svr->Start();
 }
 
 Bool Net::TCPServerController::IsError()
 {
-	return this->svr == 0 || this->maxBuffSize <= 0;
+	return this->svr.IsNull() || this->maxBuffSize <= 0;
 }
 
 void Net::TCPServerController::UseGetCli(NN<Sync::MutexUsage> mutUsage)

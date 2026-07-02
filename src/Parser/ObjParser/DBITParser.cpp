@@ -59,7 +59,8 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBITParser::ParseObject(NN<IO::Par
 	if (!valid)
 		return nullptr;
 
-	Map::GPSTrack *trk = 0;
+	Optional<Map::GPSTrack> opttrk = nullptr;
+	NN<Map::GPSTrack> trk;
 	Record *rec;
 	Data::FastMapObj<Int32, Record*> gpsLogMap;
 	Data::FastMapObj<Int32, Record*> wpMap;
@@ -151,7 +152,8 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBITParser::ParseObject(NN<IO::Par
 		if (db->QueryTableData(nullptr, CSTR("Line"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			Map::GPSTrack::GPSRecord3 gpsRec;
-			NEW_CLASS(trk, Map::GPSTrack(pobj->GetSourceNameObj(), true, 0, nullptr));
+			NEW_CLASSNN(trk, Map::GPSTrack(pobj->GetSourceNameObj(), true, 0, nullptr));
+			opttrk = trk;
 			while (r->ReadNext())
 			{
 				sptr = r->GetStr(2, sbuff, sizeof(sbuff)).Or(sbuff);
@@ -193,5 +195,5 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBITParser::ParseObject(NN<IO::Par
 	{
 		MemFree(gpsLogMap.GetItem(i));
 	}
-	return trk;
+	return opttrk;
 }

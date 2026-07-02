@@ -11,7 +11,7 @@ namespace Media
 
 		void *hMainMenu;
 		void *hwnd;
-		Sync::Event *updEvt;
+		NN<Sync::Event> updEvt;
 		Int32 scnUpdStat;
 
 		Int64 updStart;

@@ -12,8 +12,9 @@
 void __stdcall Net::NTPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::NTPServer> me = userData.GetNN<Net::NTPServer>();
+	NN<Net::UDPServer> svr;
 	UInt8 repBuff[48];
-	if (data.GetSize() >= 48)
+	if (data.GetSize() >= 48 && me->svr.SetTo(svr))
 	{
 		UInt8 vn = (data[0] >> 3) & 7;
 		UInt8 mode = data[0] & 7;
@@ -34,7 +35,7 @@ void __stdcall Net::NTPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo>
 			WriteNInt64(&repBuff[24], ReadNInt64(&data[40])); //Origin Timestamp
 			WriteTime(&repBuff[32], currTime + me->timeDiff);
 			WriteTime(&repBuff[40], currTime + me->timeDiff);
-			me->svr->SendTo(addr, port, repBuff, 48);
+			svr->SendTo(addr, port, repBuff, 48);
 
 			if (me->log->HasHandler())
 			{
@@ -59,66 +60,70 @@ void __stdcall Net::NTPServer::CheckThread(NN<Sync::Thread> thread)
 {
 	NN<Net::NTPServer> me = thread->GetUserObj().GetNN<Net::NTPServer>();
 	Net::SocketUtil::AddressInfo addr;
+	NN<Net::NTPClient> cli;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	Data::Timestamp nextTime = Data::Timestamp::UtcNow();
 	Data::DateTime dt;
 	Text::StringBuilderUTF8 sb;
-	while (!thread->IsStopping())
+	if (me->cli.SetTo(cli))
 	{
-		if (Data::Timestamp::UtcNow() >= nextTime)
+		while (!thread->IsStopping())
 		{
-			if (me->sockf->DNSResolveIP(me->timeServerHost->ToCString(), addr))
+			if (Data::Timestamp::UtcNow() >= nextTime)
 			{
-				if (me->cli->GetServerTime(addr, Net::NTPClient::GetDefaultPort(), dt))
+				if (me->sockf->DNSResolveIP(me->timeServerHost->ToCString(), addr))
 				{
-					if (dt.SetAsComputerTime())
+					if (cli->GetServerTime(addr, Net::NTPClient::GetDefaultPort(), dt))
 					{
-						me->refTime = dt.ToTicks();
-						me->timeDiff = 0;
-						sb.ClearStr();
-						sb.AppendC(UTF8STRC("NTP: Time updated from Time Server as "));
-						dt.ToLocalTime();
-						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-						sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
-						me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
+						if (dt.SetAsComputerTime())
+						{
+							me->refTime = dt.ToTicks();
+							me->timeDiff = 0;
+							sb.ClearStr();
+							sb.AppendC(UTF8STRC("NTP: Time updated from Time Server as "));
+							dt.ToLocalTime();
+							sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+							sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
+							me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
+						}
+						else
+						{
+							me->refTime = dt.ToTicks();
+							sb.ClearStr();
+							sb.AppendC(UTF8STRC("NTP: Time update to "));
+							dt.ToLocalTime();
+							sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+							sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
+							sb.AppendC(UTF8STRC(" failed"));
+							me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
+							dt.SetCurrTimeUTC();
+							me->timeDiff = me->refTime - dt.ToTicks();
+						}
 					}
 					else
 					{
-						me->refTime = dt.ToTicks();
-						sb.ClearStr();
-						sb.AppendC(UTF8STRC("NTP: Time update to "));
-						dt.ToLocalTime();
-						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-						sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
-						sb.AppendC(UTF8STRC(" failed"));
-						me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
-						dt.SetCurrTimeUTC();
-						me->timeDiff = me->refTime - dt.ToTicks();
+						me->log->LogMessage(CSTR("NTP: Requesting to Time Server"), IO::LogHandler::LogLevel::Error);
 					}
 				}
 				else
 				{
-					me->log->LogMessage(CSTR("NTP: Requesting to Time Server"), IO::LogHandler::LogLevel::Error);
+					me->log->LogMessage(CSTR("NTP: Error in resolving time server"), IO::LogHandler::LogLevel::Error);
 				}
+				nextTime = Data::Timestamp::UtcNow().AddMS(me->serverReqInterval);
 			}
-			else
-			{
-				me->log->LogMessage(CSTR("NTP: Error in resolving time server"), IO::LogHandler::LogLevel::Error);
-			}
-			nextTime = Data::Timestamp::UtcNow().AddMS(me->serverReqInterval);
+			thread->Wait(60000);
 		}
-		thread->Wait(60000);
 	}
 }
 
 void Net::NTPServer::InitServer(NN<Net::SocketFactory> sockf, UInt16 port)
 {
-	Net::UDPServer *svr;
-	NEW_CLASS(svr, Net::UDPServer(sockf, nullptr, port, nullptr, PacketHdlr, this, this->log, nullptr, 2, false));
+	NN<Net::UDPServer> svr;
+	NEW_CLASSNN(svr, Net::UDPServer(sockf, nullptr, port, nullptr, PacketHdlr, this, this->log, nullptr, 2, false));
 	if (svr->IsError())
 	{
-		DEL_CLASS(svr);
+		svr.Delete();
 	}
 	else
 	{
@@ -129,31 +134,32 @@ void Net::NTPServer::InitServer(NN<Net::SocketFactory> sockf, UInt16 port)
 Net::NTPServer::NTPServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log, Text::CStringNN timeServerHost) : thread(CheckThread, this, CSTR("NTPServer"))
 {
 	this->sockf = sockf;
-	this->svr = 0;
+	this->svr = nullptr;
 	this->log = log;
 	this->timeServerHost = Text::String::New(timeServerHost);
 	this->serverReqInterval = 60000;
 	this->refTime = 0;
-	this->cli = 0;
+	this->cli = nullptr;
 	InitServer(sockf, port);
-	if (this->svr)
+	NN<Net::UDPServer> svr;
+	if (this->svr.SetTo(svr))
 	{
-		NEW_CLASS(this->cli, Net::NTPClient(this->sockf, 0, this->log));
+		NEW_CLASSOPT(this->cli, Net::NTPClient(this->sockf, 0, this->log));
 		this->thread.Start();
 	}
 }
 
 Net::NTPServer::~NTPServer()
 {
-	SDEL_CLASS(this->svr);
+	this->svr.Delete();
 	this->thread.Stop();
-	SDEL_CLASS(this->cli);
+	this->cli.Delete();
 	this->timeServerHost->Release();
 }
 
 Bool Net::NTPServer::IsError()
 {
-	return this->svr == 0;
+	return this->svr.IsNull();
 }
 
 void Net::NTPServer::SetServerReqInterval(Int64 serverReqInterval)

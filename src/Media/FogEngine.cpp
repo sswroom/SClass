@@ -46,37 +46,46 @@ void Media::FogImage::SetPen(DrawPen *p)
 	pnt->setLineDash(pen->pattern, pen->nPattern);
 }
 
+struct Media::FogImage::ClassData
+{
+	NN<Fog::Image> img;
+	NN<Fog::Painter> painter;
+};
+
 Media::FogImage::FogImage(Int32 width, Int32 height)
 {
-	NEW_CLASS(img, Fog::Image(width, height, Fog::Image::FormatARGB32));
-	NEW_CLASS(painter, Fog::Painter());
-	((Fog::Painter*)painter)->begin(*(Fog::Image*)img);
+	NN<ClassData> clsData = MemAllocNN<ClassData>();
+	NEW_CLASSNN(clsData->img, Fog::Image(width, height, Fog::Image::FormatARGB32));
+	NEW_CLASSNN(clsData->painter, Fog::Painter());
+	clsData->painter->begin(*clsData->img.Ptr());
+	this->clsData = clsData;
 }
 
 Media::FogImage::~FogImage()
 {
-	DEL_CLASS((Fog::Painter*)painter);
-	DEL_CLASS((Fog::Image*)img);
+	DEL_CLASS(clsData->painter);
+	DEL_CLASS(clsData->img);
+	MemFreeNN(this->clsData);
 }
 
 Int32 Media::FogImage::GetWidth()
 {
-	return ((Fog::Image*)img)->width();
+	return clsData->img->width();
 }
 
 Int32 Media::FogImage::GetHeight()
 {
-	return ((Fog::Image*)img)->height();
+	return clsData->img->height();
 }
 
 Int32 Media::FogImage::GetBitCount()
 {
-	return ((Fog::Image*)img)->bytesPerPixel() << 3;
+	return clsData->img->bytesPerPixel() << 3;
 }
 
 Bool Media::FogImage::DrawLine(Int32 x1, Int32 y1, Int32 x2, Int32 y2, DrawPen *p)
 {
-	Fog::Painter *pnt = (Fog::Painter*)painter;
+	NN<Fog::Painter> pnt = clsData->painter;
 	pnt->drawLine(Fog::Point(x1, y1), Fog::Point(x2, y2));
 	return true;
 }
@@ -135,10 +144,10 @@ Bool Media::FogImage::DrawImagePt(DrawImage *img, Int32 tlx, Int32 tly)
 	return false;
 }
 
-DrawPen *Media::FogImage::NewPenARGB(Int32 color, Int32 thick, UInt8 *pattern, Int32 nPattern)
+NN<DrawPen> Media::FogImage::NewPenARGB(Int32 color, Int32 thick, UInt8 *pattern, Int32 nPattern)
 {
-	FogPen *pen;
-	NEW_CLASS(pen, FogPen(color, thick, pattern, nPattern));
+	NN<FogPen> pen;
+	NEW_CLASSNN(pen, FogPen(color, thick, pattern, nPattern));
 	return pen;
 }
 
@@ -148,31 +157,31 @@ NN<DrawBrush> Media::FogImage::NewBrushARGB(Int32 color)
 	return 0;
 }
 
-DrawFont *Media::FogImage::NewFontA(Char *name, Int16 pxSize, Int16 fontStyle)
+NN<DrawFont> Media::FogImage::NewFontA(Char *name, Int16 pxSize, Int16 fontStyle)
 {
 	//////////////////////////////////
 	return 0;
 }
 
-DrawFont *Media::FogImage::NewFontW(WChar *name, Int16 pxSize, Int16 fontStyle)
+NN<DrawFont> Media::FogImage::NewFontW(WChar *name, Int16 pxSize, Int16 fontStyle)
 {
 	/////////////////////////////////
 	return 0;
 }
 
-void Media::FogImage::DelPen(DrawPen *p)
+void Media::FogImage::DelPen(NN<DrawPen> p)
 {
-	DEL_CLASS((FogPen*)p);
+	p.Delete();
 }
 
-void Media::FogImage::DelBrush(DrawBrush *b)
+void Media::FogImage::DelBrush(NN<DrawBrush> b)
 {
-	//////////////////////////////////
+	b.Delete();
 }
 
-void Media::FogImage::DelFont(DrawFont *f)
+void Media::FogImage::DelFont(NN<DrawFont> f)
 {
-	//////////////////////////////////
+	f.Delete();
 }
 
 Bool Media::FogImage::GetTextSize(DrawFont *fnt, WChar *txt, Int32 txtLen, Int32 *sz)
@@ -196,10 +205,10 @@ Media::FogEngine::~FogEngine()
 {
 }
 
-DrawImage *Media::FogEngine::CreateImage32(Int32 width, Int32 height)
+Optional<DrawImage> Media::FogEngine::CreateImage32(Int32 width, Int32 height)
 {
-	Media::FogImage *img;
-	NEW_CLASS(img, Media::FogImage(width, height));
+	NN<Media::FogImage> img;
+	NEW_CLASSNN(img, Media::FogImage(width, height));
 	return img;
 }
 

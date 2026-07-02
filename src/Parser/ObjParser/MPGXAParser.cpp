@@ -71,7 +71,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::MPGXAParser::ParseObject(NN<IO::Pa
 	if (!found)
 		return nullptr;
 
-	Media::VCDMPGFile *file;
-	NEW_CLASS(file, Media::VCDMPGFile(data, i, data->GetSectorCount()));
+	NN<Media::VCDMPGFile> file;
+	NEW_CLASSNN(file, Media::VCDMPGFile(data, i, data->GetSectorCount()));
 	return file;
 }

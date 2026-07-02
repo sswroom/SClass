@@ -49,10 +49,10 @@ Optional<IO::ParsedObject> Parser::FileParser::SEGPackParser::ParseFileHdr(NN<IO
 		return nullptr;
 	}
 
-	IO::VirtualPackageFile *pf;
+	NN<IO::VirtualPackageFile> pf;
 	Text::Encoding enc(932);
 
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	Data::ByteBuffer buff(hdrSize);
 	fd->GetRealData(4, hdrSize, buff);
 	
@@ -65,17 +65,17 @@ Optional<IO::ParsedObject> Parser::FileParser::SEGPackParser::ParseFileHdr(NN<IO
 		UInt32 thisSize = ReadUInt32(&buff[buffOfst + 12]);
 		if (*(Int32*)&buff[buffOfst + 4] != 0 || packSize > 80 || packSize <= 17 || thisOfst != fileOfst || packSize + buffOfst > hdrSize)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		if (buff[buffOfst + packSize - 1] != 0)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		if (Text::StrCharCnt(&buff[buffOfst + 16]) != packSize - 17)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		

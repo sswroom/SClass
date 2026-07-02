@@ -1203,7 +1203,8 @@ Optional<SSWR::OrganMgr::OrganGroup> SSWR::OrganMgr::OrganEnvDB::GetGroup(Int32 
 	NN<DB::DBReader> r;
 	Int32 photoGroup;
 	Int32 photoSpecies;
-	OrganGroup *foundGroup = 0;
+	Optional<OrganGroup> foundGroup = nullptr;
+	NN<OrganGroup> group;
 	sql.AppendCmdC(CSTR("select id, group_type, eng_name, chi_name, description, parent_id, photo_group, photo_species, idKey, flags from "));
 	sql.AppendCol((const UTF8Char*)"groups");
 	sql.AppendCmdC(CSTR(" where id = "));
@@ -1222,25 +1223,26 @@ Optional<SSWR::OrganMgr::OrganGroup> SSWR::OrganMgr::OrganEnvDB::GetGroup(Int32 
 			if (!r->IsNull(7))
 				photoSpecies = r->GetInt32(7);
 
-			NEW_CLASS(foundGroup, OrganGroup());
-			foundGroup->SetGroupId(r->GetInt32(0));
+			NEW_CLASSNN(group, OrganGroup());
+			foundGroup = group;
+			group->SetGroupId(r->GetInt32(0));
 			sb.ClearStr();
 			r->GetStr(3, sb);//chiName
-			foundGroup->SetCName(sb.ToCString());
+			group->SetCName(sb.ToCString());
 			sb.ClearStr();
 			r->GetStr(2, sb);//engName
-			foundGroup->SetEName(sb.ToCString());
-			foundGroup->SetGroupType(r->GetInt32(1));
+			group->SetEName(sb.ToCString());
+			group->SetGroupType(r->GetInt32(1));
 			sb.ClearStr();
 			r->GetStr(4, sb);
-			foundGroup->SetDesc(sb.ToCString());
-			foundGroup->SetPhotoGroup(photoGroup);
-			foundGroup->SetPhotoSpecies(photoSpecies);
+			group->SetDesc(sb.ToCString());
+			group->SetPhotoGroup(photoGroup);
+			group->SetPhotoSpecies(photoSpecies);
 			sb.ClearStr();
 			r->GetStr(8, sb);
-			foundGroup->SetIDKey(sb.ToCString());
+			group->SetIDKey(sb.ToCString());
 			flags = r->GetInt32(9);
-			foundGroup->SetAdminOnly(flags & 1);
+			group->SetAdminOnly(flags & 1);
 
 			parentId.Set(r->GetInt32(5));
 		}
@@ -1256,7 +1258,8 @@ Optional<SSWR::OrganMgr::OrganSpecies> SSWR::OrganMgr::OrganEnvDB::GetSpecies(In
 		return nullptr;
 	DB::SQLBuilder sql(db);
 	NN<DB::DBReader> r;
-	OrganSpecies *sp = 0;
+	Optional<OrganSpecies> optsp = nullptr;
+	NN<OrganSpecies> sp;
 	sql.AppendCmdC(CSTR("SELECT id, chi_name, sci_name, eng_name, group_id, description, dirName, photo, idKey, flags, photoId, mapColor FROM species where id = "));
 	sql.AppendInt32(speciesId);
 	sql.AppendCmdC(CSTR(" and cate_id = "));
@@ -1266,7 +1269,7 @@ Optional<SSWR::OrganMgr::OrganSpecies> SSWR::OrganMgr::OrganEnvDB::GetSpecies(In
 		if (r->ReadNext())
 		{
 			Text::StringBuilderUTF8 sb;
-			NEW_CLASS(sp, OrganSpecies());
+			NEW_CLASSNN(sp, OrganSpecies());
 			sp->SetSpeciesId(r->GetInt32(0));
 			sb.ClearStr();
 			r->GetStr(1, sb);
@@ -1293,10 +1296,11 @@ Optional<SSWR::OrganMgr::OrganSpecies> SSWR::OrganMgr::OrganEnvDB::GetSpecies(In
 			sp->SetFlags(r->GetInt32(9));
 			sp->SetPhotoId(r->GetInt32(10));
 			sp->SetMapColor((UInt32)r->GetInt32(11));
+			optsp = sp;
 		}
 		db->CloseReader(r);
 	}
-	return sp;
+	return optsp;
 }
 
 UnsafeArray<UTF8Char> SSWR::OrganMgr::OrganEnvDB::GetSpeciesDir(NN<OrganSpecies> sp, UnsafeArray<UTF8Char> sbuff)
@@ -1518,7 +1522,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 	}
 	if (fileType == 1)
 	{
-		IO::MemoryStream *mstm;
+		NN<IO::MemoryStream> mstm;
 		{
 			IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer);
 			if (fs.IsError())
@@ -1527,7 +1531,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 			}
 			Data::ByteBuffer readBuff(1048576);
 			UIntOS readSize;
-			NEW_CLASS(mstm, IO::MemoryStream((UIntOS)fs.GetLength()));
+			NEW_CLASSNN(mstm, IO::MemoryStream((UIntOS)fs.GetLength()));
 			while (true)
 			{
 				readSize = fs.Read(readBuff);
@@ -1617,7 +1621,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				pobj.Delete();
 			}
 		}
-		DEL_CLASS(mstm);
+		mstm.Delete();
 		if (valid)
 		{
 			NN<WebUserInfo> webUser = this->GetWebUser(this->userId);
@@ -2060,7 +2064,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 	}
 }
 
-SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWebFile(NN<OrganSpecies> sp, NN<Text::String> srcURL, NN<Text::String> imgURL, IO::Stream *stm, UnsafeArrayOpt<UTF8Char> webFileName)
+SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWebFile(NN<OrganSpecies> sp, NN<Text::String> srcURL, NN<Text::String> imgURL, NN<IO::Stream> stm, UnsafeArrayOpt<UTF8Char> webFileName)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -2265,12 +2269,11 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	Bool succ;
 	sptr[0] = IO::Path::PATH_SEPERATOR;
 	sptrEnd = Text::StrConcatC(sptr + 1, fileName, (UIntOS)(fileNameEnd - fileName));
-	IO::StreamRecorder *recorder;
-	NEW_CLASS(recorder, IO::StreamRecorder({sbuff, (UIntOS)(sptrEnd - sbuff)}));
+	NN<IO::StreamRecorder> recorder;
+	NEW_CLASSNN(recorder, IO::StreamRecorder({sbuff, (UIntOS)(sptrEnd - sbuff)}));
 	succ = recorder->AppendStream(stm);
 	succ = succ && (recorder->GetRecordedLength() > 0);
-	DEL_CLASS(recorder);
-
+	recorder.Delete();
 	if (!succ)
 	{
 		IO::Path::DeleteFile(sbuff);
@@ -3098,9 +3101,11 @@ Bool SSWR::OrganMgr::OrganEnvDB::NewSpeciesBook(Int32 speciesId, Int32 bookId, U
 
 UIntOS SSWR::OrganMgr::OrganEnvDB::GetSpeciesBooks(NN<Data::ArrayListNN<SpeciesBook>> items, Int32 speciesId)
 {
+	NN<Data::ArrayListInt32> bookIds;
+	NN<Data::ArrayListNN<OrganBook>> bookObjs;
 	NN<DB::DBTool> db;
-	if (!this->db.SetTo(db))
-		return false;
+	if (!this->db.SetTo(db) || !this->bookIds.SetTo(bookIds) || !this->bookObjs.SetTo(bookObjs))
+		return 0;
 	DB::SQLBuilder sql(db);
 	NN<DB::DBReader> r;
 	NN<OrganBook> book;
@@ -3115,10 +3120,10 @@ UIntOS SSWR::OrganMgr::OrganEnvDB::GetSpeciesBooks(NN<Data::ArrayListNN<SpeciesB
 	j = 0;
 	while (r->ReadNext())
 	{
-		i = this->bookIds->SortedIndexOf(r->GetInt32(0));
+		i = bookIds->SortedIndexOf(r->GetInt32(0));
 		if (i >= 0)
 		{
-			book = this->bookObjs->GetItemNoCheck((UIntOS)i);
+			book = bookObjs->GetItemNoCheck((UIntOS)i);
 			spBook = MemAllocNN(SpeciesBook);
 			spBook->book = book;
 			spBook->dispName = r->GetNewStrNN(1);
@@ -3146,8 +3151,10 @@ void SSWR::OrganMgr::OrganEnvDB::ReleaseSpeciesBooks(NN<Data::ArrayListNN<Specie
 
 Int32 SSWR::OrganMgr::OrganEnvDB::NewBook(Text::CString title, Text::CString author, Text::CString press, const Data::Timestamp &publishDate, Text::CString url)
 {
+	NN<Data::ArrayListInt32> bookIds;
+	NN<Data::ArrayListNN<OrganBook>> bookObjs;
 	NN<DB::DBTool> db;
-	if (!this->db.SetTo(db))
+	if (!this->db.SetTo(db) || !this->bookIds.SetTo(bookIds) || !this->bookObjs.SetTo(bookObjs))
 		return 0;
 	NN<OrganBook> book;
 	DB::SQLBuilder sql(db);
@@ -3179,8 +3186,8 @@ Int32 SSWR::OrganMgr::OrganEnvDB::NewBook(Text::CString title, Text::CString aut
 	book->SetPublishDate(publishDate);
 	book->SetGroupId(0);
 	book->SetURL(url);
-	i = this->bookIds->SortedInsert(book->GetBookId());
-	this->bookObjs->Insert(i, book);
+	i = bookIds->SortedInsert(book->GetBookId());
+	bookObjs->Insert(i, book);
 	return id;
 }
 
@@ -3899,9 +3906,13 @@ void SSWR::OrganMgr::OrganEnvDB::BooksInit()
 	NN<DB::DBReader> r;
 	Data::DateTime dt;
 	UIntOS i;
+	NN<Data::ArrayListInt32> bookIds;
+	NN<Data::ArrayListNN<OrganBook>> bookObjs;
 
-	NEW_CLASS(this->bookIds, Data::ArrayListInt32());
-	NEW_CLASS(this->bookObjs, Data::ArrayListNN<OrganBook>());
+	NEW_CLASSNN(bookIds, Data::ArrayListInt32());
+	NEW_CLASSNN(bookObjs, Data::ArrayListNN<OrganBook>());
+	this->bookIds = bookIds;
+	this->bookObjs = bookObjs;
 	if (db->ExecuteReader(CSTR("select id, title, dispAuthor, press, publishDate, groupId, url from book")).SetTo(r))
 	{
 		while (r->ReadNext())
@@ -3922,8 +3933,8 @@ void SSWR::OrganMgr::OrganEnvDB::BooksInit()
 			sb.ClearStr();
 			r->GetStr(6, sb);
 			book->SetURL(&sb);
-			i = this->bookIds->SortedInsert(book->GetBookId());
-			this->bookObjs->Insert(i, book);
+			i = bookIds->SortedInsert(book->GetBookId());
+			bookObjs->Insert(i, book);
 		}
 		db->CloseReader(r);
 	}
@@ -4335,9 +4346,10 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseWebImage(NN<WebFileI
 	return nullptr;
 }
 
-SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(UnsafeArray<const UTF8Char> searchStr, UnsafeArray<UTF8Char> resultStr, UIntOS resultStrBuffSize, Int32 *parentId)
+Optional<SSWR::OrganMgr::OrganGroup> SSWR::OrganMgr::OrganEnvDB::SearchObject(UnsafeArray<const UTF8Char> searchStr, UnsafeArray<UTF8Char> resultStr, UIntOS resultStrBuffSize, Int32 *parentId)
 {
-	OrganGroup *foundGroup = 0;
+	Optional<OrganGroup> foundGroup = nullptr;
+	NN<OrganGroup> group;
 	UIntOS searchStrLen = Text::StrCharCnt(searchStr);
 	Bool found = false;
 	UTF8Char sbuff[256];
@@ -4348,7 +4360,7 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(UnsafeArray
 	Int32 photoSpecies;
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
-		return 0;
+		return nullptr;
 	NN<DB::DBReader> r;
 	DB::SQLBuilder sql(db);
 	Text::StringBuilderUTF8 sb;
@@ -4421,21 +4433,22 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(UnsafeArray
 
 			sptr = r->GetStr(2, sbuff, sizeof(sbuff)).Or(sbuff);//engName
 			sptr2 = r->GetStr(3, sbuff2, sizeof(sbuff2)).Or(sbuff2);//chiName
-			NEW_CLASS(foundGroup, OrganGroup());
-			foundGroup->SetGroupId(r->GetInt32(0));
-			foundGroup->SetCName(CSTRP(sbuff2, sptr2));
-			foundGroup->SetEName(CSTRP(sbuff, sptr));
-			foundGroup->SetGroupType(r->GetInt32(1));
+			NEW_CLASSNN(group, OrganGroup());
+			foundGroup = group;
+			group->SetGroupId(r->GetInt32(0));
+			group->SetCName(CSTRP(sbuff2, sptr2));
+			group->SetEName(CSTRP(sbuff, sptr));
+			group->SetGroupType(r->GetInt32(1));
 			sb.ClearStr();
 			r->GetStr(4, sb);
-			foundGroup->SetDesc(sb.ToCString());
-			foundGroup->SetPhotoGroup(photoGroup);
-			foundGroup->SetPhotoSpecies(photoSpecies);
+			group->SetDesc(sb.ToCString());
+			group->SetPhotoGroup(photoGroup);
+			group->SetPhotoSpecies(photoSpecies);
 			sb.ClearStr();
 			r->GetStr(8, sb);
-			foundGroup->SetIDKey(sb.ToCString());
+			group->SetIDKey(sb.ToCString());
 			flags = r->GetInt32(9);
-			foundGroup->SetAdminOnly(flags & 1);
+			group->SetAdminOnly(flags & 1);
 
 			*parentId = r->GetInt32(5);
 
@@ -4458,24 +4471,24 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(UnsafeArray
 							photoSpecies = r->GetInt32(7);
 
 
-						foundGroup->SetGroupId(r->GetInt32(0));
+						group->SetGroupId(r->GetInt32(0));
 						sb.ClearStr();
 						sb.AppendP(sbuff2, sptr2);
-						foundGroup->SetCName(sb.ToCString());
+						group->SetCName(sb.ToCString());
 						sb.ClearStr();
 						sb.AppendP(sbuff, sptr);
-						foundGroup->SetEName(sb.ToCString());
-						foundGroup->SetGroupType(r->GetInt32(1));
+						group->SetEName(sb.ToCString());
+						group->SetGroupType(r->GetInt32(1));
 						sb.ClearStr();
 						r->GetStr(4, sb);
-						foundGroup->SetDesc(sb.ToCString());
-						foundGroup->SetPhotoGroup(photoGroup);
-						foundGroup->SetPhotoSpecies(photoSpecies);
+						group->SetDesc(sb.ToCString());
+						group->SetPhotoGroup(photoGroup);
+						group->SetPhotoSpecies(photoSpecies);
 						sb.ClearStr();
 						r->GetStr(8, sb);
-						foundGroup->SetIDKey(sb.ToCString());
+						group->SetIDKey(sb.ToCString());
 						flags = r->GetInt32(9);
-						foundGroup->SetAdminOnly(flags & 1);
+						group->SetAdminOnly(flags & 1);
 
 						*parentId = r->GetInt32(5);
 						break;

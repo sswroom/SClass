@@ -73,9 +73,9 @@ Optional<IO::ParsedObject> Parser::FileParser::NOAParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 
-	IO::VirtualPackageFile *pf;
+	NN<IO::VirtualPackageFile> pf;
 	Text::Encoding enc(932);
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	
 	j = 4;
 	i = 0;

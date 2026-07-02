@@ -82,7 +82,7 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 			Optional<DB::DBTool> db;
 			IO::LogTool log;
-			Media::MonitorMgr *monMgr;
+			NN<Media::MonitorMgr> monMgr;
 			Data::FastStringMapNN<BurntDiscInfo> discMap;
 			Data::FastStringMapNN<DVDTypeInfo> dvdTypeMap;
 			Data::FastStringMapNN<CategoryInfo> cateMap;

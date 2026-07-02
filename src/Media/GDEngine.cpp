@@ -133,18 +133,18 @@ Media::GDEngine::~GDEngine()
 
 Optional<Media::DrawImage> Media::GDEngine::CreateImage32(Math::Size2D<UIntOS> size, Media::AlphaType atype)
 {
-	GDImage *img;
+	NN<GDImage> img;
 	gdImagePtr imgPtr = gdImageCreateTrueColor((int)size.GetWidth(), (int)size.GetHeight());
 	if (imgPtr == 0)
 		return 0;
-	NEW_CLASS(img, GDImage(*this, size, 32, imgPtr));
+	NEW_CLASSNN(img, GDImage(*this, size, 32, imgPtr));
 	return img;
 }
 
 Optional<Media::DrawImage> Media::GDEngine::LoadImage(Text::CStringNN fileName)
 {
 	FILE *f;
-	DrawImage *img;
+	NN<DrawImage> img;
 	gdImagePtr imgPtr = 0;
 
 	{
@@ -195,7 +195,7 @@ Optional<Media::DrawImage> Media::GDEngine::LoadImage(Text::CStringNN fileName)
 
 	if (imgPtr)
 	{
-		NEW_CLASS(img, GDImage(*this, Math::Size2D<UIntOS>(gdImageSX(imgPtr), gdImageSY(imgPtr)), 32, imgPtr));
+		NEW_CLASSNN(img, GDImage(*this, Math::Size2D<UIntOS>(gdImageSX(imgPtr), gdImageSY(imgPtr)), 32, imgPtr));
 		return img;
 	}
 	return 0;

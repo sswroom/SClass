@@ -57,8 +57,8 @@ Optional<IO::ParsedObject> Parser::FileParser::NFPParser::ParseFileHdr(NN<IO::St
 	fileOfst = ReadUInt32(&hdr[56]);
 //	dataOfst = ReadInt32(&hdr[60]);
 	Text::Encoding enc(932);
-	IO::VirtualPackageFile *pf;
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NN<IO::VirtualPackageFile> pf;
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 
 	fileInfo = MemAlloc(NFPFileInfo, fileCnt);
 	fd->GetRealData(fileOfst, fileCnt * sizeof(NFPFileInfo), Data::ByteArray((UInt8*)fileInfo, fileCnt * sizeof(NFPFileInfo)));

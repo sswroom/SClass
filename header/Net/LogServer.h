@@ -18,7 +18,7 @@ namespace Net
 		typedef struct
 		{
 			UInt32 ip;
-			IO::LogTool *log;
+			NN<IO::LogTool> log;
 		} IPStatus;
 		
 		typedef struct
@@ -31,8 +31,8 @@ namespace Net
 		typedef void (CALLBACKFUNC ClientLogHandler)(AnyType userObj, UInt32 ip, Text::CStringNN logMessage);
 	private:
 		NN<Net::SocketFactory> sockf;
-		Net::TCPServer *svr;
-		Net::TCPClientMgr *cliMgr;
+		NN<Net::TCPServer> svr;
+		NN<Net::TCPClientMgr> cliMgr;
 		NN<Text::String> logPath;
 		IO::ProtoHdlr::ProtoLogCliHandler protoHdlr;
 		NN<IO::LogTool> log;

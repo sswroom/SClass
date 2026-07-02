@@ -61,7 +61,7 @@ void __stdcall SSWR::SHPConv::SHPConvRangeFilterForm::OnOKClicked(AnyType userOb
 	{
 		typ = 0;
 	}
-	NEW_CLASS(me->filter, RangeFilter(x1, y1, x2, y2, typ));
+	NEW_CLASSOPT(me->filter, RangeFilter(x1, y1, x2, y2, typ));
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
@@ -76,10 +76,10 @@ SSWR::SHPConv::SHPConvRangeFilterForm::SHPConvRangeFilterForm(Optional<UI::GUICl
 	this->SetText(CSTR("Range Filter"));
 	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
-	NEW_CLASS(this->monMgr, Media::MonitorMgr());
+	NEW_CLASSNN(this->monMgr, Media::MonitorMgr());
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 	this->deng = deng;
-	this->filter = 0;
+	this->filter = nullptr;
 	
 	this->radInRange = ui->NewRadioButton(*this, CSTR("In Range"), true);
 	this->radInRange->SetRect(8, 8, 100, 23, false);
@@ -115,7 +115,7 @@ SSWR::SHPConv::SHPConvRangeFilterForm::SHPConvRangeFilterForm(Optional<UI::GUICl
 
 SSWR::SHPConv::SHPConvRangeFilterForm::~SHPConvRangeFilterForm()
 {
-	DEL_CLASS(this->monMgr);
+	this->monMgr.Delete();
 }
 
 void SSWR::SHPConv::SHPConvRangeFilterForm::OnMonitorChanged()
@@ -123,7 +123,7 @@ void SSWR::SHPConv::SHPConvRangeFilterForm::OnMonitorChanged()
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-SSWR::SHPConv::MapFilter *SSWR::SHPConv::SHPConvRangeFilterForm::GetFilter()
+Optional<SSWR::SHPConv::MapFilter> SSWR::SHPConv::SHPConvRangeFilterForm::GetFilter()
 {
 	return this->filter;
 }

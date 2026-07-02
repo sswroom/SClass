@@ -30,7 +30,7 @@ struct Media::MMALStillCapture::ClassData
 
 	Bool imageEnd;
 	NN<IO::Stream> stm;
-	Sync::Event *readEvt;
+	NN<Sync::Event> readEvt;
 	Bool succ;
 	Bool start;
 	Bool nextStart;
@@ -89,7 +89,7 @@ void MMALStillCapture_BufferCB(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 Media::MMALStillCapture::MMALStillCapture()
 {
 	this->classData = MemAllocNN(ClassData);
-	NEW_CLASS(info->readEvt, Sync::Event(true));
+	NEW_CLASSNN(info->readEvt, Sync::Event(true));
 	info->camera = 0;
 	info->port = 0;
 	info->buffPool = 0;
@@ -124,7 +124,7 @@ Media::MMALStillCapture::~MMALStillCapture()
 		mmal_component_destroy(info->camera);
 		info->camera = 0;
 	}
-	DEL_CLASS(info->readEvt);
+	info->readEvt.Delete();
 	MemFreeNN(info);
 }
 

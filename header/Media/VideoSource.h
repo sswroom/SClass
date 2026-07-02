@@ -2,7 +2,7 @@
 #define _SM_MEDIA_VIDEOSOURCE
 #include "AnyType.h"
 #include "Data/ArrayListInt32.h"
-#include "Data/ArrayListObj.hpp"
+#include "Data/ArrayListArr.hpp"
 #include "Data/ArrayListUInt32.h"
 #include "Media/FrameInfo.h"
 #include "Media/MediaSource.h"
@@ -16,9 +16,9 @@ namespace Media
 	class VideoSource : public MediaSource
 	{
 	protected:
-		Data::ArrayListInt32 *propNames;
-		Data::ArrayListUInt32 *propSizes;
-		Data::ArrayListObj<UInt8*> *propBuffs;
+		Optional<Data::ArrayListInt32> propNames;
+		Optional<Data::ArrayListUInt32> propSizes;
+		Optional<Data::ArrayListArr<UInt8>> propBuffs;
 
 	public:
 		typedef enum
@@ -85,7 +85,7 @@ namespace Media
 
 		virtual UIntOS ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype) = 0; //ret 0 = no more frames
 		void SetProp(Int32 propName, UnsafeArray<const UInt8> propBuff, UInt32 propBuffSize);
-		virtual UInt8 *GetProp(Int32 propName, UInt32 *size);
+		virtual UnsafeArrayOpt<UInt8> GetProp(Int32 propName, OutParam<UInt32> size);
 
 		virtual MediaType GetMediaType();
 	};

@@ -1,135 +1,150 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "IO/StmData/FileData.h"
 #include "Math/Math_C.h"
 #include "Media/ImageList.h"
 #include "Parser/FullParserList.h"
 #include "SSWR/ColorDemo/ColorDemoForm.h"
 
-void __stdcall SSWR::ColorDemo::ColorDemoForm::FileHandler(void *userObj, const WChar **files, IntOS nFiles)
+void __stdcall SSWR::ColorDemo::ColorDemoForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	SSWR::ColorDemo::ColorDemoForm *me = (SSWR::ColorDemo::ColorDemoForm*)userObj;
-	if (nFiles > 0)
+	NN<SSWR::ColorDemo::ColorDemoForm> me = userObj.GetNN<SSWR::ColorDemo::ColorDemoForm>();
+	if (files.GetCount() > 0)
 	{
-		IntOS i = 0;
-		while (i < nFiles)
+		UIntOS i = 0;
+		while (i < files.GetCount())
 		{
-			IO::StmData::FileData *fd;
-			NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
-			Media::ImageList *imgList = (Media::ImageList*)me->parsers->ParseFileType(fd, IO::ParserType::ImageList);
-			DEL_CLASS(fd);
-			if (imgList)
+			NN<IO::StmData::FileData> fd;
+			NEW_CLASSNN(fd, IO::StmData::FileData(files[i], false));
+			Optional<Media::ImageList> imgList = Optional<Media::ImageList>::ConvertFrom(me->parsers->ParseFileType(fd, IO::ParserType::ImageList));
+			NN<Media::ImageList> nnimgList;
+			fd.Delete();
+			if (imgList.SetTo(nnimgList))
 			{
-				if (imgList->GetCount() > 0)
+				if (nnimgList->GetCount() > 0)
 				{
-					Int32 t;
-					SDEL_CLASS(me->currImage);
-					me->currImage = imgList->GetImage(0, &t)->CreateStaticImage();
-					DEL_CLASS(imgList);
+					UInt32 t;
+					me->currImage.Delete();
+					NN<Media::Image> img;
+					if (nnimgList->GetImage2(0, t).SetTo(img))
+						me->currImage = img->CreateStaticImage();
+					nnimgList.Delete();
 					me->CreatePrevImage();
 					break;
 				}
 				else
 				{
-					DEL_CLASS(imgList);
+					nnimgList.Delete();
 				}
 			}
 		}
 	}
 }
 
-void __stdcall SSWR::ColorDemo::ColorDemoForm::OnValueChanged(void *userObj, Int32 scrollPos)
+void __stdcall SSWR::ColorDemo::ColorDemoForm::OnValueChanged(AnyType userObj, UIntOS scrollPos)
 {
-	SSWR::ColorDemo::ColorDemoForm *me = (SSWR::ColorDemo::ColorDemoForm*)userObj;
-	WChar wbuff[32];
+	NN<SSWR::ColorDemo::ColorDemoForm> me = userObj.GetNN<SSWR::ColorDemo::ColorDemoForm>();
+	UTF8Char sbuff[32];
+	UnsafeArray<UTF8Char> sptr;
 	Double v = (scrollPos - 400) * 0.01;
-	Text::StrDouble(wbuff, v);
+	sptr = Text::StrDouble(sbuff, v);
 	me->currValue = Math_Pow(2, v);
-	me->lblValue->SetText(wbuff);
+	me->lblValue->SetText(CSTRP(sbuff, sptr));
 
-	if (me->currImage)
+	if (me->currImage.NotNull())
 	{
 		me->UpdatePrevImage();
 	}
 }
 
-void __stdcall SSWR::ColorDemo::ColorDemoForm::OnPBResized(void *userObj)
+void __stdcall SSWR::ColorDemo::ColorDemoForm::OnPBResized(AnyType userObj)
 {
-	SSWR::ColorDemo::ColorDemoForm *me = (SSWR::ColorDemo::ColorDemoForm*)userObj;
+	NN<SSWR::ColorDemo::ColorDemoForm> me = userObj.GetNN<SSWR::ColorDemo::ColorDemoForm>();
 	me->CreatePrevImage();
 }
 
 void SSWR::ColorDemo::ColorDemoForm::CreatePrevImage()
 {
-	this->pbMain->SetImage(0, false);
-	SDEL_CLASS(this->currPrevImage);
-	SDEL_CLASS(this->currDispImage);
-	if (this->currImage)
+	this->pbMain->SetImage(nullptr, false);
+	this->currPrevImage.Delete();
+	this->currDispImage.Delete();
+	NN<Media::StaticImage> currImage;
+	if (this->currImage.SetTo(currImage))
 	{
-		this->currPrevImage = this->pbMain->CreatePreviewImage(this->currImage);
-		this->currDispImage = this->currPrevImage->CreateStaticImage();
-		this->UpdatePrevImage();
+		this->currPrevImage = this->pbMain->CreatePreviewImage(currImage);
+		if (this->currPrevImage.SetTo(currImage))
+		{
+			this->currDispImage = currImage->CreateStaticImage();
+			this->UpdatePrevImage();
+		}
 	}
 }
 
 void SSWR::ColorDemo::ColorDemoForm::UpdatePrevImage()
 {
-	Media::ColorProfile color(this->currPrevImage->info->color);
+	NN<Media::StaticImage> currPrevImage;
+	NN<Media::StaticImage> currDispImage;
+	if (!this->currPrevImage.SetTo(currPrevImage) || !this->currDispImage.SetTo(currDispImage))
+	{
+		this->pbMain->SetImage(nullptr, false);
+		return;
+	}
+	Media::ColorProfile color(currPrevImage->info.color);
 	if (color.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
 	{
-		color.GetRTranParam()->Set(this->colorMgr->GetDefPProfile()->GetRTranParam());
-		color.GetGTranParam()->Set(this->colorMgr->GetDefPProfile()->GetGTranParam());
-		color.GetBTranParam()->Set(this->colorMgr->GetDefPProfile()->GetBTranParam());
+		color.GetRTranParam()->Set(NN<const Media::CS::TransferParam>(this->colorMgr->GetDefPProfile()->GetRTranParam()));
+		color.GetGTranParam()->Set(NN<const Media::CS::TransferParam>(this->colorMgr->GetDefPProfile()->GetGTranParam()));
+		color.GetBTranParam()->Set(NN<const Media::CS::TransferParam>(this->colorMgr->GetDefPProfile()->GetBTranParam()));
 	}
 	else if (color.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
-		color.GetRTranParam()->Set(this->colorMgr->GetDefVProfile()->GetRTranParam());
-		color.GetGTranParam()->Set(this->colorMgr->GetDefVProfile()->GetGTranParam());
-		color.GetBTranParam()->Set(this->colorMgr->GetDefVProfile()->GetBTranParam());
+		color.GetRTranParam()->Set(NN<const Media::CS::TransferParam>(this->colorMgr->GetDefVProfile()->GetRTranParam()));
+		color.GetGTranParam()->Set(NN<const Media::CS::TransferParam>(this->colorMgr->GetDefVProfile()->GetGTranParam()));
+		color.GetBTranParam()->Set(NN<const Media::CS::TransferParam>(this->colorMgr->GetDefVProfile()->GetBTranParam()));
 	}
-	this->rgbFilter->SetParameter(0, this->currValue, 1.0, &color, this->currPrevImage->info->bpp);
-	this->rgbFilter->ProcessImage(this->currPrevImage->data, this->currDispImage->data, this->currPrevImage->info->width, this->currPrevImage->info->height, this->currPrevImage->info->width * (this->currPrevImage->info->bpp >> 3), this->currPrevImage->info->width * (this->currPrevImage->info->bpp >> 3));
-	this->pbMain->SetImage(this->currDispImage, true);
+	this->rgbFilter->SetParameter(0, this->currValue, 1.0, color, currPrevImage->info.storeBPP, currPrevImage->info.pf, 200);
+	this->rgbFilter->ProcessImage(currPrevImage->data, currDispImage->data, currPrevImage->info.dispSize.x, currPrevImage->info.dispSize.y, currPrevImage->info.storeSize.x * (currPrevImage->info.storeBPP >> 3), currPrevImage->info.storeSize.x * (currPrevImage->info.storeBPP >> 3), false);
+	this->pbMain->SetImage(currDispImage, true);
 }
 
-SSWR::ColorDemo::ColorDemoForm::ColorDemoForm(void *hInst, UI::MSWindowClientControl *parent, UI::MSWindowUI *ui, Media::ColorManager *colorMgr) : UI::MSWindowForm(hInst, parent, 1024, 480, ui)
+SSWR::ColorDemo::ColorDemoForm::ColorDemoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::ColorManager> colorMgr) : UI::GUIForm(parent, 1024, 480, ui)
 {
-	this->SetText(L"ColorDemo");
+	this->SetText(CSTR("ColorDemo"));
 	this->HandleDropFiles(FileHandler, this);
 
-	NEW_CLASS(this->parsers, Parser::FullParserList());
-	NEW_CLASS(this->rgbFilter, Media::RGBColorFilter(colorMgr));
+	NEW_CLASSNN(this->parsers, Parser::FullParserList());
+	NEW_CLASSNN(this->rgbFilter, Media::RGBColorFilter(colorMgr));
 	this->colorMgr = colorMgr;
 	this->colorSess = this->colorMgr->CreateSess(this->GetHMonitor());
 	this->currValue = 1;
-	this->currImage = 0;
-	this->currPrevImage = 0;
-	this->currDispImage = 0;
+	this->currImage = nullptr;
+	this->currPrevImage = nullptr;
+	this->currDispImage = nullptr;
 
-	NEW_CLASS(this->pnlMain, UI::MSWindowPanel(hInst, this));
-	this->pnlMain->SetRect(0, 0, 10, UI::MSWindowHScrollBar::GetSystemSize() + 1, false);
-	this->pnlMain->SetDockType(UI::MSWindowControl::DOCK_TOP);
-	this->lblValue, UI::MSWindowLabel(hInst, this->pnlMain, L"0");
+	this->pnlMain = ui->NewPanel(*this);
+	this->pnlMain->SetRect(0, 0, 10, 3 + 1, false);
+	this->pnlMain->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblValue = ui->NewLabel(this->pnlMain, CSTR("0"));
 	this->lblValue->SetRect(0, 0, 50, 24, false);
-	this->lblValue->SetDockType(UI::MSWindowControl::DOCK_RIGHT);
-/*	NEW_CLASS(this->tbValue, UI::MSWindowTrackBar(hInst, this->pnlMain, 0, 800, 400));
-	this->tbValue->SetDockType(UI::MSWindowControl::DOCK_FILL);
+	this->lblValue->SetDockType(UI::GUIControl::DOCK_RIGHT);
+/*	this->tbValue = ui->NewTrackBar(this->pnlMain, 0, 800, 400);
+	this->tbValue->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tbValue->HandleScrolled(OnValueChanged, this);*/
-	NEW_CLASS(this->hsbValue, UI::MSWindowHScrollBar(hInst, this->pnlMain, UI::MSWindowHScrollBar::GetSystemSize()));
-	this->hsbValue->SetDockType(UI::MSWindowControl::DOCK_FILL);
+	this->hsbValue = ui->NewHScrollBar(this->pnlMain, 3);
+	this->hsbValue->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->hsbValue->InitScrollBar(0, 809, 400, 10);
 	this->hsbValue->HandlePosChanged(OnValueChanged, this);
-	NEW_CLASS(this->pbMain, UI::MSWindowPictureBoxDD(hInst, this, this->colorSess, false, false));
-	this->pbMain->SetDockType(UI::MSWindowControl::DOCK_FILL);
+	this->pbMain = ui->NewPictureBoxDD(*this, this->colorSess, false, false);
+	this->pbMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbMain->HandleSizeChanged(OnPBResized, this);
 }
 
 SSWR::ColorDemo::ColorDemoForm::~ColorDemoForm()
 {
-	DEL_CLASS(this->parsers);
-	DEL_CLASS(this->rgbFilter);
-	SDEL_CLASS(this->currImage);
-	SDEL_CLASS(this->currPrevImage);
-	SDEL_CLASS(this->currDispImage);
+	this->parsers.Delete();
+	this->rgbFilter.Delete();
+	this->currImage.Delete();
+	this->currPrevImage.Delete();
+	this->currDispImage.Delete();
 	this->colorMgr->DeleteSess(this->colorSess);
 }
 

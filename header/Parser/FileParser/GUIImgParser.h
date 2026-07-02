@@ -11,7 +11,7 @@ namespace Parser
 		{
 		private:
 			struct ClassData;
-			ClassData *clsData;
+			NN<ClassData> clsData;
 			Optional<Parser::ParserList> parsers;
 		public:
 			GUIImgParser();

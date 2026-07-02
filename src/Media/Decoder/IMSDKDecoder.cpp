@@ -701,7 +701,7 @@ Optional<Media::VideoSource> __stdcall IMSDKDecoder_DecodeVideo(NN<Media::VideoS
 	if (frameInfo.fourcc == *(Int32*)"ravc")
 	{
 		NN<Media::Decoder::RAVCDecoder> ravc;
-		Media::Decoder::VDecoderChain *decChain;
+		NN<Media::Decoder::VDecoderChain> decChain;
 
 		NEW_CLASSNN(ravc, Media::Decoder::RAVCDecoder(video, false, false));
 		NEW_CLASSNN(decoder, IMSDKDecoder(ravc));
@@ -711,7 +711,7 @@ Optional<Media::VideoSource> __stdcall IMSDKDecoder_DecodeVideo(NN<Media::VideoS
 			ravc.Delete();
 			return nullptr;
 		}
-		NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
+		NEW_CLASSNN(decChain, Media::Decoder::VDecoderChain(decoder));
 		decChain->AddDecoder(ravc);
 		return decChain;
 	}

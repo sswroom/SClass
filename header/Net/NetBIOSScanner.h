@@ -29,7 +29,7 @@ namespace Net
 
 		typedef void (CALLBACKFUNC AnswerUpdated)(AnyType userObj, UInt32 sortableIP);
 	private:
-		Net::UDPServer *svr;
+		NN<Net::UDPServer> svr;
 		Sync::Mutex ansMut;
 		Data::FastMapNN<UInt32, NameAnswer> answers;
 		Data::CallbackStorage<AnswerUpdated> hdlr;

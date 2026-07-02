@@ -17,12 +17,12 @@ Media::ScreenCapturer::ScreenCapturer(Media::MonitorMgr *monMgr, Media::ColorMan
 {
 	this->monMgr = monMgr;
 	this->colorMgr = colorMgr;
-	NEW_CLASS(this->surfaceMgr, Media::DRMMonitorSurfaceMgr(0, monMgr, colorMgr));
+	NEW_CLASSNN(this->surfaceMgr, Media::DRMMonitorSurfaceMgr(0, monMgr, colorMgr));
 }
 
 Media::ScreenCapturer::~ScreenCapturer()
 {
-	DEL_CLASS(this->surfaceMgr);
+	this->surfaceMgr.Delete();
 }
 
 Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
@@ -59,7 +59,8 @@ Optional<Media::StaticImage> Media::ScreenCapturer::CaptureScreen(Optional<Monit
     Screen *scr = ScreenOfDisplay(dis, -1 + (int)(IntOS)hMon.OrNull());
     Drawable drawable = XRootWindowOfScreen(scr);
 
-	Media::StaticImage *retImg = 0;
+	Optional<Media::StaticImage> retImg = nullptr;
+	NN<Media::StaticImage> nnimg;
     XImage *image = XGetImage(dis, drawable, 0, 0, (UInt32)scr->width, (UInt32)scr->height, AllPlanes, ZPixmap);
 	if (image)
 	{
@@ -88,8 +89,9 @@ Optional<Media::StaticImage> Media::ScreenCapturer::CaptureScreen(Optional<Monit
 		
 		if (valid)
 		{
-			NEW_CLASS(retImg, Media::StaticImage(info));
-			MemCopyNANC(retImg->data.Ptr(), image->data, info.byteSize);
+			NEW_CLASSNN(nnimg, Media::StaticImage(info));
+			MemCopyNANC(nnimg->data.Ptr(), image->data, info.byteSize);
+			retImg = nnimg;
 		}
 	    XDestroyImage(image);
 	}	

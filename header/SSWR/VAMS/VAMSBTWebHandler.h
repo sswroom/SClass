@@ -12,7 +12,7 @@ namespace SSWR
 		{
 		private:
 			NN<Text::String> logPath;
-			VAMSBTList *btList;
+			NN<VAMSBTList> btList;
 
 			static Bool __stdcall DevData(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
 			static Bool __stdcall KAData(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
@@ -21,7 +21,7 @@ namespace SSWR
 			static Bool __stdcall ListItem(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
 
 		public:
-			VAMSBTWebHandler(NN<Text::String> logPath, VAMSBTList *btList);
+			VAMSBTWebHandler(NN<Text::String> logPath, NN<VAMSBTList> btList);
 			virtual ~VAMSBTWebHandler();
 		};
 	}

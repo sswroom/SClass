@@ -32,8 +32,8 @@ namespace Media
 	class FogImage : public DrawImage
 	{
 	private:
-		void *img;
-		void *painter;
+		struct ClassData;
+		NN<ClassData> clsData;
 
 		void SetPen(DrawPen *p);
 	public:
@@ -55,13 +55,13 @@ namespace Media
 		virtual Bool DrawStringRot(Int32 centX, Int32 centY, Char *utf8Str, DrawFont *f, DrawBrush *p, Int32 angleDegree);
 		virtual Bool DrawImagePt(DrawImage *img, Int32 tlx, Int32 tly);
 		
-		virtual DrawPen *NewPenARGB(Int32 color, Int32 thick, UInt8 *pattern, Int32 nPattern);
-		virtual DrawBrush *NewBrushARGB(Int32 color);
-		virtual DrawFont *NewFontA(Char *name, Int16 pxSize, Int16 fontStyle);
-		virtual DrawFont *NewFontW(WChar *name, Int16 pxSize, Int16 fontStyle);
-		virtual void DelPen(DrawPen *p);
-		virtual void DelBrush(DrawBrush *b);
-		virtual void DelFont(DrawFont *f);
+		virtual NN<DrawPen> NewPenARGB(Int32 color, Int32 thick, UInt8 *pattern, Int32 nPattern);
+		virtual NN<DrawBrush> NewBrushARGB(Int32 color);
+		virtual NN<DrawFont> NewFontA(Char *name, Int16 pxSize, Int16 fontStyle);
+		virtual NN<DrawFont> NewFontW(WChar *name, Int16 pxSize, Int16 fontStyle);
+		virtual void DelPen(NN<DrawPen> p);
+		virtual void DelBrush(NN<DrawBrush> b);
+		virtual void DelFont(NN<DrawFont> f);
 		
 		Bool GetTextSize(DrawFont *fnt, WChar *txt, Int32 txtLen, Int32 *sz);
 		

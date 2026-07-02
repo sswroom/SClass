@@ -35,7 +35,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ASN1Parser::ParseFileHdr(NN<IO::S
 {
 	if (!fd->IsFullFile())
 		return nullptr;
-	Net::ASN1Data *asn1 = 0;
+	Optional<Net::ASN1Data> asn1 = nullptr;
 //	UInt8 *buff;
 	UInt64 fsize = fd->GetDataSize();
 	NN<Text::String> fname = fd->GetFullFileName();
@@ -44,7 +44,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ASN1Parser::ParseFileHdr(NN<IO::S
 /*		buff = MemAlloc(UInt8, (UIntOS)fsize);
 		if (fd->GetRealData(0, (UIntOS)fsize, buff) == fsize && Net::ASN1Util::PDUIsValid(buff, buff + (UIntOS)fsize))
 		{
-			NEW_CLASS(asn1, Crypto::JKSFile(fname, buff, (UIntOS)fsize));
+			NEW_CLASSOPT(asn1, Crypto::JKSFile(fname, buff, (UIntOS)fsize));
 		}
 		MemFree(buff);*/
 	}

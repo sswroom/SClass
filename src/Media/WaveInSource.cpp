@@ -116,7 +116,7 @@ Media::WaveInSource::WaveInSource(UnsafeArray<const UTF8Char> devName, UInt32 fr
 	this->hWaveIn = 0;
 	this->hdrs = 0;
 	this->hdrsCnt = 0;
-	NEW_CLASS(this->dataEvt, Sync::Event(true));
+	NEW_CLASSNN(this->dataEvt, Sync::Event(true));
 
 	i = GetDeviceCount();
 	while (i-- > 0)
@@ -143,7 +143,7 @@ Media::WaveInSource::WaveInSource(UInt32 devId, UInt32 freq, UInt16 nbits, UInt1
 	this->hWaveIn = 0;
 	this->hdrs = 0;
 	this->hdrsCnt = 0;
-	NEW_CLASS(this->dataEvt, Sync::Event(true));
+	NEW_CLASSNN(this->dataEvt, Sync::Event(true));
 	OpenAudio();
 }
 
@@ -155,7 +155,7 @@ Media::WaveInSource::~WaveInSource()
 		waveInClose((HWAVEIN)hWaveIn);
 		hWaveIn = 0;
 	}
-	DEL_CLASS(this->dataEvt);
+	this->dataEvt.Delete();
 }
 
 Bool Media::WaveInSource::IsError()

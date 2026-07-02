@@ -65,8 +65,8 @@ Optional<IO::ParsedObject> Parser::FileParser::B3DMParser::ParseFileHdr(NN<IO::S
 		return nullptr;
 	}
 
-	IO::VirtualPackageFile *pf;
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NN<IO::VirtualPackageFile> pf;
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	sptr = fd->GetShortName().OrEmpty().ConcatTo(sbuff);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".glb"));
 	pf->AddData(fd, ofst, fd->GetDataSize() - ofst, IO::PackFileItem::HeaderType::No, CSTRP(sbuff, sptr), nullptr, nullptr, nullptr, 0);

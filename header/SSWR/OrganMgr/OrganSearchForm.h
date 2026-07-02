@@ -20,7 +20,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnCancel;
 			NN<OrganEnv> env;
 			Optional<Text::String> foundStr;
-			OrganGroup *foundGroup;
+			Optional<OrganGroup> foundGroup;
 			Int32 parentId;
 			
 			static void __stdcall OnOKClicked(AnyType userObj);

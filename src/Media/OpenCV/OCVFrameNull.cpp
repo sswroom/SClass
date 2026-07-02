@@ -58,9 +58,12 @@ void Media::OpenCV::OCVFrame::GetImageData(UnsafeArray<UInt8> destBuff, IntOS le
 
 }
 
-Media::StaticImage *Media::OpenCV::OCVFrame::CreateStaticImage()
+NN<Media::StaticImage> Media::OpenCV::OCVFrame::CreateStaticImage()
 {
-	return 0;
+	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
+	NN<Media::StaticImage> simg;
+	NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UIntOS>(1, 1), 0, 32, Media::PixelFormat::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVType::YUVT_BT709, Media::AlphaType::AT_IGNORE_ALPHA, Media::YCOffset::YCOFST_C_CENTER_LEFT));
+	return simg;
 }
 
 void Media::OpenCV::OCVFrame::ToBlackAndWhite(UInt8 middleV)

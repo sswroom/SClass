@@ -28,7 +28,7 @@ namespace Net
 
 		Int64 lastSendTime;
 		Sync::Mutex cliMut;
-		Net::TCPClient *cli;
+		Optional<Net::TCPClient> cli;
 		Data::Duration timeout;
 
 		Bool sendRunning;

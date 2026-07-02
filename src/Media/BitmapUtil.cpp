@@ -12,7 +12,8 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(UnsafeArray<const
 	Double hdpi = 96.0;
 	Double vdpi = 96.0;
 	UIntOS imgPos;
-	Media::StaticImage *outImg = 0;
+	NN<Media::StaticImage> outImg;
+	Optional<Media::StaticImage> ret = nullptr;
 
 	if (ReadInt32(&dataBuff[0]) == 12)
 	{
@@ -47,7 +48,8 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(UnsafeArray<const
 		palSize = (UIntOS)(4 << bpp);
 	}
 
-	NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UIntOS>((UIntOS)imgWidth, (UIntOS)imgHeight), 0, bpp, Media::PixelFormatGetDef(0, bpp), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32)?Media::AT_ALPHA:Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASSNN(outImg, Media::StaticImage(Math::Size2D<UIntOS>((UIntOS)imgWidth, (UIntOS)imgHeight), 0, bpp, Media::PixelFormatGetDef(0, bpp), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32)?Media::AT_ALPHA:Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	ret = outImg;
 	outImg->info.hdpi = hdpi;
 	outImg->info.vdpi = vdpi;
 	UnsafeArray<UInt8> pBits = outImg->data;
@@ -83,8 +85,8 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(UnsafeArray<const
 			currOfst = (lineW * (UIntOS)imgHeight) + imgPos;
 			if (currOfst > dataSize)
 			{
-				DEL_CLASS(outImg);
-				outImg = 0;
+				outImg.Delete();
+				ret = nullptr;
 			}
 			else
 			{
@@ -164,8 +166,8 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(UnsafeArray<const
 			}
 			break;
 		default:
-			DEL_CLASS(outImg);
-			outImg = 0;
+			outImg.Delete();
+			ret = nullptr;
 			break;
 		};
 	}
@@ -188,5 +190,5 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(UnsafeArray<const
 			MemCopyNO(pBits.Ptr(), &dataBuff[currOfst], (UIntOS)imgHeight * lineW);
 		}
 	}
-	return outImg;
+	return ret;
 }

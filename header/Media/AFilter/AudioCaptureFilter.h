@@ -13,7 +13,7 @@ namespace Media
 		class AudioCaptureFilter : public AudioFilter
 		{
 		private:
-			IO::FileStream *waveStm;
+			Optional<IO::FileStream> waveStm;
 			UInt32 dataOfst;
 			UInt64 dataSize;
 			UInt64 fileSize;

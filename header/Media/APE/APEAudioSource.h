@@ -14,13 +14,13 @@ namespace Media
 		{
 		private:
 			IAPEDecompress *ape;
-			Media::APE::APEIO *io;
-			Media::AudioFormat *fmt;
+			NN<Media::APE::APEIO> io;
+			NN<Media::AudioFormat> fmt;
 			Int32 currBlock;
 			Sync::Event *evt;
 
 		public:
-			APEAudioSource(IAPEDecompress *ape, Media::APE::APEIO *io);
+			APEAudioSource(IAPEDecompress *ape, NN<Media::APE::APEIO> io);
 			virtual ~APEAudioSource();
 
 			virtual WChar *GetName(WChar *buff);

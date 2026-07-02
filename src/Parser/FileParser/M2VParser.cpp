@@ -34,7 +34,7 @@ IO::ParserType Parser::FileParser::M2VParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+Optional<IO::ParsedObject> Parser::FileParser::M2VParser::ParseFile(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType)
 {
 	UInt8 tmpBuff[1024];
 	IntOS readSize = fd->GetRealData(0, 1024, BYTEARR(tmpBuff));
@@ -42,7 +42,7 @@ IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(NN<IO::StreamData> fd
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	if (!Media::MPEGVideoParser::GetFrameInfo(tmpBuff, readSize, info, frameRateNorm, frameRateDenorm, 0, false))
-		return 0;
+		return nullptr;
 
 	IntOS i;
 	IntOS j;
@@ -68,7 +68,7 @@ IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(NN<IO::StreamData> fd
 		if (readSize == 0)
 		{
 			vSource.Delete();
-			return 0;
+			return nullptr;
 		}
 
 		i = 0;
@@ -99,8 +99,8 @@ IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(NN<IO::StreamData> fd
 	vSource->AddNewFrame(gopStart, (Int32)(fleng - gopStart), true, MulDiv((Int32)gopFrameCnt, frameRateDenorm * 1000, frameRateNorm));
 	NN<Media::Decoder::MP2GDecoder> mp2g;
 	NEW_CLASSNN(mp2g, Media::Decoder::MP2GDecoder(vSource, true));
-	Media::MediaFile *file;
-	NEW_CLASS(file, Media::MediaFile(fd->GetFullName()));
+	NN<Media::MediaFile> file;
+	NEW_CLASSNN(file, Media::MediaFile(fd->GetFullName()));
 	file->AddSource(mp2g, 0);
 	return file;
 }

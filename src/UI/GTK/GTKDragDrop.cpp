@@ -108,9 +108,9 @@ Bool UI::GTK::GTKDropData::GetDataText(UnsafeArray<const UTF8Char> name, NN<Text
 	}
 }
 
-IO::Stream *UI::GTK::GTKDropData::GetDataStream(UnsafeArray<const UTF8Char> name)
+Optional<IO::Stream> UI::GTK::GTKDropData::GetDataStream(UnsafeArray<const UTF8Char> name)
 {
-	return 0;
+	return nullptr;
 }
 
 void UI::GTK::GTKDropData::OnDataReceived(void *selData)

@@ -154,10 +154,10 @@ Media::DeinterlaceLR::DeinterlaceLR(UIntOS fieldCnt, UIntOS fieldSep)
 	this->stats = MemAllocArr(DITHREADSTAT, this->nCore);
 	UIntOS i = this->nCore;
 
-	NEW_CLASS(evtMain, Sync::Event());
+	NEW_CLASSNN(this->evtMain, Sync::Event());
 	while (i-- > 0)
 	{
-		NEW_CLASS(stats[i].evt, Sync::Event());
+		NEW_CLASSNN(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 		stats[i].evtMain = this->evtMain;
 	}
@@ -199,9 +199,9 @@ Media::DeinterlaceLR::~DeinterlaceLR()
 	i = nCore;
 	while (i-- > 0)
 	{
-		DEL_CLASS(stats[i].evt);
+		stats[i].evt.Delete();
 	}
-	DEL_CLASS(evtMain);
+	this->evtMain.Delete();
 	MemFreeArr(this->stats);
 	UnsafeArray<Int64> weight;
 	UnsafeArray<IntOS> index;

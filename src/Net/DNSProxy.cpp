@@ -127,7 +127,8 @@ void __stdcall Net::DNSProxy::OnDNSRequest(AnyType userObj, Text::CStringNN reqN
 			me->svr->ReplyRequest(reqAddr, reqPort, buff, buffSize);
 
 			NN<Sync::Mutex> targetMut;
-			if (req->status == NS_NORMAL && me->targetMap && targetMut.Set(me->targetMut))
+			NN<Data::FastMapNN<UInt32, TargetInfo>> targetMap;
+			if (req->status == NS_NORMAL && me->targetMap.SetTo(targetMap) && me->targetMut.SetTo(targetMut))
 			{
 				Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
 				UInt32 resIP;
@@ -148,11 +149,11 @@ void __stdcall Net::DNSProxy::OnDNSRequest(AnyType userObj, Text::CStringNN reqN
 						resIP = ReadNUInt32(ans->addr.addr);
 						sortIP = ReadMUInt32(ans->addr.addr);
 						Sync::MutexUsage targetMutUsage(targetMut);
-						if (!me->targetMap->Get(sortIP).SetTo(target))
+						if (!targetMap->Get(sortIP).SetTo(target))
 						{
 							NEW_CLASSNN(target, TargetInfo());
 							target->ip = resIP;
-							me->targetMap->Put(sortIP, target);
+							targetMap->Put(sortIP, target);
 							me->targetUpdated = true;
 						}
 						Sync::MutexUsage mutUsage(target->mut);
@@ -618,14 +619,14 @@ Net::DNSProxy::DNSProxy(NN<Net::SocketFactory> sockf, Bool analyzeTarget, NN<IO:
 	this->reqothUpdated = true;
 	if (analyzeTarget)
 	{
-		NEW_CLASS(this->targetMut, Sync::Mutex());
-		NEW_CLASS(this->targetMap, Data::UInt32FastMapNN<TargetInfo>());
+		NEW_CLASSOPT(this->targetMut, Sync::Mutex());
+		NEW_CLASSOPT(this->targetMap, Data::UInt32FastMapNN<TargetInfo>());
 		this->targetUpdated = true;
 	}
 	else
 	{
-		this->targetMap = 0;
-		this->targetMut = 0;
+		this->targetMap = nullptr;
+		this->targetMut = nullptr;
 		this->targetUpdated = false;
 	}
 	this->lastId = 0;
@@ -634,15 +635,15 @@ Net::DNSProxy::DNSProxy(NN<Net::SocketFactory> sockf, Bool analyzeTarget, NN<IO:
 	this->currServerIndex = 0;
 	this->currIPTime.SetCurrTimeUTC();
 
-	NEW_CLASS(this->cli, Net::UDPServer(this->sockf, nullptr, 0, nullptr, ClientPacket, this, log, nullptr, 2, false));
-	NEW_CLASS(this->svr, Net::DNSServer(this->sockf, log));
+	NEW_CLASSNN(this->cli, Net::UDPServer(this->sockf, nullptr, 0, nullptr, ClientPacket, this, log, nullptr, 2, false));
+	NEW_CLASSNN(this->svr, Net::DNSServer(this->sockf, log));
 	this->svr->HandleRequest(OnDNSRequest, this);
 }
 
 Net::DNSProxy::~DNSProxy()
 {
-	DEL_CLASS(this->svr);
-	DEL_CLASS(this->cli);
+	this->svr.Delete();
+	this->cli.Delete();
 
 	NN<const Data::ArrayListNN<RequestResult>> reqList;
 	NN<RequestResult> req;
@@ -672,18 +673,19 @@ Net::DNSProxy::~DNSProxy()
 	}
 	this->blackList.FreeAll();
 	
-	if (this->targetMap)
+	NN<Data::FastMapNN<UInt32, TargetInfo>> targetMap;
+	if (this->targetMap.SetTo(targetMap))
 	{
 		NN<TargetInfo> target;
-		i = this->targetMap->GetCount();
+		i = targetMap->GetCount();
 		while (i-- > 0)
 		{
-			target = this->targetMap->GetItemNoCheck(i);
+			target = targetMap->GetItemNoCheck(i);
 			target->addrList.FreeAll();
 			target.Delete();
 		}
-		DEL_CLASS(this->targetMut);
-		DEL_CLASS(this->targetMap);
+		this->targetMut.Delete();
+		this->targetMap.Delete();
 	}
 }
 
@@ -752,9 +754,9 @@ UIntOS Net::DNSProxy::GetReqOthList(NN<Data::ArrayListNN<Text::String>> reqList)
 
 UIntOS Net::DNSProxy::GetTargetList(NN<Data::ArrayListNN<TargetInfo>> targetList)
 {
-	NN<const Data::ReadingListNN<TargetInfo>> thisList;
+	NN<Data::FastMapNN<UInt32, TargetInfo>> thisList;
 	NN<Sync::Mutex> targetMut;
-	if (!thisList.Set(this->targetMap) || !targetMut.Set(this->targetMut))
+	if (!this->targetMap.SetTo(thisList) || !this->targetMut.SetTo(targetMut))
 		return 0;
 	Sync::MutexUsage mutUsage(targetMut);
 	return targetList->AddAll(thisList);

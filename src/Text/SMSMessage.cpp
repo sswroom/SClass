@@ -293,7 +293,7 @@ Optional<Text::SMSMessage> Text::SMSMessage::CreateFromPDU(UnsafeArray<const UIn
 	UnsafeArray<UTF16Char> address;
 	Data::DateTime msgTime;
 	Optional<Text::SMSUserData> ud;
-	Text::SMSMessage *msg;
+	NN<Text::SMSMessage> msg;
 
 	if (pduBytes[0] == 0)
 	{
@@ -327,7 +327,7 @@ Optional<Text::SMSMessage> Text::SMSMessage::CreateFromPDU(UnsafeArray<const UIn
 		ParseTimestamp(pduBytes, msgTime);
 		pduBytes += 7;
 		ud = Text::SMSUserData::CreateSMSFromBytes(pduBytes, udhi, (Text::SMSUtil::DCS)(dcs & 0xc));
-		NEW_CLASS(msg, Text::SMSMessage(address, smsc, ud));
+		NEW_CLASSNN(msg, Text::SMSMessage(address, smsc, ud));
 		msg->SetMessageTime(msgTime);
 		msg->SetMoreMsgToSend(mms);
 		msg->SetReplyPath(rp);
@@ -364,7 +364,7 @@ Optional<Text::SMSMessage> Text::SMSMessage::CreateFromPDU(UnsafeArray<const UIn
 			pduBytes += 7;
 		}
 		ud = Text::SMSUserData::CreateSMSFromBytes(pduBytes, udhi, (Text::SMSUtil::DCS)(dcs & 0xc));
-		NEW_CLASS(msg, Text::SMSMessage(address, smsc, ud));
+		NEW_CLASSNN(msg, Text::SMSMessage(address, smsc, ud));
 		msg->SetRejectDuplicates(rd);
 		msg->SetReplyPath(rp);
 		msg->SetStatusReport(srr);

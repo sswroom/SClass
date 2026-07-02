@@ -40,11 +40,11 @@ Optional<IO::ParsedObject> Parser::FileParser::SMakeParser::ParseFileHdr(NN<IO::
 	{
 		return nullptr;
 	}
-	IO::SMake *smake;
-	NEW_CLASS(smake, IO::SMake(fd->GetFullFileName()->ToCString(), 0, nullptr));
+	NN<IO::SMake> smake;
+	NEW_CLASSNN(smake, IO::SMake(fd->GetFullFileName()->ToCString(), 0, nullptr));
 	if (smake->IsLoadFailed())
 	{
-		DEL_CLASS(smake);
+		smake.Delete();
 		return nullptr;
 	}
 

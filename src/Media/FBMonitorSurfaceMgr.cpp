@@ -94,22 +94,18 @@ UIntOS Media::FBMonitorSurfaceMgr::GetMonitorCount()
 
 Optional<Media::MonitorSurface> Media::FBMonitorSurfaceMgr::CreateSurface(Math::Size2D<UIntOS> size, UIntOS bitDepth)
 {
-	Media::MemorySurface *surface;
-	NEW_CLASS(surface, Media::MemorySurface(size, bitDepth, this->GetMonitorColor(nullptr), this->GetMonitorDPI(nullptr)));
+	NN<Media::MemorySurface> surface;
+	NEW_CLASSNN(surface, Media::MemorySurface(size, bitDepth, this->GetMonitorColor(nullptr), this->GetMonitorDPI(nullptr)));
 	return surface;
 }
 
 Optional<Media::MonitorSurface> Media::FBMonitorSurfaceMgr::CreatePrimarySurface(Optional<MonitorHandle> hMon, Optional<ControlHandle> clipWindow, Media::RotateType rotateType)
 {
-	Media::FBSurface *surface = nullptr;
-	NEW_CLASS(surface, Media::FBSurface(hMon, this->GetMonitorColor(hMon), this->GetMonitorDPI(hMon), rotateType));
-	if (surface == nullptr)
+	NN<Media::FBSurface> surface;
+	NEW_CLASSNN(surface, Media::FBSurface(hMon, this->GetMonitorColor(hMon), this->GetMonitorDPI(hMon), rotateType));
+	if (surface->IsError())
 	{
-		return nullptr;
-	}
-	else if (surface->IsError())
-	{
-		DEL_CLASS(surface);
+		surface.Delete();
 		return nullptr;
 	}
 	return surface;

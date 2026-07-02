@@ -45,7 +45,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CDXAParser::ParseFileHdr(NN<IO::S
 	fileSize = ReadUInt32(&hdr[4]) + 8;
 
 	UInt8 riffBuff[12];
-	IO::CDXAData *cdData = 0;
+	Optional<IO::CDXAData> cdData = nullptr;
 	UInt8 *fmt = 0;
 	currPos = 12;
 	while (currPos < fileSize)
@@ -64,7 +64,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CDXAParser::ParseFileHdr(NN<IO::S
 			UInt32 leng = ReadUInt32(&riffBuff[4]);
 			if ((leng % 2352) == 0)
 			{
-				NEW_CLASS(cdData, IO::CDXAData(fd, currPos + 8, leng));
+				NEW_CLASSOPT(cdData, IO::CDXAData(fd, currPos + 8, leng));
 				break;
 			}
 			//////////////////////////

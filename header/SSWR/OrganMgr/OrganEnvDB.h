@@ -50,7 +50,7 @@ namespace SSWR
 			virtual Bool AddSpecies(NN<OrganSpecies> sp);
 			virtual Bool DelSpecies(NN<OrganSpecies> sp);
 			virtual FileStatus AddSpeciesFile(NN<OrganSpecies> sp, Text::CStringNN fileName, Bool firstPhoto, Bool moveFile, OptOut<Int32> fileId);
-			virtual FileStatus AddSpeciesWebFile(NN<OrganSpecies> sp, NN<Text::String> srcURL, NN<Text::String> imgURL, IO::Stream *stm, UnsafeArrayOpt<UTF8Char> webFileName);
+			virtual FileStatus AddSpeciesWebFile(NN<OrganSpecies> sp, NN<Text::String> srcURL, NN<Text::String> imgURL, NN<IO::Stream> stm, UnsafeArrayOpt<UTF8Char> webFileName);
 			FileStatus AddSpeciesWebFileOld(NN<OrganSpecies> sp, NN<Text::String> srcURL, NN<Text::String> imgURL, NN<IO::Stream> stm, UnsafeArrayOpt<UTF8Char> webFileName);
 			virtual Bool UpdateSpeciesWebFile(NN<OrganSpecies> sp, NN<WebFileInfo> wfile, NN<Text::String> srcURL, NN<Text::String> location);
 			Bool UpdateSpeciesWebFileOld(NN<OrganSpecies> sp, UnsafeArray<const UTF8Char> webFileName, UnsafeArray<const UTF8Char> srcURL);
@@ -106,7 +106,7 @@ namespace SSWR
 			virtual Optional<Media::ImageList> ParseSpImage(NN<OrganSpecies> sp);
 			virtual Optional<Media::ImageList> ParseFileImage(NN<UserFileInfo> userFile);
 			virtual Optional<Media::ImageList> ParseWebImage(NN<WebFileInfo> webFile);
-			virtual OrganGroup *SearchObject(UnsafeArray<const UTF8Char> searchStr, UnsafeArray<UTF8Char> resultStr, UIntOS resultStrBuffSize, Int32 *parentId);
+			virtual Optional<OrganGroup> SearchObject(UnsafeArray<const UTF8Char> searchStr, UnsafeArray<UTF8Char> resultStr, UIntOS resultStrBuffSize, Int32 *parentId);
 
 		private:
 			virtual void LoadGroupTypes();

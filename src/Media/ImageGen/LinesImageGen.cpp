@@ -20,7 +20,7 @@ Text::CStringNN Media::ImageGen::LinesImageGen::GetName() const
 
 Optional<Media::RasterImage> Media::ImageGen::LinesImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UIntOS> size)
 {
-	Media::StaticImage *outImage;
+	NN<Media::StaticImage> outImage;
 	UnsafeArray<Int64> imgPtr;
 	UnsafeArray<UInt8> imgPtr2;
 	UInt16 c[4];
@@ -32,7 +32,7 @@ Optional<Media::RasterImage> Media::ImageGen::LinesImageGen::GenerateImage(NN<co
 	NN<Media::CS::TransferFunc> rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParamRead());
 	NN<Media::CS::TransferFunc> gfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetGTranParamRead());
 	NN<Media::CS::TransferFunc> bfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetBTranParamRead());
-	NEW_CLASS(outImage, Media::StaticImage(size, 0, 64, Media::PF_LE_B16G16R16A16, 0, colorProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASSNN(outImage, Media::StaticImage(size, 0, 64, Media::PF_LE_B16G16R16A16, 0, colorProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 
 	imgPtr2 = outImage->data;
 	

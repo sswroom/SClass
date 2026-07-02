@@ -54,8 +54,8 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 	UInt8 buff[256];
 	Data::ByteBuffer cerBuff(0);
 	Text::StringBuilderUTF8 sb;
-	IO::VirtualPackageFile *pkg;
-	NEW_CLASS(pkg, IO::VirtualPackageFileFast(fd->GetFullFileName()));
+	NN<IO::VirtualPackageFile> pkg;
+	NEW_CLASSNN(pkg, IO::VirtualPackageFileFast(fd->GetFullFileName()));
 	UInt32 cnt = ReadMUInt32(&hdr[8]);
 	UInt64 ofst = 12;
 	UIntOS readSize;

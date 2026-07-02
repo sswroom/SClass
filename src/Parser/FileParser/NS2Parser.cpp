@@ -59,12 +59,12 @@ Optional<IO::ParsedObject> Parser::FileParser::NS2Parser::ParseFileHdr(NN<IO::St
 	if (hdr[i + 5] != '"')
 		return nullptr;
 
-	IO::VirtualPackageFile *pf;
+	NN<IO::VirtualPackageFile> pf;
 	Text::Encoding enc(932);
 	hdrSize = ReadUInt32(&hdr[0]);
 	Data::ByteBuffer hdrBuff(hdrSize);
 	fd->GetRealData(0, hdrSize, hdrBuff);
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	
 	i = 4;
 	fileOfst = hdrSize;

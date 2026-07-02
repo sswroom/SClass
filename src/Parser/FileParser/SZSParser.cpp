@@ -45,7 +45,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SZSParser::ParseFileHdr(NN<IO::St
 	UInt64 minOfst;
 	UInt64 fileOfst;
 	UInt64 fileSize;
-	IO::VirtualPackageFile *pf = 0;
+	NN<IO::VirtualPackageFile> pf;
 	UInt64 fileLen = fd->GetDataSize();
 
 	if (!Text::StrStartsWithC(&hdr[0], 16, UTF8STRC("SZS100__")))
@@ -54,7 +54,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SZSParser::ParseFileHdr(NN<IO::St
 	if (fileCnt <= 0)
 		return nullptr;
 	Text::Encoding enc(932);
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	ofst = 16;
 	minOfst = 16 + 272 * (UInt32)fileCnt;
 	i = 0;
@@ -66,7 +66,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SZSParser::ParseFileHdr(NN<IO::St
 		fileSize = ReadUInt64(&fileBuff[264]);
 		if (fileOfst < minOfst || (fileOfst + fileSize) > fileLen)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(sbuff, fileBuff, 256, 0);

@@ -40,7 +40,7 @@ Optional<IO::ParsedObject> Parser::FileParser::HTRecParser::ParseFileHdr(NN<IO::
 	if (fd->GetDataSize() != 96 + recCnt * 3)
 		return nullptr;
 
-	Media::HTRecFile *file;
-	NEW_CLASS(file, Media::HTRecFile(fd));
+	NN<Media::HTRecFile> file;
+	NEW_CLASSNN(file, Media::HTRecFile(fd));
 	return file;
 }

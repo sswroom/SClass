@@ -42,7 +42,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPParser::ParseFileHdr(NN<IO::S
 	UInt32 inclLen;
 	UInt32 origLen;
 	UInt32 linkType;
-	Net::EthernetAnalyzer *analyzer;
+	NN<Net::EthernetAnalyzer> analyzer;
 	NN<IO::DataRateCalc> dataRate;
 	Data::DateTime dt;
 	UInt8 dataBuff[16];
@@ -50,7 +50,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPParser::ParseFileHdr(NN<IO::S
 	if (ReadUInt32(&hdr[0]) == 0xa1b2c3d4)
 	{
 		linkType = ReadUInt32(&hdr[20]);
-		NEW_CLASS(analyzer, Net::EthernetAnalyzer(nullptr, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
+		NEW_CLASSNN(analyzer, Net::EthernetAnalyzer(nullptr, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
 		NEW_CLASSNN(dataRate, IO::DataRateCalc(fd->GetFullFileName()));
 		Data::ByteBuffer packetBuff(maxSize);
 		currOfst = 24;
@@ -76,7 +76,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPParser::ParseFileHdr(NN<IO::S
 		}
 		if (targetType == IO::ParserType::DataRateCalc)
 		{
-			DEL_CLASS(analyzer);
+			analyzer.Delete();
 			return dataRate;
 		}
 		else
@@ -88,7 +88,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPParser::ParseFileHdr(NN<IO::S
 	else if (ReadMUInt32(&hdr[0]) == 0xa1b2c3d4)
 	{
 		linkType = ReadMUInt32(&hdr[20]);
-		NEW_CLASS(analyzer, Net::EthernetAnalyzer(nullptr, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
+		NEW_CLASSNN(analyzer, Net::EthernetAnalyzer(nullptr, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
 		NEW_CLASSNN(dataRate, IO::DataRateCalc(fd->GetFullFileName()));
 		Data::ByteBuffer packetBuff(maxSize);
 		currOfst = 24;
@@ -114,7 +114,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPParser::ParseFileHdr(NN<IO::S
 		}
 		if (targetType == IO::ParserType::DataRateCalc)
 		{
-			DEL_CLASS(analyzer);
+			analyzer.Delete();
 			return dataRate;
 		}
 		else

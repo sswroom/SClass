@@ -25,11 +25,11 @@ Net::SNS::SNSRSS::SNSRSS(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine
 	this->chDesc = nullptr;
 	this->timeout = 30000;
 
-	Net::RSS *rss;
+	NN<Net::RSS> rss;
 	NN<Text::String> s;
 	NN<SNSItem> snsItem;
 	NN<Net::RSSItem> item;
-	NEW_CLASS(rss, Net::RSS(this->channelId->ToCString(), this->userAgent, this->clif, this->ssl, this->timeout, this->log));
+	NEW_CLASSNN(rss, Net::RSS(this->channelId->ToCString(), this->userAgent, this->clif, this->ssl, this->timeout, this->log));
 	if (rss->GetTitle().SetTo(s))
 	{
 		this->chName = s->Clone();
@@ -85,7 +85,7 @@ Net::SNS::SNSRSS::SNSRSS(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine
 		}
 		this->itemMap.Put(item->guid, snsItem);
 	}
-	DEL_CLASS(rss);
+	rss.Delete();
 }
 
 Net::SNS::SNSRSS::~SNSRSS()
@@ -166,9 +166,9 @@ Bool Net::SNS::SNSRSS::Reload()
 		i++;
 	}
 
-	Net::RSS *rss;
+	NN<Net::RSS> rss;
 	NN<Text::String> nns;
-	NEW_CLASS(rss, Net::RSS(this->channelId->ToCString(), this->userAgent, this->clif, this->ssl, this->timeout, this->log));
+	NEW_CLASSNN(rss, Net::RSS(this->channelId->ToCString(), this->userAgent, this->clif, this->ssl, this->timeout, this->log));
 	i = rss->GetCount();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
@@ -222,7 +222,7 @@ Bool Net::SNS::SNSRSS::Reload()
 				changed = true;
 			}
 		}
-		DEL_CLASS(rss);
+		rss.Delete();
 
 		i = idList.GetCount();
 		while (i-- > 0)
@@ -236,7 +236,7 @@ Bool Net::SNS::SNSRSS::Reload()
 	}
 	else
 	{
-		DEL_CLASS(rss);
+		rss.Delete();
 	}
 	
 	return changed;

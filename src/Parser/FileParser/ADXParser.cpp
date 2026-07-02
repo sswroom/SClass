@@ -56,11 +56,11 @@ Optional<IO::ParsedObject> Parser::FileParser::ADXParser::ParseFileHdr(NN<IO::St
 	af.extraSize = 0;
 	af.extra = 0;
 
-	Media::MediaFile *vid;
+	NN<Media::MediaFile> vid;
 	NN<Media::AudioFixBlockSource> src;
 	NEW_CLASSNN(src, Media::AudioFixBlockSource(fd, startOfst + 4, ((ReadMUInt32(&buff[8]) >> 4) + 1) * 18, af, fd->GetFullName()));
 
-	NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
+	NEW_CLASSNN(vid, Media::MediaFile(fd->GetFullName()));
 	vid->AddSource(src, 0);
 	return vid;
 }

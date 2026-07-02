@@ -21,7 +21,7 @@ namespace Net
 		typedef struct
 		{
 			NN<Text::String> groupName;
-			Data::ArrayListNN<ImageInfo> *imageList;
+			NN<Data::ArrayListNN<ImageInfo>> imageList;
 		} GroupInfo;
 
 	private:

@@ -360,7 +360,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::W
 								}
 							}
 							gimg->DelBrush(b);
-							NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganWeb::OrganWebHandler.WebRequest"));
+							NEW_CLASSNN(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganWeb::OrganWebHandler.WebRequest"));
 							gimg->SaveJPG(mstm);
 							buff = mstm->GetBuff(&buffSize);
 							resp->AddDefHeaders(req);
@@ -374,8 +374,8 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::W
 								fs.Write(buff, buffSize);
 							}
 
-							DEL_CLASS(mstm);
-							DEL_CLASS(dimg);
+							mstm.Delete();
+							dimg.Delete();
 							this->eng->DeleteImage(gimg);*/
 						}
 						else
@@ -1000,7 +1000,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 SSWR::OrganWeb::OrganWebPhotoController::OrganWebPhotoController(NN<Net::WebServer::MemoryWebSessionManager> sessMgr, NN<OrganWebEnv> env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize), csconvColor(Media::ColorProfile::CPT_SRGB)
 {
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(this->resizerLR, Media::Resizer::LanczosResizerLR_C32(3, 3, destProfile, this->env->GetColorSess().Ptr(), Media::AT_IGNORE_ALPHA, 0, Media::PF_B8G8R8A8));
+	NEW_CLASSNN(this->resizerLR, Media::Resizer::LanczosResizerLR_C32(3, 3, destProfile, this->env->GetColorSess().Ptr(), Media::AT_IGNORE_ALPHA, 0, Media::PF_B8G8R8A8));
 	this->csconv = nullptr;
 	this->csconvFCC = 0;
 	this->csconvBpp = 0;
@@ -1015,6 +1015,6 @@ SSWR::OrganWeb::OrganWebPhotoController::OrganWebPhotoController(NN<Net::WebServ
 
 SSWR::OrganWeb::OrganWebPhotoController::~OrganWebPhotoController()
 {
-	DEL_CLASS(this->resizerLR);
+	this->resizerLR.Delete();
 	this->csconv.Delete();
 }

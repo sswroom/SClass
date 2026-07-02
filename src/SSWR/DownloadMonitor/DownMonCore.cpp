@@ -470,7 +470,7 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore() : thread(CheckThread, this, CS
 	this->ssl = Net::SSLEngineFactory::Create(this->clif, true);
 	this->chkStatus = CS_IDLE;
 
-	NEW_CLASS(this->parsers, Parser::FullParserList());
+	NEW_CLASSNN(this->parsers, Parser::FullParserList());
 	
 	this->downPath = Text::String::New(UTF8STRC("D:\\DownTemp"));
 	this->succPath = Text::String::New(UTF8STRC("\\\\192.168.0.21\\disk4\\DownVideo\\ToCheck"));
@@ -526,7 +526,7 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore() : thread(CheckThread, this, CS
 SSWR::DownloadMonitor::DownMonCore::~DownMonCore()
 {
 	this->thread.Stop();
-	DEL_CLASS(this->parsers);
+	this->parsers.Delete();
 
 	this->fileTypeMap.FreeAll(FileFree);
 	this->ssl.Delete();

@@ -10,11 +10,11 @@
 
 //#include "tools_common.h"
 
-typedef struct
+struct Media::Decoder::VPXDecoder::ClassData
 {
 	Bool inited;
 	vpx_codec_ctx_t codec;
-} ClassData;
+};
 
 void Media::Decoder::VPXDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
@@ -27,10 +27,10 @@ Media::Decoder::VPXDecoder::VPXDecoder(NN<VideoSource> sourceVideo) : Media::Dec
 	data->inited = false;
 
 	Media::FrameInfo frameInfo;
-	Int32 frameRateNorm;
-	Int32 frameRateDenorm;
+	UInt32 frameRateNorm;
+	UInt32 frameRateDenorm;
 	UIntOS maxFrameSize;
-	sourceVideo->GetVideoInfo(&frameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
+	sourceVideo->GetVideoInfo(frameInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
 
 /*	vpx_codec_iface_t *(*codec_interface)();
 	if (frameInfo.fourcc == *(Int32*)"VP80")
@@ -54,13 +54,13 @@ Media::Decoder::VPXDecoder::VPXDecoder(NN<VideoSource> sourceVideo) : Media::Dec
 
 Media::Decoder::VPXDecoder::~VPXDecoder()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 /*	if (data->inited)
 	{
 		vpx_codec_destroy(&data->codec);
 		data->inited = false;
 	}*/
-	MemFree(data);
+	MemFreeNN(data);
 }
 
 Bool Media::Decoder::VPXDecoder::CaptureImage(ImageCallback imgCb, AnyType userData)
@@ -68,7 +68,7 @@ Bool Media::Decoder::VPXDecoder::CaptureImage(ImageCallback imgCb, AnyType userD
 	return false;
 }
 
-Text::CString Media::Decoder::VPXDecoder::GetFilterName()
+Text::CStringNN Media::Decoder::VPXDecoder::GetFilterName()
 {
 	return CSTR("VPXDecoder");
 }
@@ -82,12 +82,12 @@ void Media::Decoder::VPXDecoder::Stop()
 {
 }
 
-IntOS Media::Decoder::VPXDecoder::GetFrameCount()
+UIntOS Media::Decoder::VPXDecoder::GetFrameCount()
 {
-	return -1;
+	return 0;
 }
 
-UInt32 Media::Decoder::VPXDecoder::GetFrameTime(UIntOS frameIndex)
+Data::Duration Media::Decoder::VPXDecoder::GetFrameTime(UIntOS frameIndex) const
 {
 	return 0;
 }
@@ -102,32 +102,31 @@ void Media::Decoder::VPXDecoder::OnFrameChanged(Media::VideoSource::FrameChange 
 
 Bool Media::Decoder::VPXDecoder::IsError()
 {
-	ClassData *data = (ClassData*)this->clsData;
-	return !data->inited;
+	return !this->clsData->inited;
 }
 
-Media::VideoSource *__stdcall VPXDecoder_DecodeVideo(Media::VideoSource *sourceVideo)
+Optional<Media::VideoSource> __stdcall VPXDecoder_DecodeVideo(NN<Media::VideoSource> sourceVideo)
 {
-	Media::Decoder::VPXDecoder *decoder;
+	NN<Media::Decoder::VPXDecoder> decoder;
 	Media::FrameInfo frameInfo;
-	Int32 frameRateNorm;
-	Int32 frameRateDenorm;
+	UInt32 frameRateNorm;
+	UInt32 frameRateDenorm;
 	UIntOS maxFrameSize;
-	sourceVideo->GetVideoInfo(&frameInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
+	sourceVideo->GetVideoInfo(frameInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
 	if (frameInfo.fourcc == 0 || frameInfo.fourcc == -1)
-		return 0;
+		return nullptr;
 
 	if (frameInfo.fourcc == *(Int32*)"VP90" || frameInfo.fourcc == *(Int32*)"VP80")
 	{
-		NEW_CLASS(decoder, Media::Decoder::VPXDecoder(sourceVideo));
+		NEW_CLASSNN(decoder, Media::Decoder::VPXDecoder(sourceVideo));
 		if (decoder->IsError())
 		{
-			DEL_CLASS(decoder);
-			return 0;
+			decoder.Delete();
+			return nullptr;
 		}
 		return decoder;
 	}
-	return 0;
+	return nullptr;
 }
 
 void Media::Decoder::VPXDecoder::Enable()

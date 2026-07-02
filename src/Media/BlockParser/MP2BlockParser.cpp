@@ -39,7 +39,7 @@ Optional<Media::AudioBlockSource> Media::BlockParser::MP2BlockParser::ParseStrea
 		frameLength = 144 * bitrateL2[bitrateIndex] / 32;
 	}
 
-	Media::AudioBlockSource *audio;
+	NN<Media::AudioBlockSource> audio;
 	Media::AudioFormat format;
 	format.formatId = 0x50;
 	switch (mode)
@@ -77,7 +77,7 @@ Optional<Media::AudioBlockSource> Media::BlockParser::MP2BlockParser::ParseStrea
 	*(Int32*)&format.extra[6] = 65537;
 	*(Int16*)&format.extra[10] = 1;
 
-	NEW_CLASS(audio, Media::AudioBlockSource(stmData, format, stmData->GetFullName(), 1152));
+	NEW_CLASSNN(audio, Media::AudioBlockSource(stmData, format, stmData->GetFullName(), 1152));
 	while (currOfst < leng)
 	{
 		if (buff[0] != 0xff || (buff[1] & 0xfe) != 0xfc)

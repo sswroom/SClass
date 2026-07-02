@@ -62,7 +62,9 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(AnyType o)
 	UIntOS i;
 	Bool found;
 	SubthreadStatus *sthreads = 0;
-	Sync::Event *threadEvt = 0;
+	Optional<Sync::Event> threadEvt = nullptr;
+	NN<Sync::Event> nnthreadEvt;
+
 
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
 	Sync::ThreadUtil::SetName(CSTR("TCPSvrv4"));
@@ -74,14 +76,15 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(AnyType o)
 	if (sthreadCnt > 0)
 	{
 		sthreads = MemAlloc(SubthreadStatus, sthreadCnt);
-		NEW_CLASS(threadEvt, Sync::Event(true));
+		NEW_CLASSNN(nnthreadEvt, Sync::Event(true));
+		threadEvt = nnthreadEvt;
 		i = sthreadCnt;
 		while (i-- > 0)
 		{
 			sthreads[i].me = svr;
 			sthreads[i].threadRunning = false;
 			sthreads[i].toStop = false;
-			sthreads[i].threadEvt = threadEvt;
+			sthreads[i].threadEvt = nnthreadEvt;
 			Sync::ThreadUtil::Create(Svrv4Subthread, &sthreads[i]);
 		}
 		found = true;
@@ -99,7 +102,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(AnyType o)
 			}
 			if (!found)
 				break;
-			threadEvt->Wait(100);
+			nnthreadEvt->Wait(100);
 		}
 	}
 	NN<Socket> soc;
@@ -123,7 +126,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(AnyType o)
 		svr->socf->DestroySocket(soc);
 		svr->svrSocv4 = nullptr;
 	}
-	if (sthreadCnt > 0)
+	if (sthreadCnt > 0 && threadEvt.SetTo(nnthreadEvt))
 	{
 		found = true;
 		while (true)
@@ -142,10 +145,10 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(AnyType o)
 			{
 				break;
 			}
-			threadEvt->Wait();
+			nnthreadEvt->Wait();
 		}
 		MemFree(sthreads);
-		DEL_CLASS(threadEvt);
+		threadEvt.Delete();
 	}
 	str = Text::StrConcatC(buff, UTF8STRC("End listening on v4 port "));
 	str = Text::StrInt32(str, svr->port);
@@ -182,7 +185,8 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(AnyType o)
 	UIntOS i;
 	Bool found;
 	SubthreadStatus *sthreads = 0;
-	Sync::Event *threadEvt = 0;
+	Optional<Sync::Event> threadEvt = nullptr;
+	NN<Sync::Event> nnthreadEvt;
 	NN<Socket> soc;
 
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
@@ -195,14 +199,15 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(AnyType o)
 	if (sthreadCnt > 0)
 	{
 		sthreads = MemAlloc(SubthreadStatus, sthreadCnt);
-		NEW_CLASS(threadEvt, Sync::Event(true));
+		NEW_CLASSNN(nnthreadEvt, Sync::Event(true));
+		threadEvt = nnthreadEvt;
 		i = sthreadCnt;
 		while (i-- > 0)
 		{
 			sthreads[i].me = svr;
 			sthreads[i].threadRunning = false;
 			sthreads[i].toStop = false;
-			sthreads[i].threadEvt = threadEvt;
+			sthreads[i].threadEvt = nnthreadEvt;
 			Sync::ThreadUtil::Create(Svrv6Subthread, &sthreads[i]);
 		}
 		found = true;
@@ -220,7 +225,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(AnyType o)
 			}
 			if (!found)
 				break;
-			threadEvt->Wait(100);
+			nnthreadEvt->Wait(100);
 		}
 	}
 	if (svr->svrSocv6.SetTo(soc))
@@ -243,7 +248,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(AnyType o)
 		svr->socf->DestroySocket(soc);
 		svr->svrSocv6 = nullptr;
 	}
-	if (sthreadCnt > 0)
+	if (sthreadCnt > 0 && threadEvt.SetTo(nnthreadEvt))
 	{
 		found = true;
 		while (true)
@@ -262,10 +267,10 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(AnyType o)
 			{
 				break;
 			}
-			threadEvt->Wait();
+			nnthreadEvt->Wait();
 		}
 		MemFree(sthreads);
-		DEL_CLASS(threadEvt);
+		threadEvt.Delete();
 	}
 	str = Text::StrConcatC(buff, UTF8STRC("End listening on v6 port "));
 	str = Text::StrInt32(str, svr->port);

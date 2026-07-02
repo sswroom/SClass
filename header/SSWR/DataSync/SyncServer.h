@@ -28,8 +28,8 @@ namespace SSWR
 		private:
 			NN<Net::SocketFactory> sockf;
 			IO::ProtoHdlr::ProtoSyncHandler protoHdlr;
-			Net::TCPServer *svr;
-			Net::TCPClientMgr *cliMgr;
+			NN<Net::TCPServer> svr;
+			NN<Net::TCPClientMgr> cliMgr;
 			DataHandler dataHdlr;
 			AnyType dataObj;
 

@@ -3,25 +3,26 @@
 
 Media::VideoSource::VideoSource()
 {
-	this->propNames = 0;
-	this->propSizes = 0;
-	this->propBuffs = 0;
+	this->propNames = nullptr;
+	this->propSizes = nullptr;
+	this->propBuffs = nullptr;
 
 }
 
 Media::VideoSource::~VideoSource()
 {
-	if (this->propBuffs)
+	NN<Data::ArrayListArr<UInt8>> propBuffs;
+	if (this->propBuffs.SetTo(propBuffs))
 	{
-		UIntOS i = this->propBuffs->GetCount();
+		UIntOS i = propBuffs->GetCount();
 		while (i-- > 0)
 		{
-			MemFree(this->propBuffs->GetItem(i));
+			MemFreeArr(propBuffs->GetItemNoCheck(i));
 		}
-		DEL_CLASS(this->propBuffs);
-		DEL_CLASS(this->propSizes);
-		DEL_CLASS(this->propNames);
 	}
+	this->propBuffs.Delete();
+	this->propSizes.Delete();
+	this->propNames.Delete();
 }
 
 Bool Media::VideoSource::CaptureImage(ImageCallback imgCb, AnyType userData)
@@ -56,39 +57,48 @@ Bool Media::VideoSource::ReadFrameEnd()
 
 void Media::VideoSource::SetProp(Int32 propName, UnsafeArray<const UInt8> propBuff, UInt32 propBuffSize)
 {
-	UInt8 *prop;
-	if (this->propBuffs == 0)
+	UnsafeArray<UInt8> prop;
+	NN<Data::ArrayListArr<UInt8>> propBuffs;
+	NN<Data::ArrayListInt32> propNames;
+	NN<Data::ArrayListUInt32> propSizes;
+	if (!this->propBuffs.SetTo(propBuffs) || !this->propNames.SetTo(propNames) || !this->propSizes.SetTo(propSizes))
 	{
-		NEW_CLASS(this->propBuffs, Data::ArrayListObj<UInt8*>());
-		NEW_CLASS(this->propNames, Data::ArrayListInt32());
-		NEW_CLASS(this->propSizes, Data::ArrayListUInt32());
+		NEW_CLASSNN(propBuffs, Data::ArrayListArr<UInt8>());
+		NEW_CLASSNN(propNames, Data::ArrayListInt32());
+		NEW_CLASSNN(propSizes, Data::ArrayListUInt32());
+		this->propBuffs = propBuffs;
+		this->propNames = propNames;
+		this->propSizes = propSizes;
 	}
-	IntOS i = this->propNames->SortedIndexOf(propName);
-	prop = MemAlloc(UInt8, propBuffSize);
-	MemCopyNO(prop, propBuff.Ptr(), propBuffSize);
+	IntOS i = propNames->SortedIndexOf(propName);
+	prop = MemAllocArr(UInt8, propBuffSize);
+	MemCopyNO(prop.Ptr(), propBuff.Ptr(), propBuffSize);
 	if (i >= 0)
 	{
-		MemFree(this->propBuffs->GetItem((UIntOS)i));
-		this->propBuffs->SetItem((UIntOS)i, prop);
-		this->propSizes->SetItem((UIntOS)i, propBuffSize);
+		MemFreeArr(propBuffs->GetItemNoCheck((UIntOS)i));
+		propBuffs->SetItem((UIntOS)i, prop);
+		propSizes->SetItem((UIntOS)i, propBuffSize);
 	}
 	else
 	{
-		this->propNames->Insert((UIntOS)~i, propName);
-		this->propBuffs->Insert((UIntOS)~i, prop);
-		this->propSizes->Insert((UIntOS)~i, propBuffSize);
+		propNames->Insert((UIntOS)~i, propName);
+		propBuffs->Insert((UIntOS)~i, prop);
+		propSizes->Insert((UIntOS)~i, propBuffSize);
 	}
 }
 
-UInt8 *Media::VideoSource::GetProp(Int32 propName, UInt32 *size)
+UnsafeArrayOpt<UInt8> Media::VideoSource::GetProp(Int32 propName, OutParam<UInt32> size)
 {
-	if (this->propBuffs == 0)
-		return 0;
-	IntOS i = this->propNames->SortedIndexOf(propName);
+	NN<Data::ArrayListArr<UInt8>> propBuffs;
+	NN<Data::ArrayListInt32> propNames;
+	NN<Data::ArrayListUInt32> propSizes;
+	if (!this->propBuffs.SetTo(propBuffs) || !this->propNames.SetTo(propNames) || !this->propSizes.SetTo(propSizes))
+		return nullptr;
+	IntOS i = propNames->SortedIndexOf(propName);
 	if (i < 0)
-		return 0;
-	*size = this->propSizes->GetItem((UIntOS)i);
-	return this->propBuffs->GetItem((UIntOS)i);
+		return nullptr;
+	size.Set(propSizes->GetItem((UIntOS)i));
+	return propBuffs->GetItem((UIntOS)i);
 }
 
 Media::MediaType Media::VideoSource::GetMediaType()

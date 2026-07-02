@@ -35,7 +35,7 @@ IO::ParserType Parser::FileParser::AFSParser::GetParserType()
 
 Optional<IO::ParsedObject> Parser::FileParser::AFSParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
-	IO::VirtualPackageFile *pf;
+	NN<IO::VirtualPackageFile> pf;
 	UTF8Char sbuff[9];
 	UnsafeArray<UTF8Char> namePtr;
 	UInt32 fileCnt;
@@ -57,7 +57,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AFSParser::ParseFileHdr(NN<IO::St
 
 	fileCnt = ReadUInt32(&hdr[4]);
 	Data::ByteBuffer buff2(fileCnt << 3);
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	fd->GetRealData(8, fileCnt << 3, buff2);
 	i = 0;
 	while (i < fileCnt)
@@ -72,7 +72,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AFSParser::ParseFileHdr(NN<IO::St
 		leng = ReadUInt32(&buff2[(i << 3) + 4]);
 		if (ofst == 0 || leng == 0)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		pf->AddData(fd, ofst, leng, IO::PackFileItem::HeaderType::No, {sbuff, 8}, nullptr, nullptr, nullptr, 0);

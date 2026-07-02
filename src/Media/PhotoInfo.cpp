@@ -102,7 +102,7 @@ Media::PhotoInfo::PhotoInfo(NN<IO::StreamData> fd)
 
 			if (nnexif->GetPhotoDate(dt))
 			{
-				NEW_CLASS(this->photoDate, Data::DateTime(dt));
+				NEW_CLASSOPT(this->photoDate, Data::DateTime(dt));
 			}
 
 			NN<Media::EXIFData::EXIFItem> item;
@@ -169,8 +169,7 @@ Media::PhotoInfo::~PhotoInfo()
 	OPTSTR_DEL(this->make);
 	OPTSTR_DEL(this->model);
 	OPTSTR_DEL(this->lens);
-	if (this->photoDate)
-		DEL_CLASS(this->photoDate);
+	this->photoDate.Delete();
 }
 
 Bool Media::PhotoInfo::HasInfo() const
@@ -181,7 +180,7 @@ Bool Media::PhotoInfo::HasInfo() const
 Bool Media::PhotoInfo::GetPhotoDate(NN<Data::DateTime> dt) const
 {
 	NN<Data::DateTime> photoDate;
-	if (photoDate.Set(this->photoDate))
+	if (this->photoDate.SetTo(photoDate))
 	{
 		dt->SetValue(photoDate);
 		return true;

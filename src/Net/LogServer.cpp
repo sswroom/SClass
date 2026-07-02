@@ -103,7 +103,7 @@ Optional<Net::LogServer::IPStatus> Net::LogServer::GetIPStatus(NN<const Net::Soc
 		sptr = Net::SocketUtil::GetAddrName(sptr, addr).Or(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcatC(sptr, UTF8STRC("Log"));
-		NEW_CLASS(status->log, IO::LogTool());
+		NEW_CLASSNN(status->log, IO::LogTool());
 		status->log->AddFileLog(CSTRP(sbuff, sptr), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 		this->ipMap.Put(ip, status);
 		mutUsage.EndUse();
@@ -120,14 +120,14 @@ Net::LogServer::LogServer(NN<Net::SocketFactory> sockf, UInt16 port, Text::CStri
 	this->redirLog = redirLog;
 	this->logHdlr = 0;
 	this->logHdlrObj = 0;
-	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(240, ClientEvent, ClientData, this, 4, ClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, nullptr, port, log, ConnHdlr, this, nullptr, autoStart));
+	NEW_CLASSNN(this->cliMgr, Net::TCPClientMgr(240, ClientEvent, ClientData, this, 4, ClientTimeout));
+	NEW_CLASSNN(this->svr, Net::TCPServer(this->sockf, nullptr, port, log, ConnHdlr, this, nullptr, autoStart));
 }
 
 Net::LogServer::~LogServer()
 {
-	DEL_CLASS(this->svr);
-	DEL_CLASS(this->cliMgr);
+	this->svr.Delete();
+	this->cliMgr.Delete();
 	this->logPath->Release();
 	UIntOS i;
 	NN<IPStatus> status;
@@ -135,7 +135,7 @@ Net::LogServer::~LogServer()
 	while (i-- > 0)
 	{
 		status = this->ipMap.GetItemNoCheck(i);
-		DEL_CLASS(status->log);
+		status->log.Delete();
 		MemFreeNN(status);
 	}
 }

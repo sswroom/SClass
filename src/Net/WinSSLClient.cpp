@@ -38,7 +38,7 @@ struct Net::WinSSLClient::ClassData
 	UIntOS readSize;
 	Optional<Net::SocketRecvSess> readData;
 	Optional<Sync::Event> readEvt;
-	Data::ArrayListNN<Crypto::Cert::Certificate> *remoteCerts;
+	Optional<Data::ArrayListNN<Crypto::Cert::Certificate>> remoteCerts;
 };
 
 Net::WinSSLClient::WinSSLClient(NN<Net::SocketFactory> sockf, NN<Socket> s, void *ctxt) : SSLClient(sockf, s)
@@ -57,7 +57,7 @@ Net::WinSSLClient::WinSSLClient(NN<Net::SocketFactory> sockf, NN<Socket> s, void
 	this->clsData->decSize = 0;
 	this->clsData->readBuff = 0;
 	this->clsData->readSize = 0;
-	this->clsData->remoteCerts = 0;
+	this->clsData->remoteCerts = nullptr;
 	this->clsData->readData = nullptr;
 	this->clsData->readEvt = nullptr;
 
@@ -69,14 +69,16 @@ Net::WinSSLClient::WinSSLClient(NN<Net::SocketFactory> sockf, NN<Socket> s, void
 	{
 		DWORD dwVerificationFlags = 0;
 		NN<Crypto::Cert::X509Cert> cert;
-		NEW_CLASS(this->clsData->remoteCerts, Data::ArrayListNN<Crypto::Cert::Certificate>());
+		NN<Data::ArrayListNN<Crypto::Cert::Certificate>> remoteCerts;
+		NEW_CLASSNN(remoteCerts, Data::ArrayListNN<Crypto::Cert::Certificate>());
+		this->clsData->remoteCerts = remoteCerts;
 		NEW_CLASSNN(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), Data::ByteArrayR(serverCert->pbCertEncoded, serverCert->cbCertEncoded)));
-		this->clsData->remoteCerts->Add(cert);
+		remoteCerts->Add(cert);
 		thisCert = CertGetIssuerCertificateFromStore(serverCert->hCertStore, serverCert, NULL, &dwVerificationFlags);
 		while (thisCert)
 		{
 			NEW_CLASSNN(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), Data::ByteArrayR(thisCert->pbCertEncoded, thisCert->cbCertEncoded)));
-			this->clsData->remoteCerts->Add(cert);
+			remoteCerts->Add(cert);
 			lastCert = thisCert;
 			thisCert = CertGetIssuerCertificateFromStore(serverCert->hCertStore, lastCert, NULL, &dwVerificationFlags);
 			CertFreeCertificateContext(lastCert);
@@ -95,15 +97,16 @@ Net::WinSSLClient::~WinSSLClient()
 	}
 	MemFreeArr(this->clsData->recvBuff);
 	MemFreeArr(this->clsData->decBuff);
-	if (this->clsData->remoteCerts)
+	NN<Data::ArrayListNN<Crypto::Cert::Certificate>> remoteCerts;
+	if (this->clsData->remoteCerts.SetTo(remoteCerts))
 	{
-		UIntOS i = this->clsData->remoteCerts->GetCount();
+		UIntOS i = remoteCerts->GetCount();
 		while (i-- > 0)
 		{
-			NN<Crypto::Cert::Certificate> cert = this->clsData->remoteCerts->GetItemNoCheck(i);
+			NN<Crypto::Cert::Certificate> cert = remoteCerts->GetItemNoCheck(i);
 			cert.Delete();
 		}
-		DEL_CLASS(this->clsData->remoteCerts);
+		remoteCerts.Delete();
 	}
 	MemFreeNN(this->clsData);
 }
@@ -703,8 +706,9 @@ Bool Net::WinSSLClient::Recover()
 
 Optional<Crypto::Cert::Certificate> Net::WinSSLClient::GetRemoteCert()
 {
-	if (this->clsData->remoteCerts)
-		return this->clsData->remoteCerts->GetItem(0);
+	NN<Data::ArrayListNN<Crypto::Cert::Certificate>> remoteCerts;
+	if (this->clsData->remoteCerts.SetTo(remoteCerts))
+		return remoteCerts->GetItem(0);
 	else
 		return nullptr;
 }

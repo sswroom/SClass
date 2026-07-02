@@ -18,7 +18,7 @@ namespace Net
 			NN<TCPServer> me;
 			Bool toStop;
 			Bool threadRunning;
-			Sync::Event *threadEvt;
+			NN<Sync::Event> threadEvt;
 		} SubthreadStatus;
 
 	private:

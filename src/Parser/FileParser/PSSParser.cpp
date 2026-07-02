@@ -66,8 +66,10 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 	Bool valid = true;
 	NN<Media::AudioFormat> formats[4];
 	Int32 audDelay[4];
-	Media::FileVideoSource *vstm = 0;
-	IO::StmData::BlockStreamData *stmData[4];
+	Optional<Media::FileVideoSource> vstm = nullptr;
+	NN<Media::FileVideoSource> nnvstm;
+	Optional<IO::StmData::BlockStreamData> stmData[4];
+	NN<IO::StmData::BlockStreamData> nnstmData;
 	Int32 stmId;
 	Int64 initScr = -1;
 	Int64 last_scr_base = -1;
@@ -84,10 +86,10 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 	UInt64 currOfst;
 	NN<IO::PackageFile> nnpkgFile;
 
-	stmData[0] = 0;
-	stmData[1] = 0;
-	stmData[2] = 0;
-	stmData[3] = 0;
+	stmData[0] = nullptr;
+	stmData[1] = nullptr;
+	stmData[2] = nullptr;
+	stmData[3] = nullptr;
 	if (v1)
 	{
 		currOfst = 12;
@@ -129,19 +131,19 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 		else if (pkgFile.SetTo(nnpkgFile))
 		{
 			sptr = fd->GetShortName().OrEmpty().ConcatTo(sbuff) - 5;
-/*			IO::StmData::ConcatStreamData *data;
+/*			NN<IO::StmData::ConcatStreamData> data;
 			stmId = 2;
-			NEW_CLASS(data, IO::StmData::ConcatStreamData(fd->GetFullName()));
+			NEW_CLASSNN(data, IO::StmData::ConcatStreamData(fd->GetFullName()));
 			data->AddData(fd->GetPartialData(0, fd->GetDataSize()));
 			
 			sptr = Text::StrConcat(sbuff, fd->GetFullFileName()) - 5;
 			while (true)
 			{
 				Text::StrConcat(Text::StrInt32(sptr, stmId), L".vob");
-				NEW_CLASS(concatFile, IO::StmData::FileData(sbuff, false));
+				NEW_CLASSNN(concatFile, IO::StmData::FileData(sbuff, false));
 				if (concatFile->GetDataSize() <= 0)
 				{
-					DEL_CLASS(concatFile);
+					concatFile.Delete();
 					break;
 				}
 				data->AddData(concatFile);
@@ -260,8 +262,9 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 								formats[stmId]->intType = Media::AudioFormat::IT_NORMAL;
 								formats[stmId]->extraSize = 0;
 								formats[stmId]->extra = 0;
-								NEW_CLASS(stmData[stmId], IO::StmData::BlockStreamData(fd));
-								stmData[stmId]->Append(currOfst + 0x3F, i - 0x39);
+								NEW_CLASSNN(nnstmData, IO::StmData::BlockStreamData(fd));
+								stmData[stmId] = nnstmData;
+								nnstmData->Append(currOfst + 0x3F, i - 0x39);
 								audDelay[stmId] = (Int32)((dts - initScr) / 90);
 							}
 							else if (buff[0x14] == 0xa1)
@@ -276,28 +279,29 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 								formats[stmId]->intType = Media::AudioFormat::IT_NORMAL;
 								formats[stmId]->extraSize = 0;
 								formats[stmId]->extra = 0;
-								NEW_CLASS(stmData[stmId], IO::StmData::BlockStreamData(fd));
-								stmData[stmId]->Append(currOfst + 0x3F, i - 0x39);
+								NEW_CLASSNN(nnstmData, IO::StmData::BlockStreamData(fd));
+								stmData[stmId] = nnstmData;
+								nnstmData->Append(currOfst + 0x3F, i - 0x39);
 								audDelay[stmId] = (Int32)((dts - initScr) / 90);
 							}
 						}
 
-						if (resync)
+						if (resync && stmData[stmId].SetTo(nnstmData))
 						{
 							resync = false;
-							initScr = dts - 90 * ((Int64)(stmData[stmId]->GetDataSize() * 8000LL / formats[stmId]->bitRate) + audDelay[stmId]);
+							initScr = dts - 90 * ((Int64)(nnstmData->GetDataSize() * 8000LL / formats[stmId]->bitRate) + audDelay[stmId]);
 						}
 
 					}
-					else if (formats[stmId]->formatId == 1 || formats[stmId]->formatId == 0x2081)
+					else if (stmData[stmId].SetTo(nnstmData) && (formats[stmId]->formatId == 1 || formats[stmId]->formatId == 0x2081))
 					{
 						if (resync)
 						{
 							resync = false;
-							initScr = dts - 90 * ((Int64)(stmData[stmId]->GetDataSize() * 8000LL / formats[stmId]->bitRate) + audDelay[stmId]);
+							initScr = dts - 90 * ((Int64)(nnstmData->GetDataSize() * 8000LL / formats[stmId]->bitRate) + audDelay[stmId]);
 						}
 
-						stmData[stmId]->Append(currOfst + 0x17, i - 0x11);
+						nnstmData->Append(currOfst + 0x17, i - 0x11);
 					}
 				}
 				else if (stmType == 0xa0)
@@ -305,7 +309,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 					if (buff[10 + stmHdrSize] > 0)
 					{
 						stmId = 2;
-						if (formats[stmId]->formatId == 0)
+						if (formats[stmId]->formatId == 0 || !stmData[stmId].SetTo(nnstmData))
 						{
 							formats[stmId]->formatId = 1;
 							if (buff[14 + stmHdrSize] == 0x91)
@@ -327,17 +331,18 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 							formats[stmId]->intType = Media::AudioFormat::IT_BIGENDIAN16;
 							formats[stmId]->extraSize = 0;
 							formats[stmId]->extra = 0;
-							NEW_CLASS(stmData[stmId], IO::StmData::BlockStreamData(fd));
+							NEW_CLASSNN(nnstmData, IO::StmData::BlockStreamData(fd));
+							stmData[stmId] = nnstmData;
 							audDelay[stmId] = (Int32)((dts - initScr) / 90);
 						}
 
 						if (resync)
 						{
 							resync = false;
-							initScr = dts - 90 * ((Int64)(stmData[stmId]->GetDataSize() * 8000LL / formats[stmId]->bitRate) + audDelay[stmId]);
+							initScr = dts - 90 * ((Int64)(nnstmData->GetDataSize() * 8000LL / formats[stmId]->bitRate) + audDelay[stmId]);
 						}
 
-						stmData[stmId]->Append(currOfst + 16 + stmHdrSize, i - 10 - stmHdrSize);
+						nnstmData->Append(currOfst + 16 + stmHdrSize, i - 10 - stmHdrSize);
 					}
 					else
 					{
@@ -347,11 +352,12 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 				else if (stmType == 0x80)
 				{
 					stmId = 2;
-					if (formats[stmId]->formatId == 0)
+					if (formats[stmId]->formatId == 0 || !stmData[stmId].SetTo(nnstmData))
 					{
 						formats[stmId]->formatId = 0x2000;
 						formats[stmId]->bitRate = 0;
-						NEW_CLASS(stmData[stmId], IO::StmData::BlockStreamData(fd));
+						NEW_CLASSNN(nnstmData, IO::StmData::BlockStreamData(fd));
+						stmData[stmId] = nnstmData;
 						audDelay[stmId] = (Int32)((dts - initScr) / 90);
 
 						if (resync)
@@ -363,9 +369,9 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 					if (resync && formats[stmId]->bitRate)
 					{
 						resync = false;
-						initScr = dts - 90 * ((Int64)(stmData[stmId]->GetDataSize() * 8000LL / formats[stmId]->bitRate) + audDelay[stmId]);
+						initScr = dts - 90 * ((Int64)(nnstmData->GetDataSize() * 8000LL / formats[stmId]->bitRate) + audDelay[stmId]);
 					}
-					stmData[stmId]->Append(currOfst + 13 + stmHdrSize, i - 7 - stmHdrSize);
+					nnstmData->Append(currOfst + 13 + stmHdrSize, i - 7 - stmHdrSize);
 					if (formats[stmId]->bitRate == 0)
 					{
 						Media::BlockParser::AC3BlockParser ac3Parser;
@@ -416,7 +422,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 				}
 
 				stmId = buff[3] & 0x1f;
-				if (formats[stmId]->formatId == 0)
+				if (formats[stmId]->formatId == 0 || !stmData[stmId].SetTo(nnstmData))
 				{
 					UInt32 v = ReadMUInt32(&buff[j]);
 					if ((v & 0x80000000) != 0 && (v & 0x7fffffff) <= 2048)
@@ -431,8 +437,9 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 						formats[stmId]->intType = Media::AudioFormat::IT_NORMAL;
 						formats[stmId]->extraSize = 0;
 						formats[stmId]->extra = 0;
-						NEW_CLASS(stmData[stmId], IO::StmData::BlockStreamData(fd));
-						stmData[stmId]->Append(currOfst + j + 4 + (v & 0x7fffffff), (UInt32)(i - j + 2 - (v & 0x7fffffff)));
+						NEW_CLASSNN(nnstmData, IO::StmData::BlockStreamData(fd));
+						stmData[stmId] = nnstmData;
+						nnstmData->Append(currOfst + j + 4 + (v & 0x7fffffff), (UInt32)(i - j + 2 - (v & 0x7fffffff)));
 						audDelay[stmId] = (Int32)((pts - initScr) / 90);
 
 						if (resync)
@@ -442,8 +449,9 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 					{
 						formats[stmId]->formatId = 0x50;
 						formats[stmId]->bitRate = 0;
-						NEW_CLASS(stmData[stmId], IO::StmData::BlockStreamData(fd));
-						stmData[stmId]->Append(currOfst + j, (UInt32)(i - j + 6));
+						NEW_CLASSNN(nnstmData, IO::StmData::BlockStreamData(fd));
+						stmData[stmId] = nnstmData;
+						nnstmData->Append(currOfst + j, (UInt32)(i - j + 6));
 						audDelay[stmId] = (Int32)((pts - initScr) / 90);
 
 						if (resync)
@@ -458,8 +466,9 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 					{
 						formats[stmId]->formatId = 0x55;
 						formats[stmId]->bitRate = 224000;
-						NEW_CLASS(stmData[stmId], IO::StmData::BlockStreamData(fd));
-						stmData[stmId]->Append(currOfst + j, (UInt32)(i - j + 6));
+						NEW_CLASSNN(nnstmData, IO::StmData::BlockStreamData(fd));
+						stmData[stmId] = nnstmData;
+						nnstmData->Append(currOfst + j, (UInt32)(i - j + 6));
 						audDelay[stmId] = (Int32)((pts - initScr) / 90);
 
 						if (resync)
@@ -476,10 +485,10 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 					if (resync)
 					{
 						resync = false;
-						initScr = dts - 90 * ((Int64)(stmData[stmId]->GetDataSize() * 8000LL / formats[stmId]->bitRate) + audDelay[stmId]);
+						initScr = dts - 90 * ((Int64)(nnstmData->GetDataSize() * 8000LL / formats[stmId]->bitRate) + audDelay[stmId]);
 					}
 
-					stmData[stmId]->Append(currOfst + j, (UInt32)(i - j + 6));
+					nnstmData->Append(currOfst + j, (UInt32)(i - j + 6));
 				}
 			}
 			else if ((buff[3] & 0xf0) == 0xe0) //Video stream
@@ -593,7 +602,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 						}
 					}
 
-					if (vstm && v1 && !isFrame)
+					if (vstm.SetTo(nnvstm) && v1 && !isFrame)
 					{
 						Media::MPEGVideoParser::MPEGFrameProp prop;
 						UIntOS currPtr;
@@ -610,7 +619,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 								if (Media::MPEGVideoParser::GetFrameProp(&frameBuff[currPtr], frameSize - currPtr, prop) && prop.pictureCodingType == 'I')
 								{
 									isFrame = true;
-									vstm->AddFramePart(currOfst + 9 + stmHdrSize, (UInt32)currPtr);
+									nnvstm->AddFramePart(currOfst + 9 + stmHdrSize, (UInt32)currPtr);
 									stmHdrSize += currPtr;
 									break;
 								}
@@ -622,13 +631,13 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 
 				UInt32 frameRateNorm;
 				UInt32 frameRateDenorm;
-				if (isFrame && vstm == 0 && Media::MPEGVideoParser::GetFrameInfo(&buff[9 + stmHdrSize], 256 - 9 - stmHdrSize, frameInfo, frameRateNorm, frameRateDenorm, 0, false))
+				if (isFrame && vstm.IsNull() && Media::MPEGVideoParser::GetFrameInfo(&buff[9 + stmHdrSize], 256 - 9 - stmHdrSize, frameInfo, frameRateNorm, frameRateDenorm, 0, false))
 				{
 					frameInfo.fourcc = *(UInt32*)"MP2G";
-					NEW_CLASS(vstm, Media::FileVideoSource(fd, frameInfo, frameRateNorm, frameRateDenorm, true));
+					NEW_CLASSOPT(vstm, Media::FileVideoSource(fd, frameInfo, frameRateNorm, frameRateDenorm, true));
 				}
 
-				if (vstm != 0)
+				if (vstm.SetTo(nnvstm))
 				{
 					if (isFrame)
 					{
@@ -644,11 +653,11 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 							lastFrameTime = 0;
 						}
 						lastFrameTime = frameTime;
-						vstm->AddNewFrame(currOfst + 9 + stmHdrSize, (UInt32)(i - stmHdrSize - 3), true, (UInt32)frameTime);
+						nnvstm->AddNewFrame(currOfst + 9 + stmHdrSize, (UInt32)(i - stmHdrSize - 3), true, (UInt32)frameTime);
 					}
 					else
 					{
-						vstm->AddFramePart(currOfst + 9 + stmHdrSize, (UInt32)(i - stmHdrSize - 3));
+						nnvstm->AddFramePart(currOfst + 9 + stmHdrSize, (UInt32)(i - stmHdrSize - 3));
 					}
 				}
 
@@ -668,27 +677,20 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 	}
 	if (!valid)
 	{
-		if (vstm)
-		{
-			DEL_CLASS(vstm);
-		}
+		vstm.Delete();
 
 		i = 4;
 		while (i-- > 0)
 		{
-			if (stmData[i])
-			{
-				DEL_CLASS(stmData[i]);
-			}
+			stmData[i].Delete();
 			formats[i].Delete();
 		}
 		SDEL_CLASS(concatFile);
 		return nullptr;
 	}
-	Media::MediaFile *file;
-	NEW_CLASS(file, Media::MediaFile(fd->GetFullName()));
-	NN<Media::VideoSource> nnvstm;
-	if (nnvstm.Set(vstm))
+	NN<Media::MediaFile> file;
+	NEW_CLASSNN(file, Media::MediaFile(fd->GetFullName()));
+	if (vstm.SetTo(nnvstm))
 	{
 		NN<Media::Decoder::MP2GDecoder> mp2g;
 		NEW_CLASSNN(mp2g, Media::Decoder::MP2GDecoder(nnvstm, true));
@@ -699,7 +701,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 	while (i < 4)
 	{
 		NN<IO::StreamData> stmFD;
-		if (formats[i]->formatId && stmFD.Set(stmData[i]))
+		if (formats[i]->formatId && Optional<IO::StreamData>(stmData[i]).SetTo(stmFD))
 		{
 			if (formats[i]->formatId == 1)
 			{

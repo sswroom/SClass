@@ -11,8 +11,8 @@ namespace Media
 	{
 	private:
 		void *pWiaDevMgr;
-		Data::ArrayListStrUTF8 *devNames;
-		Data::ArrayListStrUTF8 *devIds;
+		NN<Data::ArrayListStrUTF8> devNames;
+		NN<Data::ArrayListStrUTF8> devIds;
 	public:
 		WIAManager();
 		~WIAManager();

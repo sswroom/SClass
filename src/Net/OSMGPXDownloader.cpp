@@ -67,7 +67,7 @@ void Net::OSMGPXDownloader::ItemAdded(NN<Net::RSSItem> item)
 		UInt8 buff[2048];
 		UIntOS readSize;
 		UInt64 totalSize;
-		IO::FileStream *fs;
+		NN<IO::FileStream> fs;
 		UIntOS retryCnt = 3;
 
 		sb.AppendC(UTF8STRC("Downloading: "));
@@ -76,7 +76,7 @@ void Net::OSMGPXDownloader::ItemAdded(NN<Net::RSSItem> item)
 
 		while (retryCnt-- > 0)
 		{
-			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			cli = Net::HTTPClient::CreateConnect(sockf, 0, CSTRP(sbuff2, sptr2), Net::WebUtil::RequestMethod::HTTP_GET, true);
 
 			totalSize = 0;
@@ -89,7 +89,7 @@ void Net::OSMGPXDownloader::ItemAdded(NN<Net::RSSItem> item)
 				fs->Write(Data::ByteArrayR(buff, readSize));
 			}
 			cli.Delete();
-			DEL_CLASS(fs);
+			fs.Delete();
 
 			if (totalSize > 1)
 				break;

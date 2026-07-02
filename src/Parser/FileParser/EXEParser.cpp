@@ -67,8 +67,8 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	IO::EXEFile *exef;
-	NEW_CLASS(exef, IO::EXEFile(fd->GetFullName()));
+	NN<IO::EXEFile> exef;
+	NEW_CLASSNN(exef, IO::EXEFile(fd->GetFullName()));
 	UIntOS codeLen;
 
 	sptr = Text::StrInt32(sbuff, ReadUInt16(&hdr[2]));
@@ -109,7 +109,7 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 	UnsafeArray<UInt8> codePtr;
 	if (!exef->GetDOSCodePtr(codeLen).SetTo(codePtr))
 	{
-		DEL_CLASS(exef);
+		exef.Delete();
 		return nullptr;
 	}
 	exef->SetDOSHasPSP(true);
@@ -862,7 +862,7 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 	return exef;
 }
 
-void Parser::FileParser::EXEParser::ParseResource(IO::EXEFile *exef, UInt32 resType, UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd, UInt8 *resBuff, UIntOS resOfst, UInt8 *exeImage)
+void Parser::FileParser::EXEParser::ParseResource(NN<IO::EXEFile> exef, UInt32 resType, UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd, UInt8 *resBuff, UIntOS resOfst, UInt8 *exeImage)
 {
 	IntOS i;
 	IntOS j;
@@ -917,7 +917,7 @@ void Parser::FileParser::EXEParser::ParseResource(IO::EXEFile *exef, UInt32 resT
 	}
 }
 
-void Parser::FileParser::EXEParser::ParseResourceData(IO::EXEFile *exef, UInt32 resType, UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd, UInt8 *resBuff, UIntOS resOfst, UInt8 *exeImage)
+void Parser::FileParser::EXEParser::ParseResourceData(NN<IO::EXEFile> exef, UInt32 resType, UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd, UInt8 *resBuff, UIntOS resOfst, UInt8 *exeImage)
 {
 	UInt32 dataRVA = ReadUInt32(&resBuff[resOfst]);
 	UInt32 size = ReadUInt32(&resBuff[resOfst + 4]);

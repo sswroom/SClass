@@ -22,7 +22,7 @@ UnsafeArray<UnsafeArray<UTF8Char>> __stdcall ServiceControl_GetCommandLines(NN<C
 void Win32::ServiceControl_Create(NN<Core::ProgControl> progCtrl)
 {
 	Win32::ServiceControl *me = (Win32::ServiceControl*)progCtrl.Ptr();
-	NEW_CLASS(me->evt, Sync::Event(true));
+	NEW_CLASSNN(me->evt, Sync::Event(true));
 	me->exited = false;
 	me->toRestart = false;
 	me->argv = (UTF8Char*)Text::StrCopyNewC(UTF8STRC("svchost")).Ptr();
@@ -37,7 +37,7 @@ void Win32::ServiceControl_Destroy(NN<Core::ProgControl> progCtrl)
 {
 	Win32::ServiceControl *me = (Win32::ServiceControl*)progCtrl.Ptr();
 	Text::StrDelNew(me->argv);
-	DEL_CLASS(me->evt);
+	me->evt.Delete();
 }
 
 

@@ -16,7 +16,7 @@ namespace Net
 	{
 	private:
 		struct ClassData;
-		ClassData *clsData;
+		NN<ClassData> clsData;
 	protected:
 		Optional<Net::SSLEngine> ssl;
 		Optional<Net::TCPClient> cli;

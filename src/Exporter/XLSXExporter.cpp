@@ -67,7 +67,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	UnsafeArray<UTF8Char> sptr;
 	Data::Timestamp ts;
 	Data::DateTime dt2;
-	Data::DateTime *t;
+	NN<Data::DateTime> t;
 	NN<Text::String> s;
 	NN<Text::String> s2;
 	Text::CString csptr;
@@ -1146,8 +1146,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"));
 	sb.AppendC(UTF8STRC("<cp:coreProperties xmlns:cp=\"http://schemas.openxmlformats.org/package/2006/metadata/core-properties\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:dcmitype=\"http://purl.org/dc/dcmitype/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"));
-	t = workbook->GetCreateTime();
-	if (t)
+	if (workbook->GetCreateTime().SetTo(t))
 	{
 		sb.AppendC(UTF8STRC("<dcterms:created xsi:type=\"dcterms:W3CDTF\">"));
 		sptr = t->ToString(sbuff, "yyyy-MM-dd");
@@ -1193,8 +1192,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		s->Release();
 	}
 	sb.AppendC(UTF8STRC("</cp:lastModifiedBy>"));
-	t = workbook->GetModifyTime();
-	if (t)
+	if (workbook->GetModifyTime().SetTo(t))
 	{
 		sb.AppendC(UTF8STRC("<dcterms:modified xsi:type=\"dcterms:W3CDTF\">"));
 		sptr = t->ToString(sbuff, "yyyy-MM-dd");

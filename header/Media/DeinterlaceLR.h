@@ -11,8 +11,8 @@ namespace Media
 	private:
 		typedef struct
 		{
-			Sync::Event *evt;
-			Sync::Event *evtMain;
+			NN<Sync::Event> evt;
+			NN<Sync::Event> evtMain;
 			Int32 status; //0 = not running, 1 = idling, 2 = resizing, 3 = finish, 4 = to exit
 
 			UnsafeArray<UInt8> inPt;
@@ -40,7 +40,7 @@ namespace Media
 		DIPARAMETER evenParam;
 		UnsafeArray<DITHREADSTAT> stats;
 		UIntOS nCore;
-		Sync::Event *evtMain;
+		NN<Sync::Event> evtMain;
 		UIntOS fieldCnt;
 		UIntOS fieldSep;
 

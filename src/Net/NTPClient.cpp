@@ -33,12 +33,12 @@ Net::NTPClient::NTPClient(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogT
 {
 	this->sockf = sockf;
 	this->resultTime = nullptr;
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, nullptr, port, nullptr, PacketHdlr, this, log, nullptr, 1, false));
+	NEW_CLASSNN(this->svr, Net::UDPServer(sockf, nullptr, port, nullptr, PacketHdlr, this, log, nullptr, 1, false));
 }
 
 Net::NTPClient::~NTPClient()
 {
-	DEL_CLASS(this->svr);
+	this->svr.Delete();
 }
 
 Bool Net::NTPClient::GetServerTime(Text::CStringNN host, UInt16 port, NN<Data::DateTime> svrTime)

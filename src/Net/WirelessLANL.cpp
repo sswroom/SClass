@@ -78,7 +78,7 @@ typedef struct
 typedef struct
 {
 	int fd;
-	Sync::Mutex *mut;
+	NN<Sync::Mutex> mut;
 } WirelessLANData;
 
 
@@ -246,7 +246,7 @@ NN<Text::String> Net::WirelessLAN::Interface::GetName() const
 Net::WirelessLAN::WirelessLAN()
 {
 	NN<WirelessLANData> thisData = MemAllocNN(WirelessLANData);
-	NEW_CLASS(thisData->mut, Sync::Mutex());
+	NEW_CLASSNN(thisData->mut, Sync::Mutex());
 	thisData->fd = socket(AF_INET, SOCK_DGRAM, 0) + 1;
 	this->clsData = thisData;
 }
@@ -258,7 +258,7 @@ Net::WirelessLAN::~WirelessLAN()
 	{
 		close(-1 + thisData->fd);
 	}
-	DEL_CLASS(thisData->mut);
+	thisData->mut.Delete();
 	MemFreeNN(thisData);
 }
 
@@ -273,13 +273,13 @@ UIntOS Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::In
 	NN<WirelessLANData> thisData = this->clsData.GetNN<WirelessLANData>();
 	UIntOS ret = 0;
 	NN<Net::WirelessLAN::Interface> interf;
-/*	NEW_CLASS(fs, IO::FileStream(CSTR("/proc/net/wireless"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+/*	NEW_CLASSNN(fs, IO::FileStream(CSTR("/proc/net/wireless"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		Text::StringBuilderUTF8 sb;
 		Text::UTF8Reader *reader;
 		UIntOS i;
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
+		NEW_CLASSNN(reader, Text::UTF8Reader(fs));
 		sb.ClearStr();
 		reader->ReadLine(sb, 1024);
 		sb.ClearStr();
@@ -292,15 +292,15 @@ UIntOS Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::In
 			if (i != INVALID_INDEX)
 			{
 				sb.TrimToLength(i);
-				NEW_CLASS(interf, Net::WirelessLAN::Interface(sb.ToString(), (void*)(IntOS)thisData->fd, Net::WirelessLAN::INTERFACE_STATE_CONNECTED, 0));
+				NEW_CLASSNN(interf, Net::WirelessLAN::Interface(sb.ToString(), (void*)(IntOS)thisData->fd, Net::WirelessLAN::INTERFACE_STATE_CONNECTED, 0));
 				outArr->Add(interf);
 				ret++;
 			}
 			sb.ClearStr();
 		}
-		DEL_CLASS(reader);		
+		reader.Delete();
 	}
-	DEL_CLASS(fs);*/
+	fs.Delete();*/
 
 	IO::FileStream fs(CSTR("/proc/net/dev"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())

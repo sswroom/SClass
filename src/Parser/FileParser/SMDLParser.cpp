@@ -257,8 +257,8 @@ Optional<IO::ParsedObject> Parser::FileParser::SMDLParser::ParseFileHdr(NN<IO::S
 	NEW_CLASSNN(track, Map::GPSTrack(fd->GetFullName(), true, 0, s.Ptr()));
 	track->SetTrackName(s->ToCString());
 	s->Release();
-	SMDLExtraParser *parser;
-	NEW_CLASS(parser, SMDLExtraParser());
+	NN<SMDLExtraParser> parser;
+	NEW_CLASSNN(parser, SMDLExtraParser());
 	track->SetExtraParser(parser);
 	currPos = 0;
 	while (currPos < fileSize)

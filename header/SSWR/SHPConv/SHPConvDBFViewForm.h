@@ -15,7 +15,7 @@ namespace SSWR
 		{
 		private:
 			NN<UI::GUIListView> lvDBF;
-			Media::MonitorMgr *monMgr;
+			NN<Media::MonitorMgr> monMgr;
 
 		public:
 			SHPConvDBFViewForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<DB::DBFFile> dbf, NN<SSWR::SHPConv::SHPConvEng> eng, Text::CStringNN lbl);

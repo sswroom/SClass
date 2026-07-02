@@ -301,14 +301,14 @@ Net::MODBUSTCPListener::MODBUSTCPListener(NN<Net::SocketFactory> sockf, UInt16 p
 {
 	this->sockf = sockf;
 	this->delay = 0;
-	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(120, OnClientEvent, OnClientData, this, 2, OnClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, nullptr, port, log, OnClientConn, this, CSTR("MODBUSTCP: "), autoStart));
+	NEW_CLASSNN(this->cliMgr, Net::TCPClientMgr(120, OnClientEvent, OnClientData, this, 2, OnClientTimeout));
+	NEW_CLASSNN(this->svr, Net::TCPServer(this->sockf, nullptr, port, log, OnClientConn, this, CSTR("MODBUSTCP: "), autoStart));
 }
 
 Net::MODBUSTCPListener::~MODBUSTCPListener()
 {
-	DEL_CLASS(this->svr);
-	DEL_CLASS(this->cliMgr);
+	this->svr.Delete();
+	this->cliMgr.Delete();
 
 	UIntOS i = this->devMap.GetCount();
 	NN<IO::MODBUSDevSim> dev;

@@ -10,6 +10,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 
+//#define _DEBUG
 #define PLAYBUFFSIZE 30
 
 void Media::M2VStreamSource::SubmitFrame(UIntOS frameSize, UIntOS frameStart, UIntOS pictureStart)
@@ -163,14 +164,15 @@ void Media::M2VStreamSource::SubmitFrame(UIntOS frameSize, UIntOS frameStart, UI
 				{
 #ifdef _DEBUG
 					NN<Sync::Mutex> debugMut;
-					if (this->debugLog && debugMut.Set(this->debugMut))
+					NN<IO::Writer> debugLog;
+					if (this->debugLog.SetTo(debugLog) && this->debugMut.SetTo(debugMut))
 					{
 						Text::StringBuilderUTF8 sb;
 						sb.AppendC(UTF8STRC("Add to Play buff "));
 						sb.AppendDur((this->thisFrameTime + fieldAdd));
 						sb.AppendC(UTF8STRC(" skipped"));
 						Sync::MutexUsage debugMutUsage(debugMut);
-						this->debugLog->WriteLine(sb.ToCString());
+						debugLog->WriteLine(sb.ToCString());
 					}
 #endif
 					break;
@@ -181,13 +183,14 @@ void Media::M2VStreamSource::SubmitFrame(UIntOS frameSize, UIntOS frameStart, UI
 			{
 #ifdef _DEBUG
 				NN<Sync::Mutex> debugMut;
-				if (this->debugLog && debugMut.Set(this->debugMut))
+				NN<IO::Writer> debugLog;
+				if (this->debugLog.SetTo(debugLog) && this->debugMut.SetTo(debugMut))
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("Add to Play buff "));
 					sb.AppendDur((this->thisFrameTime + fieldAdd));
 					Sync::MutexUsage debugMutUsage(debugMut);
-					this->debugLog->WriteLine(sb.ToCString());
+					debugLog->WriteLine(sb.ToCString());
 				}
 #endif
 				Sync::MutexUsage mutUsage(this->playMut);
@@ -382,13 +385,14 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(AnyType userObj)
 
 #ifdef _DEBUG
 			NN<Sync::Mutex> debugMut;
-			if (me->debugLog && debugMut.Set(me->debugMut))
+			NN<IO::Writer> debugLog;
+			if (me->debugLog.SetTo(debugLog) && me->debugMut.SetTo(debugMut))
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Output frame "));
 				sb.AppendDur(frameTime);
 				Sync::MutexUsage debugMutUsage(debugMut);
-				me->debugLog->WriteLine(sb.ToCString());
+				debugLog->WriteLine(sb.ToCString());
 			}
 #endif
 			me->frameCb(frameTime, frameNum, &frameBuff, frameSize, fs, me->frameCbData, ft, (frameNum == 0)?Media::VideoSource::FF_DISCONTTIME:Media::VideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
@@ -429,16 +433,18 @@ Media::M2VStreamSource::M2VStreamSource(NN<Media::MediaStreamControl> pbc)
 	this->frameNum = 0;
 	this->totalFrameCnt = 0;
 	this->totalFrameSize = 0;
-	this->debugLog = 0;
-	this->debugFS = 0;
-	this->debugMut = 0;
+	this->debugLog = nullptr;
+	this->debugFS = nullptr;
+	this->debugMut = nullptr;
 
 #ifdef _DEBUG
 	NN<IO::FileStream> debugFS;
-	NEW_CLASS(this->debugMut, Sync::Mutex());
+	NN<IO::Writer> debugLog;
+	NEW_CLASSOPT(this->debugMut, Sync::Mutex());
 	NEW_CLASSNN(debugFS, IO::FileStream(CSTR("M2VDebug.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	this->debugFS = debugFS.Ptr();
-	NEW_CLASS(this->debugLog, Text::UTF8Writer(debugFS));
+	NEW_CLASSNN(debugLog, Text::UTF8Writer(debugFS));
+	this->debugLog = debugLog;
 #endif
 
 	this->playing = false;
@@ -456,9 +462,9 @@ Media::M2VStreamSource::~M2VStreamSource()
 	MemFree(this->frameBuff);
 	MemFree(playBuff);
 #ifdef _DEBUG
-	SDEL_CLASS(this->debugLog);
-	SDEL_CLASS(this->debugFS);
-	SDEL_CLASS(this->debugMut);
+	this->debugLog.Delete();
+	this->debugFS.Delete();
+	this->debugMut.Delete();
 #endif
 }
 
@@ -501,10 +507,11 @@ Bool Media::M2VStreamSource::Start()
 
 #ifdef _DEBUG
 	NN<Sync::Mutex> debugMut;
-	if (this->debugLog && debugMut.Set(this->debugMut))
+	NN<IO::Writer> debugLog;
+	if (this->debugLog.SetTo(debugLog) && this->debugMut.SetTo(debugMut))
 	{
 		Sync::MutexUsage debugMutUsage(debugMut);
-		this->debugLog->WriteLine(CSTR("Start"));
+		debugLog->WriteLine(CSTR("Start"));
 	}
 #endif
 	Sync::MutexUsage mutUsage(this->pbcMut);
@@ -644,13 +651,14 @@ void Media::M2VStreamSource::SetStreamTime(Data::Duration time)
 {
 #ifdef _DEBUG
 	NN<Sync::Mutex> debugMut;
-	if (this->debugLog && debugMut.Set(this->debugMut))
+	NN<IO::Writer> debugLog;
+	if (this->debugLog.SetTo(debugLog) && this->debugMut.SetTo(debugMut))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Set Stream Time "));
 		sb.AppendDur(time);
 		Sync::MutexUsage debugMutUsage(debugMut);
-		this->debugLog->WriteLine(sb.ToCString());
+		debugLog->WriteLine(sb.ToCString());
 	}
 #endif
 	this->syncFrameTime = time;
@@ -672,13 +680,14 @@ void Media::M2VStreamSource::WriteFrameStream(UInt8 *buff, UIntOS buffSize)
 
 #ifdef _DEBUG
 	NN<Sync::Mutex> debugMut;
-	if (this->debugLog && debugMut.Set(this->debugMut))
+	NN<IO::Writer> debugLog;
+	if (this->debugLog.SetTo(debugLog) && this->debugMut.SetTo(debugMut))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("WriteFrameStream "));
 		sb.AppendIntOS(buffSize);
 		Sync::MutexUsage debugMutUsage(debugMut);
-		this->debugLog->WriteLine(sb.ToCString());
+		debugLog->WriteLine(sb.ToCString());
 	}
 #endif
 

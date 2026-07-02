@@ -5,18 +5,18 @@
 
 struct Media::VideoCaptureMgr::ClassData
 {
-	Media::V4LVideoCaptureMgr *v4lMgr;
+	NN<Media::V4LVideoCaptureMgr> v4lMgr;
 };
 
 Media::VideoCaptureMgr::VideoCaptureMgr()
 {
 	this->clsData = MemAllocNN(ClassData);
-	NEW_CLASS(this->clsData->v4lMgr, Media::V4LVideoCaptureMgr());
+	NEW_CLASSNN(this->clsData->v4lMgr, Media::V4LVideoCaptureMgr());
 }
 
 Media::VideoCaptureMgr::~VideoCaptureMgr()
 {
-	DEL_CLASS(this->clsData->v4lMgr);
+	this->clsData->v4lMgr.Delete();
 	MemFreeNN(this->clsData);
 }
 

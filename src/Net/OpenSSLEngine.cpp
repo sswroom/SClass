@@ -37,7 +37,7 @@ struct Net::OpenSSLEngine::ClassData
 	SSL_CTX *ctx;
 	Crypto::Cert::X509File *cliCert;
 	Crypto::Cert::X509File *cliKey;
-	Data::FastStringMapNative<Bool> *alpnSupports;
+	Optional<Data::FastStringMapNative<Bool>> alpnSupports;
 };
 
 Optional<Net::SSLClient> Net::OpenSSLEngine::CreateServerConn(NN<Socket> s)
@@ -60,8 +60,8 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateServerConn(NN<Socket> s)
 	else
 	{
 		this->clif->GetSocketFactory()->SetRecvTimeout(s, 120000);
-		Net::SSLClient *cli;
-		NEW_CLASS(cli, OpenSSLClient(this->clif->GetSocketFactory(), ssl, s));
+		NN<Net::SSLClient> cli;
+		NEW_CLASSNN(cli, OpenSSLClient(this->clif->GetSocketFactory(), ssl, s));
 		return cli;
 	}
 }
@@ -106,15 +106,15 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<S
 			err.Set(ErrorType::CertNotFound);
 			return nullptr;
 		}
-		Crypto::Cert::X509Cert *svrCert;
-		NEW_CLASS(svrCert, Crypto::Cert::X509Cert(hostName, Data::ByteArrayR(certBuff, (UInt32)certLen)));
+		NN<Crypto::Cert::X509Cert> svrCert;
+		NEW_CLASSNN(svrCert, Crypto::Cert::X509Cert(hostName, Data::ByteArrayR(certBuff, (UInt32)certLen)));
 		Data::DateTime dt;
 		Int64 currTime;
 		dt.SetCurrTimeUTC();
 		currTime = dt.ToTicks();
 		if (!svrCert->GetNotBefore(dt) || currTime < dt.ToTicks())
 		{
-			DEL_CLASS(svrCert);
+			svrCert.Delete();
 			this->clif->GetSocketFactory()->DestroySocket(s);
 			SSL_free(ssl);
 			err.Set(ErrorType::InvalidPeriod);
@@ -122,7 +122,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<S
 		}
 		if (!svrCert->GetNotAfter(dt) || currTime > dt.ToTicks())
 		{
-			DEL_CLASS(svrCert);
+			svrCert.Delete();
 			this->clif->GetSocketFactory()->DestroySocket(s);
 			SSL_free(ssl);
 			err.Set(ErrorType::InvalidPeriod);
@@ -130,7 +130,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<S
 		}
 		if (!svrCert->DomainValid(hostName))
 		{
-			DEL_CLASS(svrCert);
+			svrCert.Delete();
 			this->clif->GetSocketFactory()->DestroySocket(s);
 			SSL_free(ssl);
 			err.Set(ErrorType::InvalidName);
@@ -138,17 +138,17 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<S
 		}
 		if (svrCert->IsSelfSigned())
 		{
-			DEL_CLASS(svrCert);
+			svrCert.Delete();
 			this->clif->GetSocketFactory()->DestroySocket(s);
 			SSL_free(ssl);
 			err.Set(ErrorType::SelfSign);
 			return nullptr;
 		}
-		DEL_CLASS(svrCert);
+		svrCert.Delete();
 	}
 	this->clif->GetSocketFactory()->SetRecvTimeout(s, 120000);
-	Net::SSLClient *cli;
-	NEW_CLASS(cli, OpenSSLClient(this->clif->GetSocketFactory(), ssl, s));
+	NN<Net::SSLClient> cli;
+	NEW_CLASSNN(cli, OpenSSLClient(this->clif->GetSocketFactory(), ssl, s));
 	return cli;
 }
 
@@ -257,7 +257,7 @@ Net::OpenSSLEngine::OpenSSLEngine(NN<Net::TCPClientFactory> clif, Method method)
 	this->clsData->ctx = SSL_CTX_new(m);
 	this->clsData->cliCert = 0;
 	this->clsData->cliKey = 0;
-	this->clsData->alpnSupports = 0;
+	this->clsData->alpnSupports = nullptr;
 	if (this->clsData->ctx)
 	{
 		SSL_CTX_set_options(this->clsData->ctx, SSL_OP_NO_TICKET);
@@ -273,7 +273,7 @@ Net::OpenSSLEngine::~OpenSSLEngine()
 	}
 	SDEL_CLASS(this->clsData->cliCert);
 	SDEL_CLASS(this->clsData->cliKey);
-	SDEL_CLASS(this->clsData->alpnSupports);
+	this->clsData->alpnSupports.Delete();
 	MemFreeNN(this->clsData);
 	Net::OpenSSLCore::Deinit();
 }
@@ -417,11 +417,12 @@ Bool Net::OpenSSLEngine::ServerSetClientCA(Text::CStringNN clientCA)
 int OpenSSLEngine_alpn_select_cb(SSL *ssl, const unsigned char **out, unsigned char *outlen, const unsigned char *in, unsigned int inlen, void *arg)
 {
 	Net::OpenSSLEngine::ClassData *clsData = (Net::OpenSSLEngine::ClassData *)arg;
+	NN<Data::FastStringMapNative<Bool>> alpnSupports;
 	while (true)
 	{
 		if (inlen == 0 || (UIntOS)in[0] + 1 > inlen)
 			return SSL_TLSEXT_ERR_NOACK;
-		if (clsData->alpnSupports->GetC(Text::CStringNN(in + 1, in[0])))
+		if (clsData->alpnSupports.SetTo(alpnSupports) && alpnSupports->GetC(Text::CStringNN(in + 1, in[0])))
 		{
 			*out = in + 1;
 			*outlen = in[0];
@@ -435,11 +436,12 @@ int OpenSSLEngine_alpn_select_cb(SSL *ssl, const unsigned char **out, unsigned c
 int OpenSSLEngine_next_proto_select_cb(SSL *s, unsigned char **out, unsigned char *outlen, const unsigned char *in, unsigned int inlen, void *arg)
 {
 	Net::OpenSSLEngine::ClassData *clsData = (Net::OpenSSLEngine::ClassData *)arg;
+	NN<Data::FastStringMapNative<Bool>> alpnSupports;
 	while (true)
 	{
 		if ((UIntOS)in[0] + 1 > inlen)
 			return SSL_TLSEXT_ERR_NOACK;
-		if (clsData->alpnSupports->GetC(Text::CStringNN(in + 1, in[0])))
+		if (clsData->alpnSupports.SetTo(alpnSupports) && alpnSupports->GetC(Text::CStringNN(in + 1, in[0])))
 		{
 			*out = (unsigned char*)in + 1;
 			*outlen = in[0];
@@ -453,17 +455,19 @@ int OpenSSLEngine_next_proto_select_cb(SSL *s, unsigned char **out, unsigned cha
 Bool Net::OpenSSLEngine::ServerAddALPNSupport(Text::CStringNN proto)
 {
 #if OPENSSL_VERSION_NUMBER >= 0x10002000L
+	NN<Data::FastStringMapNative<Bool>> alpnSupports;
 	if (this->clsData->ctx == 0)
 	{
 		return false;
 	}
-	if (this->clsData->alpnSupports == 0)
+	if (!this->clsData->alpnSupports.SetTo(alpnSupports))
 	{
-		NEW_CLASS(this->clsData->alpnSupports, Data::FastStringMapNative<Bool>());
+		NEW_CLASSNN(alpnSupports, Data::FastStringMapNative<Bool>());
+		this->clsData->alpnSupports = alpnSupports;
 		SSL_CTX_set_alpn_select_cb(this->clsData->ctx, OpenSSLEngine_alpn_select_cb, this->clsData.Ptr());
 		SSL_CTX_set_next_proto_select_cb(this->clsData->ctx, OpenSSLEngine_next_proto_select_cb, this->clsData.Ptr());
 	}
-	this->clsData->alpnSupports->PutC(proto, true);
+	alpnSupports->PutC(proto, true);
 	return true;
 #else
 	return false;

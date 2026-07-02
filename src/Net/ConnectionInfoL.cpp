@@ -216,11 +216,11 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	}
 	this->ent.defGW = 0;
 
-/*	NEW_CLASS(fs, IO::FileStream(L"/proc/net/route", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+/*	NEW_CLASSNN(fs, IO::FileStream(CSTR("/proc/net/route"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		WChar *sarr[4];
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
+		NEW_CLASSNN(reader, Text::UTF8Reader(fs));
 		sb.ClearStr();
 		reader->ReadLine(sb, 512);
 		sb.ClearStr();
@@ -241,9 +241,9 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 			}
 			sb.ClearStr();
 		}
-		DEL_CLASS(reader);
+		reader.Delete();
 	}
-	DEL_CLASS(fs);*/
+	fs.Delete();*/
 }
 
 Bool Net::ConnectionInfo::SetInfo(void *info)

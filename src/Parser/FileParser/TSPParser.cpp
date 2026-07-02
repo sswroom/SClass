@@ -35,8 +35,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TSPParser::ParseFileHdr(NN<IO::St
 	{
 		return nullptr;
 	}
-	Math::TSPFile *pf;
-	NEW_CLASS(pf, Math::TSPFile(fd));
+	NN<Math::TSPFile> pf;
+	NEW_CLASSNN(pf, Math::TSPFile(fd));
 
 	return pf;
 }

@@ -6,35 +6,35 @@
 
 struct Media::VideoCaptureMgr::ClassData
 {
-	Media::V4LVideoCaptureMgr *v4lMgr;
-	Media::AndroidVideoCaptureMgr *androidMgr;
+	NN<Media::V4LVideoCaptureMgr> v4lMgr;
+	NN<Media::AndroidVideoCaptureMgr> androidMgr;
 };
 
 Media::VideoCaptureMgr::VideoCaptureMgr()
 {
-	ClassData *data = MemAlloc(ClassData, 1);
-	NEW_CLASS(data->v4lMgr, Media::V4LVideoCaptureMgr());
-	NEW_CLASS(data->androidMgr, Media::AndroidVideoCaptureMgr());
+	NN<ClassData> data = MemAllocNN(ClassData);
+	NEW_CLASSNN(data->v4lMgr, Media::V4LVideoCaptureMgr());
+	NEW_CLASSNN(data->androidMgr, Media::AndroidVideoCaptureMgr());
 	this->clsData = data;
 }
 
 Media::VideoCaptureMgr::~VideoCaptureMgr()
 {
-	ClassData *data = (ClassData*)this->clsData;;
-	DEL_CLASS(data->v4lMgr);
-	DEL_CLASS(data->androidMgr);
-	MemFree(data);
+	NN<ClassData> data = this->clsData;
+	data->v4lMgr.Delete();
+	data->androidMgr.Delete();
+	MemFreeNN(data);
 }
 
 UIntOS Media::VideoCaptureMgr::GetDeviceList(NN<Data::ArrayListNN<DeviceInfo>> devList)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<DeviceInfo> devInfo;
 	UTF8Char sbuff[512];
-	Data::ArrayList<UInt32> devIdList;
+	Data::ArrayListNative<UInt32> devIdList;
 	UIntOS ret = 0;
 	UIntOS i = 0;
-	UIntOS j = data->v4lMgr->GetDeviceList(&devIdList);
+	UIntOS j = data->v4lMgr->GetDeviceList(devIdList);
 	while (i < j)
 	{
 		devInfo = MemAllocNN(DeviceInfo);
@@ -49,14 +49,14 @@ UIntOS Media::VideoCaptureMgr::GetDeviceList(NN<Data::ArrayListNN<DeviceInfo>> d
 
 	devIdList.Clear();
 	i = 0;
-	j = data->androidMgr->GetDeviceList(&devIdList);
+	j = data->androidMgr->GetDeviceList(devIdList);
 	while (i < j)
 	{
 		devInfo = MemAllocNN(DeviceInfo);
 		devInfo->devType = 1;
 		devInfo->devId = devIdList.GetItem(i);
 		data->androidMgr->GetDeviceName(sbuff, devInfo->devId);
-		devInfo->devName = Text::StrCopyNew(sbuff).Ptr();
+		devInfo->devName = Text::StrCopyNew(sbuff);
 		devList->Add(devInfo);
 		ret++;
 		i++;
@@ -71,14 +71,14 @@ void Media::VideoCaptureMgr::FreeDeviceList(NN<Data::ArrayListNN<DeviceInfo>> de
 	while (i-- > 0)
 	{
 		devInfo = devList->GetItemNoCheck(i);
-		if (devInfo->devName) Text::StrDelNew(devInfo->devName);
+		Text::StrDelNew(devInfo->devName);
 		MemFreeNN(devInfo);
 	}
 }
 
 Optional<Media::VideoCapturer> Media::VideoCaptureMgr::CreateDevice(Int32 devType, UIntOS devId)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (devType == 0)
 	{
 		return data->v4lMgr->CreateDevice(devId);
@@ -89,7 +89,7 @@ Optional<Media::VideoCapturer> Media::VideoCaptureMgr::CreateDevice(Int32 devTyp
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 

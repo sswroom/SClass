@@ -52,7 +52,7 @@ namespace Media
 		class DShowFileSource
 		{
 		private:
-			DShowSourceCapture *capFilter;
+			Optional<DShowSourceCapture> capFilter;
 			
 		public:
 			DShowFileSource(UnsafeArray<const WChar> fileName);

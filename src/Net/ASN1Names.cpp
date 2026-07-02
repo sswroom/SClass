@@ -9,17 +9,18 @@
 
 void Net::ASN1Names::AddRule(NN<NameRule> rule)
 {
-	if (this->readContainer)
-		this->readContainer->rules.Add(rule);
+	NN<RuleContainer> readContainer;
+	if (this->readContainer.SetTo(readContainer))
+		readContainer->rules.Add(rule);
 	else
 		this->rules.Add(rule);
 	this->AnyCond();
 }
 
-void Net::ASN1Names::FreeContainer(RuleContainer *container)
+void Net::ASN1Names::FreeContainer(NN<RuleContainer> container)
 {
 	ClearRules(container->rules);
-	DEL_CLASS(container);
+	container.Delete();
 }
 	
 void Net::ASN1Names::ClearRules(NN<Data::ArrayListNN<NameRule>> rules)
@@ -37,17 +38,16 @@ void Net::ASN1Names::ClearRules(NN<Data::ArrayListNN<NameRule>> rules)
 
 Net::ASN1Names::ASN1Names()
 {
-	this->readContainer = 0;
+	this->readContainer = nullptr;
 	this->ReadBegin();
 	this->AnyCond();
 }
 
 Net::ASN1Names::~ASN1Names()
 {
-	RuleContainer *container;
-	while (this->readContainer)
+	NN<RuleContainer> container;
+	while (this->readContainer.SetTo(container))
 	{
-		container = this->readContainer;
 		this->readContainer = container->parent;
 		FreeContainer(container);
 	}
@@ -58,7 +58,7 @@ void Net::ASN1Names::ReadBegin()
 {
 	this->readLev.Clear();
 	this->readIndex = 0;
-	this->readContainer = 0;
+	this->readContainer = nullptr;
 	this->readLastOIDLen = 0;
 }
 
@@ -84,11 +84,12 @@ Text::CString Net::ASN1Names::ReadNameNoDef(Net::ASN1Util::ItemType itemType, UI
 	}
 	Optional<NameRule> rule;
 	NN<NameRule> nnrule;
+	NN<RuleContainer> readContainer;
 	while (true)
 	{
-		if (this->readContainer)
+		if (this->readContainer.SetTo(readContainer))
 		{
-			rule = this->readContainer->rules.GetItem(this->readIndex);
+			rule = readContainer->rules.GetItem(this->readIndex);
 		}
 		else
 		{
@@ -159,12 +160,13 @@ void Net::ASN1Names::ReadContainerBegin()
 	}
 	else
 	{
-		if (this->readContainer)
+		NN<RuleContainer> readContainer;
+		if (this->readContainer.SetTo(readContainer))
 		{
 			if (this->readIndex == 0)
-				rule = this->readContainer->rules.GetItem(0);
+				rule = readContainer->rules.GetItem(0);
 			else
-				rule = this->readContainer->rules.GetItem(this->readIndex - 1);
+				rule = readContainer->rules.GetItem(this->readIndex - 1);
 		}
 		else
 		{
@@ -180,9 +182,9 @@ void Net::ASN1Names::ReadContainerBegin()
 		}
 		else
 		{
-			RuleContainer *container;
+			NN<RuleContainer> container;
 			this->readIndex = 0;
-			NEW_CLASS(container, RuleContainer());
+			NEW_CLASSNN(container, RuleContainer());
 			container->parent = this->readContainer;
 			this->readContainer = container;
 			nnrule->contentFunc(*this);
@@ -199,10 +201,10 @@ void Net::ASN1Names::ReadContainerEnd()
 	else
 	{
 		this->readIndex = this->readLev.Pop();
-		if (this->readContainer)
+		NN<RuleContainer> container;
+		if (this->readContainer.SetTo(container))
 		{
-			RuleContainer *container = this->readContainer;
-			this->readContainer = this->readContainer->parent;
+			this->readContainer = container->parent;
 			FreeContainer(container);
 		}
 	}

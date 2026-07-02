@@ -11,16 +11,16 @@ Text::ChineseInfo::ChineseInfo()
 	UnsafeArray<UTF8Char> sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Chinese.dat"));
-	NEW_CLASS(this->fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	this->currCharBuff = MemAlloc(UInt8, 256);
+	NEW_CLASSNN(this->fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	this->currCharBuff = MemAllocArr(UInt8, 256);
 	this->currCharCode = 0;
 	this->fileSize = this->fs->GetLength();
 }
 
 Text::ChineseInfo::~ChineseInfo()
 {
-	MemFree(this->currCharBuff);
-	DEL_CLASS(this->fs);
+	MemFreeArr(this->currCharBuff);
+	this->fs.Delete();
 }
 
 Bool Text::ChineseInfo::GetCharInfo(UInt32 charCode, CharacterInfo *chInfo)
@@ -93,7 +93,7 @@ Bool Text::ChineseInfo::GetCharInfo(UInt32 charCode, CharacterInfo *chInfo)
 		chInfo->cantonPronun[3] = 0;
 		chInfo->radical = 0;
 		chInfo->strokeCount = 0;
-		MemClear(this->currCharBuff, 256);
+		MemClear(&this->currCharBuff[0], 256);
 		this->currCharCode = charCode;
 	}
 	return true;
@@ -192,7 +192,7 @@ Bool Text::ChineseInfo::SetCharInfo(UInt32 charCode, CharacterInfo *chInfo)
 		this->fileSize += 256;
 	if (this->currCharCode == charCode)
 	{
-		MemCopyNO(this->currCharBuff, buff, 256);
+		MemCopyNO(&this->currCharBuff[0], buff, 256);
 	}
 	return true;
 }
@@ -262,7 +262,7 @@ Bool Text::ChineseInfo::AddRelation(UInt32 charCode, UInt32 relatedCharCode)
 	this->fs->Write(Data::ByteArrayR(buff, 256));
 	if (relatedCharCode == this->currCharCode)
 	{
-		MemCopyNO(this->currCharBuff, buff, 256);
+		MemCopyNO(&this->currCharBuff[0], buff, 256);
 	}
 	UInt32 currCode = charCode;
 	UInt32 nextCode;
@@ -289,7 +289,7 @@ Bool Text::ChineseInfo::AddRelation(UInt32 charCode, UInt32 relatedCharCode)
 
 			if (currCode == this->currCharCode)
 			{
-				MemCopyNO(this->currCharBuff, buff, 256);
+				MemCopyNO(&this->currCharBuff[0], buff, 256);
 			}
 			return true;
 		}

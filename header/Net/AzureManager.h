@@ -11,7 +11,7 @@ namespace Net
 	private:
 		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
-		Data::FastStringMapNN<Text::String> *keyMap;
+		Optional<Data::FastStringMapNN<Text::String>> keyMap;
 
 	public:
 		AzureManager(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl);

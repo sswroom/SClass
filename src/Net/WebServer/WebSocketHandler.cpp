@@ -72,7 +72,7 @@ Bool Net::WebServer::WebSocketHandler::ProcessRequest(NN<Net::WebServer::WebRequ
 	b64.EncodeBin(sb, hash, 20);
 	resp->AddHeader(CSTR("Sec-WebSocket-Accept"), sb.ToCString());
 
-	Net::WebServer::WebSocketServerStream *stm;
-	NEW_CLASS(stm, Net::WebServer::WebSocketServerStream(this->stmHdlr, resp));
+	NN<Net::WebServer::WebSocketServerStream> stm;
+	NEW_CLASSNN(stm, Net::WebServer::WebSocketServerStream(this->stmHdlr, resp));
 	return resp->SwitchProtocol(stm);
 }

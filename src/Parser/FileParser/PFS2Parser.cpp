@@ -63,8 +63,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PFS2Parser::ParseFileHdr(NN<IO::S
 		return nullptr;
 	Data::ByteBuffer records(hdrSize - 8);
 	fd->GetRealData(15, hdrSize - 8, records);
-	IO::VirtualPackageFile *pf = 0;
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NN<IO::VirtualPackageFile> pf;
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	i = 0;
 	while (i < hdrSize - 8)
 	{
@@ -79,7 +79,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PFS2Parser::ParseFileHdr(NN<IO::S
 
 	if (fileCnt != ReadInt32(&hdr[11]))
 	{
-		DEL_CLASS(pf);
+		pf.Delete();
 		return nullptr;
 	}
 	return pf;

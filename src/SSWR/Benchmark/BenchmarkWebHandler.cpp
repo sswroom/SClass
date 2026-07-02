@@ -46,13 +46,13 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(NN<SSWR::Benchmar
 			UnsafeArrayOpt<const UTF8Char> platform = nullptr;
 			UnsafeArrayOpt<const UTF8Char> cpu = nullptr;
 			NN<IO::MemoryStream> mstm;
-			Text::UTF8Reader *reader;
+			NN<Text::UTF8Reader> reader;
 			UTF8Char sbuff[512];
 			UnsafeArray<UTF8Char> sptr;
 			NEW_CLASSNN(mstm, IO::MemoryStream(leng));
 			mstm->Write(Data::ByteArrayR(data, leng));
 			mstm->SeekFromBeginning(0);
-			NEW_CLASS(reader, Text::UTF8Reader(mstm));
+			NEW_CLASSNN(reader, Text::UTF8Reader(mstm));
 
 			sb.ClearStr();
 			if (reader->ReadLine(sb, 512))
@@ -131,7 +131,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(NN<SSWR::Benchmar
 				}
 			}
 
-			DEL_CLASS(reader);
+			reader.Delete();
 			mstm.Delete();
 
 			if (valid)

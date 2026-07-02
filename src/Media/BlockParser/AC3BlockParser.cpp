@@ -60,7 +60,7 @@ Optional<Media::AudioBlockSource> Media::BlockParser::AC3BlockParser::ParseStrea
 		break;
 	}
 
-	Media::AudioBlockSource *audio;
+	NN<Media::AudioBlockSource> audio;
 	Media::AudioFormat format;
 	format.formatId = 0x2000;
 	switch (acmod)
@@ -108,7 +108,7 @@ Optional<Media::AudioBlockSource> Media::BlockParser::AC3BlockParser::ParseStrea
 	format.intType = Media::AudioFormat::IT_NORMAL;
 	format.extra = 0;
 
-	NEW_CLASS(audio, Media::AudioBlockSource(stmData, format, stmData->GetFullName(), 1536));
+	NEW_CLASSNN(audio, Media::AudioBlockSource(stmData, format, stmData->GetFullName(), 1536));
 	if (currOfst > 0)
 	{
 		audio->AddBlock(0, (UInt32)currOfst);

@@ -92,12 +92,12 @@ void Media::OpenCV::OCVFrame::GetImageData(UnsafeArray<UInt8> destBuff, IntOS le
 	Media::ImageUtil::ImageCopyR(destBuff, (IntOS)destBpl, fr->data, srcW, left, top, width, height, ((UIntOS)srcW << 3) / width, upsideDown, Media::RotateType::None, destRotate);
 }
 
-Media::StaticImage *Media::OpenCV::OCVFrame::CreateStaticImage()
+NN<Media::StaticImage> Media::OpenCV::OCVFrame::CreateStaticImage()
 {
 	Media::ColorProfile sRGB(Media::ColorProfile::CPT_SRGB);
-	Media::StaticImage *simg;
+	NN<Media::StaticImage> simg;
 	Math::Size2D<UIntOS> size = this->GetSize();
-	NEW_CLASS(simg, Media::StaticImage(size, 0, 8, Media::PF_PAL_W8, size.CalcArea(), sRGB, Media::ColorProfile::YUVT_BT601, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASSNN(simg, Media::StaticImage(size, 0, 8, Media::PF_PAL_W8, size.CalcArea(), sRGB, Media::ColorProfile::YUVT_BT601, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 	simg->InitGrayPal();
 	this->GetImageData(simg->data, 0, 0, size.x, size.y, simg->GetDataBpl(), false, Media::RotateType::None);
 	cv::imshow("Clear", *(cv::Mat *)this->frame);
@@ -158,8 +158,8 @@ Optional<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::CreateYFrame(UnsafeAr
 		converter->ConvertV2(imgData, fr->ptr(0), dispSize.x, dispSize.y, storeWidth, dispSize.y, (IntOS)dispSize.x, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 
 		converter.Delete();
-		Media::OpenCV::OCVFrame *frame;
-		NEW_CLASS(frame, Media::OpenCV::OCVFrame(fr));
+		NN<Media::OpenCV::OCVFrame> frame;
+		NEW_CLASSNN(frame, Media::OpenCV::OCVFrame(fr));
 		return frame;
 	}
 	else

@@ -50,15 +50,15 @@ Optional<IO::ParsedObject> Parser::FileParser::MRGParser::ParseFileHdr(NN<IO::St
 	currOfst = startOfst;
 	hdrOfst = 16;
 	Text::Encoding enc(932);
-	IO::VirtualPackageFile *pf;
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NN<IO::VirtualPackageFile> pf;
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 
 	while (hdrOfst < startOfst)
 	{
 		fd->GetRealData(hdrOfst, 76, BYTEARR(rec));
 		if (*(Int32*)&rec[68] != 0 || *(Int32*)&rec[72] != 0)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(name, rec, 64, 0);

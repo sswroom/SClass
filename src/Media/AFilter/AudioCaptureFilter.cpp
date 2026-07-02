@@ -12,6 +12,7 @@ UInt32 __stdcall Media::AFilter::AudioCaptureFilter::CaptureThread(AnyType userO
 	NN<Media::AFilter::AudioCaptureFilter> me = userObj.GetNN<Media::AFilter::AudioCaptureFilter>();
 	UInt8 *tmpBuff;
 	UIntOS buffSize;
+	NN<IO::FileStream> waveStm;
 	me->running = true;
 	while (!me->toStop)
 	{
@@ -26,9 +27,9 @@ UInt32 __stdcall Media::AFilter::AudioCaptureFilter::CaptureThread(AnyType userO
 			me->readBuffSize = 0;
 			readMutUsage.EndUse();
 
-			if (me->waveStm)
+			if (me->waveStm.SetTo(waveStm))
 			{
-				me->waveStm->Write(Data::ByteArrayR(me->writeBuff, buffSize));
+				waveStm->Write(Data::ByteArrayR(me->writeBuff, buffSize));
 				me->dataSize += buffSize;
 				me->fileSize += buffSize;
 			}
@@ -43,7 +44,7 @@ UInt32 __stdcall Media::AFilter::AudioCaptureFilter::CaptureThread(AnyType userO
 
 Media::AFilter::AudioCaptureFilter::AudioCaptureFilter(NN<Media::AudioSource> sourceAudio) : Media::AudioFilter(sourceAudio)
 {
-	this->waveStm = 0;
+	this->waveStm = nullptr;
 	this->readBuff = MemAlloc(UInt8, BUFFSIZE);
 	this->writeBuff = MemAlloc(UInt8, BUFFSIZE);
 	this->readBuffSize = 0;
@@ -118,12 +119,14 @@ Bool Media::AFilter::AudioCaptureFilter::StartCapture(Text::CStringNN fileName)
 	WriteUInt16(&buff[70], format.bitpersample);
 	WriteUInt16(&buff[72], (UInt16)format.extraSize);
 	Sync::MutexUsage mutUsage(this->writeMut);
-	NEW_CLASS(this->waveStm, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	this->waveStm->Write(Data::ByteArrayR(buff, 74));
+	NN<IO::FileStream> waveStm;
+	NEW_CLASSNN(waveStm, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	this->waveStm = waveStm;
+	waveStm->Write(Data::ByteArrayR(buff, 74));
 	if (format.extraSize > 0)
 	{
 		this->dataOfst = 78 + format.extraSize;
-		this->waveStm->Write(Data::ByteArrayR(format.extra, format.extraSize));
+		waveStm->Write(Data::ByteArrayR(format.extra, format.extraSize));
 	}
 	else
 	{
@@ -131,7 +134,7 @@ Bool Media::AFilter::AudioCaptureFilter::StartCapture(Text::CStringNN fileName)
 	}
 	*(Int32*)&buff[0] = *(Int32*)"data";
 	*(Int32*)&buff[4] = 0;
-	this->waveStm->Write(Data::ByteArrayR(buff, 8));
+	waveStm->Write(Data::ByteArrayR(buff, 8));
 	this->dataSize = 0;
 	this->fileSize = this->dataOfst - 4;
 	this->writing = true;
@@ -142,7 +145,8 @@ void Media::AFilter::AudioCaptureFilter::StopCapture()
 {
 	this->writing = false;
 	Sync::MutexUsage mutUsage(this->writeMut);
-	if (this->waveStm)
+	NN<IO::FileStream> waveStm;
+	if (this->waveStm.SetTo(waveStm))
 	{
 		if (this->fileSize >= 0x100000000LL)
 		{
@@ -154,20 +158,19 @@ void Media::AFilter::AudioCaptureFilter::StopCapture()
 			WriteUInt64(&buff[28], this->dataSize);
 			*(Int64*)&buff[36] = 0;
 			*(Int32*)&buff[44] = 0;
-			this->waveStm->SeekFromBeginning(0);
-			this->waveStm->Write(Data::ByteArrayR(buff, 48));
+			waveStm->SeekFromBeginning(0);
+			waveStm->Write(Data::ByteArrayR(buff, 48));
 
-			this->waveStm->SeekFromBeginning(dataOfst);
-			this->waveStm->Write(Data::ByteArrayR(&buff[4], 4));
+			waveStm->SeekFromBeginning(dataOfst);
+			waveStm->Write(Data::ByteArrayR(&buff[4], 4));
 		}
 		else
 		{
-			this->waveStm->SeekFromBeginning(4);
-			this->waveStm->Write(Data::ByteArrayR((const UInt8*)&this->fileSize, 4));
-			this->waveStm->SeekFromBeginning(dataOfst);
-			this->waveStm->Write(Data::ByteArrayR((const UInt8*)&this->dataSize, 4));
+			waveStm->SeekFromBeginning(4);
+			waveStm->Write(Data::ByteArrayR((const UInt8*)&this->fileSize, 4));
+			waveStm->SeekFromBeginning(dataOfst);
+			waveStm->Write(Data::ByteArrayR((const UInt8*)&this->dataSize, 4));
 		}
-		DEL_CLASS(this->waveStm);
-		this->waveStm = 0;
+		this->waveStm.Delete();
 	}
 }

@@ -54,10 +54,10 @@ NN<Media::JPEGExif::ExifValue> Media::JPEGExif::DupExif(NN<ExifValue> exif)
 		else if (exif->t == Media::JPEGExif::EXIF_TYPE_GROUP)
 		{
 			Int32 i;
-			Data::ArrayListNN<ExifValue> *tmpArr;
+			NN<Data::ArrayListNN<ExifValue>> tmpArr;
 			Data::ArrayListNN<ExifValue> *tmpArr2 = (Data::ArrayListNN<ExifValue>*)exif->s.Ptr();
-			NEW_CLASS(tmpArr, Data::ArrayListNN<ExifValue>());
-			nexif->s = (UTF8Char*)tmpArr;
+			NEW_CLASSNN(tmpArr, Data::ArrayListNN<ExifValue>());
+			nexif->s = (UTF8Char*)tmpArr.Ptr();
 			i = 0;
 			while (i < tmpArr2->GetCount())
 			{
@@ -352,12 +352,12 @@ Media::JPEGExif::~JPEGExif()
 NN<Media::JPEGExif::ExifValue> Media::JPEGExif::AddExifGroup(Int32 id)
 {
 	NN<Media::JPEGExif::ExifValue> val;
-	Data::ArrayListNN<ExifValue> *exifArr;
+	NN<Data::ArrayListNN<ExifValue>> exifArr;
 	val = MemAllocNN(Media::JPEGExif::ExifValue);
 	val->id = id;
 	val->t = Media::JPEGExif::EXIF_TYPE_GROUP;
-	NEW_CLASS(exifArr, Data::ArrayListNN<ExifValue>());
-	val->s = (UTF8Char*)exifArr;
+	NEW_CLASSNN(exifArr, Data::ArrayListNN<ExifValue>());
+	val->s = (UTF8Char*)exifArr.Ptr();
 	this->exifs.Add(val);
 	return val;
 }

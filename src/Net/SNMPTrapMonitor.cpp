@@ -26,12 +26,12 @@ Net::SNMPTrapMonitor::SNMPTrapMonitor(NN<Net::SocketFactory> sockf, SNMPTrapHand
 {
 	this->hdlr = hdlr;
 	this->hdlrObj = userObj;
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, nullptr, 162, nullptr, OnSNMPPacket, this, log, nullptr, 2, false));
+	NEW_CLASSNN(this->svr, Net::UDPServer(sockf, nullptr, 162, nullptr, OnSNMPPacket, this, log, nullptr, 2, false));
 }
 
 Net::SNMPTrapMonitor::~SNMPTrapMonitor()
 {
-	DEL_CLASS(this->svr);
+	this->svr.Delete();
 }
 
 Bool Net::SNMPTrapMonitor::IsError()

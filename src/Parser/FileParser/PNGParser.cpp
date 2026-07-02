@@ -2619,7 +2619,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 	UInt8 interlaceMeth = 0;
 	Optional<IO::MemoryStream> mstm = nullptr;
 	Optional<Data::Compress::Inflater> cstm = nullptr;
-	IO::WriteCacheStream *wcstm = 0;
+	Optional<IO::WriteCacheStream> wcstm = nullptr;
+	NN<IO::WriteCacheStream> nnwcstm;
 	UIntOS imgSize = 0;
 	UInt32 imgDelay = 0;
 	UInt32 imgX = 0;
@@ -2840,8 +2841,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 					{
 						ParseImage(bitDepth, colorType, dataBuff, info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette, palHasAlpha);
 					}
-					DEL_CLASS(wcstm);
-					wcstm = 0;
+					wcstm.Delete();
 					cstm.Delete();
 					mstm.Delete();
 				}
@@ -2867,7 +2867,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 				Data::ByteBuffer chunkData(size);
 				if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 				{
-					if (mstm.IsNull())
+					if (mstm.IsNull() || !wcstm.SetTo(nnwcstm))
 					{
 						imgSize = CalcImageSize(imgW, imgH, bitDepth, colorType, interlaceMeth);
 						NN<IO::MemoryStream> nnmstm;
@@ -2883,12 +2883,13 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 						NN<Data::Compress::Inflater> nncstm;
 						NEW_CLASSNN(nncstm, Data::Compress::Inflater(nnmstm, false));
 						cstm = nncstm;
-						NEW_CLASS(wcstm, IO::WriteCacheStream(nncstm));
-						wcstm->Write(chunkData.WithSize(size) + 2);
+						NEW_CLASSNN(nnwcstm, IO::WriteCacheStream(nncstm));
+						wcstm = nnwcstm;
+						nnwcstm->Write(chunkData.WithSize(size) + 2);
 					}
 					else
 					{
-						wcstm->Write(chunkData.WithSize(size));
+						nnwcstm->Write(chunkData.WithSize(size));
 					}
 				}
 			}
@@ -2900,7 +2901,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 				Data::ByteBuffer chunkData(size);
 				if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 				{
-					if (mstm.IsNull())
+					if (mstm.IsNull() || !wcstm.SetTo(nnwcstm))
 					{
 						if (colorType == 0)
 						{
@@ -2939,12 +2940,13 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 						NN<Data::Compress::Inflater> nncstm;
 						NEW_CLASSNN(nncstm, Data::Compress::Inflater(nnmstm, false));
 						cstm = nncstm;
-						NEW_CLASS(wcstm, IO::WriteCacheStream(nncstm));
-						wcstm->Write(Data::ByteArrayR(&chunkData[6], size - 6));
+						NEW_CLASSNN(nnwcstm, IO::WriteCacheStream(nncstm));
+						wcstm = nnwcstm;
+						nnwcstm->Write(Data::ByteArrayR(&chunkData[6], size - 6));
 					}
 					else
 					{
-						wcstm->Write(Data::ByteArrayR(&chunkData[4], size - 4));
+						nnwcstm->Write(Data::ByteArrayR(&chunkData[4], size - 4));
 					}
 				}
 			}
@@ -2952,17 +2954,16 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 		else if (*(Int32*)&buff[4] == *(Int32*)"IEND")
 		{
 			NN<IO::MemoryStream> nnmstm;
-			if (mstm.SetTo(nnmstm))
+			if (mstm.SetTo(nnmstm) && wcstm.SetTo(nnwcstm))
 			{
-				wcstm->Flush();
+				nnwcstm->Flush();
 				UIntOS dataSize;
 				UnsafeArray<UInt8> dataBuff = nnmstm->GetBuff(dataSize);
 				if (dataSize == imgSize || imgSize != 0)
 				{
 					ParseImage(bitDepth, colorType, dataBuff, info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette, palHasAlpha);
 				}
-				DEL_CLASS(wcstm);
-				wcstm = 0;
+				wcstm.Delete();
 				cstm.Delete();
 				mstm.Delete();
 			}
@@ -2970,17 +2971,16 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 		ofst += (UInt64)size + 12;
 	}
 	NN<IO::MemoryStream> nnmstm;
-	if (mstm.SetTo(nnmstm))
+	if (mstm.SetTo(nnmstm) && wcstm.SetTo(nnwcstm))
 	{
-		wcstm->Flush();
+		nnwcstm->Flush();
 		UIntOS dataSize;
 		UnsafeArray<UInt8> dataBuff = nnmstm->GetBuff(dataSize);
 		if (dataSize == imgSize || imgSize != 0)
 		{
 			ParseImage(bitDepth, colorType, dataBuff, info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette, palHasAlpha);
 		}
-		DEL_CLASS(wcstm);
-		wcstm = 0;
+		wcstm.Delete();
 		cstm.Delete();
 		mstm.Delete();
 	}
@@ -2989,7 +2989,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 		MemFree(palette);
 		palette = 0;
 	}
-	SDEL_CLASS(wcstm);
+	wcstm.Delete();
 	cstm.Delete();
 	mstm.Delete();
 	if (imgList->GetCount() <= 0)

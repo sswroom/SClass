@@ -1,6 +1,6 @@
 #ifndef _SM_WIN32_WMIREADER
 #define _SM_WIN32_WMIREADER
-#include "Data/ArrayListObj.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "DB/DBReader.h"
 
 namespace Win32
@@ -21,7 +21,7 @@ namespace Win32
 		Bool isFirst;
 		Int8 tzQhr;
 
-		Data::ArrayListObj<WMIColumn*> *columns;
+		NN<Data::ArrayListNN<WMIColumn>> columns;
 	public:
 		WMIReader(void *pEnum, Int8 tzQhr);
 		virtual ~WMIReader();

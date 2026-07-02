@@ -3,11 +3,11 @@
 
 #include <stdio.h>
 
-Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text::XMLReader> reader, Text::CStringNN fileName)
+Optional<Media::Jasper::JasperReport> Media::Jasper::JasperXML::ParseJasperReport(NN<Text::XMLReader> reader, Text::CStringNN fileName)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element || !reader->GetNodeTextNN()->Equals(UTF8STRC("jasperReport")))
 	{
-		return 0;
+		return nullptr;
 	}
 
 	UIntOS i;
@@ -16,12 +16,12 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text
 	NN<Text::XMLAttrib> attr;
 	Text::XMLNode::NodeType nodeType;
 	NN<Text::String> nodeText;
-	Media::Jasper::JasperReport *report;
+	NN<Media::Jasper::JasperReport> report;
 	Text::StringBuilderUTF8 sb;
 	NN<Text::String> aname;
 	NN<Text::String> nns;
 	NN<JasperBand> band;
-	NEW_CLASS(report, Media::Jasper::JasperReport(fileName));
+	NEW_CLASSNN(report, Media::Jasper::JasperReport(fileName));
 	i = 0;
 	j = reader->GetAttribCount();
 	while (i < j)

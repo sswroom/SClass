@@ -75,7 +75,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GZIPParser::ParseFileHdr(NN<IO::S
 	fileLeng = fd->GetDataSize();
 	fd->GetRealData(fileLeng - 8, 8, BYTEARR(footer));
 
-	IO::VirtualPackageFile *pf;
+	NN<IO::VirtualPackageFile> pf;
 	IO::PackFileItem::CompressInfo cinfo;
 
 	cinfo.decSize = *(UInt32*)&footer[4];
@@ -85,7 +85,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GZIPParser::ParseFileHdr(NN<IO::S
 	cinfo.compExtraSize = 0;
 	cinfo.compExtras = 0;
 	*(Int32*)cinfo.checkBytes = *(Int32*)footer;
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	pf->AddCompData(fd, 10 + byteConv, fileLeng - 18 - byteConv, IO::PackFileItem::HeaderType::No, &cinfo, CSTRP(sbuff, sptr), Data::Timestamp(ReadUInt32(&hdr[4]) * 1000LL, 0), nullptr, nullptr, 0);
 
 	return pf;

@@ -155,8 +155,8 @@ Optional<Math::Geometry::Vector2D> SSWR::OrganMgr::OrganSpImgLayer::GetNewVector
 	if (!this->objList.GetItem((UIntOS)id).SetTo(ufile))
 		return nullptr;
 	UInt32 srid = this->csys->GetSRID();
-	Math::Geometry::Point *pt;
-	NEW_CLASS(pt, Math::Geometry::Point(srid, ufile->lon, ufile->lat));
+	NN<Math::Geometry::Point> pt;
+	NEW_CLASSNN(pt, Math::Geometry::Point(srid, ufile->lon, ufile->lat));
 	return pt;
 }
 

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "MyMemory.h"
 #include "Media/MPEG4V.h"
 #include "Media/StaticImage.h"
@@ -21,9 +21,9 @@ Media::Decoder::DSVDecoder::DSVDecoder(Media::VideoSource *sourceVideo) : Media:
 	HRESULT hr =  CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC_SERVER, IID_IGraphBuilder, (void **)&pGraph);
 	if (SUCCEEDED(hr))
 	{
-		Media::DShow::DShowVideoFilter *captureFilter;
-		NEW_CLASS(captureFilter, Media::DShow::DShowVideoFilter(true));
-		pGraph->AddFilter(captureFilter, L"DShowVideoCapture");
+		NN<Media::DShow::DShowVideoFilter> captureFilter;
+		NEW_CLASSNN(captureFilter, Media::DShow::DShowVideoFilter(true));
+		pGraph->AddFilter(captureFilter.Ptr(), L"DShowVideoCapture");
 /*		IEnumPins *enums;
 		if (((IBaseFilter*)baseFilter)->EnumPins(&enums) == S_OK)
 		{

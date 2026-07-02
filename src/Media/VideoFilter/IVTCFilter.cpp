@@ -532,7 +532,8 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 fr
 								}
 							}
 #ifdef _DEBUG
-							if (this->debugLog)
+							NN<IO::Writer> debugLog;
+							if (this->debugLog.SetTo(debugLog))
 							{
 								UTF8Char sbuff[256];
 								UnsafeArray<UTF8Char> sptr;
@@ -570,7 +571,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 fr
 								sptr = Text::StrIntOS(sptr, pFieldStat.field3Cnt);
 								sptr = Text::StrConcatC(sptr, UTF8STRC("\t");
 								sptr = Text::StrIntOS(sptr, pFieldStat.field4Cnt);*/
-								this->debugLog->WriteLine(CSTRP(sbuff, sptr));
+								debugLog->WriteLine(CSTRP(sbuff, sptr));
 							}
 #endif
 						}
@@ -1103,7 +1104,8 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 fr
 				}
 
 #ifdef _DEBUG
-				if (this->debugLog)
+				NN<IO::Writer> debugLog;
+				if (this->debugLog.SetTo(debugLog))
 				{
 					UTF8Char sbuff[256];
 					UnsafeArray<UTF8Char> sptr;
@@ -1174,7 +1176,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 fr
 						sptr = Text::StrConcatC(sptr, UTF8STRC("Interlaced (No deinterlace)"));
 						break;
 					}
-					this->debugLog->WriteLine(CSTRP(sbuff, sptr));
+					debugLog->WriteLine(CSTRP(sbuff, sptr));
 				}
 #endif
 			}
@@ -1963,8 +1965,8 @@ Media::VideoFilter::IVTCFilter::IVTCFilter(Media::VideoSource *srcVideo) : Media
 #ifdef _DEBUG
 	NN<IO::FileStream> debugFS;
 	NEW_CLASSNN(debugFS, IO::FileStream(CSTR("IVTC.log"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	this->debugFS = debugFS.Ptr();
-	NEW_CLASS(this->debugLog, Text::UTF8Writer(debugFS));
+	this->debugFS = debugFS;
+	NEW_CLASSOPT(this->debugLog, Text::UTF8Writer(debugFS));
 #endif
 	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 	if (this->threadCnt > 8)
@@ -2050,8 +2052,8 @@ Media::VideoFilter::IVTCFilter::~IVTCFilter()
 	MemFreeAArr(this->fieldBuff);
 	MemFreeArr(this->threadStats);
 #ifdef _DEBUG
-	DEL_CLASS(this->debugLog);
-	DEL_CLASS(this->debugFS);
+	this->debugLog.Delete();;
+	this->debugFS.Delete();;
 #endif
 }
 

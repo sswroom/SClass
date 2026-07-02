@@ -126,11 +126,11 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NN<Net::TCPClie
 Bool Net::HKOWeather::GetCurrentTempRH(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, OutParam<Int32> temperature, OutParam<Int32> rh, NN<IO::LogTool> log)
 {
 	Bool succ = false;
-	Net::RSS *rss;
+	NN<Net::RSS> rss;
 	NN<Text::String> s;
 	Text::CStringNN userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
 	NN<Text::String> ua = Text::String::New(userAgent);
-	NEW_CLASS(rss, Net::RSS(CSTR("https://rss.weather.gov.hk/rss/CurrentWeather.xml"), ua.Ptr(), clif, ssl, 30000, log));
+	NEW_CLASSNN(rss, Net::RSS(CSTR("https://rss.weather.gov.hk/rss/CurrentWeather.xml"), ua.Ptr(), clif, ssl, 30000, log));
 	ua->Release();
 	if (!rss->IsError())
 	{
@@ -170,7 +170,7 @@ Bool Net::HKOWeather::GetCurrentTempRH(NN<Net::TCPClientFactory> clif, Optional<
 			succ = true;
 		}
 	}
-	DEL_CLASS(rss);
+	rss.Delete();
 	return succ;
 }
 

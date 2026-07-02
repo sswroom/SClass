@@ -2,47 +2,48 @@
 #include "MyMemory.h"
 #include "Net/ProtoClient.h"
 #include "Sync/MutexUsage.h"
+#include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-UInt32 __stdcall Net::ProtoClient::ProtoThread(void *userObj)
+UInt32 __stdcall Net::ProtoClient::ProtoThread(AnyType userObj)
 {
-	Net::ProtoClient *me = (Net::ProtoClient *)userObj;
+	NN<Net::ProtoClient> me = userObj.GetNN<Net::ProtoClient>();
 	UInt8 buff[4096];
 	IntOS buffSize;
 	IntOS readSize;
-
-
+	NN<Net::TCPClient> cli;
+	
 	me->threadRunning = true;
 	while (!me->threadToStop)
 	{
-		if (me->started && me->cli == 0)
+		if (me->started && me->cli.IsNull())
 		{
 			Sync::MutexUsage mutUsage(me->cliMut);
-			NEW_CLASS(me->cli, Net::TCPClient(me->sockf, &me->cliAddr, me->cliPort));
-			if (me->cli->IsConnectError())
+			NEW_CLASSNN(cli, Net::TCPClient(me->sockf, me->cliAddr, me->cliPort, 30000));
+			if (cli->IsConnectError())
 			{
-				DEL_CLASS(me->cli);
-				me->cli = 0;
+				cli.Delete();
+				me->cli = nullptr;
 			}
 			else
 			{
-				me->cliData = me->proto->CreateStreamData(me->cli);
+				me->cliData = me->proto->CreateStreamData(cli);
+				me->cli = cli;
 				buffSize = 0;
 				me->connected = true;
 				mutUsage.EndUse();
 				me->cliHdlr->ClientConn();
 			}
 		}
-		if (me->cli)
+		if (me->cli.SetTo(cli))
 		{
-			readSize = me->cli->Read(&buff[buffSize], 2048);
+			readSize = cli->Read(Data::ByteArray(&buff[buffSize], 2048));
 			if (readSize == 0)
 			{
 				Sync::MutexUsage mutUsage(me->cliMut);
-				me->proto->DeleteStreamData(me->cli, me->cliData);
-				DEL_CLASS(me->cli);
-				me->cli = 0;
+				me->proto->DeleteStreamData(cli, me->cliData);
+				me->cli.Delete();
 				me->connected = false;
 				mutUsage.EndUse();
 				me->cliHdlr->ClientDisconn();
@@ -50,7 +51,7 @@ UInt32 __stdcall Net::ProtoClient::ProtoThread(void *userObj)
 			else
 			{
 				buffSize += readSize;
-				readSize = me->proto->ParseProtocol(me->cli, 0, me->cliData, buff, buffSize);
+				readSize = me->proto->ParseProtocol(cli, 0, me->cliData, Data::ByteArrayR(buff, buffSize));
 				if (readSize == 0)
 				{
 					buffSize = 0;
@@ -68,17 +69,17 @@ UInt32 __stdcall Net::ProtoClient::ProtoThread(void *userObj)
 			}
 		}
 
-		if (me->cli == 0)
+		if (me->cli.IsNull())
 		{
 			me->threadEvt.Wait(10000);
 		}
 	}
-	if (me->cli)
+	if (me->cli.SetTo(cli))
 	{
 		Sync::MutexUsage mutUsage(me->cliMut);
-		me->proto->DeleteStreamData(me->cli, me->cliData);
-		DEL_CLASS(me->cli);
-		me->cli = 0;
+		me->proto->DeleteStreamData(cli, me->cliData);
+		cli.Delete();
+		me->cli = nullptr;
 		me->connected = false;
 		mutUsage.EndUse();
 		me->cliHdlr->ClientDisconn();
@@ -87,11 +88,11 @@ UInt32 __stdcall Net::ProtoClient::ProtoThread(void *userObj)
 	return 0;
 }
 
-Net::ProtoClient::ProtoClient(NN<Net::SocketFactory> sockf, Text::CString cliAddr, UInt16 cliPort, IO::ProtocolHandler *proto, Net::ProtoClient::IProtoClientHandler *cliHdlr)
+Net::ProtoClient::ProtoClient(NN<Net::SocketFactory> sockf, Text::CStringNN cliAddr, UInt16 cliPort, IO::ProtocolHandler *proto, Net::ProtoClient::IProtoClientHandler *cliHdlr)
 {
 	this->sockf = sockf;
-	this->cli = 0;
-	Net::SocketUtil::GetIPAddr(cliAddr, &this->cliAddr);
+	this->cli = nullptr;
+	sockf->DNSResolveIP(cliAddr, this->cliAddr);
 	this->cliPort = cliPort;
 	this->proto = proto;
 	this->cliHdlr = cliHdlr;
@@ -108,12 +109,13 @@ Net::ProtoClient::ProtoClient(NN<Net::SocketFactory> sockf, Text::CString cliAdd
 
 Net::ProtoClient::~ProtoClient()
 {
+	NN<Net::TCPClient> cli;
 	this->threadToStop = true;
 	{
 		Sync::MutexUsage mutUsage(this->cliMut);
-		if (this->cli)
+		if (this->cli.SetTo(cli))
 		{
-			this->cli->Close();
+			cli->Close();
 		}
 	}
 	this->threadEvt.Set();
@@ -132,10 +134,11 @@ void Net::ProtoClient::Start()
 }
 void Net::ProtoClient::Reconnect()
 {
+	NN<Net::TCPClient> cli;
 	Sync::MutexUsage mutUsage(this->cliMut);
-	if (this->cli)
+	if (this->cli.SetTo(cli))
 	{
-		this->cli->Close();
+		cli->Close();
 	}
 }
 
@@ -149,11 +152,12 @@ Bool Net::ProtoClient::SendPacket(UInt8 *buff, IntOS buffSize, Int32 cmdType, In
 	UInt8 sendBuff[2048];
 	IntOS sendSize;
 	Bool succ = true;
+	NN<Net::TCPClient> cli;
 	Sync::MutexUsage mutUsage(this->cliMut);
-	if (this->cli)
+	if (this->cli.SetTo(cli))
 	{
 		sendSize = this->proto->BuildPacket(sendBuff, cmdType, seqId, buff, buffSize, 0);
-		if (this->cli->Write(sendBuff, sendSize) != sendSize)
+		if (cli->Write(Data::ByteArrayR(sendBuff, sendSize)) != sendSize)
 		{
 			succ = false;
 		}
@@ -168,10 +172,11 @@ Bool Net::ProtoClient::SendPacket(UInt8 *buff, IntOS buffSize, Int32 cmdType, In
 Bool Net::ProtoClient::SendPacket(UInt8 *buff, IntOS buffSize)
 {
 	Bool succ = true;
+	NN<Net::TCPClient> cli;
 	Sync::MutexUsage mutUsage(this->cliMut);
-	if (this->cli)
+	if (this->cli.SetTo(cli))
 	{
-		if (this->cli->Write(buff, buffSize) != buffSize)
+		if (cli->Write(Data::ByteArrayR(buff, buffSize)) != buffSize)
 		{
 			succ = false;
 		}

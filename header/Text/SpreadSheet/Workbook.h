@@ -17,8 +17,8 @@ namespace Text
 			UnsafeArrayOpt<const UTF8Char> author;
 			UnsafeArrayOpt<const UTF8Char> lastAuthor;
 			UnsafeArrayOpt<const UTF8Char> company;
-			Data::DateTime *createTime;
-			Data::DateTime *modifyTime;
+			Optional<Data::DateTime> createTime;
+			Optional<Data::DateTime> modifyTime;
 			Double version;
 			Int32 windowTopX;
 			Int32 windowTopY;
@@ -45,16 +45,16 @@ namespace Text
 			void SetAuthor(UnsafeArrayOpt<const UTF8Char> author);
 			void SetLastAuthor(UnsafeArrayOpt<const UTF8Char> lastAuthor);
 			void SetCompany(UnsafeArrayOpt<const UTF8Char> company);
-			void SetCreateTime(Data::DateTime *createTime);
+			void SetCreateTime(Optional<Data::DateTime> createTime);
 			void SetCreateTime(Data::Timestamp createTime);
-			void SetModifyTime(Data::DateTime *modifyTime);
+			void SetModifyTime(Optional<Data::DateTime> modifyTime);
 			void SetModifyTime(Data::Timestamp modifyTime);
 			void SetVersion(Double version);
 			UnsafeArrayOpt<const UTF8Char> GetAuthor() const;
 			UnsafeArrayOpt<const UTF8Char> GetLastAuthor() const;
 			UnsafeArrayOpt<const UTF8Char> GetCompany() const;
-			Data::DateTime *GetCreateTime() const;
-			Data::DateTime *GetModifyTime() const;
+			Optional<Data::DateTime> GetCreateTime() const;
+			Optional<Data::DateTime> GetModifyTime() const;
 			Double GetVersion() const;
 			Bool HasInfo() const;
 

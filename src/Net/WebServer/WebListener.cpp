@@ -16,8 +16,8 @@ void __stdcall Net::WebServer::WebListener::ClientReady(NN<Net::TCPClient> cli, 
 		NN<Net::TCPClientMgr> cliMgr;
 		if (me->cliMgrs.GetItem(i).SetTo(cliMgr))
 		{
-			Net::WebServer::WebConnection *conn;
-			NEW_CLASS(conn, Net::WebServer::WebConnection(me->clif, me->ssl, cli, me, me->hdlr, me->allowProxy, me->keepAlive));
+			NN<Net::WebServer::WebConnection> conn;
+			NEW_CLASSNN(conn, Net::WebServer::WebConnection(me->clif, me->ssl, cli, me, me->hdlr, me->allowProxy, me->keepAlive));
 			conn->SetLogWriter(cliMgr->GetLogWriter());
 			conn->SetSendLogger(OnDataSent, userObj);
 			cliMgr->AddClient(cli, conn);

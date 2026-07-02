@@ -19,7 +19,7 @@ namespace Media
 			Data::Duration lastSampleTime;
 			Bool isEnd;
 			Optional<Media::AudioSource> adecoder;
-			Media::NullRenderer *renderer;
+			Optional<Media::NullRenderer> renderer;
 			Optional<Media::VideoSource> vdecoder;
 			NN<Sync::Event> evt;
 		} DecodeStatus;

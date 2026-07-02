@@ -19,8 +19,8 @@ namespace Net
 
 	private:
 		NN<Net::SocketFactory> sockf;
-		Net::TCPClient *cli;
-		void *cliData;
+		Optional<Net::TCPClient> cli;
+		AnyType cliData;
 		Sync::Mutex cliMut;
 		Net::SocketUtil::AddressInfo cliAddr;
 		UInt16 cliPort;
@@ -33,9 +33,9 @@ namespace Net
 		Bool started;
 		Bool connected;
 
-		static UInt32 __stdcall ProtoThread(void *userObj);
+		static UInt32 __stdcall ProtoThread(AnyType userObj);
 	public:
-		ProtoClient(NN<Net::SocketFactory> sockf, Text::CString cliAddr, UInt16 cliPort, IO::ProtocolHandler *proto, IProtoClientHandler *cliHdlr);
+		ProtoClient(NN<Net::SocketFactory> sockf, Text::CStringNN cliAddr, UInt16 cliPort, IO::ProtocolHandler *proto, IProtoClientHandler *cliHdlr);
 		~ProtoClient();
 
 		void Start();

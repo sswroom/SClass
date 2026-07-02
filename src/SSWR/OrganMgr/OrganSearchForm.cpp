@@ -13,9 +13,9 @@ void __stdcall SSWR::OrganMgr::OrganSearchForm::OnOKClicked(AnyType userObj)
 	Text::StrTrim(sbuff);
 
 	me->foundGroup = me->env->SearchObject(sbuff, sbuff2, sizeof(sbuff2), &me->parentId);
-	if (me->foundGroup)
+	if (me->foundGroup.NotNull())
 	{
-		me->foundStr = Text::String::NewNotNullSlow(sbuff2).Ptr();
+		me->foundStr = Text::String::NewNotNullSlow(sbuff2);
 		me->SetDialogResult(DR_OK);
 	}
 	else
@@ -37,7 +37,7 @@ SSWR::OrganMgr::OrganSearchForm::OrganSearchForm(Optional<UI::GUIClientControl> 
 	this->SetNoResize(true);
 	this->env = env;
 	this->foundStr = nullptr;
-	this->foundGroup = 0;
+	this->foundGroup = nullptr;
 	this->parentId = 0;
 
 	this->SetText(this->env->GetLang(CSTR("SearchTitle")));
@@ -75,7 +75,7 @@ NN<Text::String> SSWR::OrganMgr::OrganSearchForm::GetFoundStr()
 
 NN<SSWR::OrganMgr::OrganGroup> SSWR::OrganMgr::OrganSearchForm::GetFoundGroup()
 {
-	return NN<OrganGroup>::FromPtr(this->foundGroup);
+	return NN<OrganGroup>::FromPtr(this->foundGroup.OrNull());
 }
 
 Int32 SSWR::OrganMgr::OrganSearchForm::GetParentId()

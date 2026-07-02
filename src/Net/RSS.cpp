@@ -547,7 +547,7 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 								sb.ClearStr();
 								node3->GetInnerText(sb);
 								SDEL_CLASS(this->pubDate);
-								NEW_CLASS(this->pubDate, Data::DateTime());
+								NEW_CLASSNN(this->pubDate, Data::DateTime());
 								this->pubDate->SetValue(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("lastBuildDate")))
@@ -555,16 +555,16 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 								sb.ClearStr();
 								node3->GetInnerText(sb);
 								SDEL_CLASS(this->lastBuildDate);
-								NEW_CLASS(this->lastBuildDate, Data::DateTime());
+								NEW_CLASSNN(this->lastBuildDate, Data::DateTime());
 								this->lastBuildDate->SetValue(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("item")))
 							{
-								RSSItem *itm;
-								NEW_CLASS(itm, Net::RSSItem(node3));
+								NN<RSSItem> itm;
+								NEW_CLASSNN(itm, Net::RSSItem(node3));
 								if (itm->IsError())
 								{
-									DEL_CLASS(itm);
+									itm.Delete();
 								}
 								else
 								{
@@ -653,7 +653,7 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 								sb.ClearStr();
 								node3->GetInnerText(sb);
 								SDEL_CLASS(this->pubDate);
-								NEW_CLASS(this->pubDate, Data::DateTime());
+								NEW_CLASSNN(this->pubDate, Data::DateTime());
 								this->pubDate->SetValue(sb.ToCString());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("lastBuildDate")))
@@ -661,7 +661,7 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 								sb.ClearStr();
 								node3->GetInnerText(sb);
 								SDEL_CLASS(this->lastBuildDate);
-								NEW_CLASS(this->lastBuildDate, Data::DateTime());
+								NEW_CLASSNN(this->lastBuildDate, Data::DateTime());
 								this->lastBuildDate->SetValue(sb.ToCString());
 							}
 						}
@@ -670,11 +670,11 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 				}
 				else if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->EqualsICase(UTF8STRC("item")))
 				{
-					RSSItem *itm;
-					NEW_CLASS(itm, Net::RSSItem(node2));
+					NN<RSSItem> itm;
+					NEW_CLASSNN(itm, Net::RSSItem(node2));
 					if (itm->IsError())
 					{
-						DEL_CLASS(itm);
+						itm.Delete();
 					}
 					else
 					{
@@ -790,7 +790,7 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 						sb.ClearStr();
 						node2->GetInnerText(sb);
 						SDEL_CLASS(this->pubDate);
-						NEW_CLASS(this->pubDate, Data::DateTime());
+						NEW_CLASSNN(this->pubDate, Data::DateTime());
 						this->pubDate->SetValue(sb.ToCString());
 					}
 					else if (node2->name->EqualsICase(UTF8STRC("lastBuildDate")))
@@ -798,16 +798,16 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 						sb.ClearStr();
 						node2->GetInnerText(sb);
 						SDEL_CLASS(this->lastBuildDate);
-						NEW_CLASS(this->lastBuildDate, Data::DateTime());
+						NEW_CLASSNN(this->lastBuildDate, Data::DateTime());
 						this->lastBuildDate->SetValue(sb.ToCString());
 					}
 					else if (node2->name->EqualsICase(UTF8STRC("entry")))
 					{
-						RSSItem *itm;
-						NEW_CLASS(itm, Net::RSSItem(node2));
+						NN<RSSItem> itm;
+						NEW_CLASSNN(itm, Net::RSSItem(node2));
 						if (itm->IsError())
 						{
-							DEL_CLASS(itm);
+							itm.Delete();
 						}
 						else
 						{

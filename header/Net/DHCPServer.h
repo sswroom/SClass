@@ -24,7 +24,7 @@ namespace Net
 		
 	private:
 		NN<Net::SocketFactory> sockf;
-		Net::UDPServer *svr;
+		Optional<Net::UDPServer> svr;
 		UInt32 infIndex;
 		UInt32 infIP;
 		UInt32 subnet;

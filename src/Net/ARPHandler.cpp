@@ -9,8 +9,12 @@ UInt32 __stdcall Net::ARPHandler::DataThread(AnyType obj)
 {
 	NN<Net::ARPHandler::ThreadStat> stat = obj.GetNN<Net::ARPHandler::ThreadStat>();
 	NN<Socket> soc;
+	NN<Sync::Event> ctrlEvt;
 	stat->threadRunning = true;
-	stat->me->ctrlEvt->Set();
+	if (stat->me->ctrlEvt.SetTo(ctrlEvt))
+	{
+		ctrlEvt->Set();
+	}
 
 	if (stat->me->soc.SetTo(soc))
 	{
@@ -41,7 +45,10 @@ UInt32 __stdcall Net::ARPHandler::DataThread(AnyType obj)
 		MemFreeArr(buff);
 	}
 	stat->threadRunning = false;
-	stat->me->ctrlEvt->Set();
+	if (stat->me->ctrlEvt.SetTo(ctrlEvt))
+	{
+		ctrlEvt->Set();
+	}
 	return 0;
 }
 
@@ -55,7 +62,7 @@ Net::ARPHandler::ARPHandler(NN<Net::SocketFactory> sockf, UnsafeArray<const UTF8
 	MemCopyNO(this->hwAddr, hwAddr, 6);
 	this->ipAddr = adapterIP;
 	this->userData = userData;
-	this->ctrlEvt = 0;
+	this->ctrlEvt = nullptr;
 	this->soc = this->sockf->CreateARPSocket();
 	this->threadStats = nullptr;
 
@@ -63,7 +70,9 @@ Net::ARPHandler::ARPHandler(NN<Net::SocketFactory> sockf, UnsafeArray<const UTF8
 	NN<Socket> soc;
 	if (this->soc.SetTo(soc))
 	{
-		NEW_CLASS(this->ctrlEvt, Sync::Event(true));
+		NN<Sync::Event> ctrlEvt;
+		NEW_CLASSNN(ctrlEvt, Sync::Event(true));
+		this->ctrlEvt = ctrlEvt;
 
 		this->threadStats = threadStats = MemAllocArr(Net::ARPHandler::ThreadStat, this->threadCnt);
 
@@ -91,7 +100,7 @@ Net::ARPHandler::ARPHandler(NN<Net::SocketFactory> sockf, UnsafeArray<const UTF8
 			}
 			if (running)
 				break;
-			this->ctrlEvt->Wait(10);
+			ctrlEvt->Wait(10);
 		}
 	}
 }
@@ -101,6 +110,7 @@ Net::ARPHandler::~ARPHandler()
 	UIntOS i;
 	NN<Socket> soc;
 	UnsafeArray<ThreadStat> threadStats;
+	NN<Sync::Event> ctrlEvt;
 	if (this->threadStats.SetTo(threadStats))
 	{
 		i = this->threadCnt;
@@ -113,7 +123,7 @@ Net::ARPHandler::~ARPHandler()
 	{
 		this->sockf->DestroySocket(soc);
 	}
-	if (this->threadStats.SetTo(threadStats))
+	if (this->threadStats.SetTo(threadStats) && this->ctrlEvt.SetTo(ctrlEvt))
 	{
 		i = this->threadCnt;
 		while (i-- > 0)
@@ -136,7 +146,7 @@ Net::ARPHandler::~ARPHandler()
 			}
 			if (!threadRunning)
 				break;
-			this->ctrlEvt->Wait(10);
+			ctrlEvt->Wait(10);
 		}
 
 		i = this->threadCnt;
@@ -148,7 +158,7 @@ Net::ARPHandler::~ARPHandler()
 	}
 	this->soc = nullptr;
 
-	SDEL_CLASS(this->ctrlEvt);
+	this->ctrlEvt.Delete();
 	Text::StrDelNew(this->ifName);
 }
 

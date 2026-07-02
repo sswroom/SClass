@@ -35,7 +35,8 @@ IO::ParserType Parser::FileParser::SPREDParser::GetParserType()
 
 Optional<IO::ParsedObject> Parser::FileParser::SPREDParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
-	Data::ArrayListNN<Map::GPSTrack::GPSRecord3> *currDev = 0;
+	Optional<Data::ArrayListNN<Map::GPSTrack::GPSRecord3>> currDev = nullptr;
+	NN<Data::ArrayListNN<Map::GPSTrack::GPSRecord3>> nncurrDev;
 	Int32 currDevId = -1;
 	Int32 devId;
 	NN<Map::GPSTrack::GPSRecord3> rec;
@@ -95,7 +96,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPREDParser::ParseFileHdr(NN<IO::
 	fileSize = fd->GetDataSize();
 	currPos = 0;
 
-	Data::FastMapObj<Int32, Data::ArrayListNN<Map::GPSTrack::GPSRecord3>*> devRecs;
+	Data::FastMapNN<Int32, Data::ArrayListNN<Map::GPSTrack::GPSRecord3>> devRecs;
 	buffSize = 0;
 	while (true)
 	{
@@ -132,13 +133,14 @@ Optional<IO::ParsedObject> Parser::FileParser::SPREDParser::ParseFileHdr(NN<IO::
 			if (cmdType == 0)
 			{
 				devId = *(Int32*)&buff[i + 4];
-				if (currDevId != devId)
+				if (currDevId != devId || !currDev.SetTo(nncurrDev))
 				{
 					currDev = devRecs.Get(devId);
-					if (currDev == 0)
+					if (!currDev.SetTo(nncurrDev))
 					{
-						NEW_CLASS(currDev, Data::ArrayListNN<Map::GPSTrack::GPSRecord3>());
-						devRecs.Put(devId, currDev);
+						NEW_CLASSNN(nncurrDev, Data::ArrayListNN<Map::GPSTrack::GPSRecord3>());
+						devRecs.Put(devId, nncurrDev);
+						currDev = nncurrDev;
 					}
 					currDevId = devId;
 				}
@@ -167,7 +169,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPREDParser::ParseFileHdr(NN<IO::
 				rec->nSateViewGA = 0;
 				rec->nSateViewQZSS = 0;
 				rec->nSateViewBD = 0;
-				currDev->Add(rec);
+				nncurrDev->Add(rec);
 
 			}
 			i += cmdSize;
@@ -199,19 +201,19 @@ Optional<IO::ParsedObject> Parser::FileParser::SPREDParser::ParseFileHdr(NN<IO::
 		i = devRecs.GetCount();
 		while (i-- > 0)
 		{
-			currDev = devRecs.GetItem(i);
-			Data::ArrayIterator<NN<Map::GPSTrack::GPSRecord3>> it = currDev->Iterator();
+			nncurrDev = devRecs.GetItemNoCheck(i);
+			Data::ArrayIterator<NN<Map::GPSTrack::GPSRecord3>> it = nncurrDev->Iterator();
 			while (it.HasNext())
 			{
 				MemFreeA(it.Next().Ptr());
 			}
-			DEL_CLASS(currDev);
+			nncurrDev.Delete();
 		}
 		return nullptr;
 	}
 
-	Map::GPSTrack *track;
-	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, nullptr));
+	NN<Map::GPSTrack> track;
+	NEW_CLASSNN(track, Map::GPSTrack(fd->GetFullName(), true, 0, nullptr));
 	i = devRecs.GetCount();
 	while (i-- > 0)
 	{
@@ -219,14 +221,14 @@ Optional<IO::ParsedObject> Parser::FileParser::SPREDParser::ParseFileHdr(NN<IO::
 		sptr = Text::StrInt32(sbuff, devId);
 		track->SetTrackName(CSTRP(sbuff, sptr));
 
-		currDev = devRecs.Get(devId);
-		Data::ArrayIterator<NN<Map::GPSTrack::GPSRecord3>> it = currDev->Iterator();
+		nncurrDev = devRecs.GetItemNoCheck(i);
+		Data::ArrayIterator<NN<Map::GPSTrack::GPSRecord3>> it = nncurrDev->Iterator();
 		while (it.HasNext())
 		{
 			track->AddRecord(rec = it.Next());
 			MemFreeA(rec.Ptr());
 		}
-		DEL_CLASS(currDev);
+		nncurrDev.Delete();
 		track->NewTrack();
 	}
 	return track;

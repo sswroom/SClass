@@ -22,7 +22,7 @@ namespace Net
 		NN<Net::SocketFactory> sockf;
 		Sync::Mutex resultMut;
 		Data::FastMapNN<UInt32, ScanResult> results;
-		Manage::HiResClock *clk;
+		Optional<Manage::HiResClock> clk;
 		Optional<Socket> soc;
 		Bool threadRunning;
 		Bool threadToStop;

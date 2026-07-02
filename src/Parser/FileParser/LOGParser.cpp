@@ -67,8 +67,8 @@ Optional<IO::ParsedObject> Parser::FileParser::LOGParser::ParseFileHdr(NN<IO::St
 	UIntOS strLen = (UIntOS)(sptr - sbuff);
 	if (strLen >= 43 && sbuff[2] == ':' && sbuff[5] == ':' && sbuff[8] == ' ' && Text::StrEquals(&sbuff[9], (const UTF8Char*)"MSG start UDP server successfully!"))
 	{
-		IO::UDPLog *log = 0;
-/*		NEW_CLASS(log, IO::LogFile(fd->GetFullFileName()));
+		Optional<IO::UDPLog> log = nullptr;
+/*		NEW_CLASSOPT(log, IO::LogFile(fd->GetFullFileName()));
 		log->*/
 		//////////////////////////////
 		return log;

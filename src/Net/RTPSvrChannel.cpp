@@ -119,7 +119,7 @@ void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::Addr
 					sb.Append(ReadMInt32(&data[ofst + 4]));
 					if (size >= 28)
 					{
-						NEW_CLASS(dt, Data::DateTime());
+						NEW_CLASSNN(dt, Data::DateTime());
 						sb.Append(L",NTP ts=");
 						dt->SetNTPTime(ReadMInt32(&data[ofst + 8]), ReadMInt32(&data[ofst + 12]));
 						sb.Append(dt);
@@ -129,7 +129,7 @@ void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::Addr
 						sb.Append(ReadMInt32(&data[ofst + 20]));
 						sb.Append(L",nOctet=");
 						sb.Append(ReadMInt32(&data[ofst + 24]));
-						DEL_CLASS(dt);
+						dt.Delete();
 					}
 					sb->Append(L"\r\n");
 					IO::Console::PrintStrO(sb->ToString());

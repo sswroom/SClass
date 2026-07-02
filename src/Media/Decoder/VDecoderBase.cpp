@@ -141,10 +141,10 @@ UIntOS Media::Decoder::VDecoderBase::ReadNextFrame(UnsafeArray<UInt8> frameBuff,
 	return 0;
 }
 
-UInt8 *Media::Decoder::VDecoderBase::GetProp(Int32 propName, UInt32 *size)
+UnsafeArrayOpt<UInt8> Media::Decoder::VDecoderBase::GetProp(Int32 propName, OutParam<UInt32> size)
 {
-	UInt8 *ret = Media::VideoSource::GetProp(propName, size);
-	if (ret)
+	UnsafeArrayOpt<UInt8> ret = Media::VideoSource::GetProp(propName, size);
+	if (ret.NotNull())
 		return ret;
 	NN<Media::VideoSource> sourceVideo;
 	if (!this->sourceVideo.SetTo(sourceVideo))

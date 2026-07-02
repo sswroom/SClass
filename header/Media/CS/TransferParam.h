@@ -42,7 +42,7 @@ namespace Media
 			TransferType tranType;
 			Double gamma;
 
-			Media::LUT *lut;
+			Optional<Media::LUT> lut;
 		public:
 			Double *params;
 			UIntOS paramCnt;
@@ -60,8 +60,8 @@ namespace Media
 			void Set(NN<const TransferParam> tran);
 			TransferType GetTranType() const { return this->tranType; }
 			Double GetGamma() const { return this->gamma; }
-			Media::LUT *GetLUT() { return this->lut; }
-			const Media::LUT *GetLUTRead() const { return this->lut; }
+			Optional<Media::LUT> GetLUT() { return this->lut; }
+			Optional<const Media::LUT> GetLUTRead() const { return this->lut; }
 			Bool Equals(NN<const TransferParam> tran) const;
 		};
 

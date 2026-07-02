@@ -32,8 +32,8 @@ namespace SSWR
 			NN<UI::GUIButton> btnOK;
 			NN<UI::GUIButton> btnCancel;
 			NN<Media::DrawEngine> deng;
-			Media::MonitorMgr *monMgr;
-			MapFilter *filter;
+			NN<Media::MonitorMgr> monMgr;
+			Optional<MapFilter> filter;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
@@ -42,7 +42,7 @@ namespace SSWR
 			virtual ~SHPConvRangeFilterForm();
 
 			virtual void OnMonitorChanged();
-			MapFilter *GetFilter();
+			Optional<MapFilter> GetFilter();
 		};
 	}
 }

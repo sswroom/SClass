@@ -173,8 +173,8 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 		{
 			if (nodeText->Equals(UTF8STRC("trk"))) // /gpx/trk/trkseg
 			{
-				Map::GPSTrack *track;
-				NEW_CLASS(track, Map::GPSTrack(fileName, true, 0, nullptr));
+				NN<Map::GPSTrack> track;
+				NEW_CLASSNN(track, Map::GPSTrack(fileName, true, 0, nullptr));
 				track->SetTrackName({shortName, (UIntOS)(fileName.v + fileName.leng - shortName)});
 				while (reader.NextElementName().SetTo(nodeText))
 				{
@@ -209,8 +209,8 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 			}
 /*			else if (nodeText->Equals(UTF8STRC("rte")) // /gpx/rte
 			{
-				Map::GPSTrack *track;
-				NEW_CLASS(track, Map::GPSTrack(fileName, true, 0, 0));
+				NN<Map::GPSTrack> track;
+				NEW_CLASSNN(track, Map::GPSTrack(fileName, true, 0, 0));
 				j = 0;
 				while (j < i)
 				{
@@ -247,8 +247,8 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 			}*/
 /*			else if (nodeText->Equals(UTF8STRC("wpt")) // /gpx/wpt
 			{
-				Map::GPSTrack *track;
-				NEW_CLASS(track, Map::GPSTrack(fileName, true, 0, 0));
+				NN<Map::GPSTrack> track;
+				NEW_CLASSNN(track, Map::GPSTrack(fileName, true, 0, 0));
 				track->NewTrack();
 				track->SetTrackName(shortName);
 				j = 0;
@@ -293,7 +293,8 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 	}
 	else if (nodeText->Equals(UTF8STRC("OruxTracker")))
 	{
-		Map::OruxDBLayer *lyr = 0;
+		Optional<Map::OruxDBLayer> lyr = nullptr;
+		NN<Map::OruxDBLayer> nnlyr;
 		while (reader.NextElementName().SetTo(nodeText))
 		{
 			if (nodeText->Equals(UTF8STRC("MapCalibration")))
@@ -302,7 +303,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 				{
 					if (nodeText->Equals(UTF8STRC("OruxTracker")))
 					{
-						if (lyr)
+						if (lyr.SetTo(nnlyr))
 						{
 							while (reader.NextElementName().SetTo(nodeText))
 							{
@@ -402,7 +403,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 
 									if (flags == 255)
 									{
-										lyr->AddLayer(layerId, mapXMin, mapYMin, mapXMax, mapYMax, maxX, maxY, tileSize);
+										nnlyr->AddLayer(layerId, mapXMin, mapYMin, mapXMax, mapYMax, maxX, maxY, tileSize);
 									}
 								}
 								else
@@ -419,15 +420,19 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 					else if (nodeText->Equals(UTF8STRC("MapName")))
 					{
 						NN<Parser::ParserList> nnparsers;
-						if (lyr == 0 && parsers.SetTo(nnparsers))
+						if (lyr.IsNull() && parsers.SetTo(nnparsers))
 						{
 							Text::StringBuilderUTF8 sb;
 							reader.ReadNodeText(sb);
-							NEW_CLASS(lyr, Map::OruxDBLayer(fileName, sb.ToCString(), nnparsers));
-							if (lyr->IsError())
+							NEW_CLASSNN(nnlyr, Map::OruxDBLayer(fileName, sb.ToCString(), nnparsers));
+							if (nnlyr->IsError())
 							{
-								DEL_CLASS(lyr);
-								lyr = 0;
+								nnlyr.Delete();
+								lyr = nullptr;
+							}
+							else
+							{
+								lyr = nnlyr;
 							}
 						}
 						else
@@ -554,7 +559,8 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 			{
 				UIntOS i;
 				UIntOS j;
-				DB::TextDB *db = 0;
+				Optional<DB::TextDB> db = nullptr;
+				NN<DB::TextDB> nndb;
 				Text::StringBuilderUTF8 sb;
 				Data::ArrayListStringNN colList;
 				Data::ArrayListStringNN nameList;
@@ -589,8 +595,9 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 									colList.Add(nameList.GetItemNoCheck(i)->Clone());
 									i++;
 								}
-								NEW_CLASS(db, DB::TextDB(fileName));
-								db->AddTable(sbTableName.ToCString(), colList);
+								NEW_CLASSNN(nndb, DB::TextDB(fileName));
+								db = nndb;
+								nndb->AddTable(sbTableName.ToCString(), colList);
 							}
 							Bool eq = true;
 							if (colList.GetCount() == nameList.GetCount())
@@ -610,9 +617,9 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 								eq = false;
 							}
 							
-							if (eq)
+							if (eq && db.SetTo(nndb))
 							{
-								db->AddTableData(valList);
+								nndb->AddTableData(valList);
 							}
 							nameList.FreeAll();
 							i = valList.GetCount();
@@ -639,7 +646,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 				}
 				if (!succ)
 				{
-					SDEL_CLASS(db);
+					db.Delete();
 				}
 				return db;
 			}
@@ -652,8 +659,8 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 	else if (nodeText->Equals(UTF8STRC("SYSTEMINFO")))
 	{
 		Text::StringBuilderUTF8 sb;
-		IO::SystemInfoLog *sysInfo;
-		NEW_CLASS(sysInfo, IO::SystemInfoLog(fileName));
+		NN<IO::SystemInfoLog> sysInfo;
+		NEW_CLASSNN(sysInfo, IO::SystemInfoLog(fileName));
 		while (reader.NextElementName().SetTo(nodeText))
 		{
 			if (nodeText->Equals(UTF8STRC("SYSTEM")))

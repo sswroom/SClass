@@ -112,8 +112,8 @@ namespace Text
 			Bool mainChar;
 		} CharacterInfo;
 	private:
-		IO::FileStream *fs;
-		UInt8 *currCharBuff;
+		NN<IO::FileStream> fs;
+		UnsafeArray<UInt8> currCharBuff;
 		UInt32 currCharCode;
 		UInt64 fileSize;
 	public:

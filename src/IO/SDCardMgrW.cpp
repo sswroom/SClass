@@ -83,7 +83,7 @@ typedef struct _SDCMD_DESCRIPTOR
 	SD_RESPONSE_TYPE      ResponseType;
 } SDCMD_DESCRIPTOR, *PSDCMD_DESCRIPTOR;
 
-IO::SDCardInfo *SDCardMgr_ReadInfo(const WChar *path)
+Optional<IO::SDCardInfo> SDCardMgr_ReadInfo(const WChar *path)
 {
     BOOL bResult=FALSE;                 // results flag
     UInt32 nSizeofCmd = 0;
@@ -96,7 +96,7 @@ IO::SDCardInfo *SDCardMgr_ReadInfo(const WChar *path)
 	HANDLE hDevice = CreateFileW(path, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_DELETE | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hDevice == INVALID_HANDLE_VALUE)
 	{
-		return 0;
+		return nullptr;
 	}
 	SFFDISK_DEVICE_COMMAND_DATA* commandData = NULL;
 	nSizeofCmd = sizeof (SFFDISK_DEVICE_COMMAND_DATA) + sizeof(SDCMD_DESCRIPTOR) + 16;
@@ -231,7 +231,7 @@ UIntOS IO::SDCardMgr::GetCardList(NN<Data::ArrayListNN<IO::SDCardInfo>> cardList
 					sb.ClearStr();
 					r->GetStr(11, sb);
 					UnsafeArray<const WChar> wptr = Text::StrToWCharNew(sb.ToString());
-					if (sdcard.Set(SDCardMgr_ReadInfo(wptr.Ptr())))
+					if (SDCardMgr_ReadInfo(wptr.Ptr()).SetTo(sdcard))
 					{
 						cardList->Add(sdcard);
 						ret++;

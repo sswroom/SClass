@@ -94,13 +94,13 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 		if (customType == 1 && fd->IsFullFile() && this->clif.SetTo(clif) && this->parsers.SetTo(parsers))
 		{
 			Data::ByteBuffer customBuff(customSize);
-			IO::SPackageFile *spkg;
+			NN<IO::SPackageFile> spkg;
 			NN<Map::OSM::OSMTileMap> tileMap;
 			fd->GetRealData(i + 8, customSize, customBuff);
 			MemCopyNO(srcPath, &customBuff[2], customBuff[1]);
 			srcPath[customBuff[1]] = 0;
 			j = 2 + (UIntOS)customBuff[1];
-			NEW_CLASS(spkg, IO::SPackageFile(fd->GetFullFileName()->ToCString()));
+			NEW_CLASSNN(spkg, IO::SPackageFile(fd->GetFullFileName()->ToCString()));
 			NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap({srcPath, customBuff[1]}, spkg, 0, 18, clif, this->ssl));
 			i = 1;
 			while (i < customBuff[0])
@@ -110,16 +110,16 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 				tileMap->AddAlternateURL({srcPath, customBuff[j]});
 				i++;
 			}
-			Map::TileMapLayer *layer;
-			NEW_CLASS(layer, Map::TileMapLayer(tileMap, parsers));
+			NN<Map::TileMapLayer> layer;
+			NEW_CLASSNN(layer, Map::TileMapLayer(tileMap, parsers));
 			return layer;
 		}
 	}
 
-	IO::VirtualPackageFile *pf;
-	IO::VirtualPackageFile *pf2;
+	NN<IO::VirtualPackageFile> pf;
+	NN<IO::VirtualPackageFile> pf2;
 	NN<IO::PackageFile> pf3;
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	srcPtr = fd->GetFullName()->ConcatTo(srcPath);
 	UIntOS k;
 	UIntOS l;
@@ -158,7 +158,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, k}, nullptr, nullptr, nullptr, 0);
 						}
-						pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
+						pf2 = NN<IO::VirtualPackageFile>::ConvertFrom(pf3);
 						sptr = &sptr[k + 1];
 					}
 					else if ((l = Text::StrIndexOfChar(sptr, '\\')) != INVALID_INDEX)
@@ -171,7 +171,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, l}, nullptr, nullptr, nullptr, 0);
 						}
-						pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
+						pf2 = NN<IO::VirtualPackageFile>::ConvertFrom(pf3);
 						sptr = &sptr[l + 1];
 					}
 					else
@@ -220,7 +220,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, k}, nullptr, nullptr, nullptr, 0);
 						}
-						pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
+						pf2 = NN<IO::VirtualPackageFile>::ConvertFrom(pf3);
 						sptr = &sptr[k + 1];
 					}
 					else if ((l = Text::StrIndexOfChar(sptr, '\\')) != INVALID_INDEX)
@@ -233,7 +233,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, l}, nullptr, nullptr, nullptr, 0);
 						}
-						pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
+						pf2 = NN<IO::VirtualPackageFile>::ConvertFrom(pf3);
 						sptr = &sptr[l + 1];
 					}
 					else

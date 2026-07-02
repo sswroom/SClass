@@ -63,7 +63,7 @@ void Media::DDrawManager::ReleaseAll()
 
 Media::DDrawManager::DDrawManager(Optional<Media::MonitorMgr> monMgr, NN<Media::ColorManagerSess> colorSess)
 {
-	NEW_CLASS(this->clsData, ClassData());
+	NEW_CLASSNN(this->clsData, ClassData());
 	this->clsData->defDD = 0;
 	this->clsData->monMgr = nullptr;
 	this->clsData->colorMgr = nullptr;
@@ -73,7 +73,7 @@ Media::DDrawManager::DDrawManager(Optional<Media::MonitorMgr> monMgr, NN<Media::
 
 Media::DDrawManager::DDrawManager(NN<Media::MonitorMgr> monMgr, NN<Media::ColorManager> colorMgr)
 {
-	NEW_CLASS(this->clsData, ClassData());
+	NEW_CLASSNN(this->clsData, ClassData());
 	this->clsData->defDD = 0;
 	this->clsData->monMgr = monMgr;
 	this->clsData->colorMgr = colorMgr;
@@ -84,7 +84,7 @@ Media::DDrawManager::DDrawManager(NN<Media::MonitorMgr> monMgr, NN<Media::ColorM
 Media::DDrawManager::~DDrawManager()
 {
 	this->ReleaseAll();
-	DEL_CLASS(this->clsData);
+	this->clsData.Delete();
 }
 
 Bool Media::DDrawManager::IsError()
@@ -267,8 +267,8 @@ Optional<Media::MonitorSurface> Media::DDrawManager::CreateSurface(Math::Size2D<
 	{
 		return nullptr;
 	}
-	Media::DDrawSurface *retSurface;
-	NEW_CLASS(retSurface, Media::DDrawSurface(*this, lpDD, surface, nullptr, true, Media::RotateType::None));
+	NN<Media::DDrawSurface> retSurface;
+	NEW_CLASSNN(retSurface, Media::DDrawSurface(*this, lpDD, surface, nullptr, true, Media::RotateType::None));
 	return retSurface;
 }
 
@@ -301,8 +301,8 @@ Optional<Media::MonitorSurface> Media::DDrawManager::CreatePrimarySurface(Option
 	{
 		return nullptr;
 	}
-	Media::DDrawSurface *surface;
-	NEW_CLASS(surface, Media::DDrawSurface(*this, lpDD, primarySurface, hMon, true, rotateType));
+	NN<Media::DDrawSurface> surface;
+	NEW_CLASSNN(surface, Media::DDrawSurface(*this, lpDD, primarySurface, hMon, true, rotateType));
 	if (clipWindow.NotNull())
 		surface->SetClipWindow(clipWindow);
 	return surface;

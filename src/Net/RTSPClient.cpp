@@ -235,7 +235,7 @@ Net::RTSPClient::RTSPClient(NN<const Net::RTSPClient> cli)
 
 Net::RTSPClient::RTSPClient(NN<Net::TCPClientFactory> clif, Text::CStringNN host, UInt16 port, Data::Duration timeout)
 {
-	NEW_CLASS(this->cliData, ClientData());
+	NEW_CLASSNN(this->cliData, ClientData());
 	this->cliData->useCnt = 1;
 	this->cliData->timeout = timeout;
 	this->cliData->clif = clif;
@@ -274,7 +274,7 @@ Net::RTSPClient::~RTSPClient()
 		}
 		this->NextRequest();
 		this->cliData->host->Release();
-		DEL_CLASS(this->cliData);
+		this->cliData.Delete();
 	}
 }
 
@@ -330,7 +330,7 @@ Bool Net::RTSPClient::GetOptions(Text::CStringNN url, NN<Data::ArrayListArr<cons
 	return ret;
 }
 
-Net::SDPFile *Net::RTSPClient::GetMediaInfo(Text::CStringNN url)
+Optional<Net::SDPFile> Net::RTSPClient::GetMediaInfo(Text::CStringNN url)
 {
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
@@ -359,10 +359,10 @@ Net::SDPFile *Net::RTSPClient::GetMediaInfo(Text::CStringNN url)
 
 	Bool succ = this->WaitForReply();
 
-	Net::SDPFile *sdp = 0;
+	Optional<Net::SDPFile> sdp = nullptr;
 	if (succ && this->cliData->reqReplyStatus == 200 && this->cliData->reqReplySize > 0 && this->cliData->reqReply)
 	{
-		NEW_CLASS(sdp, Net::SDPFile(this->cliData->reqReply, this->cliData->reqReplySize));
+		NEW_CLASSOPT(sdp, Net::SDPFile(this->cliData->reqReply, this->cliData->reqReplySize));
 	}
 	mutUsage.EndUse();
 	return sdp;
@@ -412,7 +412,7 @@ Optional<IO::ParsedObject> Net::RTSPClient::ParseURL(NN<Net::TCPClientFactory> c
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	Net::RTSPClient *cli;
+	NN<Net::RTSPClient> cli;
 	UIntOS i;
 	UIntOS j;
 	UIntOS k;
@@ -424,13 +424,13 @@ Optional<IO::ParsedObject> Net::RTSPClient::ParseURL(NN<Net::TCPClientFactory> c
 		port = 554;
 	}
 
-	NEW_CLASS(cli, Net::RTSPClient(clif, CSTRP(sbuff, sptr), port, timeout));
+	NEW_CLASSNN(cli, Net::RTSPClient(clif, CSTRP(sbuff, sptr), port, timeout));
 
-	Net::SDPFile *sdp = cli->GetMediaInfo(url);
-	if (sdp)
+	NN<Net::SDPFile> sdp;
+	if (cli->GetMediaInfo(url).SetTo(sdp))
 	{
-		Media::MediaFile *mediaFile;
-		NEW_CLASS(mediaFile, Media::MediaFile(url));
+		NN<Media::MediaFile> mediaFile;
+		NEW_CLASSNN(mediaFile, Media::MediaFile(url));
 		Data::ArrayListNN<Net::RTPCliChannel> chList;
 		NN<Media::VideoSource> vid;
 		NN<Media::AudioSource> aud;
@@ -473,14 +473,13 @@ Optional<IO::ParsedObject> Net::RTSPClient::ParseURL(NN<Net::TCPClientFactory> c
 		}
 
 		chList.DeleteAll();
-		SDEL_CLASS(sdp);
-		DEL_CLASS(cli);
-
+		sdp.Delete();
+		cli.Delete();
 		return mediaFile;
 	}
 	else
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 		return nullptr;
 	}
 }

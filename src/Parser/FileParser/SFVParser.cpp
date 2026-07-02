@@ -37,7 +37,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SFVParser::ParseFileHdr(NN<IO::St
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	IO::FileCheck *fchk;
+	NN<IO::FileCheck> fchk;
 	Crypto::Hash::HashType ctype;
 	UInt8 chk[8];
 	UIntOS chkSize;
@@ -53,7 +53,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SFVParser::ParseFileHdr(NN<IO::St
 	}
 	IO::StreamDataStream stm(fd);
 	Text::UTF8Reader reader(stm);
-	NEW_CLASS(fchk, IO::FileCheck(fd->GetFullName(), ctype));
+	NEW_CLASSNN(fchk, IO::FileCheck(fd->GetFullName(), ctype));
 	while (reader.ReadLine(sbuff, 512).SetTo(sptr))
 	{
 		if (sptr - sbuff > (IntOS)(chkSize << 1) + 2)

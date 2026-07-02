@@ -538,13 +538,13 @@ UInt64 Net::MQTTConn::GetTotalDownload()
 
 Bool Net::MQTTConn::PublishMessage(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Text::CStringNN topic, Text::CStringNN message, Data::Duration timeout)
 {
-	Net::MQTTConn *cli;
+	NN<Net::MQTTConn> cli;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	NEW_CLASS(cli, Net::MQTTConn(clif, ssl, host, port, 0, 0, timeout));
+	NEW_CLASSNN(cli, Net::MQTTConn(clif, ssl, host, port, 0, 0, timeout));
 	if (cli->IsError())
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 		return false;
 	}
 
@@ -561,7 +561,6 @@ Bool Net::MQTTConn::PublishMessage(NN<Net::TCPClientFactory> clif, Optional<Net:
 		succ = cli->SendPublish(topic, message, false, 0, false);
 		cli->SendDisconnect();
 	}
-	
-	DEL_CLASS(cli);
+	cli.Delete();
 	return succ;
 }

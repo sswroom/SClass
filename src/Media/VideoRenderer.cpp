@@ -1934,7 +1934,7 @@ Media::VideoRenderer::VideoRenderer(NN<Media::ColorManagerSess> colorSess, NN<Me
 		this->tstats[i].resizerSrcRefLuminance = 0;
 		this->tstats[i].resizer10Bit = false;
 		this->tstats[i].me = this;
-		NEW_CLASS(this->tstats[i].evt, Sync::Event(true));
+		NEW_CLASSNN(this->tstats[i].evt, Sync::Event(true));
 		Sync::ThreadUtil::Create(ProcessThread, &this->tstats[i]);
 	}
 
@@ -1982,7 +1982,7 @@ Media::VideoRenderer::~VideoRenderer()
 		this->tstats[i].resizer.Delete();
 		this->tstats[i].dresizer.Delete();
 		this->tstats[i].csconv.Delete();
-		DEL_CLASS(this->tstats[i].evt);
+		this->tstats[i].evt.Delete();
 		if (this->tstats[i].lrBuff.SetTo(lrBuff))
 		{
 			MemFreeAArr(lrBuff);

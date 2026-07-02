@@ -30,7 +30,7 @@ UInt32 __stdcall Media::OpenSLESRenderer::PlayThread(AnyType obj)
 {
 	NN<Media::OpenSLESRenderer> me = obj.GetNN<Media::OpenSLESRenderer>();
 	Media::AudioFormat af;
-	Sync::Event *evt;
+	NN<Sync::Event> evt;
 	Int32 i;
 	Int32 refStart;
 	Data::Duration audStartTime;	
@@ -39,7 +39,7 @@ UInt32 __stdcall Media::OpenSLESRenderer::PlayThread(AnyType obj)
 	Int32 thisT;
 	Int32 lastT;
 
-	NEW_CLASS(evt, Sync::Event());
+	NEW_CLASSNN(evt, Sync::Event());
 
 	me->threadInit = true;
 	NN<Media::AudioSource> audsrc;
@@ -475,7 +475,7 @@ Bool Media::OpenSLESRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 
 	this->hand = hand;
 	this->audsrc = audsrc;
-	NEW_CLASS(this->playEvt, Sync::Event());*/
+	NEW_CLASSOPT(this->playEvt, Sync::Event());*/
 	return true;
 }
 

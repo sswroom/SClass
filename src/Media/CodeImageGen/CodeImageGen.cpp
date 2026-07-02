@@ -13,23 +13,23 @@ Media::CodeImageGen::CodeImageGen::~CodeImageGen()
 
 Optional<Media::CodeImageGen::CodeImageGen> Media::CodeImageGen::CodeImageGen::CreateGenerator(CodeType codeType)
 {
-	Media::CodeImageGen::CodeImageGen *codeImgGen = 0;
+	Optional<Media::CodeImageGen::CodeImageGen> codeImgGen = nullptr;
 	switch (codeType)
 	{
 	case Media::CodeImageGen::CodeImageGen::CT_EAN13:
-		NEW_CLASS(codeImgGen, Media::CodeImageGen::EAN13CodeImageGen());
+		NEW_CLASSOPT(codeImgGen, Media::CodeImageGen::EAN13CodeImageGen());
 		break;
 	case Media::CodeImageGen::CodeImageGen::CT_EAN8:
-		NEW_CLASS(codeImgGen, Media::CodeImageGen::EAN8CodeImageGen());
+		NEW_CLASSOPT(codeImgGen, Media::CodeImageGen::EAN8CodeImageGen());
 		break;
 	case Media::CodeImageGen::CodeImageGen::CT_EAN5:
-		NEW_CLASS(codeImgGen, Media::CodeImageGen::EAN5CodeImageGen());
+		NEW_CLASSOPT(codeImgGen, Media::CodeImageGen::EAN5CodeImageGen());
 		break;
 	case Media::CodeImageGen::CodeImageGen::CT_EAN2:
-		NEW_CLASS(codeImgGen, Media::CodeImageGen::EAN2CodeImageGen());
+		NEW_CLASSOPT(codeImgGen, Media::CodeImageGen::EAN2CodeImageGen());
 		break;
 	case Media::CodeImageGen::CodeImageGen::CT_QRCODE:
-		NEW_CLASS(codeImgGen, Media::CodeImageGen::QRCodeImageGen());
+		NEW_CLASSOPT(codeImgGen, Media::CodeImageGen::QRCodeImageGen());
 		break;
 	}
 	return codeImgGen;

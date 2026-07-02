@@ -78,8 +78,8 @@ Optional<IO::StreamData> Net::WebBrowser::GetData(Text::CStringNN url, Bool forc
 	/////////////////////////////////////////////
 	if (pt == IO::Path::PathType::File)
 	{
-		IO::StmData::FileData *fd;
-		NEW_CLASS(fd, IO::StmData::FileData(url, false));
+		NN<IO::StmData::FileData> fd;
+		NEW_CLASSNN(fd, IO::StmData::FileData(url, false));
 		if (contentType.SetTo(nncontentType))
 		{
 			Text::CStringNN mime = Net::MIME::GetMIMEFromFileName(url.v, url.leng);
@@ -93,8 +93,8 @@ Optional<IO::StreamData> Net::WebBrowser::GetData(Text::CStringNN url, Bool forc
 	{
 		if (Text::URLString::GetURLFilePath(sbuff, url.v, url.leng).SetTo(sptr))
 			return nullptr;
-		IO::StmData::FileData *fd;
-		NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
+		NN<IO::StmData::FileData> fd;
+		NEW_CLASSNN(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
 		if (contentType.SetTo(nncontentType))
 		{
 			Text::CStringNN mime = Net::MIME::GetMIMEFromFileName(url.v, url.leng);
@@ -106,33 +106,33 @@ Optional<IO::StreamData> Net::WebBrowser::GetData(Text::CStringNN url, Bool forc
 	{
 		if (!GetLocalFileName(sbuff, url.v, url.leng).SetTo(sptr))
 			return nullptr;
-		Net::HTTPData *data;
-		NEW_CLASS(data, Net::HTTPData(this->clif, this->ssl, &this->queue, url, CSTRP(sbuff, sptr), forceReload));
+		NN<Net::HTTPData> data;
+		NEW_CLASSNN(data, Net::HTTPData(this->clif, this->ssl, &this->queue, url, CSTRP(sbuff, sptr), forceReload));
 		return data;
 	}
 	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("HTTPS")))
 	{
 		if (!GetLocalFileName(sbuff, url.v, url.leng).SetTo(sptr))
 			return nullptr;
-		Net::HTTPData *data;
+		NN<Net::HTTPData> data;
 #if defined(VERBOSE)
 		printf("WebBrowser: Loading HTTPS: %s\r\n", url.v);
 #endif
-		NEW_CLASS(data, Net::HTTPData(this->clif, this->ssl, &this->queue, url, CSTRP(sbuff, sptr), forceReload));
+		NEW_CLASSNN(data, Net::HTTPData(this->clif, this->ssl, &this->queue, url, CSTRP(sbuff, sptr), forceReload));
 		return data;
 	}
 	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("FTP")))
 	{
 /*		IO::Stream *stm = Net::URL::OpenStream(url, this->sockf);
-		IO::StmData::StreamDataStream *data;
+		NN<IO::StmData::StreamDataStream> data;
 		if (stm == 0)
 			return nullptr;
-		NEW_CLASS(data, IO::StmData::*/
+		NEW_CLASSNN(data, IO::StmData::StreamDataStream(stm));*/
 		return nullptr;
 	}
 	else if (Text::StrEqualsC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("DATA")))
 	{
-		IO::StmData::MemoryDataCopy *fd;
+		NN<IO::StmData::MemoryDataCopy> fd;
 		UnsafeArray<const UTF8Char> urlPtr;
 		WChar c;
 		UnsafeArray<const UTF8Char> urlEnd = url.v + url.leng;
@@ -185,7 +185,7 @@ Optional<IO::StreamData> Net::WebBrowser::GetData(Text::CStringNN url, Bool forc
 			binSize = b64.CalcBinSize(CSTRP(strTemp, sptr));
 			Data::ByteBuffer binTemp(binSize);
 			b64.DecodeBin(CSTRP(strTemp, sptr), binTemp.Arr().Ptr());
-			NEW_CLASS(fd, IO::StmData::MemoryDataCopy(binTemp));
+			NEW_CLASSNN(fd, IO::StmData::MemoryDataCopy(binTemp));
 			MemFreeArr(strTemp);
 			return fd;
 		}

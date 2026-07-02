@@ -381,7 +381,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(AnyType obj)
 	Data::Duration audStartTime;
 	UInt8 *sampleBuff;
 	UInt32 blkAlign;
-	Sync::Event *evt;
+	NN<Sync::Event> evt;
 	UInt32 i;
 	UInt32 j;
 	UInt32 k;
@@ -428,7 +428,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(AnyType obj)
 			return 0;
 		}
 		nSamples = me->bufferSize;
-		NEW_CLASS(evt, Sync::Event());
+		NEW_CLASSNN(evt, Sync::Event());
 		blkAlign = fmt.nChannels * (UInt32)fmt.bitpersample >> 3;
 		sampleBuff = MemAlloc(UInt8, nSamples * blkAlign);
 		audStartTime = audSrc->GetCurrTime();
@@ -635,7 +635,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(AnyType obj)
 		}
 		asio->stop();
 		MemFree(sampleBuff);
-		DEL_CLASS(evt);
+		evt.Delete();
 		me->playing = false;
 	}
 	if (me->endHdlr)
@@ -656,7 +656,7 @@ void Media::ASIOOutRenderer::InitDevice(UInt32 devId)
 	DWORD nameLen = MAXDRVNAMELEN;
 	bufferCreated = false;
 	playing = false;
-	NEW_CLASS(bufferEvt, Sync::Event());
+	NEW_CLASSNN(bufferEvt, Sync::Event());
 	Int32 cr = RegOpenKeyW(HKEY_LOCAL_MACHINE, ASIO_PATH, &hkEnum);
 	if (cr == ERROR_SUCCESS)
 	{
@@ -797,7 +797,7 @@ Media::ASIOOutRenderer::~ASIOOutRenderer()
 		asiodrv = 0;
 	}
 
-	DEL_CLASS(bufferEvt);
+	this->bufferEvt.Delete();
 }
 
 Bool Media::ASIOOutRenderer::IsError()

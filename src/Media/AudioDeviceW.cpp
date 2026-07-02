@@ -46,20 +46,20 @@ UnsafeArrayOpt<UTF8Char> Media::AudioDevice::GetDeviceName(UnsafeArray<UTF8Char>
 
 Optional<Media::AudioRenderer> Media::AudioDevice::CreateRenderer(Text::CStringNN devName)
 {
-Media::AudioRenderer *renderer = 0;
+Optional<Media::AudioRenderer> renderer = nullptr;
 #ifndef _WIN32_WCE
 	if (devName.StartsWith(UTF8STRC("KS: ")))
 	{
-		NEW_CLASS(renderer, Media::KSRenderer(Media::KSRenderer::GetDeviceId(devName.v + 4)));
+		NEW_CLASSOPT(renderer, Media::KSRenderer(Media::KSRenderer::GetDeviceId(devName.v + 4)));
 	}
 #endif
 	if (devName.StartsWith(UTF8STRC("ASIO: ")))
 	{
-		NEW_CLASS(renderer, Media::ASIOOutRenderer(devName.v + 6));
+		NEW_CLASSOPT(renderer, Media::ASIOOutRenderer(devName.v + 6));
 	}
 	else if (devName.StartsWith(UTF8STRC("WO: ")))
 	{
-		NEW_CLASS(renderer, Media::WaveOutRenderer(devName.v + 4));
+		NEW_CLASSOPT(renderer, Media::WaveOutRenderer(devName.v + 4));
 	}
 	return renderer;
 }

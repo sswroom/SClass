@@ -69,8 +69,8 @@ namespace Media
 			Sync::Event mainEvt;
 			UIntOS threadCnt;
 			UnsafeArray<ThreadStat> threadStats;
-			IO::FileStream *debugFS;
-			IO::Writer *debugLog;
+			Optional<IO::FileStream> debugFS;
+			Optional<IO::Writer> debugLog;
 
 			Bool ivtcTToStop;
 			Sync::Event ivtcTEvt;

@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "MyMemory.h"
 #include "IO/StmData/FileData.h"
 #include "IO/DataSegment.h"
@@ -7,7 +7,7 @@
 #include "Media/VideoFile.h"
 #include <memory.h>
 
-VideoFile::VideoFile(WChar *name, IO::DataSegment *vs, Data::ArrayList<AudioStream*> *audioList, AVIStream *avis, Char *chap)
+VideoFile::VideoFile(WChar *name, IO::DataSegment *vs, Data::ArrayListNN<AudioStream> *audioList, AVIStream *avis, Char *chap)
 {
 	if (name == 0)
 	{
@@ -45,7 +45,7 @@ VideoFile::VideoFile(WChar *name, IO::DataSegment *vs, Data::ArrayList<AudioStre
 		while (dataCnt--)
 			*dest++ = *src++;
 	}
-	NEW_CLASS(vseqList, Data::ArrayList<IO::DataSegment*>());
+	NEW_CLASSNN(vseqList, Data::ArrayListNN<IO::DataSegment>());
 	vseqList->Add(vs);
 	astmList = audioList;
 

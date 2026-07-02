@@ -296,6 +296,7 @@ Media::DDrawRenderer::DDrawRenderer(void *hwnd)
 	this->pSurface = 0;
 	this->ddLock = 0;
 	this->ddCount = 0;
+	NEW_CLASSNN(updEvt, Event());
 
 	LPDIRECTDRAW7 lpDD;
 	if (DirectDrawCreateEx( NULL, (VOID**)&lpDD, IID_IDirectDraw7, NULL ) != DD_OK )
@@ -303,7 +304,6 @@ Media::DDrawRenderer::DDrawRenderer(void *hwnd)
 	}
 	else
 	{
-		NEW_CLASS(updEvt, Event());
 		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)ScnUpdater, (void*)this, 0, (DWORD*)&threadId);
 		this->ddObj = lpDD;
 	}
@@ -318,7 +318,7 @@ Media::DDrawRenderer::~DDrawRenderer()
 	{
 		Sleep(1);
 	}
-	DEL_CLASS(updEvt);
+	updEvt.Delete();
 	MemFree(this->updDelayAll);
 
 	if (lpDD)

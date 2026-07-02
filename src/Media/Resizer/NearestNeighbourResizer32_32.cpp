@@ -129,7 +129,7 @@ Bool Media::Resizer::NearestNeighbourResizer32_32::IsSupported(NN<const Media::F
 Optional<Media::StaticImage> Media::Resizer::NearestNeighbourResizer32_32::ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
-	Media::StaticImage *newImage;
+	NN<Media::StaticImage> newImage;
 	if (srcImage->GetImageClass() != Media::RasterImage::ImageClass::StaticImage || !IsSupported(srcImage->info))
 	{
 		return nullptr;
@@ -146,7 +146,7 @@ Optional<Media::StaticImage> Media::Resizer::NearestNeighbourResizer32_32::Proce
 	CalOutputSize(srcImage->info, targetSize, destInfo, this->rar);
 	destInfo.color.Set(srcImage->info.color);;
 	destInfo.atype = srcImage->info.atype;
-	NEW_CLASS(newImage, Media::StaticImage(destInfo));
+	NEW_CLASSNN(newImage, Media::StaticImage(destInfo));
 	Int32 tlx = (Int32)srcTL.x;
 	Int32 tly = (Int32)srcTL.y;
 	Resize(((Media::StaticImage*)srcImage.Ptr())->data + (tlx << 2) + tly * (IntOS)srcImage->GetDataBpl(), (IntOS)srcImage->GetDataBpl(), srcBR.x - srcTL.x, srcBR.y - srcTL.y, srcTL.x - tlx, srcTL.y - tly, newImage->data, (IntOS)newImage->GetDataBpl(), newImage->info.dispSize.x, newImage->info.dispSize.y);

@@ -5,12 +5,12 @@
 
 Text::TextBinEnc::CodePageTextBinEnc::CodePageTextBinEnc(UInt32 codePage)
 {
-	NEW_CLASS(this->enc, Text::Encoding(codePage));
+	NEW_CLASSNN(this->enc, Text::Encoding(codePage));
 }
 
 Text::TextBinEnc::CodePageTextBinEnc::~CodePageTextBinEnc()
 {
-	DEL_CLASS(this->enc);
+	this->enc.Delete();
 }
 
 UIntOS Text::TextBinEnc::CodePageTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UIntOS buffSize) const

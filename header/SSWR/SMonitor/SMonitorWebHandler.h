@@ -15,9 +15,9 @@ namespace SSWR
 		private:
 			typedef Bool (CALLBACKFUNC RequestHandler)(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 		private:
-			SSWR::SMonitor::SMonitorCore *core;
-			Data::FastStringMapObj<RequestHandler> *reqMap;
-			Net::WebServer::MemoryWebSessionManager *sessMgr;
+			NN<SSWR::SMonitor::SMonitorCore> core;
+			NN<Data::FastStringMapObj<RequestHandler>> reqMap;
+			NN<Net::WebServer::MemoryWebSessionManager> sessMgr;
 
 			static Bool __stdcall OnSessDeleted(NN<Net::WebServer::WebSession> sess, AnyType userObj);
 			static Bool __stdcall OnSessCheck(NN<Net::WebServer::WebSession> sess, AnyType userObj);
@@ -53,7 +53,7 @@ namespace SSWR
 			virtual Bool ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
 
 		public:
-			SMonitorWebHandler(SSWR::SMonitor::SMonitorCore *core);
+			SMonitorWebHandler(NN<SSWR::SMonitor::SMonitorCore> core);
 			virtual ~SMonitorWebHandler();
 		};
 	}

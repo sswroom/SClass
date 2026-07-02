@@ -247,12 +247,12 @@ UnsafeArray<const WChar> Win32::WMIQuery::GetNS()
 UIntOS Win32::WMIQuery::GetNSList(NN<Data::ArrayListArr<const WChar>> nsList)
 {
 	UIntOS ret = 0;
-	Win32::WMIQuery *query;
+	NN<Win32::WMIQuery> query;
 	NN<Win32::WMIReader> reader;
 	WChar wbuff[256];
 	UnsafeArray<WChar> wptr = Text::StrConcat(wbuff, L"ROOT\\");
 
-	NEW_CLASS(query, Win32::WMIQuery(L"ROOT"));
+	NEW_CLASSNN(query, Win32::WMIQuery(L"ROOT"));
 	if (!query->IsError())
 	{
 		if (Optional<Win32::WMIReader>::ConvertFrom(query->ExecuteReaderW(L"select * from __NAMESPACE")).SetTo(reader))
@@ -267,7 +267,7 @@ UIntOS Win32::WMIQuery::GetNSList(NN<Data::ArrayListArr<const WChar>> nsList)
 			query->CloseReader(reader);
 		}
 	}
-	DEL_CLASS(query);
+	query.Delete();
 	return ret;
 }
 

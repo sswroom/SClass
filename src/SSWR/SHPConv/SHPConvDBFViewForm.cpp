@@ -6,7 +6,7 @@ SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(Optional<UI::GUIClientCont
 {
 	this->SetText(CSTR("DBFView"));
 	this->SetFont(nullptr, 8.25, false);
-	NEW_CLASS(this->monMgr, Media::MonitorMgr());
+	NEW_CLASSNN(this->monMgr, Media::MonitorMgr());
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 	
 	this->lvDBF = ui->NewListView(*this, UI::ListViewStyle::Table, dbf->GetColCount() + 1);
@@ -63,7 +63,7 @@ SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(Optional<UI::GUIClientCont
 
 SSWR::SHPConv::SHPConvDBFViewForm::~SHPConvDBFViewForm()
 {
-	DEL_CLASS(this->monMgr);
+	this->monMgr.Delete();
 }
 
 void SSWR::SHPConv::SHPConvDBFViewForm::OnMonitorChanged()

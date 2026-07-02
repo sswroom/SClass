@@ -150,8 +150,8 @@ Optional<IO::ParsedObject> Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::St
 			if (pobj->GetParserType() == IO::ParserType::MediaFile)
 			{
 				mf = (Media::MediaFile*)pobj.Ptr();
-				Media::ChapterInfo *chapters;
-				NEW_CLASS(chapters, Media::ChapterInfo());
+				NN<Media::ChapterInfo> chapters;
+				NEW_CLASSNN(chapters, Media::ChapterInfo());
 				lastTime = 0;
 				i = 1;
 				while (i <= maxTrack)

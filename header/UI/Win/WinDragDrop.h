@@ -15,7 +15,7 @@ namespace UI
 			IDataObject *pDataObj;
 			Optional<Data::StringUTF8Map<FORMATETC *>> dataMap;
 
-			void LoadData();
+			NN<Data::StringUTF8Map<FORMATETC *>> LoadData();
 		public:
 			WinDropData(IDataObject *pDataObj);
 			virtual ~WinDropData();

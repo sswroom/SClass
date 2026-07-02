@@ -286,8 +286,8 @@ NN<Text::String> Net::WirelessLAN::Interface::GetName() const
 
 Net::WirelessLAN::WirelessLAN()
 {
-	Net::WLANWindowsCore *core;
-	NEW_CLASS(core, Net::WLANWindowsCore());
+	NN<Net::WLANWindowsCore> core;
+	NEW_CLASSNN(core, Net::WLANWindowsCore());
 	this->clsData = core;
 }
 

@@ -98,9 +98,9 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 	this->workerCnt = 0;
 	this->clsData = 0;
 	this->workers = 0;
-	Sync::Event *cliEvt;
-	NEW_CLASS(cliEvt, Sync::Event(true));
-	this->clsData = (ClassData*)cliEvt;
+	NN<Sync::Event> cliEvt;
+	NEW_CLASSNN(cliEvt, Sync::Event(true));
+	this->clsData = NN<ClassData>::ConvertFrom(cliEvt);
 	Sync::ThreadUtil::Create(ClientThread, this);
 }
 

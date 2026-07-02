@@ -121,24 +121,30 @@ Net::TCPBoardcastStream::TCPBoardcastStream(NN<Net::SocketFactory> sockf, UInt16
 	this->sockf = sockf;
 	this->log = log;
 	this->readCnt = 0;
-	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(600, ClientEvent, ClientData, this, 3, ClientTimeout));
+	NEW_CLASSNN(this->cliMgr, Net::TCPClientMgr(600, ClientEvent, ClientData, this, 3, ClientTimeout));
 	this->readBuff = MemAlloc(UInt8, 16384);
 	this->writeBuff = MemAlloc(UInt8, 2048);
 	this->readBuffPtr1 = 0;
 	this->readBuffPtr2 = 0;
 	this->writeBuffSize = 0;
-	NEW_CLASS(this->svr, Net::TCPServer(sockf, nullptr, port, log, ConnHandler, this, CSTR("BStm: "), true));
-	if (this->svr->IsV4Error())
+	NN<Net::TCPServer> svr;
+	NEW_CLASSNN(svr, Net::TCPServer(sockf, nullptr, port, log, ConnHandler, this, CSTR("BStm: "), true));
+	if (svr->IsV4Error())
 	{
-		SDEL_CLASS(this->svr);
+		svr.Delete();
+		this->svr = nullptr;
 		return;
+	}
+	else
+	{
+		this->svr = svr;
 	}
 }
 
 Net::TCPBoardcastStream::~TCPBoardcastStream()
 {
-	SDEL_CLASS(this->svr);
-	DEL_CLASS(this->cliMgr);
+	this->svr.Delete();
+	this->cliMgr.Delete();
 	while (this->readCnt > 0)
 	{
 		Sync::SimpleThread::Sleep(10);
@@ -149,7 +155,7 @@ Net::TCPBoardcastStream::~TCPBoardcastStream()
 
 Bool Net::TCPBoardcastStream::IsDown() const
 {
-	if (this->svr == 0)
+	if (this->svr.IsNull())
 	{
 		return true;
 	}
@@ -163,7 +169,7 @@ UIntOS Net::TCPBoardcastStream::Read(const Data::ByteArray &buff)
 	Sync::Interlocked::IncrementU32(this->readCnt);
 	while (true)
 	{
-		if (this->svr == 0)
+		if (this->svr.IsNull())
 		{
 			Sync::Interlocked::DecrementU32(this->readCnt);
 			return 0;
@@ -274,7 +280,7 @@ Int32 Net::TCPBoardcastStream::Flush()
 
 void Net::TCPBoardcastStream::Close()
 {
-	SDEL_CLASS(this->svr);
+	this->svr.Delete();
 }
 
 Bool Net::TCPBoardcastStream::Recover()
@@ -289,5 +295,5 @@ IO::StreamType Net::TCPBoardcastStream::GetStreamType() const
 
 Bool Net::TCPBoardcastStream::IsError() const
 {
-	return this->svr == 0;
+	return this->svr.IsNull();
 }

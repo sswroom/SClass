@@ -113,8 +113,8 @@ Optional<Media::PDFParameter> Media::PDFParameter::Parse(Text::CStringNN paramet
 		return nullptr;
 	if (parameter.v[0] != '/')
 		return nullptr;
-	PDFParameter *param;
-	NEW_CLASS(param, PDFParameter());
+	NN<PDFParameter> param;
+	NEW_CLASSNN(param, PDFParameter());
 	Data::ArrayListNative<UTF8Char> endChars;
 	Optional<ParamEntry> lastEntry = nullptr;
 	NN<ParamEntry> nnlastEntry;

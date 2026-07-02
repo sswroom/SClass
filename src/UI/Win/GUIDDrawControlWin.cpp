@@ -735,7 +735,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 	{
 		this->BeginUpdateSize();
 		if (this->surfaceMon.NotNull()) this->surfaceMgr->SetFSMode(this->surfaceMon, rootForm->GetHandle(), false);
-		NN<Media::IamgeCopy> imgCopy;
+		NN<Media::ImageCopy> imgCopy;
 		if (this->imgCopy.IsNull())
 		{
 			NEW_CLASSNN(imgCopy, Media::ImageCopy());

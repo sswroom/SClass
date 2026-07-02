@@ -144,8 +144,8 @@ SSWR::OrganMgr::OrganEnv::OrganEnv()
 	this->ssl = Net::SSLEngineFactory::Create(this->clif, true);
 	this->currCate = 0;
 	this->cateIsFullDir = false;
-	this->bookIds = 0;
-	this->bookObjs = 0;
+	this->bookIds = nullptr;
+	this->bookObjs = nullptr;
 	this->gpsTrk = nullptr;
 	this->gpsUserId = 0;
 	this->errType = ERR_NONE;
@@ -290,7 +290,7 @@ Bool SSWR::OrganMgr::OrganEnv::SetSpeciesMapColor(NN<OrganSpecies> sp, UInt32 ma
 UIntOS SSWR::OrganMgr::OrganEnv::GetBooksAll(NN<Data::ArrayListNN<OrganBook>> items)
 {
 	NN<Data::ArrayListNN<OrganBook>> books;
-	if (books.Set(this->bookObjs))
+	if (this->bookObjs.SetTo(books))
 	{
 		items->AddAll(books);
 		return books->GetCount();
@@ -300,16 +300,21 @@ UIntOS SSWR::OrganMgr::OrganEnv::GetBooksAll(NN<Data::ArrayListNN<OrganBook>> it
 
 UIntOS SSWR::OrganMgr::OrganEnv::GetBooksOfYear(NN<Data::ArrayListNN<OrganBook>> items, Int32 year)
 {
+	NN<Data::ArrayListNN<OrganBook>> bookObjs;
+	if (!this->bookObjs.SetTo(bookObjs))
+	{
+		return 0;
+	}
 	UIntOS i;
 	UIntOS j;
 	UIntOS k;
 	NN<OrganBook> book;
 	k = 0;
 	i = 0;
-	j = this->bookObjs->GetCount();
+	j = bookObjs->GetCount();
 	while (i < j)
 	{
-		book = this->bookObjs->GetItemNoCheck(i);
+		book = bookObjs->GetItemNoCheck(i);
 		if (book->GetPublishDate().GetTimeValue().year == year)
 		{
 			items->Add(book);
@@ -537,14 +542,13 @@ NN<SSWR::OrganMgr::SpeciesInfo> SSWR::OrganMgr::OrganEnv::GetSpeciesInfoCreate(I
 
 void SSWR::OrganMgr::OrganEnv::BooksDeinit()
 {
-	if (this->bookObjs)
+	NN<Data::ArrayListNN<OrganBook>> bookObjs;
+	if (this->bookObjs.SetTo(bookObjs))
 	{
-		this->bookObjs->DeleteAll();
-		DEL_CLASS(this->bookObjs);
-		DEL_CLASS(this->bookIds);
-		this->bookIds = 0;
-		this->bookObjs = 0;
+		bookObjs->DeleteAll();
+		this->bookObjs.Delete();
 	}
+	this->bookIds.Delete();
 }
 
 Optional<Text::String> SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, const Data::Timestamp &ts, UI::GUIForm *ownerFrm, NN<UI::GUICore> ui)

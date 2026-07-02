@@ -688,10 +688,10 @@ Optional<DB::TableDef> Media::HTRecFile::GetTableDef(Text::CString schemaName, T
 	UIntOS i = 0;
 	UIntOS j;
 	NN<DB::ColDef> col;
-	DB::TableDef *tab = 0;
+	NN<DB::TableDef> tab;
 	if (tableName.Equals(UTF8STRC("Setting")))
 	{
-		NEW_CLASS(tab, DB::TableDef(nullptr, tableName));
+		NEW_CLASSNN(tab, DB::TableDef(nullptr, tableName));
 		j = 2;
 		while (i < j)
 		{
@@ -700,10 +700,11 @@ Optional<DB::TableDef> Media::HTRecFile::GetTableDef(Text::CString schemaName, T
 			tab->AddCol(col);
 			i++;
 		}
+		return tab;
 	}
 	else if (tableName.Equals(UTF8STRC("Records")))
 	{
-		NEW_CLASS(tab, DB::TableDef(nullptr, tableName));
+		NEW_CLASSNN(tab, DB::TableDef(nullptr, tableName));
 		j = 4;
 		while (i < j)
 		{
@@ -712,8 +713,9 @@ Optional<DB::TableDef> Media::HTRecFile::GetTableDef(Text::CString schemaName, T
 			tab->AddCol(col);
 			i++;
 		}
+		return tab;
 	}
-	return tab;
+	return nullptr;
 }
 
 void Media::HTRecFile::CloseReader(NN<DB::DBReader> r)

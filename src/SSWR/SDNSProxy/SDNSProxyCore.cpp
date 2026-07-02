@@ -92,8 +92,8 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(NN<IO::ConfigFile> cfg, NN<IO::Wri
 		console->WriteLine(CSTR("Error in listening to DNS port"));
 	}
 
-	this->listener = 0;
-	this->hdlr = 0;
+	this->listener = nullptr;
+	this->hdlr = nullptr;
 
 	NN<Text::String> s;
 	UIntOS i;
@@ -162,18 +162,19 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(NN<IO::ConfigFile> cfg, NN<IO::Wri
 	if (cfg->GetValue(CSTR("ManagePort")).SetTo(s) && s->v[0] != 0 && s->ToUInt16(managePort))
 	{
 		NN<SSWR::SDNSProxy::SDNSProxyWebHandler> hdlr;
+		NN<Net::WebServer::WebListener> listener;
 		NEW_CLASSNN(hdlr, SSWR::SDNSProxy::SDNSProxyWebHandler(this->proxy, this->log, this));
-		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->clif, nullptr, hdlr, managePort, 60, 1, 4, CSTR("SDNSProxy/1.0"), false, Net::WebServer::KeepAlive::Default, true));
-		if (this->listener->IsError())
+		NEW_CLASSNN(listener, Net::WebServer::WebListener(this->clif, nullptr, hdlr, managePort, 60, 1, 4, CSTR("SDNSProxy/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+		if (listener->IsError())
 		{
 			console->WriteLine(CSTR("Error in listening to ManagePort"));
-			DEL_CLASS(this->listener);
-			this->listener = 0;
+			listener.Delete();
 			hdlr.Delete();
 		}
 		else
 		{
-			this->hdlr = hdlr.Ptr();
+			this->hdlr = hdlr;
+			this->listener = listener;
 		}
 	}
 	else
@@ -187,8 +188,8 @@ SSWR::SDNSProxy::SDNSProxyCore::~SDNSProxyCore()
 	UIntOS i;
 	UIntOS j;
 	NN<ClientInfo> cli;
-	SDEL_CLASS(this->listener);
-	SDEL_CLASS(this->hdlr);
+	this->listener.Delete();
+	this->hdlr.Delete();
 
 	this->proxy.Delete();
 	i = this->cliInfos.GetCount();
@@ -209,7 +210,7 @@ SSWR::SDNSProxy::SDNSProxyCore::~SDNSProxyCore()
 
 Bool SSWR::SDNSProxy::SDNSProxyCore::IsError()
 {
-	return this->listener == 0 || this->proxy->IsError();
+	return this->listener.IsNull() || this->proxy->IsError();
 }
 
 void SSWR::SDNSProxy::SDNSProxyCore::Run(NN<Core::ProgControl> progCtrl)

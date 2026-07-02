@@ -374,7 +374,7 @@ Optional<Text::SMSUserData> Text::SMSUserData::CreateSMSTrim(UnsafeArray<const U
 	{
 		udhSize = (UInt32)udh[0] + 1;
 	}
-	Text::SMSUserData *ud;
+	NN<Text::SMSUserData> ud;
 	Text::SMSUtil::GetTextInfo(smsMessage, dcs, msgLeng);
 	if (dcs == Text::SMSUtil::DCS_UCS2)
 	{
@@ -382,12 +382,12 @@ Optional<Text::SMSUserData> Text::SMSUserData::CreateSMSTrim(UnsafeArray<const U
 		{
 			MemCopyNO(sbuff, smsMessage.Ptr(), sizeof(WChar) * ((140 - udhSize) >> 1));
 			sbuff[(140 - udhSize) >> 1] = 0;
-			NEW_CLASS(ud, Text::SMSUserData(sbuff, dcs, udh));
+			NEW_CLASSNN(ud, Text::SMSUserData(sbuff, dcs, udh));
 			return ud;
 		}
 		else
 		{
-			NEW_CLASS(ud, Text::SMSUserData(smsMessage, dcs, udh));
+			NEW_CLASSNN(ud, Text::SMSUserData(smsMessage, dcs, udh));
 			return ud;
 		}
 	}
@@ -397,12 +397,12 @@ Optional<Text::SMSUserData> Text::SMSUserData::CreateSMSTrim(UnsafeArray<const U
 		if (dataLeng > 140 - udhSize)
 		{
 			Text::SMSUtil::TrimGSMText(sbuff, smsMessage, 140 - udhSize);
-			NEW_CLASS(ud, Text::SMSUserData(sbuff, dcs, udh));
+			NEW_CLASSNN(ud, Text::SMSUserData(sbuff, dcs, udh));
 			return ud;
 		}
 		else
 		{
-			NEW_CLASS(ud, Text::SMSUserData(smsMessage, dcs, udh));
+			NEW_CLASSNN(ud, Text::SMSUserData(smsMessage, dcs, udh));
 			return ud;
 		}
 	}

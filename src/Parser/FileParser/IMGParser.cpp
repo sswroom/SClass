@@ -33,8 +33,8 @@ Optional<IO::ParsedObject> Parser::FileParser::IMGParser::ParseFileHdr(NN<IO::St
 {
 	if (hdr[0] == 0xeb && hdr[510] == 0x55 && hdr[511] == 0xaa && (fd->GetDataSize() & 511) == 0)
 	{
-		IO::FileSectorData *data;
-		NEW_CLASS(data, IO::FileSectorData(fd, 0, fd->GetDataSize(), 512));
+		NN<IO::FileSectorData> data;
+		NEW_CLASSNN(data, IO::FileSectorData(fd, 0, fd->GetDataSize(), 512));
 		return data;
 	}
 	return nullptr;

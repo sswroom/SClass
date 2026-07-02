@@ -9,7 +9,7 @@ namespace Net
 	class SNMPClient
 	{
 	private:
-		Net::UDPServer *svr;
+		NN<Net::UDPServer> svr;
 		Int32 reqId;
 		Sync::Mutex mut;
 		Sync::Event respEvt;

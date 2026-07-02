@@ -11,7 +11,7 @@ namespace Net
 	{
 	public:
 		NN<Net::SocketFactory> sockf;
-		Net::UDPServer *svr;
+		Optional<Net::UDPServer> svr;
 		NN<IO::LogTool> log;
 		Sync::Event readEvt;
 

@@ -4,9 +4,15 @@
 void __stdcall Net::ProxyServer::OnClientConn(NN<Socket> s, AnyType userObj)
 {
 	NN<Net::ProxyServer> me = userObj.GetNN<Net::ProxyServer>();
+	NN<Net::TCPClientMgr> cliMgr;
+	if (!me->cliMgr.SetTo(cliMgr))
+	{
+		me->sockf->DestroySocket(s);
+		return;
+	}
 	NN<Net::TCPClient> cli;
 	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
-	me->cliMgr->AddClient(cli, 0);
+	cliMgr->AddClient(cli, 0);
 }
 		
 void __stdcall Net::ProxyServer::OnClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
@@ -32,31 +38,34 @@ Net::ProxyServer::ProxyServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::
 	this->sockf = sockf;
 	this->log = log;
 	this->port = port;
-	this->svr = 0;
-	this->cliMgr = 0;
-	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(30, OnClientEvent, OnClientData, this, 10, OnClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(sockf, nullptr, port, log, OnClientConn, this, CSTR("Prx: "), autoStart));
-	if (this->svr->IsV4Error())
+	this->svr = nullptr;
+	NEW_CLASSOPT(this->cliMgr, Net::TCPClientMgr(30, OnClientEvent, OnClientData, this, 10, OnClientTimeout));
+	NN<Net::TCPServer> svr;
+	NEW_CLASSNN(svr, Net::TCPServer(sockf, nullptr, port, log, OnClientConn, this, CSTR("Prx: "), autoStart));
+	if (svr->IsV4Error())
 	{
-		DEL_CLASS(this->svr);
-		DEL_CLASS(this->cliMgr);
-		this->svr = 0;
-		this->cliMgr = 0;
+		svr.Delete();
+		this->cliMgr.Delete();
+	}
+	else
+	{
+		this->svr = svr;
 	}
 }
 
 Net::ProxyServer::~ProxyServer()
 {
-	SDEL_CLASS(this->svr);
-	SDEL_CLASS(this->cliMgr);
+	this->svr.Delete();
+	this->cliMgr.Delete();
 }
 
 Bool Net::ProxyServer::Start()
 {
-	return this->svr != 0 && this->svr->Start();
+	NN<Net::TCPServer> svr;
+	return this->svr.SetTo(svr) && svr->Start();
 }
 
 Bool Net::ProxyServer::IsError()
 {
-	return this->svr == 0;
+	return this->svr.IsNull();
 }

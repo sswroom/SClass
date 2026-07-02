@@ -1030,7 +1030,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 		NN<Media::DrawBrush> b;
 		UIntOS readingIndex = (UIntOS)-1;
 		Int32 readingTypeD;
-		Data::ChartPlotter *chart;
+		NN<Data::ChartPlotter> chart;
 		j = dev->nReading;
 		i = 0;
 		while (i < j)
@@ -1393,7 +1393,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 					}
 				}
 
-				NEW_CLASS(chart, Data::ChartPlotter(sb.ToCString()));
+				NEW_CLASSNN(chart, Data::ChartPlotter(sb.ToCString()));
 				if (dateList2.GetCount() >= 2)
 				{
 					chart->AddLineChart(CSTR("Yesterday"), Data::ChartPlotter::NewData(valList2), Data::ChartPlotter::NewDataDate(dateList2.Arr(), dateList2.GetCount()), 0xffcccccc);
@@ -1405,7 +1405,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 				chart->SetTimeZoneQHR(32);
 				chart->SetTimeFormat(CSTR("HH:mm"));
 				chart->Plot(dimg, 0, 0, UIntOS2Double(dimg->GetWidth()), UIntOS2Double(dimg->GetHeight()));
-				DEL_CLASS(chart);
+				chart.Delete();
 			}
 			else
 			{
@@ -1422,7 +1422,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 		}
 		mutUsage.EndUse();
 		
-		Exporter::GUIPNGExporter *exporter;
+		NN<Exporter::GUIPNGExporter> exporter;
 		NN<Media::ImageList> imgList;
 		NN<Media::StaticImage> simg;
 
@@ -1434,9 +1434,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 		deng->DeleteImage(dimg);
 
 		NEW_CLASSNN(mstm, IO::MemoryStream());
-		NEW_CLASS(exporter, Exporter::GUIPNGExporter());
+		NEW_CLASSNN(exporter, Exporter::GUIPNGExporter());
 		exporter->ExportFile(mstm, CSTR("temp.png"), imgList, nullptr);
-		DEL_CLASS(exporter);
+		exporter.Delete();
 		imgList.Delete();
 
 		buff = mstm->GetBuff(buffSize);
@@ -1658,7 +1658,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 		NN<Media::DrawBrush> b;
 		UIntOS readingIndex = (UIntOS)-1;
 		Int32 readingType = 0;
-		Data::ChartPlotter *chart;
+		NN<Data::ChartPlotter> chart;
 		Sync::RWMutexUsage mutUsage(dev->mut, false);
 		i = dev->nReading;
 		while (i-- > 0)
@@ -1750,14 +1750,14 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 
 			if (dateList.GetCount() >= 2)
 			{
-				NEW_CLASS(chart, Data::ChartPlotter(sb.ToCString()));
+				NEW_CLASSNN(chart, Data::ChartPlotter(sb.ToCString()));
 				chart->AddLineChart(CSTR("Reading"), Data::ChartPlotter::NewData(valList), Data::ChartPlotter::NewDataDate(dateList.Arr(), dateList.GetCount()), 0xffff0000);
 				chart->SetDateFormat(CSTR(""));
 				chart->SetFontHeightPt(10);
 				chart->SetTimeZoneQHR(32);
 				chart->SetTimeFormat(CSTR("HH:mm"));
 				chart->Plot(dimg, 0, 0, UIntOS2Double(dimg->GetWidth()), UIntOS2Double(dimg->GetHeight()));
-				DEL_CLASS(chart);
+				chart.Delete();
 			}
 			else
 			{
@@ -1773,7 +1773,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 			}
 		}
 		
-		Exporter::GUIPNGExporter *exporter;
+		NN<Exporter::GUIPNGExporter> exporter;
 		NN<Media::ImageList> imgList;
 		NN<Media::StaticImage> simg;
 
@@ -1785,9 +1785,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 		deng->DeleteImage(dimg);
 
 		IO::MemoryStream mstm;
-		NEW_CLASS(exporter, Exporter::GUIPNGExporter());
+		NEW_CLASSNN(exporter, Exporter::GUIPNGExporter());
 		exporter->ExportFile(mstm, CSTR("temp.png"), imgList, nullptr);
-		DEL_CLASS(exporter);
+		exporter.Delete();
 		imgList.Delete();
 
 		buff = mstm.GetBuff(buffSize);
@@ -2283,11 +2283,11 @@ Bool SSWR::SMonitor::SMonitorWebHandler::ProcessRequest(NN<Net::WebServer::WebRe
 	return true;
 }
 
-SSWR::SMonitor::SMonitorWebHandler::SMonitorWebHandler(SSWR::SMonitor::SMonitorCore *core)
+SSWR::SMonitor::SMonitorWebHandler::SMonitorWebHandler(NN<SSWR::SMonitor::SMonitorCore> core)
 {
 	this->core = core;
-	NEW_CLASS(this->reqMap, Data::FastStringMapObj<RequestHandler>());
-	NEW_CLASS(this->sessMgr, Net::WebServer::MemoryWebSessionManager(CSTR("/monitor"), OnSessDeleted, this, 60000, OnSessCheck, this, CSTR("SMonSessId")));
+	NEW_CLASSNN(this->reqMap, Data::FastStringMapObj<RequestHandler>());
+	NEW_CLASSNN(this->sessMgr, Net::WebServer::MemoryWebSessionManager(CSTR("/monitor"), OnSessDeleted, this, 60000, OnSessCheck, this, CSTR("SMonSessId")));
 	this->reqMap->PutC(CSTR(""), DefaultReq);
 	this->reqMap->PutC(CSTR("/index"), IndexReq);
 	this->reqMap->PutC(CSTR("/login"), LoginReq);
@@ -2308,6 +2308,6 @@ SSWR::SMonitor::SMonitorWebHandler::SMonitorWebHandler(SSWR::SMonitor::SMonitorC
 
 SSWR::SMonitor::SMonitorWebHandler::~SMonitorWebHandler()
 {
-	DEL_CLASS(this->sessMgr);
-	DEL_CLASS(this->reqMap);
+	this->sessMgr.Delete();
+	this->reqMap.Delete();
 }

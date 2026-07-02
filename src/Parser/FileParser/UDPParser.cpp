@@ -36,8 +36,8 @@ Optional<IO::ParsedObject> Parser::FileParser::UDPParser::ParseFileHdr(NN<IO::St
 
 	if (hdr[0] == 0xaa && hdr[1] == 0xbb)
 	{
-		IO::UDPLog *log;
-		NEW_CLASS(log, IO::UDPFileLog(fd));
+		NN<IO::UDPLog> log;
+		NEW_CLASSNN(log, IO::UDPFileLog(fd));
 		return log;
 	}
 	else

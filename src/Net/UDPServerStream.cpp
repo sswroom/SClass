@@ -41,11 +41,17 @@ Net::UDPServerStream::UDPServerStream(NN<Net::SocketFactory> sockf, UInt16 port,
 	this->buffSize = 0;
 	this->isClient = false;
 	this->buff = MemAlloc(UInt8, BUFFSIZE);
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, nullptr, port, nullptr, OnUDPPacket, this, log, CSTR("UDPStm: "), 2, false));
-	if (this->svr->IsError())
+	this->svr = nullptr;
+	NN<Net::UDPServer> svr;
+	NEW_CLASSNN(svr, Net::UDPServer(sockf, nullptr, port, nullptr, OnUDPPacket, this, log, CSTR("UDPStm: "), 2, false));
+	if (svr->IsError())
 	{
-		SDEL_CLASS(this->svr);
+		svr.Delete();
 		return;
+	}
+	else
+	{
+		this->svr = svr;
 	}
 }
 
@@ -57,16 +63,16 @@ Net::UDPServerStream::~UDPServerStream()
 
 Bool Net::UDPServerStream::IsDown() const
 {
-	return this->svr == 0;
+	return this->svr.IsNull();
 }
 
 UIntOS Net::UDPServerStream::Read(const Data::ByteArray &buff)
 {
-	while (this->svr != 0 && this->buffSize == 0)
+	while (this->svr.NotNull() && this->buffSize == 0)
 	{
 		this->readEvt.Wait(10000);
 	}
-	if (this->svr == 0 || this->buffSize == 0)
+	if (this->svr.IsNull() || this->buffSize == 0)
 		return 0;
 	UIntOS ret;
 	Sync::MutexUsage mutUsage(this->dataMut);
@@ -88,13 +94,20 @@ UIntOS Net::UDPServerStream::Read(const Data::ByteArray &buff)
 
 UIntOS Net::UDPServerStream::Write(Data::ByteArrayR buff)
 {
+	NN<Net::UDPServer> svr;
 	Sync::MutexUsage mutUsage(this->dataMut);
-	if (this->lastAddr.addrType == Net::AddrType::Unknown)
+	if (this->lastAddr.addrType == Net::AddrType::Unknown || !this->svr.SetTo(svr))
 	{
 		return 0;
 	}
-	this->svr->SendTo(this->lastAddr, this->lastPort, buff.Arr(), buff.GetSize());
-	return buff.GetSize();
+	if (svr->SendTo(this->lastAddr, this->lastPort, buff.Arr(), buff.GetSize()))
+	{
+		return buff.GetSize();
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 Int32 Net::UDPServerStream::Flush()
@@ -104,7 +117,7 @@ Int32 Net::UDPServerStream::Flush()
 
 void Net::UDPServerStream::Close()
 {
-	SDEL_CLASS(this->svr);
+	this->svr.Delete();
 	this->readEvt.Set();
 }
 
@@ -115,7 +128,7 @@ Bool Net::UDPServerStream::Recover()
 
 Bool Net::UDPServerStream::IsError() const
 {
-	return this->svr == 0;
+	return this->svr.IsNull();
 }
 
 IO::StreamType Net::UDPServerStream::GetStreamType() const

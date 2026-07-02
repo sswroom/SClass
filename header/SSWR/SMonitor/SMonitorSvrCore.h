@@ -42,17 +42,17 @@ namespace SSWR
 			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			IO::LogTool log;
-			Net::TCPServer *cliSvr;
-			Net::TCPClientMgr *cliMgr;
+			Optional<Net::TCPServer> cliSvr;
+			Optional<Net::TCPClientMgr> cliMgr;
 			IO::ProtoHdlr::ProtoSMonHandler protoHdlr;
-			Net::UDPServer *notifyUDP;
-			Net::UDPServer *dataUDP;
-			Crypto::Hash::HashCalc *dataCRC;
+			Optional<Net::UDPServer> notifyUDP;
+			Optional<Net::UDPServer> dataUDP;
+			Optional<Crypto::Hash::HashCalc> dataCRC;
 			Sync::Mutex notifyCRCMut;
 			Crypto::Hash::CRC32RC notifyCRC;
 			Optional<Text::String> notifyPwd;
-			Net::WebServer::WebListener *listener;
-			Net::WebServer::HTTPDirectoryHandler *webHdlr;
+			Optional<Net::WebServer::WebListener> listener;
+			Optional<Net::WebServer::HTTPDirectoryHandler> webHdlr;
 			Optional<Text::String> dataDir;
 			NN<Media::DrawEngine> deng;
 			NN<Parser::ParserList> parsers;
@@ -62,7 +62,7 @@ namespace SSWR
 			Optional<Text::String> emailFrom;
 
 			Optional<DB::DBTool> db;
-			Sync::Mutex *dbMut;
+			Optional<Sync::Mutex> dbMut;
 			Sync::Thread thread;
 			Int64 currDate;
 			Sync::RWMutex dateMut;

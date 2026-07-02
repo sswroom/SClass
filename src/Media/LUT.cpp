@@ -278,10 +278,10 @@ void Media::LUT::GetValueSingle(UInt32 *inputVals, Single *outVals) const
 	}
 }
 
-Media::LUT *Media::LUT::Clone() const
+NN<Media::LUT> Media::LUT::Clone() const
 {
-	Media::LUT *newLut;
-	NEW_CLASS(newLut, Media::LUT(this->inputCh, this->inputLev, this->outputCh, this->fmt, this->sourceName));
+	NN<Media::LUT> newLut;
+	NEW_CLASSNN(newLut, Media::LUT(this->inputCh, this->inputLev, this->outputCh, this->fmt, this->sourceName));
 	if (!this->remark.IsNull())
 	{
 		newLut->SetRemark(this->remark);
@@ -314,7 +314,7 @@ Media::LUT *Media::LUT::Clone() const
 	return newLut;
 }
 
-Bool Media::LUT::Equals(Media::LUT *lut) const
+Bool Media::LUT::Equals(NN<Media::LUT> lut) const
 {
 	if (this->fmt != lut->fmt)
 		return false;

@@ -852,7 +852,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(AnyType us
 						{
 							IO::FileStream fs(fileNameSb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 							NN<Text::String> url = Text::String::New(urlSb.ToString(), urlSb.GetLength());
-							succ = (me->env->AddSpeciesWebFile(NN<OrganSpecies>::ConvertFrom(gi), url, url, &fs, sbuff) == OrganEnv::FS_SUCCESS);
+							succ = (me->env->AddSpeciesWebFile(NN<OrganSpecies>::ConvertFrom(gi), url, url, fs, sbuff) == OrganEnv::FS_SUCCESS);
 							url->Release();
 						}
 
@@ -2511,7 +2511,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NN<UI::GUICore> ui, Optional<UI::GU
 	this->restoreObj = false;
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile color2(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->mapResizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color2, this->colorSess.Ptr(), Media::AT_ALPHA_ALL_FF));
+	NEW_CLASSNN(this->mapResizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color2, this->colorSess.Ptr(), Media::AT_ALPHA_ALL_FF));
 	this->mapCurrFile = 0;
 	this->mapCurrImage = nullptr;
 
@@ -2822,7 +2822,7 @@ SSWR::OrganMgr::OrganMainForm::~OrganMainForm()
 	this->imgItems.DeleteAll();
 	this->ClearPicks();
 
-	DEL_CLASS(this->mapResizer);
+	this->mapResizer.Delete();
 	if (this->mapCurrImage.SetTo(dimg))
 	{
 		this->env->GetDrawEngine()->DeleteImage(dimg);
@@ -3371,15 +3371,15 @@ void SSWR::OrganMgr::OrganMainForm::DropData(NN<UI::GUIDropData> data, IntOS x, 
 				{
 					if (fmtFile.SetTo(nns))
 					{
-						IO::Stream *stm = data->GetDataStream(nns);
-						if (stm)
+						NN<IO::Stream> stm;
+						if (data->GetDataStream(nns).SetTo(stm))
 						{
 							NN<Text::String> ssurl = Text::String::New(sURL.ToString(), sURL.GetLength());
 							NN<Text::String> siurl = Text::String::New(iURL.ToString(), iURL.GetLength());
 							Bool succ = (this->env->AddSpeciesWebFile(NN<OrganSpecies>::ConvertFrom(gi), ssurl, siurl, stm, sbuff) == OrganEnv::FS_SUCCESS);
 							ssurl->Release();
 							siurl->Release();
-							DEL_CLASS(stm);
+							stm.Delete();
 
 							if (succ)
 							{

@@ -19,8 +19,8 @@ void __stdcall Net::Email::POP3Server::ConnReady(NN<Net::TCPClient> cli, AnyType
 #if defined(VERBOSE)
 	printf("POP3Server: %lld, ConnReady\r\n", cli->GetCliId());
 #endif
-	MailStatus *cliStatus;
-	NEW_CLASS(cliStatus, MailStatus());
+	NN<MailStatus> cliStatus;
+	NEW_CLASSNN(cliStatus, MailStatus());
 	cliStatus->buffSize = 0;
 	cliStatus->cliName = nullptr;
 	cliStatus->userName = nullptr;

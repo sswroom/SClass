@@ -1618,7 +1618,7 @@ UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(NN<UI::GUIDropHan
 		UI::GUIControl::DragErrorType errType;
 #if !defined(_WIN32_WCE)
 		OleInitialize(0);
-		HRESULT hRes = RegisterDragDrop((HWND)this->GetHandle().OrNull(), dragDrop);
+		HRESULT hRes = RegisterDragDrop((HWND)this->GetHandle().OrNull(), dragDrop.Ptr());
 		if (hRes == S_OK)
 		{
 			errType = UI::GUIControl::DET_NOERROR;

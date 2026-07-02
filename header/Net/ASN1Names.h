@@ -39,7 +39,7 @@ namespace Net
 		struct RuleContainer
 		{
 			Data::ArrayListNN<NameRule> rules;
-			RuleContainer *parent;
+			Optional<RuleContainer> parent;
 		};
 
 		RuleCond currCond;
@@ -49,12 +49,12 @@ namespace Net
 
 		Data::ArrayListNative<UIntOS> readLev;
 		UIntOS readIndex;
-		RuleContainer *readContainer;
+		Optional<RuleContainer> readContainer;
 		UInt8 readLastOID[32];
 		UIntOS readLastOIDLen;
 	private:
 		void AddRule(NN<NameRule> rule);
-		void FreeContainer(RuleContainer *container);
+		void FreeContainer(NN<RuleContainer> container);
 		void ClearRules(NN<Data::ArrayListNN<NameRule>> rules);
 
 	public:

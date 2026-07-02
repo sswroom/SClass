@@ -38,7 +38,7 @@ namespace Net
 			Bool threadToStop;
 		};
 	private:
-		ClientData *cliData;
+		NN<ClientData> cliData;
 
 		static UInt32 __stdcall ControlThread(AnyType userObj);
 		Int32 NextRequest();
@@ -52,7 +52,7 @@ namespace Net
 
 
 		Bool GetOptions(Text::CStringNN url, NN<Data::ArrayListArr<const UTF8Char>> options);
-		Net::SDPFile *GetMediaInfo(Text::CStringNN url);
+		Optional<Net::SDPFile> GetMediaInfo(Text::CStringNN url);
 
 		static Optional<IO::ParsedObject> ParseURL(NN<Net::TCPClientFactory> clif, Text::CStringNN url, Data::Duration timeout, NN<IO::LogTool> log);
 

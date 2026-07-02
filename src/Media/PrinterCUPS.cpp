@@ -261,11 +261,11 @@ Bool Media::Printer::ShowPrintSettings(Optional<ControlHandle> hWnd)
 
 Optional<Media::PrintDocument> Media::Printer::StartPrint(NN<PrintHandler> hdlr, NN<Media::DrawEngine> eng)
 {
-	Media::CUPSPrintDocument *doc;
-	NEW_CLASS(doc, Media::CUPSPrintDocument(this->printerName, NN<Media::GTKDrawEngine>::ConvertFrom(eng), hdlr));
+	NN<Media::CUPSPrintDocument> doc;
+	NEW_CLASSNN(doc, Media::CUPSPrintDocument(this->printerName, NN<Media::GTKDrawEngine>::ConvertFrom(eng), hdlr));
 	if (doc->IsError())
 	{
-		DEL_CLASS(doc);
+		doc.Delete();
 		return nullptr;
 	}
 	doc->Start();

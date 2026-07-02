@@ -44,7 +44,7 @@ namespace Media
 			virtual UIntOS GetDataSeekCount();
 
 			virtual UIntOS ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype);
-			virtual UInt8 *GetProp(Int32 propName, UInt32 *size);
+			virtual UnsafeArrayOpt<UInt8> GetProp(Int32 propName, OutParam<UInt32> size);
 			virtual void OnFrameChanged(Media::VideoSource::FrameChange fc);
 		};
 	}

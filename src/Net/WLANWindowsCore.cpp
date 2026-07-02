@@ -15,7 +15,7 @@ typedef UInt32 (__stdcall *GetNetworkBssListFunc)(void *hClientHandle, void *pIn
 
 struct Net::WLANWindowsCore::ClassData
 {
-	IO::Library *apiLib;
+	NN<IO::Library> apiLib;
 	void *hand;
 	FreeMemoryFunc WlanFreeMemoryFunc;
 	ScanFunc WlanScanFunc;
@@ -29,7 +29,7 @@ Net::WLANWindowsCore::WLANWindowsCore()
 	NN<ClassData> clsData = MemAllocNN(ClassData);
 	this->clsData = clsData;
 	UInt32 ver;
-	NEW_CLASS(clsData->apiLib, IO::Library((const UTF8Char*)"Wlanapi.dll"));
+	NEW_CLASSNN(clsData->apiLib, IO::Library((const UTF8Char*)"Wlanapi.dll"));
 	if (!clsData->apiLib->IsError())
 	{
 		clsData->WlanFreeMemoryFunc = (FreeMemoryFunc)clsData->apiLib->GetFunc("WlanFreeMemory");
@@ -57,7 +57,7 @@ Net::WLANWindowsCore::~WLANWindowsCore()
 		CloseHandleFunc func = (CloseHandleFunc)this->clsData->apiLib->GetFunc("WlanCloseHandle");
 		func(this->clsData->hand, 0);
 	}
-	DEL_CLASS(this->clsData->apiLib);
+	this->clsData->apiLib.Delete();
 	MemFreeNN(this->clsData);
 }
 

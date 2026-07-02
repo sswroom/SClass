@@ -54,7 +54,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	fileSize = ReadUInt32(&hdr[4]) + 8;
 
-	Media::MediaFile *vid;
+	NN<Media::MediaFile> vid;
 	Data::ByteBuffer fmt;
 	currPos = 12;
 	while (currPos < fileSize)
@@ -87,7 +87,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 					NN<Media::LPCMSource> src;
 					NEW_CLASSNN(src, Media::LPCMSource(fd, currPos + 8, ReadUInt32(&chunkBuff[4]), af, fd->GetFullName()));
 
-					NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
+					NEW_CLASSNN(vid, Media::MediaFile(fd->GetFullName()));
 					vid->AddSource(src, 0);
 					return vid;
 				}
@@ -99,7 +99,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 					if (ac3Parser.ParseStreamData(data).SetTo(src))
 					{
 						data.Delete();
-						NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
+						NEW_CLASSNN(vid, Media::MediaFile(fd->GetFullName()));
 						vid->AddSource(src, 0);
 						return vid;
 					}
@@ -117,7 +117,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 					if (mp3Parser.ParseStreamData(data).SetTo(src))
 					{
 						data.Delete();
-						NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
+						NEW_CLASSNN(vid, Media::MediaFile(fd->GetFullName()));
 						vid->AddSource(src, 0);
 						return vid;
 					}
@@ -135,7 +135,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 					if (mp2Parser.ParseStreamData(data).SetTo(src))
 					{
 						data.Delete();
-						NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
+						NEW_CLASSNN(vid, Media::MediaFile(fd->GetFullName()));
 						vid->AddSource(src, 0);
 						return vid;
 					}
@@ -153,7 +153,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 					NN<Media::AudioFixBlockSource> src;
 					NEW_CLASSNN(src, Media::AudioFixBlockSource(fd, currPos + 8, ReadUInt32(&chunkBuff[4]), af, fd->GetFullName()));
 
-					NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
+					NEW_CLASSNN(vid, Media::MediaFile(fd->GetFullName()));
 					vid->AddSource(src, 0);
 					return vid;
 				}

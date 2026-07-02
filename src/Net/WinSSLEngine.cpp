@@ -1124,8 +1124,8 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<So
 	Text::StrDelNew(wptr);
 
 	clif->GetSocketFactory()->SetRecvTimeout(s, 120000);
-	Net::SSLClient *cli;
-	NEW_CLASS(cli, Net::WinSSLClient(clif->GetSocketFactory(), s, &ctxt));
+	NN<Net::SSLClient> cli;
+	NEW_CLASSNN(cli, Net::WinSSLClient(clif->GetSocketFactory(), s, &ctxt));
 	return cli;
 }
 
@@ -1370,8 +1370,8 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 	printf("%s SSL: Svr %x, Success, extra size = %d\r\n", debugBuff, (Int32)(IntOS)s.Ptr(), (UInt32)recvOfst);
 #endif
 
-	Net::SSLClient *cli;
-	NEW_CLASS(cli, Net::WinSSLClient(clif->GetSocketFactory(), s, &ctxt));
+	NN<Net::SSLClient> cli;
+	NEW_CLASSNN(cli, Net::WinSSLClient(clif->GetSocketFactory(), s, &ctxt));
 	return cli;
 }
 
@@ -1779,8 +1779,8 @@ Optional<Crypto::Cert::X509Key> Net::WinSSLEngine::GenerateRSAKey(UIntOS keyLeng
 		return nullptr;
 	}
 
-	Crypto::Cert::X509Key *key;
-	NEW_CLASS(key, Crypto::Cert::X509Key(CSTR("RSAKey.key"), Data::ByteArray(certBuff, certBuffSize), Crypto::Cert::X509File::KeyType::RSA));
+	NN<Crypto::Cert::X509Key> key;
+	NEW_CLASSNN(key, Crypto::Cert::X509Key(CSTR("RSAKey.key"), Data::ByteArray(certBuff, certBuffSize), Crypto::Cert::X509File::KeyType::RSA));
 	CryptDestroyKey(hKey);
 	CryptReleaseContext(hProv, 0);
 	return key;

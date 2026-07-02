@@ -138,10 +138,10 @@ Optional<IO::ParsedObject> Parser::ObjParser::KMZParser::ParseObject(NN<IO::Pars
 	}
 	else
 	{
-		Map::MapLayerCollection *mapLyrColl;
+		NN<Map::MapLayerCollection> mapLyrColl;
 		NN<IO::ParsedObject> nnpobj2;
 		NN<Map::MapDrawLayer> layer;
-		NEW_CLASS(mapLyrColl, Map::MapLayerCollection(pobj->GetSourceNameObj(), 0));
+		NEW_CLASSNN(mapLyrColl, Map::MapLayerCollection(pobj->GetSourceNameObj(), 0));
 		i = 0;
 		j = pobjList.GetCount();
 		while (i < j)

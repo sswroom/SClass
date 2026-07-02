@@ -347,7 +347,7 @@ Optional<Text::MIMEObj::MultipartMIMEObj> Text::MIMEObj::MultipartMIMEObj::Parse
 		if (currPart.StartsWith(UTF8STRC("boundary=")))
 		{
 			Text::StringBuilderUTF8 boundary;
-			Text::MIMEObj::MultipartMIMEObj *obj;
+			NN<Text::MIMEObj::MultipartMIMEObj> obj;
 			UIntOS buffSize;
 			UnsafeArray<UInt8> buff;
 			i = currPart.leng;
@@ -375,13 +375,13 @@ Optional<Text::MIMEObj::MultipartMIMEObj> Text::MIMEObj::MultipartMIMEObj::Parse
 			j = Text::StrIndexOfC(buff, buffSize, boundary.ToString(), boundary.GetLength());
 			if (j == INVALID_INDEX)
 			{
-				NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, nullptr, boundary.ToCString()));
+				NEW_CLASSNN(obj, Text::MIMEObj::MultipartMIMEObj(contentType, nullptr, boundary.ToCString()));
 				i = 0;
 			}
 			else
 			{
 				buff[j] = 0;
-				NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, Text::CString(UnsafeArray<const UInt8>(buff), j), boundary.ToCString()));
+				NEW_CLASSNN(obj, Text::MIMEObj::MultipartMIMEObj(contentType, Text::CString(UnsafeArray<const UInt8>(buff), j), boundary.ToCString()));
 				i = j + boundary.GetLength();
 				if (buff[i] == '\r' && buff[i + 1] == '\n')
 				{

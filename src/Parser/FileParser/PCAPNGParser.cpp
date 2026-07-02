@@ -50,8 +50,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 	Int64 time;
 
 	Bool isBTLink = false;
-	IO::BTScanLog *scanLog;
-	Net::EthernetAnalyzer *analyzer;
+	NN<IO::BTScanLog> scanLog;
+	NN<Net::EthernetAnalyzer> analyzer;
 	NN<IO::DataRateCalc> dataRateCalc;
 	Data::DateTime dt;
 
@@ -64,8 +64,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 		Data::ArrayListNative<Int8> resolList;
 		Data::ArrayListNative<UInt16> linkTypeList;
 
-		NEW_CLASS(analyzer, Net::EthernetAnalyzer(nullptr, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
-		NEW_CLASS(scanLog, IO::BTScanLog(fd->GetFullFileName()));
+		NEW_CLASSNN(analyzer, Net::EthernetAnalyzer(nullptr, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
+		NEW_CLASSNN(scanLog, IO::BTScanLog(fd->GetFullFileName()));
 		NEW_CLASSNN(dataRateCalc, IO::DataRateCalc(fd->GetFullFileName()));
 		Data::ByteBuffer packetBuff(maxSize);
 		currOfst = 0;
@@ -157,19 +157,19 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 		}
 		if (isBTLink)
 		{
-			DEL_CLASS(analyzer);
+			analyzer.Delete();
 			dataRateCalc.Delete();
 			return scanLog;
 		}
 		else if (targetType == IO::ParserType::DataRateCalc)
 		{
-			DEL_CLASS(analyzer);
-			DEL_CLASS(scanLog);
+			analyzer.Delete();
+			scanLog.Delete();
 			return dataRateCalc;
 		}
 		else
 		{
-			DEL_CLASS(scanLog);
+			scanLog.Delete();
 			dataRateCalc.Delete();
 			return analyzer;
 		}
@@ -179,8 +179,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 		Data::ArrayListNative<Int8> resolList;
 		Data::ArrayListNative<UInt16> linkTypeList;
 
-		NEW_CLASS(analyzer, Net::EthernetAnalyzer(nullptr, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
-		NEW_CLASS(scanLog, IO::BTScanLog(fd->GetFullFileName()));
+		NEW_CLASSNN(analyzer, Net::EthernetAnalyzer(nullptr, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
+		NEW_CLASSNN(scanLog, IO::BTScanLog(fd->GetFullFileName()));
 		NEW_CLASSNN(dataRateCalc, IO::DataRateCalc(fd->GetFullFileName()));
 		Data::ByteBuffer packetBuff(maxSize);
 		currOfst = 0;
@@ -272,18 +272,18 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 		}
 		if (isBTLink)
 		{
-			DEL_CLASS(analyzer);
+			analyzer.Delete();
 			dataRateCalc.Delete();
 			return scanLog;
 		}
 		else if (targetType == IO::ParserType::DataRateCalc)
 		{
-			DEL_CLASS(analyzer);
-			DEL_CLASS(scanLog);
+			analyzer.Delete();
+			scanLog.Delete();
 			return dataRateCalc;
 		}
 		{
-			DEL_CLASS(scanLog);
+			scanLog.Delete();
 			dataRateCalc.Delete();
 			return analyzer;
 		}

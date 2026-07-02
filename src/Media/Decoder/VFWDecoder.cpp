@@ -196,7 +196,7 @@ void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 
 Media::Decoder::VFWDecoder::VFWDecoder(NN<Media::VideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
 {
-	this->sourceVideo = 0;
+	this->sourceVideo = nullptr;
 	this->frameRateNorm = 0;
 	this->frameRateDenorm = 0;
 	this->maxFrameSize = 0;
@@ -440,9 +440,10 @@ Text::CStringNN Media::Decoder::VFWDecoder::GetFilterName()
 
 Bool Media::Decoder::VFWDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
-	if (this->sourceVideo == 0)
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
 		return false;
-	if (!this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize))
+	if (!sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize))
 		return false;
 	BITMAPINFOHEADER *bmih = (BITMAPINFOHEADER *)this->bmihDest;
 	frameRateNorm.Set(this->frameRateNorm);
@@ -460,11 +461,12 @@ Bool Media::Decoder::VFWDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutPara
 
 void Media::Decoder::VFWDecoder::Stop()
 {
-	if (this->sourceVideo == 0)
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
 		return;
 
 	this->started = false;
-	this->sourceVideo->Stop();
+	sourceVideo->Stop();
 	while (this->endProcessing)
 	{
 		Sync::SimpleThread::Sleep(10);
@@ -475,22 +477,34 @@ void Media::Decoder::VFWDecoder::Stop()
 
 Bool Media::Decoder::VFWDecoder::HasFrameCount()
 {
-	return this->sourceVideo->HasFrameCount();
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return false;
+	return sourceVideo->HasFrameCount();
 }
 
 UIntOS Media::Decoder::VFWDecoder::GetFrameCount()
 {
-	return this->sourceVideo->GetFrameCount();
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return 0;
+	return sourceVideo->GetFrameCount();
 }
 
 Data::Duration Media::Decoder::VFWDecoder::GetFrameTime(UIntOS frameIndex)
 {
-	return this->sourceVideo->GetFrameTime(frameIndex);
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return Data::Duration(0);
+	return sourceVideo->GetFrameTime(frameIndex);
 }
 
 void Media::Decoder::VFWDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
-	return this->sourceVideo->EnumFrameInfos(cb, userData);
+	NN<Media::VideoSource> sourceVideo;
+	if (!this->sourceVideo.SetTo(sourceVideo))
+		return;
+	return sourceVideo->EnumFrameInfos(cb, userData);
 }
 
 void Media::Decoder::VFWDecoder::OnFrameChanged(Media::VideoSource::FrameChange fc)

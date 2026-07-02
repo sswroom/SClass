@@ -38,7 +38,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::St
 	UnsafeArray<UTF8Char> sptr;
 	UInt8 riffHdr[24];
 	UInt32 aniSize;
-	Media::ImageList *imgList;
+	NN<Media::ImageList> imgList;
 	UIntOS buffSize;
 	UIntOS buffOfst;
 	UInt32 tmp;
@@ -53,7 +53,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::St
 	}
 	aniSize = ReadUInt32(&hdr[4]) + 8;
 	UIntOS currOfst = 12;
-	NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
+	NEW_CLASSNN(imgList, Media::ImageList(fd->GetFullName()));
 
 	while (currOfst < aniSize)
 	{
@@ -143,7 +143,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::St
 
 	if (nFrames != imgList->GetCount())
 	{
-		DEL_CLASS(imgList);
+		imgList.Delete();
 		return nullptr;
 	}
 

@@ -10,7 +10,7 @@ namespace Win32
 	private:
 		NN<IO::SeekableStream> stm;
 		UInt32 cnt;
-		Data::DateTime *dt;
+		NN<Data::DateTime> dt;
 
 	public:
 		COMStream(NN<IO::SeekableStream> stm);

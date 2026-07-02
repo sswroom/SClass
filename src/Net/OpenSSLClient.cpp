@@ -60,8 +60,8 @@ Net::OpenSSLClient::OpenSSLClient(NN<Net::SocketFactory> sockf, AnyType ssl, NN<
 		X509 *cert = SSL_get_peer_certificate(this->clsData->ssl);
 		if (cert)
 		{
-			Crypto::Cert::OpenSSLCert *crt;
-			NEW_CLASS(crt, Crypto::Cert::OpenSSLCert(cert));
+			NN<Crypto::Cert::OpenSSLCert> crt;
+			NEW_CLASSNN(crt, Crypto::Cert::OpenSSLCert(cert));
 			this->clsData->remoteCerts->Add(crt);
 		}
 	}*/

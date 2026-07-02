@@ -14,8 +14,8 @@ namespace Net
 		NN<Net::SocketFactory> sockf;
 		NN<IO::LogTool> log;
 		UInt16 port;
-		Net::TCPServer *svr;
-		Net::TCPClientMgr *cliMgr;
+		Optional<Net::TCPServer> svr;
+		Optional<Net::TCPClientMgr> cliMgr;
 
 		static void __stdcall OnClientConn(NN<Socket> s, AnyType userObj);
 		static void __stdcall OnClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);

@@ -32,7 +32,7 @@ namespace Net
 			Sync::Event finEvt;
 		};
 
-		Net::UDPServer *svr;
+		NN<Net::UDPServer> svr;
 		NN<Net::SocketFactory> sockf;
 		UInt32 lastID;
 		Net::SocketUtil::AddressInfo serverAddr;

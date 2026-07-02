@@ -125,8 +125,8 @@ Optional<IO::ParsedObject> Parser::FileParser::SQLiteParser::ParseAsMap(NN<DB::D
 	
 	tableNames.FreeAll();
 
-	Map::GeoPackage *gpkg;
-	NEW_CLASS(gpkg, Map::GeoPackage(conn));
+	NN<Map::GeoPackage> gpkg;
+	NEW_CLASSNN(gpkg, Map::GeoPackage(conn));
 	NN<IO::ParsedObject> pobj = gpkg->CreateLayerCollection();
 	gpkg->Release();
 	return pobj;

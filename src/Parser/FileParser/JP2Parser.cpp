@@ -100,7 +100,8 @@ Optional<IO::ParsedObject> Parser::FileParser::JP2Parser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 	Bool succ = false;
-	Media::ImageList *imgList = nullptr;
+	Optional<Media::ImageList> imgList = nullptr;
+	NN<Media::ImageList> nnimgList;
 #if 1
 	NN<Media::StaticImage> img;
 	UIntOS w = (UInt32)(imgInfo->x1 - imgInfo->x0);
@@ -190,8 +191,9 @@ Optional<IO::ParsedObject> Parser::FileParser::JP2Parser::ParseFileHdr(NN<IO::St
 	}
 	if (succ)
 	{
-		NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
-		imgList->AddImage(img, 0);
+		NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
+		imgList = nnimgList;
+		nnimgList->AddImage(img, 0);
 	}
 	else
 	{
@@ -225,7 +227,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JP2Parser::ParseFileHdr(NN<IO::St
 		printf("JP2 decode succeed\r\n");
 		printf("Color space = %d, (%d, %d), (%d, %d), ncomp = %d, icc_len = %d\r\n", imgInfo->color_space, imgInfo->x0, imgInfo->y0, imgInfo->x1, imgInfo->y1, imgInfo->numcomps, imgInfo->icc_profile_len);
 #endif
-		Media::StaticImage *img;
+		NN<Media::StaticImage> img;
 		UIntOS w = (UInt32)(imgInfo->x1 - imgInfo->x0);
 		UIntOS h = (UInt32)(imgInfo->y1 - imgInfo->y0);
 		if (imgInfo->color_space == OPJ_CLRSPC_SRGB && imgInfo->numcomps == 3)
@@ -234,7 +236,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JP2Parser::ParseFileHdr(NN<IO::St
 			Int32 *rptr = imgInfo->comps[0].data;
 			Int32 *gptr = imgInfo->comps[1].data;	
 			Int32 *bptr = imgInfo->comps[2].data;	
-			NEW_CLASS(img, Media::StaticImage(w, h, 0, 24, Media::PF_B8G8R8, dataSize, 0, Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASSNN(img, Media::StaticImage(w, h, 0, 24, Media::PF_B8G8R8, dataSize, 0, Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			UInt8 *dptr = img->data;
 			UIntOS i;
 			while (h-- > 0)
@@ -251,8 +253,9 @@ Optional<IO::ParsedObject> Parser::FileParser::JP2Parser::ParseFileHdr(NN<IO::St
 					bptr++;
 				}
 			}
-			NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
-			imgList->AddImage(img, 0);
+			NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
+			imgList = nnimgList;
+			nnimgList->AddImage(img, 0);
 		}
 	}
 #endif

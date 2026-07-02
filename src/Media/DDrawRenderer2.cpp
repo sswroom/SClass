@@ -432,8 +432,8 @@ Media::DDrawRenderer2::DDrawRenderer2(void *hwnd, Media::ColorManager *colorMgr)
 	this->scnUpdToStop = false;
 	this->frameProcRunning = false;
 	this->frameProcToStop = false;
-	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerH8_8(3, 3, Media::AT_NO_ALPHA));
-	NEW_CLASS(this->deinterlace, Media::Deinterlace8(10, 10));
+	NEW_CLASSNN(this->resizer, Media::Resizer::LanczosResizerH8_8(3, 3, Media::AT_NO_ALPHA));
+	NEW_CLASSNN(this->deinterlace, Media::Deinterlace8(10, 10));
 	this->surfaceBuff = MemAlloc(FrameBuffer, FRAMEBUFFSIZE);
 	this->surfaceBuffStart = 0;
 	this->surfaceBuffEnd = 0;
@@ -517,8 +517,8 @@ Media::DDrawRenderer2::~DDrawRenderer2()
 		lpDD->Release();
 		ddObj = 0;
 	}
-	DEL_CLASS(this->resizer);
-	DEL_CLASS(this->deinterlace);
+	this->resizer.Delete();
+	this->deinterlace.Delete();
 }
 
 void Media::DDrawRenderer2::OnSizeChanged()

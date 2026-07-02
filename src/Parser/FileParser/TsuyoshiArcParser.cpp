@@ -64,9 +64,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TsuyoshiArcParser::ParseFileHdr(N
 		return nullptr;
 	}
 
-	IO::VirtualPackageFile *pf;
+	NN<IO::VirtualPackageFile> pf;
 	Text::Encoding enc(932);
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	
 	j = 0;
 	i = 0;
@@ -78,7 +78,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TsuyoshiArcParser::ParseFileHdr(N
 		recOfst = ReadMUInt32(&recBuff[j + 268]);
 		if (recOfst != nextOfst)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		filePtr = &recBuff[j];

@@ -14,7 +14,7 @@ Win32::WMIReader::WMIReader(void *pEnum, Int8 tzQhr)
 	this->fObject = 0;
 	this->isFirst = false;
 	this->tzQhr = tzQhr;
-	NEW_CLASS(this->columns, Data::ArrayListObj<WMIColumn*>());
+	NEW_CLASSNN(this->columns, Data::ArrayListNN<WMIColumn>());
 
 	IWbemClassObject *pObject;
 	ULONG returned;
@@ -37,14 +37,14 @@ Win32::WMIReader::WMIReader(void *pEnum, Int8 tzQhr)
 		hr = pObject->BeginEnumeration(0);
 		if (SUCCEEDED(hr))
 		{
-			WMIColumn *col;
+			NN<WMIColumn> col;
 			BSTR bs;
 			CIMTYPE t;
 			while (pObject->Next(0, &bs, 0, &t, 0) == S_OK)
 			{
 				if (bs[0] != '_')
 				{
-					col = MemAlloc(WMIColumn, 1);
+					col = MemAllocNN(WMIColumn);
 					col->name = Text::StrCopyNew(bs);
 					col->colType = t;
 					this->columns->Add(col);
@@ -59,7 +59,7 @@ Win32::WMIReader::WMIReader(void *pEnum, Int8 tzQhr)
 Win32::WMIReader::~WMIReader()
 {
 	UIntOS i;
-	WMIColumn *col;
+	NN<WMIColumn> col;
 
 	if (this->pObject)
 	{
@@ -74,11 +74,11 @@ Win32::WMIReader::~WMIReader()
 	i = this->columns->GetCount();
 	while (i-- > 0)
 	{
-		col = this->columns->GetItem(i);
+		col = this->columns->GetItemNoCheck(i);
 		Text::StrDelNew(col->name);
-		MemFree(col);
+		MemFreeNN(col);
 	}
-	DEL_CLASS(this->columns);
+	this->columns.Delete();
 	((IEnumWbemClassObject*)this->pEnum)->Release();
 	this->pEnum = 0;
 }
@@ -134,8 +134,8 @@ IntOS Win32::WMIReader::GetRowChanged()
 
 Int32 Win32::WMIReader::GetInt32(UIntOS colIndex)
 {
-	WMIColumn *col = this->columns->GetItem(colIndex);
-	if (col == 0 || this->pObject == 0)
+	NN<WMIColumn> col;
+	if (!this->columns->GetItem(colIndex).SetTo(col) || this->pObject == 0)
 		return 0;
 
 	Int32 ret = 0;
@@ -203,8 +203,8 @@ Int32 Win32::WMIReader::GetInt32(UIntOS colIndex)
 
 Int64 Win32::WMIReader::GetInt64(UIntOS colIndex)
 {
-	WMIColumn *col = this->columns->GetItem(colIndex);
-	if (col == 0 || this->pObject == 0)
+	NN<WMIColumn> col;
+	if (!this->columns->GetItem(colIndex).SetTo(col) || this->pObject == 0)
 		return 0;
 
 	Int64 ret = 0;
@@ -272,8 +272,8 @@ Int64 Win32::WMIReader::GetInt64(UIntOS colIndex)
 
 UnsafeArrayOpt<WChar> Win32::WMIReader::GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
 {
-	WMIColumn *col = this->columns->GetItem(colIndex);
-	if (col == 0 || this->pObject == 0)
+	NN<WMIColumn> col;
+	if (!this->columns->GetItem(colIndex).SetTo(col) || this->pObject == 0)
 		return nullptr;
 
 	UnsafeArrayOpt<WChar> ret = nullptr;
@@ -356,8 +356,8 @@ UnsafeArrayOpt<WChar> Win32::WMIReader::GetStr(UIntOS colIndex, UnsafeArray<WCha
 
 Bool Win32::WMIReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 {
-	WMIColumn *col = this->columns->GetItem(colIndex);
-	if (col == 0 || this->pObject == 0)
+	NN<WMIColumn> col;
+	if (!this->columns->GetItem(colIndex).SetTo(col) || this->pObject == 0)
 		return 0;
 
 	Bool ret = false;
@@ -455,8 +455,8 @@ Bool Win32::WMIReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 
 Optional<Text::String> Win32::WMIReader::GetNewStr(UIntOS colIndex)
 {
-	WMIColumn *col = this->columns->GetItem(colIndex);
-	if (col == 0 || this->pObject == 0)
+	NN<WMIColumn> col;
+	if (!this->columns->GetItem(colIndex).SetTo(col) || this->pObject == 0)
 		return nullptr;
 
 	UTF8Char sbuff[64];
@@ -550,8 +550,8 @@ Optional<Text::String> Win32::WMIReader::GetNewStr(UIntOS colIndex)
 
 UnsafeArrayOpt<UTF8Char> Win32::WMIReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
-	WMIColumn *col = this->columns->GetItem(colIndex);
-	if (col == 0 || this->pObject == 0)
+	NN<WMIColumn> col;
+	if (!this->columns->GetItem(colIndex).SetTo(col) || this->pObject == 0)
 		return nullptr;
 
 	*buff = 0;
@@ -637,8 +637,8 @@ UnsafeArrayOpt<UTF8Char> Win32::WMIReader::GetStr(UIntOS colIndex, UnsafeArray<U
 
 Data::Timestamp Win32::WMIReader::GetTimestamp(UIntOS colIndex)
 {
-	WMIColumn *col = this->columns->GetItem(colIndex);
-	if (col == 0 || this->pObject == 0)
+	NN<WMIColumn> col;
+	if (!this->columns->GetItem(colIndex).SetTo(col) || this->pObject == 0)
 		return Data::Timestamp(0);
 
 	Data::Timestamp ret = Data::Timestamp(0);
@@ -670,8 +670,8 @@ Data::Timestamp Win32::WMIReader::GetTimestamp(UIntOS colIndex)
 
 Double Win32::WMIReader::GetDblOrNAN(UIntOS colIndex)
 {
-	WMIColumn *col = this->columns->GetItem(colIndex);
-	if (col == 0 || this->pObject == 0)
+	NN<WMIColumn> col;
+	if (!this->columns->GetItem(colIndex).SetTo(col) || this->pObject == 0)
 		return NAN;
 
 	Double ret = NAN;
@@ -745,8 +745,8 @@ Bool Win32::WMIReader::GetBool(UIntOS colIndex)
 
 UIntOS Win32::WMIReader::GetBinarySize(UIntOS colIndex)
 {
-	WMIColumn *col = this->columns->GetItem(colIndex);
-	if (col == 0 || this->pObject == 0)
+	NN<WMIColumn> col;
+	if (!this->columns->GetItem(colIndex).SetTo(col) || this->pObject == 0)
 		return 0;
 
 	UIntOS ret = 0;
@@ -779,8 +779,8 @@ UIntOS Win32::WMIReader::GetBinarySize(UIntOS colIndex)
 
 UIntOS Win32::WMIReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 {
-	WMIColumn *col = this->columns->GetItem(colIndex);
-	if (col == 0 || this->pObject == 0)
+	NN<WMIColumn> col;
+	if (!this->columns->GetItem(colIndex).SetTo(col) || this->pObject == 0)
 		return 0;
 
 	UIntOS ret = 0;
@@ -824,8 +824,8 @@ Bool Win32::WMIReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 
 Bool Win32::WMIReader::IsNull(UIntOS colIndex)
 {
-	WMIColumn *col = this->columns->GetItem(colIndex);
-	if (col == 0 || this->pObject == 0)
+	NN<WMIColumn> col;
+	if (!this->columns->GetItem(colIndex).SetTo(col) || this->pObject == 0)
 		return 0;
 
 	Bool ret = false;
@@ -853,16 +853,16 @@ Bool Win32::WMIReader::IsNull(UIntOS colIndex)
 
 UnsafeArrayOpt<UTF8Char> Win32::WMIReader::GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
 {
-	WMIColumn *col = this->columns->GetItem(colIndex);
-	if (col == 0)
+	NN<WMIColumn> col;
+	if (!this->columns->GetItem(colIndex).SetTo(col))
 		return nullptr;
 	return Text::StrWChar_UTF8(buff, col->name);
 }
 
 DB::DBUtil::ColType Win32::WMIReader::GetColType(UIntOS colIndex, OptOut<UIntOS> colSize)
 {
-	WMIColumn *col = this->columns->GetItem(colIndex);
-	if (col == 0)
+	NN<WMIColumn> col;
+	if (!this->columns->GetItem(colIndex).SetTo(col))
 		return DB::DBUtil::CT_Unknown;
 
 	colSize.Set(0);
@@ -901,8 +901,8 @@ DB::DBUtil::ColType Win32::WMIReader::GetColType(UIntOS colIndex, OptOut<UIntOS>
 
 Bool Win32::WMIReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 {
-	WMIColumn *col = this->columns->GetItem(colIndex);
-	if (col == 0)
+	NN<WMIColumn> col;
+	if (!this->columns->GetItem(colIndex).SetTo(col))
 		return false;
 
 	NN<Text::String> s = Text::String::NewNotNull(col->name);

@@ -8,14 +8,15 @@
 void __stdcall Net::TCPServerStream::ConnHandler(NN<Socket> s, AnyType userObj)
 {
 	NN<Net::TCPServerStream> me = userObj.GetNN<Net::TCPServerStream>();
-	Net::TCPClient *cli;
-	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
+	NN<Net::TCPClient> cli;
+	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 	Sync::MutexUsage connMutUsage(me->connMut);
-	if (me->currCli)
+	NN<Net::TCPClient> currCli;
+	if (me->currCli.SetTo(currCli))
 	{
-		me->currCli->Close();
+		currCli->Close();
 		Sync::MutexUsage mutUsage(me->readMut);
-		DEL_CLASS(me->currCli);
+		currCli.Delete();
 		me->currCli = cli;
 	}
 	else
@@ -31,11 +32,17 @@ Net::TCPServerStream::TCPServerStream(NN<Net::SocketFactory> sockf, UInt16 port,
 {
 	this->sockf = sockf;
 	this->log = log;
-	this->currCli = 0;
-	NEW_CLASS(this->svr, Net::TCPServer(sockf, nullptr, port, log, ConnHandler, this, CSTR("SStm: "), true));
-	if (this->svr->IsV4Error())
+	this->currCli = nullptr;
+	NN<Net::TCPServer> svr;
+	NEW_CLASSNN(svr, Net::TCPServer(sockf, nullptr, port, log, ConnHandler, this, CSTR("SStm: "), true));
+	if (svr->IsV4Error())
 	{
-		SDEL_CLASS(this->svr);return;
+		svr.Delete();
+		this->svr = nullptr;
+	}
+	else
+	{
+		this->svr = svr;
 	}
 }
 
@@ -46,9 +53,9 @@ Net::TCPServerStream::~TCPServerStream()
 
 Bool Net::TCPServerStream::IsDown() const
 {
-	if (this->svr == 0)
+	if (this->svr.IsNull())
 		return true;
-	if (this->currCli == 0)
+	if (this->currCli.IsNull())
 		return true;
 	return false;
 }
@@ -57,12 +64,13 @@ UIntOS Net::TCPServerStream::Read(const Data::ByteArray &buff)
 {
 	Bool toClose = false;
 	UIntOS readSize = 0;
-	while (this->svr)
+	NN<Net::TCPClient> currCli;
+	while (this->svr.NotNull())
 	{
 		Sync::MutexUsage readMutUsage(this->readMut);
-		if (this->currCli)
+		if (this->currCli.SetTo(currCli))
 		{
-			readSize = this->currCli->Read(buff);
+			readSize = currCli->Read(buff);
 			if (readSize == 0)
 				toClose = true;
 		}
@@ -74,7 +82,7 @@ UIntOS Net::TCPServerStream::Read(const Data::ByteArray &buff)
 		{
 			Sync::MutexUsage mutUsage(this->connMut);
 			readMutUsage.BeginUse();
-			SDEL_CLASS(this->currCli);
+			this->currCli.Delete();
 			readMutUsage.EndUse();
 			mutUsage.EndUse();
 		}
@@ -90,13 +98,14 @@ UIntOS Net::TCPServerStream::Read(const Data::ByteArray &buff)
 UIntOS Net::TCPServerStream::Write(Data::ByteArrayR buff)
 {
 	Bool toClose = false;
-	Net::TCPClient *cli = 0;
+	Optional<Net::TCPClient> cli = nullptr;
+	NN<Net::TCPClient> currCli;
 	Sync::MutexUsage mutUsage(this->connMut);
 	UIntOS writeSize;
-	if (this->currCli)
+	if (this->currCli.SetTo(currCli))
 	{
-		cli = this->currCli;
-		writeSize = this->currCli->Write(buff);
+		cli = currCli;
+		writeSize = currCli->Write(buff);
 		if (writeSize == 0)
 			toClose = true;
 	}
@@ -109,9 +118,9 @@ UIntOS Net::TCPServerStream::Write(Data::ByteArrayR buff)
 	{
 		mutUsage.BeginUse();
 		Sync::MutexUsage readMutUsage(this->readMut);
-		if (this->currCli != 0 && this->currCli == cli)
+		if (this->currCli.SetTo(currCli) && this->currCli == cli)
 		{
-			SDEL_CLASS(this->currCli);
+			this->currCli.Delete();
 		}
 		readMutUsage.EndUse();
 		mutUsage.EndUse();
@@ -126,19 +135,17 @@ Int32 Net::TCPServerStream::Flush()
 
 void Net::TCPServerStream::Close()
 {
-	SDEL_CLASS(this->svr);
+	this->svr.Delete();
+	NN<Net::TCPClient> currCli;
 	Sync::MutexUsage mutUsage(this->connMut);
-	if (this->currCli != 0)
+	if (this->currCli.SetTo(currCli))
 	{
-		this->currCli->Close();
+		currCli->Close();
 	}
 	mutUsage.EndUse();
 	mutUsage.BeginUse();
 	Sync::MutexUsage readMutUsage(this->readMut);
-	if (this->currCli != 0)
-	{
-		SDEL_CLASS(this->currCli);
-	}
+	this->currCli.Delete();
 	readMutUsage.EndUse();
 	mutUsage.EndUse();
 }
@@ -155,5 +162,5 @@ IO::StreamType Net::TCPServerStream::GetStreamType() const
 
 Bool Net::TCPServerStream::IsError() const
 {
-	return this->svr == 0;
+	return this->svr.IsNull();
 }

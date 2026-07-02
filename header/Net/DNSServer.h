@@ -11,7 +11,7 @@ namespace Net
 	public:
 		typedef void (CALLBACKFUNC DNSRequest)(AnyType userObj, Text::CStringNN reqName, Int32 reqType, Int32 reqClass, NN<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId);
 	private:
-		Net::UDPServer *svr;
+		NN<Net::UDPServer> svr;
 		NN<Net::SocketFactory> sockf;
 		DNSRequest reqHdlr;
 		AnyType reqObj;

@@ -70,7 +70,7 @@ namespace Net
 			UIntOS index;
 			ClientReadyHandler clientReady;
 			AnyType clientReadyObj;
-			Sync::Event *evt;
+			NN<Sync::Event> evt;
 			SSLEngine *me;
 		};
 	protected:

@@ -64,12 +64,12 @@ Optional<IO::ParsedObject> Parser::FileParser::CIPParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 
-	Map::CIPLayer2 *layer;
+	NN<Map::CIPLayer2> layer;
 	sptr = Text::StrConcatC(&sbuff[i], UTF8STRC(".cip"));
-	NEW_CLASS(layer, Map::CIPLayer2(CSTRP(sbuff, sptr)));
+	NEW_CLASSNN(layer, Map::CIPLayer2(CSTRP(sbuff, sptr)));
 	if (layer->IsError())
 	{
-		DEL_CLASS(layer);
+		layer.Delete();
 		return nullptr;
 	}
 	return layer;

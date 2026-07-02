@@ -57,9 +57,9 @@ Optional<IO::ParsedObject> Parser::FileParser::SM2MPXParser::ParseFileHdr(NN<IO:
 	UInt32 thisOfst;
 	UInt32 thisSize;
 	lastOfst = endOfst;
-	IO::VirtualPackageFile *pf;
+	NN<IO::VirtualPackageFile> pf;
 	Text::Encoding enc(932);
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	while (hdrOfst < endOfst)
 	{
 		fd->GetRealData(hdrOfst, 20, BYTEARR(rec));
@@ -67,7 +67,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SM2MPXParser::ParseFileHdr(NN<IO:
 		thisSize = ReadUInt32(&rec[16]);
 		if (thisOfst < lastOfst)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 

@@ -93,7 +93,7 @@ void Net::HKTrafficImage::Init(NN<Text::EncodingFactory> encFact, UnsafeArray<co
 							{
 								grp = MemAllocNN(GroupInfo);
 								grp->groupName = Text::String::New(sbRegion.ToString(), sbRegion.GetLength());
-								NEW_CLASS(grp->imageList, Data::ArrayListNN<ImageInfo>());
+								NEW_CLASSNN(grp->imageList, Data::ArrayListNN<ImageInfo>());
 								this->groupMap.PutNN(grp->groupName, grp);
 							}
 
@@ -152,7 +152,7 @@ Net::HKTrafficImage::~HKTrafficImage()
 			img->url->Release();
 			MemFreeNN(img);
 		}
-		DEL_CLASS(grp->imageList);
+		grp->imageList.Delete();
 		grp->groupName->Release();
 		MemFreeNN(grp);
 	}

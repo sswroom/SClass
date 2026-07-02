@@ -123,7 +123,8 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 	UIntOS algKeySize = 0;
 	Bool headingIV = false;
 	MemClear(keyBuff, sizeof(keyBuff));
-	Crypto::Encrypt::BlockCipher *cipher = 0;
+	Optional<Crypto::Encrypt::BlockCipher> cipher = nullptr;
+	NN<Crypto::Encrypt::BlockCipher> nncipher;
 	NN<Text::XMLAttrib> attr;
 	NN<Text::String> avalue;
 	NN<Text::String> nodeName;
@@ -131,9 +132,9 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 	{
 		if (nodeName->Equals(UTF8STRC("xenc:EncryptionMethod")))
 		{
-			if (cipher != 0)
+			if (cipher.NotNull())
 			{
-				DEL_CLASS(cipher);
+				cipher.Delete();
 				sbResult->AppendC(UTF8STRC("xenc:EncryptionMethod already exists"));
 				return false;
 			}
@@ -145,8 +146,9 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 				{
 					if (avalue->Equals(UTF8STRC("http://www.w3.org/2001/04/xmlenc#aes256-cbc")))
 					{
-						NEW_CLASS(cipher, Crypto::Encrypt::AES256(keyBuff));
-						cipher->SetChainMode(Crypto::Encrypt::ChainMode::CBC);
+						NEW_CLASSNN(nncipher, Crypto::Encrypt::AES256(keyBuff));
+						nncipher->SetChainMode(Crypto::Encrypt::ChainMode::CBC);
+						cipher = nncipher;
 						algKeySize = 32;
 						headingIV = true;
 					}
@@ -158,7 +160,7 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 					}
 				}
 			}
-			if (cipher == 0)
+			if (cipher.IsNull())
 			{
 				sbResult->AppendC(UTF8STRC("Algorithm not found in xenc:EncryptionMethod"));
 				return false;
@@ -170,24 +172,24 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 			keySize = ParseKeyInfo(ssl, key, reader, sbResult, keyBuff);
 			if (keySize == 0)
 			{
-				SDEL_CLASS(cipher);
+				cipher.Delete();
 				return false;
 			}
 		}
 		else if (nodeName->Equals(UTF8STRC("xenc:CipherData")))
 		{
-			if (cipher == 0)
+			if (!cipher.SetTo(nncipher))
 			{
 				sbResult->AppendC(UTF8STRC("xenc:EncryptionMethod not found before xenc:CipherData"));
 				return false;
 			}
 			else if (keySize != algKeySize)
 			{
-				DEL_CLASS(cipher);
+				cipher.Delete();
 				sbResult->AppendC(UTF8STRC("Key size invalid"));
 				return false;
 			}
-			((Crypto::Encrypt::AES256*)cipher)->SetKey(keyBuff);
+			NN<Crypto::Encrypt::AES256>::ConvertFrom(nncipher)->SetKey(keyBuff);
 			while (reader->NextElementName().SetTo(nodeName))
 			{
 				if (nodeName->Equals(UTF8STRC("xenc:CipherValue")))
@@ -199,25 +201,25 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 					UIntOS dataSize = b64.CalcBinSize(sb.ToCString());
 					if (headingIV)
 					{
-						if (dataSize < cipher->GetDecBlockSize())
+						if (dataSize < nncipher->GetDecBlockSize())
 						{
 							sbResult->AppendC(UTF8STRC("xenc:CipherValue is too short to decrypt"));
 							return false;
 						}
 					}
-					UIntOS blkSize = cipher->GetDecBlockSize();
+					UIntOS blkSize = nncipher->GetDecBlockSize();
 					UnsafeArray<UInt8> data = MemAllocArr(UInt8, dataSize);
 					UnsafeArray<UInt8> decData = MemAllocArr(UInt8, dataSize + blkSize);
 					UIntOS decSize;
 					b64.DecodeBin(sb.ToCString(), data);
 					if (headingIV)
 					{
-						cipher->SetIV(data);
-						decSize = cipher->Decrypt(data + blkSize, dataSize - blkSize, decData);
+						nncipher->SetIV(data);
+						decSize = nncipher->Decrypt(data + blkSize, dataSize - blkSize, decData);
 					}
 					else
 					{
-						decSize = cipher->Decrypt(data, dataSize, decData);
+						decSize = nncipher->Decrypt(data, dataSize, decData);
 					}
 					if (decData[decSize - 1] <= blkSize)
 					{
@@ -226,7 +228,7 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 					sbResult->AppendC(decData, decSize);
 					MemFreeArr(data);
 					MemFreeArr(decData);
-					DEL_CLASS(cipher);
+					cipher.Delete();
 					return true;
 				}
 				else
@@ -234,7 +236,7 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 					reader->SkipElement();
 				}
 			}
-			SDEL_CLASS(cipher);
+			cipher.Delete();
 			sbResult->AppendC(UTF8STRC("xenc:CipherData not found in EncryptedData"));
 			return false;
 		}
@@ -243,7 +245,7 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 			reader->SkipElement();
 		}
 	}
-	SDEL_CLASS(cipher);
+	cipher.Delete();
 	if (reader->GetErrorCode() != 0)
 	{
 		sbResult->AppendC(UTF8STRC("End of EncryptedData not found"));

@@ -13,8 +13,8 @@ namespace Net
 	{
 	private:
 		NN<Net::SocketFactory> sockf;
-		Net::TCPServer *svr;
-		Net::TCPClientMgr *cliMgr;
+		NN<Net::TCPServer> svr;
+		NN<Net::TCPClientMgr> cliMgr;
 		UInt32 delay;
 		Sync::Mutex devMut;
 		Data::FastMapNN<UInt32, IO::MODBUSDevSim> devMap;

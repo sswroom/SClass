@@ -76,13 +76,15 @@ CCritSec *Media::DShow::DShowSourceCapture::GetLock()
 Media::DShow::DShowFileSource::DShowFileSource(UnsafeArray<const WChar> fileName)
 {
 	IGraphBuilder *pGraph = NULL;
-	this->capFilter = 0;
+	this->capFilter = nullptr;
 	CoInitializeEx(0, COINIT_MULTITHREADED);
 	HRESULT hr =  CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC_SERVER, IID_IGraphBuilder, (void **)&pGraph);
 	if (SUCCEEDED(hr))
 	{
-		NEW_CLASS(this->capFilter, Media::DShow::DShowSourceCapture());
-		pGraph->AddFilter(this->capFilter, L"Source Capture");
+		NN<Media::DShow::DShowSourceCapture> capFilter;
+		NEW_CLASSNN(capFilter, Media::DShow::DShowSourceCapture());
+		this->capFilter = capFilter;
+		pGraph->AddFilter(capFilter.Ptr(), L"Source Capture");
 		if (pGraph->RenderFile(fileName.Ptr(), 0) == S_OK)
 		{
 			hr = 0;

@@ -50,6 +50,7 @@ Bool Media::VideoChecker::IsValid(NN<Media::MediaFile> mediaFile)
 	NN<Media::AudioSource> adecoder;
 	NN<Media::VideoSource> vdecoder;
 	Data::ArrayListObj<DecodeStatus*> statusList;
+	NN<Media::NullRenderer> renderer;
 	Bool isEnd;
 	UIntOS i = 0;
 	Int32 syncTime;
@@ -67,7 +68,7 @@ Bool Media::VideoChecker::IsValid(NN<Media::MediaFile> mediaFile)
 		status->isEnd = false;
 		status->adecoder = nullptr;
 		status->vdecoder = nullptr;
-		status->renderer = 0;
+		status->renderer = nullptr;
 		status->evt = evt;
 		if (msrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 		{
@@ -86,10 +87,11 @@ Bool Media::VideoChecker::IsValid(NN<Media::MediaFile> mediaFile)
 			status->adecoder = adecoders.DecodeAudio(NN<Media::AudioSource>::ConvertFrom(msrc));
 			if (status->adecoder.SetTo(adecoder))
 			{
-				NEW_CLASS(status->renderer, Media::NullRenderer());
-				status->renderer->BindAudio(adecoder);
-				status->renderer->SetEndNotify(OnAudioEnd, status);
-				status->renderer->AudioInit(nullptr);
+				NEW_CLASSNN(renderer, Media::NullRenderer());
+				status->renderer = renderer;
+				renderer->BindAudio(adecoder);
+				renderer->SetEndNotify(OnAudioEnd, status);
+				renderer->AudioInit(nullptr);
 			}
 			else
 			{
@@ -114,9 +116,9 @@ Bool Media::VideoChecker::IsValid(NN<Media::MediaFile> mediaFile)
 			{
 				vdecoder->Start();
 			}
-			if (status->adecoder.NotNull())
+			if (status->adecoder.NotNull() && status->renderer.SetTo(renderer))
 			{
-				status->renderer->Start();
+				renderer->Start();
 			}
 		}
 		isEnd = false;
@@ -154,11 +156,11 @@ Bool Media::VideoChecker::IsValid(NN<Media::MediaFile> mediaFile)
 		while (i-- > 0)
 		{
 			status = statusList.GetItem(i);
-			if (status->renderer)
+			if (status->renderer.SetTo(renderer))
 			{
-				status->sampleCnt = status->renderer->GetSampleCnt();
+				status->sampleCnt = renderer->GetSampleCnt();
 			}
-			SDEL_CLASS(status->renderer);
+			status->renderer.Delete();
 			status->vdecoder.Delete();
 			status->adecoder.Delete();
 

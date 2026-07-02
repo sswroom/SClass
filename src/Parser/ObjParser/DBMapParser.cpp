@@ -40,18 +40,18 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBMapParser::ParseObject(NN<IO::Pa
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB)
 		return nullptr;
 	///////////////////////////
-/*	Map::MapLayerCollection *layerColl;
+/*	NN<Map::MapLayerCollection> layerColl;
 	Data::ArrayList<Text::String *> tableNames;
 	IntOS i;
 	IntOS j;
 	IntOS k;
 	IntOS xCol;
 	IntOS yCol;
-	DB::SharedDBConn *sdb;
+	NN<DB::SharedDBConn> sdb;
 
-	//NEW_CLASS(sdb, DB::SharedDBConn(db
+	//NEW_CLASSNN(sdb, DB::SharedDBConn(db
 	
-	NEW_CLASS(layerColl, Map::MapLayerCollection(pobj->GetSourceNameObj()));
+	NEW_CLASSNN(layerColl, Map::MapLayerCollection(pobj->GetSourceNameObj()));
 	db = (DB::ReadingDB*)pobj;
 	db->QueryTableNames(nullptr, &tableNames);
 	i = 0;
@@ -92,6 +92,6 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBMapParser::ParseObject(NN<IO::Pa
 	{
 		return layerColl;
 	}
-	DEL_CLASS(layerColl);*/
+	layerColl.Delete();*/
 	return nullptr;
 }

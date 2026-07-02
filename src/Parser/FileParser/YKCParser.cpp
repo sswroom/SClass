@@ -66,9 +66,9 @@ Optional<IO::ParsedObject> Parser::FileParser::YKCParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 
-	IO::VirtualPackageFile *pf;
+	NN<IO::VirtualPackageFile> pf;
 	Text::Encoding enc(932);
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	
 	i = 0;
 	nextOfst = 24;
@@ -80,7 +80,7 @@ Optional<IO::ParsedObject> Parser::FileParser::YKCParser::ParseFileHdr(NN<IO::St
 		fileSize = ReadUInt32(&recBuff[i + 12]);
 		if (fileOfst != nextOfst || fnameSize == 0 || fnameSize >= 256)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		fd->GetRealData(fnameOfst, fnameSize, BYTEARR(fnameBuff));

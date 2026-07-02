@@ -9,27 +9,31 @@ Net::AzureManager::AzureManager(NN<Net::TCPClientFactory> clif, Optional<Net::SS
 {
 	this->clif = clif;
 	this->ssl = ssl;
-	this->keyMap = 0;
+	this->keyMap = nullptr;
 }
 
 Net::AzureManager::~AzureManager()
 {
-	if (this->keyMap)
+	NN<Data::FastStringMapNN<Text::String>> keyMap;
+	if (this->keyMap.SetTo(keyMap))
 	{
-		UIntOS i = this->keyMap->GetCount();
+		UIntOS i = keyMap->GetCount();
 		while (i-- > 0)
 		{
-			this->keyMap->GetItemNoCheck(i)->Release();
+			keyMap->GetItemNoCheck(i)->Release();
 		}
-		DEL_CLASS(this->keyMap);
+		keyMap.Delete();
+		this->keyMap = nullptr;
 	}
 }
 
 Optional<Crypto::Cert::X509Key> Net::AzureManager::CreateKey(Text::CStringNN kid)
 {
-	if (this->keyMap == 0)
+	NN<Data::FastStringMapNN<Text::String>> keyMap;
+	if (!this->keyMap.SetTo(keyMap))
 	{
-		NEW_CLASS(this->keyMap, Data::FastStringMapNN<Text::String>());
+		NEW_CLASSNN(keyMap, Data::FastStringMapNN<Text::String>());
+		this->keyMap = keyMap;
 		Text::StringBuilderUTF8 sb;
 		if (Net::HTTPClient::LoadContent(this->clif, this->ssl, CSTR("https://login.microsoftonline.com/common/discovery/v2.0/keys"), sb, 1048576))
 		{
@@ -48,7 +52,7 @@ Optional<Crypto::Cert::X509Key> Net::AzureManager::CreateKey(Text::CStringNN kid
 						NN<Text::String> cert;
 						if (keys->GetArrayValue(i).SetTo(key) && key->GetValueString(CSTR("kid")).SetTo(kid) && key->GetValueString(CSTR("x5c[0]")).SetTo(cert))
 						{
-							this->keyMap->PutNN(kid, cert->Clone());
+							keyMap->PutNN(kid, cert->Clone());
 						}
 						i++;
 					}
@@ -58,7 +62,7 @@ Optional<Crypto::Cert::X509Key> Net::AzureManager::CreateKey(Text::CStringNN kid
 		}
 	}
 	NN<Text::String> s;
-	if (!this->keyMap->GetC(kid).SetTo(s))
+	if (!keyMap->GetC(kid).SetTo(s))
 	{
 		return nullptr;
 	}

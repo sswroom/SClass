@@ -44,13 +44,13 @@ Optional<Media::VideoSource> Media::Decoder::VideoDecoderFinder::DecodeVideo(NN<
 	if (frameInfo.fourcc == *(UInt32*)"MP2G")
 	{
 		NN<Media::Decoder::MP2GDecoder> mp2g;
-		Media::Decoder::VDecoderChain *decChain;
+		NN<Media::Decoder::VDecoderChain> decChain;
 
 		NEW_CLASSNN(mp2g, Media::Decoder::MP2GDecoder(vsrc, false));
 		NEW_CLASSNN(decoder, Media::Decoder::VFWDecoder(mp2g));
 		if (decoder->GetVideoInfo(decFrameInfo, frameRateNorm, frameRateDenorm, maxFrameSize))
 		{
-			NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
+			NEW_CLASSNN(decChain, Media::Decoder::VDecoderChain(decoder));
 			decChain->AddDecoder(mp2g);
 			return decChain;
 		}
@@ -60,13 +60,13 @@ Optional<Media::VideoSource> Media::Decoder::VideoDecoderFinder::DecodeVideo(NN<
 	else if (frameInfo.fourcc == *(UInt32*)"m2v1")
 	{
 		NN<Media::Decoder::M2VDecoder> m2vd;
-		Media::Decoder::VDecoderChain *decChain;
+		NN<Media::Decoder::VDecoderChain> decChain;
 
 		NEW_CLASSNN(m2vd, Media::Decoder::M2VDecoder(vsrc, false));
 		NEW_CLASSNN(decoder, Media::Decoder::VFWDecoder(m2vd));
 		if (decoder->GetVideoInfo(decFrameInfo, frameRateNorm, frameRateDenorm, maxFrameSize))
 		{
-			NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
+			NEW_CLASSNN(decChain, Media::Decoder::VDecoderChain(decoder));
 			decChain->AddDecoder(m2vd);
 			return decChain;
 		}
@@ -76,13 +76,13 @@ Optional<Media::VideoSource> Media::Decoder::VideoDecoderFinder::DecodeVideo(NN<
 	else if (frameInfo.fourcc == *(UInt32*)"ravc")
 	{
 		NN<Media::Decoder::RAVCDecoder> ravc;
-		Media::Decoder::VDecoderChain *decChain;
+		NN<Media::Decoder::VDecoderChain> decChain;
 
 		NEW_CLASSNN(ravc, Media::Decoder::RAVCDecoder(vsrc, false, false));
 		NEW_CLASSNN(decoder, Media::Decoder::VFWDecoder(ravc));
 		if (decoder->GetVideoInfo(decFrameInfo, frameRateNorm, frameRateDenorm, maxFrameSize))
 		{
-			NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
+			NEW_CLASSNN(decChain, Media::Decoder::VDecoderChain(decoder));
 			decChain->AddDecoder(ravc);
 			return decChain;
 		}
@@ -92,13 +92,13 @@ Optional<Media::VideoSource> Media::Decoder::VideoDecoderFinder::DecodeVideo(NN<
 	else if (frameInfo.fourcc == *(UInt32*)"rhvc")
 	{
 		NN<Media::Decoder::RHVCDecoder> rhvc;
-		Media::Decoder::VDecoderChain *decChain;
+		NN<Media::Decoder::VDecoderChain> decChain;
 
 		NEW_CLASSNN(rhvc, Media::Decoder::RHVCDecoder(vsrc, false));
 		NEW_CLASSNN(decoder, Media::Decoder::VFWDecoder(rhvc));
 		if (decoder->GetVideoInfo(decFrameInfo, frameRateNorm, frameRateDenorm, maxFrameSize))
 		{
-			NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
+			NEW_CLASSNN(decChain, Media::Decoder::VDecoderChain(decoder));
 			decChain->AddDecoder(rhvc);
 			return decChain;
 		}

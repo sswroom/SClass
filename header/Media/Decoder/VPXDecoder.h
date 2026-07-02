@@ -20,14 +20,14 @@ namespace Media
 			virtual ~VPXDecoder();
 
 			virtual Bool CaptureImage(ImageCallback imgCb, AnyType userData);
-			virtual Text::CString GetFilterName();
+			virtual Text::CStringNN GetFilterName();
 
 			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize);
 			virtual void Stop();
 
 			virtual Bool HasFrameCount();
 			virtual UIntOS GetFrameCount();
-			virtual UInt32 GetFrameTime(UIntOS frameIndex);
+			virtual Data::Duration GetFrameTime(UIntOS frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 
 			virtual void OnFrameChanged(Media::VideoSource::FrameChange fc);

@@ -103,6 +103,12 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientTimeout(NN<Net::TCPClien
 void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnServerConn(NN<Socket> s, AnyType userObj)
 {
 	NN<SSWR::SMonitor::SMonitorSvrCore> me = userObj.GetNN<SSWR::SMonitor::SMonitorSvrCore>();
+	NN<Net::TCPClientMgr> cliMgr;
+	if (!me->cliMgr.SetTo(cliMgr))
+	{
+		me->sockf->DestroySocket(s);
+		return;
+	}
 	NN<Net::TCPClient> cli;
 	ClientStatus *status;
 	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
@@ -113,7 +119,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnServerConn(NN<Socket> s, AnyTy
 	status->me = me;
 	status->dev = nullptr;
 	status->stmData = me->protoHdlr.CreateStreamData(cli);
-	me->cliMgr->AddClient(cli, status);
+	cliMgr->AddClient(cli, status);
 }
 
 void __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(NN<Sync::Thread> thread)
@@ -187,13 +193,16 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(NN<Sync::Thread> thr
 void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<SSWR::SMonitor::SMonitorSvrCore> me = userData.GetNN<SSWR::SMonitor::SMonitorSvrCore>();
+	NN<Crypto::Hash::HashCalc> dataCRC;
+	if (!me->dataCRC.SetTo(dataCRC))
+		return;
 	UnsafeArray<UInt8> photoBuff;
 	UnsafeArray<UInt8> photoBuffRecv;
 	NN<SSWR::SMonitor::SMonitorCore::DeviceInfo> devInfo;
 	if (data.GetSize() >= 6 && data[0] == 'S' && data[1] == 'm')
 	{
 		UInt8 calcVal[2];
-		me->dataCRC->Calc(data.Arr(), data.GetSize() - 2, calcVal);
+		dataCRC->Calc(data.Arr(), data.GetSize() - 2, calcVal);
 		if (calcVal[0] == (data[data.GetSize() - 2] ^ 0x12) && calcVal[1] == (data[data.GetSize() - 1] ^ 0x34))
 		{
 			switch (ReadUInt16(&data[2]))
@@ -697,33 +706,45 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendSetOutput(NN<IO::Stream> stm, UInt3
 
 void SSWR::SMonitor::SMonitorSvrCore::UDPSendReadingRecv(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Int64 recTime)
 {
+	NN<Crypto::Hash::HashCalc> dataCRC;
+	NN<Net::UDPServer> dataUDP;
+	if (!this->dataCRC.SetTo(dataCRC) || !this->dataUDP.SetTo(dataUDP))
+		return;
 	UInt8 reply[14];
 	UInt8 calcVal[2];
 	reply[0] = 'S';
 	reply[1] = 'm';
 	WriteInt16(&reply[2], 1);
 	WriteInt64(&reply[4], recTime);
-	this->dataCRC->Calc(reply, 12, calcVal);
+	dataCRC->Calc(reply, 12, calcVal);
 	reply[12] = calcVal[0] ^ 0x12;
 	reply[13] = calcVal[1] ^ 0x34;
-	this->dataUDP->SendTo(addr, port, reply, 14);
+	dataUDP->SendTo(addr, port, reply, 14);
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::UDPSendCapturePhoto(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
 {
+	NN<Crypto::Hash::HashCalc> dataCRC;
+	NN<Net::UDPServer> dataUDP;
+	if (!this->dataCRC.SetTo(dataCRC) || !this->dataUDP.SetTo(dataUDP))
+		return;
 	UInt8 reply[6];
 	UInt8 calcVal[2];
 	reply[0] = 'S';
 	reply[1] = 'm';
 	WriteInt16(&reply[2], 9);
-	this->dataCRC->Calc(reply, 4, calcVal);
+	dataCRC->Calc(reply, 4, calcVal);
 	reply[4] = calcVal[0] ^ 0x12;
 	reply[5] = calcVal[1] ^ 0x34;
-	this->dataUDP->SendTo(addr, port, reply, 6);
+	dataUDP->SendTo(addr, port, reply, 6);
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::UDPSendPhotoPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Int64 photoTime, UInt32 seq)
 {
+	NN<Crypto::Hash::HashCalc> dataCRC;
+	NN<Net::UDPServer> dataUDP;
+	if (!this->dataCRC.SetTo(dataCRC) || !this->dataUDP.SetTo(dataUDP))
+		return;
 	UInt8 reply[18];
 	UInt8 calcVal[2];
 	reply[0] = 'S';
@@ -731,28 +752,36 @@ void SSWR::SMonitor::SMonitorSvrCore::UDPSendPhotoPacket(NN<const Net::SocketUti
 	WriteInt16(&reply[2], 13);
 	WriteInt64(&reply[4], photoTime);
 	WriteUInt32(&reply[12], seq);
-	this->dataCRC->Calc(reply, 16, calcVal);
+	dataCRC->Calc(reply, 16, calcVal);
 	reply[16] = calcVal[0] ^ 0x12;
 	reply[17] = calcVal[1] ^ 0x34;
-	this->dataUDP->SendTo(addr, port, reply, 18);
+	dataUDP->SendTo(addr, port, reply, 18);
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::UDPSendPhotoEnd(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Int64 photoTime)
 {
+	NN<Crypto::Hash::HashCalc> dataCRC;
+	NN<Net::UDPServer> dataUDP;
+	if (!this->dataCRC.SetTo(dataCRC) || !this->dataUDP.SetTo(dataUDP))
+		return;
 	UInt8 reply[14];
 	UInt8 calcVal[2];
 	reply[0] = 'S';
 	reply[1] = 'm';
 	WriteInt16(&reply[2], 15);
 	WriteInt64(&reply[4], photoTime);
-	this->dataCRC->Calc(reply, 12, calcVal);
+	dataCRC->Calc(reply, 12, calcVal);
 	reply[12] = calcVal[0] ^ 0x12;
 	reply[13] = calcVal[1] ^ 0x34;
-	this->dataUDP->SendTo(addr, port, reply, 14);
+	dataUDP->SendTo(addr, port, reply, 14);
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::UDPSendSetOutput(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, UInt8 outputNum, Bool isHigh)
 {
+	NN<Crypto::Hash::HashCalc> dataCRC;
+	NN<Net::UDPServer> dataUDP;
+	if (!this->dataCRC.SetTo(dataCRC) || !this->dataUDP.SetTo(dataUDP))
+		return;
 	UInt8 reply[8];
 	UInt8 calcVal[2];
 	reply[0] = 'S';
@@ -760,10 +789,10 @@ void SSWR::SMonitor::SMonitorSvrCore::UDPSendSetOutput(NN<const Net::SocketUtil:
 	WriteInt16(&reply[2], 21);
 	reply[4] = outputNum;
 	reply[5] = isHigh?1:0;
-	this->dataCRC->Calc(reply, 6, calcVal);
+	dataCRC->Calc(reply, 6, calcVal);
 	reply[6] = calcVal[0] ^ 0x12;
 	reply[7] = calcVal[1] ^ 0x34;
-	this->dataUDP->SendTo(addr, port, reply, 8);
+	dataUDP->SendTo(addr, port, reply, 8);
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
@@ -774,7 +803,8 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 	NN<DeviceInfo> dev;
 	NN<DevRecord2> rec;
 	Data::DateTime dt;
-	IO::FileStream *fs;
+	Optional<IO::FileStream> fs;
+	NN<IO::FileStream> nnfs;
 	UIntOS i;
 	UIntOS j;
 	UIntOS k;
@@ -789,7 +819,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 	devList.AddAll(this->devMap);
 	mutUsage.EndUse();
 	dt.ToUTCTime();
-	fs = 0;
+	fs = nullptr;
 
 	i = devList.GetCount();
 	while (i-- > 0)
@@ -812,7 +842,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 			dt.SetTicks(rec->recTime);
 			if (dt.GetDay() != currDay || dt.GetMonth() != currMonth || dt.GetYear() != currYear)
 			{
-				SDEL_CLASS(fs);
+				fs.Delete();
 				currYear = dt.GetYear();
 				currMonth = dt.GetMonth();
 				currDay = dt.GetDay();
@@ -826,15 +856,18 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 				sptr = dt.ToString(sptr, "yyyyMMdd");
 				sptr = Text::StrConcatC(sptr, UTF8STRC(".rec"));
 
-				NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-				if (fs->IsError())
+				NEW_CLASSNN(nnfs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				if (nnfs->IsError())
 				{
-					DEL_CLASS(fs);
-					fs = 0;
+					nnfs.Delete();
+				}
+				else
+				{
+					fs = nnfs;
 				}
 			}
 
-			if (fs)
+			if (fs.SetTo(nnfs))
 			{
 				WriteUInt32(&fsBuff[0], rec->digitalVals);
 				fsBuff[4] = 2;
@@ -846,10 +879,10 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 				fsBuff[21] = 0;
 				WriteInt16(&fsBuff[22], -2);
 				WriteInt64(&fsBuff[24], rec->recvTime);
-				fs->Write(Data::ByteArrayR(fsBuff, 32));
+				nnfs->Write(Data::ByteArrayR(fsBuff, 32));
 				if (rec->nreading)
 				{
-					fs->Write(Data::ByteArrayR((UInt8*)&rec->readings[0], 16 * rec->nreading));
+					nnfs->Write(Data::ByteArrayR((UInt8*)&rec->readings[0], 16 * rec->nreading));
 				}
 				MemFreeNN(rec);
 			}
@@ -860,7 +893,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 			j++;
 		}
 		recList.Clear();
-		SDEL_CLASS(fs);
+		fs.Delete();
 
 		if (recList2.GetCount() > 0)
 		{
@@ -1134,7 +1167,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 Optional<DB::DBTool> SSWR::SMonitor::SMonitorSvrCore::UseDB(NN<Sync::MutexUsage> mutUsage)
 {
 	NN<Sync::Mutex> mut;
-	if (mut.Set(this->dbMut))
+	if (this->dbMut.SetTo(mut))
 	{
 		mutUsage->ReplaceMutex(mut);
 		return this->db;
@@ -1161,16 +1194,16 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 	NEW_CLASSNN(this->parsers, Parser::FullParserList());
 	this->deng = deng;
 	this->dataDir = nullptr;
-	this->cliSvr = 0;
-	this->cliMgr = 0;
-	this->notifyUDP = 0;
+	this->cliSvr = nullptr;
+	this->cliMgr = nullptr;
+	this->notifyUDP = nullptr;
 	this->notifyPwd = nullptr;
-	this->dataUDP = 0;
-	this->dataCRC = 0;
+	this->dataUDP = nullptr;
+	this->dataCRC = nullptr;
 	this->db = nullptr;
-	this->dbMut = 0;
-	this->listener = 0;
-	this->webHdlr = 0;
+	this->dbMut = nullptr;
+	this->listener = nullptr;
+	this->webHdlr = nullptr;
 	this->emailSender = nullptr;
 	this->emailFrom = nullptr;
 	Data::DateTime dt;
@@ -1179,6 +1212,8 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 	this->currDate = dt.ToTicks();
 	this->initErr = false;
 
+	NN<Net::WebServer::WebListener> listener;
+	NN<Net::TCPServer> cliSvr;
 	NN<IO::ConfigFile> cfg;
 	NN<Text::String> s;
 	NN<Text::String> s2;
@@ -1256,7 +1291,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 		if (cfg->GetValue(CSTR("MySQLServer")).SetTo(s) && cfg->GetValue(CSTR("MySQLDB")).SetTo(s2))
 		{
 			this->db = Net::MySQLTCPClient::CreateDBTool(this->clif, this->ssl, s, s2, Text::String::OrEmpty(cfg->GetValue(CSTR("UID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("PWD"))), this->log, CSTR("DB: "));
-			NEW_CLASS(this->dbMut, Sync::Mutex());
+			NEW_CLASSOPT(this->dbMut, Sync::Mutex());
 			if (this->db.IsNull())
 			{
 				writer->WriteLine(CSTR("Error in connecting to mysql database"));
@@ -1271,7 +1306,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 			if (cfg->GetValue(CSTR("DSN")).SetTo(s))
 			{
 				this->db = DB::ODBCConn::CreateDBTool(s, cfg->GetValue(CSTR("UID")), cfg->GetValue(CSTR("PWD")), cfg->GetValue(CSTR("Schema")), this->log, CSTR("DB: "));
-				NEW_CLASS(this->dbMut, Sync::Mutex());
+				NEW_CLASSOPT(this->dbMut, Sync::Mutex());
 				if (this->db.IsNull())
 				{
 					writer->WriteLine(CSTR("Error in connecting to odbc database"));
@@ -1299,9 +1334,10 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 					NN<SSWR::Benchmark::BenchmarkWebHandler> benchhdlr;
 					NN<SSWR::VAMS::VAMSBTWebHandler> vamsHdlr;
 					NN<Net::WebServer::HTTPDirectoryHandler> jshdlr;
-					SSWR::VAMS::VAMSBTList *btList;
+					NN<SSWR::VAMS::VAMSBTList> btList;
+					NN<Net::UDPServer> notifyUDP;
 					NEW_CLASSNN(hdlr, Net::WebServer::HTTPDirectoryHandler(Text::String::OrEmpty(s2), false, 0, false));
-					NEW_CLASSNN(shdlr, SSWR::SMonitor::SMonitorWebHandler(this));
+					NEW_CLASSNN(shdlr, SSWR::SMonitor::SMonitorWebHandler(*this));
 					NEW_CLASSNN(benchhdlr, SSWR::Benchmark::BenchmarkWebHandler());
 
 					sb.ClearStr();
@@ -1313,7 +1349,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 					hdlr->HandlePath(CSTR("/benchmark"), benchhdlr, true);
 					if (cfg->GetValue(CSTR("VAMSLogPath")).SetTo(s))
 					{
-						NEW_CLASS(btList, SSWR::VAMS::VAMSBTList());
+						NEW_CLASSNN(btList, SSWR::VAMS::VAMSBTList());
 						NEW_CLASSNN(vamsHdlr, SSWR::VAMS::VAMSBTWebHandler(s, btList));
 						hdlr->HandlePath(CSTR("/vams"), vamsHdlr, true);
 					}
@@ -1324,27 +1360,30 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 					hdlr->HandlePath(CSTR("/js"), jshdlr, true);
 
 					hdlr->ExpandPackageFiles(this->parsers, CSTR("*.spk"));
-					this->webHdlr = hdlr.Ptr();
-					NEW_CLASS(this->listener, Net::WebServer::WebListener(this->clif, nullptr, hdlr, port, 60, 1, 4, CSTR("SSWRServer/1.0"), false, Net::WebServer::KeepAlive::Default, false));
-					if (this->listener->IsError())
+					this->webHdlr = hdlr;
+					NEW_CLASSNN(listener, Net::WebServer::WebListener(this->clif, nullptr, hdlr, port, 60, 1, 4, CSTR("SSWRServer/1.0"), false, Net::WebServer::KeepAlive::Default, false));
+					if (listener->IsError())
 					{
-						DEL_CLASS(this->listener);
-						this->listener = 0;
+						listener.Delete();
 						this->initErr = true;
 						writer->WriteLine(CSTR("Error in listening web port"));
 					}
 					else
 					{
-						this->listener->SetAccessLog(&this->log, IO::LogHandler::LogLevel::Command);
-						this->listener->SetRequestLog(this);
+						this->listener = listener;
+						listener->SetAccessLog(&this->log, IO::LogHandler::LogLevel::Command);
+						listener->SetRequestLog(this);
 						if (this->notifyPwd.NotNull())
 						{
-							NEW_CLASS(this->notifyUDP, Net::UDPServer(this->sockf, nullptr, port, nullptr, OnNotifyUDPPacket, this, this->log, CSTR("Not: "), 2, false));
-							if (this->notifyUDP->IsError())
+							NEW_CLASSNN(notifyUDP, Net::UDPServer(this->sockf, nullptr, port, nullptr, OnNotifyUDPPacket, this, this->log, CSTR("Not: "), 2, false));
+							if (notifyUDP->IsError())
 							{
 								writer->WriteLine(CSTR("Error in listening web(notify) port"));
-								DEL_CLASS(this->notifyUDP);
-								this->notifyUDP = 0;
+								notifyUDP.Delete();
+							}
+							else
+							{
+								this->notifyUDP = notifyUDP;
 							}
 						}
 					}
@@ -1368,14 +1407,18 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 		{
 			if (s->ToUInt16(port) && port > 0)
 			{
-				NEW_CLASS(this->cliMgr, Net::TCPClientMgr(300, OnClientEvent, OnClientData, this, 4, OnClientTimeout));
-				NEW_CLASS(this->cliSvr, Net::TCPServer(this->sockf, nullptr, port, this->log, OnServerConn, this, CSTR("CLI: "), false));
-				if (this->cliSvr->IsV4Error())
+				NEW_CLASSOPT(this->cliMgr, Net::TCPClientMgr(300, OnClientEvent, OnClientData, this, 4, OnClientTimeout));
+				NEW_CLASSNN(cliSvr, Net::TCPServer(this->sockf, nullptr, port, this->log, OnServerConn, this, CSTR("CLI: "), false));
+				if (cliSvr->IsV4Error())
 				{
-					DEL_CLASS(this->cliSvr);
-					this->cliSvr = 0;
+					cliSvr.Delete();
+					this->cliSvr = nullptr;
 					this->initErr = true;
 					writer->WriteLine(CSTR("Error in listening client port"));
+				}
+				else
+				{
+					this->cliSvr = cliSvr;
 				}
 			}
 			else
@@ -1393,14 +1436,20 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 			if (s->ToUInt16(port) && port > 0)
 			{
 				NN<Crypto::Hash::CRC16> crc;
+				NN<Crypto::Hash::HashCalc> dataCRC;
+				NN<Net::UDPServer> dataUDP;
 				NEW_CLASSNN(crc, Crypto::Hash::CRC16(Crypto::Hash::CRC16::GetPolynomialCCITT()));
-				NEW_CLASS(this->dataCRC, Crypto::Hash::HashCalc(crc));
-				NEW_CLASS(this->dataUDP, Net::UDPServer(this->sockf, nullptr, port, nullptr, OnDataUDPPacket, this, this->log, CSTR("DUDP: "), 4, false));
-				if (this->dataUDP->IsError())
+				NEW_CLASSNN(dataCRC, Crypto::Hash::HashCalc(crc));
+				this->dataCRC = dataCRC;
+				NEW_CLASSNN(dataUDP, Net::UDPServer(this->sockf, nullptr, port, nullptr, OnDataUDPPacket, this, this->log, CSTR("DUDP: "), 4, false));
+				if (dataUDP->IsError())
 				{
-					DEL_CLASS(this->dataUDP);
-					this->dataUDP = 0;
+					dataUDP.Delete();
 					writer->WriteLine(CSTR("Error in listening data UDP port"));
+				}
+				else
+				{
+					this->dataUDP = dataUDP;
 				}
 			}
 			else
@@ -1415,7 +1464,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 
 		cfg.Delete();
 
-		if (!this->IsError() && this->cliSvr->Start() && this->listener->Start())
+		if (!this->IsError() && this->cliSvr.SetTo(cliSvr) && this->listener.SetTo(listener) && cliSvr->Start() && listener->Start())
 		{
 			this->thread.Start();
 		}
@@ -1424,14 +1473,14 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 
 SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 {
-	SDEL_CLASS(this->cliSvr);
-	SDEL_CLASS(this->cliMgr);
-	SDEL_CLASS(this->dataUDP);
-	SDEL_CLASS(this->notifyUDP);
-	SDEL_CLASS(this->listener);
-	SDEL_CLASS(this->webHdlr);
+	this->cliSvr.Delete();
+	this->cliMgr.Delete();
+	this->dataUDP.Delete();
+	this->notifyUDP.Delete();
+	this->listener.Delete();
+	this->webHdlr.Delete();
 	this->db.Delete();
-	SDEL_CLASS(this->dbMut);
+	this->dbMut.Delete();
 	this->thread.Stop();
 	this->SaveDatas();
 
@@ -1507,7 +1556,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 
 	this->emailSender.Delete();
 	OPTSTR_DEL(this->emailFrom);
-	SDEL_CLASS(this->dataCRC);
+	this->dataCRC.Delete();
 	this->parsers.Delete();
 	this->ssl.Delete();
 	this->clif.Delete();
@@ -1519,7 +1568,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 
 Bool SSWR::SMonitor::SMonitorSvrCore::IsError()
 {
-	return this->cliSvr == 0 || this->db.IsNull() || this->listener == 0 || this->dataDir.IsNull() || this->notifyUDP == 0 || this->initErr;
+	return this->cliSvr.IsNull() || this->db.IsNull() || this->listener.IsNull() || this->dataDir.IsNull() || this->notifyUDP.IsNull() || this->initErr;
 }
 
 NN<Media::DrawEngine> SSWR::SMonitor::SMonitorSvrCore::GetDrawEngine()

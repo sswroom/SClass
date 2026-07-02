@@ -63,7 +63,7 @@ namespace SSWR
 			NN<Text::String> ffmpegPath;
 			NN<Text::String> firefoxPath;
 			NN<Text::String> listFile;
-			Parser::ParserList *parsers;
+			NN<Parser::ParserList> parsers;
 			Media::VideoChecker checker;
 
 			Sync::Mutex fileMut;

@@ -45,8 +45,8 @@ namespace SSWR
 			Sync::Mutex cliInfoMut;
 			Data::FastMapNN<UInt32, ClientInfo> cliInfos;
 			IO::LogTool log;
-			Net::WebServer::WebListener *listener;
-			SSWR::SDNSProxy::SDNSProxyWebHandler *hdlr;
+			Optional<Net::WebServer::WebListener> listener;
+			Optional<SSWR::SDNSProxy::SDNSProxyWebHandler> hdlr;
 			
 			UInt8 lastHour;
 			UInt8 lastMinute;

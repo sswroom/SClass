@@ -20,7 +20,8 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 	UInt32 j;
 	UInt8 buff[18];
 	Bool ret = false;
-	IO::MemoryStream *flirMstm = 0;
+	Optional<IO::MemoryStream> flirMstm = nullptr;
+	NN<IO::MemoryStream> nnflirMstm;
 	NN<Parser::ParserList> nnparsers;
 	UInt8 flirMaxSegm;
 	UInt8 flirCurrSegm = 0;
@@ -89,21 +90,22 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 			{
 				if (buff[4] == 0 && buff[5] == 1)
 				{
-					if (flirMstm == 0 && buff[6] == 0)
+					if (flirMstm.IsNull() && buff[6] == 0)
 					{
 						flirMaxSegm = buff[7];
-						NEW_CLASS(flirMstm, IO::MemoryStream());
+						NEW_CLASSNN(nnflirMstm, IO::MemoryStream());
+						flirMstm = nnflirMstm;
 						flirCurrSegm = buff[6];
 						Data::ByteBuffer tagBuff(j);
 						fd->GetRealData(ofst + 4, j, tagBuff);
-						flirMstm->Write(Data::ByteArrayR(&tagBuff[8], j - 8));
+						nnflirMstm->Write(Data::ByteArrayR(&tagBuff[8], j - 8));
 					}
-					else if (flirMstm && buff[6] == (flirCurrSegm + 1))
+					else if (flirMstm.SetTo(nnflirMstm) && buff[6] == (flirCurrSegm + 1))
 					{
 						flirCurrSegm = (UInt8)(flirCurrSegm + 1);
 						Data::ByteBuffer tagBuff(j);
 						fd->GetRealData(ofst + 4, j, tagBuff);
-						flirMstm->Write(Data::ByteArrayR(&tagBuff[8], j - 8));
+						nnflirMstm->Write(Data::ByteArrayR(&tagBuff[8], j - 8));
 					}
 				}
 				ofst += j + 4;
@@ -134,7 +136,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 		}
 	}
 
-	if (flirMstm)
+	if (flirMstm.SetTo(nnflirMstm))
 	{
 		if (flirMaxSegm == flirCurrSegm)
 		{
@@ -144,7 +146,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 			UInt32 blkSize;
 //			UInt32 blkType;
 			UInt32 delay;
-			Data::ByteArray tagBuff = flirMstm->GetArray();
+			Data::ByteArray tagBuff = nnflirMstm->GetArray();
 			if (tagBuff[0] == 'F' && tagBuff[1] == 'F' && tagBuff[2] == 'F')
 			{
 				j = 0x44;
@@ -234,8 +236,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 				}
 			}
 		}
-		DEL_CLASS(flirMstm);
-		flirMstm = 0;
+		flirMstm.Delete();
 	}
 	return ret;
 }

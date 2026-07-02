@@ -39,13 +39,13 @@ Optional<IO::ParsedObject> Parser::FileParser::DTSParser::ParseFileHdr(NN<IO::St
 	}
 	
 	NN<Media::AudioBlockSource> src;
-	Media::MediaFile *vid;
+	NN<Media::MediaFile> vid;
 	Media::BlockParser::DTSBlockParser dtsParser;
 	NN<IO::StreamData> data = fd->GetPartialData(0, fd->GetDataSize());
 	if (dtsParser.ParseStreamData(data).SetTo(src))
 	{
 		data.Delete();
-		NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
+		NEW_CLASSNN(vid, Media::MediaFile(fd->GetFullName()));
 		vid->AddSource(src, 0);
 		return vid;
 	}

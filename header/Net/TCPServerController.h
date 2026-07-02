@@ -26,8 +26,8 @@ namespace Net
 		};
 
 	private:
-		Net::TCPClientMgr *cliMgr;
-		Net::TCPServer *svr;
+		NN<Net::TCPClientMgr> cliMgr;
+		Optional<Net::TCPServer> svr;
 		NN<Net::SocketFactory> sockf;
 		UIntOS maxBuffSize;
 		TCPServerHandler *hdlr;

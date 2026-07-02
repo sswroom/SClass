@@ -19,12 +19,12 @@ Win32::COMStream::COMStream(NN<IO::SeekableStream> stm)
 {
 	this->stm = stm;
 	this->cnt = 0;
-	NEW_CLASS(this->dt, Data::DateTime());
+	NEW_CLASSNN(this->dt, Data::DateTime());
 }
 
 Win32::COMStream::~COMStream()
 {
-	DEL_CLASS(this->dt);
+	this->dt.Delete();
 }
 
 HRESULT __stdcall Win32::COMStream::QueryInterface(const IID &riid, void **ppvObject)

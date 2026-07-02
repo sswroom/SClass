@@ -50,7 +50,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TGAParser::ParseFileHdr(NN<IO::St
 	UInt32 bpp;
 	UInt32 imgPos;
 
-	Media::StaticImage *outImg;
+	NN<Media::StaticImage> outImg;
 
 	UInt64 ds = fd->GetDataSize();
 	if (fd->GetRealData(ds - 26, 26, BYTEARR(footer)) != 26)
@@ -75,12 +75,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TGAParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 
-	NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UIntOS>(imgWidth, imgHeight), 0, bpp, Media::PixelFormatGetDef(0, bpp), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-	if (outImg == 0)
-	{
-		return nullptr;
-	}
-
+	NEW_CLASSNN(outImg, Media::StaticImage(Math::Size2D<UIntOS>(imgWidth, imgHeight), 0, bpp, Media::PixelFormatGetDef(0, bpp), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	imgPos = 18;
 	imgPos += hdr[0];
 
@@ -88,269 +83,267 @@ Optional<IO::ParsedObject> Parser::FileParser::TGAParser::ParseFileHdr(NN<IO::St
 	{
 		if (hdr[7] == 32)
 		{
-			DEL_CLASS(outImg);
+			outImg.Delete();
 			return nullptr;
 			/////////////////////////////////////
 		}
 		else if (hdr[7] == 16 || hdr[7] == 15)
 		{
-			DEL_CLASS(outImg);
+			outImg.Delete();
 			return nullptr;
 			/////////////////////////////////////
 		}
 		else if (hdr[7] == 24)
 		{
-			DEL_CLASS(outImg);
+			outImg.Delete();
 			return nullptr;
 			/////////////////////////////////////
 		}
 		else
 		{
-			DEL_CLASS(outImg);
+			outImg.Delete();
 			return nullptr;
 		}
 	}
 	else if (hdr[1] != 0 || bpp <= 8)
 	{
-		DEL_CLASS(outImg);
+		outImg.Delete();
 		return nullptr;
 	}
 
-	if (outImg)
+	Data::ByteArray pBits = outImg->GetDataArray();
+	UInt32 lineW;
+	UInt32 lineW2;
+	UInt32 currOfst;
+	Optional<Media::StaticImage> out = outImg;
+
+	if (hdr[2] == 10)
 	{
-		Data::ByteArray pBits = outImg->GetDataArray();
-		UInt32 lineW;
-		UInt32 lineW2;
-		UInt32 currOfst;
+		Data::ByteBuffer tmpBuff((UIntOS)ds - 26 - imgPos);
+		UInt8 *tmpBits = 0;
+		fd->GetRealData(imgPos, (UIntOS)ds - 26 - imgPos, tmpBuff);
 
-		if (hdr[2] == 10)
+		if ((hdr[17] & 30) != 20)
 		{
-			Data::ByteBuffer tmpBuff((UIntOS)ds - 26 - imgPos);
-			UInt8 *tmpBits = 0;
-			fd->GetRealData(imgPos, (UIntOS)ds - 26 - imgPos, tmpBuff);
-
-			if ((hdr[17] & 30) != 20)
-			{
-				tmpBits = MemAlloc(UInt8, imgWidth * imgHeight * bpp >> 3);
-				pBits = Data::ByteArray(tmpBits, imgWidth * imgHeight * bpp >> 3);
-			}
-			switch (bpp)
-			{
+			tmpBits = MemAlloc(UInt8, imgWidth * imgHeight * bpp >> 3);
+			pBits = Data::ByteArray(tmpBits, imgWidth * imgHeight * bpp >> 3);
+		}
+		switch (bpp)
+		{
 #ifdef HAS_ASM32
-			case 32:
-				_asm
-				{
-					mov edi,pBits
-					mov esi,tmpBuff
-					mov eax,imgHeight
-					mul imgWidth
-					mov ebx,eax
+		case 32:
+			_asm
+			{
+				mov edi,pBits
+				mov esi,tmpBuff
+				mov eax,imgHeight
+				mul imgWidth
+				mov ebx,eax
 
 rle32lop:
-					movzx eax,byte ptr [esi]
-					test al,0x80
-					jz rle32lop2
-					and eax,0x7f
-					inc eax
-					mov ecx,eax
-					mov eax,dword ptr [esi+1]
-					add esi,5
-					mov edx,ecx
-					rep stosd
-					sub ebx,edx
-					jz rle32exit
-					js rle32exit
-					jmp rle32lop
+				movzx eax,byte ptr [esi]
+				test al,0x80
+				jz rle32lop2
+				and eax,0x7f
+				inc eax
+				mov ecx,eax
+				mov eax,dword ptr [esi+1]
+				add esi,5
+				mov edx,ecx
+				rep stosd
+				sub ebx,edx
+				jz rle32exit
+				js rle32exit
+				jmp rle32lop
 rle32lop2:
-					inc esi
-					inc eax
-					mov ecx,eax
-					rep movsd
-					sub ebx,eax
-					jz rle32exit
-					js rle32exit
-					jmp rle32lop
+				inc esi
+				inc eax
+				mov ecx,eax
+				rep movsd
+				sub ebx,eax
+				jz rle32exit
+				js rle32exit
+				jmp rle32lop
 rle32exit:
-				}
-				break;
+			}
+			break;
 #else
-			case 32:
+		case 32:
+			{
+				UnsafeArray<UInt8> tmpSPtr;
+				UnsafeArray<UInt8> tmpDPtr;
+				UIntOS cnt = imgHeight * imgWidth;
+				UInt32 tmpVal;
+				tmpSPtr = tmpBuff.Arr();
+				tmpDPtr = pBits.Arr();
+				while (cnt > 0)
 				{
-					UnsafeArray<UInt8> tmpSPtr;
-					UnsafeArray<UInt8> tmpDPtr;
-					UIntOS cnt = imgHeight * imgWidth;
-					UInt32 tmpVal;
-					tmpSPtr = tmpBuff.Arr();
-					tmpDPtr = pBits.Arr();
-					while (cnt > 0)
+					tmpVal = *tmpSPtr;
+					if (0x80 & tmpVal)
 					{
-						tmpVal = *tmpSPtr;
-						if (0x80 & tmpVal)
+						tmpVal = 1 + (tmpVal & 0x7f);
+						cnt -= tmpVal;
+						tmpSPtr++;
+						while (tmpVal-- > 0)
 						{
-							tmpVal = 1 + (tmpVal & 0x7f);
-							cnt -= tmpVal;
-							tmpSPtr++;
-							while (tmpVal-- > 0)
-							{
-								*(Int32*)tmpDPtr.Ptr() = *(Int32*)tmpSPtr.Ptr();
-								tmpDPtr += 4;
-							}
+							*(Int32*)tmpDPtr.Ptr() = *(Int32*)tmpSPtr.Ptr();
+							tmpDPtr += 4;
+						}
+						tmpSPtr += 4;
+					}
+					else
+					{
+						tmpVal = 1 + tmpVal;
+						tmpSPtr++;
+						cnt -= tmpVal;
+						while (tmpVal-- > 0)
+						{
+							*(Int32*)tmpDPtr.Ptr() = *(Int32*)tmpSPtr.Ptr();
+							tmpDPtr += 4;
 							tmpSPtr += 4;
 						}
-						else
-						{
-							tmpVal = 1 + tmpVal;
-							tmpSPtr++;
-							cnt -= tmpVal;
-							while (tmpVal-- > 0)
-							{
-								*(Int32*)tmpDPtr.Ptr() = *(Int32*)tmpSPtr.Ptr();
-								tmpDPtr += 4;
-								tmpSPtr += 4;
-							}
-						}
 					}
 				}
+			}
 #endif
-			default:
-				DEL_CLASS(outImg);
-				outImg = 0;
-				break;
-			}
-			if ((hdr[17] & 30) != 20)
-			{
-				if (outImg)
-				{
-					UInt32 bpl = imgWidth * bpp >> 3;
-					UInt8 *tmpOfst = tmpBits + imgHeight * bpl;
-					pBits = outImg->GetDataArray();
-					while (imgHeight-- > 0)
-					{
-						tmpOfst -= bpl;
-						pBits.CopyFrom(0, Data::ByteArrayR(tmpOfst, bpl));
-						pBits += bpl;
-					}
-				}
-				MemFree(tmpBits);
-			}
+		default:
+			outImg.Delete();
+			out = nullptr;
+			break;
 		}
-		else if (hdr[17] & 0x20)
+		if ((hdr[17] & 30) != 20)
 		{
-			switch (bpp)
+			if (out.SetTo(outImg))
 			{
-			case 4:
-				lineW = (imgWidth >> 1) + (imgWidth & 1);
-				lineW2 = lineW;
-				if (lineW & 3)
-				{
-					lineW = lineW + 4 - (lineW & 3);
-				}
-				currOfst = imgPos;
+				UInt32 bpl = imgWidth * bpp >> 3;
+				UInt8 *tmpOfst = tmpBits + imgHeight * bpl;
+				pBits = outImg->GetDataArray();
 				while (imgHeight-- > 0)
 				{
-					fd->GetRealData(currOfst, lineW2, pBits);
-					currOfst += lineW;
-					pBits += lineW2;
+					tmpOfst -= bpl;
+					pBits.CopyFrom(0, Data::ByteArrayR(tmpOfst, bpl));
+					pBits += bpl;
 				}
-				break;
-			case 8:
-			case 16:
-			case 24:
-			case 32:
-				fd->GetRealData(imgPos, imgWidth * imgHeight * bpp >> 3, pBits);
-				break;
-			default:
-				DEL_CLASS(outImg);
-				outImg = 0;
-				break;
 			}
+			MemFree(tmpBits);
 		}
-		else
+	}
+	else if (hdr[17] & 0x20)
+	{
+		switch (bpp)
 		{
-			switch (bpp)
+		case 4:
+			lineW = (imgWidth >> 1) + (imgWidth & 1);
+			lineW2 = lineW;
+			if (lineW & 3)
 			{
-			case 4:
-				lineW = (imgWidth >> 1) + (imgWidth & 1);
-				lineW2 = lineW;
-				if (lineW & 3)
-				{
-					lineW = lineW + 4 - (lineW & 3);
-				}
-				currOfst = (lineW * imgHeight) + imgPos;
-				while (imgHeight-- > 0)
-				{
-					currOfst -= lineW;
-					fd->GetRealData(currOfst, lineW2, pBits);
-					pBits += lineW2;
-				}
-				break;
-			case 8:
-				lineW = imgWidth;
-				if (lineW & 3)
-				{
-					lineW = lineW + 4 - (lineW & 3);
-				}
-				currOfst = (lineW * imgHeight) + imgPos;
-				while (imgHeight-- > 0)
-				{
-					currOfst -= lineW;
-					fd->GetRealData(currOfst, imgWidth, pBits);
-					pBits += imgWidth;
-				}
-				break;
-			case 16:
-				lineW = imgWidth;
-				if (lineW & 3)
-				{
-					lineW = lineW + 4 - (lineW & 3);
-				}
-				lineW2 = imgWidth << 1;
-				currOfst = (lineW * imgHeight) + imgPos;
-				while (imgHeight-- > 0)
-				{
-					currOfst -= lineW;
-					fd->GetRealData(currOfst, lineW2, pBits);
-					pBits += lineW2;
-				}
-				break;
-			case 24:
-				lineW = imgWidth * 3;
-				if (lineW & 3)
-				{
-					lineW = lineW + 4 - (lineW & 3);
-				}
-				lineW2 = imgWidth * 3;
-				currOfst = (lineW * imgHeight) + imgPos;
-				while (imgHeight-- > 0)
-				{
-					currOfst -= lineW;
-					fd->GetRealData(currOfst, lineW2, pBits);
-					pBits += lineW2;
-				}
-				break;
-			case 32:
-				currOfst = imgPos;
-				pBits = pBits + imgWidth * imgHeight * 4;
-				while (imgHeight-- > 0)
-				{
-					pBits -= imgWidth << 2;
-					fd->GetRealData(currOfst, imgWidth << 2, pBits);
-					currOfst += imgWidth << 2;
-				}
-				break;
-			default:
-				DEL_CLASS(outImg);
-				outImg = 0;
-				break;
-			};
+				lineW = lineW + 4 - (lineW & 3);
+			}
+			currOfst = imgPos;
+			while (imgHeight-- > 0)
+			{
+				fd->GetRealData(currOfst, lineW2, pBits);
+				currOfst += lineW;
+				pBits += lineW2;
+			}
+			break;
+		case 8:
+		case 16:
+		case 24:
+		case 32:
+			fd->GetRealData(imgPos, imgWidth * imgHeight * bpp >> 3, pBits);
+			break;
+		default:
+			outImg.Delete();
+			out = nullptr;
+			break;
 		}
+	}
+	else
+	{
+		switch (bpp)
+		{
+		case 4:
+			lineW = (imgWidth >> 1) + (imgWidth & 1);
+			lineW2 = lineW;
+			if (lineW & 3)
+			{
+				lineW = lineW + 4 - (lineW & 3);
+			}
+			currOfst = (lineW * imgHeight) + imgPos;
+			while (imgHeight-- > 0)
+			{
+				currOfst -= lineW;
+				fd->GetRealData(currOfst, lineW2, pBits);
+				pBits += lineW2;
+			}
+			break;
+		case 8:
+			lineW = imgWidth;
+			if (lineW & 3)
+			{
+				lineW = lineW + 4 - (lineW & 3);
+			}
+			currOfst = (lineW * imgHeight) + imgPos;
+			while (imgHeight-- > 0)
+			{
+				currOfst -= lineW;
+				fd->GetRealData(currOfst, imgWidth, pBits);
+				pBits += imgWidth;
+			}
+			break;
+		case 16:
+			lineW = imgWidth;
+			if (lineW & 3)
+			{
+				lineW = lineW + 4 - (lineW & 3);
+			}
+			lineW2 = imgWidth << 1;
+			currOfst = (lineW * imgHeight) + imgPos;
+			while (imgHeight-- > 0)
+			{
+				currOfst -= lineW;
+				fd->GetRealData(currOfst, lineW2, pBits);
+				pBits += lineW2;
+			}
+			break;
+		case 24:
+			lineW = imgWidth * 3;
+			if (lineW & 3)
+			{
+				lineW = lineW + 4 - (lineW & 3);
+			}
+			lineW2 = imgWidth * 3;
+			currOfst = (lineW * imgHeight) + imgPos;
+			while (imgHeight-- > 0)
+			{
+				currOfst -= lineW;
+				fd->GetRealData(currOfst, lineW2, pBits);
+				pBits += lineW2;
+			}
+			break;
+		case 32:
+			currOfst = imgPos;
+			pBits = pBits + imgWidth * imgHeight * 4;
+			while (imgHeight-- > 0)
+			{
+				pBits -= imgWidth << 2;
+				fd->GetRealData(currOfst, imgWidth << 2, pBits);
+				currOfst += imgWidth << 2;
+			}
+			break;
+		default:
+			outImg.Delete();
+			out = nullptr;
+			break;
+		};
 	}
 
 	NN<Media::StaticImage> nnimg;
-	if (nnimg.Set(outImg))
+	if (out.SetTo(nnimg))
 	{
-		Media::ImageList *imgList;
-		NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
+		NN<Media::ImageList> imgList;
+		NEW_CLASSNN(imgList, Media::ImageList(fd->GetFullName()));
 		imgList->AddImage(nnimg, 0);
 		return imgList;
 	}

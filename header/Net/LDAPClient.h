@@ -52,7 +52,7 @@ namespace Net
 
 	private:
 		NN<Net::SocketFactory> sockf;
-		Net::TCPClient *cli;
+		NN<Net::TCPClient> cli;
 		
 		Sync::Mutex reqMut;
 		Data::FastMapNN<UInt32, ReqStatus> reqMap;
@@ -66,7 +66,7 @@ namespace Net
 
 		static UInt32 __stdcall RecvThread(AnyType userObj);
 		void ParseLDAPMessage(UnsafeArray<const UInt8> msgBuff, UIntOS msgLen);
-		UnsafeArrayOpt<const UTF8Char> ParseFilter(Net::ASN1PDUBuilder *pdu, UnsafeArray<const UTF8Char> filter, Bool complex);
+		UnsafeArrayOpt<const UTF8Char> ParseFilter(NN<Net::ASN1PDUBuilder> pdu, UnsafeArray<const UTF8Char> filter, Bool complex);
 	public:
 		LDAPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout);
 		~LDAPClient();

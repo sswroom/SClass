@@ -34,8 +34,8 @@ namespace Net
 		} FileFormat;
 	private:
 		NN<Net::SocketFactory> sockf;
-		Net::SocketMonitor *socMon;
-		IO::PacketLogWriter *writer;
+		Optional<Net::SocketMonitor> socMon;
+		Optional<IO::PacketLogWriter> writer;
 		Sync::Mutex mut;
 		UInt64 packetCnt;
 		UInt64 dataSize;

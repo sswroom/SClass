@@ -72,9 +72,9 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 		Bool succ;
 		NN<Net::HTTPClient> cli;
 		NN<IO::MemoryStream> mstm;
-		Text::UTF8Writer *writer;
+		NN<Text::UTF8Writer> writer;
 		NEW_CLASSNN(mstm, IO::MemoryStream());
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		NEW_CLASSNN(writer, Text::UTF8Writer(mstm));
 		writer->Write(CSTR("<?xml version=\"1.0\" encoding=\"utf-8\"?>"));
 		writer->Write(CSTR("<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">"));
 		writer->Write(CSTR("<soap:Body>"));
@@ -117,7 +117,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 		writer->Write(CSTR(">"));
 		writer->Write(CSTR("</soap:Body>"));
 		writer->Write(CSTR("</soap:Envelope>"));
-		DEL_CLASS(writer);
+		writer.Delete();
 
 		cli = Net::HTTPClient::CreateConnect(sockf, this->ssl, this->serviceAddr->ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
 		if (!this->soapAction.SetTo(s))
@@ -158,11 +158,11 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 				if (i == contLeng)
 				{
 					Text::EncodingFactory encFact;
-					Text::XMLDocument *doc;
+					NN<Text::XMLDocument> doc;
 					NN<Text::XMLNode> node1;
 					NN<Text::XMLNode> node2;
 					Text::StringBuilderUTF8 sb;
-					NEW_CLASS(doc, Text::XMLDocument());
+					NEW_CLASSNN(doc, Text::XMLDocument());
 					if (doc->ParseBuff(encFact, buff, contLeng))
 					{
 						i = doc->GetChildCnt();
@@ -207,7 +207,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 							}
 						}
 					}
-					DEL_CLASS(doc);
+					doc.Delete();
 				}
 				MemFreeArr(buff);
 			}
@@ -221,9 +221,9 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 		Bool succ;
 		NN<Net::HTTPClient> cli;
 		NN<IO::MemoryStream> mstm;
-		Text::UTF8Writer *writer;
+		NN<Text::UTF8Writer> writer;
 		NEW_CLASSNN(mstm, IO::MemoryStream());
-		NEW_CLASS(writer, Text::UTF8Writer(mstm));
+		NEW_CLASSNN(writer, Text::UTF8Writer(mstm));
 		writer->Write(CSTR("<?xml version=\"1.0\" encoding=\"utf-8\"?>"));
 		writer->Write(CSTR("<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">"));
 		writer->Write(CSTR("<soap12:Body>"));
@@ -266,7 +266,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 		writer->Write(CSTR(">"));
 		writer->Write(CSTR("</soap12:Body>"));
 		writer->Write(CSTR("</soap12:Envelope>"));
-		DEL_CLASS(writer);
+		writer.Delete();
 
 		cli = Net::HTTPClient::CreateConnect(sockf, this->ssl, this->serviceAddr->ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
 		cli->AddHeaderC(CSTR("Content-Type"), CSTR("application/soap+xml; charset=utf-8"));
@@ -294,11 +294,11 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 				if (i == contLeng)
 				{
 					Text::EncodingFactory encFact;
-					Text::XMLDocument *doc;
+					NN<Text::XMLDocument> doc;
 					NN<Text::XMLNode> node1;
 					NN<Text::XMLNode> node2;
 					Text::StringBuilderUTF8 sb;
-					NEW_CLASS(doc, Text::XMLDocument());
+					NEW_CLASSNN(doc, Text::XMLDocument());
 					if (doc->ParseBuff(encFact, buff, contLeng))
 					{
 						i = doc->GetChildCnt();
@@ -343,7 +343,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 							}
 						}
 					}
-					DEL_CLASS(doc);
+					doc.Delete();
 				}
 				MemFreeArr(buff);
 			}

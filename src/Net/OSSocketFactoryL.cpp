@@ -65,17 +65,17 @@ Net::OSSocketFactory::OSSocketFactory(Bool noV6DNS) : Net::SocketFactory(noV6DNS
 /*	UnsafeArray<const UTF8Char> fileName = (const UTF8Char*)"/proc/sys/net/ipv6/bindv6only";
 	if (IO::Path::GetPathType(fileName) == IO::Path::PathType::File)
 	{
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::CreateWRITE, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NN<IO::FileStream> fs;
+		NEW_CLASSNN(fs, IO::FileStream(fileName, IO::FileMode::CreateWRITE, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (fs->IsError())
 		{
 			wprintf(L"bindv6only cannot open\r\n");
-			DEL_CLASS(fs);
+			fs.Delete();
 		}
 		else
 		{
 			fs->Write((const UInt8*)"1", 1);
-			DEL_CLASS(fs);
+			fs.Delete();
 			wprintf(L"bindv6only set\r\n");
 		}
 	}

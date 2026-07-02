@@ -51,8 +51,8 @@ Optional<IO::ParsedObject> Parser::FileParser::MPGParser::ParseFileHdr(NN<IO::St
 
 		////////////////////////////
 		//return 0;
-		Media::MediaFile *file = 0;
-		NEW_CLASS(file, Media::MPGFile(fd));
+		NN<Media::MediaFile> file;
+		NEW_CLASSNN(file, Media::MPGFile(fd));
 		return file;
 	}
 	else if ((hdr[4] & 0xc0) == 0x40) //MPG2
@@ -122,8 +122,8 @@ Optional<IO::ParsedObject> Parser::FileParser::MPGParser::ParseFileHdr(NN<IO::St
 			}
 		}
 
-		Media::MediaFile *file = 0;
-		NEW_CLASS(file, Media::MPGFile(fd));
+		NN<Media::MediaFile> file;
+		NEW_CLASSNN(file, Media::MPGFile(fd));
 		SDEL_CLASS(concatFile);
 		return file;
 	}

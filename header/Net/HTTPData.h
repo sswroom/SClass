@@ -15,7 +15,7 @@ namespace Net
 	private:
 		struct HTTPDATAHANDLE
 		{
-			IO::FileStream *file;
+			Optional<IO::FileStream> file;
 			UInt64 fileLength;
 			UInt64 currentOffset;
 			NN<Text::String> url;
@@ -30,7 +30,7 @@ namespace Net
 			UInt64 loadSize;
 			Bool isLoading;
 			Sync::Mutex mut;
-			Sync::Event *evtTmp;
+			Optional<Sync::Event> evtTmp;
 			Int32 objectCnt;
 		};
 

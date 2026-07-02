@@ -295,12 +295,12 @@ Optional<IO::ParsedObject> Parser::FileParser::GLOCParser::ParseFileHdr(NN<IO::S
 	if (ReadUInt32(&hdr[0]) != idevId || (fileSize > 128 && ReadUInt32(&hdr[128]) != idevId) || (fileSize > 256 && ReadUInt32(&hdr[256]) != idevId))
 		return nullptr;
 
-	Map::GPSTrack *track;
+	NN<Map::GPSTrack> track;
 	sptr = Text::StrInt64(sbuff, devId);
-	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName()->ToCString(), true, 0, CSTRP(sbuff, sptr)));
+	NEW_CLASSNN(track, Map::GPSTrack(fd->GetFullName()->ToCString(), true, 0, CSTRP(sbuff, sptr)));
 	track->SetTrackName(CSTRP(sbuff, sptr));
-	GLOCExtraParser *parser;
-	NEW_CLASS(parser, GLOCExtraParser());
+	NN<GLOCExtraParser> parser;
+	NEW_CLASSNN(parser, GLOCExtraParser());
 	track->SetExtraParser(parser);
 	currPos = 0;
 	while (currPos < fileSize)

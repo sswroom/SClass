@@ -4872,7 +4872,7 @@ Text::CString Media::EXIFData::GetFieldTypeName(UInt32 ftype)
 
 Optional<Media::EXIFData> Media::EXIFData::ParseIFD(UnsafeArray<const UInt8> buff, UIntOS buffSize, NN<Data::ByteOrder> bo, OptOut<UInt64> nextOfst, EXIFMaker exifMaker, UnsafeArrayOpt<const UInt8> optbasePtr)
 {
-	Media::EXIFData *exif;
+	NN<Media::EXIFData> exif;
 	const UInt8 *ifdEntries;
 	IntOS ifdCnt;
 	IntOS i;
@@ -4886,7 +4886,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(UnsafeArray<const UInt8> buf
 
 	UnsafeArray<UInt8> tmpBuff;
 	UInt32 j;
-	NEW_CLASS(exif, Media::EXIFData(exifMaker));
+	NEW_CLASSNN(exif, Media::EXIFData(exifMaker));
 
 	UnsafeArray<const UInt8> basePtr;
 	if (!optbasePtr.SetTo(basePtr))

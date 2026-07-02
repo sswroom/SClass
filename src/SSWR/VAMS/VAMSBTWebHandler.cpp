@@ -183,7 +183,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListItem(NN<Net::WebServer::WebRequ
 	return true;
 }
 
-SSWR::VAMS::VAMSBTWebHandler::VAMSBTWebHandler(NN<Text::String> logPath, VAMSBTList *btList)
+SSWR::VAMS::VAMSBTWebHandler::VAMSBTWebHandler(NN<Text::String> logPath, NN<VAMSBTList> btList)
 {
 	this->logPath = logPath->Clone();
 	this->btList = btList;
@@ -198,5 +198,5 @@ SSWR::VAMS::VAMSBTWebHandler::VAMSBTWebHandler(NN<Text::String> logPath, VAMSBTL
 SSWR::VAMS::VAMSBTWebHandler::~VAMSBTWebHandler()
 {
 	this->logPath->Release();
-	DEL_CLASS(this->btList);
+	this->btList.Delete();
 }

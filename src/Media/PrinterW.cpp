@@ -237,7 +237,7 @@ Optional<Media::Printer> Media::Printer::SelectPrinter(Optional<ControlHandle> h
 		return nullptr;
 	}
 
-	Media::Printer *printer = 0;
+	Optional<Media::Printer> printer = nullptr;
 
 	PRINTDLGEX pdx;
     pdx.lStructSize = sizeof(PRINTDLGEX);
@@ -269,7 +269,7 @@ Optional<Media::Printer> Media::Printer::SelectPrinter(Optional<ControlHandle> h
 		DEVNAMES *devNames = (DEVNAMES*)GlobalLock(pdx.hDevNames);
 		void *devMode = GlobalLock(pdx.hDevMode);
 		const WChar *devName = &((const WChar*)devNames)[devNames->wDeviceOffset];
-		NEW_CLASS(printer, Media::Printer(devName, (UInt8*)devMode, GlobalSize(pdx.hDevMode)));
+		NEW_CLASSOPT(printer, Media::Printer(devName, (UInt8*)devMode, GlobalSize(pdx.hDevMode)));
 		GlobalUnlock(pdx.hDevMode);
 		GlobalUnlock(pdx.hDevNames);
 	}
@@ -383,13 +383,13 @@ Bool Media::Printer::ShowPrintSettings(Optional<ControlHandle> hWnd)
 
 Optional<Media::PrintDocument> Media::Printer::StartPrint(NN<Media::PrintHandler> hdlr, NN<Media::DrawEngine> eng)
 {
-	Media::GDPrintDocument *doc;
+	NN<Media::GDPrintDocument> doc;
 	if (this->devMode == 0)
 		return nullptr;
-	NEW_CLASS(doc, Media::GDPrintDocument(this->printerName, this->devMode, NN<Media::GDIEngine>::ConvertFrom(eng), hdlr));
+	NEW_CLASSNN(doc, Media::GDPrintDocument(this->printerName, this->devMode, NN<Media::GDIEngine>::ConvertFrom(eng), hdlr));
 	if (doc->IsError())
 	{
-		DEL_CLASS(doc);
+		doc.Delete();
 		return nullptr;
 	}
 	doc->Start();

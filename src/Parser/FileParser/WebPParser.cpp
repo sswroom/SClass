@@ -176,8 +176,8 @@ Optional<IO::ParsedObject> Parser::FileParser::WebPParser::ParseFileHdr(NN<IO::S
 	{
 		return nullptr;
 	}
-	Media::ImageList *ret;
-	NEW_CLASS(ret, Media::ImageList(fd->GetFullFileName()));
+	NN<Media::ImageList> ret;
+	NEW_CLASSNN(ret, Media::ImageList(fd->GetFullFileName()));
 	i = 0;
 	j = imgList.GetCount();
 	while (i < j)

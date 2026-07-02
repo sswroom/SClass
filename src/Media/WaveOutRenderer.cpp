@@ -93,7 +93,11 @@ void __stdcall Media::WaveOutRenderer::WaveEvents(void *hwo, UInt32 uMsg, UInt32
 	if (uMsg == WOM_DONE)
 	{
 		me->buffEmpty[((WAVEHDR*)dwParam1)->dwUser] = true;
-		me->playEvt->Set();
+		NN<Sync::Event> evt;
+		if (me->playEvt.SetTo(evt))
+		{
+			evt->Set();
+		}
 	}
 }
 
@@ -101,7 +105,7 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(AnyType obj)
 {
 	NN<Media::WaveOutRenderer> me = obj.GetNN<Media::WaveOutRenderer>();
 	Media::AudioFormat af;
-	Sync::Event *evt;
+	NN<Sync::Event> evt;
 	WAVEHDR hdrs[4];
 	UInt32 i;
 	Data::Duration refStart;
@@ -114,14 +118,15 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(AnyType obj)
 	Int32 stmEnd;
 	Bool needNotify = false;
 	NN<Media::AudioSource> audsrc;
+	NN<Sync::Event> playEvt;
 	NN<Media::RefClock> clk;
 
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
-	NEW_CLASS(evt, Sync::Event());
+	NEW_CLASSNN(evt, Sync::Event());
 
 	me->playing = true;
 	me->threadInit = true;
-	if (me->audsrc.SetTo(audsrc))
+	if (me->audsrc.SetTo(audsrc) && me->playEvt.SetTo(playEvt))
 	{
 		audsrc->GetFormat(af);
 		if (me->buffTime)
@@ -210,7 +215,7 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(AnyType obj)
 
 			}
 
-			me->playEvt->Wait();
+			playEvt->Wait();
 		}
 
 		waveOutPause((HWAVEOUT)me->hwo);
@@ -221,7 +226,7 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(AnyType obj)
 			MemFree(hdrs[i].lpData);
 		}
 	}
-	DEL_CLASS(evt);
+	evt.Delete();
 	me->playing = false;
 
 	if (needNotify)
@@ -365,7 +370,7 @@ Bool Media::WaveOutRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 		waveOutClose((HWAVEOUT)this->hwo);
 		this->audsrc = nullptr;
 		this->hwo = 0;
-		DEL_CLASS(playEvt);
+		this->playEvt.Delete();
 	}
 	if (!audsrc.SetTo(nnaudsrc))
 		return false;
@@ -444,7 +449,7 @@ Bool Media::WaveOutRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 	{
 		this->hwo = hwo;
 		this->audsrc = audsrc;
-		NEW_CLASS(this->playEvt, Sync::Event());
+		NEW_CLASSOPT(this->playEvt, Sync::Event());
 		return true;
 	}
 	else
@@ -480,10 +485,12 @@ void Media::WaveOutRenderer::Start()
 void Media::WaveOutRenderer::Stop()
 {
 	NN<Media::AudioSource> audsrc;
+	NN<Sync::Event> playEvt;
 	stopPlay = true;
 	if (!playing)
 		return;
-	playEvt->Set();
+	if (this->playEvt.SetTo(playEvt))
+		playEvt->Set();
 	if (this->audsrc.SetTo(audsrc))
 	{
 		audsrc->Stop();

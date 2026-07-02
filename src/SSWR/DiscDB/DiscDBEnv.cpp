@@ -131,7 +131,7 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(false));
 	NEW_CLASSNN(this->clif, Net::TCPClientFactory(this->sockf));
 	this->ssl = Net::SSLEngineFactory::Create(this->clif, false);
-	NEW_CLASS(this->monMgr, Media::MonitorMgr());
+	NEW_CLASSNN(this->monMgr, Media::MonitorMgr());
 
 	if (IO::IniFile::ParseProgConfig(0).SetTo(cfg))
 	{
@@ -179,7 +179,7 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 {
 	this->db.Delete();
-	DEL_CLASS(this->monMgr);
+	this->monMgr.Delete();
 
 	UIntOS i;
 	NN<BurntDiscInfo> disc;

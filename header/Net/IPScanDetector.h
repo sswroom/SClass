@@ -16,9 +16,9 @@ namespace Net
 
 		typedef struct
 		{
-			IPScanDetector *me;
+			NN<IPScanDetector> me;
 			Bool threadRunning;
-			Sync::Event *evt;
+			NN<Sync::Event> evt;
 			Bool toStop;
 		} ThreadStat;
 
@@ -40,7 +40,7 @@ namespace Net
 
 		UnsafeArrayOpt<ThreadStat> threadStats;
 		UIntOS threadCnt;
-		Sync::Event *ctrlEvt;
+		Optional<Sync::Event> ctrlEvt;
 
 	private:
 		static UInt32 __stdcall DataThread(AnyType obj);

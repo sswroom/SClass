@@ -260,7 +260,11 @@ UnsafeArrayOpt<UTF8Char> __stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailRec
 	cli->GetRemoteAddr(remoteAddr);
 	me->store->NewEmail(id, remoteAddr, SERVER_DOMAIN, mail);
 	me->mailChanged = true;
-	me->totalSize += (UIntOS)mail->dataStm->GetLength();
+	NN<IO::MemoryStream> dataStm;
+	if (mail->dataStm.SetTo(dataStm))
+	{
+		me->totalSize += (UIntOS)dataStm->GetLength();
+	}
 	return Text::StrInt64(queryId, id);
 }
 

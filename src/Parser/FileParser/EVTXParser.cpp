@@ -42,14 +42,14 @@ Optional<IO::ParsedObject> Parser::FileParser::EVTXParser::ParseFileHdr(NN<IO::S
 	{
 		return nullptr;
 	}
-	IO::StringLogFile *logFile;
+	NN<IO::StringLogFile> logFile;
 	UInt64 ofst = 4096;
 	UIntOS dataOfst;
 	Data::Timestamp ts;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbDetail;
 	Data::ByteBuffer buff(65536);
-	NEW_CLASS(logFile, IO::StringLogFile(fd->GetFullName()));
+	NEW_CLASSNN(logFile, IO::StringLogFile(fd->GetFullName()));
 
 	while (fd->GetRealData(ofst, 65536, buff) == 65536)
 	{

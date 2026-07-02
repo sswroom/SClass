@@ -6,45 +6,46 @@
 #include "Map/MapEnv.h"
 #include "Media/ColorManager.h"
 #include "Net/SocketFactory.h"
-#include "UI/MSWindowForm.h"
-#include "UI/MSWindowHSplitter.h"
-#include "UI/MSWindowListBox.h"
-#include "UI/MSWindowMapControl.h"
-#include "Ui/MSWindowMainMenu.h"
+#include "UI/GUIForm.h"
+#include "UI/GUIHSplitter.h"
+#include "UI/GUIListBox.h"
+#include "UI/GUIMapControl.h"
+#include "UI/GUIMainMenu.h"
 #include "SSWR/AVIRead/AVIRGISReplayForm.h"
 
 namespace SSWR
 {
 	namespace MapReplay
 	{
-		class MapReplayForm : public UI::MSWindowForm, public SSWR::AVIRead::IMapNavigator
+		class MapReplayForm : public UI::GUIForm, public SSWR::AVIRead::AVIRMapNavigator
 		{
 		private:
-			UI::MSWindowMapControl *map;
-			UI::MSWindowMainMenu *mnu;
-			UI::MSWindowListBox *lbLayers;
-			UI::MSWindowHSplitter *splitter;
-			SSWR::AVIRead::AVIRGISReplayForm *replayForm;
+			NN<UI::GUIMapControl> map;
+			NN<UI::GUIMainMenu> mnu;
+			NN<UI::GUIListBox> lbLayers;
+			NN<UI::GUIHSplitter> splitter;
+			Optional<SSWR::AVIRead::AVIRGISReplayForm> replayForm;
 
-			Map::MapEnv *env;
-			Media::GDIEngine *eng;
-			Map::DrawMapRenderer *envRenderer;
-			Map::TileMap *tileMap;
+			NN<Map::MapEnv> env;
+			NN<Media::DrawEngine> eng;
+			NN<Map::DrawMapRenderer> envRenderer;
+			Optional<Map::TileMap> tileMap;
 			Int32 currMapType;
-			Parser::ParserList *parsers;
-			Media::ColorManager *colorMgr;
+			NN<Parser::ParserList> parsers;
+			NN<Media::ColorManager> colorMgr;
 			NN<Net::SocketFactory> sockf;
-			Media::ColorManagerSess *colorSess;
-			Map::MapView *mapView;
+			NN<Net::TCPClientFactory> clif;
+			NN<Media::ColorManagerSess> colorSess;
+			NN<Map::MapView> mapView;
 
 		private:
 			void LoadMap(Int32 mapType);
 			void UpdateList();
 
-			static void __stdcall OnFileDrop(void *userObj, const WChar **files, IntOS nFiles);
-			static void __stdcall OnLayerDblClicked(void *userObj);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
+			static void __stdcall OnLayerDblClicked(AnyType userObj);
 		public:
-			MapReplayForm(UI::MSWindowUI *ui, UI::MSWindowForm *parent, Media::GDIEngine *eng, Parser::ParserList *parsers, Media::ColorManager *colorMgr, NN<Net::SocketFactory> sockf);
+			MapReplayForm(NN<UI::GUICore> ui, Optional<UI::GUIForm> parent, NN<Media::DrawEngine> eng, NN<Parser::ParserList> parsers, NN<Media::ColorManager> colorMgr, NN<Net::SocketFactory> sockf);
 			virtual ~MapReplayForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);
@@ -53,8 +54,8 @@ namespace SSWR
 			virtual void PanToMap(Double lat, Double lon);
 			virtual void ShowMarker(Double lat, Double lon);
 			virtual void HideMarker();
-			virtual void AddLayer(Map::MapDrawLayer *layer);
-			virtual void SetSelectedVector(Math::Geometry::Vector2D *vec);
+			virtual void AddLayer(NN<Map::MapDrawLayer> layer);
+			virtual void SetSelectedVector(Optional<Math::Geometry::Vector2D> vec);
 
 			virtual void SetKMapEnv(const WChar *kmapIP, Int32 kmapPort, Int32 lcid);
 			virtual Bool HasKMap();

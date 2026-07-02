@@ -2,18 +2,18 @@
 #include "Media/FBMonitorSurfaceMgr.h"
 #include "Media/MemorySurface.h"
 
-Media::FBMonitorSurfaceMgr::FBMonitorSurfaceMgr(Media::MonitorMgr *monMgr, Media::ColorManagerSess *colorSess)
+Media::FBMonitorSurfaceMgr::FBMonitorSurfaceMgr(Optional<Media::MonitorMgr> monMgr, NN<Media::ColorManagerSess> colorSess)
 {
-	this->monMgr = 0;
-	this->colorMgr = 0;
+	this->monMgr = nullptr;
+	this->colorMgr = nullptr;
 	this->colorSess = colorSess;
 }
 
-Media::FBMonitorSurfaceMgr::FBMonitorSurfaceMgr(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
+Media::FBMonitorSurfaceMgr::FBMonitorSurfaceMgr(NN<Media::MonitorMgr> monMgr, NN<Media::ColorManager> colorMgr)
 {
 	this->monMgr = monMgr;
 	this->colorMgr = colorMgr;
-	this->colorSess = 0;
+	this->colorSess = nullptr;
 }
 
 Media::FBMonitorSurfaceMgr::~FBMonitorSurfaceMgr()
@@ -21,43 +21,48 @@ Media::FBMonitorSurfaceMgr::~FBMonitorSurfaceMgr()
 
 }
 
-Double Media::FBMonitorSurfaceMgr::GetMonitorDPI(MonitorHandle *hMonitor)
+Double Media::FBMonitorSurfaceMgr::GetMonitorDPI(Optional<MonitorHandle> hMonitor)
 {
-	if (hMonitor == 0)
+	if (hMonitor.IsNull())
 	{
 		return 96.0;
 	}
 
-	if (this->monMgr)
+	NN<Media::MonitorMgr> monMgr;
+	if (this->monMgr.SetTo(monMgr))
 	{
-		return this->monMgr->GetMonitorHDPI(hMonitor);
+		return monMgr->GetMonitorHDPI(hMonitor);
 	}
 	return 96.0;
 }
 
-const Media::ColorProfile *Media::FBMonitorSurfaceMgr::GetMonitorColor(MonitorHandle *hMonitor)
+Optional<const Media::ColorProfile> Media::FBMonitorSurfaceMgr::GetMonitorColor(Optional<MonitorHandle> hMonitor)
 {
-	if (this->colorMgr)
+	NN<Media::ColorManager> colorMgr;
+	NN<Media::ColorManagerSess> colorSess;
+	if (this->colorMgr.SetTo(colorMgr))
 	{
-		Media::MonitorColorManager *monColor = this->colorMgr->GetMonColorManager(hMonitor);
+		NN<Media::MonitorColorManager> monColor = colorMgr->GetMonColorManager(hMonitor);
 		return &monColor->GetRGBParam()->monProfile;
 	}
-	else if (this->colorSess)
+	else if (this->colorSess.SetTo(colorSess))
 	{
-		return &this->colorSess->GetRGBParam()->monProfile;
+		return &colorSess->GetRGBParam()->monProfile;
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Media::FBMonitorSurfaceMgr::Is10BitColor(Optional<MonitorHandle> hMonitor)
 {
-	if (this->colorMgr)
+	NN<Media::ColorManager> colorMgr;
+	NN<Media::ColorManagerSess> colorSess;
+	if (this->colorMgr.SetTo(colorMgr))
 	{
-		return this->colorMgr->GetMonColorManager(hMonitor)->Get10BitColor();
+		return colorMgr->GetMonColorManager(hMonitor)->Get10BitColor();
 	}
-	else if (this->colorSess)
+	else if (this->colorSess.SetTo(colorSess))
 	{
-		return this->colorSess->Get10BitColor();
+		return colorSess->Get10BitColor();
 	}
 	return false;
 }
@@ -67,16 +72,16 @@ Bool Media::FBMonitorSurfaceMgr::SetFSMode(Optional<MonitorHandle> hMon, Optiona
 	return true;
 }
 
-void Media::FBMonitorSurfaceMgr::WaitForVBlank(MonitorHandle *hMon)
+void Media::FBMonitorSurfaceMgr::WaitForVBlank(Optional<MonitorHandle> hMon)
 {
 }
 
-UInt32 Media::FBMonitorSurfaceMgr::GetRefreshRate(MonitorHandle *hMon)
+UInt32 Media::FBMonitorSurfaceMgr::GetRefreshRate(Optional<MonitorHandle> hMon)
 {
 	return 0;
 }
 
-MonitorHandle *Media::FBMonitorSurfaceMgr::GetMonitorHandle(UIntOS monIndex)
+Optional<MonitorHandle> Media::FBMonitorSurfaceMgr::GetMonitorHandle(UIntOS monIndex)
 {
 	return (MonitorHandle*)(1 + monIndex);
 }
@@ -86,19 +91,19 @@ UIntOS Media::FBMonitorSurfaceMgr::GetMonitorCount()
 	return 1;
 }
 
-Media::MonitorSurface *Media::FBMonitorSurfaceMgr::CreateSurface(Math::Size2D<UIntOS> size, UIntOS bitDepth)
+Optional<Media::MonitorSurface> Media::FBMonitorSurfaceMgr::CreateSurface(Math::Size2D<UIntOS> size, UIntOS bitDepth)
 {
-	Media::MemorySurface *surface;
-	NEW_CLASS(surface, Media::MemorySurface(size, bitDepth, this->GetMonitorColor(0), this->GetMonitorDPI(0)));
+	NN<Media::MemorySurface> surface;
+	NEW_CLASSNN(surface, Media::MemorySurface(size, bitDepth, this->GetMonitorColor(nullptr), this->GetMonitorDPI(nullptr)));
 	return surface;
 }
 
-Media::MonitorSurface *Media::FBMonitorSurfaceMgr::CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow, Media::RotateType rotateType)
+Optional<Media::MonitorSurface> Media::FBMonitorSurfaceMgr::CreatePrimarySurface(Optional<MonitorHandle> hMon, Optional<ControlHandle> clipWindow, Media::RotateType rotateType)
 {
-	return 0;
+	return nullptr;
 }
 
-Bool Media::FBMonitorSurfaceMgr::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, MonitorSurface **primarySurface, MonitorSurface **bufferSurface, Media::RotateType rotateType)
+Bool Media::FBMonitorSurfaceMgr::CreatePrimarySurfaceWithBuffer(Optional<MonitorHandle> hMon, OutParam<NN<MonitorSurface>> primarySurface, OutParam<NN<MonitorSurface>> bufferSurface, Media::RotateType rotateType)
 {
 	return false;
 }

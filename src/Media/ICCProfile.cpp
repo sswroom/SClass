@@ -296,7 +296,7 @@ Optional<Media::LUT> Media::ICCProfile::CreateRLUT() const
 {
 	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
 	Int32 i = 0;
-	Media::LUT *lut;
+	NN<Media::LUT> lut;
 	while (i < cnt)
 	{
 		Int32 tagSign;
@@ -321,7 +321,7 @@ Optional<Media::LUT> Media::ICCProfile::CreateRLUT() const
 				{
 					return nullptr;
 				}
-				NEW_CLASS(lut, Media::LUT(1, valCnt, 1, Media::LUT::DF_UINT16, CSTR("ICC Profile R")));
+				NEW_CLASSNN(lut, Media::LUT(1, valCnt, 1, Media::LUT::DF_UINT16, CSTR("ICC Profile R")));
 				stab = &this->iccBuff[tagOfst + 12];
 				dtab = lut->GetTablePtr();
 				i = 0;
@@ -346,7 +346,7 @@ Optional<Media::LUT> Media::ICCProfile::CreateGLUT() const
 {
 	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
 	Int32 i = 0;
-	Media::LUT *lut;
+	NN<Media::LUT> lut;
 	while (i < cnt)
 	{
 		Int32 tagSign;
@@ -371,7 +371,7 @@ Optional<Media::LUT> Media::ICCProfile::CreateGLUT() const
 				{
 					return nullptr;
 				}
-				NEW_CLASS(lut, Media::LUT(1, valCnt, 1, Media::LUT::DF_UINT16, CSTR("ICC Profile G")));
+				NEW_CLASSNN(lut, Media::LUT(1, valCnt, 1, Media::LUT::DF_UINT16, CSTR("ICC Profile G")));
 				stab = &this->iccBuff[tagOfst + 12];
 				dtab = lut->GetTablePtr();
 				i = 0;
@@ -396,7 +396,7 @@ Optional<Media::LUT> Media::ICCProfile::CreateBLUT() const
 {
 	UInt32 cnt = ReadMUInt32(&this->iccBuff[128]);
 	UInt32 i = 0;
-	Media::LUT *lut;
+	NN<Media::LUT> lut;
 	while (i < cnt)
 	{
 		Int32 tagSign;
@@ -421,7 +421,7 @@ Optional<Media::LUT> Media::ICCProfile::CreateBLUT() const
 				{
 					return nullptr;
 				}
-				NEW_CLASS(lut, Media::LUT(1, valCnt, 1, Media::LUT::DF_UINT16, CSTR("ICC Profile B")));
+				NEW_CLASSNN(lut, Media::LUT(1, valCnt, 1, Media::LUT::DF_UINT16, CSTR("ICC Profile B")));
 				stab = &this->iccBuff[tagOfst + 12];
 				dtab = lut->GetTablePtr();
 				i = 0;

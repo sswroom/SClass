@@ -28,8 +28,8 @@ namespace Text
 
 			void InitEnvStatus(NN<Text::Cpp::CppParseStatus> status);
 
-			static CppEnv *LoadVSEnv(Text::VSProject::VisualStudioVersion vsv);
-			static CppEnv *LoadVSEnv();
+			static Optional<CppEnv> LoadVSEnv(Text::VSProject::VisualStudioVersion vsv);
+			static Optional<CppEnv> LoadVSEnv();
 			static UnsafeArrayOpt<UTF8Char> GetVCInstallDir(UnsafeArray<UTF8Char> sbuff, Text::VSProject::VisualStudioVersion vsv);
 			static UnsafeArrayOpt<UTF8Char> GetWindowsSdkDir(UnsafeArray<UTF8Char> sbuff);
 			static Bool IsCompilerExist(Text::VSProject::VisualStudioVersion vsv);

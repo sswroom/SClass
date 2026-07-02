@@ -13,7 +13,7 @@
 #include "Parser/ParserList.h"
 #include "Parser/FileParser/BMPParser.h"
 
-void BMPParser_ReadPal(Media::StaticImage *img, NN<IO::StreamData> fd, UIntOS palStart, Int32 palType, UIntOS colorUsed)
+void BMPParser_ReadPal(NN<Media::StaticImage> img, NN<IO::StreamData> fd, UIntOS palStart, Int32 palType, UIntOS colorUsed)
 {
 	UnsafeArray<UInt8> pal;
 	if (!img->pal.SetTo(pal))
@@ -122,7 +122,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 	IntOS bitDefault = false;
 	Bool headerValid = true;
 
-	Media::StaticImage *outImg = 0;
+	Optional<Media::StaticImage> outImg = nullptr;
 	NN<Media::StaticImage> nnimg;
 
 	if (hdr.ReadNI16(0) != *(Int16*)"BM")
@@ -396,9 +396,10 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 	}
 	if (imgWidth > 0 && imgHeight > 0 && bpp != 0 && imgWidth <= 32768 && imgHeight <= 32768 && headerValid)
 	{
-		NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UIntOS>(imgWidth, uimgHeight), 0, bpp, pf, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, atype, Media::YCOFST_C_CENTER_LEFT));
-		outImg->info.hdpi = hdpi;
-		outImg->info.vdpi = vdpi;
+		NEW_CLASSNN(nnimg, Media::StaticImage(Math::Size2D<UIntOS>(imgWidth, uimgHeight), 0, bpp, pf, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, atype, Media::YCOFST_C_CENTER_LEFT));
+		outImg = nnimg;
+		nnimg->info.hdpi = hdpi;
+		nnimg->info.vdpi = vdpi;
 		if (headerSize >= 124 && ReadInt32(&hdr[70]) == ReadInt32((const UInt8*)"DEBM")) //BITMAPV5HEADER
 		{
 			UInt32 imgDataSize = ReadUInt32(&hdr[126]);
@@ -412,7 +413,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 					NN<Media::ICCProfile> icc;
 					if (Media::ICCProfile::Parse(iccBuff.WithSize(iccSize)).SetTo(icc))
 					{
-						icc->SetToColorProfile(outImg->info.color);
+						icc->SetToColorProfile(nnimg->info.color);
 						icc.Delete();
 					}
 				}
@@ -420,7 +421,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 		}
 		else if (headerSize >= 108 && ReadInt32(&hdr[70]) == ReadInt32((const UInt8*)"BGRs"))
 		{
-			outImg->info.color.SetCommonProfile(Media::ColorProfile::CPT_SRGB);
+			nnimg->info.color.SetCommonProfile(Media::ColorProfile::CPT_SRGB);
 		}
 		else if (headerSize >= 108 && ReadInt32(&hdr[70]) == 0)
 		{
@@ -455,28 +456,28 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 				xyzVec.val[0] = rx / (Double)0x40000000;
 				xyzVec.val[1] = ry / (Double)0x40000000;
 				xyzVec.val[2] = rz / (Double)0x40000000;
-				outImg->info.color.primaries.r = Media::ColorProfile::ColorPrimaries::XYZToxyY(xyzVec).GetXY();
+				nnimg->info.color.primaries.r = Media::ColorProfile::ColorPrimaries::XYZToxyY(xyzVec).GetXY();
 
 				xyzVec.val[0] = gx / (Double)0x40000000;
 				xyzVec.val[1] = gy / (Double)0x40000000;
 				xyzVec.val[2] = gz / (Double)0x40000000;
-				outImg->info.color.primaries.g = Media::ColorProfile::ColorPrimaries::XYZToxyY(xyzVec).GetXY();
+				nnimg->info.color.primaries.g = Media::ColorProfile::ColorPrimaries::XYZToxyY(xyzVec).GetXY();
 
 				xyzVec.val[0] = bx / (Double)0x40000000;
 				xyzVec.val[1] = by / (Double)0x40000000;
 				xyzVec.val[2] = bz / (Double)0x40000000;
-				outImg->info.color.primaries.b = Media::ColorProfile::ColorPrimaries::XYZToxyY(xyzVec).GetXY();
-				outImg->info.color.primaries.colorType = Media::ColorProfile::CT_CUSTOM;
+				nnimg->info.color.primaries.b = Media::ColorProfile::ColorPrimaries::XYZToxyY(xyzVec).GetXY();
+				nnimg->info.color.primaries.colorType = Media::ColorProfile::CT_CUSTOM;
 
-				outImg->info.color.rtransfer.Set(Media::CS::TRANT_GAMMA, rg / 65536.0);
-				outImg->info.color.gtransfer.Set(Media::CS::TRANT_GAMMA, gg / 65536.0);
-				outImg->info.color.btransfer.Set(Media::CS::TRANT_GAMMA, bg / 65536.0);
+				nnimg->info.color.rtransfer.Set(Media::CS::TRANT_GAMMA, rg / 65536.0);
+				nnimg->info.color.gtransfer.Set(Media::CS::TRANT_GAMMA, gg / 65536.0);
+				nnimg->info.color.btransfer.Set(Media::CS::TRANT_GAMMA, bg / 65536.0);
 			}
 		}
 	}
-	if (outImg)
+	if (outImg.SetTo(nnimg))
 	{
-		Data::ByteArray pBits = outImg->GetDataArray();
+		Data::ByteArray pBits = nnimg->GetDataArray();
 		UInt32 lineW;
 		UInt32 lineW2;
 		UInt32 currOfst;
@@ -488,7 +489,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 				switch (bpp)
 				{
 				case 1:
-					BMPParser_ReadPal(outImg, fd, endPos, palType, colorUsed);
+					BMPParser_ReadPal(nnimg, fd, endPos, palType, colorUsed);
 					if (imgWidth & 7)
 					{
 						lineW = (imgWidth + 8 - (imgWidth & 7)) >> 3;
@@ -507,7 +508,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 					}
 					break;
 				case 2:
-					BMPParser_ReadPal(outImg, fd, endPos, palType, colorUsed);
+					BMPParser_ReadPal(nnimg, fd, endPos, palType, colorUsed);
 					if (imgWidth & 3)
 					{
 						lineW = (imgWidth + 4 - (imgWidth & 3)) >> 2;
@@ -526,7 +527,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 					}
 					break;
 				case 4:
-					BMPParser_ReadPal(outImg, fd, endPos, palType, colorUsed);
+					BMPParser_ReadPal(nnimg, fd, endPos, palType, colorUsed);
 					lineW = (imgWidth >> 1) + (imgWidth & 1);
 					lineW2 = lineW;
 					if (lineW & 3)
@@ -542,7 +543,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 					}
 					break;
 				case 8:
-					BMPParser_ReadPal(outImg, fd, endPos, palType, colorUsed);
+					BMPParser_ReadPal(nnimg, fd, endPos, palType, colorUsed);
 					lineW = imgWidth;
 					if (lineW & 3)
 					{
@@ -597,8 +598,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 					}
 					break;
 				default:
-					DEL_CLASS(outImg);
-					outImg = 0;
+					outImg.Delete();
 					break;
 				};
 			}
@@ -608,7 +608,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 				switch (bpp)
 				{
 				case 1:
-					BMPParser_ReadPal(outImg, fd, endPos, palType, colorUsed);
+					BMPParser_ReadPal(nnimg, fd, endPos, palType, colorUsed);
 					if (imgWidth & 7)
 					{
 						lineW = (imgWidth + 8 - (imgWidth & 7)) >> 3;
@@ -621,7 +621,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 					currOfst = ReadUInt32(&hdr[10]);
 					break;
 				case 2:
-					BMPParser_ReadPal(outImg, fd, endPos, palType, colorUsed);
+					BMPParser_ReadPal(nnimg, fd, endPos, palType, colorUsed);
 					if (imgWidth & 3)
 					{
 						lineW = (imgWidth + 4 - (imgWidth & 3)) >> 2;
@@ -634,8 +634,8 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 					currOfst = ReadUInt32(&hdr[10]);
 					break;
 				case 4:
-					BMPParser_ReadPal(outImg, fd, endPos, palType, colorUsed);
-					if (outImg->pal.SetTo(pal))
+					BMPParser_ReadPal(nnimg, fd, endPos, palType, colorUsed);
+					if (nnimg->pal.SetTo(pal))
 					{
 						i = 16;
 						while (i-- > 0)
@@ -652,7 +652,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 					currOfst = ReadUInt32(&hdr[10]);
 					break;
 				case 8:
-					BMPParser_ReadPal(outImg, fd, endPos, palType, colorUsed);
+					BMPParser_ReadPal(nnimg, fd, endPos, palType, colorUsed);
 					lineW = imgWidth;
 					lineW2 = lineW;
 					if (lineW & 3)
@@ -685,14 +685,13 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 					currOfst = ReadUInt32(&hdr[10]);
 					break;
 				default:
-					DEL_CLASS(outImg);
-					outImg = 0;
+					outImg.Delete();
 					break;
 				};
 
-				if (outImg)
+				if (outImg.SetTo(nnimg))
 				{
-					UIntOS bpl = outImg->GetDataBpl();
+					UIntOS bpl = nnimg->GetDataBpl();
 					if (bpl != lineW)
 					{
 						while (uimgHeight-- > 0)
@@ -711,11 +710,11 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 		}
 		else if (biCompression == 1 && bpp == 8) // rle8
 		{
-			BMPParser_ReadPal(outImg, fd, endPos, palType, colorUsed);
+			BMPParser_ReadPal(nnimg, fd, endPos, palType, colorUsed);
 			UIntOS dataSize = (UIntOS)(fd->GetDataSize() - ReadUInt32(&hdr[10]));
 			Data::ByteBuffer rleData(dataSize);
 			Data::ByteArray currPtr;
-			IntOS dAdd = (IntOS)outImg->GetDataBpl();
+			IntOS dAdd = (IntOS)nnimg->GetDataBpl();
 			pBits.Clear(0, uimgHeight * (UIntOS)dAdd);
 			fd->GetRealData(ReadUInt32(&hdr[10]), dataSize, rleData);
 			UInt8 c;
@@ -815,10 +814,10 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 		}
 		else if (biCompression == 2 && bpp == 4) // rle4
 		{
-			BMPParser_ReadPal(outImg, fd, endPos, palType, colorUsed);
+			BMPParser_ReadPal(nnimg, fd, endPos, palType, colorUsed);
 			UIntOS dataSize = (UIntOS)(fd->GetDataSize() - ReadUInt32(&hdr[10]));
 			Data::ByteBuffer rleData(dataSize);
-			IntOS dAdd = (IntOS)outImg->GetDataBpl() << 1;
+			IntOS dAdd = (IntOS)nnimg->GetDataBpl() << 1;
 			Data::ByteBuffer tmpData(uimgHeight * (UIntOS)dAdd);
 			Data::ByteArray currPtr;
 			tmpData.Clear(0, (UInt32)imgHeight * (UIntOS)dAdd);
@@ -939,7 +938,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 					}
 				}
 			}
-			pBits = outImg->GetDataArray();
+			pBits = nnimg->GetDataArray();
 			rleData.ReplaceBy(tmpData);
 			if (dAdd < 0)
 			{
@@ -959,7 +958,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 			UInt32 bVal;
 			UInt32 aVal;
 			UInt32 pxVal;
-			IntOS dAdd = (IntOS)outImg->GetDataBpl();
+			IntOS dAdd = (IntOS)nnimg->GetDataBpl();
 			UIntOS currW;
 			IntOS srcI;
 			UIntOS destI;
@@ -1869,21 +1868,19 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 			}
 			else
 			{
-				DEL_CLASS(outImg);
-				outImg = 0;
+				outImg.Delete();
 			}
 		}
 		else
 		{
-			DEL_CLASS(outImg);
-			outImg = 0;
+			outImg.Delete();
 		}
 	}
 
-	if (nnimg.Set(outImg))
+	if (outImg.SetTo(nnimg))
 	{
-		Media::ImageList *imgList;
-		NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
+		NN<Media::ImageList> imgList;
+		NEW_CLASSNN(imgList, Media::ImageList(fd->GetFullName()));
 		imgList->AddImage(nnimg, 0);
 		return imgList;
 	}

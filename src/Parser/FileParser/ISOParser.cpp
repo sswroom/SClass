@@ -42,30 +42,30 @@ Optional<IO::ParsedObject> Parser::FileParser::ISOParser::ParseFileHdr(NN<IO::St
 	UInt8 buff[32];
 	UInt64 fileSize = fd->GetDataSize();
 
-	IO::FileSectorData *sectorData = 0;
+	Optional<IO::FileSectorData> sectorData = nullptr;
 	NN<IO::FileSectorData> sd;
 	if (ReadMInt32(&hdr[0]) == 0x00ffffff && ReadMUInt32(&hdr[4]) == 0xffffffff && ReadMUInt32(&hdr[8]) == 0xffffff00 && fileSize >= 75264 && (fileSize % 2352) == 0)
 	{
 		fd->GetRealData(37632, 32, BYTEARR(buff));
 		if (ReadMInt32(&buff[0]) == 0x00ffffff && ReadMUInt32(&buff[4]) == 0xffffffff && ReadMUInt32(&buff[8]) == 0xffffff00 && ReadMInt32(&buff[16]) == 0x01434430 && ReadMInt32(&buff[20]) == 0x30310100)
 		{
-			NEW_CLASS(sectorData, IO::FileSectorData(fd, 0, fileSize, 2352));
+			NEW_CLASSOPT(sectorData, IO::FileSectorData(fd, 0, fileSize, 2352));
 		}
 	}
 
-	if (sectorData == 0)// && (fileSize & 2047) == 0)
+	if (sectorData.IsNull())// && (fileSize & 2047) == 0)
 	{
 		if (fd->GetRealData(32768, 32, BYTEARR(buff)) >= 8)
 		{
 			if (ReadMInt32(&buff[0]) == 0x01434430 && ReadMInt32(&buff[4]) == 0x30310100)
 			{
-				NEW_CLASS(sectorData, IO::FileSectorData(fd, 0, fileSize, 2048));
+				NEW_CLASSOPT(sectorData, IO::FileSectorData(fd, 0, fileSize, 2048));
 			}
 		}
 	}
 
 	NN<Parser::ParserList> parsers;
-	if (sd.Set(sectorData) && this->parsers.SetTo(parsers) && targetType != IO::ParserType::SectorData)
+	if (sectorData.SetTo(sd) && this->parsers.SetTo(parsers) && targetType != IO::ParserType::SectorData)
 	{
 		NN<IO::ParsedObject> pobj;
 		if (parsers->ParseObject(sd).SetTo(pobj))

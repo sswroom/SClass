@@ -142,14 +142,14 @@ SSWR::DataSync::SyncServer::SyncServer(NN<Net::SocketFactory> sockf, NN<IO::LogT
 			}
 		}
 	}
-	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, this, 2, OnClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(sockf, nullptr, port, log, OnClientConn, this, CSTR("Sync: "), autoStart));
+	NEW_CLASSNN(this->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, this, 2, OnClientTimeout));
+	NEW_CLASSNN(this->svr, Net::TCPServer(sockf, nullptr, port, log, OnClientConn, this, CSTR("Sync: "), autoStart));
 }
 
 SSWR::DataSync::SyncServer::~SyncServer()
 {
-	DEL_CLASS(this->svr);
-	DEL_CLASS(this->cliMgr);
+	this->svr.Delete();
+	this->cliMgr.Delete();
 	UIntOS i;
 	NN<ServerInfo> svrInfo;
 	i = this->svrMap.GetCount();
@@ -170,12 +170,12 @@ SSWR::DataSync::SyncServer::~SyncServer()
 
 Bool SSWR::DataSync::SyncServer::Start()
 {
-	return this->svr != 0 && this->svr->Start();
+	return this->svr->Start();
 }
 
 Bool SSWR::DataSync::SyncServer::IsError()
 {
-	return this->svr == 0 || this->svr->IsV4Error();
+	return this->svr->IsV4Error();
 }
 
 UIntOS SSWR::DataSync::SyncServer::GetServerList(NN<Data::ArrayListNN<ServerInfo>> svrList)

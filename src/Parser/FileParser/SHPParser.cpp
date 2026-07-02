@@ -51,11 +51,11 @@ Optional<IO::ParsedObject> Parser::FileParser::SHPParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 
-	Map::SHPData *shp;
-	NEW_CLASS(shp, Map::SHPData(&hdr[0], fd, this->codePage, prjParser));
+	NN<Map::SHPData> shp;
+	NEW_CLASSNN(shp, Map::SHPData(&hdr[0], fd, this->codePage, prjParser));
 	if (shp->IsError())
 	{
-		DEL_CLASS(shp);
+		shp.Delete();
 		return nullptr;
 	}
 	return shp;

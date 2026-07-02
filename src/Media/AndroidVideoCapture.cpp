@@ -428,8 +428,8 @@ Optional<Media::VideoCapturer> Media::AndroidVideoCaptureMgr::CreateDevice(UIntO
 		ACameraIdList *cameraIdList = (ACameraIdList*)this->cameraIdList;
 		if (devId < cameraIdList->numCameras)
 		{
-			Media::AndroidVideoCapture *capture;
-			NEW_CLASS(capture, Media::AndroidVideoCapture(this->cameraMgr, cameraIdList->cameraIds[devId]));
+			NN<Media::AndroidVideoCapture> capture;
+			NEW_CLASSNN(capture, Media::AndroidVideoCapture(this->cameraMgr, cameraIdList->cameraIds[devId]));
 			return capture;
 		}
 		return nullptr;

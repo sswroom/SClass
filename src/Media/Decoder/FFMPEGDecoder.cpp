@@ -129,8 +129,8 @@ static int FFMPEGDecoder_avcodec_decode_audio4(AVCodecContext *avctx, AVFrame *f
 #endif
 #define FFMPEGDecoder_avcodec_decode_video2 avcodec_decode_video2
 #else
-IO::Library *FFMPEGDecoder_lib1 = 0;
-IO::Library *FFMPEGDecoder_lib2 = 0;
+NN<IO::Library> FFMPEGDecoder_lib1;
+NN<IO::Library> FFMPEGDecoder_lib2;
 AVFrame *(__stdcall *FFMPEGDecoder_av_frame_alloc)() = 0;
 void (__stdcall *FFMPEGDecoder_av_frame_free)(AVFrame **frame) = 0;
 
@@ -206,8 +206,8 @@ struct Media::Decoder::FFMPEGDecoder::ClassData
 	Data::Duration lastFrameTime;
 	Bool isOpenGOP;
 #ifdef _DEBUG
-	IO::Stream *dbgStm;
-	IO::Writer *dbgWriter;
+	NN<IO::Stream> dbgStm;
+	NN<IO::Writer> dbgWriter;
 #endif
 };
 
@@ -564,8 +564,8 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<VideoSource> sourceVideo) : Medi
 #ifdef _DEBUG
 	NN<IO::FileStream> dbgStm;
 	NEW_CLASSNN(dbgStm, IO::FileStream(CSTR("FFMPEGDebug.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	data->dbgStm = dbgStm.Ptr();
-	NEW_CLASS(data->dbgWriter, Text::UTF8Writer(dbgStm));
+	data->dbgStm = dbgStm;
+	NEW_CLASSNN(data->dbgWriter, Text::UTF8Writer(dbgStm));
 #endif
 
 	Media::FrameInfo frameInfo;
@@ -657,22 +657,22 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<VideoSource> sourceVideo) : Medi
 	if (codecId == AV_CODEC_ID_H264)
 	{
 		UInt32 sz;
-		UInt8 *buff = sourceVideo->GetProp(*(Int32*)"AVCH", &sz);
-		if (buff)
+		UnsafeArray<UInt8> buff;
+		if (sourceVideo->GetProp(*(Int32*)"AVCH", sz).SetTo(buff))
 		{
 			data->ctx->extradata_size = (int)sz;
-			data->ctx->extradata = buff;
+			data->ctx->extradata = buff.Ptr();
 		}
 	}	
 #if VERSION_FROM(55, 0, 0) //not sure
 	else if (codecId == AV_CODEC_ID_HEVC)
 	{
 		UInt32 sz;
-		UInt8 *buff = sourceVideo->GetProp(*(Int32*)"HEVC", &sz);
-		if (buff)
+		UnsafeArray<UInt8> buff;
+		if (sourceVideo->GetProp(*(Int32*)"HEVC", sz).SetTo(buff))
 		{
 			data->ctx->extradata_size = (int)sz;
-			data->ctx->extradata = buff;
+			data->ctx->extradata = buff.Ptr();
 		}
 	}
 #endif
@@ -884,8 +884,8 @@ Media::Decoder::FFMPEGDecoder::~FFMPEGDecoder()
 	}
 	MemFreeAArr(data->frameBuff);
 #ifdef _DEBUG
-	DEL_CLASS(data->dbgStm);
-	DEL_CLASS(data->dbgWriter);
+	data->dbgStm.Delete();
+	data->dbgWriter.Delete();
 #endif
 	MemFreeNN(data);
 }
@@ -1271,7 +1271,7 @@ Optional<Media::VideoSource> __stdcall FFMPEGDecoder_DecodeVideo(NN<Media::Video
 	if (frameInfo.fourcc == *(UInt32*)"ravc")
 	{
 		NN<Media::Decoder::RAVCDecoder> ravc;
-		Media::Decoder::VDecoderChain *decChain;
+		NN<Media::Decoder::VDecoderChain> decChain;
 
 		NEW_CLASSNN(ravc, Media::Decoder::RAVCDecoder(sourceVideo, false, true));
 		NEW_CLASSNN(decoder, Media::Decoder::FFMPEGDecoder(ravc));
@@ -1281,14 +1281,14 @@ Optional<Media::VideoSource> __stdcall FFMPEGDecoder_DecodeVideo(NN<Media::Video
 			ravc.Delete();
 			return nullptr;
 		}
-		NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
+		NEW_CLASSNN(decChain, Media::Decoder::VDecoderChain(decoder));
 		decChain->AddDecoder(ravc);
 		return decChain;
 	}
 	else if (frameInfo.fourcc == *(UInt32*)"rhvc")
 	{
 		NN<Media::Decoder::RHVCDecoder> rhvc;
-		Media::Decoder::VDecoderChain *decChain;
+		NN<Media::Decoder::VDecoderChain> decChain;
 
 		NEW_CLASSNN(rhvc, Media::Decoder::RHVCDecoder(sourceVideo, false));
 		NEW_CLASSNN(decoder, Media::Decoder::FFMPEGDecoder(rhvc));
@@ -1298,14 +1298,14 @@ Optional<Media::VideoSource> __stdcall FFMPEGDecoder_DecodeVideo(NN<Media::Video
 			rhvc.Delete();
 			return nullptr;
 		}
-		NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
+		NEW_CLASSNN(decChain, Media::Decoder::VDecoderChain(decoder));
 		decChain->AddDecoder(rhvc);
 		return decChain;
 	}
 	else if (frameInfo.fourcc == *(UInt32*)"m2v1")
 	{
 		NN<Media::Decoder::M2VDecoder> m2vd;
-		Media::Decoder::VDecoderChain *decChain;
+		NN<Media::Decoder::VDecoderChain> decChain;
 
 		NEW_CLASSNN(m2vd, Media::Decoder::M2VDecoder(sourceVideo, false));
 		NEW_CLASSNN(decoder, Media::Decoder::FFMPEGDecoder(m2vd));
@@ -1315,14 +1315,14 @@ Optional<Media::VideoSource> __stdcall FFMPEGDecoder_DecodeVideo(NN<Media::Video
 			m2vd.Delete();
 			return nullptr;
 		}
-		NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
+		NEW_CLASSNN(decChain, Media::Decoder::VDecoderChain(decoder));
 		decChain->AddDecoder(m2vd);
 		return decChain;
 	}
 	else if (frameInfo.fourcc == *(UInt32*)"vp09")
 	{
 		NN<Media::Decoder::VP09Decoder> vp09;
-		Media::Decoder::VDecoderChain *decChain;
+		NN<Media::Decoder::VDecoderChain> decChain;
 
 		NEW_CLASSNN(vp09, Media::Decoder::VP09Decoder(sourceVideo, false));
 		NEW_CLASSNN(decoder, Media::Decoder::FFMPEGDecoder(vp09));
@@ -1332,7 +1332,7 @@ Optional<Media::VideoSource> __stdcall FFMPEGDecoder_DecodeVideo(NN<Media::Video
 			vp09.Delete();
 			return nullptr;
 		}
-		NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
+		NEW_CLASSNN(decChain, Media::Decoder::VDecoderChain(decoder));
 		decChain->AddDecoder(vp09);
 		return decChain;
 	}
@@ -1356,7 +1356,7 @@ private:
 	const AVCodec *codec;
 	AVCodecContext *ctx;
 	AVFrame *frame;
-	Media::AudioFormat *decFmt;
+	Optional<Media::AudioFormat> decFmt;
 	UnsafeArrayOpt<UInt8> frameBuff;
 	UIntOS frameMaxSize;
 	UIntOS frameBuffSize;
@@ -1387,7 +1387,7 @@ public:
 		this->codec = 0;
 		this->ctx = 0;
 		this->frame = 0;
-		this->decFmt = 0;
+		this->decFmt = nullptr;
 		this->frameBuff = nullptr;
 		this->readBuff = 0;
 		this->readBlockSize = 0;
@@ -1494,49 +1494,51 @@ public:
 		this->frameMaxSize = 65536;
 		this->frameBuff = MemAllocArr(UInt8, this->frameMaxSize);
 		this->frameBuffSize = 0;
-		NEW_CLASS(this->decFmt, Media::AudioFormat());
-		this->decFmt->FromAudioFormat(fmt);
+		NN<Media::AudioFormat> decFmt;
+		NEW_CLASSNN(decFmt, Media::AudioFormat());
+		this->decFmt = decFmt;
+		decFmt->FromAudioFormat(fmt);
 		switch (this->ctx->sample_fmt)
 		{
 		case AV_SAMPLE_FMT_U8:
 		case AV_SAMPLE_FMT_U8P:
-			this->decFmt->formatId = 1;
-			this->decFmt->bitpersample = 8;
+			decFmt->formatId = 1;
+			decFmt->bitpersample = 8;
 			break;
 		case AV_SAMPLE_FMT_S16P:
 		case AV_SAMPLE_FMT_S16:
-			this->decFmt->formatId = 1;
-			this->decFmt->bitpersample = 16;
+			decFmt->formatId = 1;
+			decFmt->bitpersample = 16;
 			break;
 		case AV_SAMPLE_FMT_S32:
 		case AV_SAMPLE_FMT_S32P:
-			this->decFmt->formatId = 1;
-			this->decFmt->bitpersample = 32;
+			decFmt->formatId = 1;
+			decFmt->bitpersample = 32;
 			break;
 #if UTIL_VERSION_FROM(55, 29, 0)
 		case AV_SAMPLE_FMT_S64:
 		case AV_SAMPLE_FMT_S64P:
-			this->decFmt->formatId = 1;
-			this->decFmt->bitpersample = 64;
+			decFmt->formatId = 1;
+			decFmt->bitpersample = 64;
 			break;
 #endif
 		case AV_SAMPLE_FMT_FLT:
 		case AV_SAMPLE_FMT_FLTP:
-			this->decFmt->formatId = 3;
-			this->decFmt->bitpersample = 32;
+			decFmt->formatId = 3;
+			decFmt->bitpersample = 32;
 			break;
 		case AV_SAMPLE_FMT_DBL:
 		case AV_SAMPLE_FMT_DBLP:
-			this->decFmt->formatId = 3;
-			this->decFmt->bitpersample = 64;
+			decFmt->formatId = 3;
+			decFmt->bitpersample = 64;
 			break;
 		case AV_SAMPLE_FMT_NONE:
 		case AV_SAMPLE_FMT_NB:
 		default:
 			break;
 		}
-		this->decFmt->align = (UInt32)this->decFmt->nChannels * this->decFmt->bitpersample >> 3;
-		this->decFmt->bitRate = this->decFmt->frequency * this->decFmt->align << 3;
+		decFmt->align = (UInt32)decFmt->nChannels * decFmt->bitpersample >> 3;
+		decFmt->bitRate = decFmt->frequency * decFmt->align << 3;
 		this->inited = true;
 	}
 
@@ -1573,17 +1575,13 @@ public:
 			FFMPEGDecoder_av_frame_free(&this->frame);
 			this->frame = 0;
 		}
-		if (this->decFmt)
-		{
-			DEL_CLASS(this->decFmt);
-			this->decFmt = 0;
-		}
+		this->decFmt.Delete();
 	}
 
 	virtual void GetFormat(NN<Media::AudioFormat> format)
 	{
-		NN<const Media::AudioFormat> fmt;
-		if (fmt.Set(this->decFmt))
+		NN<Media::AudioFormat> fmt;
+		if (this->decFmt.SetTo(fmt))
 		{
 			format->FromAudioFormat(fmt);
 		}
@@ -1640,21 +1638,22 @@ public:
 	    AVPacket avpkt;
 		Int32 ret;
 		NN<Media::AudioSource> sourceAudio;
+		NN<Media::AudioFormat> decFmt;
 		NN<Sync::Event> readEvt;
-		if (this->decFmt == 0 || !this->inited || !this->sourceAudio.SetTo(sourceAudio))
+		if (!this->decFmt.SetTo(decFmt) || !this->inited || !this->sourceAudio.SetTo(sourceAudio))
 		{
 			return 0;
 		}
-		else if (this->decFmt->align == 0)
+		else if (decFmt->align == 0)
 		{
-			if (this->decFmt->frequency == 0)
+			if (decFmt->frequency == 0)
 				return 0;
 			else
 			{
-				this->decFmt->align = 1;
+				decFmt->align = 1;
 			}
 		}
-		i = blk.GetSize() % this->decFmt->align;
+		i = blk.GetSize() % decFmt->align;
 		if (i)
 		{
 			blk = blk.WithSize(blk.GetSize() - i);
@@ -1731,7 +1730,7 @@ public:
 					if (gotFrame)
 					{
 						UInt8 *dataPtr = this->frame->data[0];
-						UIntOS dataSize = (UIntOS)this->frame->nb_samples * this->decFmt->align;
+						UIntOS dataSize = (UIntOS)this->frame->nb_samples * decFmt->align;
 						UnsafeArray<UInt8> frameBuff;
 						if (!this->frameBuff.SetTo(frameBuff) || this->frameBuffSize + dataSize > this->frameMaxSize)
 						{
@@ -1974,7 +1973,10 @@ public:
 
 	virtual UIntOS GetMinBlockSize()
 	{
-		return this->decFmt->align;
+		NN<Media::AudioFormat> decFmt;
+		if (!this->decFmt.SetTo(decFmt))
+			return 0;
+		return decFmt->align;
 	}
 
 	Bool IsError()
@@ -1987,26 +1989,27 @@ public:
 
 Optional<Media::AudioSource> __stdcall FFMPEGDecoder_DecodeAudio(NN<Media::AudioSource> sourceAudio)
 {
-	FFMPEGADecoder *decoder;
-	NEW_CLASS(decoder, FFMPEGADecoder(sourceAudio));
+	NN<FFMPEGADecoder> decoder;
+	NEW_CLASSNN(decoder, FFMPEGADecoder(sourceAudio));
 	if (!decoder->IsError())
 		return decoder;
+	decoder.Delete();
 	return nullptr;
 }
 
 void __stdcall FFMPEGDecoder_OnExit()
 {
 #if !defined(__GNUC__) || defined(__MINGW32__)
-	DEL_CLASS(FFMPEGDecoder_lib1);
-	DEL_CLASS(FFMPEGDecoder_lib2);
+	FFMPEGDecoder_lib1.Delete();
+	FFMPEGDecoder_lib2.Delete();
 #endif
 }
 
 void Media::Decoder::FFMPEGDecoder::Enable()
 {
 #if !defined(__GNUC__) || defined(__MINGW32__)
-	NEW_CLASS(FFMPEGDecoder_lib1, IO::Library((const UTF8Char*)"avcodec-" DEFINE_TOSTRING(LIBAVCODEC_VERSION_MAJOR) ".dll"));
-	NEW_CLASS(FFMPEGDecoder_lib2, IO::Library((const UTF8Char*)"avutil-" DEFINE_TOSTRING(LIBAVUTIL_VERSION_MAJOR) ".dll"));
+	NEW_CLASSNN(FFMPEGDecoder_lib1, IO::Library((const UTF8Char*)"avcodec-" DEFINE_TOSTRING(LIBAVCODEC_VERSION_MAJOR) ".dll"));
+	NEW_CLASSNN(FFMPEGDecoder_lib2, IO::Library((const UTF8Char*)"avutil-" DEFINE_TOSTRING(LIBAVUTIL_VERSION_MAJOR) ".dll"));
 	Core::CoreAddOnExitFunc(FFMPEGDecoder_OnExit);
 
 	FFMPEGDecoder_av_frame_alloc = (AVFrame *(__stdcall *)())FFMPEGDecoder_lib2->GetFunc("av_frame_alloc");

@@ -25,7 +25,7 @@ namespace Media
 			IntOS GetBpl();
 			UInt8 *GetDataPtr();
 			void GetImageData(UnsafeArray<UInt8> destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate);
-			Media::StaticImage *CreateStaticImage();
+			NN<Media::StaticImage> CreateStaticImage();
 			void ToBlackAndWhite(UInt8 middleV);
 			void Normalize();
 			NN<Media::OpenCV::OCVFrame> BilateralFilter(Int32 d, Double sigmaColor, Double sigmaSpace);

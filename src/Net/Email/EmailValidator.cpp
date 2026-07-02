@@ -18,7 +18,7 @@ Net::Email::EmailValidator::~EmailValidator()
 Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(Text::CStringNN emailAddr)
 {
 	Net::SocketUtil::AddressInfo addr;
-	Net::Email::SMTPConn *conn;
+	NN<Net::Email::SMTPConn> conn;
 	Text::CStringNN emailDomain;
 	UIntOS i = emailAddr.IndexOf('@');
 	UIntOS j;
@@ -61,33 +61,33 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(Text::CS
 		nnemailSvr->Release();
 		return S_DOMAIN_NOT_RESOLVED;
 	}
-	NEW_CLASS(conn, Net::Email::SMTPConn(this->clif, nullptr, nnemailSvr->ToCString(), 25, Net::Email::SMTPConn::ConnType::Plain, nullptr, 60000));
+	NEW_CLASSNN(conn, Net::Email::SMTPConn(this->clif, nullptr, nnemailSvr->ToCString(), 25, Net::Email::SMTPConn::ConnType::Plain, nullptr, 60000));
 	nnemailSvr->Release();
 	if (conn->IsError())
 	{
-		DEL_CLASS(conn);
+		conn.Delete();
 		return S_CONN_ERROR;
 	}
 	if (!conn->SendHelo(CSTR("[127.0.0.1]")))
 	{
 		conn->SendQuit();
-		DEL_CLASS(conn);
+		conn.Delete();
 		return S_COMM_ERROR;
 	}
 	if (!conn->SendMailFrom(CSTR("sswroom@yahoo.com")))
 	{
 		conn->SendQuit();
-		DEL_CLASS(conn);
+		conn.Delete();
 		return S_FROM_NOT_ACCEPT;
 	}
 	if (!conn->SendRcptTo(emailAddr))
 	{
 		conn->SendQuit();
-		DEL_CLASS(conn);
+		conn.Delete();
 		return S_NO_SUCH_ADDR;
 	}
 	conn->SendQuit();
-	DEL_CLASS(conn);
+	conn.Delete();
 	return S_VALID;
 }
 

@@ -440,8 +440,8 @@ Media::DDrawRendererLR::DDrawRendererLR(void *hwnd, Media::ColorManager *colorMg
 	this->scnUpdToStop = false;
 	this->frameProcRunning = false;
 	this->frameProcToStop = false;
-	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerLR_C8(3, 3, Media::CS::TRANT_DISPLAY, 2.2, colorMgr));
-	NEW_CLASS(this->deinterlace, Media::DeinterlaceLR(10, 10));
+	NEW_CLASSNN(this->resizer, Media::Resizer::LanczosResizerLR_C8(3, 3, Media::CS::TRANT_DISPLAY, 2.2, colorMgr));
+	NEW_CLASSNN(this->deinterlace, Media::DeinterlaceLR(10, 10));
 	this->surfaceBuff = MemAlloc(FrameBuffer, FRAMEBUFFSIZE);
 	this->surfaceBuffStart = 0;
 	this->surfaceBuffEnd = 0;
@@ -458,10 +458,10 @@ Media::DDrawRendererLR::DDrawRendererLR(void *hwnd, Media::ColorManager *colorMg
 	{
 		this->frameSources[i].frameData = 0;
 	}
-	NEW_CLASS(this->surfaceBuffEvent, Sync::Event(L"Media.DDrawRenderer2.surfaceBuffEvt"));
-	NEW_CLASS(this->surfaceBuffMut, Sync::Mutex());
-	NEW_CLASS(this->frameProcEvent, Sync::Event(L"Media.DDrawRenderer2.frameProcEvent"));
-	NEW_CLASS(this->frameProcMut, Sync::Mutex());
+	NEW_CLASSNN(this->surfaceBuffEvent, Sync::Event());
+	NEW_CLASSNN(this->surfaceBuffMut, Sync::Mutex());
+	NEW_CLASSNN(this->frameProcEvent, Sync::Event());
+	NEW_CLASSNN(this->frameProcMut, Sync::Mutex());
 
 	LPDIRECTDRAW7 lpDD;
 	if (DirectDrawCreateEx( NULL, (VOID**)&lpDD, IID_IDirectDraw7, NULL ) != DD_OK )
@@ -518,10 +518,10 @@ Media::DDrawRendererLR::~DDrawRendererLR()
 	this->ReleaseSubSurface();
 	MemFree(this->surfaceBuff);
 	MemFree(this->frameSources);
-	DEL_CLASS(this->surfaceBuffEvent);
-	DEL_CLASS(this->surfaceBuffMut);
-	DEL_CLASS(this->frameProcEvent);
-	DEL_CLASS(this->frameProcMut);
+	this->surfaceBuffEvent.Delete();
+	this->surfaceBuffMut.Delete();
+	this->frameProcEvent.Delete();
+	this->frameProcMut.Delete();
 
 	if (clipper)
 	{
@@ -533,8 +533,8 @@ Media::DDrawRendererLR::~DDrawRendererLR()
 		lpDD->Release();
 		ddObj = 0;
 	}
-	DEL_CLASS(this->resizer);
-	DEL_CLASS(this->deinterlace);
+	this->resizer.Delete();
+	this->deinterlace.Delete();
 }
 
 void Media::DDrawRendererLR::OnSizeChanged()

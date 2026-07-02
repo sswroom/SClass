@@ -341,7 +341,7 @@ Media::Decoder::RAVCDecoder::RAVCDecoder(NN<VideoSource> sourceVideo, Bool toRel
 	UInt32 size32;
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	this->toRelease = toRelease;
 	this->sps = nullptr;
 	this->pps = nullptr;
@@ -368,8 +368,7 @@ Media::Decoder::RAVCDecoder::RAVCDecoder(NN<VideoSource> sourceVideo, Bool toRel
 		return;
 	}
 	this->maxFrameSize = size;
-	buff = sourceVideo->GetProp(*(Int32*)"sps", &size32);
-	if (buff == 0)
+	if (!sourceVideo->GetProp(*(Int32*)"sps", size32).SetTo(buff))
 	{
 		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 		this->sourceVideo = nullptr;
@@ -378,11 +377,10 @@ Media::Decoder::RAVCDecoder::RAVCDecoder(NN<VideoSource> sourceVideo, Bool toRel
 	UnsafeArray<UInt8> sps;
 	this->sps = sps = MemAllocArr(UInt8, size32);
 	this->spsSize = size32;
-	MemCopyNO(&sps[0], buff, size32);
+	MemCopyNO(&sps[0], &buff[0], size32);
 	this->maxFrameSize += 8 + size32;
 
-	buff = sourceVideo->GetProp(*(Int32*)"pps", &size32);
-	if (buff == 0)
+	if (!sourceVideo->GetProp(*(Int32*)"pps", size32).SetTo(buff))
 	{
 		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 		this->sourceVideo = nullptr;
@@ -391,7 +389,7 @@ Media::Decoder::RAVCDecoder::RAVCDecoder(NN<VideoSource> sourceVideo, Bool toRel
 	UnsafeArray<UInt8> pps;
 	this->pps = pps = MemAllocArr(UInt8, size32);
 	this->ppsSize = size32;
-	MemCopyNO(&pps[0], buff, size32);
+	MemCopyNO(&pps[0], &buff[0], size32);
 	this->maxFrameSize += 4 + size32;
 	this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 //	IntOS oriW;

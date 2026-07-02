@@ -178,12 +178,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcLogin(NN<Net::WebServer
 			{
 				mutUsage.EndUse();
 				NN<Net::WebServer::WebSession> sess = me->sessMgr->CreateSession(req, resp);
-				Data::DateTime *t;
-				Data::ArrayListInt32 *pickObjs;
-				NEW_CLASS(t, Data::DateTime());
-				NEW_CLASS(pickObjs, Data::ArrayListInt32());
+				NN<Data::DateTime> t;
+				NN<Data::ArrayListInt32> pickObjs;
+				NEW_CLASSNN(t, Data::DateTime());
+				NEW_CLASSNN(pickObjs, Data::ArrayListInt32());
 				sess->SetValuePtr(CSTR("LastUseTime"), t);
-				sess->SetValuePtr(CSTR("User"), user.Ptr());
+				sess->SetValuePtr(CSTR("User"), user);
 				sess->SetValuePtr(CSTR("PickObjs"), pickObjs);
 				sess->SetValueInt32(CSTR("PickObjType"), 0);
 				sess->EndUse();

@@ -98,8 +98,8 @@ NN<Text::String> Net::ACMEConn::EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CS
 	b64.EncodeBin(sb, protStr.v, protStr.leng);
 	sb.AppendUTF8Char('.');
 	b64.EncodeBin(sb, data.v, data.leng);
-	Crypto::Token::JWSignature *sign;
-	NEW_CLASS(sign, Crypto::Token::JWSignature(ssl, alg, key->GetASN1Buff(), key->GetASN1BuffSize(), key->GetKeyType()));
+	NN<Crypto::Token::JWSignature> sign;
+	NEW_CLASSNN(sign, Crypto::Token::JWSignature(ssl, alg, key->GetASN1Buff(), key->GetASN1BuffSize(), key->GetKeyType()));
 	sign->CalcHash(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
@@ -110,7 +110,7 @@ NN<Text::String> Net::ACMEConn::EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CS
 	sb.AppendC(UTF8STRC("\",\"signature\":\""));
 	sign->GetHashB64(sb);
 	sb.AppendC(UTF8STRC("\"}"));
-	DEL_CLASS(sign);
+	sign.Delete();
 	printf("Protected: %s\r\n", protStr.v.Ptr());
 	printf("Payload: %s\r\n", data.v.Ptr());
 	printf("JWS: %s\r\n", sb.ToPtr());

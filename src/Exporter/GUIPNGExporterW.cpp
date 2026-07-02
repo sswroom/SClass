@@ -49,7 +49,8 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	CLSID   encoderClsid;
 	Gdiplus::Status  stat;
 	Gdiplus::Image*   image;
-	UInt8 *relBuff;
+	UnsafeArrayOpt<UInt8> relBuff;
+	UnsafeArray<UInt8> nnrelBuff;
 
 	image = (Gdiplus::Image*)ToImage(pobj, relBuff).p;
 	if (image == 0)
@@ -60,9 +61,9 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	if (GetEncoderClsid(L"image/png", &encoderClsid) < 0)
 	{
 		DEL_CLASS(image);
-		if (relBuff)
+		if (relBuff.SetTo(nnrelBuff))
 		{
-			MemFreeA(relBuff);
+			MemFreeAArr(nnrelBuff);
 		}
 		return false;
 	}
@@ -88,9 +89,9 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		}
 	}
 	DEL_CLASS(image);
-	if (relBuff)
+	if (relBuff.SetTo(nnrelBuff))
 	{
-		MemFreeA(relBuff);
+		MemFreeAArr(nnrelBuff);
 	}
 
 	if (stat != Gdiplus::Ok)

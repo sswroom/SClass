@@ -52,7 +52,7 @@ namespace Media
 
 void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> dest, UnsafeArray<UInt8> palette, UIntOS width, UIntOS height, IntOS sbpl, IntOS dbpl)
 {
-	Data::ArrayListCmp *arr[256];
+	Optional<Data::ArrayListCmp> arr[256];
 	UIntOS i;
 	UIntOS j;
 	UIntOS h;
@@ -62,8 +62,8 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 	UnsafeArray<UInt8> currPtr2;
 	UnsafeArray<UInt8> ptr;
 	UnsafeArray<UInt8> ptr2;
-	Data::ArrayListCmp *currArr;
-	Data::ArrayListCmp *cArr;
+	NN<Data::ArrayListCmp> currArr;
+	NN<Data::ArrayListCmp> cArr;
 	NN<Media::ColorStat> cs;
 	NN<Media::ColorStat> cs2;
 	UIntOS colorCnt = 0;
@@ -71,7 +71,7 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 	i = 256;
 	while (i-- > 0)
 	{
-		arr[i] = 0;
+		arr[i] = nullptr;
 	}
 
 	ptr = src;
@@ -82,10 +82,9 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 		j = width;
 		while (j-- > 0)
 		{
-			currArr = arr[*currPtr];
-			if (currArr == 0)
+			if (!arr[*currPtr].SetTo(currArr))
 			{
-				NEW_CLASS(currArr, Data::ArrayListCmp());
+				NEW_CLASSNN(currArr, Data::ArrayListCmp());
                 arr[*currPtr] = currArr;
 			}
 			l = 0;
@@ -130,11 +129,10 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 		i = 256;
 		while (i-- > 0)
 		{
-			currArr = arr[i];
-			if (currArr)
+			if (arr[i].SetTo(currArr))
 			{
 				currArr->DeleteAll();
-				DEL_CLASS(currArr);
+				currArr.Delete();
 			}
 		}
 
@@ -234,12 +232,12 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 	}
 	else
 	{
-		NEW_CLASS(cArr, Data::ArrayListCmp());
+		NEW_CLASSNN(cArr, Data::ArrayListCmp());
 		i = 256;
 		while (i-- > 0)
 		{
 			NN<Data::ArrayListCmp> carr;
-			if (carr.Set(arr[i]))
+			if (arr[i].SetTo(carr))
 			{
 				cArr->AddAll(carr);
 			}
@@ -346,22 +344,24 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 			j = width;
 			while (j-- > 0)
 			{
-				currArr = arr[*currPtr];
-				l = 0;
-				k = currArr->GetCount();
-				while (k-- > 0)
+				if (arr[*currPtr].SetTo(currArr))
 				{
-					cs = NN<ColorStat>::ConvertFrom(currArr->GetItemNoCheck(k));
-					if (cs->color == *(Int32*)&currPtr[0])
+					l = 0;
+					k = currArr->GetCount();
+					while (k-- > 0)
 					{
-						l = 1;
-						*currPtr2 = (UInt8)cs->index;
-						break;
+						cs = NN<ColorStat>::ConvertFrom(currArr->GetItemNoCheck(k));
+						if (cs->color == *(Int32*)&currPtr[0])
+						{
+							l = 1;
+							*currPtr2 = (UInt8)cs->index;
+							break;
+						}
 					}
-				}
-				if (l == 0)
-				{
-					*currPtr2 = 0;
+					if (l == 0)
+					{
+						*currPtr2 = 0;
+					}
 				}
 				currPtr += 4;
 				currPtr2++;
@@ -373,13 +373,12 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 		i = 256;
 		while (i-- > 0)
 		{
-			currArr = arr[i];
-			if (currArr)
+			if (arr[i].SetTo(currArr))
 			{
-				DEL_CLASS(currArr);
+				currArr.Delete();
 			}
 		}
 		cArr->DeleteAll();
-		DEL_CLASS(cArr);
+		cArr.Delete();
 	}
 }

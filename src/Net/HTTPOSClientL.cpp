@@ -22,7 +22,7 @@ struct Net::HTTPOSClient::ClassData
 	struct curl_slist *headers;
 	Data::ArrayListStringNN *respHeaders;
 	NN<Text::String> userAgent;
-	IO::MemoryStream *respData;
+	NN<IO::MemoryStream> respData;
 	UInt64 contLen;
 	Optional<Data::ArrayListNN<Crypto::Cert::Certificate>> certs;
 };
@@ -76,7 +76,7 @@ Net::HTTPOSClient::HTTPOSClient(NN<Net::TCPClientFactory> clif, Text::CString us
 #endif
 	this->clsData->headers = 0;
 	this->clsData->respHeaders = &this->headers;
-	NEW_CLASS(this->clsData->respData, IO::MemoryStream());
+	NEW_CLASSNN(this->clsData->respData, IO::MemoryStream());
 	this->clsData->contLen = 0x7fffffff;
 	this->clsData->certs = nullptr;
 	this->cliHost = nullptr;
@@ -117,7 +117,7 @@ Net::HTTPOSClient::~HTTPOSClient()
 		}
 		certList.Delete();
 	}
-	DEL_CLASS(this->clsData->respData);
+	this->clsData->respData.Delete();
 	MemFreeNN(this->clsData);
 	this->reqMstm.Delete();
 }

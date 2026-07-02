@@ -39,11 +39,11 @@ Optional<IO::ParsedObject> Parser::FileParser::AC3Parser::ParseFileHdr(NN<IO::St
 	}
 	
 	NN<Media::AudioBlockSource> src;
-	Media::MediaFile *vid;
+	NN<Media::MediaFile> vid;
 	Media::BlockParser::AC3BlockParser ac3Parser;
 	if (ac3Parser.ParseStreamData(fd).SetTo(src))
 	{
-		NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
+		NEW_CLASSNN(vid, Media::MediaFile(fd->GetFullName()));
 		vid->AddSource(src, 0);
 		return vid;
 	}

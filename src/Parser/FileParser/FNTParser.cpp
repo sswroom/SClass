@@ -92,11 +92,11 @@ Optional<Media::FontRenderer> Parser::FileParser::FNTParser::ParseFontBuff(NN<Te
 		return nullptr;
 	}
 
-	Media::MSFontRenderer *font;
-	NEW_CLASS(font, Media::MSFontRenderer(sourceName, fontBuff, buffSize));
+	NN<Media::MSFontRenderer> font;
+	NEW_CLASSNN(font, Media::MSFontRenderer(sourceName, fontBuff, buffSize));
 	if (font->IsError())
 	{
-		DEL_CLASS(font);
+		font.Delete();
 		return nullptr;
 	}
 	return font;

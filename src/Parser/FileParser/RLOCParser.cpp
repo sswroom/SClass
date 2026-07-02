@@ -228,14 +228,14 @@ Optional<IO::ParsedObject> Parser::FileParser::RLOCParser::ParseFileHdr(NN<IO::S
 	if (ReadInt32(&hdr[0]) != devId || ReadInt32(&hdr[128]) != devId || ReadInt32(&hdr[256]) != devId)
 		return nullptr;
 
-	Map::GPSTrack *track;
+	NN<Map::GPSTrack> track;
 	sptr = Text::StrInt32(sbuff, devId);
 	s = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
-	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s.Ptr()));
+	NEW_CLASSNN(track, Map::GPSTrack(fd->GetFullName(), true, 0, s.Ptr()));
 	track->SetTrackName(s->ToCString());
 	s->Release();
-	RLOCExtraParser *parser;
-	NEW_CLASS(parser, RLOCExtraParser());
+	NN<RLOCExtraParser> parser;
+	NEW_CLASSNN(parser, RLOCExtraParser());
 	track->SetExtraParser(parser);
 	currPos = 0;
 	while (currPos < fileSize)

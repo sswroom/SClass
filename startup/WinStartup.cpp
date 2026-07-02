@@ -170,8 +170,8 @@ void WinProgControl_Destroy(NN<WinProgControl> ctrl)
 Optional<UI::GUICore> Core::ProgControl::CreateGUICore(NN<Core::ProgControl> progCtrl)
 {
 	WinProgControl *ctrl = (WinProgControl*)progCtrl.Ptr();
-	UI::Win::WinCore *ui;
-	NEW_CLASS(ui, UI::Win::WinCore(ctrl->hInst));
+	NN<UI::Win::WinCore> ui;
+	NEW_CLASSNN(ui, UI::Win::WinCore(ctrl->hInst));
 	return ui;
 }
 

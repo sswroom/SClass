@@ -11,7 +11,7 @@ namespace Media
 	class ScreenCapturer
 	{
 	private:
-		Media::MonitorSurfaceMgr *surfaceMgr;
+		NN<Media::MonitorSurfaceMgr> surfaceMgr;
 		NN<Media::MonitorMgr> monMgr;
 		NN<Media::ColorManager> colorMgr;
 

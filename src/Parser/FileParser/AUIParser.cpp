@@ -38,8 +38,8 @@ Optional<IO::ParsedObject> Parser::FileParser::AUIParser::ParseFileHdr(NN<IO::St
 	Data::ArrayListNN<Media::MediaSource> mediaArr;
 	if (auiMgr->LoadFile(fd->GetFullFileName()->v, mediaArr) > 0)
 	{
-		Media::MediaFile *file;
-		NEW_CLASS(file, Media::MediaFile(fd->GetFullName()));
+		NN<Media::MediaFile> file;
+		NEW_CLASSNN(file, Media::MediaFile(fd->GetFullName()));
 		UIntOS i = 0;
 		UIntOS j = mediaArr.GetCount();
 		while (i < j)

@@ -25,7 +25,7 @@
 #include "IO/Path.h"
 struct Net::HTTPMyClient::ClassData
 {
-	IO::FileStream *fs;
+	NN<IO::FileStream> fs;
 };
 
 #endif
@@ -434,13 +434,13 @@ Net::HTTPMyClient::HTTPMyClient(NN<Net::TCPClientFactory> clif, Optional<Net::SS
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("HTTPClient_"));
 	dt.SetCurrTimeUTC();
 	sptr = Text::StrInt64(sptr, dt.ToTicks());
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".dat"));
-	NEW_CLASS(this->clsData->fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(this->clsData->fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 #endif
 	this->ssl = ssl;
 	this->cli = nullptr;
@@ -473,8 +473,8 @@ Net::HTTPMyClient::~HTTPMyClient()
 	this->reqHeaders.FreeAll();
 	this->userAgent->Release();
 #if defined(LOGREPLY)
-	DEL_CLASS(this->clsData->fs);
-	MemFree(this->clsData);
+	this->clsData->fs.Delete();
+	MemFreeNN(this->clsData);
 #endif
 }
 

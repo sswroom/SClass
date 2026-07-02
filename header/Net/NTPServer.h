@@ -12,14 +12,14 @@ namespace Net
 	{
 	private:
 		NN<Net::SocketFactory> sockf;
-		Net::UDPServer *svr;
+		Optional<Net::UDPServer> svr;
 		NN<IO::LogTool> log;
 		NN<Text::String> timeServerHost;
 		Int64 serverReqInterval;
 		Int64 refTime;
 		Int64 timeDiff;
 		Sync::Thread thread;
-		Net::NTPClient *cli;
+		Optional<Net::NTPClient> cli;
 
 		static void __stdcall PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
 		static void __stdcall CheckThread(NN<Sync::Thread> thread);

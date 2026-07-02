@@ -1109,13 +1109,14 @@ UnsafeArrayOpt<UTF8Char> Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, Un
 							if (optnode.IsNull())
 							{
 								return xmlEnd;
-/*								NEW_CLASS(node, XMLNode(XMLNode::NodeType::Element));
+/*								NEW_CLASSNN(node, XMLNode(XMLNode::NodeType::Element));
 								currPtr2 = node->name = MemAlloc(WChar, xmlNameEn - xmlNameSt + 1);
 								while (xmlNameSt < xmlNameEn)
 								{
 									*currPtr2++ = *xmlNameSt++;
 								}
-								*currPtr2 = 0;*/
+								*currPtr2 = 0;
+								optnode = node;*/
 							}
 						}
 					}

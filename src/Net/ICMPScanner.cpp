@@ -12,11 +12,11 @@
 
 typedef struct
 {
-	Net::ICMPScanner *me;
+	NN<Net::ICMPScanner> me;
 	UInt32 ipStart;
 	UInt32 ipEnd;
 	Bool ended;
-	Sync::Event *evt;
+	NN<Sync::Event> evt;
 } PingStatus;
 
 void Net::ICMPScanner::ICMPChecksum(UInt8 *buff, IntOS buffSize)
@@ -123,7 +123,15 @@ UInt32 __stdcall Net::ICMPScanner::Ping2Thread(AnyType userObj)
 						{
 							result = MemAllocNN(ScanResult);
 							result->ip = ReadNUInt32(&readBuff[12]);
-							result->respTime = me->clk->GetTimeDiff();;
+							NN<Manage::HiResClock> clk;
+							if (me->clk.SetTo(clk))
+							{
+								result->respTime = clk->GetTimeDiff();;
+							}
+							else
+							{
+								result->respTime = -1;
+							}
 							result->mac[0] = 0;
 							result->mac[1] = 0;
 							result->mac[2] = 0;
@@ -241,7 +249,9 @@ Bool Net::ICMPScanner::Scan(UInt32 ip)
 		this->threadRunning = true;
 		this->threadToStop = false;
 		this->soc = s;
-		NEW_CLASS(this->clk, Manage::HiResClock());
+		NN<Manage::HiResClock> clk;
+		NEW_CLASSNN(clk, Manage::HiResClock());
+		this->clk = clk;
 		Sync::ThreadUtil::Create(Ping2Thread, this);
 
 		Net::SocketUtil::AddressInfo addr;
@@ -253,7 +263,7 @@ Bool Net::ICMPScanner::Scan(UInt32 ip)
 		MemClear(&packetBuff[8], 56);
 		ICMPChecksum(packetBuff, 64);
 
-		this->clk->Start();
+		clk->Start();
 		buff[3] = 1;
 		while (buff[3] < 255)
 		{
@@ -270,19 +280,18 @@ Bool Net::ICMPScanner::Scan(UInt32 ip)
 			Sync::SimpleThread::Sleep(1);
 		}
 		this->soc = nullptr;
-		DEL_CLASS(this->clk);
-		this->clk = 0;
+		this->clk.Delete();
 
 		this->AppendMACs(ip);
 	}
 	else
 	{
 		UnsafeArray<PingStatus>status = MemAllocArr(PingStatus, (1 << THREADLEV));
-		NEW_CLASS(status[0].evt, Sync::Event(true));
+		NEW_CLASSNN(status[0].evt, Sync::Event(true));
 		UIntOS i = 0;
 		while (i < (UIntOS)(1 << THREADLEV))
 		{
-			status[i].me = this;
+			status[i].me = *this;
 			status[i].evt = status[0].evt;
 			status[i].ended = false;
 			buff[3] = (UInt8)(i << (8 - THREADLEV));
@@ -315,7 +324,7 @@ Bool Net::ICMPScanner::Scan(UInt32 ip)
 				break;
 			}
 		}
-		DEL_CLASS(status[0].evt);
+		status[0].evt.Delete();
 		MemFreeArr(status);
 
 		this->AppendMACs(ip);

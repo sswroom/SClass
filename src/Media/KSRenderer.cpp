@@ -61,7 +61,7 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(AnyType obj)
 	Data::Duration audStartTime;
 //	CKsAudRenFilter *pFilter;
 	CKsAudRenPin *pPin;
-	Sync::Event *evt;
+	NN<Sync::Event> evt;
 //	HRESULT hr;
 	UIntOS buffLeng = 8192;
 	NN<Media::AudioSource> audsrc;
@@ -83,7 +83,7 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(AnyType obj)
 				buffLeng = 8192;
 		}
 
-		NEW_CLASS(evt, Sync::Event(true));
+		NEW_CLASSNN(evt, Sync::Event(true));
 		if (me->clk.SetTo(clk)) clk->Start(audStartTime);
 		me->playing = true;
 		audsrc->Start(evt, buffLeng);
@@ -204,7 +204,7 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(AnyType obj)
 		}
 
 		audsrc->Stop();
-		DEL_CLASS(evt);
+		evt.Delete();
 		pPin->SetState(KSSTATE_PAUSE);
 		pPin->SetState(KSSTATE_STOP);
 		i = cPackets;

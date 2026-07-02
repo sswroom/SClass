@@ -19,7 +19,7 @@ namespace Media
 		UInt32 isoRating;
 		Optional<Text::String> lens;
 		Double focalLength;
-		Data::DateTime *photoDate;
+		Optional<Data::DateTime> photoDate;
 
 		void ParseXMF(NN<Text::XMLDocument> xmf);
 		Double ParseFractionOr(NN<Text::String> s, Double orVal);

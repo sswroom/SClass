@@ -27,7 +27,7 @@ namespace Media
 		private:
 			IBaseFilter *baseFilter;
 			IPropertyBag *pPropBag;
-			DShowVideoFilter *captureFilter;
+			Optional<DShowVideoFilter> captureFilter;
 			IGraphBuilder *graph;
 			IPin *pin1;
 			IPin *pin2;
@@ -71,7 +71,7 @@ namespace Media
 			UIntOS GetDeviceCount();
 			UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UIntOS devNo);
 			UnsafeArrayOpt<WChar> GetDeviceId(UnsafeArray<WChar> buff, UIntOS devNo);
-			DShowVideoCapture *GetDevice(UIntOS devNo);
+			Optional<DShowVideoCapture> GetDevice(UIntOS devNo);
 		};
 	}
 }

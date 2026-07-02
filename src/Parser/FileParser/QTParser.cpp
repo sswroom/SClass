@@ -1121,7 +1121,7 @@ Optional<Media::MediaSource> Parser::FileParser::QTParser::ParseStblAtom(NN<IO::
 	{
 		if (afmt.formatId != 0 && stszOfst != 0 && stcOfst != 0 && ttsOfst != 0 && stcoOfst != 0)
 		{
-			Media::AudioFrameSource *asrc = 0;
+			NN<Media::AudioFrameSource> asrc;
 //			Int32 ntts;
 			Int32 nstc;
 //			Int32 nstco;
@@ -1169,11 +1169,11 @@ Optional<Media::MediaSource> Parser::FileParser::QTParser::ParseStblAtom(NN<IO::
 
 			if (afmt.formatId == 255 || afmt.formatId == 0x1610)
 			{
-				NEW_CLASS(asrc, Media::AACFrameSource(fd, afmt, fd->GetFullName()));
+				NEW_CLASSNN(asrc, Media::AACFrameSource(fd, afmt, fd->GetFullName()));
 			}
 			else
 			{
-				NEW_CLASS(asrc, Media::AudioFrameSource(fd, afmt, fd->GetFullName()));
+				NEW_CLASSNN(asrc, Media::AudioFrameSource(fd, afmt, fd->GetFullName()));
 			}
 
 //			ntts = ReadMInt32(&ttsBuff[12]);
@@ -1334,8 +1334,8 @@ Optional<Media::MediaSource> Parser::FileParser::QTParser::ParseStblAtom(NN<IO::
 			Data::FastMapNative<UInt32, Int32> keyMap;
 			keyMap.Put(0, 1);
 
-			Media::FileVideoSource *fsrc;
-			NEW_CLASS(fsrc, Media::FileVideoSource(fd, frInfo, frameRate, frameRateDenorm, timeScale != 0));
+			NN<Media::FileVideoSource> fsrc;
+			NEW_CLASSNN(fsrc, Media::FileVideoSource(fd, frInfo, frameRate, frameRateDenorm, timeScale != 0));
 			Data::ByteBuffer ttsBuff(ttsAtomSize);
 			Data::ByteBuffer stcBuff(stcAtomSize);
 			Data::ByteBuffer stcoBuff(stcoAtomSize);

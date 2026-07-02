@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListInt32.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/ArrayListObj.hpp"
 #include "Data/ICaseBTreeStringMapObj.hpp"
 #include "Text/SearchIndexer.h"
@@ -13,10 +14,10 @@ Text::SearchIndexer::SearchIndexer(NN<Text::TextAnalyzer> ta)
 Text::SearchIndexer::~SearchIndexer()
 {
 	UIntOS cnt;
-	UnsafeArray<Data::ArrayListInt64*> vals = this->strIndex.ToArray(cnt);
+	UnsafeArray<Optional<Data::ArrayListInt64>> vals = this->strIndex.ToArray(cnt);
 	while (cnt-- > 0)
 	{
-		DEL_CLASS(vals[cnt]);
+		vals[cnt].Delete();
 	}
 	MemFreeArr(vals);
 }
@@ -29,10 +30,10 @@ void Text::SearchIndexer::IndexString(UnsafeArray<const UTF8Char> str, Int64 key
 	NN<Text::TextAnalyzer::TextSession> sess = this->ta->BeginAnalyze(str);
 	while (this->ta->NextWord(sbuff, sess).SetTo(sptr))
 	{
-		Data::ArrayListInt64 *tmpVal = this->strIndex.Get(CSTRP(sbuff, sptr));
-		if (tmpVal == 0)
+		NN<Data::ArrayListInt64> tmpVal;
+		if (!this->strIndex.Get(CSTRP(sbuff, sptr)).SetTo(tmpVal))
 		{
-			NEW_CLASS(tmpVal, Data::ArrayListInt64());
+			NEW_CLASSNN(tmpVal, Data::ArrayListInt64());
 			this->strIndex.Put(CSTRP(sbuff, sptr), tmpVal);
 		}
 		i = tmpVal->SortedIndexOf(key);
@@ -48,15 +49,14 @@ UIntOS Text::SearchIndexer::SearchString(NN<Data::ArrayListInt64> outArr, Unsafe
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	Data::ArrayListInt64 *tmpIndex;
-	Data::ArrayListInt64 *tmpIndex2;
+	NN<Data::ArrayListInt64> tmpIndex;
+	NN<Data::ArrayListInt64> tmpIndex2;
 	NN<Text::TextAnalyzer::TextSession> sess = this->ta->BeginAnalyze(searchStr);
-	Data::ArrayListObj<Data::ArrayListInt64*> resultList;
+	Data::ArrayListNN<Data::ArrayListInt64> resultList;
 	Data::ArrayListInt32 resultListCnt;
 	while (this->ta->NextWord(sbuff, sess).SetTo(sptr))
 	{
-		tmpIndex = this->strIndex.Get(CSTRP(sbuff, sptr));
-		if (tmpIndex == 0)
+		if (!this->strIndex.Get(CSTRP(sbuff, sptr)).SetTo(tmpIndex))
 		{
 			this->ta->EndAnalyze(sess);
 			return 0;
@@ -74,7 +74,7 @@ UIntOS Text::SearchIndexer::SearchString(NN<Data::ArrayListInt64> outArr, Unsafe
 	j = resultList.GetCount();
 	if (j > 0)
 	{
-		tmpIndex = resultList.GetItem(0);
+		tmpIndex = resultList.GetItemNoCheck(0);
 		k = tmpIndex->GetCount();
 		i = 0;
 		while (retCnt < maxResults && i < k)
@@ -83,7 +83,7 @@ UIntOS Text::SearchIndexer::SearchString(NN<Data::ArrayListInt64> outArr, Unsafe
 			l = 1;
 			while (l < j)
 			{
-				tmpIndex2 = resultList.GetItem(l);
+				tmpIndex2 = resultList.GetItemNoCheck(l);
 				if (tmpIndex2->SortedIndexOf(ind) < 0)
 				{
 					break;

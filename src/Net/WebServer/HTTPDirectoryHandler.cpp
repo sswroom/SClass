@@ -164,10 +164,10 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NN<Net::WebServer
 			sbTmp.Append(sbuff);
 			if (IO::Path::GetPathType(sbTmp.ToString()) == IO::Path::PathType::Unknown)
 			{
-				IO::FileStream *uplFS;
-				NEW_CLASS(uplFS, IO::FileStream(sbTmp.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+				NN<IO::FileStream> uplFS;
+				NEW_CLASSNN(uplFS, IO::FileStream(sbTmp.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 				uplFS->Write(uplfile, uplSize);
-				DEL_CLASS(uplFS);
+				uplFS.Delete();
 			}
 		}
 	}*/
@@ -854,10 +854,10 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 						sbTmp.AppendP((UTF8Char*)buff, sptr2);
 						if (IO::Path::GetPathType(sbTmp.ToCString()) == IO::Path::PathType::Unknown)
 						{
-							IO::FileStream *uplFS;
-							NEW_CLASS(uplFS, IO::FileStream(sbTmp.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+							NN<IO::FileStream> uplFS;
+							NEW_CLASSNN(uplFS, IO::FileStream(sbTmp.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 							uplFS->Write(Data::ByteArrayR(uplfile, uplSize));
-							DEL_CLASS(uplFS);
+							uplFS.Delete();
 						}
 						fileId++;
 					}
@@ -1742,9 +1742,9 @@ Optional<IO::PackageFile> Net::WebServer::HTTPDirectoryHandler::GetPackageFile(T
 	IO::Path::PathType pt = IO::Path::GetPathType(sb.ToCString());
 	if (pt == IO::Path::PathType::Directory)
 	{
-		IO::DirectoryPackage *dpkg;
+		NN<IO::DirectoryPackage> dpkg;
 		needRelease.Set(true);
-		NEW_CLASS(dpkg, IO::DirectoryPackage(sb.ToCString()));
+		NEW_CLASSNN(dpkg, IO::DirectoryPackage(sb.ToCString()));
 		return dpkg;
 	}
 	needRelease.Set(false);

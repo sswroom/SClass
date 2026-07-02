@@ -7,7 +7,7 @@ namespace Win32
 {
 	struct ServiceControl : public Core::ProgControl
 	{
-		Sync::Event *evt;
+		NN<Sync::Event> evt;
 		Bool exited;
 		Bool toRestart;
 		UnsafeArray<UTF8Char> argv;

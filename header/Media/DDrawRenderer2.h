@@ -44,8 +44,8 @@ namespace Media
 		void *hwnd;
 		Media::FrameInfo info;
 		Media::CS::CSConverter *csconv;
-		Media::ImageResizer *resizer;
-		Media::Deinterlace8 *deinterlace;
+		NN<Media::ImageResizer> resizer;
+		NN<Media::Deinterlace8> deinterlace;
 		Media::RefClock *clk;
 		Media::ColorManager *colorMgr;
 		FrameSource *frameSources;

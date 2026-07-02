@@ -59,12 +59,12 @@ Net::DNSClient::DNSClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil
 	this->sockf = sockf;
 	this->serverAddr = serverAddr.Ptr()[0];
 	this->lastID = random.NextInt15();
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, nullptr, 0, nullptr, PacketHdlr, this, log, nullptr, 1, false));
+	NEW_CLASSNN(this->svr, Net::UDPServer(sockf, nullptr, 0, nullptr, PacketHdlr, this, log, nullptr, 1, false));
 }
 
 Net::DNSClient::~DNSClient()
 {
-	DEL_CLASS(this->svr);
+	this->svr.Delete();
 }
 
 UIntOS Net::DNSClient::GetByEmailDomainName(NN<Data::ArrayListNN<RequestAnswer>> answers, Text::CStringNN domain)

@@ -355,12 +355,12 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(AnyTyp
 	Data::ArrayListNN<Net::WebSite::WebSite48IdolControl::ItemData> pageList;
 	Data::ArrayListNN<Net::WebSite::WebSite48IdolControl::ItemData> totalList;
 	NN<Net::WebSite::WebSite48IdolControl::ItemData> item;
-	Net::WebSite::WebSite48IdolControl *ctrl;
+	NN<Net::WebSite::WebSite48IdolControl> ctrl;
 	NN<Text::EncodingFactory> encFact;
 	Text::CStringNN userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
 	NN<Text::String> ua = Text::String::New(userAgent);
 	NEW_CLASSNN(encFact, Text::EncodingFactory());
-	NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(me->core->GetTCPClientFactory(), me->core->GetSSLEngine(), encFact, ua.Ptr()));
+	NEW_CLASSNN(ctrl, Net::WebSite::WebSite48IdolControl(me->core->GetTCPClientFactory(), me->core->GetSSLEngine(), encFact, ua.Ptr()));
 	ua->Release();
 	while (true)
 	{
@@ -416,7 +416,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(AnyTyp
 		}
 	}
 
-	DEL_CLASS(ctrl);
+	ctrl.Delete();
 	encFact.Delete();
 }
 
@@ -477,8 +477,9 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 {
 	Text::StringBuilderUTF8 sb;
 
-	Net::WebSite::WebSite48IdolControl *ctrl = 0;
-	Text::EncodingFactory *encFact = 0;
+	Optional<Net::WebSite::WebSite48IdolControl> ctrl = nullptr;
+	Optional<Text::EncodingFactory> encFact = nullptr;
+	NN<Text::EncodingFactory> nnencFact;
 	Text::CStringNN userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
 	NN<Text::String> ua = Text::String::New(userAgent);
 	Text::StringBuilderUTF8 sb2;
@@ -504,13 +505,16 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 				if (!Text::UTF8Util::ValidStr(sarr[1].v))
 				{
 					printf("Invalid char found, id = %d\r\n", id);
-					if (ctrl == 0)
+					NN<Net::WebSite::WebSite48IdolControl> nnctrl;
+					if (!ctrl.SetTo(nnctrl))
 					{
-						NEW_CLASS(encFact, Text::EncodingFactory());
-						NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(this->core->GetTCPClientFactory(), this->core->GetSSLEngine(), encFact, ua.Ptr()));
+						NEW_CLASSNN(nnencFact, Text::EncodingFactory());
+						encFact = nnencFact;
+						NEW_CLASSNN(nnctrl, Net::WebSite::WebSite48IdolControl(this->core->GetTCPClientFactory(), this->core->GetSSLEngine(), nnencFact, ua.Ptr()));
+						ctrl = nnctrl;
 					}
 					sb2.ClearStr();
-					if (ctrl->GetVideoName(id, sb2))
+					if (nnctrl->GetVideoName(id, sb2))
 					{
 						printf("Name of id %d updated\r\n", id);
 						sarr[1] = sb2;
@@ -536,8 +540,8 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 		sb.ClearStr();
 	}
 	ua->Release();
-	SDEL_CLASS(ctrl);
-	SDEL_CLASS(encFact);
+	ctrl.Delete();
+	encFact.Delete();
 	
 	if (updated)
 	{

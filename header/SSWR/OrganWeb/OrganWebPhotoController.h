@@ -17,7 +17,7 @@ namespace SSWR
 		private:
 			Data::RandomOS random;
 			Sync::Mutex resizerMut;
-			Media::Resizer::LanczosResizerLR_C32 *resizerLR;
+			NN<Media::Resizer::LanczosResizerLR_C32> resizerLR;
 			Sync::Mutex csconvMut;
 			Optional<Media::CS::CSConverter> csconv;
 			UInt32 csconvFCC;

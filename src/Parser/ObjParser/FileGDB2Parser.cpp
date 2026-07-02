@@ -105,7 +105,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO:
 		{
 			UTF8Char sbuff[512];
 			UnsafeArray<UTF8Char> sptr;
-			Map::MapLayerCollection *layerColl;
+			NN<Map::MapLayerCollection> layerColl;
 			NN<Map::FileGDBLayer> layer;
 			NN<DB::SharedReadingDB> db;
 			UIntOS i;
@@ -113,7 +113,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO:
 			NEW_CLASSNN(db, DB::SharedReadingDB(fgdb));
 			sptr = pobj->GetSourceNameObj()->ConcatTo(sbuff);
 			i = Text::StrLastIndexOfC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
-			NEW_CLASS(layerColl, Map::MapLayerCollection(CSTRP(sbuff, sptr), CSTRP(&sbuff[i + 1], sptr)));
+			NEW_CLASSNN(layerColl, Map::MapLayerCollection(CSTRP(sbuff, sptr), CSTRP(&sbuff[i + 1], sptr)));
 			i = 0;
 			j = layers.GetCount();
 			while (i < j)

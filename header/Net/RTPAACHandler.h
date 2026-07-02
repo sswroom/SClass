@@ -32,7 +32,7 @@ namespace Net
 		UIntOS buffSize;
 
 		Optional<Sync::Event> evt;
-		Sync::Event *dataEvt;
+		Optional<Sync::Event> dataEvt;
 
 		Sync::Mutex mut;
 

@@ -1512,7 +1512,7 @@ Bool Media::Resizer::LanczosResizer8_8::IsSupported(NN<const Media::FrameInfo> s
 Optional<Media::StaticImage> Media::Resizer::LanczosResizer8_8::ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
-	Media::StaticImage *img;
+	NN<Media::StaticImage> img;
 	if (!IsSupported(srcImage->info))
 		return nullptr;
 	Math::Size2D<UIntOS> targetSize = this->targetSize;
@@ -1525,7 +1525,7 @@ Optional<Media::StaticImage> Media::Resizer::LanczosResizer8_8::ProcessToNewPart
 		targetSize.y = srcImage->info.dispSize.y;
 	}
 	CalOutputSize(srcImage->info, targetSize, destInfo, rar);
-	NEW_CLASS(img, Media::StaticImage(destInfo));
+	NEW_CLASSNN(img, Media::StaticImage(destInfo));
 	Int32 tlx = (Int32)srcTL.x;
 	Int32 tly = (Int32)srcTL.y;
 	Resize(NN<const Media::StaticImage>::ConvertFrom(srcImage)->data + tlx * 4 + tly * srcImage->GetDataBpl(), srcImage->GetDataBpl(), srcBR.x - srcTL.x, srcBR.y - srcTL.y, srcTL.x - tlx, srcTL.y - tly, img->data, img->GetDataBpl(), destInfo.dispSize.x, destInfo.dispSize.y);

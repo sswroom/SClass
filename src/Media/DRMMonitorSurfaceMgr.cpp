@@ -193,23 +193,19 @@ UIntOS Media::DRMMonitorSurfaceMgr::GetMonitorCount()
 
 Optional<Media::MonitorSurface> Media::DRMMonitorSurfaceMgr::CreateSurface(Math::Size2D<UIntOS> size, UIntOS bitDepth)
 {
-	Media::MemorySurface *surface;
-	NEW_CLASS(surface, Media::MemorySurface(size, bitDepth, this->GetMonitorColor(0), this->GetMonitorDPI(0)));
+	NN<Media::MemorySurface> surface;
+	NEW_CLASSNN(surface, Media::MemorySurface(size, bitDepth, this->GetMonitorColor(0), this->GetMonitorDPI(0)));
 	return surface;
 }
 
 Optional<Media::MonitorSurface> Media::DRMMonitorSurfaceMgr::CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow)
 {
-	Media::DRMSurface *surface = 0;
-	NEW_CLASS(surface, Media::DRMSurface(this->clsData->fd, hMon, this->GetMonitorColor(hMon), this->GetMonitorDPI(hMon)));
-	if (surface == 0)
+	NN<Media::DRMSurface> surface;
+	NEW_CLASSNN(surface, Media::DRMSurface(this->clsData->fd, hMon, this->GetMonitorColor(hMon), this->GetMonitorDPI(hMon)));
+	if (surface->IsError())
 	{
-		return 0;
-	}
-	else if (surface->IsError())
-	{
-		DEL_CLASS(surface);
-		return 0;
+		surface.Delete();
+		return nullptr;
 	}
 	return surface;
 }

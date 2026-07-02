@@ -121,7 +121,7 @@ Optional<Math::Geometry::Vector2D> SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVect
 	NN<UserFileInfo> ufile;
 	if (!this->userFileList->GetItem((UIntOS)id).SetTo(ufile))
 		return nullptr;
-	Math::Geometry::Point *pt;
+	NN<Math::Geometry::Point> pt;
 	NN<Text::String> s;
 	if (ufile->locType != LocType::PhotoExif && ufile->locType != LocType::UserInput)
 	{
@@ -133,12 +133,12 @@ Optional<Math::Geometry::Vector2D> SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVect
 		}
 		UInt32 srid = this->csys->GetSRID();
 		pos = this->gpsTrk->GetPosByTime(ts);
-		NEW_CLASS(pt, Math::Geometry::Point(srid, pos));
+		NEW_CLASSNN(pt, Math::Geometry::Point(srid, pos));
 		return pt;
 	}
 	else
 	{
-		NEW_CLASS(pt, Math::Geometry::Point(this->csys->GetSRID(), Math::Coord2DDbl(ufile->lon, ufile->lat)));
+		NEW_CLASSNN(pt, Math::Geometry::Point(this->csys->GetSRID(), Math::Coord2DDbl(ufile->lon, ufile->lat)));
 		return pt;
 	}
 }

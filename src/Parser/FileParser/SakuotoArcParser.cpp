@@ -62,8 +62,8 @@ Optional<IO::ParsedObject> Parser::FileParser::SakuotoArcParser::ParseFileHdr(NN
 		return nullptr;
 	}
 
-	IO::VirtualPackageFile *pf;
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NN<IO::VirtualPackageFile> pf;
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	
 	i = 0;
 	nextOfst = 0;
@@ -73,7 +73,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SakuotoArcParser::ParseFileHdr(NN
 		fileOfst = ReadUInt32(&recBuff[i + 4]);
 		if (fileOfst != nextOfst)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		fileName = (UTF16Char*)&recBuff[i + 8];

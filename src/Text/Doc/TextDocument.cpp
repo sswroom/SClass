@@ -155,16 +155,16 @@ Optional<Text::Doc::DocSection> Text::Doc::TextDocument::GetItem(UIntOS index) c
 Bool Text::Doc::TextDocument::BeginPrint(NN<Media::PrintDocument> doc)
 {
 	NN<Text::Doc::DocSection> section;
-	Media::PaperSize *paper;
+	NN<Media::PaperSize> paper;
 	if (this->items.GetCount() == 0)
 		return false;
 	pStatus.currSection = 0;
 	doc->SetDocName(this->docName);
 	section = this->items.GetItemNoCheck(0);
-	NEW_CLASS(paper, Media::PaperSize(section->GetPaperType()));
+	NEW_CLASSNN(paper, Media::PaperSize(section->GetPaperType()));
 	doc->SetNextPagePaperSizeMM(paper->GetWidthMM(), paper->GetHeightMM());
 	doc->SetNextPageOrientation(section->IsLandscape()?Media::PrintDocument::PageOrientation::Landscape:Media::PrintDocument::PageOrientation::Portrait);
-	DEL_CLASS(paper);
+	paper.Delete();
 	return true;
 }
 

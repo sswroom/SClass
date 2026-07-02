@@ -344,7 +344,7 @@ void Net::LDAPClient::ParseLDAPMessage(UnsafeArray<const UInt8> msgBuff, UIntOS 
 	}
 }
 
-UnsafeArrayOpt<const UTF8Char> Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, UnsafeArray<const UTF8Char> filter, Bool complex)
+UnsafeArrayOpt<const UTF8Char> Net::LDAPClient::ParseFilter(NN<Net::ASN1PDUBuilder> pdu, UnsafeArray<const UTF8Char> filter, Bool complex)
 {
 	UnsafeArray<const UTF8Char> filterStart;
 	while (Text::CharUtil::PtrIsWS(filter));
@@ -533,7 +533,7 @@ Net::LDAPClient::LDAPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUt
 	this->recvRunning = false;
 	this->recvToStop = false;
 	this->lastMsgId = 0;
-	NEW_CLASS(this->cli, Net::TCPClient(sockf, addr, port, timeout));
+	NEW_CLASSNN(this->cli, Net::TCPClient(sockf, addr, port, timeout));
 	if (!this->cli->IsConnectError() && !this->cli->IsClosed())
 	{
 		Sync::ThreadUtil::Create(RecvThread, this);
@@ -555,7 +555,7 @@ Net::LDAPClient::~LDAPClient()
 			Sync::SimpleThread::Sleep(1);
 		}
 	}
-	DEL_CLASS(this->cli);
+	this->cli.Delete();
 }
 
 Bool Net::LDAPClient::IsError()
@@ -565,12 +565,12 @@ Bool Net::LDAPClient::IsError()
 
 Bool Net::LDAPClient::Bind(Text::CString userDN, Text::CString password)
 {
-	Net::ASN1PDUBuilder *pdu;
+	NN<Net::ASN1PDUBuilder> pdu;
 	UIntOS buffSize;
 	UnsafeArray<const UInt8> buff;
 	Net::LDAPClient::ReqStatus status;
 	Bool valid;
-	NEW_CLASS(pdu, ASN1PDUBuilder())
+	NEW_CLASSNN(pdu, ASN1PDUBuilder())
 	pdu->BeginSequence();
 	Sync::MutexUsage msgIdMutUsage(this->msgIdMut);
 	status.msgId = ++(this->lastMsgId);
@@ -604,7 +604,7 @@ Bool Net::LDAPClient::Bind(Text::CString userDN, Text::CString password)
 	mutUsage.EndUse();
 
 	valid = (this->cli->Write(Data::ByteArrayR(buff, buffSize)) == buffSize);
-	DEL_CLASS(pdu);
+	pdu.Delete();
 	if (valid)
 	{
 		Manage::HiResClock clk;
@@ -626,11 +626,11 @@ Bool Net::LDAPClient::Bind(Text::CString userDN, Text::CString password)
 
 Bool Net::LDAPClient::Unbind()
 {
-	Net::ASN1PDUBuilder *pdu;
+	NN<Net::ASN1PDUBuilder> pdu;
 	UIntOS buffSize;
 	UnsafeArray<const UInt8> buff;
 	Bool valid;
-	NEW_CLASS(pdu, ASN1PDUBuilder())
+	NEW_CLASSNN(pdu, ASN1PDUBuilder())
 	pdu->BeginSequence();
 	Sync::MutexUsage msgIdMutUsage(this->msgIdMut);
 	pdu->AppendUInt32(++(this->lastMsgId));
@@ -647,19 +647,19 @@ Bool Net::LDAPClient::Unbind()
 
 	buff = pdu->GetBuff(buffSize);
 	valid = (this->cli->Write(Data::ByteArrayR(buff, buffSize)) == buffSize);
-	DEL_CLASS(pdu);
+	pdu.Delete();
 	return valid;
 }
 
 Bool Net::LDAPClient::Search(Text::CStringNN baseObject, ScopeType scope, DerefType derefAliases, UInt32 sizeLimit, UInt32 timeLimit, Bool typesOnly, UnsafeArrayOpt<const UTF8Char> filter, NN<Data::ArrayListNN<Net::LDAPClient::SearchResObject>> results)
 {
-	Net::ASN1PDUBuilder *pdu;
+	NN<Net::ASN1PDUBuilder> pdu;
 	UIntOS buffSize;
 	UnsafeArray<const UInt8> buff;
 	Net::LDAPClient::ReqStatus status;
 	Data::ArrayListNN<Net::LDAPClient::SearchResObject> resObjs;
 	Bool valid;
-	NEW_CLASS(pdu, ASN1PDUBuilder())
+	NEW_CLASSNN(pdu, ASN1PDUBuilder())
 	pdu->BeginSequence();
 	Sync::MutexUsage msgIdMutUsage(this->msgIdMut);
 	status.msgId = ++(this->lastMsgId);
@@ -681,7 +681,7 @@ Bool Net::LDAPClient::Search(Text::CStringNN baseObject, ScopeType scope, DerefT
 	}
 	if (!ParseFilter(pdu, nnfilter, false).SetTo(nnfilter) || nnfilter[0] != 0)
 	{
-		DEL_CLASS(pdu);
+		pdu.Delete();
 		return false;
 	}
 
@@ -706,7 +706,7 @@ Bool Net::LDAPClient::Search(Text::CStringNN baseObject, ScopeType scope, DerefT
 	mutUsage.EndUse();
 
 	valid = (this->cli->Write(Data::ByteArrayR(buff, buffSize)) == buffSize);
-	DEL_CLASS(pdu);
+	pdu.Delete();
 	if (valid)
 	{
 		Manage::HiResClock clk;

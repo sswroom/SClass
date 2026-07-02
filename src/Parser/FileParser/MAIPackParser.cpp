@@ -52,9 +52,9 @@ Optional<IO::ParsedObject> Parser::FileParser::MAIPackParser::ParseFileHdr(NN<IO
 	hdrEnd = ReadUInt32(&hdr[8]) * 24 + 16;
 	fileOfst = hdrEnd;
 	hdrOfst = 16;
-	IO::VirtualPackageFile *pf;
+	NN<IO::VirtualPackageFile> pf;
 	Text::Encoding enc(932);
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 
 	while (hdrOfst < hdrEnd)
 	{
@@ -63,7 +63,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MAIPackParser::ParseFileHdr(NN<IO
 		thisSize = ReadUInt32(&recbuff[20]);
 		if (thisOfst != fileOfst)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(name, recbuff, 16, 0);

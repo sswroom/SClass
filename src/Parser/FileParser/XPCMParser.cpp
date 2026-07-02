@@ -45,7 +45,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XPCMParser::ParseFileHdr(NN<IO::S
 	if (ReadUInt64(&hdr[4]) != fd->GetDataSize() - 28)
 		return nullptr;
 
-	Media::MediaFile *vid;
+	NN<Media::MediaFile> vid;
 	Media::AudioFormat af;
 	af.formatId = ReadUInt16(&hdr[12]);
 	af.nChannels = ReadUInt16(&hdr[14]);
@@ -61,7 +61,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XPCMParser::ParseFileHdr(NN<IO::S
 	NN<Media::LPCMSource> src;
 	NEW_CLASSNN(src, Media::LPCMSource(fd, 28, ReadUInt32(&hdr[4]), af, fd->GetFullName()));
 
-	NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
+	NEW_CLASSNN(vid, Media::MediaFile(fd->GetFullName()));
 	vid->AddSource(src, 0);
 
 	return vid;

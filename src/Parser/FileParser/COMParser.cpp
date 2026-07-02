@@ -56,8 +56,8 @@ Optional<IO::ParsedObject> Parser::FileParser::COMParser::ParseFileHdr(NN<IO::St
 	regs.DS = 0x80;
 	regs.ES = 0x80;
 	regs.SS = 0x80;
-	IO::EXEFile *exef;
-	NEW_CLASS(exef, IO::EXEFile(fd->GetFullName()));
+	NN<IO::EXEFile> exef;
+	NEW_CLASSNN(exef, IO::EXEFile(fd->GetFullName()));
 	UIntOS codeLen;
 	exef->AddDOSEnv((UIntOS)fd->GetDataSize() + 256, regs, 0x80);
 	UnsafeArray<UInt8> codePtr;

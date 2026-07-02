@@ -242,14 +242,14 @@ Optional<IO::ParsedObject> Parser::FileParser::SLOCParser::ParseFileHdr(NN<IO::S
 	if (ReadInt64(&hdr[0]) != devId || ReadInt64(&hdr[84]) != devId || ReadInt64(&hdr[168]) != devId)
 		return nullptr;
 
-	Map::GPSTrack *track;
+	NN<Map::GPSTrack> track;
 	sptr = Text::StrInt64(sbuff, devId);
 	s = Text::String::New(sbuff, (UIntOS)(sptr - sbuff));
-	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s.Ptr()));
+	NEW_CLASSNN(track, Map::GPSTrack(fd->GetFullName(), true, 0, s.Ptr()));
 	track->SetTrackName(s->ToCString());
 	s->Release();
-	SLOCExtraParser *parser;
-	NEW_CLASS(parser, SLOCExtraParser());
+	NN<SLOCExtraParser> parser;
+	NEW_CLASSNN(parser, SLOCExtraParser());
 	track->SetExtraParser(parser);
 	currPos = 0;
 	while (currPos < fileSize)

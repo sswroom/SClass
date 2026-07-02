@@ -24,7 +24,7 @@ namespace Media
 		Int32 bufferIndex;
 		Int64 bufferOfst;
 		Bool bufferFilled;
-		Sync::Event *bufferEvt;
+		NN<Sync::Event> bufferEvt;
 
 		EndNotifier endHdlr;
 		AnyType endHdlrObj;

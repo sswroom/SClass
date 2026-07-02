@@ -1171,7 +1171,7 @@ Bool Media::Resizer::LanczosResizerH8_8::IsSupported(NN<const Media::FrameInfo> 
 Optional<Media::StaticImage> Media::Resizer::LanczosResizerH8_8::ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
-	Media::StaticImage *img;
+	NN<Media::StaticImage> img;
 	if (srcImage->GetImageClass() != Media::RasterImage::ImageClass::StaticImage || !IsSupported(srcImage->info))
 		return nullptr;
 	Math::Size2D<UIntOS> targetSize = this->targetSize;
@@ -1184,7 +1184,7 @@ Optional<Media::StaticImage> Media::Resizer::LanczosResizerH8_8::ProcessToNewPar
 		targetSize.y = (UIntOS)Double2IntOS(srcBR.y - srcTL.y);//srcImage->info.height;
 	}
 	CalOutputSize(srcImage->info, targetSize, destInfo, rar);
-	NEW_CLASS(img, Media::StaticImage(destInfo));
+	NEW_CLASSNN(img, Media::StaticImage(destInfo));
 	NN<Media::EXIFData> exif;
 	if (srcImage->exif.SetTo(exif))
 	{

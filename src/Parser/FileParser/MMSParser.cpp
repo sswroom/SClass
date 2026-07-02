@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::MMSParser::GetParserType()
 
 Optional<IO::ParsedObject> Parser::FileParser::MMSParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
-	IO::VirtualPackageFile *pf;
+	NN<IO::VirtualPackageFile> pf;
 	UInt32 fileCnt;
 	UIntOS currOfst;
 	UInt8 buff[256];
@@ -44,7 +44,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MMSParser::ParseFileHdr(NN<IO::St
 	if (hdr[0] != 0x8c || hdr[1] != 0x80)
 		return nullptr;
 
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	ptr = &hdr[2];
 	while (*ptr & 0x80)
 	{

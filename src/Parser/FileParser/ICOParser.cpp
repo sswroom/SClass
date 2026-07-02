@@ -40,7 +40,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 	UInt8 icoImageHdr[16];
 	UInt32 icoCnt;
 	UIntOS i;
-	Media::ImageList *imgList;
+	NN<Media::ImageList> imgList;
 	NN<Media::StaticImage> currImg;
 	UInt32 imgWidth;
 	UInt32 imgHeight;
@@ -66,7 +66,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 
 	nextOfst = 6 + (icoCnt << 4);
-	NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
+	NEW_CLASSNN(imgList, Media::ImageList(fd->GetFullName()));
 	i = 0;
 	while (i < icoCnt)
 	{
@@ -81,7 +81,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 		thisSize = ReadUInt32(&icoImageHdr[8]);
 		if (nextOfst != ReadUInt32(&icoImageHdr[12]) || thisSize > 1572904)
 		{
-			DEL_CLASS(imgList);
+			imgList.Delete();
 			return nullptr;
 		}
 
@@ -89,7 +89,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 		fd->GetRealData(nextOfst, thisSize, imgBuff);
 		if (ReadUInt32(&imgBuff[0]) != 40 || ReadUInt32(&imgBuff[4]) != imgWidth || ReadUInt32(&imgBuff[8]) != (imgHeight << 1))
 		{
-			DEL_CLASS(imgList);
+			imgList.Delete();
 			return nullptr;
 		}
 		pal = &imgBuff[40];
@@ -114,7 +114,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 
 				if (thisSize != (dataSize + dataAdd) * imgHeight * 2 + 40 + 8)
 				{
-					DEL_CLASS(imgList);
+					imgList.Delete();
 					return nullptr;
 				}
 
@@ -169,7 +169,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 
 				if (thisSize != (imgByteSize + imgByteAdd + maskByteSize + maskByteAdd) * imgHeight + 40 + 64)
 				{
-					DEL_CLASS(imgList);
+					imgList.Delete();
 					return nullptr;
 				}
 
@@ -223,7 +223,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 
 				if (thisSize != (imgWidth + imgByteAdd + maskByteSize + maskByteAdd) * imgHeight + 40 + 1024)
 				{
-					DEL_CLASS(imgList);
+					imgList.Delete();
 					return nullptr;
 				}
 
@@ -277,7 +277,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 
 				if ((IntOS)thisSize != ((IntOS)imgWidth * 3 + (IntOS)imgByteAdd + maskByteSize + maskByteAdd) * (IntOS)imgHeight + 40)
 				{
-					DEL_CLASS(imgList);
+					imgList.Delete();
 					return nullptr;
 				}
 
@@ -343,7 +343,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 				}
 				if (thisSize != (UInt32)((imgWidth * 4) * imgHeight + 40) && thisSize != (imgWidth * 4 + maskByteSize + maskByteAdd) * imgHeight + 40)
 				{
-					DEL_CLASS(imgList);
+					imgList.Delete();
 					return nullptr;
 				}
 
@@ -353,7 +353,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 			}
 			break;
 		default:
-			DEL_CLASS(imgList);
+			imgList.Delete();
 			return nullptr;
 		}
 		if (fileType == 2)

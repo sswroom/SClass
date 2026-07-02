@@ -20,9 +20,9 @@ namespace Net
 		struct Listener
 		{
 			Optional<Net::SSLEngine> ssl;
-			Net::TCPServer *svr;
-			Net::TCPClientMgr *cliMgr;
-			Net::WebServer::WebListener *listener;
+			Optional<Net::TCPServer> svr;
+			Optional<Net::TCPClientMgr> cliMgr;
+			Optional<Net::WebServer::WebListener> listener;
 			MQTTBroker *me;
 		};
 		typedef enum

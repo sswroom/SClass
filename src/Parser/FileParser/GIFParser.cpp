@@ -76,13 +76,12 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 	UInt8 readBlock[256];
 	UIntOS readSize;
 	UInt8 disposalMethod = 0;
-	Media::ImageList *imgList;
-	;
+	NN<Media::ImageList> imgList;
 	Data::ByteBufferA scnImg32;
 	Data::ByteBuffer globalColorTable;
 	Data::ByteBuffer screenColorTable;
 	Int32 globalTransparentIndex = -1;
-	NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
+	NEW_CLASSNN(imgList, Media::ImageList(fd->GetFullName()));
 	if (hdr[10] & 0x80)
 	{
 		globalColorTable.ChangeSizeAndClear((UIntOS)3 << colorSize);
@@ -158,9 +157,9 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 						currOfst += 1 + (UIntOS)readBlock[0];
 					}
 					mstm.SeekFromBeginning(0);
-					Data::Compress::LZWDecStream *lzw;
+					NN<Data::Compress::LZWDecStream> lzw;
 					NN<Media::StaticImage> simg;
-					NEW_CLASS(lzw, Data::Compress::LZWDecStream(mstm, true, blockType, 12, 0));
+					NEW_CLASSNN(lzw, Data::Compress::LZWDecStream(mstm, true, blockType, 12, 0));
 					
 					Data::ByteArray tmpPtr;
 					Data::ByteArray tmpPtr2;
@@ -688,7 +687,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 					imgList->AddImage(simg, frameDelay);
 					isFirst = false;
 
-					DEL_CLASS(lzw);
+					lzw.Delete();
 					break;
 				}
 				else
@@ -791,8 +790,8 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 
 	if (imgList->GetCount() == 0)
 	{
-		DEL_CLASS(imgList);
-		imgList = 0;
+		imgList.Delete();
+		return nullptr;
 	}
 	return imgList;
 }

@@ -6,20 +6,20 @@
 
 struct Media::VideoCaptureMgr::ClassData
 {
-	Media::V4LVideoCaptureMgr *v4lMgr;
+	NN<Media::V4LVideoCaptureMgr> v4lMgr;
 };
 
 Media::VideoCaptureMgr::VideoCaptureMgr()
 {
 	NN<ClassData> data = MemAllocNN(ClassData);
-	NEW_CLASS(data->v4lMgr, Media::V4LVideoCaptureMgr());
+	NEW_CLASSNN(data->v4lMgr, Media::V4LVideoCaptureMgr());
 	this->clsData = data;
 }
 
 Media::VideoCaptureMgr::~VideoCaptureMgr()
 {
 	NN<ClassData> data = this->clsData;
-	DEL_CLASS(data->v4lMgr);
+	data->v4lMgr.Delete();
 	MemFreeNN(data);
 }
 
@@ -77,8 +77,8 @@ Optional<Media::VideoCapturer> Media::VideoCaptureMgr::CreateDevice(Int32 devTyp
 	}
 	else if (devType == 1)
 	{
-		Media::MMALVideoCapture *dev;
-		NEW_CLASS(dev, Media::MMALVideoCapture(false));
+		NN<Media::MMALVideoCapture> dev;
+		NEW_CLASSNN(dev, Media::MMALVideoCapture(false));
 		return dev;
 	}
 	else

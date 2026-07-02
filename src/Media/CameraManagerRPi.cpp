@@ -18,10 +18,10 @@ IntOS Media::CameraManager::GetDeviceCount()
 
 Optional<Media::PhotoCapturer> Media::CameraManager::CreateDevice(IntOS devId)
 {
-	Media::PhotoCapturer *capture = 0;
+	Optional<Media::PhotoCapturer> capture = nullptr;
 	if (devId == 0)
 	{
-		NEW_CLASS(capture, Media::MMALStillCapture());
+		NEW_CLASSOPT(capture, Media::MMALStillCapture());
 	}
 	return capture;
 }

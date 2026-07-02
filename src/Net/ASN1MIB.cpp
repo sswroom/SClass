@@ -1045,8 +1045,8 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 									{
 										MemCopyNO(impObj2->oid, impObj->oid, impObj->oidLen);
 									}
-									NEW_CLASS(impObj2->valName, Data::ArrayList<const UTF8Char*>());
-									NEW_CLASS(impObj2->valCont, Data::ArrayList<const UTF8Char*>());
+									NEW_CLASSNN(impObj2->valName, Data::ArrayListArr<const UTF8Char>());
+									NEW_CLASSNN(impObj2->valCont, Data::ArrayListArr<const UTF8Char>());
 									impObj2->impModule = impModule;
 									impObj2->parsed = false;
 									UIntOS ui = 0;
@@ -1866,9 +1866,9 @@ Bool Net::ASN1MIB::LoadFileInner(Text::CStringNN fileName, NN<Text::StringBuilde
 			module = MemAllocNN(ModuleInfo);
 			module->moduleName = Text::StrCopyNew(sb.ToString());
 			module->moduleFileName = Text::StrCopyNew(fileName);
-			NEW_CLASS(module->objKeys, Data::ArrayListStrUTF8());
-			NEW_CLASS(module->objValues, Data::ArrayList<ObjectInfo*>());
-			NEW_CLASS(module->oidList, Data::ArrayList<ObjectInfo*>());
+			NEW_CLASSNN(module->objKeys, Data::ArrayListStrUTF8());
+			NEW_CLASSNN(module->objValues, Data::ArrayListNN<ObjectInfo>());
+			NEW_CLASSNN(module->oidList, Data::ArrayListNN<ObjectInfo>());
 			this->moduleMap->Put(module->moduleName, module);
 			succ = ParseModule(reader, module, errMessage);
 			moduleFound = true;

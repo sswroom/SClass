@@ -72,10 +72,10 @@ Optional<IO::ParsedObject> Parser::FileParser::RAR5Parser::ParseFileHdr(NN<IO::S
 	{
 		return nullptr;
 	}
-	IO::VirtualPackageFile *pf;
+	NN<IO::VirtualPackageFile> pf;
 	Data::DateTime dt;
 	dt.ToLocalTime();
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 
 	while (currOfst + 8 <= endOfst)
 	{
@@ -84,14 +84,14 @@ Optional<IO::ParsedObject> Parser::FileParser::RAR5Parser::ParseFileHdr(NN<IO::S
 		buffPtr = ReadVInt(buffPtr, &iVal);
 		if (iVal >= 1048576 * 2)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		headerSize = (UInt32)(iVal + (UIntOS)(buffPtr - buff));
 		buffPtr = ReadVInt(buffPtr, &iVal);
 		if (iVal > 5)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		headerType = (UInt32)iVal;

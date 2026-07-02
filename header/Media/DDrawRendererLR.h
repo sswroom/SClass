@@ -38,14 +38,14 @@ namespace Media
 		FrameBuffer *surfaceBuff;
 		IntOS surfaceBuffStart;
 		IntOS surfaceBuffEnd;
-		Sync::Event *surfaceBuffEvent;
-		Sync::Mutex *surfaceBuffMut;
+		NN<Sync::Event> surfaceBuffEvent;
+		NN<Sync::Mutex> surfaceBuffMut;
 
 		void *hwnd;
 		Media::FrameInfo info;
 		Media::CS::CSConverter *csconv;
-		Media::ImageResizer *resizer;
-		Media::DeinterlaceLR *deinterlace;
+		NN<Media::ImageResizer> resizer;
+		NN<Media::DeinterlaceLR> deinterlace;
 		Media::RefClock *clk;
 		Media::ColorManager *colorMgr;
 		FrameSource *frameSources;
@@ -71,8 +71,8 @@ namespace Media
 		Bool frameProcToStop;
 		IntOS frameProcStart;
 		IntOS frameProcEnd;
-		Sync::Mutex *frameProcMut;
-		Sync::Event *frameProcEvent;
+		NN<Sync::Mutex> frameProcMut;
+		NN<Sync::Event> frameProcEvent;
 
 	private:
 		void GetDrawingRect(void *rc);

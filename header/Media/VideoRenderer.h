@@ -108,7 +108,7 @@ namespace Media
 			Double hTime;
 			Double vTime;
 			Double csTime;
-			Sync::Event *evt;
+			NN<Sync::Event> evt;
 			Bool cs10Bit;
 			Double resizerSrcRefLuminance;
 		} ThreadStat;

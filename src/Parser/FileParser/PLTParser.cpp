@@ -40,7 +40,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PLTParser::ParseFileHdr(NN<IO::St
 	UTF8Char sbuff[1024];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> tmpArr[6];
-	Map::GPSTrack *track = nullptr;
+	NN<Map::GPSTrack> track;
 	Bool valid;
 
 /*	UIntOS i = fd->GetFullName()->LastIndexOf('.');
@@ -77,7 +77,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PLTParser::ParseFileHdr(NN<IO::St
 		reader.ReadLine(sbuff, 1024);
 		UIntOS cnt;
 
-		NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 65001, nullptr));
+		NEW_CLASSNN(track, Map::GPSTrack(fd->GetFullName(), true, 65001, nullptr));
 		while (reader.ReadLine(sbuff, 1024).NotNull())
 		{
 			cnt = Text::StrSplitTrim(tmpArr, 6, sbuff, ',');
@@ -110,6 +110,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PLTParser::ParseFileHdr(NN<IO::St
 				track->AddRecord(rec);
 			}
 		}
+		return track;
 	}
-	return track;
+	return nullptr;
 }

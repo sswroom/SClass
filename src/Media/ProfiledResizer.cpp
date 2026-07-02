@@ -278,16 +278,16 @@ Bool Media::ProfiledResizer::LoadProfile(Text::CStringNN fileName)
 	UInt32 outParam;
 	Int32 sizeType;
 	Text::StringBuilderUTF8 sb;
-	DB::CSVFile *csv;
+	NN<DB::CSVFile> csv;
 	if (fileName.leng == 0)
 	{
 		IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("prof"));
-		NEW_CLASS(csv, DB::CSVFile(CSTRP(sbuff, sptr), 65001));
+		NEW_CLASSNN(csv, DB::CSVFile(CSTRP(sbuff, sptr), 65001));
 	}
 	else
 	{
-		NEW_CLASS(csv, DB::CSVFile(fileName, 65001));
+		NEW_CLASSNN(csv, DB::CSVFile(fileName, 65001));
 	}
 	csv->SetNoHeader(true);
 	NN<DB::DBReader> r;
@@ -342,6 +342,6 @@ Bool Media::ProfiledResizer::LoadProfile(Text::CStringNN fileName)
 		}
 		csv->CloseReader(r);
 	}
-	DEL_CLASS(csv);
+	csv.Delete();
 	return false;
 }

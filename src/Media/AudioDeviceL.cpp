@@ -25,14 +25,14 @@ UnsafeArrayOpt<UTF8Char> Media::AudioDevice::GetDeviceName(UnsafeArray<UTF8Char>
 
 Optional<Media::AudioRenderer> Media::AudioDevice::CreateRenderer(Text::CStringNN devName)
 {
-	Media::AudioRenderer *renderer = 0;
+	Optional<Media::AudioRenderer> renderer = nullptr;
 	if (devName.StartsWith(UTF8STRC("ALSA: ")))
 	{
-		NEW_CLASS(renderer, Media::ALSARenderer(devName.v + 6));
+		NEW_CLASSOPT(renderer, Media::ALSARenderer(devName.v + 6));
 	}
 	else if (devName.StartsWith(UTF8STRC("PA: ")))
 	{
-//		NEW_CLASS(renderer, Media::ALSARenderer(devName.v + 6));
+//		NEW_CLASSOPT(renderer, Media::ALSARenderer(devName.v + 6));
 	}
 	return renderer;
 }
@@ -66,10 +66,10 @@ Bool Media::AudioDevice::AddDevice(Text::CStringNN devName)
 	}
 	else if (devName.StartsWith(UTF8STRC("PA: ")))
 	{
-/*		NEW_CLASS(renderer, Media::ALSARenderer(devName.v + 6));
+/*		NEW_CLASSNN(renderer, Media::ALSARenderer(devName.v + 6));
 		if (renderer->IsError())
 		{
-			DEL_CLASS(renderer);
+			renderer.Delete();
 		}
 		else
 		{

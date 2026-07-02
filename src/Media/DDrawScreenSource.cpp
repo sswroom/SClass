@@ -12,14 +12,14 @@ UInt32 __stdcall Media::DDrawScreenSource::CaptureThread(void *userObj)
 	LPDIRECTDRAWSURFACE7 surface;
 	DDSURFACEDESC2 ddsd;
 	IntOS sizeNeeded;
-	Manage::HiResClock *clk;
+	NN<Manage::HiResClock> clk;
 	UInt32 frameNum;
 	Double t1;
 	Double t2;
 
 	me->captureRunning = true;
 	frameNum = 0;
-	NEW_CLASS(clk, Manage::HiResClock());
+	NEW_CLASSNN(clk, Manage::HiResClock());
 	while (!me->captureToStop)
 	{
 		surface = (LPDIRECTDRAWSURFACE7)me->primarySurface;
@@ -117,7 +117,7 @@ ctlop2:
 			me->captureEvt->Wait(1000);
 		}
 	}
-	DEL_CLASS(clk);
+	clk.Delete();
 	me->captureRunning = false;
 	return 0;
 }
@@ -148,7 +148,7 @@ Media::DDrawScreenSource::DDrawScreenSource()
 {
 	this->captureToStop = false;
 	this->captureRunning = false;
-	NEW_CLASS(this->captureEvt, Sync::Event(true));
+	NEW_CLASSNN(this->captureEvt, Sync::Event(true));
 
 	this->ddObj = 0;
 	this->primarySurface = 0;
@@ -176,7 +176,7 @@ Media::DDrawScreenSource::~DDrawScreenSource()
 		((LPDIRECTDRAW7)ddObj)->Release();
 		this->ddObj = 0;
 	}
-	DEL_CLASS(this->captureEvt);
+	this->captureEvt.Delete();
 	if (this->scnBuff)
 	{
 		MemFree(this->scnBuff);

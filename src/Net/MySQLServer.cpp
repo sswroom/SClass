@@ -32,7 +32,7 @@ typedef struct
 	UTF8Char userName[64];
 	UIntOS userNameLen;
 	UTF8Char database[64];
-	Data::StringUTF8Map<const UTF8Char*> *attrMap;
+	NN<Data::StringUTF8Map<const UTF8Char*>> attrMap;
 } ClientData;
 
 Net::MySQLServer::CharsetInfo Net::MySQLServer::charsets[] = {
@@ -299,7 +299,7 @@ void __stdcall Net::MySQLServer::OnClientEvent(NN<Net::TCPClient> cli, AnyType u
 		{
 			Text::StrDelNew(attrList->GetItem(i));
 		}
-		DEL_CLASS(data->attrMap);
+		data->attrMap.Delete();
 		MemFreeArr(data->buff);
 		MemFreeNN(data);
 		cli.Delete();
@@ -791,7 +791,7 @@ void __stdcall Net::MySQLServer::OnClientConn(NN<Socket> s, AnyType userObj)
 	data->userName[0] = 0;
 	data->userNameLen = 0;
 	data->database[0] = 0;
-	NEW_CLASS(data->attrMap, Data::StringUTF8Map<const UTF8Char*>());
+	NEW_CLASSNN(data->attrMap, Data::StringUTF8Map<const UTF8Char*>());
 	Sync::MutexUsage mutUsage(me->randMut);
 	i = 0;
 	while (i < 20)

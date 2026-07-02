@@ -10,7 +10,7 @@ namespace Net
 	public:
 		typedef Bool (CALLBACKFUNC SNMPTrapHandler)(AnyType userObj, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<const Net::SNMPUtil::TrapInfo> trap, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList); // return true = no need to release
 	private:
-		Net::UDPServer *svr;
+		NN<Net::UDPServer> svr;
 		SNMPTrapHandler hdlr;
 		AnyType hdlrObj;
 

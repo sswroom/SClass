@@ -167,7 +167,7 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(NN<VideoSource> sourceVideo, Bool toRel
 	UInt32 size32;
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	this->toRelease = toRelease;
 	this->sps = 0;
 	this->pps = 0;
@@ -193,8 +193,7 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(NN<VideoSource> sourceVideo, Bool toRel
 	}
 	this->maxFrameSize = size;
 
-	buff = sourceVideo->GetProp(*(Int32*)"sps", &size32);
-	if (buff == 0)
+	if (!sourceVideo->GetProp(*(Int32*)"sps", size32).SetTo(buff))
 	{
 		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 		this->sourceVideo = nullptr;
@@ -202,11 +201,10 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(NN<VideoSource> sourceVideo, Bool toRel
 	}
 	this->sps = MemAlloc(UInt8, size32);
 	this->spsSize = size32;
-	MemCopyNO(this->sps, buff, size32);
+	MemCopyNO(this->sps, &buff[0], size32);
 	this->maxFrameSize += 4 + this->spsSize;
 
-	buff = sourceVideo->GetProp(*(Int32*)"pps", &size32);
-	if (buff == 0)
+	if (!sourceVideo->GetProp(*(Int32*)"pps", size32).SetTo(buff))
 	{
 		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 		this->sourceVideo = nullptr;
@@ -214,11 +212,10 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(NN<VideoSource> sourceVideo, Bool toRel
 	}
 	this->pps = MemAlloc(UInt8, size32);
 	this->ppsSize = size32;
-	MemCopyNO(this->pps, buff, size32);
+	MemCopyNO(this->pps, &buff[0], size32);
 	this->maxFrameSize += 4 + this->ppsSize;
 
-	buff = sourceVideo->GetProp(*(Int32*)"vps", &size32);
-	if (buff == 0)
+	if (!sourceVideo->GetProp(*(Int32*)"vps", size32).SetTo(buff))
 	{
 		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 		this->sourceVideo = nullptr;
@@ -226,7 +223,7 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(NN<VideoSource> sourceVideo, Bool toRel
 	}
 	this->vps = MemAlloc(UInt8, size32);
 	this->vpsSize = size32;
-	MemCopyNO(this->vps, buff, size32);
+	MemCopyNO(this->vps, &buff[0], size32);
 	this->maxFrameSize += 4 + this->vpsSize;
 
 	this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);

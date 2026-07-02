@@ -12,8 +12,8 @@ namespace Net
 	{
 	public:
 		NN<Net::SocketFactory> sockf;
-		Net::TCPServer *svr;
-		Net::TCPClientMgr *cliMgr;
+		Optional<Net::TCPServer> svr;
+		NN<Net::TCPClientMgr> cliMgr;
 		NN<IO::LogTool> log;
 		Sync::Mutex readMut;
 		UInt32 readCnt;

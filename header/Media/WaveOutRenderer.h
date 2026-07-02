@@ -16,7 +16,7 @@ namespace Media
 		Bool stopPlay;
 		Bool buffEmpty[4];
 		void *hwo;
-		Sync::Event *playEvt;
+		Optional<Sync::Event> playEvt;
 		Optional<Media::RefClock> clk;
 		EndNotifier endHdlr;
 		AnyType endHdlrObj;

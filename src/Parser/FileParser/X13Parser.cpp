@@ -44,11 +44,11 @@ Optional<IO::ParsedObject> Parser::FileParser::X13Parser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 
-	IO::VirtualPackageFile *pf;
+	NN<IO::VirtualPackageFile> pf;
 	Text::Encoding enc;
 	Data::ByteBuffer recHdrs(ReadUInt32(&hdr[8]));
 	fd->GetRealData(ReadUInt32(&hdr[4]), ReadUInt32(&hdr[8]), recHdrs);
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	buffOfst = 0;
 	while (buffOfst < ReadUInt32(&hdr[8]))
 	{

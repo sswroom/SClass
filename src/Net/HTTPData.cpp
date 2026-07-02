@@ -13,6 +13,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 	UInt8 buff[2048];
 	UIntOS readSize;
 
+	NN<IO::FileStream> fs;
 	NN<Net::HTTPClient> cli;
 	NN<HTTPDATAHANDLE> fdh = userObj.GetNN<HTTPDATAHANDLE>();
 	NN<HTTPQueue> queue;
@@ -26,7 +27,11 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 	{
 		fdh->cli = cli = Net::HTTPClient::CreateConnect(fdh->clif, fdh->ssl, fdh->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	}
-	fdh->evtTmp->Set();
+	NN<Sync::Event> evtTmp;
+	if (fdh->evtTmp.SetTo(evtTmp))
+	{
+		evtTmp->Set();
+	}
 	if (IO::Path::GetPathType(fdh->localFile->ToCString()) == IO::Path::PathType::File)
 	{
 		IO::FileStream fs(fdh->localFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -64,23 +69,25 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 
 	if (cli->GetRespStatus() == 304)
 	{
-		NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		fdh->fileLength = fdh->file->GetLength();
+		NEW_CLASSNN(fs, IO::FileStream(fdh->localFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		fdh->file = fs;
+		fdh->fileLength = fs->GetLength();
 	}
 	else if (cli->GetRespStatus() == 200)
 	{
 		fdh->fileLength = cli->GetContentLength();
 		if (fdh->fileLength > 0)
 		{
-			NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile, IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+			NEW_CLASSNN(fs, IO::FileStream(fdh->localFile, IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+			fdh->file = fs;
 			while (fdh->loadSize < fdh->fileLength)
 			{
 				readSize = cli->Read(BYTEARR(buff));
 				if (readSize == 0)
 				{
 					Sync::MutexUsage mutUsage(fdh->mut);
-					DEL_CLASS(fdh->file);
-					fdh->file = 0;
+					fs.Delete();
+					fdh->file = nullptr;
 					fdh->fileLength = 0;
 					mutUsage.EndUse();
 					IO::Path::DeleteFile(fdh->localFile->v);
@@ -89,19 +96,19 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 				Sync::MutexUsage mutUsage(fdh->mut);
 				if (fdh->currentOffset != fdh->loadSize)
 				{
-					fdh->file->SeekFromBeginning(fdh->loadSize);
+					fs->SeekFromBeginning(fdh->loadSize);
 					fdh->seekCnt++;
 					fdh->currentOffset = fdh->loadSize;
 				}
-				fdh->file->Write(Data::ByteArrayR(buff, readSize));
+				fs->Write(Data::ByteArrayR(buff, readSize));
 				fdh->loadSize += readSize;
 				fdh->currentOffset = fdh->loadSize;
 				mutUsage.EndUse();
 			}
 			Data::DateTime dt;
-			if (fdh->file && cli->GetLastModified(dt))
+			if (fdh->file.SetTo(fs) && cli->GetLastModified(dt))
 			{
-				fdh->file->SetFileTimes(nullptr, nullptr, &dt);
+				fs->SetFileTimes(nullptr, nullptr, &dt);
 			}
 		}
 		else
@@ -111,7 +118,8 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 			{
 				NN<IO::StreamReadReq> sess;
 				Sync::Event readEvt(false);
-				NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile, IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+				NEW_CLASSNN(fs, IO::FileStream(fdh->localFile, IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+				fdh->file = fs;
 				while (true)
 				{
 					readEvt.Clear();
@@ -134,19 +142,19 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 					Sync::MutexUsage mutUsage(fdh->mut);
 					if (fdh->currentOffset != fdh->loadSize)
 					{
-						fdh->file->SeekFromBeginning(fdh->loadSize);
+						fs->SeekFromBeginning(fdh->loadSize);
 						fdh->seekCnt++;
 					}
-					fdh->file->Write(Data::ByteArrayR(buff, readSize));
+					fs->Write(Data::ByteArrayR(buff, readSize));
 					fdh->loadSize += readSize;
 					fdh->fileLength = fdh->loadSize;
 					fdh->currentOffset = fdh->fileLength;
 					mutUsage.EndUse();
 				}
 				Data::DateTime dt;
-				if (fdh->file && cli->GetLastModified(dt))
+				if (fdh->file.SetTo(fs) && cli->GetLastModified(dt))
 				{
-					fdh->file->SetFileTimes(nullptr, nullptr, &dt);
+					fs->SetFileTimes(nullptr, nullptr, &dt);
 				}
 			}
 		}
@@ -207,11 +215,11 @@ Net::HTTPData::HTTPData(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine>
 	}
 	if (!needReload)
 	{
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(localFile, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+		NN<IO::FileStream> fs;
+		NEW_CLASSNN(fs, IO::FileStream(localFile, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 		if (fs->IsError())
 		{
-			DEL_CLASS(fs);
+			fs.Delete();
 			this->dataLength = 0;
 			this->dataOffset = 0;
 		}
@@ -248,7 +256,7 @@ Net::HTTPData::HTTPData(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine>
 		dataLength = (UIntOS)-1;
 		NEW_CLASSNN(fdh, Net::HTTPData::HTTPDATAHANDLE());
 		this->fdh = fdh;
-		fdh->file = 0;
+		fdh->file = nullptr;
 		fdh->fileLength = 0;
 		fdh->currentOffset = 0;
 		fdh->objectCnt = 1;
@@ -271,13 +279,15 @@ Net::HTTPData::HTTPData(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine>
 			fdh->fileName = fdh->url->ToCString();
 		}
 		fdh->cli = nullptr;
-		NEW_CLASS(fdh->evtTmp, Sync::Event(false));
+		NN<Sync::Event> evtTmp;
+		NEW_CLASSNN(evtTmp, Sync::Event(false));
+		fdh->evtTmp = evtTmp;
 		Sync::ThreadUtil::Create(LoadThread, fdh);
 		while (fdh->cli.IsNull() && fdh->isLoading)
 		{
-			fdh->evtTmp->Wait(10);
+			evtTmp->Wait(10);
 		}
-		DEL_CLASS(fdh->evtTmp);
+		fdh->evtTmp.Delete();
 	}
 }
 
@@ -289,6 +299,7 @@ Net::HTTPData::~HTTPData()
 UIntOS Net::HTTPData::GetRealData(UInt64 offset, UIntOS length, Data::ByteArray buffer)
 {
 	NN<HTTPDATAHANDLE> fdh;
+	NN<IO::FileStream> fs;
 	if (!this->fdh.SetTo(fdh))
 		return 0;
 	Sync::MutexUsage mutUsage(fdh->mut);
@@ -298,9 +309,9 @@ UIntOS Net::HTTPData::GetRealData(UInt64 offset, UIntOS length, Data::ByteArray 
 		Sync::SimpleThread::Sleep(10);
 		mutUsage.BeginUse();
 	}
-	if (fdh->currentOffset != dataOffset + offset)
+	if (fdh->currentOffset != dataOffset + offset && fdh->file.SetTo(fs))
 	{
-		if ((fdh->currentOffset = fdh->file->SeekFromBeginning(dataOffset + offset)) != dataOffset + offset)
+		if ((fdh->currentOffset = fs->SeekFromBeginning(dataOffset + offset)) != dataOffset + offset)
 		{
 			mutUsage.EndUse();
 			return 0;
@@ -308,10 +319,17 @@ UIntOS Net::HTTPData::GetRealData(UInt64 offset, UIntOS length, Data::ByteArray 
 		fdh->seekCnt++;
 	}
 	UIntOS byteRead;
-	if (length < this->GetDataSize() - offset)
-		byteRead = fdh->file->Read(buffer.WithSize(length));
+	if (fdh->file.SetTo(fs))
+	{
+		if (length < this->GetDataSize() - offset)
+			byteRead = fs->Read(buffer.WithSize(length));
+		else
+			byteRead = fs->Read(buffer.WithSize((UIntOS) (dataLength - offset)));
+	}
 	else
-		byteRead = fdh->file->Read(buffer.WithSize((UIntOS) (dataLength - offset)));
+	{
+		byteRead = 0;
+	}
 	if (byteRead == 0)
 	{
 		mutUsage.EndUse();
@@ -427,7 +445,7 @@ void Net::HTTPData::Close()
 			{
 				Sync::SimpleThread::Sleep(10);
 			}
-			DEL_CLASS(fdh->file);
+			fdh->file.Delete();
 			fdh->url->Release();
 			fdh->localFile->Release();
 			fdh.Delete();

@@ -58,8 +58,8 @@ Optional<IO::ParsedObject> Parser::FileParser::LinkArcParser::ParseFileHdr(NN<IO
 	currOfst = 8 + (UIntOS)nameSize;
 	fileSize = fd->GetDataSize();
 
-	IO::VirtualPackageFile *pf;
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NN<IO::VirtualPackageFile> pf;
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	
 	while (currOfst < fileSize)
 	{
@@ -70,12 +70,12 @@ Optional<IO::ParsedObject> Parser::FileParser::LinkArcParser::ParseFileHdr(NN<IO
 			break;
 		if (recSize <= 16 || recSize + currOfst > fileSize)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		if (fnameSize <= 0 || fnameSize >= 256 || fnameSize & 1)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		dt.SetValue(ReadUInt16(&recBuff[6]), recBuff[8], recBuff[9], recBuff[10], recBuff[11], recBuff[12], 0, 36);

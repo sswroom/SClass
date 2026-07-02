@@ -45,8 +45,8 @@ namespace Media
 		void GetValueUInt16(UInt32 *inputVals, UInt16 *outVals) const;
 		void GetValueSingle(UInt32 *inputVals, Single *outVals) const;
 
-		LUT *Clone() const;
-		Bool Equals(Media::LUT *lut) const;
+		NN<LUT> Clone() const;
+		Bool Equals(NN<Media::LUT> lut) const;
 	};
 }
 #endif

@@ -28,7 +28,7 @@ Optional<Media::AudioBlockSource> Media::BlockParser::DTSBlockParser::ParseStrea
 //	Int32 ext_audio = ((buff[10] & 0x10) >> 4);
 	Int32 lff = ((buff[10] & 6) >> 1);
 
-	Media::AudioBlockSource *audio;
+	NN<Media::AudioBlockSource> audio;
 	Media::AudioFormat format;
 	format.formatId = 0x2001;
 	switch (amode)
@@ -110,7 +110,7 @@ Optional<Media::AudioBlockSource> Media::BlockParser::DTSBlockParser::ParseStrea
 	format.other = 0;
 	format.intType = Media::AudioFormat::IT_NORMAL;
 
-	NEW_CLASS(audio, Media::AudioBlockSource(stmData, format, stmData->GetFullName(), 1536));
+	NEW_CLASSNN(audio, Media::AudioBlockSource(stmData, format, stmData->GetFullName(), 1536));
 	while (currOfst < leng)
 	{
 		if (*(Int32*)&buff[0] != 0x180FE7F || (buff[4] & 0xfc) != 0xfc)

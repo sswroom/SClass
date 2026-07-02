@@ -29,7 +29,7 @@ UInt32 __stdcall Media::AAudioRenderer::PlayThread(void *obj)
 {
 	Media::AAudioRenderer *me = (Media::AAudioRenderer *)obj;
 	Media::AudioFormat af;
-	Sync::Event *evt;
+	NN<Sync::Event> evt;
 	Int32 i;
 	Int32 refStart;
 	Int32 audStartTime;	
@@ -38,7 +38,7 @@ UInt32 __stdcall Media::AAudioRenderer::PlayThread(void *obj)
 	Int32 thisT;
 	Int32 lastT;
 
-	NEW_CLASS(evt, Sync::Event());
+	NEW_CLASSNN(evt, Sync::Event());
 
 	me->threadInit = true;
 	me->audsrc->GetFormat(&af);
@@ -212,7 +212,7 @@ UInt32 __stdcall Media::AAudioRenderer::PlayThread(void *obj)
 		MemFree(readBuff[i]);
 	}*/
 
-	DEL_CLASS(evt);
+	evt.Delete();
 	me->playing = false;
 	return 0;
 }
@@ -476,7 +476,7 @@ Bool Media::AAudioRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 
 	this->hand = hand;
 	this->audsrc = audsrc;
-	NEW_CLASS(this->playEvt, Sync::Event());*/
+	NEW_CLASSOPT(this->playEvt, Sync::Event());*/
 	return true;
 }
 

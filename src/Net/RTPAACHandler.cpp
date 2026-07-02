@@ -52,7 +52,7 @@ Net::RTPAACHandler::RTPAACHandler(Int32 payloadType, UInt32 freq, UInt32 nChanne
 	this->config = 0;
 	this->buffSize = 0;
 	this->buff = MemAlloc(UInt8, 1048576);
-	this->dataEvt = 0;
+	this->dataEvt = nullptr;
 }
 
 Net::RTPAACHandler::~RTPAACHandler()
@@ -125,9 +125,10 @@ void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, UIntOS dataSize, UInt32 
 	{
 		evt->Set();
 	}
-	if (this->dataEvt)
+	NN<Sync::Event> dataEvt;
+	if (this->dataEvt.SetTo(dataEvt))
 	{
-		this->dataEvt->Set();
+		dataEvt->Set();
 	}
 }
 
@@ -240,25 +241,26 @@ void Net::RTPAACHandler::GetFormat(NN<Media::AudioFormat> format)
 Bool Net::RTPAACHandler::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 {
 	this->evt = evt;
-	if (this->dataEvt)
+	if (this->dataEvt.NotNull())
 	{
 		return true;
 	}
-	NEW_CLASS(this->dataEvt, Sync::Event(true));
+	NEW_CLASSOPT(this->dataEvt, Sync::Event(true));
 	return true;
 }
 
 void Net::RTPAACHandler::Stop()
 {
 	this->evt = nullptr;
-	SDEL_CLASS(this->dataEvt);
+	this->dataEvt.Delete();
 }
 
 UIntOS Net::RTPAACHandler::ReadBlock(Data::ByteArray blk)
 {
-	while (this->buffSize == 0 && this->dataEvt)
+	NN<Sync::Event> dataEvt;
+	while (this->buffSize == 0 && this->dataEvt.SetTo(dataEvt))
 	{
-		this->dataEvt->Wait(1000);
+		dataEvt->Wait(1000);
 	}
 	Sync::MutexUsage mutUsage(this->mut);
 	if (this->buffSize <= 0)

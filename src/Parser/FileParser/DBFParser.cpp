@@ -68,8 +68,8 @@ Optional<IO::ParsedObject> Parser::FileParser::DBFParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 
-	DB::DBFFile *pf;
-	NEW_CLASS(pf, DB::DBFFile(fd, this->codePage));
+	NN<DB::DBFFile> pf;
+	NEW_CLASSNN(pf, DB::DBFFile(fd, this->codePage));
 
 	return pf;
 }

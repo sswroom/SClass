@@ -111,7 +111,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseFileHdr(NN<IO::S
 Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseGeoJSON(NN<Text::JSONBase> fileJSON, NN<Text::String> sourceName, Text::CStringNN layerName, IO::ParserType targetType, Optional<IO::PackageFile> pkgFile, Optional<Parser::ParserList> parsers)
 {
 	UInt32 srid = 0;
-	IO::ParsedObject *pobj = 0;
+	Optional<IO::ParsedObject> pobj = nullptr;
 	if (fileJSON->GetType() == Text::JSONType::Object)
 	{
 		NN<IO::PackageFile> nnpkgFile;
@@ -149,7 +149,8 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseGeoJSON(NN<Text:
 
 			if (jobj->GetObjectValue(CSTR("features")).SetTo(jbase) && jbase->GetType() == Text::JSONType::Array)
 			{
-				Map::VectorLayer *lyr = 0;
+				Optional<Map::VectorLayer> lyr = nullptr;
+				NN<Map::VectorLayer> nnlyr;
 				UnsafeArrayOpt<const UTF8Char> tabHdrs[32];
 				Optional<Text::String> tabCols[32];
 				Optional<Text::String> tabVals[32];
@@ -182,14 +183,14 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseGeoJSON(NN<Text:
 						if (ParseGeomJSON(NN<Text::JSONObject>::ConvertFrom(featGeom), srid).SetTo(vec))
 						{
 							NN<Text::String> s = Text::String::New(layerName);
-							NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_MIXED, sourceName, colCnt, tabHdrs, nncsys, 0, s.Ptr()));
+							NEW_CLASSOPT(lyr, Map::VectorLayer(Map::DRAW_LAYER_MIXED, sourceName, colCnt, tabHdrs, nncsys, 0, s.Ptr()));
 							s->Release();
 							vec.Delete();
 						}
 					}
 				}
 
-				if (lyr)
+				if (lyr.SetTo(nnlyr))
 				{
 					i = 0;
 					while (i < j)
@@ -215,14 +216,14 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseGeoJSON(NN<Text:
 								}
 								if (ParseGeomJSON(NN<Text::JSONObject>::ConvertFrom(featGeom), srid).SetTo(vec))
 								{
-									lyr->AddVector2(vec, tabVals);
+									nnlyr->AddVector2(vec, tabVals);
 								}
 							}
 						}
 
 						i++;
 					}
-					pobj = lyr;
+					pobj = nnlyr;
 				}
 				else
 				{
@@ -274,13 +275,13 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseGeoJSON(NN<Text:
 	NEW_CLASSNN(db, DB::JSONDB(sourceName, layerName, dataArr));
 	if (targetType == IO::ParserType::Unknown || targetType == IO::ParserType::MapLayer)
 	{
-		Map::DBMapLayer *layer;
-		NEW_CLASS(layer, Map::DBMapLayer(sourceName));
+		NN<Map::DBMapLayer> layer;
+		NEW_CLASSNN(layer, Map::DBMapLayer(sourceName));
 		if (layer->SetDatabase(db, nullptr, layerName, true))
 		{
 			return layer;
 		}
-		DEL_CLASS(layer);
+		layer.Delete();
 	}
 	return db;
 }
@@ -362,10 +363,10 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 				{
 					if (hasZ)
 					{
-						Math::Geometry::LineString *pl;
+						NN<Math::Geometry::LineString> pl;
 						UnsafeArray<Math::Coord2DDbl> ptArr;
 						UnsafeArray<Double> altArr;
-						NEW_CLASS(pl, Math::Geometry::LineString(srid, zList.GetCount(), true, false));
+						NEW_CLASSNN(pl, Math::Geometry::LineString(srid, zList.GetCount(), true, false));
 						ptArr = pl->GetPointList(i);
 						i = 0;
 						j = ptList.GetCount() >> 1;
@@ -391,8 +392,8 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 					{
 						Double *ptArr;
 						ptArr = ptList.GetArr(i).Ptr();
-						Math::Geometry::LineString *pl;
-						NEW_CLASS(pl, Math::Geometry::LineString(srid, (Math::Coord2DDbl*)ptArr, i >> 1, nullptr, nullptr));
+						NN<Math::Geometry::LineString> pl;
+						NEW_CLASSNN(pl, Math::Geometry::LineString(srid, (Math::Coord2DDbl*)ptArr, i >> 1, nullptr, nullptr));
 						return pl;
 					}
 				}
@@ -472,10 +473,10 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 				if (ptList.GetCount() >= 4)
 				{
 					UnsafeArray<Math::Coord2DDbl> ptArr;
-					Math::Geometry::Polygon *pg;
+					NN<Math::Geometry::Polygon> pg;
 					NN<Math::Geometry::LinearRing> lr;
 					UIntOS m;
-					NEW_CLASS(pg, Math::Geometry::Polygon(srid));
+					NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
 					i = 0;
 					j = partList.GetCount();
 					k = 0;
@@ -511,7 +512,8 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 		{
 			if (obj->GetObjectValue(CSTR("coordinates")).SetTo(jbase) && jbase->GetType() == Text::JSONType::Array)
 			{
-				Math::Geometry::MultiPolygon *mpg = 0;
+				Optional<Math::Geometry::MultiPolygon> mpg = nullptr;
+				NN<Math::Geometry::MultiPolygon> nnmpg;
 				NN<Text::JSONArray> pgCoords = NN<Text::JSONArray>::ConvertFrom(jbase);
 				UIntOS pgIndex = 0;
 				UIntOS pgCnt = pgCoords->GetArrayLength();
@@ -600,11 +602,12 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 								pg->AddGeometry(lr);
 								i++;
 							}
-							if (mpg == 0)
+							if (!mpg.SetTo(nnmpg))
 							{
-								NEW_CLASS(mpg, Math::Geometry::MultiPolygon(srid));
+								NEW_CLASSNN(nnmpg, Math::Geometry::MultiPolygon(srid));
+								mpg = nnmpg;
 							}
-							mpg->AddGeometry(pg);
+							nnmpg->AddGeometry(pg);
 						}
 					}
 					pgIndex++;
@@ -617,14 +620,14 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 			if (obj->GetObjectValue(CSTR("coordinates")).SetTo(jbase) && jbase->GetType() == Text::JSONType::Array)
 			{
 				NN<Text::JSONArray> coord = NN<Text::JSONArray>::ConvertFrom(jbase);
-				Math::Geometry::Point *pt = 0;
+				Optional<Math::Geometry::Point> pt = nullptr;
 				if (coord->GetArrayLength() == 2)
 				{
-					NEW_CLASS(pt, Math::Geometry::Point(srid, Math::Coord2DDbl(coord->GetArrayDoubleOrNAN(0), coord->GetArrayDoubleOrNAN(1))));
+					NEW_CLASSOPT(pt, Math::Geometry::Point(srid, Math::Coord2DDbl(coord->GetArrayDoubleOrNAN(0), coord->GetArrayDoubleOrNAN(1))));
 				}
 				else if (coord->GetArrayLength() >= 3)
 				{
-					NEW_CLASS(pt, Math::Geometry::PointZ(srid, coord->GetArrayDoubleOrNAN(0), coord->GetArrayDoubleOrNAN(1), coord->GetArrayDoubleOrNAN(2)));
+					NEW_CLASSOPT(pt, Math::Geometry::PointZ(srid, coord->GetArrayDoubleOrNAN(0), coord->GetArrayDoubleOrNAN(1), coord->GetArrayDoubleOrNAN(2)));
 				}
 				else
 				{

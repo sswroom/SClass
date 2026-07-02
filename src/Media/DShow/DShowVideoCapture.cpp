@@ -44,7 +44,7 @@ Media::DShow::DShowVideoCapture::DShowVideoCapture(IBaseFilter *baseFilter, IPro
 	}
 	this->baseFilter = baseFilter;
 	this->pPropBag = pPropBag;
-	this->captureFilter = 0;
+	this->captureFilter = nullptr;
 	this->graph = 0;
 	this->cb = 0;
 
@@ -52,16 +52,18 @@ Media::DShow::DShowVideoCapture::DShowVideoCapture(IBaseFilter *baseFilter, IPro
 	HRESULT hr =  CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC_SERVER, IID_IGraphBuilder, (void **)&pGraph);
 	if (SUCCEEDED(hr))
 	{
-		NEW_CLASS(captureFilter, Media::DShow::DShowVideoFilter(false));
+		NN<Media::DShow::DShowVideoFilter> captureFilter;
+		NEW_CLASSNN(captureFilter, Media::DShow::DShowVideoFilter(false));
+		this->captureFilter = captureFilter;
 		pGraph->AddFilter(baseFilter, L"BaseFilter");
-		pGraph->AddFilter((DShowVideoFilter*)captureFilter, L"DShowVideoCapture");
+		pGraph->AddFilter((DShowVideoFilter*)captureFilter.Ptr(), L"DShowVideoCapture");
 		IEnumPins *enums;
 		if (((IBaseFilter*)baseFilter)->EnumPins(&enums) == S_OK)
 		{
 			IPin *pin;
 			enums->Next(1, &pin, 0);
 			this->pin1 = pin;
-			this->pin2 = ((DShowVideoFilter*)captureFilter)->GetPin(0);
+			this->pin2 = captureFilter->GetPin(0);
 			pGraph->Connect(pin1, pin2);
 			enums->Release();
 		}
@@ -75,9 +77,10 @@ Media::DShow::DShowVideoCapture::~DShowVideoCapture()
 	{
 		this->baseFilter->Stop();
 	}
-	if (this->captureFilter)
+	NN<Media::DShow::DShowVideoFilter> captureFilter;
+	if (this->captureFilter.SetTo(captureFilter))
 	{
-		this->captureFilter->Stop();
+		captureFilter->Stop();
 	}
 	if (graph)
 	{
@@ -112,12 +115,13 @@ Text::CStringNN Media::DShow::DShowVideoCapture::GetFilterName()
 
 Bool Media::DShow::DShowVideoCapture::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UIntOS> maxFrameSize)
 {
-	if (captureFilter == 0)
+	NN<Media::DShow::DShowVideoFilter> captureFilter;
+	if (!this->captureFilter.SetTo(captureFilter))
 	{
 		info->fourcc = 0;
 		return false;
 	}
-	DShowVideoFilter *filter = (DShowVideoFilter*)captureFilter;
+	NN<DShowVideoFilter> filter = captureFilter;
 	Bool succ = false;
 	Int32 pinCnt = filter->GetPinCount();
 	Int32 i = 0;
@@ -298,9 +302,10 @@ void Media::DShow::DShowVideoCapture::SetPreferSize(Math::Size2D<UIntOS> size, U
 		mediaTypes->Release();
 	}
 
-	if (found)
+	NN<Media::DShow::DShowVideoFilter> captureFilter;
+	if (found && this->captureFilter.SetTo(captureFilter))
 	{
-		((Media::DShow::DShowVideoFilter*)captureFilter)->SetPreferSize(size, minRate, fcc, bpp);
+		captureFilter->SetPreferSize(size, minRate, fcc, bpp);
 		if (foundMediaType)
 		{
 			AM_MEDIA_TYPE connMT;
@@ -320,9 +325,9 @@ void Media::DShow::DShowVideoCapture::SetPreferSize(Math::Size2D<UIntOS> size, U
 			graph->Reconnect(pin1);
 		}
 	}
-	else if (nearWidth != 0 && nearHeight != 0)
+	else if (nearWidth != 0 && nearHeight != 0 && this->captureFilter.SetTo(captureFilter))
 	{
-		((Media::DShow::DShowVideoFilter*)captureFilter)->SetPreferSize(Math::Size2D<UIntOS>(nearWidth, nearHeight), nearRate, fcc, bpp);
+		captureFilter->SetPreferSize(Math::Size2D<UIntOS>(nearWidth, nearHeight), nearRate, fcc, bpp);
 		if (foundMediaType)
 		{
 			AM_MEDIA_TYPE connMT;
@@ -353,16 +358,26 @@ void Media::DShow::DShowVideoCapture::SetPreferSize(Math::Size2D<UIntOS> size, U
 
 Bool Media::DShow::DShowVideoCapture::Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData)
 {
-	this->captureFilter->SetFrameCallback(cb, fcCb, userData);
+	NN<Media::DShow::DShowVideoFilter> captureFilter;
+	if (!this->captureFilter.SetTo(captureFilter))
+	{
+		return false;
+	}
+	captureFilter->SetFrameCallback(cb, fcCb, userData);
 	return true;
 }
 
 Bool Media::DShow::DShowVideoCapture::Start()
 {
+	NN<Media::DShow::DShowVideoFilter> captureFilter;
+	if (!this->captureFilter.SetTo(captureFilter))
+	{
+		return false;
+	}
 	HRESULT hres1;
 	HRESULT hres2;
-	this->captureFilter->BeginCapture();
-	hres1 = this->captureFilter->Run(0);
+	captureFilter->BeginCapture();
+	hres1 = captureFilter->Run(0);
 	if (hres1 == S_OK)
 	{
 		hres2 = this->baseFilter->Run(0);
@@ -372,7 +387,7 @@ Bool Media::DShow::DShowVideoCapture::Start()
 		}
 		else
 		{
-			this->captureFilter->Stop();
+			captureFilter->Stop();
 			return false;
 		}
 	}
@@ -385,9 +400,10 @@ void Media::DShow::DShowVideoCapture::Stop()
 	{
 		this->baseFilter->Stop();
 	}
-	if (this->captureFilter)
+	NN<Media::DShow::DShowVideoFilter> captureFilter;
+	if (this->captureFilter.SetTo(captureFilter))
 	{
-		this->captureFilter->Stop();
+		captureFilter->Stop();
 	}
 }
 
@@ -425,7 +441,8 @@ void Media::DShow::DShowVideoCapture::EnumFrameInfos(FrameInfoCallback cb, AnyTy
 
 UIntOS Media::DShow::DShowVideoCapture::GetSupportedFormats(UnsafeArray<VideoFormat> fmtArr, UIntOS maxCnt)
 {
-	if (captureFilter == 0)
+	NN<Media::DShow::DShowVideoFilter> captureFilter;
+	if (!this->captureFilter.SetTo(captureFilter))
 	{
 		return 0;
 	}
@@ -700,7 +717,7 @@ UnsafeArrayOpt<WChar> Media::DShow::DShowVideoCaptureMgr::GetDeviceId(UnsafeArra
 	return nullptr;
 }
 
-Media::DShow::DShowVideoCapture *Media::DShow::DShowVideoCaptureMgr::GetDevice(UIntOS devNo)
+Optional<Media::DShow::DShowVideoCapture> Media::DShow::DShowVideoCaptureMgr::GetDevice(UIntOS devNo)
 {
 	IEnumMoniker *pEnum = (IEnumMoniker*)this->pEnum;
 	IMoniker *pMoniker;
@@ -710,7 +727,7 @@ Media::DShow::DShowVideoCapture *Media::DShow::DShowVideoCaptureMgr::GetDevice(U
 
 	if (pEnum == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	pEnum->Reset();
 	cnt = 0;
@@ -719,13 +736,13 @@ Media::DShow::DShowVideoCapture *Media::DShow::DShowVideoCaptureMgr::GetDevice(U
 		if (devNo == cnt)
 		{
 			IBaseFilter *pCap = 0;
-			Media::DShow::DShowVideoCapture *capture;
+			NN<Media::DShow::DShowVideoCapture> capture;
 
 	        HRESULT hr = pMoniker->BindToStorage(0, 0, IID_IPropertyBag, (LPVOID*)&pPropBag);
 			if (FAILED(hr))
 			{
 				pMoniker->Release();
-				return 0;
+				return nullptr;
 			} 
 			VARIANT var;
 			VariantInit(&var);
@@ -748,7 +765,7 @@ Media::DShow::DShowVideoCapture *Media::DShow::DShowVideoCaptureMgr::GetDevice(U
 			{
 				pMoniker->Release();
 		        pPropBag->Release();
-				return 0;
+				return nullptr;
 			} 
 
 			LPOLESTR dispName;
@@ -756,12 +773,12 @@ Media::DShow::DShowVideoCapture *Media::DShow::DShowVideoCaptureMgr::GetDevice(U
 			CoGetMalloc(1, &mem);
 			if (SUCCEEDED(pMoniker->GetDisplayName(0, 0, &dispName)))
 			{
-				NEW_CLASS(capture, Media::DShow::DShowVideoCapture(pCap, pPropBag, wbuff, dispName));
+				NEW_CLASSNN(capture, Media::DShow::DShowVideoCapture(pCap, pPropBag, wbuff, dispName));
 				mem->Free(dispName);
 			}
 			else
 			{
-				NEW_CLASS(capture, Media::DShow::DShowVideoCapture(pCap, pPropBag, wbuff, 0));
+				NEW_CLASSNN(capture, Media::DShow::DShowVideoCapture(pCap, pPropBag, wbuff, 0));
 			}
 			pMoniker->Release();
 			return capture;
@@ -769,5 +786,5 @@ Media::DShow::DShowVideoCapture *Media::DShow::DShowVideoCaptureMgr::GetDevice(U
         pMoniker->Release();
 		cnt++;
 	}
-	return 0;
+	return nullptr;
 }

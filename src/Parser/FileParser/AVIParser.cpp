@@ -128,7 +128,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 	UInt32 l;
 	UInt16 wLongsPerEntry;
 	Int32 cmpTmp;
-	Media::MediaFile *mf;
+	NN<Media::MediaFile> mf;
 	NN<Text::String> audsName;
 
 	UInt32 rate = 30000;
@@ -265,7 +265,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 			break;
 	}
 
-	NEW_CLASS(mf, Media::MediaFile(fd->GetFullName()));
+	NEW_CLASSNN(mf, Media::MediaFile(fd->GetFullName()));
 	i = 0;
 	while (i < avih->dwStreams)
 	{
@@ -286,10 +286,10 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 			rate = strl[i].strh.dwRate;
 			scale = strl[i].strh.dwScale;
 
-			Data::ArrayListUInt64 *ofsts;
-			Data::ArrayListUInt32 *sizes;
-			NEW_CLASS(ofsts, Data::ArrayListUInt64());
-			NEW_CLASS(sizes, Data::ArrayListUInt32());
+			NN<Data::ArrayListUInt64> ofsts;
+			NN<Data::ArrayListUInt32> sizes;
+			NEW_CLASSNN(ofsts, Data::ArrayListUInt64());
+			NEW_CLASSNN(sizes, Data::ArrayListUInt32());
 
 			//vs = new DataSegment(stmdata, true);
 			j = 0;
@@ -483,14 +483,15 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 				mf->AddSource(vstm, 0);
 			}
 
-			DEL_CLASS(ofsts);
-			DEL_CLASS(sizes);
+			ofsts.Delete();
+			sizes.Delete();
 		}
 		else if (strl[i].strh.fccType == *(Int32*)"auds")
 		{
 			Media::AudioFormat fmt;
-			Media::AudioFrameSource *audsData = 0;
-			Media::LPCMSource *lpcmData = 0;
+			Optional<Media::AudioFrameSource> audsData = nullptr;
+			Optional<Media::LPCMSource> lpcmData = nullptr;
+			NN<Media::AudioFrameSource> nnaudsData;
 			Int32 audDelay = 0;
 			Bool error;
 
@@ -513,15 +514,16 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 					idx1.Delete();
 
 					UInt64 totalSize = 0;
-					IO::StmData::BlockStreamData *blkData = 0;
+					Optional<IO::StmData::BlockStreamData> blkData = nullptr;
+					NN<IO::StmData::BlockStreamData> nnblkData;
 
 					if (fmt.formatId == 1)
 					{
-						NEW_CLASS(blkData, IO::StmData::BlockStreamData(fd));
+						NEW_CLASSOPT(blkData, IO::StmData::BlockStreamData(fd));
 					}
 					else
 					{
-						NEW_CLASS(audsData, Media::AudioFrameSource(fd, fmt, audsName));
+						NEW_CLASSOPT(audsData, Media::AudioFrameSource(fd, fmt, audsName));
 					}
 
 					indx = (UInt8*)&strl[i].others[j + 8];
@@ -558,7 +560,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 						}
 
 						base = ReadUInt64(&buffer[20]);
-						if (fmt.formatId == 1)
+						if (fmt.formatId == 1 && blkData.SetTo(nnblkData))
 						{
 							l = 32;
 							while (l < *(UInt32*)&indx[(k << 4) + 32])
@@ -566,12 +568,12 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 								if (*(Int32*)&buffer[l + 4] || *(Int32*)&buffer[l])
 								{
 									Int32 dwSize = *(Int32*)&buffer[l + 4];
-									blkData->Append(base + *(UInt32*)&buffer[l], dwSize & 0x7fffffff);
+									nnblkData->Append(base + *(UInt32*)&buffer[l], dwSize & 0x7fffffff);
 								}
 								l += 8;
 							}
 						}
-						else
+						else if (audsData.SetTo(nnaudsData))
 						{
 							l = 32;
 							while (l < *(UInt32*)&indx[(k << 4) + 32])
@@ -580,7 +582,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 								{
 									Int32 dwSize = *(Int32*)&buffer[l + 4];
 									totalSize += dwSize & 0x7fffffff;
-									audsData->AddBlock(base + *(UInt32*)&buffer[l], dwSize & 0x7fffffff, EstimateDecodeSize(fmt, totalSize, dwSize & 0x7fffffff));
+									nnaudsData->AddBlock(base + *(UInt32*)&buffer[l], dwSize & 0x7fffffff, EstimateDecodeSize(fmt, totalSize, dwSize & 0x7fffffff));
 								}
 								l += 8;
 							}
@@ -588,9 +590,9 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 						k++;
 					}
 					NN<IO::StreamData> fd;
-					if(fmt.formatId == 1 && fd.Set(blkData))
+					if(fmt.formatId == 1 && Optional<IO::StreamData>(blkData).SetTo(fd))
 					{
-						NEW_CLASS(lpcmData, Media::LPCMSource(fd, 0, blkData->GetDataSize(), fmt, audsName));
+						NEW_CLASSOPT(lpcmData, Media::LPCMSource(fd, 0, fd->GetDataSize(), fmt, audsName));
 						fd.Delete();
 					}
 
@@ -608,10 +610,9 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 			}
 			if (error)
 			{
-				DEL_CLASS(audsData);
-				audsData = 0;
+				audsData.Delete();
 			}
-			else if (audsData == 0 && lpcmData == 0 && idx1.GetSize() > 0)
+			else if (audsData.IsNull() && lpcmData.IsNull() && idx1.GetSize() > 0)
 			{
 				UInt64 totalSize = 0;
 				if (fmt.formatId == 1)
@@ -628,11 +629,12 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 							blkData.Append(base + ReadUInt32(&idx1[k + 8]) + 4, ReadUInt32(&idx1[k + 12]));
 						k += 16;
 					}
-					NEW_CLASS(lpcmData, Media::LPCMSource(blkData, 0,  blkData.GetDataSize(), fmt, audsName));
+					NEW_CLASSOPT(lpcmData, Media::LPCMSource(blkData, 0,  blkData.GetDataSize(), fmt, audsName));
 				}
 				else
 				{
-					NEW_CLASS(audsData, Media::AudioFrameSource(fd, fmt, audsName));
+					NEW_CLASSNN(nnaudsData, Media::AudioFrameSource(fd, fmt, audsName));
+					audsData = nnaudsData;
 					k = 4;
 					l = ReadUInt32(&idx1[0]);
 					cmpTmp = *(Int32*)"00wb";
@@ -643,7 +645,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 						if (*(Int32*)&idx1[k] == cmpTmp)
 						{
 							totalSize += ReadUInt32(&idx1[k + 12]);
-							audsData->AddBlock(base + ReadUInt32(&idx1[k + 8]) + 4, ReadUInt32(&idx1[k + 12]), EstimateDecodeSize(fmt, totalSize, ReadUInt32(&idx1[k + 12])));
+							nnaudsData->AddBlock(base + ReadUInt32(&idx1[k + 8]) + 4, ReadUInt32(&idx1[k + 12]), EstimateDecodeSize(fmt, totalSize, ReadUInt32(&idx1[k + 12])));
 						}
 						k += 16;
 					}
@@ -656,11 +658,11 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 			/////////////////////////////////
 			audsName->Release();
 			NN<Media::MediaSource> src;
-			if (src.Set(audsData))
+			if (Optional<Media::MediaSource>(audsData).SetTo(src))
 			{
 				mf->AddSource(src, audDelay);
 			}
-			else if (src.Set(lpcmData))
+			else if (Optional<Media::MediaSource>(lpcmData).SetTo(src))
 			{
 				mf->AddSource(src, audDelay);
 			}
@@ -674,8 +676,8 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 
 	if (chap.GetSize() > 0)
 	{
-		Media::ChapterInfo *chapters;
-		NEW_CLASS(chapters, Media::ChapterInfo());
+		NN<Media::ChapterInfo> chapters;
+		NEW_CLASSNN(chapters, Media::ChapterInfo());
 		UInt32 dataCnt = *(UInt32*)&chap[0];
 		UInt32 frameNum;
 		UInt32 chapOfst;

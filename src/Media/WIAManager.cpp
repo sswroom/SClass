@@ -18,8 +18,8 @@ Media::WIAManager::WIAManager()
 {
 	HRESULT hr;
 	this->pWiaDevMgr = 0;
-	NEW_CLASS(this->devNames, Data::ArrayListStrUTF8());
-	NEW_CLASS(this->devIds, Data::ArrayListStrUTF8());
+	NEW_CLASSNN(this->devNames, Data::ArrayListStrUTF8());
+	NEW_CLASSNN(this->devIds, Data::ArrayListStrUTF8());
 	hr = CoInitializeEx(0, COINIT_APARTMENTTHREADED);
 
 #if defined(__WiaDevMgr2_FWD_DEFINED__) && (_MSC_VER >= 1400)
@@ -78,8 +78,8 @@ Media::WIAManager::~WIAManager()
 	}
 	this->devNames->DeleteAll();
 	this->devIds->DeleteAll();
-	DEL_CLASS(this->devNames);
-	DEL_CLASS(this->devIds);
+	this->devNames.Delete();
+	this->devIds.Delete();
 	CoUninitialize();
 }
 
@@ -109,8 +109,8 @@ Optional<Media::WIADevice> Media::WIAManager::CreateDevice(UIntOS index)
 	Text::StrDelNew(wptr);
 	if (hr == S_OK)
 	{
-		Media::WIADevice *dev;
-		NEW_CLASS(dev, Media::WIADevice(devItem));
+		NN<Media::WIADevice> dev;
+		NEW_CLASSNN(dev, Media::WIADevice(devItem));
 		return dev;
 	}
 	return nullptr;

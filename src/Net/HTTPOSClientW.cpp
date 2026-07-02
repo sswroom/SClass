@@ -31,7 +31,7 @@ struct Net::HTTPOSClient::ClassData
 	HINTERNET hConnect;
 	HINTERNET hRequest;
 	Bool https;
-	Data::ArrayListNN<Crypto::Cert::Certificate> *certs;
+	Optional<Data::ArrayListNN<Crypto::Cert::Certificate>> certs;
 	Crypto::Cert::X509Cert* cliCert;
 	Crypto::Cert::X509File* cliKey;
 };
@@ -92,7 +92,7 @@ Net::HTTPOSClient::HTTPOSClient(NN<Net::TCPClientFactory> clif, Text::CString us
 	data->hConnect = 0;
 	data->hRequest = 0;
 	data->https = false;
-	data->certs = 0;
+	data->certs = nullptr;
 	data->cliCert = 0;
 	data->cliKey = 0;
 	this->cliHost = nullptr;
@@ -137,15 +137,16 @@ Net::HTTPOSClient::~HTTPOSClient()
 		WinHttpCloseHandle(data->hConnect);
 	if (data->hSession)
 		WinHttpCloseHandle(data->hSession);
-	if (data->certs)
+	NN<Data::ArrayListNN<Crypto::Cert::Certificate>> certs;
+	if (data->certs.SetTo(certs))
 	{
-		UIntOS i = data->certs->GetCount();
+		UIntOS i = certs->GetCount();
 		while (i-- > 0)
 		{
-			NN<Crypto::Cert::Certificate> cert = data->certs->GetItemNoCheck(i);
+			NN<Crypto::Cert::Certificate> cert = certs->GetItemNoCheck(i);
 			cert.Delete();
 		}
-		DEL_CLASS(data->certs);
+		certs.Delete();
 	}
 	SDEL_CLASS(data->cliCert);
 	SDEL_CLASS(data->cliKey);
@@ -664,8 +665,9 @@ Bool Net::HTTPOSClient::SetClientCert(NN<Crypto::Cert::X509Cert> cert, NN<Crypto
 
 Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> Net::HTTPOSClient::GetServerCerts()
 {
-	if (this->clsData->certs)
-		return this->clsData->certs;
+	NN<Data::ArrayListNN<Crypto::Cert::Certificate>> certs;
+	if (this->clsData->certs.SetTo(certs))
+		return certs;
 	PCCERT_CONTEXT serverCert = 0;
 	DWORD certSize = sizeof(serverCert);
 	if (WinHttpQueryOption(this->clsData->hRequest, WINHTTP_OPTION_SERVER_CERT_CONTEXT, &serverCert, &certSize) == FALSE)
@@ -676,14 +678,15 @@ Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> Net::HTTPOSClient
 	PCCERT_CONTEXT lastCert = 0;
 	DWORD dwVerificationFlags = 0;
 	NN<Crypto::Cert::X509Cert> cert;
-	NEW_CLASS(this->clsData->certs, Data::ArrayListNN<Crypto::Cert::Certificate>());
+	NEW_CLASSNN(certs, Data::ArrayListNN<Crypto::Cert::Certificate>());
+	this->clsData->certs = certs;
 	NEW_CLASSNN(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), Data::ByteArrayR(serverCert->pbCertEncoded, serverCert->cbCertEncoded)));
-	this->clsData->certs->Add(cert);
+	certs->Add(cert);
 	thisCert = CertGetIssuerCertificateFromStore(serverCert->hCertStore, serverCert, NULL, &dwVerificationFlags);
 	while (thisCert)
 	{
 		NEW_CLASSNN(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), Data::ByteArrayR(thisCert->pbCertEncoded, thisCert->cbCertEncoded)));
-		this->clsData->certs->Add(cert);
+		certs->Add(cert);
 		lastCert = thisCert;
 		thisCert = CertGetIssuerCertificateFromStore(serverCert->hCertStore, lastCert, NULL, &dwVerificationFlags);
 		CertFreeCertificateContext(lastCert);

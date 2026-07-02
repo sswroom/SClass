@@ -44,7 +44,7 @@ Optional<IO::ParsedObject> Parser::FileParser::M2VStmParser::ParseFileHdr(NN<IO:
 	if (!Media::MPEGVideoParser::GetFrameInfo(tmpBuff, readSize, info, frameRateNorm, frameRateDenorm, bitRate, false))
 		return nullptr;
 
-	Media::MediaFile *file;
-	NEW_CLASS(file, Media::M2VFile(fd));
+	NN<Media::MediaFile> file;
+	NEW_CLASSNN(file, Media::M2VFile(fd));
 	return file;
 }

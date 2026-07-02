@@ -5,7 +5,7 @@
 #include "UI/Win/WinDragDrop.h"
 #include "Win32/StreamCOM.h"
 
-void UI::Win::WinDropData::LoadData()
+NN<Data::StringUTF8Map<FORMATETC *>> UI::Win::WinDropData::LoadData()
 {
 	UTF8Char sbuff[512];
 	FORMATETC fmt;
@@ -27,6 +27,7 @@ void UI::Win::WinDropData::LoadData()
 		}
 		enumFmt->Release();
 	}
+	return nndataMap;
 }
 
 UI::Win::WinDropData::WinDropData(IDataObject *pDataObj)
@@ -54,29 +55,32 @@ UI::Win::WinDropData::~WinDropData()
 
 UIntOS UI::Win::WinDropData::GetCount()
 {
-	if (this->dataMap == 0)
+	NN<Data::StringUTF8Map<FORMATETC *>> nndataMap;
+	if (!this->dataMap.SetTo(nndataMap))
 	{
-		this->LoadData();
+		nndataMap = this->LoadData();
 	}
-	return this->dataMap->GetCount();
+	return nndataMap->GetCount();
 }
 
 UnsafeArrayOpt<const UTF8Char> UI::Win::WinDropData::GetName(UIntOS index)
 {
-	if (this->dataMap == 0)
+	NN<Data::StringUTF8Map<FORMATETC *>> nndataMap;
+	if (!this->dataMap.SetTo(nndataMap))
 	{
-		this->LoadData();
+		nndataMap = this->LoadData();
 	}
-	return this->dataMap->GetKey(index);
+	return nndataMap->GetKey(index);
 }
 
 Bool UI::Win::WinDropData::GetDataText(UnsafeArray<const UTF8Char> name, NN<Text::StringBuilderUTF8> sb)
 {
-	if (this->dataMap == 0)
+	NN<Data::StringUTF8Map<FORMATETC *>> nndataMap;
+	if (!this->dataMap.SetTo(nndataMap))
 	{
-		this->LoadData();
+		nndataMap = this->LoadData();
 	}
-	FORMATETC *fmt = this->dataMap->Get(name);
+	FORMATETC *fmt = nndataMap->Get(name);
 	HRESULT hres;
 	STGMEDIUM med;
 	if (fmt == 0)
@@ -102,11 +106,12 @@ Bool UI::Win::WinDropData::GetDataText(UnsafeArray<const UTF8Char> name, NN<Text
 
 Optional<IO::Stream> UI::Win::WinDropData::GetDataStream(UnsafeArray<const UTF8Char> name)
 {
-	if (this->dataMap == 0)
+	NN<Data::StringUTF8Map<FORMATETC *>> nndataMap;
+	if (!this->dataMap.SetTo(nndataMap))
 	{
-		this->LoadData();
+		nndataMap = this->LoadData();
 	}
-	FORMATETC *fmt = this->dataMap->Get(name);
+	FORMATETC *fmt = nndataMap->Get(name);
 	HRESULT hres;
 	STGMEDIUM med;
 	if (fmt == 0)

@@ -11,12 +11,12 @@ namespace Net
 	{
 	public:
 		NN<Net::SocketFactory> sockf;
-		Net::TCPServer *svr;
+		Optional<Net::TCPServer> svr;
 		NN<IO::LogTool> log;
 		Sync::Mutex readMut;
 		Sync::Mutex connMut;
 		Sync::Event readEvt;
-		Net::TCPClient *currCli;
+		Optional<Net::TCPClient> currCli;
 
 		static void __stdcall ConnHandler(NN<Socket> s, AnyType userObj);
 	public:

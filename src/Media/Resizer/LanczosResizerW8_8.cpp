@@ -825,7 +825,7 @@ Bool Media::Resizer::LanczosResizerW8_8::IsSupported(NN<const Media::FrameInfo> 
 Optional<Media::StaticImage> Media::Resizer::LanczosResizerW8_8::ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
-	Media::StaticImage *newImage;
+	NN<Media::StaticImage> newImage;
 	if (srcImage->GetImageClass() != Media::RasterImage::ImageClass::StaticImage || !IsSupported(srcImage->info))
 	{
 		return nullptr;
@@ -852,7 +852,7 @@ Optional<Media::StaticImage> Media::Resizer::LanczosResizerW8_8::ProcessToNewPar
 	destInfo.atype = Media::AT_ALPHA_ALL_FF;
 	destInfo.pf = Media::PF_PAL_W8;
 	destInfo.storeBPP = 8;
-	NEW_CLASS(newImage, Media::StaticImage(destInfo));
+	NEW_CLASSNN(newImage, Media::StaticImage(destInfo));
 	UnsafeArray<UInt8> pal;
 	if (newImage->pal.SetTo(pal))
 	{

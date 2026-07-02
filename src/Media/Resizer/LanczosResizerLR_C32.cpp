@@ -1322,7 +1322,7 @@ Bool Media::Resizer::LanczosResizerLR_C32::IsSupported(NN<const Media::FrameInfo
 Optional<Media::StaticImage> Media::Resizer::LanczosResizerLR_C32::ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
-	Media::StaticImage *img;
+	NN<Media::StaticImage> img;
 	if (srcImage->GetImageClass() != Media::RasterImage::ImageClass::StaticImage || !IsSupported(srcImage->info))
 		return nullptr;
 	Math::Size2D<UIntOS> targeSize = this->targetSize;
@@ -1346,7 +1346,7 @@ Optional<Media::StaticImage> Media::Resizer::LanczosResizerLR_C32::ProcessToNewP
 		destInfo.color.GetBTranParam()->Set(NN<const Media::CS::TransferParam>(this->destColor.GetBTranParam()));
 	}
 //	this->srcAlphaType = srcImage->info.atype;
-	NEW_CLASS(img, Media::StaticImage(destInfo));
+	NEW_CLASSNN(img, Media::StaticImage(destInfo));
 	Int32 tlx = (Int32)srcTL.x;
 	Int32 tly = (Int32)srcTL.y;
 	Resize(NN<Media::StaticImage>::ConvertFrom(srcImage)->data.Ptr() + (IntOS)srcImage->GetDataBpl() * tly + (tlx << 3), (IntOS)srcImage->GetDataBpl(), srcBR.x - srcTL.x, srcBR.y - srcTL.y, srcTL.x - tlx, srcTL.y - tly, img->data.Ptr(), (IntOS)img->GetDataBpl(), destInfo.dispSize.x, destInfo.dispSize.y);

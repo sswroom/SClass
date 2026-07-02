@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <mmreg.h>
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "Sync/Mutex.h"
 #include "Media/AudioFilter.h"
 #include "Media/AudioStream.h"
@@ -12,7 +12,7 @@
 
 AudioStream::AudioStream(WAVEFORMATEX *fmt, Data::ArrayList<IO::StreamData*>* dList, WChar *name, Int32 audDelay)
 {
-	audioSource = MemAlloc(AUDIOSOURCE, 1);
+	audioSource = MemAllocNN(AUDIOSOURCE);
 	Int32 i;
 	if (fmt->wFormatTag == 1)
 	{
@@ -25,7 +25,7 @@ AudioStream::AudioStream(WAVEFORMATEX *fmt, Data::ArrayList<IO::StreamData*>* dL
 		MemCopy(audioSource->format, fmt, i);
 	}
 	audioSource->dataList = dList;
-	NEW_CLASS(audioSource->filterList, Data::ArrayList<AudioFilter*>());
+	NEW_CLASSNN(audioSource->filterList, Data::ArrayListNN<AudioFilter>());
 	audioSource->audioDelay = audDelay;
 
 	if (name == 0)

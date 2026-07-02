@@ -4,16 +4,16 @@
 
 Media::MediaFile *Media::APE::APEFile::ParseData(NN<IO::StreamData> data)
 {
-	Media::APE::APEIO *io;
+	NN<Media::APE::APEIO> io;
 	Int32 err;
-	NEW_CLASS(io, Media::APE::APEIO(data));
-	IAPEDecompress *ape = CreateIAPEDecompressEx(io, &err);
+	NEW_CLASSNN(io, Media::APE::APEIO(data));
+	IAPEDecompress *ape = CreateIAPEDecompressEx(io.Ptr(), &err);
 	if (ape)
 	{
-		Media::APE::APEAudioSource *audStm;
-		Media::MediaFile *mf;
-		NEW_CLASS(audStm, Media::APE::APEAudioSource(ape, io));
-		NEW_CLASS(mf, Media::MediaFile(data->GetFullName()));
+		NN<Media::APE::APEAudioSource> audStm;
+		NN<Media::MediaFile> mf;
+		NEW_CLASSNN(audStm, Media::APE::APEAudioSource(ape, io));
+		NEW_CLASSNN(mf, Media::MediaFile(data->GetFullName()));
 		mf->AddSource(audStm, 0);
 		return mf;
 	}

@@ -43,8 +43,8 @@ Text::SpreadSheet::Workbook::~Workbook()
 	SDEL_TEXT(this->author);
 	SDEL_TEXT(this->lastAuthor);
 	SDEL_TEXT(this->company);
-	SDEL_CLASS(this->createTime);
-	SDEL_CLASS(this->modifyTime);
+	this->createTime.Delete();
+	this->modifyTime.Delete();
 }
 
 IO::ParserType Text::SpreadSheet::Workbook::GetParserType() const
@@ -62,13 +62,13 @@ NN<Text::SpreadSheet::Workbook> Text::SpreadSheet::Workbook::Clone() const
 	newWB->lastAuthor = Text::StrSCopyNew(this->lastAuthor);
 	newWB->company = Text::StrSCopyNew(this->company);
 	NN<Data::DateTime> dt;
-	if (dt.Set(this->createTime))
+	if (this->createTime.SetTo(dt))
 	{
-		NEW_CLASS(newWB->createTime, Data::DateTime(dt));
+		NEW_CLASSOPT(newWB->createTime, Data::DateTime(dt));
 	}
-	if (dt.Set(this->modifyTime))
+	if (this->modifyTime.SetTo(dt))
 	{
-		NEW_CLASS(newWB->modifyTime, Data::DateTime(dt));
+		NEW_CLASSOPT(newWB->modifyTime, Data::DateTime(dt));
 	}
 	newWB->version = this->version;
 	newWB->windowTopX = this->windowTopX;
@@ -159,13 +159,13 @@ void Text::SpreadSheet::Workbook::SetCompany(UnsafeArrayOpt<const UTF8Char> comp
 	}
 }
 
-void Text::SpreadSheet::Workbook::SetCreateTime(Data::DateTime *createTime)
+void Text::SpreadSheet::Workbook::SetCreateTime(Optional<Data::DateTime> createTime)
 {
-	SDEL_CLASS(this->createTime);
+	this->createTime.Delete();
 	NN<Data::DateTime> dt;
-	if (dt.Set(createTime))
+	if (createTime.SetTo(dt))
 	{
-		NEW_CLASS(this->createTime, Data::DateTime(dt));
+		NEW_CLASSOPT(this->createTime, Data::DateTime(dt));
 	}
 }
 
@@ -173,28 +173,29 @@ void Text::SpreadSheet::Workbook::SetCreateTime(Data::Timestamp createTime)
 {
 	if (createTime.IsNull())
 	{
-		SDEL_CLASS(this->createTime);
+		this->createTime.Delete();
 	}
 	else
 	{
-		if (this->createTime == 0)
+		NN<Data::DateTime> dt;
+		if (!this->createTime.SetTo(dt))
 		{
-			NEW_CLASS(this->createTime, Data::DateTime(createTime.inst, createTime.tzQhr));
+			NEW_CLASSOPT(this->createTime, Data::DateTime(createTime.inst, createTime.tzQhr));
 		}
 		else
 		{
-			this->createTime->SetValue(createTime.inst, createTime.tzQhr);
+			dt->SetValue(createTime.inst, createTime.tzQhr);
 		}
 	}
 }
 
-void Text::SpreadSheet::Workbook::SetModifyTime(Data::DateTime *modifyTime)
+void Text::SpreadSheet::Workbook::SetModifyTime(Optional<Data::DateTime> modifyTime)
 {
-	SDEL_CLASS(this->modifyTime);
+	this->modifyTime.Delete();
 	NN<Data::DateTime> dt;
-	if (dt.Set(modifyTime))
+	if (modifyTime.SetTo(dt))
 	{
-		NEW_CLASS(this->modifyTime, Data::DateTime(dt));
+		NEW_CLASSOPT(this->modifyTime, Data::DateTime(dt));
 	}
 }
 
@@ -202,17 +203,18 @@ void Text::SpreadSheet::Workbook::SetModifyTime(Data::Timestamp modifyTime)
 {
 	if (modifyTime.IsNull())
 	{
-		SDEL_CLASS(this->modifyTime);
+		this->modifyTime.Delete();
 	}
 	else
 	{
-		if (this->modifyTime == 0)
+		NN<Data::DateTime> dt;
+		if (!this->modifyTime.SetTo(dt))
 		{
-			NEW_CLASS(this->modifyTime, Data::DateTime(modifyTime.inst, modifyTime.tzQhr));
+			NEW_CLASSOPT(this->modifyTime, Data::DateTime(modifyTime.inst, modifyTime.tzQhr));
 		}
 		else
 		{
-			this->modifyTime->SetValue(modifyTime.inst, modifyTime.tzQhr);
+			dt->SetValue(modifyTime.inst, modifyTime.tzQhr);
 		}
 	}
 }
@@ -238,12 +240,12 @@ UnsafeArrayOpt<const UTF8Char> Text::SpreadSheet::Workbook::GetCompany() const
 	return this->company;
 }
 
-Data::DateTime *Text::SpreadSheet::Workbook::GetCreateTime() const
+Optional<Data::DateTime> Text::SpreadSheet::Workbook::GetCreateTime() const
 {
 	return this->createTime;
 }
 
-Data::DateTime *Text::SpreadSheet::Workbook::GetModifyTime() const
+Optional<Data::DateTime> Text::SpreadSheet::Workbook::GetModifyTime() const
 {
 	return this->modifyTime;
 }
@@ -261,7 +263,7 @@ Bool Text::SpreadSheet::Workbook::HasInfo() const
 		return true;
 	if (this->company.NotNull())
 		return true;
-	if (this->createTime)
+	if (this->createTime.NotNull())
 		return true;
 	if (this->version != 0)
 		return true;

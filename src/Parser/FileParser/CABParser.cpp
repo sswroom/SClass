@@ -84,8 +84,8 @@ Optional<IO::ParsedObject> Parser::FileParser::CABParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 
-	IO::VirtualPackageFile *pf;
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NN<IO::VirtualPackageFile> pf;
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	
 	j = 0;
 	i = 0;
@@ -96,7 +96,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CABParser::ParseFileHdr(NN<IO::St
 		fileSize = ReadUInt32(&recBuff[j + 36]);
 		if (fileOfst != nextOfst)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(fileName, &recBuff[j], 32, 0);

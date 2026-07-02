@@ -61,9 +61,9 @@ Optional<IO::ParsedObject> Parser::FileParser::GamedatPac2Parser::ParseFileHdr(N
 		return nullptr;
 	}
 
-	IO::VirtualPackageFile *pf;
+	NN<IO::VirtualPackageFile> pf;
 	Text::Encoding enc(932);
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	
 	j = recCnt * 32;
 	i = 0;
@@ -75,7 +75,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GamedatPac2Parser::ParseFileHdr(N
 		fileSize = ReadUInt32(&recBuff[j + 4]);
 		if (fileOfst != nextOfst)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(fileName, &recBuff[i * 32], 32, 0);

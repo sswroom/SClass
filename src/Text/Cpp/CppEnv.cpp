@@ -291,7 +291,7 @@ void Text::Cpp::CppEnv::InitEnvStatus(NN<Text::Cpp::CppParseStatus> status)
 	}
 }
 
-Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVersion vsv)
+Optional<Text::Cpp::CppEnv> Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVersion vsv)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
@@ -302,9 +302,9 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 	Optional<IO::ConfigFile> cfg;
 	UIntOS i;
 	if (!IsCompilerExist(vsv))
-		return 0;
+		return nullptr;
 	if (!IO::Path::GetLocAppDataPath(sbuff).SetTo(sptr))
-		return 0;
+		return nullptr;
 	switch (vsv)
 	{
 	case Text::VSProject::VSV_VS71:
@@ -350,17 +350,19 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 	case Text::VSProject::VSV_VS6:
 	case Text::VSProject::VSV_UNKNOWN:
 	default:
-		return 0;
+		return nullptr;
 	}
 	
 	NN<IO::ConfigFile> nncfg;
 	if (!cfg.SetTo(nncfg))
-		return 0;
-	Text::Cpp::CppEnv *env = 0;
+		return nullptr;
+	Optional<Text::Cpp::CppEnv> env = nullptr;
+	NN<Text::Cpp::CppEnv> nnenv;
 	NN<Text::String> paths;
 	if (nncfg->GetCateValue(CSTR("VC\\VC_OBJECTS_PLATFORM_INFO\\Win32\\Directories"), CSTR("Include Dirs")).SetTo(paths))
 	{
-		NEW_CLASS(env, Text::Cpp::CppEnv(vsv));
+		NEW_CLASSNN(nnenv, Text::Cpp::CppEnv(vsv));
+		env = nnenv;
 
 		csptr = paths->v;
 		sptr = sbuff;
@@ -405,7 +407,7 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 				}
 				else
 				{
-					env->includePaths.Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
+					nnenv->includePaths.Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 				}
 				if (c == 0)
 					break;
@@ -421,24 +423,24 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 	return env;
 }
 
-Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv()
+Optional<Text::Cpp::CppEnv> Text::Cpp::CppEnv::LoadVSEnv()
 {
-	Text::Cpp::CppEnv *env;
-	if ((env = LoadVSEnv(Text::VSProject::VSV_VS12)) != 0)
+	Optional<Text::Cpp::CppEnv> env;
+	if ((env = LoadVSEnv(Text::VSProject::VSV_VS12)).NotNull())
 		return env;
-	if ((env = LoadVSEnv(Text::VSProject::VSV_VS11)) != 0)
+	if ((env = LoadVSEnv(Text::VSProject::VSV_VS11)).NotNull())
 		return env;
-	if ((env = LoadVSEnv(Text::VSProject::VSV_VS10)) != 0)
+	if ((env = LoadVSEnv(Text::VSProject::VSV_VS10)).NotNull())
 		return env;
-	if ((env = LoadVSEnv(Text::VSProject::VSV_VS9)) != 0)
+	if ((env = LoadVSEnv(Text::VSProject::VSV_VS9)).NotNull())
 		return env;
-	if ((env = LoadVSEnv(Text::VSProject::VSV_VS8)) != 0)
+	if ((env = LoadVSEnv(Text::VSProject::VSV_VS8)).NotNull())
 		return env;
-	if ((env = LoadVSEnv(Text::VSProject::VSV_VS71)) != 0)
+	if ((env = LoadVSEnv(Text::VSProject::VSV_VS71)).NotNull())
 		return env;
-	if ((env = LoadVSEnv(Text::VSProject::VSV_VS6)) != 0)
+	if ((env = LoadVSEnv(Text::VSProject::VSV_VS6)).NotNull())
 		return env;
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Text::Cpp::CppEnv::GetVCInstallDir(UnsafeArray<UTF8Char> sbuff, Text::VSProject::VisualStudioVersion vsv)
@@ -555,9 +557,9 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::CreateVSEnv()
 	WChar wbuff[512];
 	CompilerType cppVer = GetSystemCompiler(wbuff);
 	if (cppVer == Text::Cpp::CppEnv::CT_UNKNOWN)
-		return 0;
-	Text::Cpp::CppEnv *env;
-	NEW_CLASS(env, Text::Cpp::CppEnv());
+		return nullptr;
+	NN<Text::Cpp::CppEnv> env;
+	NEW_CLASSNN(env, Text::Cpp::CppEnv());
 	env->includePaths->Add(Text::StrCopyNew(wbuff));
 	return env;
 }

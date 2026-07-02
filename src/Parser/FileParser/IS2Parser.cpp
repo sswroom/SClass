@@ -61,8 +61,8 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 	Bool valid = true;
 	UIntOS currOfst = 204;
 	Int32 currType;
-	Media::ImageList *imgList;
-	NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
+	NN<Media::ImageList> imgList;
+	NEW_CLASSNN(imgList, Media::ImageList(fd->GetFullName()));
 	i = 44;
 	while (i < 204 && valid)
 	{
@@ -252,7 +252,7 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 	}
 	if (!valid)
 	{
-		DEL_CLASS(imgList);
+		imgList.Delete();
 		return nullptr;
 	}
 

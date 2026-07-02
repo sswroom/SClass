@@ -90,8 +90,8 @@ void __stdcall Net::RTPCliChannel::PacketHdlr(NN<const Net::SocketUtil::AddressI
 		}
 
 
-		Net::RTPPayloadHandler *plHdlr = chData->payloadMap.Get(chData->packBuff[minIndex].payloadType);
-		if (plHdlr)
+		NN<Net::RTPPayloadHandler> plHdlr;
+		if (chData->payloadMap.Get(chData->packBuff[minIndex].payloadType).SetTo(plHdlr))
 		{
 			plHdlr->MediaDataReceived(chData->packBuff[minIndex].buff, chData->packBuff[minIndex].dataSize, chData->packBuff[minIndex].seqNum, chData->packBuff[minIndex].ts);
 		}
@@ -319,13 +319,11 @@ void Net::RTPCliChannel::SetPlayControl(NN<Net::RTPController> playCtrl)
 
 Net::RTPCliChannel::RTPCliChannel(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log)
 {
-	NEW_CLASS(this->chData, ChannelData());
+	NEW_CLASSNN(this->chData, ChannelData());
 	this->chData->useCnt = 1;
 
 	UIntOS i;
 	this->chData->sockf = sockf;
-	this->chData->rtpUDP = 0;
-	this->chData->rtcpUDP = 0;
 	this->chData->userData = 0;
 	this->chData->controlURL = nullptr;
 	this->chData->playing = false;
@@ -346,19 +344,19 @@ Net::RTPCliChannel::RTPCliChannel(NN<Net::SocketFactory> sockf, UInt16 port, NN<
 	{
 		port = (UInt16)(port + 1);
 	}
-	NEW_CLASS(this->chData->rtpUDP, Net::UDPServer(sockf, nullptr, port, nullptr, PacketHdlr, this->chData, log, nullptr, this->chData->threadCnt, false));
+	NEW_CLASSNN(this->chData->rtpUDP, Net::UDPServer(sockf, nullptr, port, nullptr, PacketHdlr, this->chData, log, nullptr, this->chData->threadCnt, false));
 	if (port == 0)
 	{
 		port = this->chData->rtpUDP->GetPort();
 		if (port & 1)
 		{
 			port = (UInt16)(port + 1);
-			DEL_CLASS(this->chData->rtpUDP);
-			NEW_CLASS(this->chData->rtpUDP, Net::UDPServer(sockf, nullptr, port, nullptr, PacketHdlr, this->chData, log, nullptr, this->chData->threadCnt, false));
+			this->chData->rtpUDP.Delete();
+			NEW_CLASSNN(this->chData->rtpUDP, Net::UDPServer(sockf, nullptr, port, nullptr, PacketHdlr, this->chData, log, nullptr, this->chData->threadCnt, false));
 		}
 	}
 	this->chData->rtpUDP->SetBuffSize(1048576);
-	NEW_CLASS(this->chData->rtcpUDP, Net::UDPServer(sockf, nullptr, (UInt16)(port + 1), nullptr, PacketCtrlHdlr, this->chData, log, nullptr, 1, false));
+	NEW_CLASSNN(this->chData->rtcpUDP, Net::UDPServer(sockf, nullptr, (UInt16)(port + 1), nullptr, PacketCtrlHdlr, this->chData, log, nullptr, 1, false));
 }
 
 Net::RTPCliChannel::RTPCliChannel(NN<Net::RTPCliChannel> ch)
@@ -372,18 +370,18 @@ Net::RTPCliChannel::~RTPCliChannel()
 	if (--this->chData->useCnt == 0)
 	{
 		UIntOS i;
-		Net::RTPPayloadHandler *plHdlr;
+		NN<Net::RTPPayloadHandler> plHdlr;
 		this->StopPlay();
 
-		DEL_CLASS(this->chData->rtpUDP);
-		SDEL_CLASS(this->chData->rtcpUDP);
+		this->chData->rtpUDP.Delete();
+		this->chData->rtcpUDP.Delete();
 		OPTSTR_DEL(this->chData->controlURL);
 
 		i = this->chData->payloadMap.GetCount();
 		while (i-- > 0)
 		{
-			plHdlr = this->chData->payloadMap.GetItem(i);
-			DEL_CLASS(plHdlr);
+			plHdlr = this->chData->payloadMap.GetItemNoCheck(i);
+			plHdlr.Delete();
 		}
 		i = this->chData->buffCnt;
 		while (i-- > 0)
@@ -393,7 +391,7 @@ Net::RTPCliChannel::~RTPCliChannel()
 		MemFree(this->chData->packBuff);
 
 		this->chData->playCtrl.Delete();
-		DEL_CLASS(this->chData);
+		this->chData.Delete();
 	}
 }
 
@@ -433,14 +431,14 @@ Optional<Media::VideoSource> Net::RTPCliChannel::GetVideo(UIntOS index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_VIDEO)
 		return nullptr;
-	return (Net::RTPVPLHandler*)this->chData->payloadMap.GetItem(index);
+	return Optional<Net::RTPVPLHandler>::ConvertFrom(this->chData->payloadMap.GetItem(index));
 }
 
 Optional<Media::AudioSource> Net::RTPCliChannel::GetAudio(UIntOS index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_AUDIO)
 		return nullptr;
-	return nullptr;//(Net::RTPVPLHandler*)this->payloadMap->GetValues()->GetItem(index);
+	return nullptr;//Optional<Net::RTPAPLHandler>::ConvertFrom(this->payloadMap->GetValues()->GetItem(index));
 }
 
 Optional<Media::VideoSource> Net::RTPCliChannel::CreateShadowVideo(UIntOS index)
@@ -448,14 +446,14 @@ Optional<Media::VideoSource> Net::RTPCliChannel::CreateShadowVideo(UIntOS index)
 	if (this->chData->mediaType != Media::MEDIA_TYPE_VIDEO)
 		return nullptr;
 	NN<Net::RTPVPLHandler> hdlr;
-	if (!hdlr.Set((Net::RTPVPLHandler*)this->chData->payloadMap.GetItem(index)))
+	if (!Optional<Net::RTPVPLHandler>::ConvertFrom(this->chData->payloadMap.GetItem(index)).SetTo(hdlr))
 	{
 		return nullptr;
 	}
-	Net::RTPVSource *vSrc;
+	NN<Net::RTPVSource> vSrc;
 	NN<Net::RTPCliChannel> ch;
 	NEW_CLASSNN(ch, Net::RTPCliChannel(*this));
-	NEW_CLASS(vSrc, Net::RTPVSource(ch, hdlr));
+	NEW_CLASSNN(vSrc, Net::RTPVSource(ch, hdlr));
 	return vSrc;
 }
 
@@ -464,14 +462,14 @@ Optional<Media::AudioSource> Net::RTPCliChannel::CreateShadowAudio(UIntOS index)
 	if (this->chData->mediaType != Media::MEDIA_TYPE_AUDIO)
 		return nullptr;
 	NN<Net::RTPAPLHandler> hdlr;
-	if (!hdlr.Set((Net::RTPAPLHandler*)this->chData->payloadMap.GetItem(index)))
+	if (!Optional<Net::RTPAPLHandler>::ConvertFrom(this->chData->payloadMap.GetItem(index)).SetTo(hdlr))
 	{
 		return nullptr;
 	}
-	Net::RTPASource *aSrc;
+	NN<Net::RTPASource> aSrc;
 	NN<Net::RTPCliChannel> ch;
 	NEW_CLASSNN(ch, Net::RTPCliChannel(*this));
-	NEW_CLASS(aSrc, Net::RTPASource(ch, hdlr));
+	NEW_CLASSNN(aSrc, Net::RTPASource(ch, hdlr));
 	return aSrc;
 }
 
@@ -519,8 +517,8 @@ Bool Net::RTPCliChannel::IsRunning()
 
 Bool Net::RTPCliChannel::MapPayloadType(Int32 payloadType, Text::CStringNN typ, UInt32 freq, UInt32 nChannel)
 {
-	Net::RTPPayloadHandler *hdlr;
-	if (this->chData->payloadMap.Get(payloadType))
+	NN<Net::RTPPayloadHandler> hdlr;
+	if (this->chData->payloadMap.Get(payloadType).NotNull())
 	{
 		return false;
 	}
@@ -538,7 +536,7 @@ Bool Net::RTPCliChannel::MapPayloadType(Int32 payloadType, Text::CStringNN typ, 
 		}
 		else if (typ.Equals(UTF8STRC("mpeg4-generic")))
 		{
-			NEW_CLASS(hdlr, Net::RTPAACHandler(payloadType, freq, nChannel));
+			NEW_CLASSNN(hdlr, Net::RTPAACHandler(payloadType, freq, nChannel));
 			this->chData->payloadMap.Put(payloadType, hdlr);
 			return true;
 		}
@@ -547,7 +545,7 @@ Bool Net::RTPCliChannel::MapPayloadType(Int32 payloadType, Text::CStringNN typ, 
 	{
 		if (typ.Equals(UTF8STRC("H264")))
 		{
-			NEW_CLASS(hdlr, Net::RTPH264Handler(payloadType));
+			NEW_CLASSNN(hdlr, Net::RTPH264Handler(payloadType));
 			this->chData->payloadMap.Put(payloadType, hdlr);
 			return true;
 		}
@@ -557,8 +555,8 @@ Bool Net::RTPCliChannel::MapPayloadType(Int32 payloadType, Text::CStringNN typ, 
 
 Bool Net::RTPCliChannel::SetPayloadFormat(Int32 payloadType, UnsafeArray<const UTF8Char> format)
 {
-	Net::RTPPayloadHandler *plHdlr = this->chData->payloadMap.Get(payloadType);
-	if (plHdlr)
+	NN<Net::RTPPayloadHandler> plHdlr;
+	if (this->chData->payloadMap.Get(payloadType).SetTo(plHdlr))
 	{
 		plHdlr->SetFormat(format);
 		return true;
@@ -566,7 +564,7 @@ Bool Net::RTPCliChannel::SetPayloadFormat(Int32 payloadType, UnsafeArray<const U
 	return false;
 }
 
-NN<Net::RTPCliChannel> Net::RTPCliChannel::CreateChannel(NN<Net::SocketFactory> sockf, NN<Data::ArrayListStrUTF8> sdpDesc, Text::CStringNN ctrlURL, Net::RTPController *playCtrl, NN<IO::LogTool> log)
+NN<Net::RTPCliChannel> Net::RTPCliChannel::CreateChannel(NN<Net::SocketFactory> sockf, NN<Data::ArrayListStrUTF8> sdpDesc, Text::CStringNN ctrlURL, NN<Net::RTPController> playCtrl, NN<IO::LogTool> log)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;

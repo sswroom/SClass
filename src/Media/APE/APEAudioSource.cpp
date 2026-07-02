@@ -1,14 +1,14 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "MyMemory.h"
 #include "Media/APE/APEAudioSource.h"
 #include "Text/MyString.h"
 
-Media::APE::APEAudioSource::APEAudioSource(IAPEDecompress *ape, Media::APE::APEIO *io)
+Media::APE::APEAudioSource::APEAudioSource(IAPEDecompress *ape, NN<Media::APE::APEIO> io)
 {
 	WAVEFORMATEX waveFmt;
 	this->ape = ape;
 	this->io = io;
-	NEW_CLASS(this->fmt, Media::AudioFormat());
+	NEW_CLASSNN(this->fmt, Media::AudioFormat());
 	this->ape->GetInfo(APE_INFO_WAVEFORMATEX, (Int32)(IntOS)&waveFmt, 0);
 	this->fmt->FromWAVEFORMATEX((UInt8*)&waveFmt);
 	this->evt = 0;
@@ -17,8 +17,8 @@ Media::APE::APEAudioSource::APEAudioSource(IAPEDecompress *ape, Media::APE::APEI
 Media::APE::APEAudioSource::~APEAudioSource()
 {
 	delete this->ape;
-	DEL_CLASS(this->io);
-	DEL_CLASS(this->fmt);
+	this->io.Delete();
+	this->fmt.Delete();
 }
 
 WChar *Media::APE::APEAudioSource::GetName(WChar *buff)

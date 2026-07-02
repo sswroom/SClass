@@ -52,8 +52,8 @@ Optional<IO::ParsedObject> Parser::FileParser::IPACParser::ParseFileHdr(NN<IO::S
 	currOfst = recCnt * 44 + 8;
 
 	Text::Encoding enc(932);
-	IO::VirtualPackageFile *pf;
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NN<IO::VirtualPackageFile> pf;
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	UInt32 i = 0;
 
 	while (i < recCnt)
@@ -62,7 +62,7 @@ Optional<IO::ParsedObject> Parser::FileParser::IPACParser::ParseFileHdr(NN<IO::S
 		startOfst = ReadUInt32(&rec[36]);
 		if (startOfst != currOfst)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(name, rec, 32, 0);

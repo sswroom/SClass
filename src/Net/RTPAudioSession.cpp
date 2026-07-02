@@ -90,7 +90,7 @@ Net::RTPAudioSession::RTPAudioSession(NN<Net::SocketFactory> sockf, const Char *
 	this->sockf = sockf;
 	this->log = log;
 	this->svr = nullptr;
-	this->format = 0;
+	this->format = nullptr;
 	this->readEvt = 0;
 	this->lastSSRC = 0;
 	this->readBuff = 0;
@@ -112,10 +112,7 @@ Net::RTPAudioSession::~RTPAudioSession()
 	this->StopSend();
 	this->Stop();
 	this->svr.Delete();
-	if (this->format)
-	{
-		DEL_CLASS(this->format);
-	}
+	this->format.Delete();
 }
 
 Bool Net::RTPAudioSession::IsError()
@@ -125,9 +122,11 @@ Bool Net::RTPAudioSession::IsError()
 
 void Net::RTPAudioSession::SetAudioFormat(Net::RTPAudioSession::RTPAudioFormat afmt, Int32 frequency)
 {
-	if (this->format == 0)
+	NN<Media::AudioFormat> format;
+	if (!this->format.SetTo(format))
 	{
-		NEW_CLASS(this->format, Media::AudioFormat());
+		NEW_CLASSNN(format, Media::AudioFormat());
+		this->format = format;
 	}
 
 	switch (afmt)
@@ -135,12 +134,12 @@ void Net::RTPAudioSession::SetAudioFormat(Net::RTPAudioSession::RTPAudioFormat a
 	case RTPAFMT_PCMU:
 		this->afmt = afmt;
 		this->fmtFreq = frequency;
-		this->format->formatId = 7;
-		this->format->frequency = frequency;
-		this->format->bitRate = frequency << 3;
-		this->format->bitpersample = 8;
-		this->format->align = 1;
-		this->format->nChannels = 1;
+		format->formatId = 7;
+		format->frequency = frequency;
+		format->bitRate = frequency << 3;
+		format->bitpersample = 8;
+		format->align = 1;
+		format->nChannels = 1;
 		break;
 	}
 }
@@ -187,15 +186,16 @@ Data::Duration Net::RTPAudioSession::GetStreamTime()
 	return 0;
 }
 
-void Net::RTPAudioSession::GetFormat(Media::AudioFormat *format)
+void Net::RTPAudioSession::GetFormat(NN<Media::AudioFormat> format)
 {
-	if (this->format == 0)
+	NN<Media::AudioFormat> nnformat;
+	if (!this->format.SetTo(nnformat))
 	{
 		format->Clear();
 	}
 	else
 	{
-		MemCopyNO(format, this->format, sizeof(Media::AudioFormat));
+		MemCopyNO(format.Ptr(), nnformat.Ptr(), sizeof(Media::AudioFormat));
 	}
 }
 

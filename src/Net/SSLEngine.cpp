@@ -99,7 +99,7 @@ Net::SSLEngine::~SSLEngine()
 	i = this->currThreadCnt;
 	while (i-- > 0)
 	{
-		DEL_CLASS(this->threadSt[i].evt);
+		this->threadSt[i].evt.Delete();
 	}
 	MemFreeArr(this->threadSt);
 	if (this->usedTrustStore.NotNull())
@@ -276,7 +276,7 @@ void Net::SSLEngine::ServerInit(NN<Socket> s, ClientReadyHandler readyHdlr, AnyT
 		{
 			i = this->currThreadCnt;
 			this->currThreadCnt++;
-			NEW_CLASS(this->threadSt[i].evt, Sync::Event(true));
+			NEW_CLASSNN(this->threadSt[i].evt, Sync::Event(true));
 			this->threadSt[i].clientReady = readyHdlr;
 			this->threadSt[i].clientReadyObj = userObj;
 			this->threadSt[i].s = s;

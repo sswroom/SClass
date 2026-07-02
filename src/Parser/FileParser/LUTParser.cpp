@@ -50,7 +50,7 @@ Optional<IO::ParsedObject> Parser::FileParser::LUTParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 	Media::LUT::DataFormat fmt;
-	Media::LUT *lut;
+	NN<Media::LUT> lut;
 	if (outputBpp == 8)
 	{
 		fmt = Media::LUT::DF_UINT8;
@@ -69,7 +69,7 @@ Optional<IO::ParsedObject> Parser::FileParser::LUTParser::ParseFileHdr(NN<IO::St
 	}
 
 	
-	NEW_CLASS(lut, Media::LUT(3, inpLev, 3, fmt, fd->GetFullName()));
+	NEW_CLASSNN(lut, Media::LUT(3, inpLev, 3, fmt, fd->GetFullName()));
 	Data::ByteBuffer paramBuff(paramSize + 1);
 	paramBuff[paramSize] = 0;
 	fd->GetRealData(paramOfst, paramSize, paramBuff);

@@ -363,13 +363,12 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 		Data::ArrayListDbl ptX;
 		Data::ArrayListDbl ptY;
 		Data::ArrayListDbl ptZ;
-		Data::FastMapObj<Int32, Math::Geometry::Vector2D *> vecMap;
+		Data::FastMapNN<Int32, Math::Geometry::Vector2D> vecMap;
 		Data::FastMapNative<Int32, Bool> vecUsed;
 		Int32 currId = 0;
-		Math::Geometry::Polygon *pg;
-		Math::Geometry::LineString *pl;
-		Math::Geometry::PointZ *pt;
-		Math::Geometry::Vector2D *vec;
+		NN<Math::Geometry::Polygon> pg;
+		NN<Math::Geometry::LineString> pl;
+		NN<Math::Geometry::PointZ> pt;
 		NN<Math::Geometry::Vector2D> nnvec;
 		UnsafeArray<Math::Coord2DDbl> ptList;
 		UnsafeArray<Double> hList;
@@ -391,13 +390,13 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 						else if (j == 1)
 						{
 							hasPt = true;
-							NEW_CLASS(pt, Math::Geometry::PointZ(srid, ptX.GetItem(0), ptY.GetItem(0), ptZ.GetItem(0)));
+							NEW_CLASSNN(pt, Math::Geometry::PointZ(srid, ptX.GetItem(0), ptY.GetItem(0), ptZ.GetItem(0)));
 							vecMap.Put(currId, pt);
 						}
 						else if (ptX.GetItem(j - 1) == ptX.GetItem(0) && ptY.GetItem(j - 1) == ptY.GetItem(0) && ptZ.GetItem(j - 1) == ptZ.GetItem(0))
 						{
 							hasPG = true;
-							NEW_CLASS(pg, Math::Geometry::Polygon(srid));
+							NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
 							NN<Math::Geometry::LinearRing> lr;
 							NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, j, false, false));
 							ptList = lr->GetPointList(k);
@@ -414,7 +413,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 						else
 						{
 							hasPL = true;
-							NEW_CLASS(pl, Math::Geometry::LineString(srid, j, true, false));
+							NEW_CLASSNN(pl, Math::Geometry::LineString(srid, j, true, false));
 							ptList = pl->GetPointList(k);
 							if (pl->GetZList(k).SetTo(hList))
 							{
@@ -430,7 +429,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 							}
 							else
 							{
-								DEL_CLASS(pl);
+								pl.Delete();
 							}
 						}
 					}
@@ -457,13 +456,13 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 			else if (j == 1)
 			{
 				hasPt = true;
-				NEW_CLASS(pt, Math::Geometry::PointZ(srid, ptX.GetItem(0), ptY.GetItem(0), ptZ.GetItem(0)));
+				NEW_CLASSNN(pt, Math::Geometry::PointZ(srid, ptX.GetItem(0), ptY.GetItem(0), ptZ.GetItem(0)));
 				vecMap.Put(currId, pt);
 			}
 			else if (ptX.GetItem(j - 1) == ptX.GetItem(0) && ptY.GetItem(j - 1) == ptY.GetItem(0) && ptZ.GetItem(j - 1) == ptZ.GetItem(0))
 			{
 				hasPG = true;
-				NEW_CLASS(pg, Math::Geometry::Polygon(srid));
+				NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
 				NN<Math::Geometry::LinearRing> lr;
 				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, j, false, false));
 				ptList = lr->GetPointList(k);
@@ -480,7 +479,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 			else
 			{
 				hasPL = true;
-				NEW_CLASS(pl, Math::Geometry::LineString(srid, j, true, false));
+				NEW_CLASSNN(pl, Math::Geometry::LineString(srid, j, true, false));
 				ptList = pl->GetPointList(k);
 				if (pl->GetZList(k).SetTo(hList))
 				{
@@ -496,7 +495,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 				}
 				else
 				{
-					DEL_CLASS(pl);
+					pl.Delete();
 				}
 			}
 		}
@@ -504,7 +503,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 		ptY.Clear();
 		ptZ.Clear();
 
-		Map::VectorLayer *lyr;
+		NN<Map::VectorLayer> lyr;
 		Map::DrawLayerType lyrType;
 		if (hasPt && !hasPL && !hasPG)
 		{
@@ -528,14 +527,14 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 		{
 			csarr[i] = UnsafeArray<const UTF8Char>(sarr[i].v);
 		}
-		NEW_CLASS(lyr, Map::VectorLayer(lyrType, fd->GetFullFileName(), j, csarr, Math::CoordinateSystemManager::CreateWGS84Csys(), 2, nullptr));
+		NEW_CLASSNN(lyr, Map::VectorLayer(lyrType, fd->GetFullFileName(), j, csarr, Math::CoordinateSystemManager::CreateWGS84Csys(), 2, nullptr));
 		while (reader.ReadLine(sbuff, 512).SetTo(sptr))
 		{
 			i = Text::StrSplitP(sarr, 20, {sbuff, (UIntOS)(sptr - sbuff)}, ',');
 			if (i == j)
 			{
 				currId = Text::StrToInt32(sarr[1].v);
-				if (nnvec.Set(vecMap.Get(currId)))
+				if (vecMap.Get(currId).SetTo(nnvec))
 				{
 					while (i-- > 0)
 					{
@@ -552,8 +551,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 			currId = vecMap.GetKey(i);
 			if (!vecUsed.Get(currId))
 			{
-				vec = vecMap.GetItem(i);
-				DEL_CLASS(vec);
+				nnvec = vecMap.GetItemNoCheck(i);
+				nnvec.Delete();
 			}
 		}
 		return lyr;

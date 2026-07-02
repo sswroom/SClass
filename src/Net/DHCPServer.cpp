@@ -12,6 +12,11 @@
 void __stdcall Net::DHCPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::DHCPServer> me = userData.GetNN<Net::DHCPServer>();
+	NN<Net::UDPServer> svr;
+	if (!me->svr.SetTo(svr))
+	{
+		return;
+	}
 	UInt8 repBuff[512];
 	Net::SocketUtil::AddressInfo destAddr;
 	if (data.GetSize() >= 240 && data[0] == 1 && data[1] == 1 && data[2] == 6 && ReadMUInt32(&data[236]) == 0x63825363)
@@ -186,7 +191,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo
 
 //			me->sockf->ARPAddRecord(me->infIndex, &buff[28], reqIP);
 			Net::SocketUtil::SetAddrInfoV4(destAddr, reqIP | (~me->subnet));
-			me->svr->SendTo(destAddr, 68, repBuff, i);
+			svr->SendTo(destAddr, 68, repBuff, i);
 		}
 		else if (dhcpType == 3)
 		{
@@ -256,7 +261,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo
 
 //			me->sockf->ARPAddRecord(me->infIndex, &buff[28], reqIP);
 			Net::SocketUtil::SetAddrInfoV4(destAddr, reqIP | (~me->subnet));
-			me->svr->SendTo(destAddr, 68, repBuff, i);
+			svr->SendTo(destAddr, 68, repBuff, i);
 		}
 	}
 }
@@ -264,7 +269,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo
 Net::DHCPServer::DHCPServer(NN<Net::SocketFactory> sockf, UInt32 infIP, UInt32 subnet, UInt32 firstIP, UInt32 devCount, UInt32 gateway, NN<Data::ArrayListNative<UInt32>> dnsList, NN<IO::LogTool> log)
 {
 	this->sockf = sockf;
-	this->svr = 0;
+	this->svr = nullptr;
 	this->infIndex = 0;
 	this->infIP = infIP;
 	this->subnet = subnet;
@@ -323,16 +328,18 @@ Net::DHCPServer::DHCPServer(NN<Net::SocketFactory> sockf, UInt32 infIP, UInt32 s
 	MemClear(this->devUsed, this->devCount);
 	Net::SocketUtil::AddressInfo addr;
 	Net::SocketUtil::SetAddrInfoV4(addr, infIP);
-	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, &addr, 67, nullptr, PacketHdlr, this, log, nullptr, 2, true));
-	this->svr->AddMulticastIP(0xffffffff);
+	NN<Net::UDPServer> svr;
+	NEW_CLASSNN(svr, Net::UDPServer(this->sockf, &addr, 67, nullptr, PacketHdlr, this, log, nullptr, 2, true));
+	this->svr = svr;
+	svr->AddMulticastIP(0xffffffff);
 }
 
 Net::DHCPServer::~DHCPServer()
 {
-	if (this->svr)
+	NN<Net::UDPServer> svr;
+	if (this->svr.SetTo(svr))
 	{
-		DEL_CLASS(this->svr);
-		this->svr = 0;
+		this->svr.Delete();
 
 		NN<DeviceStatus> dev;
 		UIntOS i = this->devMap.GetCount();
@@ -349,11 +356,12 @@ Net::DHCPServer::~DHCPServer()
 
 Bool Net::DHCPServer::IsError() const
 {
-	if (this->svr == 0)
+	NN<Net::UDPServer> svr;
+	if (!this->svr.SetTo(svr))
 	{
 		return true;
 	}
-	return this->svr->IsError();
+	return svr->IsError();
 }
 
 void Net::DHCPServer::UseStatus(NN<Sync::MutexUsage> mutUsage) const

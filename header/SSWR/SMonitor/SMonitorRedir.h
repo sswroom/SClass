@@ -15,7 +15,7 @@ namespace SSWR
 			typedef void (CALLBACKFUNC RecordReplyHandler)(AnyType userObj, Int64 recTime, Int64 svrTime);
 		private:
 			NN<Net::SocketFactory> sockf;
-			Net::UDPServer *svr;
+			NN<Net::UDPServer> svr;
 			NN<Text::String> hostName;
 			UInt16 port;
 			Crypto::Hash::CRC16 dataCRC;

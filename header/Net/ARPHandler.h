@@ -30,7 +30,7 @@ namespace Net
 
 		UnsafeArrayOpt<ThreadStat> threadStats;
 		UIntOS threadCnt;
-		Sync::Event *ctrlEvt;
+		Optional<Sync::Event> ctrlEvt;
 
 
 	private:

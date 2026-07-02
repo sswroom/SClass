@@ -40,7 +40,7 @@ Optional<Media::AudioBlockSource> Media::BlockParser::MP3BlockParser::ParseStrea
 		frameLength = 144 * bitrateL3[bitrateIndex] / 32;
 	}
 
-	Media::AudioBlockSource *audio;
+	NN<Media::AudioBlockSource> audio;
 	Media::AudioFormat format;
 	format.formatId = 0x55;
 	switch (mode)
@@ -79,7 +79,7 @@ Optional<Media::AudioBlockSource> Media::BlockParser::MP3BlockParser::ParseStrea
 	WriteUInt16(&format.extra[10], 0);
 	UInt32 blkCnt = 0;
 
-	NEW_CLASS(audio, Media::AudioBlockSource(stmData, format, stmData->GetFullName(), 1152));
+	NEW_CLASSNN(audio, Media::AudioBlockSource(stmData, format, stmData->GetFullName(), 1152));
 	while (currOfst < leng)
 	{
 		if (buff[0] != 0xff || (buff[1] & 0xfe) != 0xfa)

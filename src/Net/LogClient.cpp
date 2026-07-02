@@ -26,15 +26,14 @@ UInt32 __stdcall Net::LogClient::RecvThread(AnyType userObj)
 		Data::ByteBuffer recvBuff(BUFFSIZE);
 		while (!me->recvToStop)
 		{
-			if (cli.Set(me->cli))
+			if (me->cli.SetTo(cli))
 			{
 				readSize = cli->Read(recvBuff.SubArray(recvSize));
 				if (readSize == 0)
 				{
 					recvSize = 0;
 					Sync::MutexUsage mutUsage(me->cliMut);
-					DEL_CLASS(me->cli);
-					me->cli = 0;
+					me->cli.Delete();
 					mutUsage.EndUse();
 				}
 				else
@@ -58,11 +57,11 @@ UInt32 __stdcall Net::LogClient::RecvThread(AnyType userObj)
 			}
 		}
 
-		if (me->cli)
+		if (me->cli.SetTo(cli))
 		{
 			Sync::MutexUsage mutUsage(me->cliMut);
-			DEL_CLASS(me->cli);
-			me->cli = 0;
+			cli.Delete();
+			me->cli = nullptr;
 			mutUsage.EndUse();
 		}
 	}
@@ -73,7 +72,7 @@ UInt32 __stdcall Net::LogClient::RecvThread(AnyType userObj)
 UInt32 __stdcall Net::LogClient::SendThread(AnyType userObj)
 {
 	NN<Net::LogClient> me = userObj.GetNN<Net::LogClient>();
-	Net::TCPClient *cli;
+	NN<Net::TCPClient> cli;
 	Int64 t;
 	Int64 msgTime;
 	NN<Text::String> msg;
@@ -85,12 +84,12 @@ UInt32 __stdcall Net::LogClient::SendThread(AnyType userObj)
 	me->sendRunning = true;
 	while (!me->sendToStop)
 	{
-		if (me->cli == 0)
+		if (me->cli.IsNull())
 		{
-			NEW_CLASS(cli, Net::TCPClient(me->sockf, me->addr, me->port, me->timeout));
+			NEW_CLASSNN(cli, Net::TCPClient(me->sockf, me->addr, me->port, me->timeout));
 			if (cli->IsConnectError())
 			{
-				DEL_CLASS(cli);
+				cli.Delete();
 			}
 			else
 			{
@@ -103,12 +102,12 @@ UInt32 __stdcall Net::LogClient::SendThread(AnyType userObj)
 
 		t = Data::DateTimeUtil::GetCurrTimeMillis();
 		Sync::MutexUsage mutUsage(me->cliMut);
-		if (me->cli)
+		if (me->cli.SetTo(cli))
 		{
 			if (t >= nextKATime)
 			{
 				buffSize = me->protoHdlr.BuildPacket(kaBuff, 0, 0, kaBuff, 0, 0);
-				me->cli->Write(Data::ByteArrayR(kaBuff, buffSize));
+				cli->Write(Data::ByteArrayR(kaBuff, buffSize));
 				nextKATime = t + 60000;
 			}
 
@@ -126,7 +125,7 @@ UInt32 __stdcall Net::LogClient::SendThread(AnyType userObj)
 					WriteInt64(buff1, msgTime);
 					MemCopyNO(&buff1[8], msg->v.Ptr(), msgLen);
 					buffSize = me->protoHdlr.BuildPacket(buff2, 2, 0, buff1, msgLen + 8, 0);
-					me->cli->Write(Data::ByteArrayR(buff2, buffSize));
+					cli->Write(Data::ByteArrayR(buff2, buffSize));
 					MemFree(buff1);
 					MemFree(buff2);
 					
@@ -148,7 +147,7 @@ Net::LogClient::LogClient(NN<Net::SocketFactory> sockf, const Net::SocketUtil::A
 	this->sockf = sockf;
 	this->addr = *addr;
 	this->port = port;
-	this->cli = 0;
+	this->cli = nullptr;
 	this->timeout = timeout;
 
 	this->lastSendTime = 0;
@@ -170,10 +169,11 @@ Net::LogClient::~LogClient()
 	this->sendToStop = true;
 	this->recvEvt.Set();
 	this->sendEvt.Set();
+	NN<Net::TCPClient> cli;
 	Sync::MutexUsage mutUsage(this->cliMut);
-	if (this->cli)
+	if (this->cli.SetTo(cli))
 	{
-		this->cli->Close();
+		cli->Close();
 	}
 	mutUsage.EndUse();
 	while (this->sendRunning || this->recvRunning)

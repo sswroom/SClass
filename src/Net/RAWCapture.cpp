@@ -18,9 +18,10 @@ void __stdcall Net::RAWCapture::DataHandler(AnyType userData, UnsafeArray<const 
 		me->packetCnt++;
 		me->dataSize += packetSize;
 	}
-	if (me->writer)
+	NN<IO::PacketLogWriter> writer;
+	if (me->writer.SetTo(writer))
 	{
-		me->writer->WritePacket(Data::ByteArrayR(packetData, packetSize));
+		writer->WritePacket(Data::ByteArrayR(packetData, packetSize));
 	}
 }
 
@@ -31,24 +32,25 @@ Net::RAWCapture::RAWCapture(NN<Net::SocketFactory> sockf, UInt32 adapterIP, Capt
 		appName = CSTR("RAWCapture");
 	}
 	this->sockf = sockf;
-	this->socMon = 0;
-	this->writer = 0;
+	this->socMon = nullptr;
+	this->writer = nullptr;
 	this->packetCnt = 0;
 	this->dataSize = 0;
 	if (format == FF_PCAP)
 	{
-		NEW_CLASS(this->writer, IO::PcapWriter(fileName, CaptureTypeGetLinkType(type)))
+		NEW_CLASSOPT(this->writer, IO::PcapWriter(fileName, CaptureTypeGetLinkType(type)))
 	}
 	else if (format == FF_PCAPNG)
 	{
-		NEW_CLASS(this->writer, IO::PcapngWriter(fileName, CaptureTypeGetLinkType(type), appName.OrEmpty()))
+		NEW_CLASSOPT(this->writer, IO::PcapngWriter(fileName, CaptureTypeGetLinkType(type), appName.OrEmpty()))
 	}
-	if (this->writer && this->writer->IsError())
+	NN<IO::PacketLogWriter> writer;
+	if (this->writer.SetTo(writer) && writer->IsError())
 	{
-		DEL_CLASS(this->writer);
-		this->writer = 0;
+		writer.Delete();
+		this->writer = nullptr;
 	}
-	if (this->writer)
+	if (this->writer.NotNull())
 	{
 		Optional<Socket> s = nullptr;
 		switch (type)
@@ -69,20 +71,20 @@ Net::RAWCapture::RAWCapture(NN<Net::SocketFactory> sockf, UInt32 adapterIP, Capt
 		NN<Socket> nns;
 		if (s.SetTo(nns))
 		{
-			NEW_CLASS(this->socMon, Net::SocketMonitor(sockf, nns, DataHandler, this, 4));
+			NEW_CLASSOPT(this->socMon, Net::SocketMonitor(sockf, nns, DataHandler, this, 4));
 		}
 	}
 }
 
 Net::RAWCapture::~RAWCapture()
 {
-	SDEL_CLASS(this->socMon);
-	SDEL_CLASS(this->writer);
+	this->socMon.Delete();
+	this->writer.Delete();
 }
 
 Bool Net::RAWCapture::IsError()
 {
-	return this->socMon == 0;
+	return this->socMon.IsNull();
 }
 
 UInt64 Net::RAWCapture::GetPacketCnt()

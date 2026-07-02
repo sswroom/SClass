@@ -7,12 +7,12 @@ Media::ScreenCapturer::ScreenCapturer(NN<Media::MonitorMgr> monMgr, NN<Media::Co
 {
 	this->monMgr = monMgr;
 	this->colorMgr = colorMgr;
-	NEW_CLASS(this->surfaceMgr, Media::DDrawManager(monMgr, colorMgr));
+	NEW_CLASSNN(this->surfaceMgr, Media::DDrawManager(monMgr, colorMgr));
 }
 
 Media::ScreenCapturer::~ScreenCapturer()
 {
-	DEL_CLASS(this->surfaceMgr);
+	this->surfaceMgr.Delete();
 }
 
 Optional<Media::StaticImage> Media::ScreenCapturer::CaptureScreen(Optional<MonitorHandle> hMon)

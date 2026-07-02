@@ -1,101 +1,103 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
-#include "UI/MSWindowUI.h"
-#include "SSWR/MapReplay/MapReplayForm.h"
-#include "Map/MapDrawLayer.h"
 #include "Map/DrawMapRenderer.h"
-#include "Map/OSM/OSMTileMap.h"
+#include "Map/MapDrawLayer.h"
 #include "Map/ResizableTileMapRenderer.h"
+#include "Map/OSM/OSMTileMap.h"
+#include "Math/CoordinateSystemManager.h"
+#include "SSWR/MapReplay/MapReplayForm.h"
+#include "UI/GUICore.h"
 
 #define MNU_MAP 101
 
 void SSWR::MapReplay::MapReplayForm::LoadMap(Int32 mapType)
 {
-	WChar wbuff[512];
-	if (this->tileMap)
-	{
-		DEL_CLASS(this->tileMap);
-	}
-	
-	IO::Path::GetProcessFileName(wbuff);
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
+	this->tileMap.Delete();
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 
+	NN<Map::OSM::OSMTileMap> tileMap;
 	switch (mapType)
 	{
 	case 0:
-		IO::Path::AppendPath(wbuff, L"OSMTile");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://a.tile.openstreetmap.org/", wbuff, 18, sockf));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://b.tile.openstreetmap.org/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://c.tile.openstreetmap.org/");
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTile"));
+		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.openstreetmap.org/"), CSTRP(sbuff, sptr), 0, 18, clif, nullptr));
+		tileMap->AddAlternateURL(CSTR("http://b.tile.openstreetmap.org/"));
+		tileMap->AddAlternateURL(CSTR("http://c.tile.openstreetmap.org/"));
+		this->tileMap = tileMap;
 		break;
 	case 1:
-		IO::Path::AppendPath(wbuff, L"OSMOpenCycleMap");
-        NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://a.tile.opencyclemap.org/cycle/", wbuff, 18, sockf));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://b.tile.opencyclemap.org/cycle/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://c.tile.opencyclemap.org/cycle/");
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMOpenCycleMap"));
+        NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.opencyclemap.org/cycle/"), CSTRP(sbuff, sptr), 0, 18, clif, nullptr));
+		tileMap->AddAlternateURL(CSTR("http://b.tile.opencyclemap.org/cycle/"));
+		tileMap->AddAlternateURL(CSTR("http://c.tile.opencyclemap.org/cycle/"));
+		this->tileMap = tileMap;
 		break;
 	case 2:
-		IO::Path::AppendPath(wbuff, L"OSMTransport");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://a.tile2.opencyclemap.org/transport/", wbuff, 18, sockf));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://b.tile2.opencyclemap.org/transport/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://c.tile2.opencyclemap.org/transport/");
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTransport"));
+		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile2.opencyclemap.org/transport/"), CSTRP(sbuff, sptr), 0, 18, clif, nullptr));
+		tileMap->AddAlternateURL(CSTR("http://b.tile2.opencyclemap.org/transport/"));
+		tileMap->AddAlternateURL(CSTR("http://c.tile2.opencyclemap.org/transport/"));
+		this->tileMap = tileMap;
 		break;
 	default:
-		IO::Path::AppendPath(wbuff, L"OSMMapQuest");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://otile1.mqcdn.com/tiles/1.0.0/osm/", wbuff, 18, sockf));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://otile2.mqcdn.com/tiles/1.0.0/osm/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://otile3.mqcdn.com/tiles/1.0.0/osm/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://otile4.mqcdn.com/tiles/1.0.0/osm/");
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMMapQuest"));
+		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://otile1.mqcdn.com/tiles/1.0.0/osm/"), CSTRP(sbuff, sptr), 0, 18, clif, nullptr));
+		tileMap->AddAlternateURL(CSTR("http://otile2.mqcdn.com/tiles/1.0.0/osm/"));
+		tileMap->AddAlternateURL(CSTR("http://otile3.mqcdn.com/tiles/1.0.0/osm/"));
+		tileMap->AddAlternateURL(CSTR("http://otile4.mqcdn.com/tiles/1.0.0/osm/"));
+		this->tileMap = tileMap;
 		break;
 	}
 }
 
 void SSWR::MapReplay::MapReplayForm::UpdateList()
 {
-	UIntOS cnt = this->env->GetItemCount(0);
+	UIntOS cnt = this->env->GetItemCount(nullptr);
 	UIntOS i;
 	Map::MapEnv::ItemType itemType;
-	const WChar *name;
+	NN<Text::String> name;
 	this->lbLayers->ClearItems();
 	i = 0;
 	while (i < cnt)
 	{
-		void *item = this->env->GetItem(0, i, &itemType);
-		if (itemType == Map::MapEnv::IT_LAYER)
+		NN<Map::MapEnv::MapItem> item;
+		if (this->env->GetItem(nullptr, i).SetTo(item) && item->itemType == Map::MapEnv::IT_LAYER)
 		{
-			Map::MapDrawLayer *layer = (Map::MapDrawLayer*)item;
-			name = layer->GetName();
-			this->lbLayers->AddItem(&name[Text::StrLastIndexOfChar(name, '\\') + 1], layer);
+			NN<Map::MapEnv::LayerItem> layer = NN<Map::MapEnv::LayerItem>::ConvertFrom(item);
+			name = layer->layer->GetName();
+			this->lbLayers->AddItem(name->ToCString().Substring(name->LastIndexOf(IO::Path::PATH_SEPERATOR) + 1), layer->layer);
 		}
 		i++;
 	}
 
 }
 
-void __stdcall SSWR::MapReplay::MapReplayForm::OnFileDrop(void *userObj, const WChar **files, IntOS nFiles)
+void __stdcall SSWR::MapReplay::MapReplayForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	SSWR::MapReplay::MapReplayForm *me = (SSWR::MapReplay::MapReplayForm*)userObj;
-	IO::StmData::FileData *fd;
-	IO::ParsedObject *pobj;
+	NN<SSWR::MapReplay::MapReplayForm> me = userObj.GetNN<SSWR::MapReplay::MapReplayForm>();
+	NN<IO::StmData::FileData> fd;
+	NN<IO::ParsedObject> pobj;
 	IO::ParserType pt;
 
-	IntOS i = 0;
-	while (i < nFiles)
+	UIntOS i = 0;
+	while (i < files.GetCount())
 	{
-		NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
-		pobj = me->parsers->ParseFile(fd, &pt);
-		DEL_CLASS(fd);
-		if (pobj)
+		NEW_CLASSNN(fd, IO::StmData::FileData(files[i], false));
+		if (me->parsers->ParseFile(fd).SetTo(pobj))
 		{
-			if (pt == IO::ParserType::MapLayer)
+			if (pobj->GetParserType() == IO::ParserType::MapLayer)
 			{
-				me->env->AddLayer(0, (Map::MapDrawLayer*)pobj, true);
+				me->env->AddLayer(nullptr, NN<Map::MapDrawLayer>::ConvertFrom(pobj), true);
 			}
 			else
 			{
-				DEL_CLASS(pobj);
+				pobj.Delete();
 			}
 		}
+		fd.Delete();
 		i++;
 	}
 	me->UpdateList();
@@ -103,83 +105,83 @@ void __stdcall SSWR::MapReplay::MapReplayForm::OnFileDrop(void *userObj, const W
 	me->Redraw();
 }
 
-void __stdcall SSWR::MapReplay::MapReplayForm::OnLayerDblClicked(void *userObj)
+void __stdcall SSWR::MapReplay::MapReplayForm::OnLayerDblClicked(AnyType userObj)
 {
-	SSWR::MapReplay::MapReplayForm *me = (SSWR::MapReplay::MapReplayForm*)userObj;
-	void *obj = me->lbLayers->GetSelectedItem();
-	if (obj)
+	NN<SSWR::MapReplay::MapReplayForm> me = userObj.GetNN<SSWR::MapReplay::MapReplayForm>();
+	NN<Map::MapDrawLayer> layer;
+	if (me->lbLayers->GetSelectedItem().GetOpt<Map::MapDrawLayer>().SetTo(layer))
 	{
-		Map::MapDrawLayer *layer = (Map::MapDrawLayer*)obj;
 		if (layer->GetObjectClass() != Map::MapDrawLayer::OC_GPS_TRACK)
 			return;
 
-		if (me->replayForm)
+		NN<SSWR::AVIRead::AVIRGISReplayForm> replayForm;
+		if (me->replayForm.SetTo(replayForm))
 		{
-			me->replayForm->Close();
+			replayForm->Close();
 		}
 
-		NEW_CLASS(me->replayForm, SSWR::AVIRead::AVIRGISReplayForm(me->ui->GetHInst(), 0, me->ui, (Map::GPSTrack*)layer, me));
-		me->replayForm->Show();
+		NEW_CLASSNN(replayForm, SSWR::AVIRead::AVIRGISReplayForm(nullptr, me->ui, NN<Map::GPSTrack>::ConvertFrom(layer), me));
+		me->replayForm = replayForm;
+		replayForm->Show();
 	}
 }
 
-SSWR::MapReplay::MapReplayForm::MapReplayForm(UI::MSWindowUI *ui, UI::MSWindowForm *parent, Media::GDIEngine *eng, Parser::ParserList *parsers, Media::ColorManager *colorMgr, NN<Net::SocketFactory> sockf) : UI::MSWindowForm(ui->GetHInst(), parent, 1024, 768, ui)
+SSWR::MapReplay::MapReplayForm::MapReplayForm(NN<UI::GUICore> ui, Optional<UI::GUIForm> parent, NN<Media::DrawEngine> eng, NN<Parser::ParserList> parsers, NN<Media::ColorManager> colorMgr, NN<Net::SocketFactory> sockf) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->parsers = parsers;
 	this->colorMgr = colorMgr;
 	this->sockf = sockf;
+	NEW_CLASSNN(this->clif, Net::TCPClientFactory(sockf));
 	this->eng = eng;
-	this->tileMap = 0;
+	this->tileMap = nullptr;
 	this->currMapType = 0;
-	this->replayForm = 0;
+	this->replayForm = nullptr;
 	this->colorSess = this->colorMgr->CreateSess(this->GetHMonitor());
 
-	this->SetText(L"MapReplay");
+	this->SetText(CSTR("MapReplay"));
 	this->SetFormState(FS_MAXIMIZED);
 	this->HandleDropFiles(OnFileDrop, this);
-	NEW_CLASS(this->mnu, UI::MSWindowMainMenu());
-	this->mnu->AddItem(L"Map"), MNU_MAP, 0, 0);
+	NEW_CLASSNN(this->mnu, UI::GUIMainMenu());
+	this->mnu->AddItem(CSTR("Map"), MNU_MAP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnu);
-	this->SetFont(0, 9, false);
+	this->SetFont(nullptr, 9, false);
 
-	NEW_CLASS(this->lbLayers, UI::MSWindowListBox(ui->GetHInst(), this));
+	this->lbLayers = ui->NewListBox(*this, false);
 	this->lbLayers->SetRect(0, 0, 200, 100, false);
-	this->lbLayers->SetDockType(UI::MSWindowControl::DOCK_LEFT);
+	this->lbLayers->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbLayers->HandleDoubleClicked(OnLayerDblClicked, this);
-	NEW_CLASS(this->splitter, UI::MSWindowHSplitter(ui->GetHInst(), this, 2, false));
+	this->splitter = ui->NewHSplitter(*this, 2, false);
 
 	IntOS i;
-	Math::CoordinateSystem *csys = Math::GeographicCoordinateSystem::CreateCoordinateSystem(Math::GeographicCoordinateSystem::GCST_WGS84);
-	NEW_CLASS(this->env, Map::MapEnv(L"Untitled", 0xffffffff, csys));
-	DEL_CLASS(csys);
+	NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateWGS84Csys();
+	NEW_CLASSNN(this->env, Map::MapEnv(CSTR("Untitled"), 0xffffffff, csys));
+	csys.Delete();
 	Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
 	i = this->env->AddLineStyle();
-	this->env->AddLineStyleLayer(i, 0xff0000ff, 3, 0, 0);
+	this->env->AddLineStyleLayer(i, 0xff0000ff, 3, nullptr, 0);
 	this->env->SetDefLineStyle(i);
-	NEW_CLASS(this->envRenderer, Map::DrawMapRenderer(this->eng, this->env, &color, this->colorSess));
+	NEW_CLASSNN(this->envRenderer, Map::DrawMapRenderer(this->eng, this->env, color, this->colorSess, Map::DrawMapRenderer::DrawType::DT_PIXELDRAW));
 	this->LoadMap(this->currMapType);
 
-	this->mapView = this->env->CreateMapView(1024, 768);
-	NEW_CLASS(this->map, UI::MSWindowMapControl(ui->GetHInst(), this, eng, 0xffffffff, this->envRenderer, this->mapView, this->colorSess));
-	this->map->SetDockType(UI::MSWindowControl::DOCK_FILL);
+	this->mapView = this->env->CreateMapView(Math::Size2DDbl(1024, 768));
+	NEW_CLASSNN(this->map, UI::GUIMapControl(ui, *this, eng, 0xffffffff, this->envRenderer, this->mapView, this->colorSess));
+	this->map->SetDockType(UI::GUIControl::DOCK_FILL);
 }
 
 SSWR::MapReplay::MapReplayForm::~MapReplayForm()
 {
-	if (this->replayForm)
+	NN<SSWR::AVIRead::AVIRGISReplayForm> replayForm;
+	if (this->replayForm.SetTo(replayForm))
 	{
-		this->replayForm->Close();
+		replayForm->Close();
 	}
-	map->SetRenderer(0);
-	if (tileMap)
-	{
-		DEL_CLASS(tileMap);
-	}
-	DEL_CLASS(this->envRenderer);
-	DEL_CLASS(this->env);
+	this->tileMap.Delete();
+	this->envRenderer.Delete();
+	this->env.Delete();
 	this->ClearChildren();
-	DEL_CLASS(this->mapView);
+	this->mapView.Delete();
 	this->colorMgr->DeleteSess(this->colorSess);
+	this->clif.Delete();
 }
 
 void SSWR::MapReplay::MapReplayForm::EventMenuClicked(UInt16 cmdId)
@@ -195,17 +197,17 @@ void SSWR::MapReplay::MapReplayForm::EventMenuClicked(UInt16 cmdId)
 
 Bool SSWR::MapReplay::MapReplayForm::InMap(Double lat, Double lon)
 {
-	return this->map->InMapMapXY(lon, lat);
+	return this->map->InMapMapXY(Math::Coord2DDbl(lon, lat));
 }
 
 void SSWR::MapReplay::MapReplayForm::PanToMap(Double lat, Double lon)
 {
-	this->map->PanToMapXY(lon, lat);
+	this->map->PanToMapXY(Math::Coord2DDbl(lon, lat));
 }
 
 void SSWR::MapReplay::MapReplayForm::ShowMarker(Double lat, Double lon)
 {
-	this->map->ShowMarkerMapXY(lon, lat);
+	this->map->ShowMarkerMapXY(Math::Coord2DDbl(lon, lat));
 }
 
 void SSWR::MapReplay::MapReplayForm::HideMarker()
@@ -213,13 +215,13 @@ void SSWR::MapReplay::MapReplayForm::HideMarker()
 	this->map->HideMarker();
 }
 
-void SSWR::MapReplay::MapReplayForm::AddLayer(Map::MapDrawLayer *layer)
+void SSWR::MapReplay::MapReplayForm::AddLayer(NN<Map::MapDrawLayer> layer)
 {
-	this->env->AddLayer(0, layer, true);
+	this->env->AddLayer(nullptr, layer, true);
 	this->UpdateList();
 }
 
-void SSWR::MapReplay::MapReplayForm::SetSelectedVector(Math::Geometry::Vector2D *vec)
+void SSWR::MapReplay::MapReplayForm::SetSelectedVector(Optional<Math::Geometry::Vector2D> vec)
 {
 	this->map->SetSelectedVector(vec);
 }

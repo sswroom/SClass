@@ -2,7 +2,7 @@
 #define _SM_NET_RTPCLICHANNEL
 #include "AnyType.h"
 #include "Data/ArrayListStrUTF8.h"
-#include "Data/FastMapObj.hpp"
+#include "Data/FastMapNN.hpp"
 #include "Media/AudioSource.h"
 #include "Media/MediaSource.h"
 #include "Media/VideoSource.h"
@@ -30,14 +30,14 @@ namespace Net
 		{
 			Int32 useCnt;
 
-			Net::UDPServer *rtpUDP;
-			Net::UDPServer *rtcpUDP;
+			NN<Net::UDPServer> rtpUDP;
+			NN<Net::UDPServer> rtcpUDP;
 			AnyType userData;
 			Optional<Text::String> controlURL;
 			UInt32 lastSSRC;
 			UInt32 lastSeqNumHi;
 			UInt32 lastSeqNumLo;
-			Data::FastMapObj<Int32, Net::RTPPayloadHandler *> payloadMap;
+			Data::FastMapNN<Int32, Net::RTPPayloadHandler> payloadMap;
 			Media::MediaType mediaType;
 			NN<Net::SocketFactory> sockf;
 
@@ -56,7 +56,7 @@ namespace Net
 		};
 
 	private:
-		ChannelData *chData;
+		NN<ChannelData> chData;
 
 	private:
 		static void __stdcall PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
@@ -92,7 +92,7 @@ namespace Net
 		Bool MapPayloadType(Int32 payloadType, Text::CStringNN typ, UInt32 freq, UInt32 nChannel);
 		Bool SetPayloadFormat(Int32 paylodType, UnsafeArray<const UTF8Char> format);
 
-		static NN<RTPCliChannel> CreateChannel(NN<Net::SocketFactory> sockf, NN<Data::ArrayListStrUTF8> sdpDesc, Text::CStringNN ctrlURL, Net::RTPController *playCtrl, NN<IO::LogTool> log);
+		static NN<RTPCliChannel> CreateChannel(NN<Net::SocketFactory> sockf, NN<Data::ArrayListStrUTF8> sdpDesc, Text::CStringNN ctrlURL, NN<Net::RTPController> playCtrl, NN<IO::LogTool> log);
 	};
 }
 #endif

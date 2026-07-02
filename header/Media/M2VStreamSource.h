@@ -65,9 +65,9 @@ namespace Media
 		Bool finfoMode;
 		Data::CallbackStorage<FrameInfoCallback> finfoCb;
 
-		IO::Stream *debugFS;
-		IO::Writer *debugLog;
-		Sync::Mutex *debugMut;
+		Optional<IO::Stream> debugFS;
+		Optional<IO::Writer> debugLog;
+		Optional<Sync::Mutex> debugMut;
 
 		void SubmitFrame(UIntOS frameSize, UIntOS frameStart, UIntOS pictureStart);
 		void ClearPlayBuff();

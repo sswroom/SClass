@@ -19,7 +19,7 @@ namespace Media
 		UInt32 hdrsCnt;
 		Optional<Sync::Event> evt;
 
-		Sync::Event *dataEvt;
+		NN<Sync::Event> dataEvt;
 		Bool started;
 
 		void OpenAudio();

@@ -138,7 +138,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 
 	if (shpTables.GetCount())
 	{
-		Map::MapLayerCollection *lyrColl;
+		NN<Map::MapLayerCollection> lyrColl;
 		Optional<Math::CoordinateSystem> csys = nullptr;
 		NN<Math::CoordinateSystem> nncsys;
 		NN<DB::SharedDBConn> conn;
@@ -171,7 +171,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 			}
 		}
 		NEW_CLASSNN(conn, DB::SharedDBConn(mdb));
-		NEW_CLASS(lyrColl, Map::MapLayerCollection(fd->GetFullName(), 0));
+		NEW_CLASSNN(lyrColl, Map::MapLayerCollection(fd->GetFullName(), 0));
 
 		UIntOS i;
 		i = shpTables.GetCount();
@@ -193,7 +193,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 		if (lyrColl->GetCount() == 1 && lyrColl->GetItem(0).SetTo(lyr1))
 		{
 			lyrColl->RemoveAt(0);
-			DEL_CLASS(lyrColl);
+			lyrColl.Delete();
 			return lyr1;
 		}
 		else
@@ -207,6 +207,6 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 		return mdb;
 	}
 #else
-	return 0;
+	return nullptr;
 #endif
 }

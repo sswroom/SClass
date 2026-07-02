@@ -196,8 +196,8 @@ namespace SSWR
 			Data::ArrayListNN<OrganGroupType> grpTypes;
 			Category *currCate;
 			Bool cateIsFullDir;
-			Data::ArrayListInt32 *bookIds;
-			Data::ArrayListNN<OrganBook> *bookObjs;
+			Optional<Data::ArrayListInt32> bookIds;
+			Optional<Data::ArrayListNN<OrganBook>> bookObjs;
 			Data::ArrayListNN<DataFileInfo> dataFiles;
 			Int32 userId;
 			Data::FastMapNN<Int32, SpeciesInfo> speciesMap;
@@ -247,7 +247,7 @@ namespace SSWR
 			virtual Bool AddSpecies(NN<OrganSpecies> sp) = 0;
 			virtual Bool DelSpecies(NN<OrganSpecies> sp) = 0;
 			virtual FileStatus AddSpeciesFile(NN<OrganSpecies> sp, Text::CStringNN fileName, Bool firstPhoto, Bool moveFile, OptOut<Int32> fileId) = 0;
-			virtual FileStatus AddSpeciesWebFile(NN<OrganSpecies> sp, NN<Text::String> srcURL, NN<Text::String> imgURL, IO::Stream *stm, UnsafeArrayOpt<UTF8Char> webFileName) = 0;
+			virtual FileStatus AddSpeciesWebFile(NN<OrganSpecies> sp, NN<Text::String> srcURL, NN<Text::String> imgURL, NN<IO::Stream> stm, UnsafeArrayOpt<UTF8Char> webFileName) = 0;
 			virtual Bool UpdateSpeciesWebFile(NN<OrganSpecies> sp, NN<WebFileInfo> wfile, NN<Text::String> srcURL, NN<Text::String> location) = 0;
 			Bool SetSpeciesImg(NN<OrganSpecies> sp, NN<OrganImageItem> img);
 			Bool SetSpeciesMapColor(NN<OrganSpecies> sp, UInt32 mapColor);
@@ -325,7 +325,7 @@ namespace SSWR
 			virtual Optional<Media::ImageList> ParseFileImage(NN<UserFileInfo> userFile) = 0;
 			virtual Optional<Media::ImageList> ParseWebImage(NN<WebFileInfo> webFile) = 0;
 			Optional<Text::String> GetLocName(Int32 userId, const Data::Timestamp &ts, UI::GUIForm *ownerFrm, NN<UI::GUICore> ui);
-			virtual OrganGroup *SearchObject(UnsafeArray<const UTF8Char> searchStr, UnsafeArray<UTF8Char> resultStr, UIntOS resultStrBuffSize, Int32 *parentId) = 0;
+			virtual Optional<OrganGroup> SearchObject(UnsafeArray<const UTF8Char> searchStr, UnsafeArray<UTF8Char> resultStr, UIntOS resultStrBuffSize, Int32 *parentId) = 0;
 
 			void SetCurrCategory(NN<Category> currCate);
 		protected:

@@ -51,8 +51,14 @@ void __stdcall Net::MQTTBroker::OnClientTimeout(NN<Net::TCPClient> cli, AnyType 
 void __stdcall Net::MQTTBroker::OnClientReady(NN<Net::TCPClient> cli, AnyType userObj)
 {
 	NN<Listener> listener = userObj.GetNN<Listener>();
-	listener->cliMgr->AddClient(cli, listener->me->StreamCreated(cli));
-	UIntOS cnt = listener->cliMgr->GetClientCount();
+	NN<Net::TCPClientMgr> cliMgr;
+	if (!listener->cliMgr.SetTo(cliMgr))
+	{
+		cli.Delete();
+		return;
+	}
+	cliMgr->AddClient(cli, listener->me->StreamCreated(cli));
+	UIntOS cnt = cliMgr->GetClientCount();
 	if (cnt > listener->me->infoCliMax)
 	{
 		listener->me->infoCliMax = cnt;
@@ -78,13 +84,13 @@ void __stdcall Net::MQTTBroker::OnClientConn(NN<Socket> s, AnyType userObj)
 UInt32 __stdcall Net::MQTTBroker::SysInfoThread(AnyType userObj)
 {
 	NN<Net::MQTTBroker> me = userObj.GetNN<Net::MQTTBroker>();
-	Data::DateTime *dt;
+	NN<Data::DateTime> dt;
 	UTF8Char sbuff[64];
 	UIntOS i;
 	UIntOS j;
 	UIntOS totalCnt;
 	NN<Listener> listener;
-	NEW_CLASS(dt, Data::DateTime());
+	NEW_CLASSNN(dt, Data::DateTime());
 
 	dt->SetCurrTimeUTC();
 	i = (UIntOS)(dt->ToString(Text::StrConcatC(sbuff, UTF8STRC("SMQTT ")), "yyyyMMdd") - sbuff);
@@ -107,13 +113,15 @@ UInt32 __stdcall Net::MQTTBroker::SysInfoThread(AnyType userObj)
 		while (j-- > 0)
 		{
 			listener = me->listeners.GetItemNoCheck(j);
-			if (listener->cliMgr)
+			NN<Net::TCPClientMgr> cliMgr;
+			NN<Net::WebServer::WebListener> nnlistener;
+			if (listener->cliMgr.SetTo(cliMgr))
 			{
-				totalCnt += listener->cliMgr->GetClientCount();
+				totalCnt += cliMgr->GetClientCount();
 			}
-			else if (listener->listener)
+			else if (listener->listener.SetTo(nnlistener))
 			{
-				totalCnt += listener->listener->GetClientCount();
+				totalCnt += nnlistener->GetClientCount();
 			}
 		}
 		i = (UIntOS)(Text::StrUIntOS(sbuff, totalCnt) - sbuff);
@@ -148,7 +156,7 @@ UInt32 __stdcall Net::MQTTBroker::SysInfoThread(AnyType userObj)
 
 		me->sysInfoEvt.Wait(10000);
 	}
-	DEL_CLASS(dt);
+	dt.Delete();
 	me->sysInfoRunning = false;
 	return 0;
 }
@@ -1013,15 +1021,9 @@ Net::MQTTBroker::~MQTTBroker()
 	while (i-- > 0)
 	{
 		listener = this->listeners.GetItemNoCheck(i);
-		if (listener->svr)
-		{
-			DEL_CLASS(listener->svr);
-			DEL_CLASS(listener->cliMgr);
-		}
-		else if (listener->listener)
-		{
-			DEL_CLASS(listener->listener);
-		}
+		listener->svr.Delete();
+		listener->cliMgr.Delete();
+		listener->listener.Delete();
 		MemFreeNN(listener);
 	}
 	NN<TopicInfo> topic;
@@ -1049,20 +1051,22 @@ Bool Net::MQTTBroker::AddListener(Optional<Net::SSLEngine> ssl, UInt16 port, Boo
 	NN<Listener> listener = MemAllocNN(Listener);
 	listener->me = this;
 	listener->ssl = ssl;
-	listener->listener = 0;
-	NEW_CLASS(listener->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, listener, Sync::ThreadUtil::GetThreadCnt(), OnClientTimeout));
-	NEW_CLASS(listener->svr, Net::TCPServer(this->clif->GetSocketFactory(), nullptr, port, this->log, OnClientConn, listener, CSTR("MQTT: "), autoStart));
-	if (listener->svr->IsV4Error())
+	listener->listener = nullptr;
+	NN<Net::TCPClientMgr> cliMgr;
+	NN<Net::TCPServer> svr;
+	NEW_CLASSNN(cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, listener, Sync::ThreadUtil::GetThreadCnt(), OnClientTimeout));
+	NEW_CLASSNN(svr, Net::TCPServer(this->clif->GetSocketFactory(), nullptr, port, this->log, OnClientConn, listener, CSTR("MQTT: "), autoStart));
+	if (svr->IsV4Error())
 	{
-		DEL_CLASS(listener->svr);
-		listener->svr = 0;
-		DEL_CLASS(listener->cliMgr);
-		listener->cliMgr = 0;
+		svr.Delete();
+		cliMgr.Delete();
 		MemFreeNN(listener);
 		return false;
 	}
 	else
 	{
+		listener->cliMgr = cliMgr;
+		listener->svr = svr;
 		this->listeners.Add(listener);
 		return true;
 	}
@@ -1073,17 +1077,19 @@ Bool Net::MQTTBroker::AddWSListener(Optional<Net::SSLEngine> ssl, UInt16 port, B
 	NN<Listener> listener = MemAllocNN(Listener);
 	listener->me = this;
 	listener->ssl = nullptr;
-	listener->cliMgr = 0;
-	listener->svr = 0;
-	NEW_CLASS(listener->listener, Net::WebServer::WebListener(this->clif, ssl, this->wsHdlr, port, 60, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("SSWRMQTT/1.0"), false, Net::WebServer::KeepAlive::No, autoStart));
-	if (listener->listener->IsError())
+	listener->cliMgr = nullptr;
+	listener->svr = nullptr;
+	NN<Net::WebServer::WebListener> nnlistener;
+	NEW_CLASSNN(nnlistener, Net::WebServer::WebListener(this->clif, ssl, this->wsHdlr, port, 60, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("SSWRMQTT/1.0"), false, Net::WebServer::KeepAlive::No, autoStart));
+	if (nnlistener->IsError())
 	{
-		DEL_CLASS(listener->listener);
+		nnlistener.Delete();
 		MemFreeNN(listener);
 		return false;
 	}
 	else
 	{
+		listener->listener = nnlistener;
 		this->listeners.Add(listener);
 	}
 	return false;
@@ -1093,20 +1099,22 @@ Bool Net::MQTTBroker::Start()
 {
 	Bool found = false;
 	NN<Listener> listener;
+	NN<Net::TCPServer> svr;
+	NN<Net::WebServer::WebListener> nnlistener;
 	UIntOS i = this->listeners.GetCount();
 	while (i-- > 0)
 	{
 		listener = this->listeners.GetItemNoCheck(i);
-		if (listener->svr)
+		if (listener->svr.SetTo(svr))
 		{
 			found = true;
-			if (!listener->svr->Start())
+			if (!svr->Start())
 				return false;
 		}
-		else if (listener->listener)
+		else if (listener->listener.SetTo(nnlistener))
 		{
 			found = true;
-			if (!listener->listener->Start())
+			if (!nnlistener->Start())
 				return false;
 		}
 	}

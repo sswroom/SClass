@@ -40,13 +40,13 @@ Optional<IO::ParsedObject> Parser::FileParser::TILParser::ParseFileHdr(NN<IO::St
 	Int32 flags;
 	UTF8Char fileName[256];
 	UnsafeArray<UTF8Char> srcPtr;
-	IO::VirtualPackageFile *pf;
+	NN<IO::VirtualPackageFile> pf;
 
 	if (hdr[0] != 'S' || hdr[1] != 'T' || hdr[2] != 'i' || hdr[3] != 'l')
 		return nullptr;
 	
 	Data::DateTime dt;
-	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
+	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	dirOfst = ReadUInt64(&hdr[8]);
 	flags = ReadInt32(&hdr[4]);
 	fileSize = fd->GetDataSize();
@@ -54,7 +54,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TILParser::ParseFileHdr(NN<IO::St
 	{
 		if (dirOfst < 16 || dirOfst > fileSize || ((fileSize - dirOfst) & 31) != 0)
 		{
-			DEL_CLASS(pf);
+			pf.Delete();
 			return nullptr;
 		}
 		UIntOS indexSize = (UIntOS)(fileSize - dirOfst);
@@ -106,7 +106,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TILParser::ParseFileHdr(NN<IO::St
 	}
 	else
 	{
-		DEL_CLASS(pf);
+		pf.Delete();
 		return nullptr;
 	}
 	return pf;

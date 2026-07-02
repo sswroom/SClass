@@ -64,12 +64,12 @@ Optional<IO::ParsedObject> Parser::FileParser::SPDParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 
-	Map::SPDLayer *layer;
+	NN<Map::SPDLayer> layer;
 	sbuff[i] = 0;
-	NEW_CLASS(layer, Map::SPDLayer(Text::CStringNN(sbuff, i)));
+	NEW_CLASSNN(layer, Map::SPDLayer(Text::CStringNN(sbuff, i)));
 	if (layer->IsError())
 	{
-		DEL_CLASS(layer);
+		layer.Delete();
 		return nullptr;
 	}
 	return layer;

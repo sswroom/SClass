@@ -10,7 +10,7 @@ namespace Parser
 		class VFPParser : public IO::FileParser
 		{
 		private:
-			Media::VFPManager *vfpMgr;
+			NN<Media::VFPManager> vfpMgr;
 		public:
 			VFPParser();
 			virtual ~VFPParser();
