@@ -1,6 +1,6 @@
 #ifndef _SM_IO_WPDMANAGER
 #define _SM_IO_WPDMANAGER
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO
@@ -11,12 +11,12 @@ namespace IO
 	{
 	private:
 		NN<WPDManager> mgr;
-		const WChar *devId;
-		const WChar *devName;
-		const WChar *devDesc;
-		const WChar *devManu;
+		UnsafeArray<const WChar> devId;
+		UnsafeArray<const WChar> devName;
+		UnsafeArray<const WChar> devDesc;
+		UnsafeArray<const WChar> devManu;
 	public:
-		WPDeviceInfo(NN<WPDManager> mgr, const WChar *devId);
+		WPDeviceInfo(NN<WPDManager> mgr, UnsafeArray<const WChar> devId);
 		~WPDeviceInfo();
 	};
 
@@ -30,9 +30,9 @@ namespace IO
 		~WPDManager();
 
 		IntOS GetDevices(NN<Data::ArrayListNN<WPDeviceInfo>> devList);
-		Bool GetDevName(const WChar *devId, NN<Text::StringBuilderUTF8> sb);
-		Bool GetDevDesc(const WChar *devId, NN<Text::StringBuilderUTF8> sb);
-		Bool GetDevManu(const WChar *devId, NN<Text::StringBuilderUTF8> sb);
+		Bool GetDevName(UnsafeArray<const WChar> devId, NN<Text::StringBuilderUTF8> sb);
+		Bool GetDevDesc(UnsafeArray<const WChar> devId, NN<Text::StringBuilderUTF8> sb);
+		Bool GetDevManu(UnsafeArray<const WChar> devId, NN<Text::StringBuilderUTF8> sb);
 	};
 };
 #endif

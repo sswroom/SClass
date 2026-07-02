@@ -32,12 +32,13 @@ Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 		*sptr = 0;
 	}
 	UIntOS i;
+	UnsafeArray<SPDBlock> blks;
 
 	this->maxId = -1;
 	this->ofsts = 0;
 	this->nblks = 0;
 	this->blkScale = 0;
-	this->blks = 0;
+	this->blks = nullptr;
 	this->maxTextSize = 0;
 	this->lyrType = (Map::DrawLayerType)0;
 	this->layerName = Text::StrCopyNew(fname);
@@ -50,13 +51,13 @@ Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 		{
 			bstm->Read(Data::ByteArray((UInt8*)&this->nblks, 4));
 			bstm->Read(Data::ByteArray((UInt8*)&this->blkScale, 4));
-			this->blks = MemAlloc(SPDBlock, this->nblks);
+			this->blks = blks = MemAllocArr(SPDBlock, this->nblks);
 			i = 0;
 			while (i < this->nblks)
 			{
-				bstm->Read(Data::ByteArray((UInt8*)&this->blks[i], 12));
-				this->blks[i].ids = MemAlloc(Int32, this->blks[i].objCnt);
-				bstm->Read(Data::ByteArray((UInt8*)this->blks[i].ids, this->blks[i].objCnt << 2));
+				bstm->Read(Data::ByteArray((UInt8*)&blks[i], 12));
+				blks[i].ids = MemAllocArr(Int32, blks[i].objCnt);
+				bstm->Read(Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(blks[i].ids), blks[i].objCnt << 2));
 				i++;
 			}
 		}
@@ -97,6 +98,7 @@ Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 		}
 
 		sptr2 = Text::StrConcatC(sptr, UTF8STRC(".sps"));
+		if (this->blks.SetTo(blks))
 		{
 			IO::FileStream file({fname, (UIntOS)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 			NEW_CLASSNN(bstm, IO::BufferedInputStream(file, 65536));
@@ -108,7 +110,7 @@ Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName
 				while (i < this->nblks)
 				{
 					bstm->Read(Data::ByteArray((UInt8*)buff, 16));
-					this->blks[i].sofst = buff[3];
+					blks[i].sofst = buff[3];
 					i++;
 				}
 			}
@@ -134,15 +136,16 @@ Map::SPDLayer::~SPDLayer()
 		MemFree(ofsts);
 		ofsts = 0;
 	}
-	if (blks)
+	UnsafeArray<SPDBlock> blks;
+	if (this->blks.SetTo(blks))
 	{
 		i = this->nblks;
 		while (i-- > 0)
 		{
-			MemFree(this->blks[i].ids);
+			MemFreeArr(blks[i].ids);
 		}
-		MemFree(blks);
-		blks = 0;
+		MemFreeArr(blks);
+		this->blks = nullptr;
 	}
 	Text::StrDelNew(this->layerName);
 }
@@ -151,7 +154,7 @@ Bool Map::SPDLayer::IsError() const
 {
 	if (ofsts == 0)
 		return true;
-	if (blks == 0)
+	if (blks.IsNull())
 		return true;
 	if (missFile)
 		return true;
@@ -169,13 +172,16 @@ UIntOS Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Op
 	UIntOS i;
 	UIntOS k;
 	UIntOS l;
+	UnsafeArray<SPDBlock> blks;
+	if (!this->blks.SetTo(blks))
+		return 0;
 
 	k = 0;
 	l = 0;
 	if (nameArr.IsNotNull())
 	{
-		NN<Data::ArrayListObj<UTF16Char *>> tmpArr;
-		NEW_CLASSNN(tmpArr, Data::ArrayListObj<UTF16Char *>());
+		NN<Data::ArrayListArr<UTF16Char>> tmpArr;
+		NEW_CLASSNN(tmpArr, Data::ArrayListArr<UTF16Char>());
 		nameArr.SetNoCheck((NameArray*)tmpArr.Ptr());
 		UTF8Char fileName[256];
 		UnsafeArray<UTF8Char> sptr;
@@ -186,17 +192,17 @@ UIntOS Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Op
 		
 		while (k < this->nblks)
 		{
-			UTF16Char *strTmp;
+			UnsafeArray<UTF16Char> strTmp;
 			UInt8 buff[13];
-			cis->SeekFromBeginning(this->blks[k].sofst);
-			i = this->blks[k].objCnt;
+			cis->SeekFromBeginning(blks[k].sofst);
+			i = blks[k].objCnt;
 			while (i-- > 0)
 			{
 				cis->Read(Data::ByteArray(buff, 13));
 				if (buff[4])
 				{
-					strTmp = MemAlloc(UTF16Char, (UIntOS)(buff[12] >> 1) + 1);
-					cis->Read(Data::ByteArray((UInt8*)strTmp, buff[12]));
+					strTmp = MemAllocArr(UTF16Char, (UIntOS)(buff[12] >> 1) + 1);
+					cis->Read(Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(strTmp), buff[12]));
 					strTmp[buff[12] >> 1] = 0;
 					outArr->Add(*(Int32*)buff);
 					tmpArr->Add(strTmp);
@@ -207,7 +213,7 @@ UIntOS Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Op
 				}
 				else
 				{
-					strTmp = MemAlloc(UTF16Char, 1);
+					strTmp = MemAllocArr(UTF16Char, 1);
 					strTmp[0] = 0;
 					outArr->Add(*(Int32*)buff);
 					tmpArr->Add(strTmp);
@@ -221,8 +227,8 @@ UIntOS Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Op
 	{
 		while (k < this->nblks)
 		{
-			outArr->AddRangeI32(this->blks[k].ids, this->blks[k].objCnt);
-			l += this->blks[k].objCnt;
+			outArr->AddRangeI32(blks[k].ids, blks[k].objCnt);
+			l += blks[k].objCnt;
 
 			k++;
 		}
@@ -232,6 +238,9 @@ UIntOS Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Op
 
 UIntOS Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
+	UnsafeArray<SPDBlock> blks;
+	if (!this->blks.SetTo(blks))
+		return 0;
 	rect.min.x = Double2Int32(rect.min.x * 200000.0 / mapRate);
 	rect.min.y = Double2Int32(rect.min.y * 200000.0 / mapRate);
 	rect.max.x = Double2Int32(rect.max.x * 200000.0 / mapRate);
@@ -259,19 +268,19 @@ UIntOS Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optio
 		while (i <= j)
 		{
 			k = (i + j) >> 1;
-			if (this->blks[k].blk.x < leftBlk)
+			if (blks[k].blk.x < leftBlk)
 			{
 				i = k + 1;
 			}
-			else if (this->blks[k].blk.x > leftBlk)
+			else if (blks[k].blk.x > leftBlk)
 			{
 				j = k - 1;
 			}
-			else if (this->blks[k].blk.y < topBlk)
+			else if (blks[k].blk.y < topBlk)
 			{
 				i = k + 1;
 			}
-			else if (this->blks[k].blk.y > topBlk)
+			else if (blks[k].blk.y > topBlk)
 			{
 				j = k - 1;
 			}
@@ -294,8 +303,8 @@ UIntOS Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optio
 	l = 0;
 	if (nameArr.IsNotNull())
 	{
-		NN<Data::ArrayListObj<UTF16Char *>> tmpArr;
-		NEW_CLASSNN(tmpArr, Data::ArrayListObj<UTF16Char *>());
+		NN<Data::ArrayListArr<UTF16Char>> tmpArr;
+		NEW_CLASSNN(tmpArr, Data::ArrayListArr<UTF16Char>());
 		nameArr.SetNoCheck((NameArray*)tmpArr.Ptr());
 		UTF8Char fileName[256];
 		UnsafeArray<UTF8Char> sptr;
@@ -306,23 +315,23 @@ UIntOS Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optio
 		
 		while ((UIntOS)k < this->nblks)
 		{
-			if (this->blks[k].blk.x > rightBlk)
+			if (blks[k].blk.x > rightBlk)
 				break;
 
 
-			if ((this->blks[k].blk.y >= topBlk) && (this->blks[k].blk.y <= bottomBlk) && (this->blks[k].blk.x >= leftBlk))
+			if ((blks[k].blk.y >= topBlk) && (blks[k].blk.y <= bottomBlk) && (blks[k].blk.x >= leftBlk))
 			{
-				UTF16Char *strTmp;
+				UnsafeArray<UTF16Char> strTmp;
 				UInt8 buff[13];
-				cis->SeekFromBeginning(this->blks[k].sofst);
-				i = (Int32)this->blks[k].objCnt;
+				cis->SeekFromBeginning(blks[k].sofst);
+				i = (Int32)blks[k].objCnt;
 				while (i-- > 0)
 				{
 					cis->Read(Data::ByteArray(buff, 13));
 					if (buff[4])
 					{
-						strTmp = MemAlloc(UTF16Char, (UIntOS)(buff[12] >> 1) + 1);
-						cis->Read(Data::ByteArray((UInt8*)strTmp, buff[12]));
+						strTmp = MemAllocArr(UTF16Char, (UIntOS)(buff[12] >> 1) + 1);
+						cis->Read(Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(strTmp), buff[12]));
 						strTmp[buff[12] >> 1] = 0;
 						outArr->Add(*(Int32*)buff);
 						tmpArr->Add(strTmp);
@@ -335,7 +344,7 @@ UIntOS Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optio
 					}
 					else if (keepEmpty)
 					{
-						strTmp = MemAlloc(UTF16Char, 1);
+						strTmp = MemAllocArr(UTF16Char, 1);
 						strTmp[0] = 0;
 						outArr->Add(*(Int32*)buff);
 						tmpArr->Add(strTmp);
@@ -350,14 +359,14 @@ UIntOS Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optio
 	{
 		while ((UIntOS)k < this->nblks)
 		{
-			if (this->blks[k].blk.x > rightBlk)
+			if (blks[k].blk.x > rightBlk)
 				break;
 
 
-			if ((this->blks[k].blk.y >= topBlk) && (this->blks[k].blk.y <= bottomBlk) && (this->blks[k].blk.x >= leftBlk))
+			if ((blks[k].blk.y >= topBlk) && (blks[k].blk.y <= bottomBlk) && (blks[k].blk.x >= leftBlk))
 			{
-				outArr->AddRangeI32(this->blks[k].ids, this->blks[k].objCnt);
-				l += this->blks[k].objCnt;
+				outArr->AddRangeI32(blks[k].ids, blks[k].objCnt);
+				l += blks[k].objCnt;
 			}
 			k++;
 		}
@@ -475,7 +484,8 @@ UInt32 Map::SPDLayer::GetCodePage() const
 
 Bool Map::SPDLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	if (this->nblks == 0)
+	UnsafeArray<SPDBlock> blks;
+	if (this->nblks == 0 || !this->blks.SetTo(blks))
 	{
 		bounds.Set(Math::RectAreaDbl(0, 0, 0, 0));
 		return false;
@@ -484,25 +494,25 @@ Bool Map::SPDLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	{
 		Math::Coord2D<Int32> minBlk;
 		Math::Coord2D<Int32> maxBlk;
-		maxBlk = minBlk = this->blks[0].blk;
+		maxBlk = minBlk = blks[0].blk;
 		UIntOS i = this->nblks;
 		while (i-- > 0)
 		{
-			if (this->blks[i].blk.x > maxBlk.x)
+			if (blks[i].blk.x > maxBlk.x)
 			{
-				maxBlk.x = this->blks[i].blk.x;
+				maxBlk.x = blks[i].blk.x;
 			}
-			if (this->blks[i].blk.x < minBlk.x)
+			if (blks[i].blk.x < minBlk.x)
 			{
-				minBlk.x = this->blks[i].blk.x;
+				minBlk.x = blks[i].blk.x;
 			}
-			if (this->blks[i].blk.y > maxBlk.y)
+			if (blks[i].blk.y > maxBlk.y)
 			{
-				maxBlk.y = this->blks[i].blk.y;
+				maxBlk.y = blks[i].blk.y;
 			}
-			if (this->blks[i].blk.y < minBlk.y)
+			if (blks[i].blk.y < minBlk.y)
 			{
-				minBlk.y = this->blks[i].blk.y;
+				minBlk.y = blks[i].blk.y;
 			}
 		}
 		bounds.Set(Math::RectAreaDbl(minBlk.ToDouble(), maxBlk.ToDouble() + 1) * (this->blkScale / 200000.0));
@@ -534,8 +544,9 @@ Optional<Math::Geometry::Vector2D> Map::SPDLayer::GetNewVectorById(NN<Map::GetOb
 	Int32 buff[3];
 	NN<IO::FileStream> cip = NN<IO::FileStream>::ConvertFrom(session);
 	UInt32 ofst = this->ofsts[2 + (id << 1)];
-	UInt32 *ptOfsts;
-	Int32 *points;
+	UnsafeArrayOpt<UInt32> ptOfsts;
+	UnsafeArray<UInt32> nnptOfsts;
+	UnsafeArray<Int32> points;
 	UnsafeArray<Math::Coord2DDbl> tmpPoints;
 
 	cip->SeekFromBeginning(ofst);
@@ -543,29 +554,29 @@ Optional<Math::Geometry::Vector2D> Map::SPDLayer::GetNewVectorById(NN<Map::GetOb
 	
 	if (buff[1] > 0)
 	{
-		ptOfsts = MemAlloc(UInt32, (UInt32)buff[1]);
-		cip->Read(Data::ByteArray((UInt8*)ptOfsts, sizeof(UInt32) * (UInt32)buff[1]));
+		ptOfsts = nnptOfsts = MemAllocArr(UInt32, (UInt32)buff[1]);
+		cip->Read(Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(nnptOfsts), sizeof(UInt32) * (UInt32)buff[1]));
 	}
 	else
 	{
-		ptOfsts = 0;
+		ptOfsts = nullptr;
 	}
 	cip->Read(Data::ByteArray((UInt8*)&buff[2], 4));
-	points = MemAlloc(Int32, (UIntOS)buff[2] * 2);
-	cip->Read(Data::ByteArray((UInt8*)points, (UIntOS)buff[2] * 8));
+	points = MemAllocArr(Int32, (UIntOS)buff[2] * 2);
+	cip->Read(Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(points), (UIntOS)buff[2] * 8));
 
 	if (this->lyrType == Map::DRAW_LAYER_POINT)
 	{
 		NN<Math::Geometry::Point> pt;
 		NEW_CLASSNN(pt, Math::Geometry::Point(4326, points[0] / 200000.0, points[1] / 200000.0));
-		if (ptOfsts)
+		if (ptOfsts.SetTo(nnptOfsts))
 		{
-			MemFree(ptOfsts);
+			MemFreeArr(nnptOfsts);
 		}
-		MemFree(points);
+		MemFreeArr(points);
 		return pt;
 	}
-	else if (ptOfsts == 0)
+	else if (!ptOfsts.SetTo(nnptOfsts))
 	{
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYLINE)
@@ -579,11 +590,11 @@ Optional<Math::Geometry::Vector2D> Map::SPDLayer::GetNewVectorById(NN<Map::GetOb
 		UIntOS l;
 		while (i < (UInt32)buff[1])
 		{
-			j = ptOfsts[i];
+			j = nnptOfsts[i];
 			if (i + 1 >= (UInt32)buff[1])
 				k = (UInt32)buff[2];
 			else
-				k = ptOfsts[i + 1];
+				k = nnptOfsts[i + 1];
 			NEW_CLASSNN(lineString, Math::Geometry::LineString(4326, (k - j), false, false));
 			tmpPoints = lineString->GetPointList(l);
 			l = 0;
@@ -598,8 +609,8 @@ Optional<Math::Geometry::Vector2D> Map::SPDLayer::GetNewVectorById(NN<Map::GetOb
 			i++;
 		}
 
-		MemFree(ptOfsts);
-		MemFree(points);
+		MemFreeArr(nnptOfsts);
+		MemFreeArr(points);
 		return pl;
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYGON)
@@ -613,11 +624,11 @@ Optional<Math::Geometry::Vector2D> Map::SPDLayer::GetNewVectorById(NN<Map::GetOb
 		UIntOS l;
 		while (i < (UInt32)buff[1])
 		{
-			j = ptOfsts[i];
+			j = nnptOfsts[i];
 			if (i + 1 >= (UInt32)buff[1])
 				k = (UInt32)buff[2];
 			else
-				k = ptOfsts[i + 1];
+				k = nnptOfsts[i + 1];
 			NEW_CLASSNN(lr, Math::Geometry::LinearRing(4326, (k - j), false, false));
 			tmpPoints = lr->GetPointList(l);
 			l = 0;
@@ -632,16 +643,16 @@ Optional<Math::Geometry::Vector2D> Map::SPDLayer::GetNewVectorById(NN<Map::GetOb
 			i++;
 		}
 
-		MemFree(ptOfsts);
-		MemFree(points);
+		MemFreeArr(nnptOfsts);
+		MemFreeArr(points);
 		return pg;
 	}
 
-	if (ptOfsts)
+	if (ptOfsts.SetTo(nnptOfsts))
 	{
-		MemFree(ptOfsts);
+		MemFreeArr(nnptOfsts);
 	}
-	MemFree(points);
+	MemFreeArr(points);
 	return nullptr;
 }
 

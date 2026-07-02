@@ -77,17 +77,17 @@ Optional<Map::VectorLayer> Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<M
 
 	NN<Map::VectorLayer> newLyr;
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> namesArr;
-	UIntOS *ofsts;
-	DB::DBUtil::ColType *colTypes;
-	UIntOS *colSizes;
-	UIntOS *colDPs;
+	UnsafeArray<UIntOS> ofsts;
+	UnsafeArray<DB::DBUtil::ColType> colTypes;
+	UnsafeArray<UIntOS> colSizes;
+	UnsafeArray<UIntOS> colDPs;
 	UIntOS nameCol = lyr->GetNameCol();
 	i = names.GetCount();
 	namesArr = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, i);
-	ofsts = MemAlloc(UIntOS, i);
-	colTypes = MemAlloc(DB::DBUtil::ColType, i);
-	colSizes = MemAlloc(UIntOS, i);
-	colDPs = MemAlloc(UIntOS, i);
+	ofsts = MemAllocArr(UIntOS, i);
+	colTypes = MemAllocArr(DB::DBUtil::ColType, i);
+	colSizes = MemAllocArr(UIntOS, i);
+	colDPs = MemAllocArr(UIntOS, i);
 	while (i-- > 0)
 	{
 		namesArr[i] = names.GetItem(i);
@@ -97,8 +97,8 @@ Optional<Map::VectorLayer> Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<M
 		colDPs[i] = nameDPs.GetItem((UIntOS)si);
 	}
 	NEW_CLASSNN(newLyr, Map::VectorLayer(lyrType, sourceName, names.GetCount(), namesArr, csys->Clone(), colTypes, colSizes, colDPs, nameCol, lyrName));
-	MemFree(colTypes);
-	MemFree(colSizes);
+	MemFreeArr(colTypes);
+	MemFreeArr(colSizes);
 
 	Data::ArrayListInt64 objIds;
 	Data::ArrayIterator<NN<Map::MapDrawLayer>> it = layers->Iterator();
@@ -174,8 +174,8 @@ Optional<Map::VectorLayer> Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<M
 		}
 		lyr->EndGetObject(sess);
 	}
-	MemFree(colDPs);
-	MemFree(ofsts);
+	MemFreeArr(colDPs);
+	MemFreeArr(ofsts);
 	MemFreeArr(namesArr);
 
 	names.DeleteAll();

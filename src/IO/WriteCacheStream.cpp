@@ -5,18 +5,19 @@
 IO::WriteCacheStream::WriteCacheStream(NN<IO::Stream> outStm) : IO::Stream(outStm->GetSourceNameObj())
 {
 	this->outStm = outStm;
-	this->cacheBuff = 0;
+	this->cacheBuff = nullptr;
 	this->cacheBuffSize = 0;
 	this->cacheSize = 0;
 }
 
 IO::WriteCacheStream::~WriteCacheStream()
 {
+	UnsafeArray<UInt8> cacheBuff;
 	this->Flush();
-	if (this->cacheBuff)
+	if (this->cacheBuff.SetTo(cacheBuff))
 	{
-		MemFree(this->cacheBuff);
-		this->cacheBuff = 0;
+		MemFreeArr(cacheBuff);
+		this->cacheBuff = nullptr;
 	}
 }
 
@@ -33,8 +34,9 @@ UIntOS IO::WriteCacheStream::Read(const Data::ByteArray &buff)
 UIntOS IO::WriteCacheStream::Write(Data::ByteArrayR buff)
 {
 	UIntOS ret;
-	UInt8 *newBuff;
-	if (this->cacheBuff == 0)
+	UnsafeArray<UInt8> newBuff;
+	UnsafeArray<UInt8> cacheBuff;
+	if (!this->cacheBuff.SetTo(cacheBuff))
 	{
 		ret = this->outStm->Write(buff);
 		if (ret == buff.GetSize())
@@ -45,8 +47,8 @@ UIntOS IO::WriteCacheStream::Write(Data::ByteArrayR buff)
 		{
 			this->cacheBuffSize = this->cacheBuffSize << 1;
 		}
-		this->cacheBuff = MemAlloc(UInt8, this->cacheBuffSize);
-		MemCopyNO(this->cacheBuff, &buff[ret], buff.GetSize() - ret);
+		this->cacheBuff = cacheBuff = MemAllocArr(UInt8, this->cacheBuffSize);
+		MemCopyNO(&cacheBuff[0], &buff[ret], buff.GetSize() - ret);
 		this->cacheSize = buff.GetSize() - ret;
 		return buff.GetSize();
 	}
@@ -62,15 +64,15 @@ UIntOS IO::WriteCacheStream::Write(Data::ByteArrayR buff)
 			{
 				this->cacheBuffSize = this->cacheBuffSize << 1;
 			}
-			MemFree(this->cacheBuff);
-			this->cacheBuff = MemAlloc(UInt8, this->cacheBuffSize);
-			MemCopyNO(this->cacheBuff, &buff[ret], buff.GetSize() - ret);
+			MemFreeArr(cacheBuff);
+			this->cacheBuff = cacheBuff = MemAllocArr(UInt8, this->cacheBuffSize);
+			MemCopyNO(&cacheBuff[0], &buff[ret], buff.GetSize() - ret);
 			this->cacheSize = buff.GetSize() - ret;
 			return buff.GetSize();
 		}
 		else
 		{
-			MemCopyNO(this->cacheBuff, &buff[ret], buff.GetSize() - ret);
+			MemCopyNO(&cacheBuff[0], &buff[ret], buff.GetSize() - ret);
 			this->cacheSize = buff.GetSize() - ret;
 			return buff.GetSize();
 		}
@@ -78,9 +80,9 @@ UIntOS IO::WriteCacheStream::Write(Data::ByteArrayR buff)
 
 	if ((buff.GetSize() + this->cacheSize) <= this->cacheBuffSize)
 	{
-		MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Ptr(), buff.GetSize());
+		MemCopyNO(&cacheBuff[this->cacheSize], buff.Ptr(), buff.GetSize());
 		this->cacheSize += buff.GetSize();
-		ret = this->outStm->Write(Data::ByteArrayR(this->cacheBuff, this->cacheSize));
+		ret = this->outStm->Write(Data::ByteArrayR(cacheBuff, this->cacheSize));
 		if (ret == this->cacheSize)
 		{
 			this->cacheSize = 0;
@@ -92,7 +94,7 @@ UIntOS IO::WriteCacheStream::Write(Data::ByteArrayR buff)
 		}
 		else
 		{
-			MemCopyO(this->cacheBuff, &this->cacheBuff[ret], this->cacheSize - ret);
+			MemCopyO(&cacheBuff[0], &cacheBuff[ret], this->cacheSize - ret);
 			this->cacheSize -= ret;
 			return buff.GetSize();
 		}
@@ -102,13 +104,13 @@ UIntOS IO::WriteCacheStream::Write(Data::ByteArrayR buff)
 	{
 		this->cacheBuffSize = this->cacheBuffSize << 1;
 	}
-	newBuff = MemAlloc(UInt8, this->cacheBuffSize);
-	MemCopyNO(newBuff, this->cacheBuff, this->cacheSize);
+	newBuff = MemAllocArr(UInt8, this->cacheBuffSize);
+	MemCopyNO(&newBuff[0], &cacheBuff[0], this->cacheSize);
 	MemCopyNO(&newBuff[this->cacheSize], buff.Ptr(), buff.GetSize());
 	this->cacheSize += buff.GetSize();
-	MemFree(this->cacheBuff);
+	MemFreeArr(cacheBuff);
 	this->cacheBuff = newBuff;
-	ret = this->outStm->Write(Data::ByteArrayR(this->cacheBuff, this->cacheSize));
+	ret = this->outStm->Write(Data::ByteArrayR(newBuff, this->cacheSize));
 	if (ret == this->cacheSize)
 	{
 		this->cacheSize = 0;
@@ -120,7 +122,7 @@ UIntOS IO::WriteCacheStream::Write(Data::ByteArrayR buff)
 	}
 	else
 	{
-		MemCopyO(this->cacheBuff, &this->cacheBuff[ret], this->cacheSize - ret);
+		MemCopyO(&newBuff[0], &newBuff[ret], this->cacheSize - ret);
 		this->cacheSize -= ret;
 		return buff.GetSize();
 	}
@@ -129,22 +131,26 @@ UIntOS IO::WriteCacheStream::Write(Data::ByteArrayR buff)
 Int32 IO::WriteCacheStream::Flush()
 {
 	UIntOS writeSize;
-	while (this->cacheSize > 0)
+	UnsafeArray<UInt8> cacheBuff;
+	if (this->cacheBuff.SetTo(cacheBuff))
 	{
-		writeSize = this->outStm->Write(Data::ByteArrayR(this->cacheBuff, this->cacheSize));
-		if (writeSize == this->cacheSize)
+		while (this->cacheSize > 0)
 		{
-			this->cacheSize = 0;
-			break;
-		}
-		else if (writeSize == 0)
-		{
-			break;
-		}
-		else
-		{
-			MemCopyO(this->cacheBuff, &this->cacheBuff[writeSize], this->cacheSize - writeSize);
-			this->cacheSize -= writeSize;
+			writeSize = this->outStm->Write(Data::ByteArrayR(cacheBuff, this->cacheSize));
+			if (writeSize == this->cacheSize)
+			{
+				this->cacheSize = 0;
+				break;
+			}
+			else if (writeSize == 0)
+			{
+				break;
+			}
+			else
+			{
+				MemCopyO(&cacheBuff[0], &cacheBuff[writeSize], this->cacheSize - writeSize);
+				this->cacheSize -= writeSize;
+			}
 		}
 	}
 	return this->outStm->Flush();

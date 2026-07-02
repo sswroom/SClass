@@ -34,11 +34,11 @@ Int32 IO::StreamTunnel::Write(const UInt8 *buff, Int32 size)
 
 void *IO::StreamTunnel::BeginRead(UInt8 *buff, Int32 size, Sync::Event *evt)
 {
-	Int32 *reqData = MemAlloc(Int32, 3);
+	UnsafeArray<Int32> reqData = MemAllocArr(Int32, 3);
 	reqData[0] = (Int32)buff;
 	reqData[1] = (Int32)size;
 	reqData[2] = (Int32)this->sourceStm->BeginRead(buff, size, evt);
-	return reqData;
+	return reqData.Ptr();
 }
 
 Int32 IO::StreamTunnel::EndRead(void *reqData, Bool toWait)

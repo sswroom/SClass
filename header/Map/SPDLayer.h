@@ -14,7 +14,7 @@ namespace Map
 			UInt32 objCnt;
 			Math::Coord2D<Int32> blk;
 			UInt32 sofst;
-			Int32 *ids;
+			UnsafeArray<Int32> ids;
 		} SPDBlock;
 
 		//IO::FileStream *cip;
@@ -22,7 +22,7 @@ namespace Map
 		UInt32 nblks;
 		Int32 blkScale;
 		Bool missFile;
-		SPDBlock *blks;
+		UnsafeArrayOpt<SPDBlock> blks;
 		UIntOS maxTextSize;
 		Int64 maxId;
 		Map::DrawLayerType lyrType;

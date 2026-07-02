@@ -551,10 +551,10 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UIntOS level, M
 	{
 		UInt64 contLeng = cli->GetContentLength();
 		UIntOS currPos = 0;
-		UInt8 *imgBuff;
+		UnsafeArray<UInt8> imgBuff;
 		if (contLeng > 0 && contLeng <= 10485760)
 		{
-			imgBuff = MemAlloc(UInt8, (UIntOS)contLeng);
+			imgBuff = MemAllocArr(UInt8, (UIntOS)contLeng);
 			while ((readSize = cli->Read(Data::ByteArray(&imgBuff[currPos], (UIntOS)contLeng - currPos))) > 0)
 			{
 				currPos += readSize;
@@ -585,7 +585,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UIntOS level, M
 					spkg->AddFile(imgBuff, (UIntOS)contLeng, {filePathU, (UIntOS)(sptru - filePathU)}, Data::Timestamp::UtcNow());
 				}
 			}
-			MemFree(imgBuff);
+			MemFreeArr(imgBuff);
 		}
 
 	}

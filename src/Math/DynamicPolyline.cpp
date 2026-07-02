@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "MyMemory.h"
 #include "Math/DynamicPolyline.h"
 #include "Math/Math_C.h"
@@ -21,9 +21,9 @@ void Math::DynamicPolyline::AddPoint(Double x, Double y)
 	if (this->pointCapacity <= this->nPoints)
 	{
 		this->pointCapacity = this->pointCapacity << 1;
-		Double *newPoints = MemAlloc(Double, this->pointCapacity << 1);
-		MemCopy(newPoints, this->points, sizeof(Double) * this->pointCapacity);
-		MemFree(this->points);
+		UnsafeArray<Double> newPoints = MemAllocArr(Double, this->pointCapacity << 1);
+		MemCopyNO(&newPoints[0], this->points, sizeof(Double) * this->pointCapacity);
+		MemFreeArr(this->points);
 		this->points = newPoints;
 	}
 	this->points[(this->nPoints << 1) + 0] = x;

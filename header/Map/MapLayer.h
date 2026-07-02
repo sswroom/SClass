@@ -11,6 +11,6 @@ namespace Map
 	class MapLayer
 	{
 	public:
-		static Int32 Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Double lon, Int32 scale, WChar *lang, Int32 imgFormat, Data::ArrayList<MAP_EXTRA*> *drawExtra, Bool *isLayerEmpty);
+		static Int32 Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Double lon, Int32 scale, WChar *lang, Int32 imgFormat, Data::ArrayListNN<MAP_EXTRA> *drawExtra, Bool *isLayerEmpty);
 	};
 };

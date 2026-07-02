@@ -7,14 +7,14 @@
 UInt32 __stdcall IO::SNBProtocol::RecvThread(AnyType userObj)
 {
 	NN<IO::SNBProtocol> me = userObj.GetNN<IO::SNBProtocol>();
-	UInt8 *recvBuff;
+	UnsafeArray<UInt8> recvBuff;
 	UIntOS buffSize;
 	UIntOS recvSize;
 	UIntOS i;
 	UIntOS j;
 	UInt8 chk;
 	me->running = true;
-	recvBuff = MemAlloc(UInt8, 4096);
+	recvBuff = MemAllocArr(UInt8, 4096);
 	buffSize = 0;
 	while (!me->toStop)
 	{
@@ -54,12 +54,12 @@ UInt32 __stdcall IO::SNBProtocol::RecvThread(AnyType userObj)
 			}
 			else if (i > 0)
 			{
-				MemCopyO(recvBuff, &recvBuff[i], buffSize - i);
+				MemCopyO(&recvBuff[0], &recvBuff[i], buffSize - i);
 				buffSize -= i;
 			}
 		}
 	}
-	MemFree(recvBuff);
+	MemFreeArr(recvBuff);
 	me->running = false;
 	return 0;
 }

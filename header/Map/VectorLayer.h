@@ -65,8 +65,8 @@ namespace Map
 		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NN<Math::CoordinateSystem> csys, Text::CString layerName);
 		VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UIntOS nameCol, Optional<Text::String> layerName);
 		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UIntOS nameCol, Text::CString layerName);
-		VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UIntOS *colSize, UIntOS *colDP, UIntOS nameCol, Optional<Text::String> layerName);
-		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UIntOS *colSize, UIntOS *colDP, UIntOS nameCol, Text::CString layerName);
+		VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UnsafeArray<DB::DBUtil::ColType> colTypes, UnsafeArray<UIntOS> colSize, UnsafeArray<UIntOS> colDP, UIntOS nameCol, Optional<Text::String> layerName);
+		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UnsafeArray<DB::DBUtil::ColType> colTypes, UnsafeArray<UIntOS> colSize, UnsafeArray<UIntOS> colDP, UIntOS nameCol, Text::CString layerName);
 		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NN<Data::ArrayListStringNN> colNames, NN<Math::CoordinateSystem> csys, NN<Data::ArrayListT<ColInfo>> colInfos, UIntOS nameCol, Text::CString layerName);
 		virtual ~VectorLayer();
 

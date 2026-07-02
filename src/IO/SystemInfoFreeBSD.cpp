@@ -188,7 +188,7 @@ UIntOS IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 			while (i < j)
 			{
 				mem = memList.GetItem(i);
-				ram = MemAlloc(RAMInfo, 1);
+				ram = MemAllocNN(RAMInfo);
 				if (mem->deviceLocator)
 				{
 					sb.ClearStr();

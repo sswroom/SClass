@@ -305,8 +305,8 @@ Bool IO::Device::MTKGPSNMEA::ParseLog(NN<Map::GPSTrack> gps)
 	UIntOS endAddr = this->CalLogBlockCount(logSize) << 16;
 	UIntOS addr = 0;
 	Bool succ = true;
-	UInt8 *block;
-	block = MemAlloc(UInt8, 65536);
+	UnsafeArray<UInt8> block;
+	block = MemAllocArr(UInt8, 65536);
 	while (addr < endAddr)
 	{
 		succ = this->ReadLogBlock(addr, block);
@@ -318,7 +318,7 @@ Bool IO::Device::MTKGPSNMEA::ParseLog(NN<Map::GPSTrack> gps)
 		addr += 65536;
 	}
 
-	MemFree(block);
+	MemFreeArr(block);
 	if (logEnabled)
 	{
 		this->EnableLog();

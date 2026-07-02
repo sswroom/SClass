@@ -5,6 +5,7 @@
 #include "IO/Stream.h"
 #include "IO/StreamReader.h"
 #include "Map/MapLayer.h"
+#include "Manage/HiResClock.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Text/Encoding.h"
@@ -37,15 +38,15 @@ namespace Map
 	}
 }
 
-Int32 Map::MapLayer::Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Double lon, Int32 scale, WChar *lang, Int32 imgFormat, Data::ArrayList<Map::MAP_EXTRA*> *drawExtra, Bool *isLayerEmpty)
+Int32 Map::MapLayer::Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Double lon, Int32 scale, WChar *lang, Int32 imgFormat, Data::ArrayListNN<Map::MAP_EXTRA> *drawExtra, Bool *isLayerEmpty)
 {
 	Int32 retSize = 0;
-	WChar fileName[256];
+	UTF8Char fileName[256];
 	WChar lineBuff[1024];
 	WChar layerName[512];
 	WChar *baseDir;
 	WChar *strs[10];
-	WChar *wptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileStream> fstm;
 	NN<IO::StreamReader> rdr;
 	Int32 maxScale;
@@ -57,26 +58,24 @@ Int32 Map::MapLayer::Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Do
 	Int32 lastFont = -1;
 	NN<Data::ArrayListNN<MAP_FONT_STYLE>> lastFonts;
 	NN<MAP_LINE_STYLE> currLine;
-	MAP_FONT_STYLE *currFont;
+	NN<MAP_FONT_STYLE> currFont;
 	Bool drawn = false;
 
 	NEW_CLASSNN(lastLines, Data::ArrayListNN<MAP_LINE_STYLE>());
 	NEW_CLASSNN(lastFonts, Data::ArrayListNN<MAP_FONT_STYLE>());
 
 
-	wptr = Text::StrConcat(fileName, L"MapLayer_");
-	wptr = Text::StrConcat(wptr, lang);
-	wptr = Text::StrConcat(wptr, L".txt");
+	sptr = Text::StrConcatC(fileName, UTF8STRC("MapLayer_"));
+	sptr = Text::StrConcat(sptr, lang);
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 //	debugMut->Lock();
-	NEW_CLASSNN(fstm, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone));
+	NEW_CLASSNN(fstm, IO::FileStream(CSTRP(fileName, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fstm->IsError())
 	{
 	}
 	else
 	{
-		LARGE_INTEGER liSt;
-		LARGE_INTEGER liEd;
-		LARGE_INTEGER liFreq;
+		Manage::HiResClock clk;
 		Double spd;
 
 		void *map;
@@ -168,11 +167,11 @@ Int32 Map::MapLayer::Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Do
 					lastFonts->Clear();
 				}
 
-				currFont = MemAlloc(MAP_FONT_STYLE, 1);
+				currFont = MemAllocNN(MAP_FONT_STYLE);
 				currFont->fontType = Text::StrToInt32(strs[2]);
 				wptr = strs[3];
 				while (*wptr++);
-				currFont->fontName = MemAlloc(WChar, wptr - strs[3]);
+				currFont->fontName = MemAllocArr(WChar, wptr - strs[3]);
 				Text::StrConcat(currFont->fontName, strs[3]);
 				currFont->fontSize = (Text::StrToInt32(strs[4]) * 3) >> 2;
 				currFont->thick = Text::StrToInt32(strs[5]);
@@ -225,11 +224,9 @@ Int32 Map::MapLayer::Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Do
 					if (scale >= minScale && scale <= maxScale)
 					{
 						Text::StrConcat(baseDir, strs[1]);
-						QueryPerformanceCounter(&liSt);
+						clk.Start();
 						Map::MapEngine::DrawLine(map, layerName, maxScale, Text::StrToInt32(strs[4]), &drawn);
-						QueryPerformanceCounter(&liEd);
-						QueryPerformanceFrequency(&liFreq);
-						spd = (liEd.QuadPart - liSt.QuadPart) / (Double)liFreq.QuadPart;
+						spd = clk.GetTimeDiff();
 						if (spd > 0.1)
 						{
 //							wprintf(L"Slow pg: %lf, %s, \n", spd, layerName);
@@ -244,11 +241,9 @@ Int32 Map::MapLayer::Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Do
 					if (scale >= minScale && scale <= maxScale)
 					{
 						Text::StrConcat(baseDir, strs[1]);
-						QueryPerformanceCounter(&liSt);
+						clk.Start();
 						Map::MapEngine::FillLine(map, layerName, maxScale, Text::StrToInt32(strs[4]), map_get_color(strs[5]), &drawn);
-						QueryPerformanceCounter(&liEd);
-						QueryPerformanceFrequency(&liFreq);
-						spd = (liEd.QuadPart - liSt.QuadPart) / (Double)liFreq.QuadPart;
+						spd = clk.GetTimeDiff();
 						if (spd > 0.1)
 						{
 //							wprintf(L"Slow pg: %lf, %s, \n", spd, layerName);
@@ -310,9 +305,9 @@ Int32 Map::MapLayer::Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Do
 		}
 	}
 //	debugMut->Unlock();
-	DEL_CLASS(lastFonts);
-	DEL_CLASS(lastLines);
-	DEL_CLASS(fstm);
+	lastFonts.Delete();
+	lastLines.Delete();
+	fstm.Delete();
 	if (isLayerEmpty)
 	{
 		*isLayerEmpty = !drawn;

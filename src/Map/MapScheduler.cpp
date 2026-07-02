@@ -266,15 +266,15 @@ void Map::MapScheduler::DrawPolygon(NN<Math::Geometry::Polygon> pg)
 	}
 	UIntOS i = 0;
 	UIntOS nPtOfst = pg->GetCount();
-	UInt32 *ptOfstArr;
-	UInt32 *relArr = 0;
+	UnsafeArray<UInt32> ptOfstArr;
+	UnsafeArrayOpt<UInt32> relArr = nullptr;
 	UInt32 cntArr[20];
 	if (nPtOfst <= 20)
 		ptOfstArr = cntArr;
 	else
 	{
-		relArr = MemAlloc(UInt32, nPtOfst);
-		ptOfstArr = relArr;
+		ptOfstArr = MemAllocArr(UInt32, nPtOfst);
+		relArr = ptOfstArr;
 	}
 	Data::ArrayListA<Math::Coord2DDbl> ptList;
 	it = pg->Iterator();
@@ -286,9 +286,9 @@ void Map::MapScheduler::DrawPolygon(NN<Math::Geometry::Polygon> pg)
 		i++;
 	}
 	this->img->DrawPolyPolygon(ptList.Arr().Ptr(), ptOfstArr, nPtOfst, this->p, this->b);
-	if (relArr)
+	if (relArr.SetTo(ptOfstArr))
 	{
-		MemFree(relArr);
+		MemFreeArr(ptOfstArr);
 	}
 }
 

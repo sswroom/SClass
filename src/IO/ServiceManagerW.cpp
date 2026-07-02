@@ -187,8 +187,8 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CStringNN svcName, NN<ServiceDet
 	{
 		return false;
 	}
-	UInt8* buff = MemAlloc(UInt8, 8192);
-	SERVICE_STATUS_PROCESS *status = (SERVICE_STATUS_PROCESS*)buff;
+	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, 8192);
+	SERVICE_STATUS_PROCESS *status = (SERVICE_STATUS_PROCESS*)buff.Ptr();
 	DWORD bytesNeeded;
 	Bool succ = (QueryServiceStatusEx(schService, SC_STATUS_PROCESS_INFO, buff, 8192, &bytesNeeded) != 0);
 	if (succ)
@@ -199,7 +199,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CStringNN svcName, NN<ServiceDet
 		svcDetail->startTime = 0;
 		svcDetail->enabled = IO::ServiceInfo::ServiceState::Unknown;
 	}
-	QUERY_SERVICE_CONFIGW* svcConfig = (QUERY_SERVICE_CONFIGW*)buff;
+	QUERY_SERVICE_CONFIGW* svcConfig = (QUERY_SERVICE_CONFIGW*)buff.Ptr();
 	if (QueryServiceConfigW(schService, svcConfig, 8192, &bytesNeeded) != 0)
 	{
 		switch (svcConfig->dwStartType)

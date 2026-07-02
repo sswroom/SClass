@@ -1,12 +1,13 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Text/MyString.h"
-#include "Sync/Event.h"
 #include "IO/Stream.h"
 #include "Map/MapView.h"
 #include "Map/SmartLabel.h"
 #include "Math/Math_C.h"
 #include "Media/DrawEngine.h"
+#include "Sync/Event.h"
+#include "Text/MyString.h"
+#include "Text/MyStringW.h"
 
 #ifndef _WIN32_WCE
 #include <windows.h>
@@ -23,7 +24,7 @@ typedef enum
 
 typedef struct
 {
-	const WChar *label;
+	UnsafeArray<const WChar> label;
 	Int32 xPos;
 	Int32 yPos;
 	Int32 fontStyle;
@@ -35,30 +36,30 @@ typedef struct
 	Double mapRate;
 	Int32 nPoints;
 	ShapeType shapeType;
-	Int32 *points;
+	UnsafeArrayOpt<Int32> points;
 	Map::SmartLabel::LabelFlags flags;
 } MapLabels;
 
-typedef struct
+struct Map::SmartLabel::LabelSession
 {
 	Int32 nLabels;
-	Map::MapView *view;
+	NN<Map::MapView> view;
 	Map::SmartLabel::DrawFunc func1;
 	Map::SmartLabel::SizeFunc func2;
-	void *userObj;
-	MapLabels *labels;
+	AnyType userObj;
+	UnsafeArray<MapLabels> labels;
 	Int32 labelCnt;
-} LabelSession;
+};
 
-Int32 Map::SmartLabel::NewLabel(void *sess, Int32 priority)
+Int32 Map::SmartLabel::NewLabel(NN<LabelSession> sess, Int32 priority)
 {
 	Int32 minPriority;
 	Int32 i;
 	Int32 j;
 	Int32 k;
 
-	LabelSession *ses = (LabelSession*)sess;
-	MapLabels *labels = ses->labels;
+	NN<LabelSession> ses = sess;
+	UnsafeArray<MapLabels> labels = ses->labels;
 
 	if (ses->labelCnt >= ses->nLabels)
 	{
@@ -104,10 +105,10 @@ Int32 Map::SmartLabel::NewLabel(void *sess, Int32 priority)
 	}
 }
 
-void Map::SmartLabel::SwapLabel(void *sess, Int32 index, Int32 index2)
+void Map::SmartLabel::SwapLabel(NN<LabelSession> sess, Int32 index, Int32 index2)
 {
-	LabelSession *ses = (LabelSession*)sess;
-	MapLabels *labels = ses->labels;
+	NN<LabelSession> ses = sess;
+	UnsafeArray<MapLabels> labels = ses->labels;
 	MapLabels l;
 
 	l.label = labels[index].label;
@@ -152,7 +153,7 @@ void Map::SmartLabel::SwapLabel(void *sess, Int32 index, Int32 index2)
 	labels[index2].points = l.points;
 	labels[index2].flags = l.flags;}
 
-Int32 Map::SmartLabel::LabelOverlapped(Int32 *points, Int32 nPoints, Int32 tlx, Int32 tly, Int32 brx, Int32 bry)
+Int32 Map::SmartLabel::LabelOverlapped(UnsafeArray<Int32> points, Int32 nPoints, Int32 tlx, Int32 tly, Int32 brx, Int32 bry)
 {
 	while (nPoints--)
 	{
@@ -170,40 +171,40 @@ Map::SmartLabel::~SmartLabel()
 {
 }
 
-void *Map::SmartLabel::BeginDraw(Int32 nLabels, MapView *view, DrawFunc func1, SizeFunc func2, void *userObj)
+NN<Map::SmartLabel::LabelSession> Map::SmartLabel::BeginDraw(Int32 nLabels, NN<MapView> view, DrawFunc func1, SizeFunc func2, AnyType userObj)
 {
-	LabelSession *ses;
-	ses = MemAlloc(LabelSession, 1);
+	NN<LabelSession> ses;
+	ses = MemAllocNN(LabelSession);
 	ses->nLabels = nLabels;
 	ses->view = view;
 	ses->func1 = func1;
 	ses->func2 = func2;
 	ses->userObj = userObj;
-	ses->labels = MemAlloc(MapLabels, nLabels);
+	ses->labels = MemAllocArr(MapLabels, nLabels);
 	ses->labelCnt = 0;
 
 	return ses;
 }
 
-void Map::SmartLabel::EndDraw(void *sess)
+void Map::SmartLabel::EndDraw(NN<LabelSession> sess)
 {
-	LabelSession *ses = (LabelSession*)sess;
+	NN<LabelSession> ses = sess;
 	Int32 i = ses->labelCnt;
 	while (i-- > 0)
 	{
 /////////////////////////////
 	}
-	MemFree(ses->labels);
-	MemFree(ses);
+	MemFreeArr(ses->labels);
+	MemFreeNN(ses);
 }
 
-void Map::SmartLabel::DrawImage(void *sess, Media::DrawImage *img)
+void Map::SmartLabel::DrawImage(NN<LabelSession> sess, Media::DrawImage *img)
 {
-	LabelSession *ses = (LabelSession*)sess;
+	NN<LabelSession> ses = sess;
 	Int32 i;
 	Int32 j;
 	WChar *dest;
-	WChar *lastLbl = 0;
+	UnsafeArrayOpt<WChar> lastLbl = nullptr;
 	Double leftLon = ses->view->GetLeftX();
 	Double topLat = ses->view->GetTopY();
 	Double rightLon = ses->view->GetRightX();
@@ -213,7 +214,7 @@ void Map::SmartLabel::DrawImage(void *sess, Media::DrawImage *img)
 
 	if (ses->labelCnt)
 	{
-		Int32* points;
+		UnsafeArray<Int32> points;
 		Int32 currPt;
 		Int32 szThis[2];
 
@@ -228,8 +229,7 @@ void Map::SmartLabel::DrawImage(void *sess, Media::DrawImage *img)
 
 		const WChar *src;
 
-		if (!(points = MemAlloc(Int32, ses->labelCnt * 20)))
-			return;
+		points = MemAllocArr(Int32, ses->labelCnt * 20);
 
 		i = 0;
 		j = ses->labelCnt;
@@ -265,13 +265,11 @@ void Map::SmartLabel::DrawImage(void *sess, Media::DrawImage *img)
 		i = 0;
 		while (i < ses->labelCnt)
 		{
-			Double scnXD;
-			Double scnYD;
 //			GetCharsSize(img, szThis, ses->labels[i].label, fonts[ses->labels[i].fontStyle], ses->labels[i].scaleW, ses->labels[i].scaleH);
 			ses->func2(ses->userObj, ses->labels[i].label, ses->labels[i].scaleW, ses->labels[i].scaleH, ses->labels[i].fontStyle, &szThis[0], &szThis[1], ses->labels[i].flags);
-			ses->view->MapXYToScnXY(ses->labels[i].xPos / ses->labels[i].mapRate, ses->labels[i].yPos / ses->labels[i].mapRate, &scnXD, &scnYD);
-			scnPtX = Double2Int32(scnXD);
-			scnPtY = Double2Int32(scnYD);
+			Math::Coord2DDbl scnPt = ses->view->MapXYToScnXY(Math::Coord2DDbl(ses->labels[i].xPos / ses->labels[i].mapRate, ses->labels[i].yPos / ses->labels[i].mapRate));
+			scnPtX = Double2Int32(scnPt.x);
+			scnPtY = Double2Int32(scnPt.y);
 
 			
 		//	labels[i].shapeType = 0;
@@ -357,7 +355,7 @@ void Map::SmartLabel::DrawImage(void *sess, Media::DrawImage *img)
 						MemFree(lastLbl);
 					src = ses->labels[i].label;
 					while (*src++);
-					dest = lastLbl = MemAlloc(WChar, src - ses->labels[i].label);
+					dest = lastLbl = MemAllocArr(WChar, src - ses->labels[i].label);
 					src = ses->labels[i].label;
 					while (*src++)
 						*dest++ = src[-1];
@@ -511,9 +509,9 @@ void Map::SmartLabel::DrawImage(void *sess, Media::DrawImage *img)
 								ses->labels[i].scaleH = ptInt[3] - ptInt[1];
 							}
 
-							ses->view->MapXYToScnXY(scnPtX / ses->labels[i].mapRate, scnPtY / ses->labels[i].mapRate, &scnXD, &scnYD);
-							scnPtX = Double2Int32(scnXD);
-							scnPtY = Double2Int32(scnYD);
+							scnPt = ses->view->MapXYToScnXY(Math::Coord2DDbl(scnPtX / ses->labels[i].mapRate, scnPtY / ses->labels[i].mapRate));
+							scnPtX = Double2Int32(scnPt.x);
+							scnPtY = Double2Int32(scnPt.y);
 
 //							GetCharsSize(img, szThis, ses->labels[i].label, fonts[ses->labels[i].fontStyle], ses->labels[i].scaleW, ses->labels[i].scaleH);
 							ses->func2(ses->userObj, ses->labels[i].label, ses->labels[i].scaleW, ses->labels[i].scaleH, ses->labels[i].fontStyle, &szThis[0], &szThis[1], ses->labels[i].flags);
@@ -652,7 +650,7 @@ void Map::SmartLabel::DrawImage(void *sess, Media::DrawImage *img)
 			i++;
 		}
 
-		MemFree(points);
+		MemFreeArr(points);
 	}
 
 //	printf("Free labels\n");
@@ -667,9 +665,9 @@ void Map::SmartLabel::DrawImage(void *sess, Media::DrawImage *img)
 		MemFree(lastLbl);
 }
 
-Bool Map::SmartLabel::AddPointLabel(void *sess, Int32 priority, Int32 fontStyle, WChar *label, Int32 *points, Int32 nPoints, LabelFlags flags, Double mapRate)
+Bool Map::SmartLabel::AddPointLabel(NN<LabelSession> sess, Int32 priority, Int32 fontStyle, WChar *label, Int32 *points, Int32 nPoints, LabelFlags flags, Double mapRate)
 {
-	LabelSession *ses = (LabelSession*)sess;
+	NN<LabelSession> ses = sess;
 	Int32 found;
 	Int32 i;
 	Int32 j;
@@ -723,7 +721,7 @@ Bool Map::SmartLabel::AddPointLabel(void *sess, Int32 priority, Int32 fontStyle,
 		j = nPoints;
 		while (j--)
 		{
-			if (ses->view->InViewXY(pInt[1] / mapRate, pInt[0] / mapRate))
+			if (ses->view->InViewXY(Math::Coord2DDbl(pInt[1] / mapRate, pInt[0] / mapRate)))
 			{
 				found = 1;
 
@@ -781,9 +779,9 @@ Bool Map::SmartLabel::AddPointLabel(void *sess, Int32 priority, Int32 fontStyle,
 	return false;
 }
 
-Bool Map::SmartLabel::AddPolylineLabel(void *sess, Int32 priority, Int32 fontStyle, WChar *label, Int32 *points, Int32 nPoints, LabelFlags flags, Double mapRate)
+Bool Map::SmartLabel::AddPolylineLabel(NN<LabelSession> sess, Int32 priority, Int32 fontStyle, WChar *label, Int32 *points, Int32 nPoints, LabelFlags flags, Double mapRate)
 {
-	LabelSession *ses = (LabelSession*)sess;
+	NN<LabelSession> ses = sess;
 	Int32 tmp;
 	Int32 lastPtX;
 	Int32 lastPtY = points[1];
@@ -794,7 +792,7 @@ Bool Map::SmartLabel::AddPolylineLabel(void *sess, Int32 priority, Int32 fontSty
 	Int32 i;
 	Int32 j;
 
-	Int32 *pInt;
+	UnsafeArray<Int32> pInt;
 	Int32 visibleSize = 0;
 	Int32 size = 0;
 
@@ -901,7 +899,7 @@ Bool Map::SmartLabel::AddPolylineLabel(void *sess, Int32 priority, Int32 fontSty
 				else if (ses->labels[i].points[0] == points[(nPoints << 1) - 2] && ses->labels[i].points[1] == points[(nPoints << 1) - 1])
 				{
 					Int32 newSize = ses->labels[i].nPoints + nPoints - 1;
-					Int32* newArr = MemAlloc(Int32, newSize << 1);
+					UnsafeArray<Int32> newArr = MemAllocArr(Int32, newSize << 1);
 					Int32 k;
 					Int32 l;
 					l = 0;
@@ -928,7 +926,7 @@ Bool Map::SmartLabel::AddPolylineLabel(void *sess, Int32 priority, Int32 fontSty
 				else if (ses->labels[i].points[(ses->labels[i].nPoints << 1) - 2] == points[0] && ses->labels[i].points[(ses->labels[i].nPoints << 1) - 1] == points[1])
 				{
 					Int32 newSize = ses->labels[i].nPoints + nPoints - 1;
-					Int32* newArr = MemAlloc(Int32, newSize << 1);
+					UnsafeArray<Int32> newArr = MemAllocArr(Int32, newSize << 1);
 					Int32 k;
 					Int32 l;
 					l = 0;
@@ -992,7 +990,7 @@ Bool Map::SmartLabel::AddPolylineLabel(void *sess, Int32 priority, Int32 fontSty
 		j = ses->labels[i].nPoints = nPoints;
 		if (ses->labels[i].points)
 			MemFree(ses->labels[i].points);
-		ses->labels[i].points = pInt = MemAlloc(Int32, nPoints * 2);
+		ses->labels[i].points = pInt = MemAllocArr(Int32, nPoints * 2);
 		ses->labels[i].mapRate = mapRate;
 		j = j << 1;
 		long k = 0;
@@ -1188,12 +1186,12 @@ Bool Map::SmartLabel::AddPolylineLabel(void *sess, Int32 priority, Int32 fontSty
 	return false;
 }
 
-Bool Map::SmartLabel::AddPolygonLabel(void *sess, Int32 priority, Int32 fontStyle, WChar *label, Int32 *points, Int32 nPoints, LabelFlags flags, Double mapRate)
+Bool Map::SmartLabel::AddPolygonLabel(NN<LabelSession> sess, Int32 priority, Int32 fontStyle, WChar *label, Int32 *points, Int32 nPoints, LabelFlags flags, Double mapRate)
 {
 	Int32 found;
 	Int32 i;
 
-	LabelSession *ses = (LabelSession*)sess;
+	NN<LabelSession> ses = sess;
 
 	Int32 left = Double2Int32(ses->view->GetLeftX() * mapRate);
 	Int32 top = Double2Int32(ses->view->GetTopY() * mapRate);
@@ -1229,7 +1227,7 @@ Bool Map::SmartLabel::AddPolygonLabel(void *sess, Int32 priority, Int32 fontStyl
 		Int32 thisY;
 		Int32 thisTX;
 		Int32 thisTY;
-		Int32* outPts;
+		UnsafeArray<Int32> outPts;
 		Int32 outPtCnt;
 		Int64 sum;
 		Int64 sumX;
@@ -1240,7 +1238,7 @@ Bool Map::SmartLabel::AddPolygonLabel(void *sess, Int32 priority, Int32 fontStyl
 		Int32 inCnt;
 		Int32 tmp;
 		Int32 tmp2;
-		outPts = MemAlloc(Int32, nPoints << 2);
+		outPts = MemAllocArr(Int32, nPoints << 2);
 		outPtCnt = 0;
 		startIndex = -1;
 		i = 0;
@@ -1571,14 +1569,14 @@ Bool Map::SmartLabel::AddPolygonLabel(void *sess, Int32 priority, Int32 fontStyl
 		}
 		if (sum != 0)
 		{
-			Int32 *finalPts;
+			UnsafeArray<Int32> finalPts;
 			Int32 finalCnt;
 			Int32 maxX;
 			Int32 maxY;
 			Int32 minX;
 			Int32 minY;
 			finalCnt = 0;
-			finalPts = MemAlloc(Int32, outPtCnt << 1);
+			finalPts = MemAllocArr(Int32, outPtCnt << 1);
 			sumX += maxX = minX = lastX = finalPts[0] = outPts[0];
 			sumY += maxY = minY = lastY = finalPts[1] = outPts[1];
 			finalCnt++;
@@ -1657,7 +1655,7 @@ Bool Map::SmartLabel::AddPolygonLabel(void *sess, Int32 priority, Int32 fontStyl
 			}
 
 			
-			MemFree(outPts);
+			MemFreeArr(outPts);
 			outPts = finalPts;
 			outPtCnt = finalCnt;
 			
@@ -1667,7 +1665,7 @@ Bool Map::SmartLabel::AddPolygonLabel(void *sess, Int32 priority, Int32 fontStyl
 			i = NewLabel(ses, priority);
 			if (i < 0)
 			{
-				MemFree(outPts);
+				MemFreeArr(outPts);
 				return false;
 			}
 
@@ -1692,7 +1690,7 @@ Bool Map::SmartLabel::AddPolygonLabel(void *sess, Int32 priority, Int32 fontStyl
 		}
 		else
 		{
-			MemFree(outPts);
+			MemFreeArr(outPts);
 		}
 	}
 	return false;

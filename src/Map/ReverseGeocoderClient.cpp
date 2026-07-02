@@ -13,13 +13,13 @@
 UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(AnyType userObj)
 {
 	NN<Map::ReverseGeocoderClient> me = userObj.GetNN<Map::ReverseGeocoderClient>();
-	UInt8 *recvBuff;
+	UnsafeArray<UInt8> recvBuff;
 	IntOS buffSize = 0;
 	IntOS readSize;
 	NN<Net::TCPClient> cli;
 
 	me->cliRunning = true;
-	recvBuff = MemAlloc(UInt8, 4096);
+	recvBuff = MemAllocArr(UInt8, 4096);
 	while (!me->cliToStop)
 	{
 		if (!me->cli.SetTo(cli))
@@ -62,7 +62,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(AnyType userObj)
 				}
 				else if (readSize < buffSize)
 				{
-					MemCopyO(recvBuff, &recvBuff[buffSize - readSize], readSize);
+					MemCopyO(&recvBuff[0], &recvBuff[buffSize - readSize], readSize);
 					buffSize = readSize;
 				}
 			}
@@ -72,7 +72,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(AnyType userObj)
 		Sync::MutexUsage mutUsage(me->cliMut);
 		me->cli.Delete();
 	}
-	MemFree(recvBuff);
+	MemFreeArr(recvBuff);
 	me->cliRunning = false;
 	return 0;
 }
