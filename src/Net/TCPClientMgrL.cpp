@@ -508,7 +508,11 @@ void Net::TCPClientMgr::AddClient(NN<TCPClient> cli, AnyType cliData)
 	IntOS i = this->cliMap.GetIndex(cliId);
 	if (i >= 0)
 	{
-		printf("TCPClientMgr: Duplicate Client Id %llx\r\n", cliId);
+		printf("TCPClientMgr: Duplicate Client %p Id %llx\r\n", cli->GetSocket().OrNull(), cliId);
+		readMutUsage.EndUse();
+		cliStat.Delete();
+		cli.Delete();
+		return;
 	}
 	else
 	{
