@@ -111,7 +111,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 	NN<Net::TCPClient> proxyCli;
 	if (this->protoHdlr.SetTo(protoHdlr))
 	{
-		protoHdlr->ProtocolData(buff.Arr().Ptr(), buff.GetSize());
+		protoHdlr->ProtocolData(buff.Arr(), buff.GetSize());
 		return;
 	}
 	else if (this->proxyMode && this->proxyCli.SetTo(proxyCli))
@@ -148,7 +148,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 			Sync::MutexUsage mutUsage(this->procMut);
 			if (this->currReq.SetTo(currReq) && currReq->DataStarted())
 			{
-				i += currReq->DataPut(buff.Arr().Ptr(), buff.GetSize());
+				i += currReq->DataPut(buff.Arr(), buff.GetSize());
 				if (!currReq->DataFull())
 				{
 					this->buffSize = 0;
@@ -344,7 +344,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 
 void Net::WebServer::WebConnection::ProxyData(const Data::ByteArrayR &buff)
 {
-	this->SendData(buff.Arr().Ptr(), buff.GetSize());
+	this->SendData(buff.Arr(), buff.GetSize());
 }
 
 void Net::WebServer::WebConnection::EndProxyConn()
@@ -488,7 +488,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 				return;
 			}
 			
-			this->proxyCli = proxyCli.Ptr();
+			this->proxyCli = proxyCli;
 			this->AddDefHeaders(currReq);
 			if (!this->respHeaderSent)
 			{
