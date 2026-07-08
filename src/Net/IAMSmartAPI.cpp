@@ -60,7 +60,8 @@ Optional<Text::JSONBase> Net::IAMSmartAPI::PostEncReq(Text::CStringNN url, NN<CE
 	UnsafeArray<UInt8> msgBuff = MemAllocArr(UInt8, jsonMsg.leng + 32);
 	WriteMInt32(msgBuff.Ptr(), 12);
 	byteGen.NextBytes(msgBuff + 4, 12);
-	Crypto::Encrypt::AES256GCM aes(cek->key, msgBuff + 4);
+	Crypto::Encrypt::AES256GCM aes(cek->key);
+	aes.SetIV(msgBuff + 4);
 	UIntOS encLeng = aes.Encrypt(jsonMsg.v, jsonMsg.leng, msgBuff + 16);
 	if (encLeng != jsonMsg.leng + 16)
 	{

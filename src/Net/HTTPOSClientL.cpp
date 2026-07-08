@@ -366,20 +366,20 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		case Net::WebUtil::RequestMethod::HTTP_PATCH:
 			this->canWrite = true;
 			this->writing = false;
-			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, UTF8STRC("PATCH"));
+			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, "PATCH");
 			break;
 		case Net::WebUtil::RequestMethod::HTTP_DELETE:
-			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, UTF8STRC("DELETE"));
+			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, "DELETE");
 			this->canWrite = false;
 			this->writing = false;
 			break;
 		case Net::WebUtil::RequestMethod::HTTP_HEAD:
-			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, UTF8STRC("HEAD"));
+			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, "HEAD");
 			this->canWrite = false;
 			this->writing = false;
 			break;
 		case Net::WebUtil::RequestMethod::HTTP_TRACE:
-			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, UTF8STRC("TRACE"));
+			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, "TRACE");
 			this->canWrite = false;
 			this->writing = false;
 			break;

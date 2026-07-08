@@ -3,18 +3,30 @@
 #include "MyMemory.h"
 #include "Crypto/Encrypt/BlockCipher.h"
 
-Crypto::Encrypt::BlockCipher::BlockCipher(UIntOS blockSize)
+Crypto::Encrypt::BlockCipher::BlockCipher(UIntOS blockSize) : BlockCipher(blockSize, blockSize)
+{
+}
+
+Crypto::Encrypt::BlockCipher::BlockCipher(UIntOS blockSize, UIntOS ivSize)
 {
 	this->blockSize = blockSize;
+	this->ivSize = ivSize;
 	this->cm = ChainMode::ECB;
-	this->iv = MemAllocArr(UInt8, blockSize);
+	this->iv = MemAllocArr(UInt8, ivSize);
 	this->pad = PaddingMode::None;
-	MemClear(this->iv.Ptr(), this->blockSize);
+	MemClear(this->iv.Ptr(), this->ivSize);
+	this->aad = nullptr;
+	this->aadSize = 0;
 }
 
 Crypto::Encrypt::BlockCipher::~BlockCipher()
 {
 	MemFreeArr(this->iv);
+	UnsafeArray<UInt8> blk;
+	if (this->aad.SetTo(blk))
+	{
+		MemFreeArr(blk);
+	}
 }
 
 UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UIntOS inSize, UnsafeArray<UInt8> outBuff)
@@ -73,7 +85,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 		return blkCnt * this->blockSize;
 	case ChainMode::CBC:
 		blk = MemAllocArr(UInt8, this->blockSize);
-		MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
+		MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
 		while (inSize >= blockSize)
 		{
 			MemXOR(blk.Ptr(), inBuff.Ptr(), blk.Ptr(), this->blockSize);
@@ -112,7 +124,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 		return blkCnt * this->blockSize;
 	case ChainMode::PCBC:
 		blk = MemAllocArr(UInt8, this->blockSize);
-		MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
+		MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
 		while (inSize >= blockSize)
 		{
 			MemXOR(blk.Ptr(), inBuff.Ptr(), blk.Ptr(), this->blockSize);
@@ -152,7 +164,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 	case ChainMode::CFB:
 		blk = MemAllocArr(UInt8, this->blockSize);
 		outSize = 0;
-		MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
+		MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
 		while (inSize > 0)
 		{
 			EncryptBlock(blk, outBuff);
@@ -176,7 +188,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 		return outSize;
 	case ChainMode::OFB:
 		blk = MemAllocArr(UInt8, this->blockSize);
-		MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
+		MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
 		outSize = 0;
 		while (inSize > 0)
 		{
@@ -202,7 +214,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 	case ChainMode::CTR:
 		blk = MemAllocArr(UInt8, this->blockSize);
 		outSize = 0;
-		MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
+		MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
 		while (inSize > 0)
 		{
 			EncryptBlock(blk, outBuff);
@@ -231,9 +243,19 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 		MemFreeArr(blk);
 		return outSize;
 	case ChainMode::GCM:
-		blk = MemAllocArr(UInt8, this->blockSize);
+	{
+		blk = MemAllocArr(UInt8, this->blockSize * 4);
 		outSize = 0;
-		MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
+		MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
+		MemClear(blk.Ptr() + this->ivSize, this->blockSize + 32 - this->ivSize);
+		blk[this->blockSize - 1] = 1;
+		EncryptBlock(blk + this->blockSize, blk + this->blockSize * 2);
+		EncryptBlock(blk, &outBuff[inSize]);
+		UnsafeArray<UInt8> aad;
+		if (this->aad.SetTo(aad))
+		{
+			GhashUpdate(blk + this->blockSize, aad, this->aadSize);
+		}
 		while (inSize > 0)
 		{
 			UIntOS i = this->blockSize;
@@ -247,6 +269,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 			if (inSize >= this->blockSize)
 			{
 				MemXOR(outBuff.Ptr(), inBuff.Ptr(), outBuff.Ptr(), this->blockSize);
+				GhashUpdate(blk + this->blockSize, outBuff, this->blockSize);
 				inBuff += this->blockSize;
 				outBuff += this->blockSize;
 				inSize = inSize - this->blockSize;
@@ -255,12 +278,19 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 			else
 			{
 				MemXOR(outBuff.Ptr(), inBuff.Ptr(), outBuff.Ptr(), inSize);
+				GhashUpdate(blk + this->blockSize, outBuff, inSize);
 				outSize += inSize;
+				outBuff += inSize;
 				break;
 			}
 		}
+		WriteMUInt64(&blk[0], (UInt64)this->aadSize * 8);
+		WriteMUInt64(&blk[8], (UInt64)outSize * 8);
+		GhashUpdateBlock(blk + this->blockSize, blk);
+		MemXOR(outBuff.Ptr(), &blk[this->blockSize], outBuff.Ptr(), 16);
 		MemFreeArr(blk);
-		return outSize;
+		return outSize + 16;
+	}
 	default:
 		return 0;
 	}
@@ -296,7 +326,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UI
 		if (inBuff != outBuff)
 		{
 			blk = MemAllocArr(UInt8, this->blockSize);
-			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
+			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
 			while (inSize >= this->blockSize)
 			{
 				DecryptBlock(inBuff, outBuff);
@@ -313,7 +343,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UI
 		{
 			blk = MemAllocArr(UInt8, this->blockSize);
 			blk2 = MemAllocArr(UInt8, this->blockSize);
-			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
+			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
 			while (inSize >= this->blockSize)
 			{
 				MemCopyNO(blk2.Ptr(), inBuff.Ptr(), this->blockSize);
@@ -342,7 +372,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UI
 		if (inBuff != outBuff)
 		{
 			blk = MemAllocArr(UInt8, this->blockSize);
-			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
+			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
 			while (inSize >= this->blockSize)
 			{
 				DecryptBlock(inBuff, outBuff);
@@ -359,7 +389,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UI
 		{
 			blk = MemAllocArr(UInt8, this->blockSize);
 			blk2 = MemAllocArr(UInt8, this->blockSize);
-			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
+			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
 			while (inSize >= this->blockSize)
 			{
 				MemCopyNO(blk2.Ptr(), inBuff.Ptr(), this->blockSize);
@@ -387,7 +417,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UI
 		{
 			blk = MemAllocArr(UInt8, this->blockSize);
 			outSize = 0;
-			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
+			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
 			while (inSize > 0)
 			{
 				EncryptBlock(blk, outBuff);
@@ -415,7 +445,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UI
 			blk = MemAllocArr(UInt8, this->blockSize);
 			blk2 = MemAllocArr(UInt8, this->blockSize);
 			outSize = 0;
-			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
+			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
 			while (inSize > 0)
 			{
 				MemCopyNO(blk2.Ptr(), inBuff.Ptr(), this->blockSize);
@@ -448,7 +478,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UI
 		{
 			blk = MemAllocArr(UInt8, this->blockSize);
 			outSize = 0;
-			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
+			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
 			while (inSize > 0)
 			{
 				EncryptBlock(blk, outBuff);
@@ -477,7 +507,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UI
 			blk = MemAllocArr(UInt8, this->blockSize);
 			blk2 = MemAllocArr(UInt8, this->blockSize);
 			outSize = 0;
-			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
+			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
 			while (inSize > 0)
 			{
 				MemCopyNO(blk2.Ptr(), inBuff.Ptr(), this->blockSize);
@@ -508,7 +538,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UI
 		{
 			blk = MemAllocArr(UInt8, this->blockSize);
 			outSize = 0;
-			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
+			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
 			while (inSize > 0)
 			{
 				EncryptBlock(blk, outBuff);
@@ -541,7 +571,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UI
 			blk = MemAllocArr(UInt8, this->blockSize);
 			blk2 = MemAllocArr(UInt8, this->blockSize);
 			outSize = 0;
-			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
+			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
 			while (inSize > 0)
 			{
 				MemCopyNO(blk2.Ptr(), inBuff.Ptr(), this->blockSize);
@@ -578,7 +608,9 @@ UIntOS Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UI
 		{
 			blk = MemAllocArr(UInt8, this->blockSize);
 			outSize = 0;
-			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
+			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
+			MemClear(blk.Ptr() + this->ivSize, this->blockSize - this->ivSize);
+			blk[this->blockSize - 1] = 1;
 			while (inSize > 0)
 			{
 				UIntOS i = this->blockSize;
@@ -611,7 +643,9 @@ UIntOS Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UI
 			blk = MemAllocArr(UInt8, this->blockSize);
 			blk2 = MemAllocArr(UInt8, this->blockSize);
 			outSize = 0;
-			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->blockSize);
+			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
+			MemClear(blk.Ptr() + this->ivSize, this->blockSize - this->ivSize);
+			blk[this->blockSize - 1] = 1;
 			while (inSize > 0)
 			{
 				MemCopyNO(blk2.Ptr(), inBuff.Ptr(), this->blockSize);
@@ -657,19 +691,111 @@ UIntOS Crypto::Encrypt::BlockCipher::GetDecBlockSize() const
 	return this->blockSize;
 }
 
+UIntOS Crypto::Encrypt::BlockCipher::GetIVSize() const
+{
+	return this->ivSize;
+}
+
 void Crypto::Encrypt::BlockCipher::SetChainMode(ChainMode cm)
 {
 	this->cm = cm;
+	if (this->cm == ChainMode::GCM)
+	{
+		this->ivSize = 12;
+	}
 }
 
 void Crypto::Encrypt::BlockCipher::SetIV(UnsafeArray<const UInt8> iv)
 {
-	MemCopyNO(this->iv.Ptr(), iv.Ptr(), this->blockSize);
+	MemCopyNO(this->iv.Ptr(), iv.Ptr(), this->ivSize);
 }
 
 void Crypto::Encrypt::BlockCipher::SetPaddingMode(PaddingMode pad)
 {
 	this->pad = pad;
+}
+
+void Crypto::Encrypt::BlockCipher::SetAAD(UnsafeArray<const UInt8> aad, UIntOS aadSize)
+{
+	UnsafeArray<UInt8> blk;
+	if (this->aad.SetTo(blk))
+	{
+		MemFreeArr(blk);
+	}
+	blk = MemAllocArr(UInt8, aadSize);
+	MemCopyNO(blk.Ptr(), aad.Ptr(), aadSize);
+	this->aad = blk;
+	this->aadSize = aadSize;
+}
+
+void Crypto::Encrypt::BlockCipher::GFMult(UnsafeArray<const UInt8> a, UnsafeArray<const UInt8> b, UnsafeArray<UInt8> c)
+{
+    UInt8 v[64];
+    MemClear(c.Ptr(), 16);
+    MemCopyNO(v, b.Ptr(), 16);
+	UIntOS i = 0;
+	UIntOS j = 16 * 8;
+	UIntOS k;
+    while (i < j)
+	{
+        if (a[i / 8] & (0x80 >> (i % 8))) 
+		{
+			k = 0;
+            while (k < 16)
+			{
+				c[k] ^= v[k];
+				k++;
+			}
+        }
+        UInt8 carry = v[k = 15] & 0x01;
+		while (k > 0)
+		{
+            v[k] = (v[k] >> 1) | (v[k - 1] << 7);
+			k--;
+		}
+        v[0] >>= 1;
+        if (carry) v[0] ^= 0xE1; // GCM polynomial reduction
+		i++;
+    }
+}
+
+void Crypto::Encrypt::BlockCipher::GhashUpdateBlock(UnsafeArray<UInt8> gcmBlk, UnsafeArray<const UInt8> inBuff)
+{
+	UIntOS i = 0;
+	while (i < 16)
+	{
+		gcmBlk[i] ^= inBuff[i];
+		i++;
+	}
+	UInt8 nextHash[16];
+	GFMult(&gcmBlk[0], &gcmBlk[16], nextHash);
+	MemCopyNO(&gcmBlk[0], nextHash, 16);
+}
+
+void Crypto::Encrypt::BlockCipher::GhashUpdateBlockPadding(UnsafeArray<UInt8> gcmBlk, UnsafeArray<const UInt8> inBuff, UIntOS inSize)
+{
+	UInt8 tmpBuff[64];
+	MemCopyNO(tmpBuff, inBuff.Ptr(), inSize);
+	MemClear(&tmpBuff[inSize], 16 - inSize);
+	GhashUpdateBlock(gcmBlk, tmpBuff);
+}
+
+void Crypto::Encrypt::BlockCipher::GhashUpdate(UnsafeArray<UInt8> gcmBlk, UnsafeArray<const UInt8> inBuff, UIntOS inSize)
+{
+	UIntOS i = 0;
+	while (i < inSize)
+	{
+		if (inSize - i >= 16)
+		{
+			GhashUpdateBlock(gcmBlk, &inBuff[i]);
+			i += 16;
+		}
+		else
+		{
+			GhashUpdateBlockPadding(gcmBlk, &inBuff[i], inSize - i);
+			break;
+		}
+	}
 }
 
 Text::CStringNN Crypto::Encrypt::ChainModeGetName(ChainMode cm)

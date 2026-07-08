@@ -5,10 +5,9 @@
 
 //#define VERBOSE
 
-Crypto::Encrypt::AES128GCM::AES128GCM(UnsafeArray<const UInt8> key, UnsafeArray<const UInt8> iv)
+Crypto::Encrypt::AES128GCM::AES128GCM(UnsafeArray<const UInt8> key) : BlockCipher(16, 12)
 {
 	MemCopyNO(this->key, key.Ptr(), 16);
-	MemCopyNO(this->iv, iv.Ptr(), 12);
 }
 
 Crypto::Encrypt::AES128GCM::~AES128GCM()
@@ -76,7 +75,7 @@ UIntOS Crypto::Encrypt::AES128GCM::Encrypt(UnsafeArray<const UInt8> inBuff, UInt
 	BCRYPT_AUTHENTICATED_CIPHER_MODE_INFO cipherInfo;
 	cipherInfo.dwInfoVersion = 1;
 	cipherInfo.cbSize = sizeof(cipherInfo);
-	cipherInfo.pbNonce = this->iv;
+	cipherInfo.pbNonce = this->iv.Ptr();
 	cipherInfo.cbNonce = 12;
 	cipherInfo.pbAuthData = 0;
 	cipherInfo.cbAuthData = 0;
@@ -168,7 +167,7 @@ UIntOS Crypto::Encrypt::AES128GCM::Decrypt(UnsafeArray<const UInt8> inBuff, UInt
 	BCRYPT_AUTHENTICATED_CIPHER_MODE_INFO cipherInfo;
 	cipherInfo.dwInfoVersion = 1;
 	cipherInfo.cbSize = sizeof(cipherInfo);
-	cipherInfo.pbNonce = this->iv;
+	cipherInfo.pbNonce = this->iv.Ptr();
 	cipherInfo.cbNonce = 12;
 	cipherInfo.pbAuthData = 0;
 	cipherInfo.cbAuthData = 0;
@@ -200,12 +199,12 @@ UIntOS Crypto::Encrypt::AES128GCM::Decrypt(UnsafeArray<const UInt8> inBuff, UInt
 	return cbData;
 }
 
-UIntOS Crypto::Encrypt::AES128GCM::GetEncBlockSize() const
+UIntOS Crypto::Encrypt::AES128GCM::EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
 {
 	return 16;
 }
 
-UIntOS Crypto::Encrypt::AES128GCM::GetDecBlockSize() const
+UIntOS Crypto::Encrypt::AES128GCM::DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
 {
 	return 16;
 }

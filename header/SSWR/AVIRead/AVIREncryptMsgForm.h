@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRENCRYPTMSGFORM
 #define _SM_SSWR_AVIREAD_AVIRENCRYPTMSGFORM
-#include "Crypto/Encrypt/Encryption.h"
+#include "Crypto/Encrypt/BlockCipher.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Text/TextBinEnc/TextBinEnc.h"
 #include "UI/GUIButton.h"
@@ -40,9 +40,9 @@ namespace SSWR
 			NN<UI::GUILabel> lblOutputMsg;
 			NN<UI::GUITextBox> txtOutputMsg;
 
-			Optional<Crypto::Encrypt::Encryption> InitCrypto();
+			Optional<Crypto::Encrypt::BlockCipher> InitCrypto();
 			UnsafeArrayOpt<UInt8> InitInput(UIntOS blockSize, OutParam<UIntOS> dataSize);
-			UnsafeArrayOpt<UInt8> InitIV(NN<Crypto::Encrypt::Encryption> crypto, UnsafeArray<UInt8> dataBuff, InOutParam<UIntOS> buffSize, UIntOS blockSize, Bool enc);
+			UnsafeArrayOpt<UInt8> InitIV(NN<Crypto::Encrypt::BlockCipher> crypto, UnsafeArray<UInt8> dataBuff, InOutParam<UIntOS> buffSize, UIntOS ivSize, Bool enc);
 			void ShowOutput(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 			static void __stdcall OnEncryptClicked(AnyType userObj);
 			static void __stdcall OnDecryptClicked(AnyType userObj);

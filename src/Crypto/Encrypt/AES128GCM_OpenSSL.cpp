@@ -4,10 +4,9 @@
 
 //#define VERBOSE
 
-Crypto::Encrypt::AES128GCM::AES128GCM(UnsafeArray<const UInt8> key, UnsafeArray<const UInt8> iv)
+Crypto::Encrypt::AES128GCM::AES128GCM(UnsafeArray<const UInt8> key) : BlockCipher(16, 12)
 {
 	MemCopyNO(this->key, key.Ptr(), 16);
-	MemCopyNO(this->iv, iv.Ptr(), 12);
 }
 
 Crypto::Encrypt::AES128GCM::~AES128GCM()
@@ -19,12 +18,16 @@ UIntOS Crypto::Encrypt::AES128GCM::Encrypt(UnsafeArray<const UInt8> inBuff, UInt
 {
 	int ret;
 	EVP_CIPHER_CTX *ectx = EVP_CIPHER_CTX_new();
-	ret = EVP_EncryptInit(ectx, EVP_aes_128_gcm(), this->key, this->iv);
+	ret = EVP_EncryptInit(ectx, EVP_aes_128_gcm(), this->key, this->iv.Ptr());
 #if defined(VERBOSE)
 	printf("EVP_EncryptInit: ret = %d\r\n", ret);
 #endif
 	if (ret != 1)
 		return 0;
+	ret = EVP_CIPHER_CTX_set_padding(ectx, this->pad == PaddingMode::None ? 0 : 1);
+#if defined(VERBOSE)
+	printf("EVP_CIPHER_CTX_set_padding: ret = %d\r\n", ret);
+#endif
 	int outSize = 0;
 	ret = EVP_EncryptUpdate(ectx, outBuff.Ptr(), &outSize, inBuff.Ptr(), (int)inSize);
 #if defined(VERBOSE)
@@ -47,12 +50,16 @@ UIntOS Crypto::Encrypt::AES128GCM::Decrypt(UnsafeArray<const UInt8> inBuff, UInt
 {
 	int ret;
 	EVP_CIPHER_CTX *ectx = EVP_CIPHER_CTX_new();
-	ret = EVP_DecryptInit(ectx, EVP_aes_128_gcm(), this->key, this->iv);
+	ret = EVP_DecryptInit(ectx, EVP_aes_128_gcm(), this->key, this->iv.Ptr());
 #if defined(VERBOSE)
 	printf("EVP_DecryptInit: ret = %d\r\n", ret);
 #endif
 	if (ret != 1)
 		return 0;
+	ret = EVP_CIPHER_CTX_set_padding(ectx, this->pad == PaddingMode::None ? 0 : 1);
+#if defined(VERBOSE)
+	printf("EVP_CIPHER_CTX_set_padding: ret = %d\r\n", ret);
+#endif
 	int outSize = 0;
 	ret = EVP_DecryptUpdate(ectx, outBuff.Ptr(), &outSize, inBuff.Ptr(), (int)inSize - 16);
 #if defined(VERBOSE)
@@ -71,12 +78,12 @@ UIntOS Crypto::Encrypt::AES128GCM::Decrypt(UnsafeArray<const UInt8> inBuff, UInt
 	return (UIntOS)(outSize + finalSize);
 }
 
-UIntOS Crypto::Encrypt::AES128GCM::GetEncBlockSize() const
+UIntOS Crypto::Encrypt::AES128GCM::EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
 {
 	return 16;
 }
 
-UIntOS Crypto::Encrypt::AES128GCM::GetDecBlockSize() const
+UIntOS Crypto::Encrypt::AES128GCM::DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
 {
 	return 16;
 }

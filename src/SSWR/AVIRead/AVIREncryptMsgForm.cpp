@@ -1,7 +1,9 @@
 #include "Stdafx.h"
 #include "Crypto/Encrypt/AES128.h"
+#include "Crypto/Encrypt/AES128GCM.h"
 #include "Crypto/Encrypt/AES192.h"
 #include "Crypto/Encrypt/AES256.h"
+#include "Crypto/Encrypt/AES256GCM.h"
 #include "Data/RandomBytesGenerator.h"
 #include "SSWR/AVIRead/AVIREncryptMsgForm.h"
 #include "Text/TextBinEnc/Base64Enc.h"
@@ -9,7 +11,7 @@
 #include "Text/TextBinEnc/UTF8TextBinEnc.h"
 #include "UI/GUIComboBoxUtil.h"
 
-Optional<Crypto::Encrypt::Encryption> SSWR::AVIRead::AVIREncryptMsgForm::InitCrypto()
+Optional<Crypto::Encrypt::BlockCipher> SSWR::AVIRead::AVIREncryptMsgForm::InitCrypto()
 {
 	UIntOS keySize;
 	UIntOS algType = this->cboAlgorithm->GetSelectedIndex();
@@ -53,23 +55,44 @@ Optional<Crypto::Encrypt::Encryption> SSWR::AVIRead::AVIREncryptMsgForm::InitCry
 	MemClear(key, keySize);
 	enc->DecodeBin(sb.ToCString(), key);
 	enc.Delete();
+	Crypto::Encrypt::ChainMode chainMode = (Crypto::Encrypt::ChainMode)this->cboChainMode->GetSelectedItem().GetIntOS();
 	NN<Crypto::Encrypt::BlockCipher> crypto;
-	switch (algType)
+	if (chainMode == Crypto::Encrypt::ChainMode::GCM)
 	{
-	case 0:
-		NEW_CLASSNN(crypto, Crypto::Encrypt::AES128(key));
-		break;
-	case 1:
-		NEW_CLASSNN(crypto, Crypto::Encrypt::AES192(key));
-		break;
-	case 2:
-		NEW_CLASSNN(crypto, Crypto::Encrypt::AES256(key));
-		break;
-	default:
-		return nullptr;
+		switch (algType)
+		{
+		case 0:
+			NEW_CLASSNN(crypto, Crypto::Encrypt::AES128GCM(key));
+			break;
+		case 2:
+			NEW_CLASSNN(crypto, Crypto::Encrypt::AES256GCM(key));
+			break;
+		case 1:
+			return nullptr;
+		default:
+			return nullptr;
+		}
+		return crypto;
 	}
-	crypto->SetChainMode((Crypto::Encrypt::ChainMode)this->cboChainMode->GetSelectedItem().GetIntOS());
-	return crypto;
+	else
+	{
+		switch (algType)
+		{
+		case 0:
+			NEW_CLASSNN(crypto, Crypto::Encrypt::AES128(key));
+			break;
+		case 1:
+			NEW_CLASSNN(crypto, Crypto::Encrypt::AES192(key));
+			break;
+		case 2:
+			NEW_CLASSNN(crypto, Crypto::Encrypt::AES256(key));
+			break;
+		default:
+			return nullptr;
+		}
+		crypto->SetChainMode((Crypto::Encrypt::ChainMode)this->cboChainMode->GetSelectedItem().GetIntOS());
+		return crypto;
+	}
 }
 
 UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptMsgForm::InitInput(UIntOS blockSize, OutParam<UIntOS> dataSize)
@@ -79,6 +102,7 @@ UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptMsgForm::InitInput(UIntOS blockS
 	if (sb.GetLength() == 0)
 	{
 		this->ui->ShowMsgOK(CSTR("Input Msg is empty"), CSTR("Encrypt Message"), this);
+		return nullptr;
 	}
 	NN<Text::TextBinEnc::TextBinEnc> enc = GetTextEncType(this->cboInputType);
 	UIntOS buffSize = enc->CalcBinSize(sb.ToCString());
@@ -97,7 +121,7 @@ UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptMsgForm::InitInput(UIntOS blockS
 	return input;
 }
 
-UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptMsgForm::InitIV(NN<Crypto::Encrypt::Encryption> crypto, UnsafeArray<UInt8> dataBuff, InOutParam<UIntOS> buffSize, UIntOS blockSize, Bool enc)
+UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptMsgForm::InitIV(NN<Crypto::Encrypt::BlockCipher> crypto, UnsafeArray<UInt8> dataBuff, InOutParam<UIntOS> buffSize, UIntOS ivSize, Bool enc)
 {
 	UInt8 tmpbuff[256];
 	UIntOS ivType = this->cboIV->GetSelectedIndex();
@@ -109,12 +133,12 @@ UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptMsgForm::InitIV(NN<Crypto::Encry
 		{
 			Text::StringBuilderUTF8 sb;
 			this->txtIV->GetText(sb);
-			if (sb.GetLength() > sizeof(tmpbuff) || sb.Hex2Bytes(tmpbuff) != blockSize)
+			if (sb.GetLength() > sizeof(tmpbuff) || sb.Hex2Bytes(tmpbuff) != ivSize)
 			{
 				this->ui->ShowMsgOK(CSTR("IV input length not valid"), CSTR("Encrypt Message"), this);
 				return nullptr;
 			}
-			NN<Crypto::Encrypt::BlockCipher>::ConvertFrom(crypto)->SetIV(tmpbuff);
+			crypto->SetIV(tmpbuff);
 			return dataBuff;
 		}
 	case 2:
@@ -127,33 +151,33 @@ UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptMsgForm::InitIV(NN<Crypto::Encry
 				return nullptr;
 			}
 			Text::TextBinEnc::Base64Enc b64;
-			if (b64.DecodeBin(sb.ToCString(), tmpbuff) != blockSize)
+			if (b64.DecodeBin(sb.ToCString(), tmpbuff) != ivSize)
 			{
 				this->ui->ShowMsgOK(CSTR("IV input length not valid"), CSTR("Encrypt Message"), this);
 				return nullptr;
 			}
-			NN<Crypto::Encrypt::BlockCipher>::ConvertFrom(crypto)->SetIV(tmpbuff);
+			crypto->SetIV(tmpbuff);
 			return dataBuff;
 		}
 	case 3:
 		if (enc)
 		{
 			Data::RandomBytesGenerator byteGen;
-			byteGen.NextBytes(dataBuff, blockSize);
-			NN<Crypto::Encrypt::BlockCipher>::ConvertFrom(crypto)->SetIV(dataBuff);
-			buffSize.Set(buffSize.Get() + blockSize);
-			return dataBuff + blockSize;
+			byteGen.NextBytes(dataBuff, ivSize);
+			crypto->SetIV(dataBuff);
+			buffSize.Set(buffSize.Get() + ivSize);
+			return dataBuff + ivSize;
 		}
 		else
 		{
-			if (buffSize.Get() < blockSize)
+			if (buffSize.Get() < ivSize)
 			{
 				this->ui->ShowMsgOK(CSTR("Data input length too short"), CSTR("Encrypt Message"), this);
 				return nullptr;
 			}
-			NN<Crypto::Encrypt::BlockCipher>::ConvertFrom(crypto)->SetIV(dataBuff);
-			buffSize.Set(buffSize.Get() - blockSize);
-			return dataBuff + blockSize;
+			crypto->SetIV(dataBuff);
+			buffSize.Set(buffSize.Get() - ivSize);
+			return dataBuff + ivSize;
 		}
 	}
 	return nullptr;
@@ -171,7 +195,7 @@ void SSWR::AVIRead::AVIREncryptMsgForm::ShowOutput(UnsafeArray<const UInt8> buff
 void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnEncryptClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIREncryptMsgForm> me = userObj.GetNN<SSWR::AVIRead::AVIREncryptMsgForm>();
-	NN<Crypto::Encrypt::Encryption> crypto;
+	NN<Crypto::Encrypt::BlockCipher> crypto;
 	if (me->InitCrypto().SetTo(crypto))
 	{
 		UIntOS buffSize;
@@ -179,7 +203,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnEncryptClicked(AnyType userO
 		if (me->InitInput(crypto->GetEncBlockSize(), buffSize).SetTo(buff))
 		{
 			UnsafeArray<UInt8> dataBuff;
-			if (me->InitIV(crypto, buff, buffSize, crypto->GetEncBlockSize(), true).SetTo(dataBuff))
+			if (me->InitIV(crypto, buff, buffSize, crypto->GetIVSize(), true).SetTo(dataBuff))
 			{
 				buffSize = crypto->Encrypt(dataBuff, buffSize, dataBuff);
 				me->ShowOutput(buff, buffSize + (UIntOS)(dataBuff - buff));
@@ -193,7 +217,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnEncryptClicked(AnyType userO
 void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnDecryptClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIREncryptMsgForm> me = userObj.GetNN<SSWR::AVIRead::AVIREncryptMsgForm>();
-	NN<Crypto::Encrypt::Encryption> crypto;
+	NN<Crypto::Encrypt::BlockCipher> crypto;
 	if (me->InitCrypto().SetTo(crypto))
 	{
 		UIntOS buffSize;
@@ -201,14 +225,26 @@ void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnDecryptClicked(AnyType userO
 		if (me->InitInput(crypto->GetDecBlockSize(), buffSize).SetTo(buff))
 		{
 			UnsafeArray<UInt8> dataBuff;
-			if (me->InitIV(crypto, buff, buffSize, crypto->GetDecBlockSize(), false).SetTo(dataBuff))
+			if (me->InitIV(crypto, buff, buffSize, crypto->GetIVSize(), false).SetTo(dataBuff))
 			{
 				buffSize = crypto->Decrypt(dataBuff, buffSize, dataBuff);
 				me->ShowOutput(dataBuff, buffSize);
+				if (buffSize == 0)
+				{
+					me->ui->ShowMsgOK(CSTR("Error in decrypting data"), CSTR("Encrypt Message"), me);
+				}
 			}
 			MemFreeArr(buff);
 		}
+		else
+		{
+			me->ui->ShowMsgOK(CSTR("Error in initializing Input"), CSTR("Encrypt Message"), me);
+		}
 		crypto.Delete();
+	}
+	else
+	{
+		me->ui->ShowMsgOK(CSTR("Error in initializing crypto"), CSTR("Encrypt Message"), me);
 	}
 }
 
@@ -283,6 +319,7 @@ SSWR::AVIRead::AVIREncryptMsgForm::AVIREncryptMsgForm(Optional<UI::GUIClientCont
 	CBOADDENUM(this->cboChainMode, Crypto::Encrypt::ChainMode, PCBC);
 	CBOADDENUM(this->cboChainMode, Crypto::Encrypt::ChainMode, CFB);
 	CBOADDENUM(this->cboChainMode, Crypto::Encrypt::ChainMode, OFB);
+	CBOADDENUM(this->cboChainMode, Crypto::Encrypt::ChainMode, GCM);
 	this->cboChainMode->SetSelectedIndex(0);
 	this->lblInputType = ui->NewLabel(*this, CSTR("Input Type"));
 	this->lblInputType->SetRect(4, 124, 100, 23, false);

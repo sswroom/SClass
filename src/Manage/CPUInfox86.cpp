@@ -39,9 +39,9 @@ struct Manage::CPUInfo::ClassData
 Manage::CPUInfo::CPUInfo()
 {
 	Int32 cpuInfo[4];
-	NN<IO::Library> winRing0;
 
 #if defined(WIN32) || defined(_WIN64)
+	NN<IO::Library> winRing0;
 	NN<ClassData> info = MemAllocNN(ClassData);
 	info->winRing0 = nullptr;
 	info->InitializeOls = 0;

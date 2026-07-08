@@ -4,10 +4,9 @@
 
 //#define VERBOSE
 
-Crypto::Encrypt::AES256GCM::AES256GCM(UnsafeArray<const UInt8> key, UnsafeArray<const UInt8> iv)
+Crypto::Encrypt::AES256GCM::AES256GCM(UnsafeArray<const UInt8> key) : BlockCipher(32, 12)
 {
 	MemCopyNO(this->key, key.Ptr(), 32);
-	MemCopyNO(this->iv, iv.Ptr(), 12);
 }
 
 Crypto::Encrypt::AES256GCM::~AES256GCM()
@@ -19,7 +18,7 @@ UIntOS Crypto::Encrypt::AES256GCM::Encrypt(UnsafeArray<const UInt8> inBuff, UInt
 {
 	int ret;
 	EVP_CIPHER_CTX *ectx = EVP_CIPHER_CTX_new();
-	ret = EVP_EncryptInit(ectx, EVP_aes_256_gcm(), this->key, this->iv);
+	ret = EVP_EncryptInit(ectx, EVP_aes_256_gcm(), this->key, this->iv.Ptr());
 #if defined(VERBOSE)
 	printf("EVP_EncryptInit: ret = %d\r\n", ret);
 #endif
@@ -47,7 +46,7 @@ UIntOS Crypto::Encrypt::AES256GCM::Decrypt(UnsafeArray<const UInt8> inBuff, UInt
 {
 	int ret;
 	EVP_CIPHER_CTX *ectx = EVP_CIPHER_CTX_new();
-	ret = EVP_DecryptInit(ectx, EVP_aes_256_gcm(), this->key, this->iv);
+	ret = EVP_DecryptInit(ectx, EVP_aes_256_gcm(), this->key, this->iv.Ptr());
 #if defined(VERBOSE)
 	printf("EVP_DecryptInit: ret = %d\r\n", ret);
 #endif
@@ -71,17 +70,12 @@ UIntOS Crypto::Encrypt::AES256GCM::Decrypt(UnsafeArray<const UInt8> inBuff, UInt
 	return (UIntOS)(outSize + finalSize);
 }
 
-UIntOS Crypto::Encrypt::AES256GCM::GetEncBlockSize() const
+UIntOS Crypto::Encrypt::AES256GCM::EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
 {
 	return 16;
 }
 
-UIntOS Crypto::Encrypt::AES256GCM::GetDecBlockSize() const
+UIntOS Crypto::Encrypt::AES256GCM::DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
 {
 	return 16;
-}
-
-void Crypto::Encrypt::AES256GCM::SetIV(UnsafeArray<const UInt8> iv)
-{
-	MemCopyNO(this->iv, iv.Ptr(), 12);
 }
