@@ -249,6 +249,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 	else
 	{
 		UnsafeArray<UInt8> initOutBuff = outBuff;
+		UInt8 encBlk[16];
 		UInt8 gcmBuff[64];
 		blk = gcmBuff + 48;
 		outSize = 0;
@@ -270,13 +271,13 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 				if (++(blk[i]) != 0)
 					break;
 			}
-			EncryptBlock(blk, outBuff);
+			EncryptBlock(blk, encBlk);
 
 			blkCnt++;
 			if (inSize >= 16)
 			{
-				WriteNUInt64(&outBuff[0], ReadNUInt64(&outBuff[0]) ^ ReadNUInt64(&inBuff[0]));
-				WriteNUInt64(&outBuff[8], ReadNUInt64(&outBuff[8]) ^ ReadNUInt64(&inBuff[8]));
+				WriteNUInt64(&outBuff[0], ReadNUInt64(&encBlk[0]) ^ ReadNUInt64(&inBuff[0]));
+				WriteNUInt64(&outBuff[8], ReadNUInt64(&encBlk[8]) ^ ReadNUInt64(&inBuff[8]));
 				//MemXOR(outBuff.Ptr(), inBuff.Ptr(), outBuff.Ptr(), 16);
 				inBuff += 16;
 				outBuff += 16;
@@ -285,7 +286,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 			}
 			else
 			{
-				MemXOR(outBuff.Ptr(), inBuff.Ptr(), outBuff.Ptr(), inSize);
+				MemXOR(encBlk, inBuff.Ptr(), outBuff.Ptr(), inSize);
 				outSize += inSize;
 				outBuff += inSize;
 				break;
@@ -613,79 +614,45 @@ UIntOS Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UI
 		}
 		return outSize;
 	case ChainMode::GCM:
-		inSize -= this->blockSize;
-		if (inBuff != outBuff)
-		{
-			blk = MemAllocArr(UInt8, this->blockSize);
-			outSize = 0;
-			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
-			MemClear(blk.Ptr() + this->ivSize, this->blockSize - this->ivSize);
-			blk[this->blockSize - 1] = 1;
-			while (inSize > 0)
-			{
-				UIntOS i = this->blockSize;
-				while (i-- > 12)
-				{
-					if (++(blk[i]) != 0)
-						break;
-				}
-				EncryptBlock(blk, outBuff);
-				blkCnt++;
-				if (inSize >= this->blockSize)
-				{
-					MemXOR(outBuff.Ptr(), inBuff.Ptr(), outBuff.Ptr(), this->blockSize);
-					inBuff += this->blockSize;
-					outBuff += this->blockSize;
-					inSize = inSize - this->blockSize;
-					outSize += this->blockSize;
-				}
-				else
-				{
-					MemXOR(outBuff.Ptr(), inBuff.Ptr(), outBuff.Ptr(), inSize);
-					outSize += inSize;
-					break;
-				}
-			}
-			MemFreeArr(blk);
-		}
+		if (this->blockSize != 16)
+			return 0;
 		else
 		{
-			blk = MemAllocArr(UInt8, this->blockSize);
-			blk2 = MemAllocArr(UInt8, this->blockSize);
+			inSize -= 16;
+			UInt8 blk[16];
+			UInt8 encBlk[16];
 			outSize = 0;
-			MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
-			MemClear(blk.Ptr() + this->ivSize, this->blockSize - this->ivSize);
-			blk[this->blockSize - 1] = 1;
+			MemCopyNO(blk, this->iv.Ptr(), this->ivSize);
+			MemClear(blk + this->ivSize, 16 - this->ivSize);
+			blk[15] = 1;
 			while (inSize > 0)
 			{
-				MemCopyNO(blk2.Ptr(), inBuff.Ptr(), this->blockSize);
-				UIntOS i = this->blockSize;
+				UIntOS i = 16;
 				while (i-- > 12)
 				{
 					if (++(blk[i]) != 0)
 						break;
 				}
-				EncryptBlock(blk, outBuff);
+				EncryptBlock(blk, encBlk);
 				blkCnt++;
-				if (inSize >= this->blockSize)
+				if (inSize >= 16)
 				{
-					MemXOR(outBuff.Ptr(), blk2.Ptr(), outBuff.Ptr(), this->blockSize);
-					inBuff += this->blockSize;
-					outBuff += this->blockSize;
-					inSize = inSize - this->blockSize;
-					outSize += this->blockSize;
+					WriteNUInt64(&outBuff[0], ReadNUInt64(&encBlk[0]) ^ ReadNUInt64(&inBuff[0]));
+					WriteNUInt64(&outBuff[8], ReadNUInt64(&encBlk[8]) ^ ReadNUInt64(&inBuff[8]));
+					inBuff += 16;
+					outBuff += 16;
+					inSize = inSize - 16;
+					outSize += 16;
 				}
 				else
 				{
-					MemXOR(outBuff.Ptr(), blk2.Ptr(), outBuff.Ptr(), inSize);
+					MemXOR(inBuff.Ptr(), encBlk, outBuff.Ptr(), inSize);
 					outSize += inSize;
 					break;
 				}
 			}
-			MemFreeArr(blk);
-			MemFreeArr(blk2);
+			return outSize;
 		}
-		return outSize;
 	default:
 		return 0;
 	}

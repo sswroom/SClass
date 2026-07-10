@@ -75,7 +75,7 @@ Optional<Crypto::Encrypt::BlockCipher> SSWR::AVIRead::AVIREncryptMsgForm::InitCr
 	return crypto;
 }
 
-UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptMsgForm::InitInput(UIntOS blockSize, OutParam<UIntOS> dataSize)
+UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptMsgForm::InitInput(UIntOS blockSize, UIntOS ivSize, OutParam<UIntOS> dataSize, Bool encrypt)
 {
 	Text::StringBuilderUTF8 sb;
 	this->txtInputMsg->GetText(sb);
@@ -95,10 +95,21 @@ UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptMsgForm::InitInput(UIntOS blockS
 	UIntOS nBlock = (buffSize + blockSize - 1) / blockSize;
 	dataSize.Set(buffSize);
 	buffSize = nBlock * blockSize;
-	UnsafeArray<UInt8> input = MemAllocArr(UInt8, buffSize);
-	enc->DecodeBin(sb.ToCString(), input);
-	enc.Delete();
-	return input;
+	UIntOS ivType = this->cboIV->GetSelectedIndex();
+	if (encrypt && ivType == 3)
+	{
+		UnsafeArray<UInt8> input = MemAllocArr(UInt8, buffSize + ivSize + blockSize);
+		enc->DecodeBin(sb.ToCString(), input + ivSize);
+		enc.Delete();
+		return input;
+	}
+	else
+	{
+		UnsafeArray<UInt8> input = MemAllocArr(UInt8, buffSize + blockSize);
+		enc->DecodeBin(sb.ToCString(), input);
+		enc.Delete();
+		return input;
+	}
 }
 
 UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptMsgForm::InitIV(NN<Crypto::Encrypt::BlockCipher> crypto, UnsafeArray<UInt8> dataBuff, InOutParam<UIntOS> buffSize, UIntOS ivSize, Bool enc)
@@ -145,7 +156,7 @@ UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptMsgForm::InitIV(NN<Crypto::Encry
 			Data::RandomBytesGenerator byteGen;
 			byteGen.NextBytes(dataBuff, ivSize);
 			crypto->SetIV(dataBuff);
-			buffSize.Set(buffSize.Get() + ivSize);
+			buffSize.Set(buffSize.Get());
 			return dataBuff + ivSize;
 		}
 		else
@@ -180,7 +191,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnEncryptClicked(AnyType userO
 	{
 		UIntOS buffSize;
 		UnsafeArray<UInt8> buff;
-		if (me->InitInput(crypto->GetEncBlockSize(), buffSize).SetTo(buff))
+		if (me->InitInput(crypto->GetEncBlockSize(), crypto->GetIVSize(), buffSize, true).SetTo(buff))
 		{
 			UnsafeArray<UInt8> dataBuff;
 			if (me->InitIV(crypto, buff, buffSize, crypto->GetIVSize(), true).SetTo(dataBuff))
@@ -202,7 +213,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnDecryptClicked(AnyType userO
 	{
 		UIntOS buffSize;
 		UnsafeArray<UInt8> buff;
-		if (me->InitInput(crypto->GetDecBlockSize(), buffSize).SetTo(buff))
+		if (me->InitInput(crypto->GetDecBlockSize(), crypto->GetIVSize(), buffSize, false).SetTo(buff))
 		{
 			UnsafeArray<UInt8> dataBuff;
 			if (me->InitIV(crypto, buff, buffSize, crypto->GetIVSize(), false).SetTo(dataBuff))

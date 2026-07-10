@@ -41,7 +41,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtOutputMsg;
 
 			Optional<Crypto::Encrypt::BlockCipher> InitCrypto();
-			UnsafeArrayOpt<UInt8> InitInput(UIntOS blockSize, OutParam<UIntOS> dataSize);
+			UnsafeArrayOpt<UInt8> InitInput(UIntOS blockSize, UIntOS ivSize, OutParam<UIntOS> dataSize, Bool encrypt);
 			UnsafeArrayOpt<UInt8> InitIV(NN<Crypto::Encrypt::BlockCipher> crypto, UnsafeArray<UInt8> dataBuff, InOutParam<UIntOS> buffSize, UIntOS ivSize, Bool enc);
 			void ShowOutput(UnsafeArray<const UInt8> buff, UIntOS buffSize);
 			static void __stdcall OnEncryptClicked(AnyType userObj);
