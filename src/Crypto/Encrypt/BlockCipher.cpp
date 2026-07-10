@@ -244,17 +244,19 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 		return outSize;
 	case ChainMode::GCM:
 	{
-		blk = MemAllocArr(UInt8, this->blockSize * 4);
+		UnsafeArray<UInt8> initOutBuff = outBuff;
+		UnsafeArray<UInt8> gcmBuff = MemAllocArr(UInt8, this->blockSize * 3 + 16);
+		blk = gcmBuff + 16 + this->blockSize * 2;
 		outSize = 0;
+		MemClear(gcmBuff.Ptr(), this->blockSize * 3 + 16);
+		EncryptBlock(blk, gcmBuff + 16);
 		MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
-		MemClear(blk.Ptr() + this->ivSize, this->blockSize + 32 - this->ivSize);
 		blk[this->blockSize - 1] = 1;
-		EncryptBlock(blk + this->blockSize, blk + this->blockSize * 2);
-		EncryptBlock(blk, &outBuff[inSize]);
+		EncryptBlock(blk, gcmBuff + 16 + this->blockSize);
 		UnsafeArray<UInt8> aad;
 		if (this->aad.SetTo(aad))
 		{
-			GhashUpdate(blk + this->blockSize, aad, this->aadSize);
+			GhashUpdate(gcmBuff, aad, this->aadSize);
 		}
 		while (inSize > 0)
 		{
@@ -265,11 +267,11 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 					break;
 			}
 			EncryptBlock(blk, outBuff);
+
 			blkCnt++;
 			if (inSize >= this->blockSize)
 			{
 				MemXOR(outBuff.Ptr(), inBuff.Ptr(), outBuff.Ptr(), this->blockSize);
-				GhashUpdate(blk + this->blockSize, outBuff, this->blockSize);
 				inBuff += this->blockSize;
 				outBuff += this->blockSize;
 				inSize = inSize - this->blockSize;
@@ -278,17 +280,17 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 			else
 			{
 				MemXOR(outBuff.Ptr(), inBuff.Ptr(), outBuff.Ptr(), inSize);
-				GhashUpdate(blk + this->blockSize, outBuff, inSize);
 				outSize += inSize;
 				outBuff += inSize;
 				break;
 			}
 		}
+		GhashUpdate(gcmBuff, initOutBuff, outSize);
 		WriteMUInt64(&blk[0], (UInt64)this->aadSize * 8);
 		WriteMUInt64(&blk[8], (UInt64)outSize * 8);
-		GhashUpdateBlock(blk + this->blockSize, blk);
-		MemXOR(outBuff.Ptr(), &blk[this->blockSize], outBuff.Ptr(), 16);
-		MemFreeArr(blk);
+		GhashUpdateBlock(gcmBuff, blk);
+		MemXOR(&gcmBuff[16 + this->blockSize], gcmBuff.Ptr(), outBuff.Ptr(), 16);
+		MemFreeArr(gcmBuff);
 		return outSize + 16;
 	}
 	default:

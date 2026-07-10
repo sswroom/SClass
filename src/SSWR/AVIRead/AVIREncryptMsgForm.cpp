@@ -55,44 +55,24 @@ Optional<Crypto::Encrypt::BlockCipher> SSWR::AVIRead::AVIREncryptMsgForm::InitCr
 	MemClear(key, keySize);
 	enc->DecodeBin(sb.ToCString(), key);
 	enc.Delete();
-	Crypto::Encrypt::ChainMode chainMode = (Crypto::Encrypt::ChainMode)this->cboChainMode->GetSelectedItem().GetIntOS();
+	Crypto::Encrypt::ChainMode cm = (Crypto::Encrypt::ChainMode)this->cboChainMode->GetSelectedItem().GetIntOS();
 	NN<Crypto::Encrypt::BlockCipher> crypto;
-	if (chainMode == Crypto::Encrypt::ChainMode::GCM)
+	switch (algType)
 	{
-		switch (algType)
-		{
-		case 0:
-			NEW_CLASSNN(crypto, Crypto::Encrypt::AES128GCM(key));
-			break;
-		case 2:
-			NEW_CLASSNN(crypto, Crypto::Encrypt::AES256GCM(key));
-			break;
-		case 1:
-			return nullptr;
-		default:
-			return nullptr;
-		}
-		return crypto;
+	case 0:
+		NEW_CLASSNN(crypto, Crypto::Encrypt::AES128(key));
+		break;
+	case 1:
+		NEW_CLASSNN(crypto, Crypto::Encrypt::AES192(key));
+		break;
+	case 2:
+		NEW_CLASSNN(crypto, Crypto::Encrypt::AES256(key));
+		break;
+	default:
+		return nullptr;
 	}
-	else
-	{
-		switch (algType)
-		{
-		case 0:
-			NEW_CLASSNN(crypto, Crypto::Encrypt::AES128(key));
-			break;
-		case 1:
-			NEW_CLASSNN(crypto, Crypto::Encrypt::AES192(key));
-			break;
-		case 2:
-			NEW_CLASSNN(crypto, Crypto::Encrypt::AES256(key));
-			break;
-		default:
-			return nullptr;
-		}
-		crypto->SetChainMode((Crypto::Encrypt::ChainMode)this->cboChainMode->GetSelectedItem().GetIntOS());
-		return crypto;
-	}
+	crypto->SetChainMode(cm);
+	return crypto;
 }
 
 UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptMsgForm::InitInput(UIntOS blockSize, OutParam<UIntOS> dataSize)

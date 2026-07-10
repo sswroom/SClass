@@ -109,7 +109,7 @@ void gf_mult(const uint8_t *x, const uint8_t *y, uint8_t *z) {
 void ghash_update(uint8_t *current_hash, const uint8_t *h_key, const uint8_t *buffer, size_t len) {
     size_t blocks = len / 16;
     for (size_t b = 0; b < blocks; b++) {
-        for (int i = 0; i < 16; i++) {
+        for (size_t i = 0; i < 16; i++) {
             current_hash[i] ^= buffer[b * 16 + i];
         }
         uint8_t next_hash[16];
@@ -285,7 +285,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Text::StringBuilderUTF8 sb;
 	sb.AppendHexBuff(Data::ByteArrayR(outBuff, outSize), ' ', Text::LineBreakType::CRLF);
 	printf("AES128.Encrypt: %s\r\n", sb.v.Ptr());
-
+	UInt8 decBuff[128];
+	UIntOS decSize;
+	decSize = aes.Decrypt(outBuff, outSize, decBuff);
+	decBuff[decSize] = 0;
+	printf("AES128.Decrypt: %s\r\n", decBuff);
 
 	aes_gcm_128_encrypt(key, iv, iv, 0, plainText.v.Ptr(), plainText.leng, outBuff, &outBuff[plainText.leng]);
 	sb.ClearStr();
