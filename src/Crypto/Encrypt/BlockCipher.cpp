@@ -3,6 +3,7 @@
 #include "MyMemory.h"
 #include "SIMD.h"
 #include "Crypto/Encrypt/BlockCipher.h"
+#include "Text/StringBuilderUTF8.h"
 
 Crypto::Encrypt::BlockCipher::BlockCipher(UIntOS blockSize) : BlockCipher(blockSize, blockSize)
 {
@@ -299,7 +300,6 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 
 		WriteNUInt64(&outBuff[0], ReadNUInt64(&gcmBuff[0]) ^ ReadNUInt64(&gcmBuff[32]));
 		WriteNUInt64(&outBuff[8], ReadNUInt64(&gcmBuff[8]) ^ ReadNUInt64(&gcmBuff[40]));
-//		MemXOR(&gcmBuff[32], gcmBuff, outBuff.Ptr(), 16);
 		return outSize + 16;
 	}
 	default:
@@ -717,20 +717,25 @@ void Crypto::Encrypt::BlockCipher::GFMult(UnsafeArray<const UInt8> a, UnsafeArra
 	{
         if (a[i / 8] & (0x80 >> (i % 8))) 
 		{
-			k = 0;
-            while (k < 16)
-			{
-				c[k] ^= v[k];
-				k++;
-			}
+			WriteNUInt64(&c[0], ReadNUInt64(&c[0]) ^ ReadNUInt64(&v[0]));
+			WriteNUInt64(&c[8], ReadNUInt64(&c[8]) ^ ReadNUInt64(&v[8]));
         }
         UInt8 carry = v[k = 15] & 0x01;
-		while (k > 0)
-		{
-            v[k] = (v[k] >> 1) | (v[k - 1] << 7);
-			k--;
-		}
-        v[0] >>= 1;
+#if _OSINT_SIZE == 64
+		UInt64 v1 = ReadMUInt64(&v[8]);
+		UInt64 v2 = ReadMUInt64(&v[0]);
+		WriteMUInt64(&v[8], (v1 >> 1) | (v2 << 63));
+		WriteMUInt64(&v[0], (v2 >> 1));
+#else
+		UInt32 v1 = ReadMUInt32(&v[12]);
+		UInt32 v2 = ReadMUInt32(&v[8]);
+		WriteMUInt32(&v[12], (v1 >> 1) | (v2 << 31));
+		v1 = ReadMUInt32(&v[4]);
+		WriteMUInt32(&v[8], (v2 >> 1) | (v1 << 31));
+		v2 = ReadMUInt32(&v[0]);
+		WriteMUInt32(&v[4], (v1 >> 1) | (v2 << 31));
+		WriteMUInt32(&v[0], (v2 >> 1));
+#endif
         if (carry) v[0] ^= 0xE1; // GCM polynomial reduction
 		i++;
     }
@@ -747,7 +752,7 @@ void Crypto::Encrypt::BlockCipher::GhashUpdateBlock(UnsafeArray<UInt8> gcmBlk, U
 
 void Crypto::Encrypt::BlockCipher::GhashUpdateBlockPadding(UnsafeArray<UInt8> gcmBlk, UnsafeArray<const UInt8> inBuff, UIntOS inSize)
 {
-	UInt8 tmpBuff[64];
+	UInt8 tmpBuff[16];
 	MemCopyNO(tmpBuff, inBuff.Ptr(), inSize);
 	MemClear(&tmpBuff[inSize], 16 - inSize);
 	GhashUpdateBlock(gcmBlk, tmpBuff);
