@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MemTool.h"
 #include "MyMemory.h"
+#include "SIMD.h"
 #include "Crypto/Encrypt/BlockCipher.h"
 
 Crypto::Encrypt::BlockCipher::BlockCipher(UIntOS blockSize) : BlockCipher(blockSize, blockSize)
@@ -243,16 +244,19 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 		MemFreeArr(blk);
 		return outSize;
 	case ChainMode::GCM:
+	if (this->blockSize != 16)
+		return 0;
+	else
 	{
 		UnsafeArray<UInt8> initOutBuff = outBuff;
-		UnsafeArray<UInt8> gcmBuff = MemAllocArr(UInt8, this->blockSize * 3 + 16);
-		blk = gcmBuff + 16 + this->blockSize * 2;
+		UInt8 gcmBuff[64];
+		blk = gcmBuff + 48;
 		outSize = 0;
-		MemClear(gcmBuff.Ptr(), this->blockSize * 3 + 16);
+		MemClear(gcmBuff, 64);
 		EncryptBlock(blk, gcmBuff + 16);
 		MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
-		blk[this->blockSize - 1] = 1;
-		EncryptBlock(blk, gcmBuff + 16 + this->blockSize);
+		blk[15] = 1;
+		EncryptBlock(blk, gcmBuff + 32);
 		UnsafeArray<UInt8> aad;
 		if (this->aad.SetTo(aad))
 		{
@@ -260,7 +264,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 		}
 		while (inSize > 0)
 		{
-			UIntOS i = this->blockSize;
+			UIntOS i = 16;
 			while (i-- > 0)
 			{
 				if (++(blk[i]) != 0)
@@ -269,13 +273,15 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 			EncryptBlock(blk, outBuff);
 
 			blkCnt++;
-			if (inSize >= this->blockSize)
+			if (inSize >= 16)
 			{
-				MemXOR(outBuff.Ptr(), inBuff.Ptr(), outBuff.Ptr(), this->blockSize);
-				inBuff += this->blockSize;
-				outBuff += this->blockSize;
-				inSize = inSize - this->blockSize;
-				outSize += this->blockSize;
+				WriteNUInt64(&outBuff[0], ReadNUInt64(&outBuff[0]) ^ ReadNUInt64(&inBuff[0]));
+				WriteNUInt64(&outBuff[8], ReadNUInt64(&outBuff[8]) ^ ReadNUInt64(&inBuff[8]));
+				//MemXOR(outBuff.Ptr(), inBuff.Ptr(), outBuff.Ptr(), 16);
+				inBuff += 16;
+				outBuff += 16;
+				inSize = inSize - 16;
+				outSize += 16;
 			}
 			else
 			{
@@ -289,8 +295,10 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 		WriteMUInt64(&blk[0], (UInt64)this->aadSize * 8);
 		WriteMUInt64(&blk[8], (UInt64)outSize * 8);
 		GhashUpdateBlock(gcmBuff, blk);
-		MemXOR(&gcmBuff[16 + this->blockSize], gcmBuff.Ptr(), outBuff.Ptr(), 16);
-		MemFreeArr(gcmBuff);
+
+		WriteNUInt64(&outBuff[0], ReadNUInt64(&gcmBuff[0]) ^ ReadNUInt64(&gcmBuff[32]));
+		WriteNUInt64(&outBuff[8], ReadNUInt64(&gcmBuff[8]) ^ ReadNUInt64(&gcmBuff[40]));
+//		MemXOR(&gcmBuff[32], gcmBuff, outBuff.Ptr(), 16);
 		return outSize + 16;
 	}
 	default:
@@ -763,12 +771,8 @@ void Crypto::Encrypt::BlockCipher::GFMult(UnsafeArray<const UInt8> a, UnsafeArra
 
 void Crypto::Encrypt::BlockCipher::GhashUpdateBlock(UnsafeArray<UInt8> gcmBlk, UnsafeArray<const UInt8> inBuff)
 {
-	UIntOS i = 0;
-	while (i < 16)
-	{
-		gcmBlk[i] ^= inBuff[i];
-		i++;
-	}
+	WriteNUInt64(&gcmBlk[0], ReadNUInt64(&gcmBlk[0]) ^ ReadNUInt64(&inBuff[0]));
+	WriteNUInt64(&gcmBlk[8], ReadNUInt64(&gcmBlk[8]) ^ ReadNUInt64(&inBuff[8]));
 	UInt8 nextHash[16];
 	GFMult(&gcmBlk[0], &gcmBlk[16], nextHash);
 	MemCopyNO(&gcmBlk[0], nextHash, 16);
