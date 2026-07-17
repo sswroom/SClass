@@ -59,6 +59,11 @@ namespace Crypto
 			static void GhashUpdateBlock(UnsafeArray<UInt8> gcmBlk, UnsafeArray<const UInt8> inBuff);
 			static void GhashUpdateBlockPadding(UnsafeArray<UInt8> gcmBlk, UnsafeArray<const UInt8> inBuff, UIntOS inSize);
 			static void GhashUpdate(UnsafeArray<UInt8> gcmBlk, UnsafeArray<const UInt8> inBuff, UIntOS inSize);
+
+			static UInt8x16 GFMultSIMD(UInt8x16 a, UInt8x16 b);
+			static UInt8x16 GhashUpdateBlockSIMD(UInt8x16 hash, UInt8x16 hKey, UnsafeArray<const UInt8> inBuff);
+			static UInt8x16 GhashUpdateBlockPaddingSIMD(UInt8x16 hash, UInt8x16 hKey, UnsafeArray<const UInt8> inBuff, UIntOS inSize);
+			static UInt8x16 GhashUpdateSIMD(UInt8x16 hash, UInt8x16 hKey, UnsafeArray<const UInt8> inBuff, UIntOS inSize);
 		};
 
 		Text::CStringNN ChainModeGetName(ChainMode cm);

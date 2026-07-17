@@ -249,8 +249,7 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 		return 0;
 	else
 	{
-		UnsafeArray<UInt8> initOutBuff = outBuff;
-		UInt8 encBlk[16];
+/*		UInt8 encBlk[16];
 		UInt8 gcmBuff[64];
 		blk = gcmBuff + 48;
 		outSize = 0;
@@ -277,8 +276,10 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 			blkCnt++;
 			if (inSize >= 16)
 			{
-				WriteNUInt64(&outBuff[0], ReadNUInt64(&encBlk[0]) ^ ReadNUInt64(&inBuff[0]));
-				WriteNUInt64(&outBuff[8], ReadNUInt64(&encBlk[8]) ^ ReadNUInt64(&inBuff[8]));
+				PStoreUInt8x16(&outBuff[0], PXORUB16(PLoadUInt8x16(&encBlk[0]), PLoadUInt8x16(&inBuff[0])));
+//				WriteNUInt64(&outBuff[0], ReadNUInt64(&encBlk[0]) ^ ReadNUInt64(&inBuff[0]));
+//				WriteNUInt64(&outBuff[8], ReadNUInt64(&encBlk[8]) ^ ReadNUInt64(&inBuff[8]));
+				GhashUpdateBlock(gcmBuff, outBuff);
 				//MemXOR(outBuff.Ptr(), inBuff.Ptr(), outBuff.Ptr(), 16);
 				inBuff += 16;
 				outBuff += 16;
@@ -288,18 +289,71 @@ UIntOS Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UI
 			else
 			{
 				MemXOR(encBlk, inBuff.Ptr(), outBuff.Ptr(), inSize);
+				GhashUpdateBlockPadding(gcmBuff, outBuff, inSize);
 				outSize += inSize;
 				outBuff += inSize;
 				break;
 			}
 		}
-		GhashUpdate(gcmBuff, initOutBuff, outSize);
 		WriteMUInt64(&blk[0], (UInt64)this->aadSize * 8);
 		WriteMUInt64(&blk[8], (UInt64)outSize * 8);
 		GhashUpdateBlock(gcmBuff, blk);
 
 		WriteNUInt64(&outBuff[0], ReadNUInt64(&gcmBuff[0]) ^ ReadNUInt64(&gcmBuff[32]));
 		WriteNUInt64(&outBuff[8], ReadNUInt64(&gcmBuff[8]) ^ ReadNUInt64(&gcmBuff[40]));
+		return outSize + 16;
+*/
+		UInt8 encBlk[16];
+		UInt8x16 hash = PUInt8x16Clear();
+		UInt8 hKeyBuff[16];
+		UInt8x16 hKey;
+		UInt8 gcmBuff3[32];
+		blk = gcmBuff3 + 16;
+		outSize = 0;
+		MemClear(gcmBuff3, 32);
+		EncryptBlock(blk, hKeyBuff);
+		hKey = PUInt64x2Set(ReadMUInt64(&hKeyBuff[8]), ReadMUInt64(&hKeyBuff[0]));
+		MemCopyNO(blk.Ptr(), this->iv.Ptr(), this->ivSize);
+		blk[15] = 1;
+		EncryptBlock(blk, gcmBuff3);
+		UnsafeArray<UInt8> aad;
+		if (this->aad.SetTo(aad))
+		{
+			hash = GhashUpdateSIMD(hash, hKey, aad, this->aadSize);
+		}
+		while (inSize > 0)
+		{
+			UIntOS i = 16;
+			while (i-- > 0)
+			{
+				if (++(blk[i]) != 0)
+					break;
+			}
+			EncryptBlock(blk, encBlk);
+
+			blkCnt++;
+			if (inSize >= 16)
+			{
+				PStoreUInt8x16(&outBuff[0], PXORUB16(PLoadUInt8x16(&encBlk[0]), PLoadUInt8x16(&inBuff[0])));
+				hash = GhashUpdateSIMD(hash, hKey, outBuff, 16);
+				inBuff += 16;
+				outBuff += 16;
+				inSize = inSize - 16;
+				outSize += 16;
+			}
+			else
+			{
+				MemXOR(encBlk, inBuff.Ptr(), outBuff.Ptr(), inSize);
+				hash = GhashUpdateBlockPaddingSIMD(hash, hKey, outBuff, inSize);
+				outSize += inSize;
+				outBuff += inSize;
+				break;
+			}
+		}
+		WriteMUInt64(&blk[0], (UInt64)this->aadSize * 8);
+		WriteMUInt64(&blk[8], (UInt64)outSize * 8);
+		hash = GhashUpdateSIMD(hash, hKey, blk, 16);
+		PStoreUInt8x16(&outBuff[0], PXORUB16(hash, PLoadUInt8x16(&gcmBuff3[0])));
 		return outSize + 16;
 	}
 	default:
@@ -707,7 +761,29 @@ void Crypto::Encrypt::BlockCipher::SetAAD(UnsafeArray<const UInt8> aad, UIntOS a
 
 void Crypto::Encrypt::BlockCipher::GFMult(UnsafeArray<const UInt8> a, UnsafeArray<const UInt8> b, UnsafeArray<UInt8> c)
 {
-    UInt8 v[64];
+#if _OSINT_SIZE == 64
+    UInt64 v1 = ReadMUInt64(&b[0]);
+	UInt64 v2 = ReadMUInt64(&b[8]);
+	UInt8x16 cTmp = PUInt8x16Clear();
+	UIntOS i = 0;
+	UIntOS j = 16 * 8;
+    while (i < j)
+	{
+        if (a[i / 8] & (0x80 >> (i % 8))) 
+		{
+			cTmp = PXORUB16(cTmp, PUInt64x2Set(v1, v2));
+		}
+        UInt8 carry = v2 & 0x01;
+		v2 = (v2 >> 1) | (v1 << 63);
+		v1 = (v1 >> 1);
+		if (carry) v1 ^= 0xE100000000000000LL; // GCM polynomial reduction
+		i++;
+    }
+	PStoreUInt8x16(c.Ptr(), cTmp);
+	WriteMUInt64(&c[0], ReadNUInt64(&c[0]));
+	WriteMUInt64(&c[8], ReadNUInt64(&c[8]));
+#else
+    UInt8 v[16];
     MemClear(c.Ptr(), 16);
     MemCopyNO(v, b.Ptr(), 16);
 	UIntOS i = 0;
@@ -721,12 +797,6 @@ void Crypto::Encrypt::BlockCipher::GFMult(UnsafeArray<const UInt8> a, UnsafeArra
 			WriteNUInt64(&c[8], ReadNUInt64(&c[8]) ^ ReadNUInt64(&v[8]));
         }
         UInt8 carry = v[k = 15] & 0x01;
-#if _OSINT_SIZE == 64
-		UInt64 v1 = ReadMUInt64(&v[8]);
-		UInt64 v2 = ReadMUInt64(&v[0]);
-		WriteMUInt64(&v[8], (v1 >> 1) | (v2 << 63));
-		WriteMUInt64(&v[0], (v2 >> 1));
-#else
 		UInt32 v1 = ReadMUInt32(&v[12]);
 		UInt32 v2 = ReadMUInt32(&v[8]);
 		WriteMUInt32(&v[12], (v1 >> 1) | (v2 << 31));
@@ -735,10 +805,10 @@ void Crypto::Encrypt::BlockCipher::GFMult(UnsafeArray<const UInt8> a, UnsafeArra
 		v2 = ReadMUInt32(&v[0]);
 		WriteMUInt32(&v[4], (v1 >> 1) | (v2 << 31));
 		WriteMUInt32(&v[0], (v2 >> 1));
-#endif
         if (carry) v[0] ^= 0xE1; // GCM polynomial reduction
 		i++;
     }
+#endif
 }
 
 void Crypto::Encrypt::BlockCipher::GhashUpdateBlock(UnsafeArray<UInt8> gcmBlk, UnsafeArray<const UInt8> inBuff)
@@ -774,6 +844,73 @@ void Crypto::Encrypt::BlockCipher::GhashUpdate(UnsafeArray<UInt8> gcmBlk, Unsafe
 			break;
 		}
 	}
+}
+
+UInt8x16 Crypto::Encrypt::BlockCipher::GFMultSIMD(UInt8x16 a, UInt8x16 b)
+{
+	UInt8x16 cTmp = PUInt8x16Clear();
+	UInt8x16 carryXOR = PUInt64x2Set(0, 0xE100000000000000LL);
+	UIntOS i = 0;
+	UIntOS j = 16;
+	UIntOS k;
+	UInt8 aByte;
+    while (i < j)
+	{
+		aByte = PEXTUB16(a, 0);
+		a = PSHRBytes(a, 1);
+		k = 0;
+		while (k < 8)
+		{
+			if (aByte & (0x80 >> k)) 
+			{
+				cTmp = PXORUB16(cTmp, b);
+			}
+			if (PEXTUB16(b, 0) & 0x01)
+			{
+				b = PXORUB16(PSHRDQ(b, 1), carryXOR);
+			}
+			else
+			{
+				b = PSHRDQ(b, 1);
+			}
+			k++;
+		}
+		i++;
+    }
+	return BSWAP128(cTmp);
+}
+
+UInt8x16 Crypto::Encrypt::BlockCipher::GhashUpdateBlockSIMD(UInt8x16 hash, UInt8x16 hKey, UnsafeArray<const UInt8> inBuff)
+{
+	hash = PXORUB16(hash, PLoadUInt8x16(&inBuff[0]));
+	return GFMultSIMD(hash, hKey);
+}
+
+UInt8x16 Crypto::Encrypt::BlockCipher::GhashUpdateBlockPaddingSIMD(UInt8x16 hash, UInt8x16 hKey, UnsafeArray<const UInt8> inBuff, UIntOS inSize)
+{
+	UInt8 tmpBuff[16];
+	MemCopyNO(tmpBuff, inBuff.Ptr(), inSize);
+	MemClear(&tmpBuff[inSize], 16 - inSize);
+	return GhashUpdateBlockSIMD(hash, hKey, tmpBuff);
+}
+
+UInt8x16 Crypto::Encrypt::BlockCipher::GhashUpdateSIMD(UInt8x16 hash, UInt8x16 hKey, UnsafeArray<const UInt8> inBuff, UIntOS inSize)
+{
+	UIntOS i = 0;
+	while (i < inSize)
+	{
+		if (inSize - i >= 16)
+		{
+			hash = GhashUpdateBlockSIMD(hash, hKey, &inBuff[i]);
+			i += 16;
+		}
+		else
+		{
+			hash = GhashUpdateBlockPaddingSIMD(hash, hKey, &inBuff[i], inSize - i);
+			break;
+		}
+	}
+	return hash;
 }
 
 Text::CStringNN Crypto::Encrypt::ChainModeGetName(ChainMode cm)

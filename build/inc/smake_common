@@ -62,6 +62,7 @@ console:
 @Adler32Speed
 @Adler32Test
 @AES128GCMTest
+@AES256GCMSpeed
 @AES256GCMTest
 @Base64Speed
 @Base64Test
@@ -328,6 +329,9 @@ Adler32Test:
 @ConsoleStartup.o
 AES128GCMTest:
 @AES128GCMTest.o
+@ConsoleStartup.o
+AES256GCMSpeed:
+@AES256GCMSpeed.o
 @ConsoleStartup.o
 AES256GCMTest:
 @AES256GCMTest.o
@@ -1297,6 +1301,7 @@ GUITest9:
 Adler32Speed.o: ../../main/CryptoTest/Adler32Speed.cpp
 Adler32Test.o: ../../main/CryptoTest/Adler32Test.cpp
 AES128GCMTest.o: ../../main/CryptoTest/AES128GCMTest.cpp
+AES256GCMSpeed.o: ../../main/CryptoTest/AES256GCMSpeed.cpp
 AES256GCMTest.o: ../../main/CryptoTest/AES256GCMTest.cpp
 Base64Speed.o: ../../main/CryptoTest/Base64Speed.cpp
 Base64Test.o: ../../main/CryptoTest/Base64Test.cpp
