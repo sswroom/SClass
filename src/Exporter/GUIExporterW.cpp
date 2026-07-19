@@ -111,7 +111,7 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(NN<IO::Pa
 	}
 }
 
-AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, OutParam<UnsafeArrayOpt<UInt8>> relBuff)
+AnyType Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, Bool noAlpha, OutParam<UnsafeArrayOpt<UInt8>> relBuff)
 {
 	relBuff.Set(nullptr);
 	UnsafeArray<UInt8> nnpal;

@@ -17,7 +17,7 @@ namespace Exporter
 
 		virtual SupportType IsObjectSupported(NN<IO::ParsedObject> pobj);
 
-		AnyType ToImage(NN<IO::ParsedObject> pobj, OutParam<UnsafeArrayOpt<UInt8>> relBuff);
+		AnyType ToImage(NN<IO::ParsedObject> pobj, Bool noAlpha, OutParam<UnsafeArrayOpt<UInt8>> relBuff);
 		Int32 GetEncoderClsid(UnsafeArray<const WChar> format, void *clsid);
 	};
 }

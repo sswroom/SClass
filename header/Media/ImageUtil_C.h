@@ -31,6 +31,7 @@ extern "C"
 	void ImageUtil_ConvB8G8R8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, UIntOS w, UIntOS h, IntOS sbpl, IntOS dbpl);
 	void ImageUtil_ConvR8G8B8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, UIntOS w, UIntOS h, IntOS sbpl, IntOS dbpl);
 	void ImageUtil_ConvB8G8R8A8_B8G8R8(const UInt8 *srcPtr, UInt8 *destPtr, UIntOS w, UIntOS h, IntOS sbpl, IntOS dbpl);
+	void ImageUtil_ConvB8G8R8A8_R8G8B8(const UInt8 *srcPtr, UInt8 *destPtr, UIntOS w, UIntOS h, IntOS sbpl, IntOS dbpl);
 	void ImageUtil_ConvR8G8B8A8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, UIntOS w, UIntOS h, IntOS sbpl, IntOS dbpl);
 	void ImageUtil_ConvR8G8B8N8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, UIntOS w, UIntOS h, IntOS sbpl, IntOS dbpl);
 	void ImageUtil_ConvB16G16R16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, UIntOS w, UIntOS h, IntOS sbpl, IntOS dbpl);

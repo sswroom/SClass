@@ -47,7 +47,7 @@ Bool Exporter::GUIGIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	UnsafeArrayOpt<UInt8> relBuff;
 	UnsafeArray<UInt8> nnrelBuff;
 
-	if (!ToImage(pobj, relBuff).GetOpt<Gdiplus::Image>().SetTo(image))
+	if (!ToImage(pobj, false, relBuff).GetOpt<Gdiplus::Image>().SetTo(image))
 	{
 		return false;
 	}

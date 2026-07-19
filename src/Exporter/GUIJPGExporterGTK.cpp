@@ -41,7 +41,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 #ifdef VERBOSE
 	printf("GUIJPGExporter: begin export file\r\n");
 #endif
-	GdkPixbuf *image = (GdkPixbuf*)ToImage(pobj, tmpBuff).p;
+	GdkPixbuf *image = (GdkPixbuf*)ToImage(pobj, true, tmpBuff).p;
 	if (image == 0)
 	{
 #ifdef VERBOSE
@@ -53,20 +53,29 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	gchar *buff = 0;
 	gsize buffSize;
 	NN<ParamData> para;
+	GError *err = 0;
+	Bool success = false;
 
 	if (param.SetTo(para))
 	{
 		Text::StrInt32(cbuff, *(Int32*)para.Ptr());
-		gdk_pixbuf_save_to_buffer(image, &buff, &buffSize, "jpeg", 0, "quality", cbuff, (void*)0);
+		success = gdk_pixbuf_save_to_buffer(image, &buff, &buffSize, "jpeg", &err, "quality", cbuff, (void*)0);
 	}
 	else
 	{
-		gdk_pixbuf_save_to_buffer(image, &buff, &buffSize, "jpeg", 0, (void*)0);
+		success = gdk_pixbuf_save_to_buffer(image, &buff, &buffSize, "jpeg", &err, (void*)0);
 	}
 	g_object_unref(image);
 	if (tmpBuff.SetTo(nntmpBuff))
 	{
 		MemFreeAArr(nntmpBuff);
+	}
+	if (!success)
+	{
+#ifdef VERBOSE
+		printf("GUIJPGExporter: gdk_pixbuf_save_to_buffer failed: %s\r\n", err->message);
+#endif
+		g_error_free(err);
 	}
 
 	if (buff)

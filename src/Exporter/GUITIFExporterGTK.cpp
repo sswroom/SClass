@@ -31,7 +31,7 @@ Bool Exporter::GUITIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 {
 	UnsafeArrayOpt<UInt8> tmpBuff;
 	UnsafeArray<UInt8> nntmpBuff;
-	GdkPixbuf *image = (GdkPixbuf*)ToImage(pobj, tmpBuff).p;
+	GdkPixbuf *image = (GdkPixbuf*)ToImage(pobj, false, tmpBuff).p;
 	if (image == 0)
 	{
 		return false;
