@@ -462,6 +462,6 @@ IO::ParserType Parser::FileParser::GUIImgParser::GetParserType()
 
 Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
-	return 0;
+	return nullptr;
 }
 #endif
