@@ -112,7 +112,7 @@ UIntOS IO::Console::WriteStdOut(UnsafeArray<const UInt8> buff, UIntOS size)
 		return (UIntOS)ret;
 	}
 #else
-	return fwrite(buff, 1, size, stdout);
+	return fwrite(buff.Ptr(), 1, size, stdout);
 #endif
 }
 

@@ -30,5 +30,5 @@ Bool Exporter::GUIGIFExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char>
 Bool Exporter::GUIGIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	Exporter::GIFExporter exporter;
-	return exporter.ExportFile(stm, fileName, pobj, 0);
+	return exporter.ExportFile(stm, fileName, pobj, nullptr);
 }

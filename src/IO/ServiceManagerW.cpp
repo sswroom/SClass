@@ -190,7 +190,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CStringNN svcName, NN<ServiceDet
 	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, 8192);
 	SERVICE_STATUS_PROCESS *status = (SERVICE_STATUS_PROCESS*)buff.Ptr();
 	DWORD bytesNeeded;
-	Bool succ = (QueryServiceStatusEx(schService, SC_STATUS_PROCESS_INFO, buff, 8192, &bytesNeeded) != 0);
+	Bool succ = (QueryServiceStatusEx(schService, SC_STATUS_PROCESS_INFO, buff.Ptr(), 8192, &bytesNeeded) != 0);
 	if (succ)
 	{
 		svcDetail->status = ServiceManager_CurrentState2RunStatus(status->dwCurrentState);
@@ -224,7 +224,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CStringNN svcName, NN<ServiceDet
 		svcDetail->memoryUsage = proc.GetMemorySize();
 		svcDetail->startTime = proc.GetStartTime();
 	}
-	MemFree(buff);
+	MemFreeArr(buff);
 	return succ;
 }
 

@@ -1105,6 +1105,27 @@ extern "C" void ImageUtil_ConvB8G8R8A8_B8G8R8(const UInt8 *srcPtr, UInt8 *destPt
 	}
 }
 
+extern "C" void ImageUtil_ConvB8G8R8A8_R8G8B8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
+{
+	IntOS i;
+	sbpl -= w << 2;
+	dbpl -= w * 3;
+	while (h-- > 0)
+	{
+		i = w;
+		while (i-- > 0)
+		{
+			destPtr[0] = srcPtr[2];
+			destPtr[1] = srcPtr[1];
+			destPtr[2] = srcPtr[0];
+			srcPtr += 4;
+			destPtr += 3;
+		}
+		srcPtr += sbpl;
+		destPtr += dbpl;
+	}
+}
+
 extern "C" void ImageUtil_ConvR8G8B8A8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl)
 {
 	IntOS i;

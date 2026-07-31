@@ -52,7 +52,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	UnsafeArrayOpt<UInt8> relBuff;
 	UnsafeArray<UInt8> nnrelBuff;
 
-	image = (Gdiplus::Image*)ToImage(pobj, relBuff).p;
+	image = (Gdiplus::Image*)ToImage(pobj, false, relBuff).p;
 	if (image == 0)
 	{
 		return false;

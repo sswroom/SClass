@@ -28,6 +28,7 @@ global ImageUtil_ConvB5G6R5_B8G8R8A8
 global ImageUtil_ConvB8G8R8_B8G8R8A8
 global ImageUtil_ConvR8G8B8_B8G8R8A8
 global ImageUtil_ConvB8G8R8A8_B8G8R8
+global ImageUtil_ConvB8G8R8A8_R8G8B8
 global ImageUtil_ConvR8G8B8A8_B8G8R8A8
 global ImageUtil_ConvR8G8B8N8_B8G8R8A8
 global ImageUtil_ConvB16G16R16_B8G8R8A8
@@ -2111,6 +2112,42 @@ cbgra8_bgr8lop2:
 	add rdx,qword [rsp+48] ;dbpl
 	dec r9
 	jnz cbgra8_bgr8lop
+	ret
+	
+;void ImageUtil_ConvB8G8R8A8_R8G8B8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);
+;0 retAddr
+;rcx srcPtr
+;rdx destPtr
+;r8 w
+;r9 h
+;40 sbpl
+;48 dbpl
+	align 16
+ImageUtil_ConvB8G8R8A8_R8G8B8:
+	lea rax,[r8+r8*2]
+	sub qword [rsp+48],rax ;dbpl
+	lea rax,[r8*4]
+	sub qword [rsp+40],rax ;sbpl
+	
+	align 16
+cbgra8_rgb8lop:
+	mov r10,r8
+	align 16
+cbgra8_rgb8lop2:
+	mov al,byte [rcx+2]
+	mov ah,byte [rcx+1]
+	mov word [rdx],ax
+	mov al,byte [rcx]
+	mov byte [rdx+2],al
+	lea rcx,[rcx+4]
+	lea rdx,[rdx+3]
+	dec r10
+	jnz cbgra8_rgb8lop2
+	
+	add rcx,qword [rsp+40] ;sbpl
+	add rdx,qword [rsp+48] ;dbpl
+	dec r9
+	jnz cbgra8_rgb8lop
 	ret
 	
 ;void ImageUtil_ConvR8G8B8A8_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, IntOS w, IntOS h, IntOS sbpl, IntOS dbpl);

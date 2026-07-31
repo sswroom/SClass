@@ -71,6 +71,8 @@ typedef __m128i Int32x4;
 typedef __m128i UInt32x4;
 typedef __m128d Doublex2;
 
+static UInt8x16 bswap128Mask = _mm_set_epi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+
 #define PUInt8x4Clear() _mm_setzero_si128()
 #define PUInt8x8Clear() _mm_setzero_si128()
 #define PUInt8x16Clear() _mm_setzero_si128()
@@ -89,6 +91,7 @@ typedef __m128d Doublex2;
 #define PUInt16x8SetA(v) _mm_set1_epi16((Int16)v)
 #define PInt32x4SetA(v) _mm_set1_epi32(v)
 #define PUInt32x4SetA(v) _mm_set1_epi32((Int32)v)
+#define PUInt64x2Set(v1, v2) _mm_set_epi64x((Int64)v2, (Int64)v1)
 #define PDoublex2SetA(v) _mm_set1_pd(v)
 #define PDoublex2Set(lo, hi) _mm_set_pd(hi, lo)
 #define PLoadUInt8x4(ptr) _mm_cvtsi32_si128(*(Int32*)(ptr))
@@ -106,7 +109,7 @@ typedef __m128d Doublex2;
 #define PMLoadInt16x4(hi, lo) _mm_set_epi64x(*(Int64*)hi, *(Int64*)lo)
 #define PStoreUInt8x4(ptr, v) *(Int32*)ptr = _mm_cvtsi128_si32(v)
 #define PStoreUInt8x8(ptr, v) _mm_storel_epi64((__m128i*)(ptr), v)
-#define PStoreUInt8x16(ptr, v) _mm_store_si128((__m128i*)(ptr), v)
+#define PStoreUInt8x16(ptr, v) _mm_storeu_si128((__m128i*)(ptr), v)
 #define PStoreInt16x2(ptr, v) *(Int32*)(ptr) = _mm_cvtsi128_si32(v)
 #define PStoreInt16x4(ptr, v) _mm_storel_epi64((__m128i*)(ptr), v)
 #define PStoreInt16x8(ptr, v) _mm_storeu_si128((__m128i*)(ptr), v)
@@ -125,6 +128,7 @@ typedef __m128d Doublex2;
 #define PCONVI8x16_U(v) (v)
 #define PCONVI16x4_U(v) (v)
 #define PCONVI16x8_U(v) (v)
+#define PEXTUB16(v, i) (UInt8)_mm_extract_epi8(v, i)
 #define PEXTUW4(v, i) (UInt16)_mm_extract_epi16(v, i)
 #define PEXTUW8(v, i) (UInt16)_mm_extract_epi16(v, i)
 #define PEXTW4(v, i) (Int16)_mm_extract_epi16(v, i)
@@ -134,6 +138,8 @@ typedef __m128d Doublex2;
 #else
 #define PEXTD4(v, i) ((_mm_extract_epi16(v, i << 1) & 0xffff) | (_mm_extract_epi16(v, (i << 1) + 1) << 16))
 #endif
+#define PEXTUQ2(v, i) (UInt64)_mm_extract_epi64(v, i)
+#define PINSUB16(v, i, iv) _mm_insert_epi8(v, iv, i)
 #define PINSUW4(v, i, iv) _mm_insert_epi16(v, iv, i)
 #define PUNPCKBB8(v1, v2) _mm_unpacklo_epi8(v1, v2)
 #define PUNPCKUBB4(v1, v2) _mm_unpacklo_epi8(v1, v2)
@@ -155,6 +161,8 @@ typedef __m128d Doublex2;
 #define PSALW4(v1, v2) _mm_slli_epi16(v1, v2)
 #define PSHRW4(v1, v2) _mm_srli_epi16(v1, v2)
 #define PSHRW8(v1, v2) _mm_srli_epi16(v1, v2)
+#define PSHRBytes(v1, v2) _mm_srli_si128(v1, v2)
+#define PSHRDQ(v1, v2) _mm_or_si128(_mm_srli_epi64(v1, v2), _mm_slli_epi64(_mm_srli_si128(v1, 8), 64 - v2))
 #define PSARW4(v1, v2) _mm_srai_epi16(v1, v2)
 #define PSARW8(v1, v2) _mm_srai_epi16(v1, v2)
 #define PSARD4(v1, v2) _mm_srai_epi32(v1, v2)
@@ -163,6 +171,7 @@ typedef __m128d Doublex2;
 #define PSHRADDWB4(v1, v2, cnt) _mm_packus_epi16(_mm_srli_epi16(_mm_adds_epu16(v1, v2), cnt), v2)
 #define PANDW8(v1, v2) _mm_and_si128(v1, v2)
 #define PANDUD4(v1, v2) _mm_and_si128(v1, v2)
+#define PXORUB16(v1, v2) _mm_xor_si128(v1, v2)
 #define PXORUD4(v1, v2) _mm_xor_si128(v1, v2)
 #define PADDUB4(v1, v2) _mm_add_epi8(v1, v2)
 #define PADDUB8(v1, v2) _mm_add_epi8(v1, v2)
@@ -199,6 +208,7 @@ typedef __m128d Doublex2;
 #define SI32ToU8x8(v1, v2) _mm_packus_epi16(_mm_packs_epi32(v1, v2), v1)
 #define SI32ToI16x4(v1) _mm_packs_epi32(v1, v1)
 #define SI32ToI16x8(v1, v2) _mm_packs_epi32(v1, v2)
+#define BSWAP128(v) _mm_shuffle_epi8(v, bswap128Mask)
 
 #define PADDPD(v1, v2) _mm_add_pd(v1, v2)
 #define PSUBPD(v1, v2) _mm_sub_pd(v1, v2)
@@ -217,6 +227,7 @@ typedef __m128d Doublex2;
 #define PStoreDoublex2(ptr, v) _mm_storeu_pd(ptr, v)
 #define Doublex2GetLo(v) _mm_cvtsd_f64(v)
 #define Doublex2GetHi(v) _mm_cvtsd_f64(_mm_unpackhi_pd(v, v))
+#define PBYTESWAP(v) _mm_shuffle_epi8(v, _mm_set_epi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15))
 #if defined(__AVX__)
 typedef __m256i Int32x8;
 #define PResetAVX() _mm256_zeroupper()

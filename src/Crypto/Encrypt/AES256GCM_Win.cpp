@@ -75,7 +75,7 @@ UIntOS Crypto::Encrypt::AES256GCM::Encrypt(UnsafeArray<const UInt8> inBuff, UInt
 	BCRYPT_AUTHENTICATED_CIPHER_MODE_INFO cipherInfo;
 	cipherInfo.dwInfoVersion = 1;
 	cipherInfo.cbSize = sizeof(cipherInfo);
-	cipherInfo.pbNonce = this->iv;
+	cipherInfo.pbNonce = this->iv.Ptr();
 	cipherInfo.cbNonce = 12;
 	cipherInfo.pbAuthData = 0;
 	cipherInfo.cbAuthData = 0;
@@ -167,7 +167,7 @@ UIntOS Crypto::Encrypt::AES256GCM::Decrypt(UnsafeArray<const UInt8> inBuff, UInt
 	BCRYPT_AUTHENTICATED_CIPHER_MODE_INFO cipherInfo;
 	cipherInfo.dwInfoVersion = 1;
 	cipherInfo.cbSize = sizeof(cipherInfo);
-	cipherInfo.pbNonce = this->iv;
+	cipherInfo.pbNonce = this->iv.Ptr();
 	cipherInfo.cbNonce = 12;
 	cipherInfo.pbAuthData = 0;
 	cipherInfo.cbAuthData = 0;
