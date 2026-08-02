@@ -482,8 +482,6 @@ I2CMODBUS.o: ../../src/IO/I2CMODBUS.cpp
 IniFile.o: ../../src/IO/IniFile.cpp
 IOPinCapture.o: ../../src/IO/IOPinCapture.cpp
 IOTool.o: ../../src/IO/IOTool.cpp
-JavaClass.o: ../../src/IO/JavaClass.cpp
-JavaProperties.o: ../../src/IO/JavaProperties.cpp
 JMeterLog.o: ../../src/IO/JMeterLog.cpp
 LangFile.o: ../../src/IO/LangFile.cpp
 LibraryL.o: ../../src/IO/LibraryL.cpp
@@ -722,6 +720,9 @@ TIFFFileAnalyse.o: ../../src/IO/FileAnalyse/TIFFFileAnalyse.cpp
 TSFileAnalyse.o: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp
 TXTFileAnalyse.o: ../../src/IO/FileAnalyse/TXTFileAnalyse.cpp
 ZIPFileAnalyse.o: ../../src/IO/FileAnalyse/ZIPFileAnalyse.cpp
+JavaClass.o: ../../src/IO/Java/JavaClass.cpp
+JavaProperties.o: ../../src/IO/Java/JavaProperties.cpp
+JavaUtil.o: ../../src/IO/Java/JavaUtil.cpp
 BluetoothCtlProgCtrl.o: ../../src/IO/ProgCtrl/BluetoothCtlProgCtrl.cpp
 JTT808ProtocolDecoder.o: ../../src/IO/ProtoDec/JTT808ProtocolDecoder.cpp
 ProtoDecList.o: ../../src/IO/ProtoDec/ProtoDecList.cpp

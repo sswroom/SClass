@@ -1,7 +1,6 @@
 #ifndef _SM_PARSER_FILEPARSER_CLASSPARSER
 #define _SM_PARSER_FILEPARSER_CLASSPARSER
 #include "IO/FileParser.h"
-#include "IO/JavaClass.h"
 
 namespace Parser
 {

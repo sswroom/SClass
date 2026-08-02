@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteBuffer.h"
 #include "Core/ByteTool_C.h"
-#include "IO/JavaClass.h"
+#include "Data/ByteBuffer.h"
+#include "IO/Java/JavaClass.h"
 #include "Parser/FileParser/ClassParser.h"
 
 Parser::FileParser::ClassParser::ClassParser()
@@ -42,11 +42,11 @@ Optional<IO::ParsedObject> Parser::FileParser::ClassParser::ParseFileHdr(NN<IO::
 	{
 		return nullptr;
 	}
-	Optional<IO::JavaClass> cls = nullptr;
+	Optional<IO::Java::JavaClass> cls = nullptr;
 	Data::ByteBuffer buff((UIntOS)dsize);
 	if (fd->GetRealData(0, (UIntOS)dsize, buff) == dsize)
 	{
-		cls = IO::JavaClass::ParseBuff(fd->GetFullFileName(), buff);
+		cls = IO::Java::JavaClass::ParseBuff(fd->GetFullFileName(), buff);
 	}
 	return cls;
 }

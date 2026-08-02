@@ -201,7 +201,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::JavaClass:
 		{
 			NN<SSWR::AVIRead::AVIRJavaClassForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJavaClassForm(nullptr, this->ui, *this, NN<IO::JavaClass>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJavaClassForm(nullptr, this->ui, *this, NN<IO::Java::JavaClass>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}

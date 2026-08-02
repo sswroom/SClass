@@ -1,12 +1,12 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/FileStream.h"
-#include "IO/JavaProperties.h"
 #include "IO/Path.h"
+#include "IO/Java/JavaProperties.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-Optional<IO::ConfigFile> IO::JavaProperties::ParseAppProp()
+Optional<IO::ConfigFile> IO::Java::JavaProperties::ParseAppProp()
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -15,7 +15,7 @@ Optional<IO::ConfigFile> IO::JavaProperties::ParseAppProp()
 	return Parse(CSTRP(sbuff, sptr));
 }
 
-Optional<IO::ConfigFile> IO::JavaProperties::Parse(Text::CStringNN fileName)
+Optional<IO::ConfigFile> IO::Java::JavaProperties::Parse(Text::CStringNN fileName)
 {
 	Optional<IO::ConfigFile> cfg;
 	IO::FileStream fstm(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
@@ -31,7 +31,7 @@ Optional<IO::ConfigFile> IO::JavaProperties::Parse(Text::CStringNN fileName)
 	return cfg;
 }
 
-Optional<IO::ConfigFile> IO::JavaProperties::ParseReader(NN<Text::UTF8Reader> reader)
+Optional<IO::ConfigFile> IO::Java::JavaProperties::ParseReader(NN<Text::UTF8Reader> reader)
 {
 	UTF8Char buff[1024];
 	UnsafeArray<UTF8Char> name;
@@ -74,7 +74,7 @@ Optional<IO::ConfigFile> IO::JavaProperties::ParseReader(NN<Text::UTF8Reader> re
 	return cfg;
 }
 
-UnsafeArray<UTF8Char> IO::JavaProperties::EscapeStr(UnsafeArray<UTF8Char> str, UnsafeArray<UTF8Char> strEnd)
+UnsafeArray<UTF8Char> IO::Java::JavaProperties::EscapeStr(UnsafeArray<UTF8Char> str, UnsafeArray<UTF8Char> strEnd)
 {
 	UnsafeArray<UTF8Char> dest = str;
 	UTF8Char c;

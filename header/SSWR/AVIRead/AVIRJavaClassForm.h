@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRJAVACLASSFORM
 #define _SM_SSWR_AVIREAD_AVIRJAVACLASSFORM
-#include "IO/JavaClass.h"
+#include "IO/Java/JavaClass.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIListBox.h"
@@ -33,11 +33,11 @@ namespace SSWR
 			NN<UI::GUITextBox> txtDecompile;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			NN<IO::JavaClass> clsFile;
+			NN<IO::Java::JavaClass> clsFile;
 
 			static void __stdcall OnMethodsSelChg(AnyType userObj);
 		public:
-			AVIRJavaClassForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::JavaClass> clsFile);
+			AVIRJavaClassForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::Java::JavaClass> clsFile);
 			virtual ~AVIRJavaClassForm();
 
 			virtual void OnMonitorChanged();

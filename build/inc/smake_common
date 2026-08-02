@@ -2311,10 +2311,6 @@ IO/IOPinCapture.h:
 @IOPinCapture.o
 IO/IOTool.h:
 @IOTool.o
-IO/JavaClass.h:
-@JavaClass.o
-IO/JavaProperties.h:
-@JavaProperties.o
 IO/JMeterLog.h:
 @JMeterLog.o
 IO/LangFile.h:
@@ -2633,6 +2629,12 @@ IO/FileAnalyse/TXTFileAnalyse.h:
 @TXTFileAnalyse.o
 IO/FileAnalyse/ZIPFileAnalyse.h:
 @ZIPFileAnalyse.o
+IO/Java/JavaClass.h:
+@JavaClass.o
+IO/Java/JavaProperties.h:
+@JavaProperties.o
+IO/Java/JavaUtil.h:
+@JavaUtil.o
 IO/ProgCtrl/BluetoothCtlProgCtrl.h:
 @BluetoothCtlProgCtrl.o
 IO/ProtoDec/JTT808ProtocolDecoder.h:
