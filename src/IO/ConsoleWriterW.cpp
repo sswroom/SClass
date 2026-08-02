@@ -114,18 +114,46 @@ Bool IO::ConsoleWriter::WriteLine(Text::CStringNN s)
 	NN<Text::Encoding> enc;
 	if (!this->clsData->enc.SetTo(enc))
 	{
-		UIntOS strLen = Text::StrUTF8_WCharCntC(s.v, s.leng);
-		UnsafeArray<WChar> str = MemAllocArr(WChar, strLen + 2);
-		Text::StrUTF8_WCharC(str, s.v, s.leng, 0);
 #if defined(__CYGWIN__)
+		UIntOS startIndex = 0;
+		UIntOS currIndex = 0;
+		UTF8Char c;
+		while (currIndex < s.leng)
+		{
+			c = s.v[currIndex];
+			if (c == '\n' || c == '\r')
+			{
+				UIntOS strLen = Text::StrUTF8_WCharCntC(&s.v[startIndex], currIndex - startIndex);
+				UnsafeArray<WChar> str = MemAllocArr(WChar, strLen + 2);
+				Text::StrUTF8_WCharC(str, &s.v[startIndex], currIndex - startIndex, 0);
+				str[strLen] = '\r';
+				str[strLen + 1] = '\n';
+				WriteConsoleW(this->clsData->hand, str.Ptr(), nChar = (UInt32)(strLen + 2), (LPDWORD)&outChars, 0);
+				MemFreeArr(str);
+				startIndex = currIndex + 1;
+				if (c == '\r' && startIndex < s.leng && s.v[startIndex] == '\n')
+				{
+					startIndex++;
+					currIndex++;
+				}
+			}
+			currIndex++;
+		}
+		UIntOS strLen = Text::StrUTF8_WCharCntC(&s.v[startIndex], s.leng - startIndex);
+		UnsafeArray<WChar> str = MemAllocArr(WChar, strLen + 2);
+		Text::StrUTF8_WCharC(str, &s.v[startIndex], s.leng - startIndex, 0);
 		str[strLen] = '\r';
 		str[strLen + 1] = '\n';
 		WriteConsoleW(this->clsData->hand, str.Ptr(), nChar = (UInt32)(strLen + 2), (LPDWORD)&outChars, 0);
+		MemFreeArr(str);
 #else
+		UIntOS strLen = Text::StrUTF8_WCharCntC(s.v, s.leng);
+		UnsafeArray<WChar> str = MemAllocArr(WChar, strLen + 2);
+		Text::StrUTF8_WCharC(str, s.v, s.leng, 0);
 		str[strLen] = '\n';
 		WriteConsoleW(this->clsData->hand, str.Ptr(), nChar = (UInt32)(strLen + 1), (LPDWORD)&outChars, 0);
-#endif
 		MemFreeArr(str);
+#endif
 		if (outChars == nChar)
 		{
 			if (this->clsData->autoFlush)
