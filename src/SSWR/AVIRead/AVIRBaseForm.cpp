@@ -136,6 +136,7 @@
 #include "SSWR/AVIRead/AVIRIPScanDetectorForm.h"
 #include "SSWR/AVIRead/AVIRIPScanForm.h"
 #include "SSWR/AVIRead/AVIRJasyptForm.h"
+#include "SSWR/AVIRead/AVIRJavaSpringForm.h"
 #include "SSWR/AVIRead/AVIRJMeterLogForm.h"
 #include "SSWR/AVIRead/AVIRJSTextForm.h"
 #include "SSWR/AVIRead/AVIRJTT808ServerForm.h"
@@ -568,7 +569,8 @@ typedef enum
 	MNU_OPENAI,
 	MNU_PYTHON,
 	MNU_KEYTEST,
-	MNU_LOGZIPPER
+	MNU_LOGZIPPER,
+	MNU_JAVASPRING
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -786,6 +788,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2->AddItem(CSTR("Bandwidth Log Analyst"), MNU_BANDWIDTH_LOG_ANALYST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Valgrind Log"), MNU_VALGRINDLOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("MD5 Compare"), MNU_MD5COMPARE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Java Spring"), MNU_JAVASPRING, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Setting"));
 	mnu->AddItem(CSTR("Set &CodePage"), MNU_SET_CODEPAGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3307,6 +3310,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRLogZipperForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLogZipperForm(nullptr, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_JAVASPRING:
+		{
+			NN<SSWR::AVIRead::AVIRJavaSpringForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJavaSpringForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

@@ -1,5 +1,6 @@
 #ifndef _SM_IO_JAVA_JAVAUTIL
 #define _SM_IO_JAVA_JAVAUTIL
+#include "Data/ArrayListStringNN.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO
@@ -11,6 +12,7 @@ namespace IO
 		public:
 			static void AccessFlags(NN<Text::StringBuilderUTF8> sb, UInt16 accessFlags);
 			static void ConstVal(NN<Text::StringBuilderUTF8> sb, UnsafeArray<UInt8> constVal, Bool brankets, UnsafeArray<UnsafeArrayOpt<UInt8>> constPool);
+			static UnsafeArray<const UTF8Char> TypeString(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> typeStr, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName);
 		};
 	}
 }

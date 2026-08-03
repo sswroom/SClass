@@ -1,4 +1,9 @@
 #include "Stdafx.h"
+#include "IO/Java/JavaAnnotation.h"
+#include "IO/Java/JavaArrayValue.h"
+#include "IO/Java/JavaMethod.h"
+#include "IO/Java/JavaStringValue.h"
+#include "Net/WebUtil.h"
 #include "SSWR/AVIRead/AVIRJavaClassForm.h"
 
 void __stdcall SSWR::AVIRead::AVIRJavaClassForm::OnMethodsSelChg(AnyType userObj)
@@ -50,8 +55,11 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(Optional<UI::GUIClientContro
 	this->txtDecompile->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtDecompile->SetReadOnly(true);
 
+	this->ctrlRest = nullptr;
+
 	UIntOS i = 0;
 	UIntOS j = this->clsFile->FieldsGetCount();
+	UIntOS k;
 	while (i < j)
 	{
 		sb.ClearStr();
@@ -73,11 +81,171 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(Optional<UI::GUIClientContro
 	sb.ClearStr();
 	this->clsFile->DecompileFile(sb);
 	this->txtDecompile->SetText(sb.ToCString());
+
+	UnsafeArray<UInt8> annoPtr;
+	UInt32 annoLen;
+	if (this->clsFile->GetAnnotations(annoLen).SetTo(annoPtr))
+	{
+		Data::ArrayListNN<IO::Java::JavaAnnotation> annoList;
+		IO::Java::JavaElementValue::ParseAnnotations(annoList, this->clsFile, annoPtr, annoPtr + annoLen);
+		NN<IO::Java::JavaAnnotation> anno;
+		Bool isRestController = false;
+		Optional<Text::String> mapPath = nullptr;
+		i = 0;
+		j = annoList.GetCount();
+		while (i < j)
+		{
+			anno = annoList.GetItemNoCheck(i);
+			NN<Text::String> typeStr = anno->GetAnnoType()->GetTypeStr();
+			if (typeStr->Equals(UTF8STRC("Lorg/springframework/web/bind/annotation/RestController;")))
+			{
+				isRestController = true;
+			}
+			else if (typeStr->Equals(UTF8STRC("Lorg/springframework/web/bind/annotation/RequestMapping;")))
+			{
+				NN<IO::Java::JavaElementValue> value;
+				if (anno->GetValue(CSTR("value")).SetTo(value))
+				{
+					if (value->GetElementType() == IO::Java::JavaElementValue::ElementType::Array)
+					{
+						NN<IO::Java::JavaArrayValue> arr = NN<IO::Java::JavaArrayValue>::ConvertFrom(value);
+						if (arr->GetItem(0).SetTo(value))
+						{
+							if (value->GetElementType() == IO::Java::JavaElementValue::ElementType::String)
+							{
+								OPTSTR_DEL(mapPath);
+								mapPath = NN<IO::Java::JavaStringValue>::ConvertFrom(value)->GetString()->Clone();
+							}
+						}
+					}
+					else if (value->GetElementType() == IO::Java::JavaElementValue::ElementType::String)
+					{
+						OPTSTR_DEL(mapPath);
+						mapPath = NN<IO::Java::JavaStringValue>::ConvertFrom(value)->GetString()->Clone();
+					}
+				}
+			}
+			i++;
+		}
+		annoList.DeleteAll();
+		if (isRestController)
+		{
+			NN<Controller> ctrl;
+			ctrl = MemAllocNN(Controller);
+			this->ctrlRest = ctrl;
+			ctrl->tp = this->tcMain->AddTabPage(CSTR("Controller"));
+			ctrl->pnlPath = ui->NewPanel(ctrl->tp);
+			ctrl->pnlPath->SetRect(0, 0, 100, 31, false);
+			ctrl->pnlPath->SetDockType(UI::GUIControl::DOCK_TOP);
+			ctrl->lblPath = ui->NewLabel(ctrl->pnlPath, CSTR("Path:"));
+			ctrl->lblPath->SetRect(4, 4, 100, 23, false);
+			ctrl->txtPath = ui->NewTextBox(ctrl->pnlPath, CSTR(""));
+			ctrl->txtPath->SetRect(104, 4, 400, 23, false);
+			ctrl->txtPath->SetReadOnly(true);
+			ctrl->lvMain = ui->NewListView(ctrl->tp, UI::ListViewStyle::Table, 4);
+			ctrl->lvMain->SetDockType(UI::GUIControl::DOCK_FILL);
+			ctrl->lvMain->AddColumn(CSTR("Path"), 200);
+			ctrl->lvMain->AddColumn(CSTR("Method"), 80);
+			ctrl->lvMain->AddColumn(CSTR("Return Type"), 200);
+			ctrl->lvMain->AddColumn(CSTR("Method"), 500);
+			ctrl->mapPath = mapPath;
+			NN<Text::String> path;
+			if (mapPath.SetTo(path))
+			{
+				ctrl->txtPath->SetText(path->ToCString());
+			}
+
+			Text::StringBuilderUTF8 sb;
+			Data::ArrayListStringNN importList;
+			i = 0;
+			j = this->clsFile->GetMethodCount();
+			while (i < j)
+			{
+				UnsafeArray<UInt8> methodPtr;
+				NN<IO::Java::JavaMethod> method;
+				NN<IO::Java::JavaAnnotation> anno;
+				if (this->clsFile->GetMethod(i).SetTo(methodPtr))
+				{
+					if (IO::Java::JavaMethod::ParseMethod(this->clsFile, methodPtr).SetTo(method))
+					{
+						k = method->GetAnnotationCount();
+						while (k-- > 0)
+						{
+							if (method->GetAnnotation(k).SetTo(anno))
+							{
+								Net::WebUtil::RequestMethod reqMethod = Net::WebUtil::RequestMethod::Unknown;
+								if (anno->GetAnnoType()->GetTypeStr()->Equals(UTF8STRC("Lorg/springframework/web/bind/annotation/GetMapping;")))
+								{
+									reqMethod = Net::WebUtil::RequestMethod::HTTP_GET;
+								}
+								else if (anno->GetAnnoType()->GetTypeStr()->Equals(UTF8STRC("Lorg/springframework/web/bind/annotation/PostMapping;")))
+								{
+									reqMethod = Net::WebUtil::RequestMethod::HTTP_POST;
+								}
+								else if (anno->GetAnnoType()->GetTypeStr()->Equals(UTF8STRC("Lorg/springframework/web/bind/annotation/PutMapping;")))
+								{
+									reqMethod = Net::WebUtil::RequestMethod::HTTP_PUT;
+								}
+								else if (anno->GetAnnoType()->GetTypeStr()->Equals(UTF8STRC("Lorg/springframework/web/bind/annotation/DeleteMapping;")))
+								{
+									reqMethod = Net::WebUtil::RequestMethod::HTTP_DELETE;
+								}
+								else if (anno->GetAnnoType()->GetTypeStr()->Equals(UTF8STRC("Lorg/springframework/web/bind/annotation/PatchMapping;")))
+								{
+									reqMethod = Net::WebUtil::RequestMethod::HTTP_PATCH;
+								}
+								if (reqMethod != Net::WebUtil::RequestMethod::Unknown)
+								{
+									NN<IO::Java::JavaElementValue> value;
+									if (anno->GetValue(CSTR("value")).SetTo(value))
+									{
+										if (value->GetElementType() == IO::Java::JavaElementValue::ElementType::Array)
+										{
+											NN<IO::Java::JavaArrayValue>::ConvertFrom(value)->GetItem(0).SetTo(value);
+										}
+
+										if (value->GetElementType() == IO::Java::JavaElementValue::ElementType::String)
+										{
+											sb.ClearStr();
+											sb.AppendOpt(mapPath);
+											sb.Append(NN<IO::Java::JavaStringValue>::ConvertFrom(value)->GetString());
+											k = ctrl->lvMain->AddItem(sb.ToCString(), 0);
+											ctrl->lvMain->SetSubItem(k, 1, Net::WebUtil::RequestMethodGetName(reqMethod));
+											sb.ClearStr();
+											method->GetReturnType()->ToString(sb, importList, nullptr);
+											ctrl->lvMain->SetSubItem(k, 2, sb.ToCString());
+											sb.ClearStr();
+											method->ToDeclarationNameParams(sb, importList, nullptr);
+											ctrl->lvMain->SetSubItem(k, 3, sb.ToCString());
+										}
+									}
+									break;
+								}
+							}
+						}
+						method.Delete();
+					}
+				}
+				i++;
+			}
+			importList.FreeAll();
+		}
+		else
+		{
+			OPTSTR_DEL(mapPath);
+		}
+	}
 }
 
 SSWR::AVIRead::AVIRJavaClassForm::~AVIRJavaClassForm()
 {
 	this->clsFile.Delete();
+	NN<Controller> ctrl;
+	if (this->ctrlRest.SetTo(ctrl))
+	{
+		OPTSTR_DEL(ctrl->mapPath);
+		MemFreeNN(ctrl);
+	}
 }
 
 void SSWR::AVIRead::AVIRJavaClassForm::OnMonitorChanged()

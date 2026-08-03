@@ -115,7 +115,6 @@ namespace IO
 			UnsafeArrayOpt<UnsafeArray<UInt8>> attrs;
 			UInt16 signatureIndex;
 
-			static UnsafeArray<const UInt8> Type2String(UnsafeArray<const UInt8> typeStr, NN<Text::StringBuilderUTF8> sb);
 			static Text::CStringNN CondType2String(CondType ct);
 			static Text::CStringNN CondType2IString(CondType ct);
 			static void AppendCond(NN<Text::StringBuilderUTF8> sb, NN<DecompileEnv> env, UIntOS index, CondType ct, Bool inv);
@@ -138,7 +137,6 @@ namespace IO
 			UnsafeArray<const UInt8> DetailElementValue(UnsafeArray<const UInt8> annoPtr, UnsafeArray<const UInt8> annoEnd, NN<Text::StringBuilderUTF8> sb, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const;
 			UnsafeArray<const UInt8> DetailStackMapFrame(UnsafeArray<const UInt8> currPtr, UnsafeArray<const UInt8> ptrEnd, UIntOS lev, NN<Text::StringBuilderUTF8> sb) const;
 			UnsafeArray<const UInt8> DetailVerificationTypeInfo(UnsafeArray<const UInt8> currPtr, UnsafeArray<const UInt8> ptrEnd, UIntOS lev, NN<Text::StringBuilderUTF8> sb) const;
-			UnsafeArrayOpt<UTF8Char> GetConstName(UnsafeArray<UTF8Char> sbuff, UInt16 index) const;
 			Bool ClassNameString(UInt16 index, NN<Text::StringBuilderUTF8> sb) const;
 			UnsafeArray<UTF8Char> GetLVName(UnsafeArray<UTF8Char> sbuff, UInt16 index, NN<const MethodInfo> method, UIntOS codeOfst) const;
 			UnsafeArray<UTF8Char> GetLVType(UnsafeArray<UTF8Char> sbuff, UInt16 index, NN<const MethodInfo> method, UIntOS codeOfst, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const;
@@ -151,7 +149,6 @@ namespace IO
 			void AppendCodeField(NN<Text::StringBuilderUTF8> sb, UIntOS index, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const;
 			void AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UIntOS index, UIntOS lev, Bool disasm, Bool decompile, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const;
 			void AppendCodeMethodCodes(NN<Text::StringBuilderUTF8> sb, UIntOS lev, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName, UnsafeArray<const UInt8> codeAttr, UnsafeArray<const UTF8Char> typeBuff, NN<const MethodInfo> method) const;
-			static UnsafeArray<const UTF8Char> AppendCodeType2String(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> typeStr, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName);
 
 			void Init(Data::ByteArrayR buff);
 		public:
@@ -160,6 +157,14 @@ namespace IO
 			virtual ~JavaClass();
 
 			virtual IO::ParserType GetParserType() const;
+			UInt16 GetAccessFlags() const;
+			UnsafeArrayOpt<UInt8> GetConst(UInt16 index) const;
+			UnsafeArrayOpt<UInt8> GetConstUTF8(UInt16 index, OutParam<UIntOS> len) const;
+			UnsafeArrayOpt<UTF8Char> GetConstUTF8(UnsafeArray<UTF8Char> sbuff, UInt16 index) const;
+			UnsafeArrayOpt<UTF8Char> GetSignature(UnsafeArray<UTF8Char> sbuff) const;
+			UnsafeArrayOpt<UInt8> GetAnnotations(OutParam<UInt32> len) const;
+			UIntOS GetMethodCount() const;
+			UnsafeArrayOpt<UInt8> GetMethod(UIntOS index) const;
 
 			Bool GetClassNameFull(NN<Text::StringBuilderUTF8> sb) const;
 			Bool GetSuperClass(NN<Text::StringBuilderUTF8> sb) const;

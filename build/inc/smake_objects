@@ -720,8 +720,15 @@ TIFFFileAnalyse.o: ../../src/IO/FileAnalyse/TIFFFileAnalyse.cpp
 TSFileAnalyse.o: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp
 TXTFileAnalyse.o: ../../src/IO/FileAnalyse/TXTFileAnalyse.cpp
 ZIPFileAnalyse.o: ../../src/IO/FileAnalyse/ZIPFileAnalyse.cpp
+JavaAnnotation.o: ../../src/IO/Java/JavaAnnotation.cpp
+JavaArrayValue.o: ../../src/IO/Java/JavaArrayValue.cpp
 JavaClass.o: ../../src/IO/Java/JavaClass.cpp
+JavaElementValue.o: ../../src/IO/Java/JavaElementValue.cpp
+JavaIntegerValue.o: ../../src/IO/Java/JavaIntegerValue.cpp
+JavaMethod.o: ../../src/IO/Java/JavaMethod.cpp
 JavaProperties.o: ../../src/IO/Java/JavaProperties.cpp
+JavaStringValue.o: ../../src/IO/Java/JavaStringValue.cpp
+JavaType.o: ../../src/IO/Java/JavaType.cpp
 JavaUtil.o: ../../src/IO/Java/JavaUtil.cpp
 BluetoothCtlProgCtrl.o: ../../src/IO/ProgCtrl/BluetoothCtlProgCtrl.cpp
 JTT808ProtocolDecoder.o: ../../src/IO/ProtoDec/JTT808ProtocolDecoder.cpp
@@ -2152,6 +2159,7 @@ AVIRIPScanDetectorForm.o: ../../src/SSWR/AVIRead/AVIRIPScanDetectorForm.cpp
 AVIRIPScanForm.o: ../../src/SSWR/AVIRead/AVIRIPScanForm.cpp
 AVIRJasyptForm.o: ../../src/SSWR/AVIRead/AVIRJasyptForm.cpp
 AVIRJavaClassForm.o: ../../src/SSWR/AVIRead/AVIRJavaClassForm.cpp
+AVIRJavaSpringForm.o: ../../src/SSWR/AVIRead/AVIRJavaSpringForm.cpp
 AVIRJMeterLogForm.o: ../../src/SSWR/AVIRead/AVIRJMeterLogForm.cpp
 AVIRJSTextForm.o: ../../src/SSWR/AVIRead/AVIRJSTextForm.cpp
 AVIRJTT808ServerForm.o: ../../src/SSWR/AVIRead/AVIRJTT808ServerForm.cpp

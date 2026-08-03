@@ -3,7 +3,9 @@
 #include "IO/Java/JavaClass.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIForm.h"
+#include "UI/GUILabel.h"
 #include "UI/GUIListBox.h"
+#include "UI/GUIListView.h"
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
@@ -15,6 +17,18 @@ namespace SSWR
 	{
 		class AVIRJavaClassForm : public UI::GUIForm
 		{
+		private:
+			struct Controller
+			{
+				NN<UI::GUITabPage> tp;
+				NN<UI::GUIPanel> pnlPath;
+				NN<UI::GUILabel> lblPath;
+				NN<UI::GUITextBox> txtPath;
+				NN<UI::GUIListView> lvMain;
+
+				Optional<Text::String> mapPath;
+			};
+
 		private:
 			NN<UI::GUITabControl> tcMain;
 
@@ -31,6 +45,8 @@ namespace SSWR
 
 			NN<UI::GUITabPage> tpDecompile;
 			NN<UI::GUITextBox> txtDecompile;
+
+			Optional<Controller> ctrlRest;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<IO::Java::JavaClass> clsFile;
