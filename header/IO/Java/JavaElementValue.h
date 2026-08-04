@@ -16,7 +16,10 @@ namespace IO
 				String,
 				Annotation,
 				Array,
-				Integer
+				Integer,
+				Boolean,
+				Enum,
+				Class
 			};
 		public:
 			virtual ~JavaElementValue(){};

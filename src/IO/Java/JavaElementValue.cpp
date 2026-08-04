@@ -1,7 +1,10 @@
 #include "Stdafx.h"
 #include "IO/Java/JavaAnnotation.h"
 #include "IO/Java/JavaArrayValue.h"
+#include "IO/Java/JavaBooleanValue.h"
+#include "IO/Java/JavaClassValue.h"
 #include "IO/Java/JavaElementValue.h"
+#include "IO/Java/JavaEnumValue.h"
 #include "IO/Java/JavaIntegerValue.h"
 #include "IO/Java/JavaStringValue.h"
 
@@ -65,25 +68,69 @@ Optional<IO::Java::JavaElementValue> IO::Java::JavaElementValue::ParseElementVal
 		annoPtr.Set(anno + 3);
 		return nullptr;
 	}
+	else if (anno[0] == 'Z') //boolean
+	{
+		if (cls->GetConst(ReadMUInt16(&anno[1])).SetTo(constPtr))
+		{
+			if (constPtr[0] == 3) //Integer
+			{
+				NN<JavaBooleanValue> val;
+				NEW_CLASSNN(val, JavaBooleanValue(ReadMInt32(&constPtr[1]) != 0));
+				annoPtr.Set(anno + 3);
+				return val;
+			}
+		}
+		annoPtr.Set(anno + 3);
+		return nullptr;
+	}
+	else if (anno[0] == 'c') //class
+	{
+		if (cls->GetConst(ReadMUInt16(&anno[1])).SetTo(constPtr))
+		{
+			if (constPtr[0] == 1)
+			{
+				NN<JavaType> type;
+				NN<JavaClassValue> val;
+				NEW_CLASSNN(type, JavaType(Text::CStringNN(&constPtr[3], ReadMUInt16(&constPtr[1]))));
+				NEW_CLASSNN(val, JavaClassValue(type));
+				anno += 5;
+				annoPtr.Set(anno);
+				return val;
+			}
+		}
+		annoPtr.Set(anno + 3);
+		return nullptr;
+	}
 /*	else if (anno[0] == 's' || anno[0] == 'B' || anno[0] == 'C' || anno[0] == 'D' || anno[0] == 'F' || anno[0] == 'I' || anno[0] == 'J' || anno[0] == 'S' || anno[0] == 'Z')
 	{
 		this->DetailConstVal(ReadMUInt16(&anno[1]), sb, false);
 		anno += 3;
 		annoPtr.Set(anno);
 		return anno;
-	}
+	}*/
 	else if (anno[0] == 'e')
 	{
 		UInt16 type_name_index = ReadMUInt16(&anno[1]);
 		UInt16 const_name_index = ReadMUInt16(&anno[3]);
-		this->DetailType(type_name_index, sb, importList, packageName);
-		sb->AppendUTF8Char('.');
-		sptr = this->GetConstUTF8(sbuff, const_name_index).Or(sbuff);
-		sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
+		UnsafeArray<UInt8> typeNamePtr;
+		UnsafeArray<UInt8> constNamePtr;
+		if (cls->GetConst(type_name_index).SetTo(typeNamePtr) && cls->GetConst(const_name_index).SetTo(constNamePtr))
+		{
+			if (typeNamePtr[0] == 1 && constNamePtr[0] == 1)
+			{
+				NN<JavaType> type;
+				NN<JavaEnumValue> val;
+				NEW_CLASSNN(type, JavaType(Text::CStringNN(&typeNamePtr[3], ReadMUInt16(&typeNamePtr[1]))));
+				NEW_CLASSNN(val, JavaEnumValue(type, Text::CStringNN(&constNamePtr[3], ReadMUInt16(&constNamePtr[1]))));
+				anno += 5;
+				annoPtr.Set(anno);
+				return val;
+			}
+		}
 		anno += 5;
 		annoPtr.Set(anno);
-		return anno;
-	}*/
+		return nullptr;
+	}
 	else if (anno[0] == '@') //Annotation
 	{
 		anno += 1;

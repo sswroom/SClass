@@ -2633,10 +2633,16 @@ IO/Java/JavaAnnotation.h:
 @JavaAnnotation.o
 IO/Java/JavaArrayValue.h:
 @JavaArrayValue.o
+IO/Java/JavaBooleanValue.h:
+@JavaBooleanValue.o
 IO/Java/JavaClass.h:
 @JavaClass.o
+IO/Java/JavaClassValue.h:
+@JavaClassValue.o
 IO/Java/JavaElementValue.h:
 @JavaElementValue.o
+IO/Java/JavaEnumValue.h:
+@JavaEnumValue.o
 IO/Java/JavaIntegerValue.h:
 @JavaIntegerValue.o
 IO/Java/JavaMethod.h:

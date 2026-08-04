@@ -100,7 +100,12 @@ Optional<IO::Java::JavaType> IO::Java::JavaType::ParseType(InOutParam<UnsafeArra
 				}
 				else if (typePtr[0] == 'V')
 				{
-
+				}
+				else if (typePtr[0] == 'I')
+				{
+				}
+				else if (typePtr[0] == 'Z')
+				{
 				}
 				else if (typePtr[0] == '*')
 				{
@@ -116,6 +121,8 @@ Optional<IO::Java::JavaType> IO::Java::JavaType::ParseType(InOutParam<UnsafeArra
 			}
 		}
 	case 'V': //void
+	case 'I': //Integer
+	case 'Z': //Boolean
 		NEW_CLASSNN(jType, IO::Java::JavaType(CSTRP(typeStart, typePtr + 1)));
 		typeStr.Set(typePtr + 1);
 		return jType;

@@ -722,8 +722,11 @@ TXTFileAnalyse.o: ../../src/IO/FileAnalyse/TXTFileAnalyse.cpp
 ZIPFileAnalyse.o: ../../src/IO/FileAnalyse/ZIPFileAnalyse.cpp
 JavaAnnotation.o: ../../src/IO/Java/JavaAnnotation.cpp
 JavaArrayValue.o: ../../src/IO/Java/JavaArrayValue.cpp
+JavaBooleanValue.o: ../../src/IO/Java/JavaBooleanValue.cpp
 JavaClass.o: ../../src/IO/Java/JavaClass.cpp
+JavaClassValue.o: ../../src/IO/Java/JavaClassValue.cpp
 JavaElementValue.o: ../../src/IO/Java/JavaElementValue.cpp
+JavaEnumValue.o: ../../src/IO/Java/JavaEnumValue.cpp
 JavaIntegerValue.o: ../../src/IO/Java/JavaIntegerValue.cpp
 JavaMethod.o: ../../src/IO/Java/JavaMethod.cpp
 JavaProperties.o: ../../src/IO/Java/JavaProperties.cpp

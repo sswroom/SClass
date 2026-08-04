@@ -1,10 +1,12 @@
 #include "Stdafx.h"
 #include "IO/DirectoryPackage.h"
+#include "IO/FileStream.h"
 #include "IO/Java/JavaAnnotation.h"
 #include "IO/Java/JavaArrayValue.h"
 #include "IO/Java/JavaMethod.h"
 #include "IO/Java/JavaStringValue.h"
 #include "SSWR/AVIRead/AVIRJavaSpringForm.h"
+#include "UI/GUIFileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRJavaSpringForm::FreeControllerRequest(NN<ControllerRequest> req)
 {
@@ -17,7 +19,34 @@ void __stdcall SSWR::AVIRead::AVIRJavaSpringForm::FreeControllerRequest(NN<Contr
 
 void __stdcall SSWR::AVIRead::AVIRJavaSpringForm::OnControllerSaveClicked(AnyType userObj)
 {
-
+	NN<SSWR::AVIRead::AVIRJavaSpringForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJavaSpringForm>();
+	if (me->reqList.GetCount() > 0)
+	{
+		NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"JavaSpring", true);
+		dlg->AddFilter(CSTR("*.csv"), CSTR("CSV File"));
+		if (dlg->ShowDialog(me->GetHandle()))
+		{
+			UnsafeArrayOpt<const UTF8Char> csvArr[5];
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(UTF8STRC("Path,Request Method,Return Type,Source File,Declaration Name\r\n"));
+			UIntOS i = 0;
+			UIntOS j = me->reqList.GetCount();
+			while (i < j)
+			{
+				NN<ControllerRequest> req = me->reqList.GetItemNoCheck(i);
+				csvArr[0] = UnsafeArray<const UTF8Char>(req->path->v);
+				csvArr[1] = Net::WebUtil::RequestMethodGetName(req->reqMethod).v;
+				csvArr[2] = UnsafeArray<const UTF8Char>(req->returnType->v);
+				csvArr[3] = UnsafeArray<const UTF8Char>(req->sourceFile->v);
+				csvArr[4] = UnsafeArray<const UTF8Char>(req->declName->v);
+				sb.AppendCSV(csvArr, 5);
+				sb.AppendC(UTF8STRC("\r\n"));
+				i++;
+			}
+			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			fs.Write(sb.ToByteArray());
+		}
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRJavaSpringForm::OnDirectoryDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
