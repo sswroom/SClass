@@ -4755,6 +4755,24 @@ void IO::Java::JavaClass::Init(Data::ByteArrayR buff)
 			}
 			ofst += 5;
 			break;
+		case 19: //CONSTANT_Module
+			if (ofst + 3 > this->fileBuffSize)
+			{
+				this->constPoolCnt = i;
+				valid = false;
+				break;
+			}
+			ofst += 3;
+			break;
+		case 20: //CONSTANT_Package
+			if (ofst + 3 > this->fileBuffSize)
+			{
+				this->constPoolCnt = i;
+				valid = false;
+				break;
+			}
+			ofst += 3;
+			break;
 		default:
 			printf("Constant Pool %d/%d, unknown tag %d\r\n", i, constant_pool_count, fileBuff[ofst]);
 			this->constPoolCnt = i;

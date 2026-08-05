@@ -1,10 +1,13 @@
 #include "Stdafx.h"
 #include "IO/DirectoryPackage.h"
 #include "IO/FileStream.h"
+#include "IO/Path.h"
 #include "IO/Java/JavaAnnotation.h"
 #include "IO/Java/JavaArrayValue.h"
+#include "IO/Java/JavaEnumValue.h"
 #include "IO/Java/JavaMethod.h"
 #include "IO/Java/JavaStringValue.h"
+#include "IO/StmData/FileData.h"
 #include "SSWR/AVIRead/AVIRJavaSpringForm.h"
 #include "UI/GUIFileDialog.h"
 
@@ -60,18 +63,37 @@ void __stdcall SSWR::AVIRead::AVIRJavaSpringForm::OnDirectoryDrop(AnyType userOb
 
 Bool SSWR::AVIRead::AVIRJavaSpringForm::LoadPath(Text::CStringNN path)
 {
-	IO::DirectoryPackage pkg(path);
-	return this->LoadPackage(pkg);
+	IO::Path::PathType pt = IO::Path::GetPathType(path);
+	if (pt == IO::Path::PathType::Directory)
+	{
+		IO::DirectoryPackage pkg(path);
+		return this->LoadClasses(pkg);
+	}
+	else if (pt == IO::Path::PathType::File)
+	{
+		if (path.EndsWithICase(UTF8STRC(".jar")) || path.EndsWithICase(UTF8STRC(".zip")))
+		{
+			IO::StmData::FileData fd(path, false);
+			NN<IO::PackageFile> pkg;
+			if (Optional<IO::PackageFile>::ConvertFrom(this->core->GetParserList()->ParseFileType(fd, IO::ParserType::PackageFile)).SetTo(pkg))
+			{
+				Bool succ = this->LoadClasses(pkg);
+				pkg.Delete();
+				return succ;
+			}
+		}
+	}
+	return false;
 }
 
-Bool SSWR::AVIRead::AVIRJavaSpringForm::LoadPackage(NN<IO::PackageFile> pkg)
+Bool SSWR::AVIRead::AVIRJavaSpringForm::LoadClasses(NN<IO::PackageFile> pkg)
 {
 	this->reqList.FreeAll(FreeControllerRequest);
 	this->lvController->ClearItems();
-	return this->LoadPackageInner(pkg);
+	return this->LoadClassesInner(pkg);
 }
 
-Bool SSWR::AVIRead::AVIRJavaSpringForm::LoadPackageInner(NN<IO::PackageFile> pkg)
+Bool SSWR::AVIRead::AVIRJavaSpringForm::LoadClassesInner(NN<IO::PackageFile> pkg)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -102,7 +124,7 @@ Bool SSWR::AVIRead::AVIRJavaSpringForm::LoadPackageInner(NN<IO::PackageFile> pkg
 			NN<IO::PackageFile> subPkg;
 			if (pkg->GetItemPack(i, needRelease).SetTo(subPkg))
 			{
-				this->LoadPackageInner(subPkg);
+				this->LoadClassesInner(subPkg);
 				if (needRelease)
 				{
 					subPkg.Delete();
@@ -146,6 +168,14 @@ void SSWR::AVIRead::AVIRJavaSpringForm::LoadFile(NN<IO::StreamData> fd)
 					anno = annoList.GetItemNoCheck(i);
 					NN<Text::String> typeStr = anno->GetAnnoType()->GetTypeStr();
 					if (typeStr->Equals(UTF8STRC("Lorg/springframework/web/bind/annotation/RestController;")))
+					{
+						isRestController = true;
+					}
+					else if (typeStr->Equals(UTF8STRC("Lorg/springframework/web/bind/annotation/Controller;")))
+					{
+						isRestController = true;
+					}
+					else if (typeStr->Equals(UTF8STRC("Lorg/springframework/stereotype/Controller;")))
 					{
 						isRestController = true;
 					}
@@ -216,6 +246,45 @@ void SSWR::AVIRead::AVIRJavaSpringForm::LoadFile(NN<IO::StreamData> fd)
 										else if (anno->GetAnnoType()->GetTypeStr()->Equals(UTF8STRC("Lorg/springframework/web/bind/annotation/PatchMapping;")))
 										{
 											reqMethod = Net::WebUtil::RequestMethod::HTTP_PATCH;
+										}
+										else if (anno->GetAnnoType()->GetTypeStr()->Equals(UTF8STRC("Lorg/springframework/web/bind/annotation/RequestMapping;")))
+										{
+											NN<IO::Java::JavaElementValue> value;
+											if (anno->GetValue(CSTR("method")).SetTo(value))
+											{
+												if (value->GetElementType() == IO::Java::JavaElementValue::ElementType::Array)
+												{
+													NN<IO::Java::JavaArrayValue>::ConvertFrom(value)->GetItem(0).SetTo(value);
+												}
+												if (value->GetElementType() == IO::Java::JavaElementValue::ElementType::Enum)
+												{
+													NN<IO::Java::JavaEnumValue> enumVal = NN<IO::Java::JavaEnumValue>::ConvertFrom(value);
+													if (enumVal->GetType()->GetTypeStr()->Equals(UTF8STRC("Lorg/springframework/web/bind/annotation/RequestMethod;")))
+													{
+														NN<Text::String> enumName = enumVal->GetConstName();
+														if (enumName->Equals(UTF8STRC("GET")))
+														{
+															reqMethod = Net::WebUtil::RequestMethod::HTTP_GET;
+														}
+														else if (enumName->Equals(UTF8STRC("POST")))
+														{
+															reqMethod = Net::WebUtil::RequestMethod::HTTP_POST;
+														}
+														else if (enumName->Equals(UTF8STRC("PUT")))
+														{
+															reqMethod = Net::WebUtil::RequestMethod::HTTP_PUT;
+														}
+														else if (enumName->Equals(UTF8STRC("DELETE")))
+														{
+															reqMethod = Net::WebUtil::RequestMethod::HTTP_DELETE;
+														}
+														else if (enumName->Equals(UTF8STRC("PATCH")))
+														{
+															reqMethod = Net::WebUtil::RequestMethod::HTTP_PATCH;
+														}
+													}
+												}
+											}
 										}
 										if (reqMethod != Net::WebUtil::RequestMethod::Unknown)
 										{

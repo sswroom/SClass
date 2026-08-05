@@ -40,8 +40,8 @@ namespace SSWR
 			static void __stdcall OnControllerSaveClicked(AnyType userObj);
 			static void __stdcall OnDirectoryDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			Bool LoadPath(Text::CStringNN path);
-			Bool LoadPackage(NN<IO::PackageFile> pkg);
-			Bool LoadPackageInner(NN<IO::PackageFile> pkg);
+			Bool LoadClasses(NN<IO::PackageFile> pkg);
+			Bool LoadClassesInner(NN<IO::PackageFile> pkg);
 			void LoadFile(NN<IO::StreamData> fd);
 		public:
 			AVIRJavaSpringForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
