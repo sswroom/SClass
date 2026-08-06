@@ -3364,7 +3364,7 @@ UnsafeArray<const UInt8> IO::Java::JavaClass::DetailElementValue(UnsafeArray<con
 		sb->AppendUTF8Char('}');
 		return annoPtr;
 	}
-	else if (annoPtr[0] == 's' || annoPtr[0] == 'B' || annoPtr[0] == 'C' || annoPtr[0] == 'D' || annoPtr[0] == 'F' || annoPtr[0] == 'I' || annoPtr[0] == 'J' || annoPtr[0] == 'S' || annoPtr[0] == 'Z')
+	else if (annoPtr[0] == 's' || annoPtr[0] == 'B' || annoPtr[0] == 'C' || annoPtr[0] == 'D' || annoPtr[0] == 'F' || annoPtr[0] == 'I' || annoPtr[0] == 'J' || annoPtr[0] == 'S' || annoPtr[0] == 'Z' || annoPtr[0] == 'c')
 	{
 		this->DetailConstVal(ReadMUInt16(&annoPtr[1]), sb, false);
 		annoPtr += 3;

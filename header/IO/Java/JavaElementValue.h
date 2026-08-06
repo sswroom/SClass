@@ -17,6 +17,7 @@ namespace IO
 				Annotation,
 				Array,
 				Integer,
+				Long,
 				Boolean,
 				Enum,
 				Class

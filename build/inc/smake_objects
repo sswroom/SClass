@@ -728,6 +728,7 @@ JavaClassValue.o: ../../src/IO/Java/JavaClassValue.cpp
 JavaElementValue.o: ../../src/IO/Java/JavaElementValue.cpp
 JavaEnumValue.o: ../../src/IO/Java/JavaEnumValue.cpp
 JavaIntegerValue.o: ../../src/IO/Java/JavaIntegerValue.cpp
+JavaLongValue.o: ../../src/IO/Java/JavaLongValue.cpp
 JavaMethod.o: ../../src/IO/Java/JavaMethod.cpp
 JavaProperties.o: ../../src/IO/Java/JavaProperties.cpp
 JavaStringValue.o: ../../src/IO/Java/JavaStringValue.cpp

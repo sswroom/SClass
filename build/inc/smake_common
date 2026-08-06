@@ -2645,6 +2645,8 @@ IO/Java/JavaEnumValue.h:
 @JavaEnumValue.o
 IO/Java/JavaIntegerValue.h:
 @JavaIntegerValue.o
+IO/Java/JavaLongValue.h:
+@JavaLongValue.o
 IO/Java/JavaMethod.h:
 @JavaMethod.o
 IO/Java/JavaProperties.h:
