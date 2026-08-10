@@ -1590,6 +1590,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupDelete(NN<Net::Web
 	}
 }
 
+//https://sswroom.no-ip.org/api/groupdetail?id=23893&cateId=102
 Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupDetail(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
 	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
@@ -1647,13 +1648,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupDetail(NN<Net::Web
 		json.ArrayEnd();
 		UIntOS i = 0;
 		UIntOS j = group->species.GetCount();
-		Sync::RWMutexUsage mutUsage;
 		json.ObjectBeginArray(CSTR("childSpecies"));
 		while (i < j)
 		{
 			NN<SpeciesInfo> sp = group->species.GetItemNoCheck(i);
 			json.ArrayBeginObject();
-			me->AppendSpeciesDispInfo(json, sp, mutUsage);
+			me->AppendSpeciesDispInfo(json, sp, groupMutUsage);
 			json.ObjectEnd();
 			i++;
 		}
