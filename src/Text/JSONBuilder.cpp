@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Map/MapDrawLayer.h"
 #include "Math/Geometry/CurvePolygon.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/Point.h"
@@ -332,7 +333,7 @@ Bool Text::JSONBuilder::ArrayAddInt32(Int32 val)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->sb.AppendI32(val);
 	return true;
@@ -346,7 +347,7 @@ Bool Text::JSONBuilder::ArrayAddNInt32(NInt32 val)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	if (val.IsNull())
 		this->sb.Append(CSTR("null"));
@@ -363,7 +364,7 @@ Bool Text::JSONBuilder::ArrayAddInt64(Int64 val)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->sb.AppendI64(val);
 	return true;
@@ -377,7 +378,7 @@ Bool Text::JSONBuilder::ArrayAddFloat64(Double val)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendDouble(val);
 	return true;
@@ -391,7 +392,7 @@ Bool Text::JSONBuilder::ArrayAddBool(Bool val)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->sb.Append(val?CSTR("true"):CSTR("false"));
 	return true;
@@ -405,7 +406,7 @@ Bool Text::JSONBuilder::ArrayAddStr(Text::CString val)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	Text::CStringNN nnval;
 	if (!val.SetTo(nnval))
@@ -427,7 +428,7 @@ Bool Text::JSONBuilder::ArrayAddStr(NN<Text::String> val)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendStrUTF8(val->v);
 	return true;
@@ -441,7 +442,7 @@ Bool Text::JSONBuilder::ArrayAddStrOpt(Optional<Text::PString> val)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	NN<Text::PString> nnval;
 	if (!val.SetTo(nnval))
@@ -463,7 +464,7 @@ Bool Text::JSONBuilder::ArrayAddStrOpt(Optional<Text::String> val)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	NN<Text::String> nnval;
 	if (!val.SetTo(nnval))
@@ -486,7 +487,7 @@ Bool Text::JSONBuilder::ArrayAddStrUTF8(UnsafeArrayOpt<const UTF8Char> val)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	UnsafeArray<const UTF8Char> nnval;
 	if (!val.SetTo(nnval))
@@ -508,7 +509,7 @@ Bool Text::JSONBuilder::ArrayAddNull()
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->sb.AppendC(UTF8STRC("null"));
 	return true;
@@ -522,7 +523,7 @@ Bool Text::JSONBuilder::ArrayAddCoord2D(Math::Coord2DDbl coord)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->sb.AppendUTF8Char('[');
 	this->AppendDouble(coord.x);
@@ -540,7 +541,7 @@ Bool Text::JSONBuilder::ArrayAddVector3(Math::Vector3 vec3)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->sb.AppendUTF8Char('[');
 	this->AppendDouble(vec3.GetX());
@@ -549,6 +550,64 @@ Bool Text::JSONBuilder::ArrayAddVector3(Math::Vector3 vec3)
 	this->sb.AppendUTF8Char(',');
 	this->AppendDouble(vec3.GetZ());
 	this->sb.AppendUTF8Char(']');
+	return true;
+}
+
+Bool Text::JSONBuilder::ArrayAddFeature(NN<Map::MapDrawLayer> layer, Int64 id, Optional<Map::NameArray> nameArr, NN<Map::GetObjectSess> sess)
+{
+	NN<Math::Geometry::Vector2D> vec;
+	if (this->currType != OT_ARRAY)
+		return false;
+	if (!layer->GetNewVectorById(sess, id).SetTo(vec))
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendUTF8Char(',');
+	}
+	this->sb.AppendC(UTF8STRC("{\"type\":\"Feature\","));
+	this->sb.AppendC(UTF8STRC("\"properties\":{"));
+	Bool found = false;
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
+	Text::StringBuilderUTF8 sb;
+	UIntOS i = 0;
+	UIntOS j = layer->GetColumnCnt();
+	while (i < j)
+	{
+		DB::DBUtil::ColType colType = layer->GetColumnType(i, nullptr);
+		if (colType == DB::DBUtil::CT_Vector)
+		{
+		}
+		else
+		{
+			if (found)
+			{
+				this->sb.AppendUTF8Char(',');
+			}
+			else
+			{
+				found = true;
+			}
+			sptr = layer->GetColumnName(sbuff, i).Or(sbuff);
+			this->AppendStr(CSTRP(sbuff, sptr));
+			this->sb.AppendUTF8Char(':');
+			sb.ClearStr();
+			if (layer->GetString(sb, nameArr, id, i))
+			{
+				this->AppendStr(sb.ToCString());
+			}
+			else
+			{
+				this->sb.AppendC(UTF8STRC("null"));
+			}
+		}
+		i++;
+	}
+	this->sb.AppendC(UTF8STRC("},\"geometry\":"));
+	this->AppendGeometry(vec);
+	this->sb.AppendUTF8Char('}');
 	return true;
 }
 
@@ -612,7 +671,7 @@ Bool Text::JSONBuilder::ArrayBeginObject()
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->objTypes.Add(OT_ARRAY);
 	this->currType = OT_OBJECT;
@@ -629,7 +688,7 @@ Bool Text::JSONBuilder::ArrayBeginArray()
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->objTypes.Add(OT_ARRAY);
 	this->currType = OT_ARRAY;
@@ -659,7 +718,7 @@ Bool Text::JSONBuilder::ObjectAddFloat64(Text::CStringNN name, Double val)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":"));
@@ -675,7 +734,7 @@ Bool Text::JSONBuilder::ObjectAddInt32(Text::CStringNN name, Int32 val)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":"));
@@ -691,7 +750,7 @@ Bool Text::JSONBuilder::ObjectAddNInt32(Text::CStringNN name, NInt32 val)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":"));
@@ -710,7 +769,7 @@ Bool Text::JSONBuilder::ObjectAddInt64(Text::CStringNN name, Int64 val)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":"));
@@ -726,7 +785,7 @@ Bool Text::JSONBuilder::ObjectAddUInt64(Text::CStringNN name, UInt64 val)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":"));
@@ -742,7 +801,7 @@ Bool Text::JSONBuilder::ObjectAddUInt64Str(Text::CStringNN name, UInt64 val)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":\""));
@@ -759,7 +818,7 @@ Bool Text::JSONBuilder::ObjectAddBool(Text::CStringNN name, Bool val)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":"));
@@ -775,7 +834,7 @@ Bool Text::JSONBuilder::ObjectAddStr(Text::CStringNN name, NN<const Text::String
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":"));
@@ -791,7 +850,7 @@ Bool Text::JSONBuilder::ObjectAddStr(Text::CStringNN name, Text::CString val)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":"));
@@ -814,7 +873,7 @@ Bool Text::JSONBuilder::ObjectAddStrOpt(Text::CStringNN name, Optional<Text::PSt
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":"));
@@ -838,7 +897,7 @@ Bool Text::JSONBuilder::ObjectAddStrUTF8(Text::CStringNN name, UnsafeArrayOpt<co
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":"));
@@ -945,7 +1004,7 @@ Bool Text::JSONBuilder::ObjectAddTSStr(Text::CStringNN name, Data::Timestamp ts)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendStr(name);
 	this->sb.AppendUTF8Char(':');
@@ -961,7 +1020,7 @@ Bool Text::JSONBuilder::ObjectAddDateStr(Text::CStringNN name, Data::Date dat)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendStr(name);
 	this->sb.AppendUTF8Char(':');
@@ -977,7 +1036,7 @@ Bool Text::JSONBuilder::ObjectAddNull(Text::CStringNN name)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":null"));
@@ -992,7 +1051,7 @@ Bool Text::JSONBuilder::ObjectAddArrayInt32(Text::CStringNN name, Optional<Data:
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendStr(name);
 	NN<Data::ArrayListNative<Int32>> nni32Arr;
@@ -1008,8 +1067,8 @@ Bool Text::JSONBuilder::ObjectAddArrayInt32(Text::CStringNN name, Optional<Data:
 		while (i < j)
 		{
 			if (i > 0)
-				sb.AppendUTF8Char(',');
-			sb.AppendI32(nni32Arr->GetItem(i));
+				this->sb.AppendUTF8Char(',');
+			this->sb.AppendI32(nni32Arr->GetItem(i));
 			i++;
 		}
 		this->sb.AppendUTF8Char(']');
@@ -1059,7 +1118,7 @@ Bool Text::JSONBuilder::ObjectAddArrayCoord2D(Text::CStringNN name, Optional<Dat
 		{
 			coord = nncoordArr->GetItem(i);
 			if (i > 0)
-				sb.AppendUTF8Char(',');
+				this->sb.AppendUTF8Char(',');
 			this->AppendCoord2D(coord);
 			i++;
 		}
@@ -1234,7 +1293,7 @@ Bool Text::JSONBuilder::ObjectBeginArray(Text::CStringNN name)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":["));
@@ -1252,12 +1311,30 @@ Bool Text::JSONBuilder::ObjectBeginObject(Text::CStringNN name)
 		this->isFirst = false;
 	else
 	{
-		this->sb.AppendC(UTF8STRC(","));
+		this->sb.AppendUTF8Char(',');
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":{"));
 	this->objTypes.Add(OT_OBJECT);
 	this->currType = OT_OBJECT;
+	this->isFirst = true;
+	return true;
+}
+
+Bool Text::JSONBuilder::ObjectBeginFeatureCollection()
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendUTF8Char(',');
+	}
+	this->sb.AppendC(UTF8STRC("\"type\":\"FeatureCollection\""));
+	this->sb.AppendC(UTF8STRC(",\"features\":["));
+	this->objTypes.Add(OT_OBJECT);
+	this->currType = OT_ARRAY;
 	this->isFirst = true;
 	return true;
 }
