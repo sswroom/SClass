@@ -2422,6 +2422,11 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 			colSize.Set(0xffffffff);
 			return DB::DBUtil::CT_Binary;
 		}
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("longblob")))
+		{
+			colSize.Set(0xffffffff);
+			return DB::DBUtil::CT_Binary;
+		}
 		else
 		{
 			colSize.Set(0);

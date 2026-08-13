@@ -781,11 +781,11 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 						{
 							if (k == TEXT_COL)
 							{
-								rowData[i] = this->GetNewText(i).OrNull();
+								rowData[i] = this->GetNewText(i);
 							}
 							else
 							{
-								rowData[i] = r->GetNewStr(k).OrNull();
+								rowData[i] = r->GetNewStr(k);
 							}
 							if (rowData[i].SetTo(s))
 							{
@@ -896,6 +896,17 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 											}
 											vec.Delete();
 										}
+									}
+									else if (col->GetColType() == DB::DBUtil::CT_Binary)
+									{
+										UIntOS binSize = r->GetBinarySize(k);
+										UnsafeArray<UInt8> binBuff = MemAllocArr(UInt8, binSize);
+										binSize = r->GetBinary(k, binBuff);
+										sb.ClearStr();
+										sb.AppendHexBuff(binBuff, binSize, 0, Text::LineBreakType::None);
+										OPTSTR_DEL(rowData[i]);
+										rowData[i] = Text::String::New(sb.ToCString());
+										MemFreeArr(binBuff);
 									}
 								}
 							}
@@ -1118,7 +1129,18 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 								break;
 							case DB::DBUtil::CT_Binary:
 								{
-									diff = true;
+									UIntOS binSize = r->GetBinarySize(i);
+									UnsafeArray<UInt8> binBuff = MemAllocArr(UInt8, binSize);
+									binSize = r->GetBinary(i, binBuff);
+									UIntOS bin2Size = rowDataStr->leng >> 1;
+									UnsafeArray<UInt8> bin2Buff = MemAllocArr(UInt8, bin2Size);
+									bin2Size = Text::StrHex2Bytes(rowDataStr->v, bin2Buff);
+									if (!Text::StrEqualsC(binBuff, binSize, bin2Buff, bin2Size))
+									{
+										diff = true;
+									}
+									MemFreeArr(binBuff);
+									MemFreeArr(bin2Buff);
 								}
 								break;
 							case DB::DBUtil::CT_UUID:
@@ -1516,9 +1538,9 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										break;
 									}
 								}
-								else if (table->GetCol(i).SetTo(col) && (srConv || simpleShape || fixError))
+								else if (table->GetCol(i).SetTo(col))
 								{
-									if (col->GetColType() == DB::DBUtil::CT_Vector)
+									if ((srConv || simpleShape || fixError) && col->GetColType() == DB::DBUtil::CT_Vector)
 									{
 										NN<Math::Geometry::Vector2D> vec;
 										if (r->GetVector(this->colInd.GetItem(i)).SetTo(vec))
@@ -1580,6 +1602,20 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 												rowData[i] = Text::String::New(sb.ToCString()).Ptr();
 											}
 											vec.Delete();
+										}
+									}
+									else if (col->GetColType() == DB::DBUtil::CT_Binary)
+									{
+										UIntOS binSize = r->GetBinarySize(this->colInd.GetItem(i));
+										if (binSize > 0)
+										{
+											UnsafeArray<UInt8> binBuff = MemAlloc(UInt8, binSize);
+											binSize = r->GetBinary(this->colInd.GetItem(i), binBuff);
+											sb.ClearStr();
+											sb.AppendHexBuff(binBuff, binSize, 0, Text::LineBreakType::None);
+											s2->Release();
+											rowData[i] = Text::String::New(sb.ToCString());
+											MemFreeArr(binBuff);
 										}
 									}
 								}
@@ -1919,6 +1955,22 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										}
 										break;
 									case DB::DBUtil::CT_Binary:
+										{
+											UnsafeArray<UInt8> binBuff = MemAllocArr(UInt8, s2->leng >> 1);
+											UIntOS binLeng = s2->Hex2Bytes(binBuff);
+											if (diff)
+											{
+												sql.AppendCmdC(CSTR(", "));
+											}
+											else
+											{
+												diff = true;
+											}
+											sql.AppendCol(col->GetColName()->v);
+											sql.AppendCmdC(CSTR(" = "));
+											sql.AppendBinary(UnsafeArray<const UInt8>(binBuff), binLeng);
+											MemFreeArr(binBuff);
+										}
 										break;
 									case DB::DBUtil::CT_UUID:
 										{
@@ -2138,6 +2190,33 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 								}
 								break;
 							case DB::DBUtil::CT_Binary:
+								{
+									UIntOS binLeng1 = r->GetBinarySize(i);
+									UnsafeArray<UInt8> binBuff1 = MemAllocArr(UInt8, binLeng1);
+									binLeng1 = r->GetBinary(i, binBuff1);
+									UIntOS binLeng2;
+									UnsafeArray<UInt8> binBuff2 = MemAllocArr(UInt8, s2->leng >> 1);
+									binLeng2 = s2->Hex2Bytes(binBuff2);
+									if (Text::StrEqualsC(binBuff1, binLeng1, binBuff2, binLeng2))
+									{
+									}
+									else
+									{
+										if (diff)
+										{
+											sql.AppendCmdC(CSTR(", "));
+										}
+										else
+										{
+											diff = true;
+										}
+										sql.AppendCol(col->GetColName()->v);
+										sql.AppendCmdC(CSTR(" = "));
+										sql.AppendBinary(UnsafeArray<const UInt8>(binBuff2), binLeng2);
+									}	
+									MemFreeArr(binBuff1);
+									MemFreeArr(binBuff2);
+								}
 								break;
 							case DB::DBUtil::CT_UUID:
 								{
@@ -2497,6 +2576,12 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(NN<DB::SQLBuilder> s
 		}
 		break;
 	case DB::DBUtil::CT_Binary:
+		{
+			UnsafeArray<UInt8> buff = MemAllocArr(UInt8, nns->leng >> 1);
+			UIntOS buffSize = Text::StrHex2Bytes(nns->v, buff);
+			sql->AppendBinary(UnsafeArray<const UInt8>(buff), buffSize);
+			MemFreeArr(buff);
+		}
 		break;
 	case DB::DBUtil::CT_UUID:
 		break;
