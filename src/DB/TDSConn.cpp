@@ -195,6 +195,7 @@ public:
 					cols[i].buff = nullptr;
 					break;
 				case SYBBINARY:
+				case SYBIMAGE:
 					cols[i].buffSize = 0;
 					cols[i].buff = nullptr;
 					break;
@@ -368,6 +369,7 @@ public:
 			return true;
 		}
 		case SYBBINARY:
+		case SYBIMAGE:
 			return false;
 		default:
 			printf("TDS: Unsupported type %d to str(sb)\r\n", cols[colIndex].type);
@@ -459,6 +461,7 @@ public:
 			return Text::String::NewP(sbuff, sptr);
 		}
 		case SYBBINARY:
+		case SYBIMAGE:
 			return nullptr;
 		default:
 			printf("TDS: Unsupported type %d to new str\r\n", cols[colIndex].type);
@@ -532,6 +535,7 @@ public:
 			printf("TDS: Geometry to string not supported\r\n");
 			return nullptr;
 		case SYBBINARY:
+		case SYBIMAGE:
 			return nullptr;
 		default:
 			printf("TDS: Unsupported type %d to str(s)\r\n", cols[colIndex].type);
@@ -602,7 +606,7 @@ public:
 		{
 			return 0;
 		}
-		if (cols[colIndex].type != SYBBINARY)
+		if (cols[colIndex].type != SYBBINARY && cols[colIndex].type != SYBIMAGE)
 			return 0;
 		return (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 	}
@@ -616,7 +620,7 @@ public:
 		{
 			return 0;
 		}
-		if (cols[colIndex].type != SYBBINARY)
+		if (cols[colIndex].type != SYBBINARY && cols[colIndex].type != SYBIMAGE)
 			return 0;
 		UIntOS dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 		UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
@@ -759,6 +763,7 @@ public:
 			return false;
 		}
 		case SYBBINARY:
+		case SYBIMAGE:
 		{
 			UIntOS dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 			UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
@@ -834,6 +839,7 @@ public:
 		case SYBGEOMETRY:
 			return DB::DBUtil::ColType::CT_Vector;
 		case SYBBINARY:
+		case SYBIMAGE:
 			return DB::DBUtil::ColType::CT_Binary;
 		case SYBUUID:
 			return DB::DBUtil::ColType::CT_UUID;
@@ -1189,6 +1195,13 @@ Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Tex
 	}
 	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, this->sqlType);
 	sb.AppendP(sbuff, sptr);
+	NN<Data::QueryConditions> nncondition;
+	if (condition.SetTo(nncondition))
+	{
+		Data::ArrayListNN<Data::Conditions::BooleanObject> condList;
+		sb.AppendC(UTF8STRC(" where "));
+		nncondition->ToWhereClause(sb, this->sqlType, this->GetTzQhr(), 100, condList);
+	}
 	if (this->sqlType == DB::SQLType::SQLite || this->sqlType == DB::SQLType::MySQL)
 	{
 		if (maxCnt > 0)

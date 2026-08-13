@@ -1058,6 +1058,13 @@ Optional<DB::DBReader> DB::ODBCConn::QueryTableData(Text::CString schemaName, Te
 	}
 	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, this->sqlType);
 	sb.AppendP(sbuff, sptr);
+	NN<Data::QueryConditions> nncondition;
+	if (condition.SetTo(nncondition))
+	{
+		Data::ArrayListNN<Data::Conditions::BooleanObject> condList;
+		sb.AppendC(UTF8STRC(" where "));
+		nncondition->ToWhereClause(sb, this->sqlType, this->GetTzQhr(), 100, condList);
+	}
 	if (this->sqlType == DB::SQLType::SQLite || this->sqlType == DB::SQLType::MySQL)
 	{
 		if (maxCnt > 0)

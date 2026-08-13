@@ -51,6 +51,54 @@ UnsafeArray<const UTF8Char> DB::SQL::SQLUtil::ParseNextWord(UnsafeArray<const UT
 				return sql;
 			}
 		}
+		else if (c == '<')
+		{
+			if (strStart.SetTo(nns))
+			{
+				sb->AppendC(nns, (UIntOS)(sql - nns - 1));
+				return sql - 1;
+			}
+			else
+			{
+				sb->AppendUTF8Char(c);
+				if (*sql == '=' || *sql == '>')
+				{
+					sb->AppendUTF8Char(*sql++);
+				}
+				return sql;
+			}
+		}
+		else if (c == '>')
+		{
+			if (strStart.SetTo(nns))
+			{
+				sb->AppendC(nns, (UIntOS)(sql - nns - 1));
+				return sql - 1;
+			}
+			else
+			{
+				sb->AppendUTF8Char(c);
+				if (*sql == '=')
+				{
+					sb->AppendUTF8Char(*sql++);
+				}
+				return sql;
+			}
+		}
+		else if (c == '!' && *sql == '=')
+		{
+			if (strStart.SetTo(nns))
+			{
+				sb->AppendC(nns, (UIntOS)(sql - nns - 1));
+				return sql - 1;
+			}
+			else
+			{
+				sb->AppendUTF8Char(c);
+				sb->AppendUTF8Char(*sql++);
+				return sql;
+			}
+		}
 		else if (c == '(' || c == ')' || c == ',' || c == '=')
 		{
 			if (strStart.SetTo(nns))

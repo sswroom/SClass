@@ -8,8 +8,8 @@
 #include "DB/DBReader.h"
 #include "DB/JavaDBUtil.h"
 #include "IO/ConsoleWriter.h"
-#include "IO/JavaProperties.h"
 #include "IO/Path.h"
+#include "IO/Java/JavaProperties.h"
 #include "Net/OSSocketFactory.h"
 #include "Text/String.h"
 
@@ -762,7 +762,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Net::OSSocketFactory sockf(false);
 	NN<IO::ConfigFile> cfg;
 	Text::StringBuilderUTF8 sb;
-	if (IO::JavaProperties::ParseAppProp().SetTo(cfg))
+	if (IO::Java::JavaProperties::ParseAppProp().SetTo(cfg))
 	{
 		Crypto::Encrypt::JasyptEncryptor jasypt(Crypto::Encrypt::JasyptEncryptor::KA_PBEWITHHMACSHA512, Crypto::Encrypt::JasyptEncryptor::CA_AES256, key.ToByteArray());
 		jasypt.Decrypt(cfg);

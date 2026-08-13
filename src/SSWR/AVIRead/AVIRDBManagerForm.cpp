@@ -594,7 +594,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapFilterClicked(AnyType user
 		return;
 	}
 	NN<Data::QueryConditions> cond;
-	if (Data::QueryConditions::ParseStr(sb.ToCString(), db->GetSQLType()).SetTo(cond))
+	if (Data::QueryConditions::ParseStr(sb.ToCString(), db->GetSQLType(), db->GetTzQhr()).SetTo(cond))
 	{
 		me->dbLayer->SetObjCondition(cond);
 		OnLayerUpdated(me);
@@ -944,13 +944,16 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateFilter()
 		return;
 	}
 	DB::SQLType sqlType;
+	Int8 tzQhr;
 	if (currDB->IsDBTool())
 	{
 		sqlType = NN<DB::ReadingDBTool>::ConvertFrom(currDB)->GetSQLType();
+		tzQhr = NN<DB::ReadingDBTool>::ConvertFrom(currDB)->GetTzQhr();
 	}
 	else
 	{
 		sqlType = DB::SQLType::MySQL;
+		tzQhr = 0;
 	}
 	NN<DB::DBReader> r;
 	Text::StringBuilderUTF8 sbFilter;
@@ -958,7 +961,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateFilter()
 	this->txtTableFilter->GetText(sbFilter);
 	if (sbFilter.leng > 0)
 	{
-		cond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), sqlType);
+		cond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), sqlType, tzQhr);
 		if (cond.IsNull())
 		{
 			OPTSTR_DEL(schemaName);

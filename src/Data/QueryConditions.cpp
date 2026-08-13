@@ -628,6 +628,74 @@ Bool Data::Conditions::NumberCondition::Eval(NN<Data::ObjectGetter> getter, OutP
 	}
 }
 
+Bool Data::Conditions::NumberBetweenCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
+{
+	if (!this->left->ToWhereClause(sb, sqlType, tzQhr, maxDBItem))
+		return false;
+	sb->Append(CSTR(" between "));
+	if (!this->middle->ToWhereClause(sb, sqlType, tzQhr, maxDBItem))
+		return false;
+	sb->Append(CSTR(" and "));
+	if (!this->right->ToWhereClause(sb, sqlType, tzQhr, maxDBItem))
+		return false;
+	return true;
+}
+
+void Data::Conditions::NumberBetweenCondition::GetFieldList(NN<Data::ArrayListStringNN> fieldList) const
+{
+	this->left->GetFieldList(fieldList);
+	this->middle->GetFieldList(fieldList);
+	this->right->GetFieldList(fieldList);
+}
+
+Bool Data::Conditions::NumberBetweenCondition::Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const
+{
+	if (this->left->GetNumberType(obj) == NumberType::F64 || this->middle->GetNumberType(obj) == NumberType::F64 || this->right->GetNumberType(obj) == NumberType::F64)
+	{
+		Double leftVal;
+		Double middleVal;
+		Double rightVal;
+		if (!this->left->EvalDouble(obj, leftVal) || !this->middle->EvalDouble(obj, middleVal) || !this->right->EvalDouble(obj, rightVal))
+			return false;
+		outVal.Set(leftVal >= middleVal && leftVal <= rightVal);
+		return true;
+	}
+	else
+	{
+		Int64 leftVal;
+		Int64 middleVal;
+		Int64 rightVal;
+		if (!this->left->EvalInt(obj, leftVal) || !this->middle->EvalInt(obj, middleVal) || !this->right->EvalInt(obj, rightVal))
+			return false;
+		outVal.Set(leftVal >= middleVal && leftVal <= rightVal);
+		return true;
+	}
+}
+
+Bool Data::Conditions::NumberBetweenCondition::Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const
+{
+	if (this->left->GetNumberType(getter) == NumberType::F64 || this->middle->GetNumberType(getter) == NumberType::F64 || this->right->GetNumberType(getter) == NumberType::F64)
+	{
+		Double leftVal;
+		Double middleVal;
+		Double rightVal;
+		if (!this->left->EvalDouble(getter, leftVal) || !this->middle->EvalDouble(getter, middleVal) || !this->right->EvalDouble(getter, rightVal))
+			return false;
+		outVal.Set(leftVal >= middleVal && leftVal <= rightVal);
+		return true;
+	}
+	else
+	{
+		Int64 leftVal;
+		Int64 middleVal;
+		Int64 rightVal;
+		if (!this->left->EvalInt(getter, leftVal) || !this->middle->EvalInt(getter, middleVal) || !this->right->EvalInt(getter, rightVal))
+			return false;
+		outVal.Set(leftVal >= middleVal && leftVal <= rightVal);
+		return true;
+	}
+}
+
 Bool Data::Conditions::TimeCondition::TSCompare(Data::Timestamp left, Data::Timestamp right, CompareCondition cond)
 {
 	switch (cond)
@@ -1700,6 +1768,14 @@ NN<Data::QueryConditions> Data::QueryConditions::Int32In(Text::CStringNN fieldNa
 	return *this;
 }
 
+NN<Data::QueryConditions> Data::QueryConditions::Int32Between(Text::CStringNN fieldName, Int32 val1, Int32 val2)
+{
+	NN<Conditions::NumberBetweenCondition> cond;
+	NEW_CLASSNN(cond, Conditions::NumberBetweenCondition(NumField(fieldName), Int32Obj(val1), Int32Obj(val2)));
+	this->andCond->AddAnd(cond);
+	return *this;
+}
+
 NN<Data::QueryConditions> Data::QueryConditions::Int64Equals(Text::CStringNN fieldName, Int64 val)
 {
 	NN<Conditions::NumberCondition> cond;
@@ -1740,6 +1816,14 @@ NN<Data::QueryConditions> Data::QueryConditions::Int64LT(Text::CStringNN fieldNa
 	return *this;
 }
 
+NN<Data::QueryConditions> Data::QueryConditions::Int64Between(Text::CStringNN fieldName, Int64 val1, Int64 val2)
+{
+	NN<Conditions::NumberBetweenCondition> cond;
+	NEW_CLASSNN(cond, Conditions::NumberBetweenCondition(NumField(fieldName), Int64Obj(val1), Int64Obj(val2)));
+	this->andCond->AddAnd(cond);
+	return *this;
+}
+
 NN<Data::QueryConditions> Data::QueryConditions::DoubleEquals(Text::CStringNN fieldName, Double val)
 {
 	NN<Conditions::NumberCondition> cond;
@@ -1776,6 +1860,14 @@ NN<Data::QueryConditions> Data::QueryConditions::DoubleLT(Text::CStringNN fieldN
 {
 	NN<Conditions::NumberCondition> cond;
 	NEW_CLASSNN(cond, Conditions::NumberCondition(NumField(fieldName), DoubleObj(val), CompareCondition::Less));
+	this->andCond->AddAnd(cond);
+	return *this;
+}
+
+NN<Data::QueryConditions> Data::QueryConditions::DoubleBetween(Text::CStringNN fieldName, Double val1, Double val2)
+{
+	NN<Conditions::NumberBetweenCondition> cond;
+	NEW_CLASSNN(cond, Conditions::NumberBetweenCondition(NumField(fieldName), DoubleObj(val1), DoubleObj(val2)));
 	this->andCond->AddAnd(cond);
 	return *this;
 }
@@ -1899,12 +1991,13 @@ Bool Data::QueryConditions::ObjectValid(NN<Data::ObjectGetter> getter, NN<Data::
 	return true;
 }
 
-Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQLType sqlType)
+Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQLType sqlType, Int8 tzQhr)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbField;
 	UnsafeArray<const UTF8Char> sql = s.v;
 	NN<Data::VariItem> item;
+	NN<Data::VariItem> item2;
 	NN<Data::QueryConditions> cond;
 	NEW_CLASSNN(cond, Data::QueryConditions());
 	while (true)
@@ -2197,6 +2290,180 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 				return nullptr;
 			}
 			item.Delete();
+		}
+		else if (sb.Equals(UTF8STRC(">=")))
+		{
+			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
+			{
+				cond.Delete();
+				return nullptr;
+			}
+			Data::VariItem::ItemType itemType = item->GetItemType();
+			if (itemType == Data::VariItem::ItemType::I32)
+			{
+				cond->Int32GE(sbField.ToCString(), item->GetItemValue().i32);
+			}
+			else if (itemType == Data::VariItem::ItemType::I64)
+			{
+				cond->Int64GE(sbField.ToCString(), item->GetItemValue().i64);
+			}
+			else if (itemType == Data::VariItem::ItemType::F64)
+			{
+				cond->DoubleGE(sbField.ToCString(), item->GetItemValue().f64);
+			}
+			else
+			{
+				item.Delete();
+				cond.Delete();
+				return nullptr;
+			}
+			item.Delete();
+		}
+		else if (sb.Equals(UTF8STRC("<=")))
+		{
+			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
+			{
+				cond.Delete();
+				return nullptr;
+			}
+			Data::VariItem::ItemType itemType = item->GetItemType();
+			if (itemType == Data::VariItem::ItemType::I32)
+			{
+				cond->Int32LE(sbField.ToCString(), item->GetItemValue().i32);
+			}
+			else if (itemType == Data::VariItem::ItemType::I64)
+			{
+				cond->Int64LE(sbField.ToCString(), item->GetItemValue().i64);
+			}
+			else if (itemType == Data::VariItem::ItemType::F64)
+			{
+				cond->DoubleLE(sbField.ToCString(), item->GetItemValue().f64);
+			}
+			else
+			{
+				item.Delete();
+				cond.Delete();
+				return nullptr;
+			}
+			item.Delete();
+		}
+		else if (sb.EqualsICase(UTF8STRC("BETWEEN")))
+		{
+			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
+			{
+				cond.Delete();
+				return nullptr;
+			}
+			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (!sb.EqualsICase(UTF8STRC("AND")))
+			{
+				item.Delete();
+				cond.Delete();
+				return nullptr;
+			}
+			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item2))
+			{
+				item.Delete();
+				cond.Delete();
+				return nullptr;
+			}
+			Data::VariItem::ItemType itemType = item->GetItemType();
+			Data::VariItem::ItemType item2Type = item2->GetItemType();
+			if (itemType == Data::VariItem::ItemType::Str && item2Type == Data::VariItem::ItemType::Str)
+			{
+				Data::Timestamp t1 = Data::Timestamp::FromStr(item->GetItemValue().str->ToCString(), tzQhr);
+				Data::Timestamp t2 = Data::Timestamp::FromStr(item2->GetItemValue().str->ToCString(), tzQhr);
+				if (t1.NotNull() && t2.NotNull())
+				{
+					cond->TimeBetween(sbField.ToCString(), t1, t2);
+				}
+				else
+				{
+					item.Delete();
+					item2.Delete();
+					cond.Delete();
+					return nullptr;
+				}
+			}
+			else if (itemType == Data::VariItem::ItemType::I32)
+			{
+				if (item2Type == Data::VariItem::ItemType::I32)
+				{
+					cond->Int32Between(sbField.ToCString(), item->GetItemValue().i32, item2->GetItemValue().i32);
+				}
+				else if (item2Type == Data::VariItem::ItemType::I64)
+				{
+					cond->Int64Between(sbField.ToCString(), item->GetItemValue().i32, item2->GetItemValue().i64);
+				}
+				else if (item2Type == Data::VariItem::ItemType::F64)
+				{
+					cond->DoubleBetween(sbField.ToCString(), item->GetItemValue().i32, item2->GetItemValue().f64);
+				}
+				else
+				{
+					item.Delete();
+					item2.Delete();
+					cond.Delete();
+					return nullptr;
+				}
+			}
+			else if (itemType == Data::VariItem::ItemType::I64)
+			{
+				if (item2Type == Data::VariItem::ItemType::I32)
+				{
+					cond->Int64Between(sbField.ToCString(), item->GetItemValue().i64, item2->GetItemValue().i32);
+				}
+				else if (item2Type == Data::VariItem::ItemType::I64)
+				{
+					cond->Int64Between(sbField.ToCString(), item->GetItemValue().i64, item2->GetItemValue().i64);
+				}
+				else if (item2Type == Data::VariItem::ItemType::F64)
+				{
+					cond->DoubleBetween(sbField.ToCString(), (Double)item->GetItemValue().i64, item2->GetItemValue().f64);
+				}
+				else
+				{
+					item.Delete();
+					item2.Delete();
+					cond.Delete();
+					return nullptr;
+				}
+			}
+			else if (itemType == Data::VariItem::ItemType::F64)
+			{
+				if (item2Type == Data::VariItem::ItemType::I32)
+				{
+					cond->DoubleBetween(sbField.ToCString(), item->GetItemValue().f64, (Double)item2->GetItemValue().i32);
+				}
+				else if (item2Type == Data::VariItem::ItemType::I64)
+				{
+					cond->DoubleBetween(sbField.ToCString(), item->GetItemValue().f64, (Double)item2->GetItemValue().i64);
+				}
+				else if (item2Type == Data::VariItem::ItemType::F64)
+				{
+					cond->DoubleBetween(sbField.ToCString(), item->GetItemValue().f64, item2->GetItemValue().f64);
+				}
+				else
+				{
+					item.Delete();
+					item2.Delete();
+					cond.Delete();
+					return nullptr;
+				}
+			}
+			else
+			{
+				item.Delete();
+				item2.Delete();
+				cond.Delete();
+				return nullptr;
+			}
+			item.Delete();
+			item2.Delete();
 		}
 		else
 		{

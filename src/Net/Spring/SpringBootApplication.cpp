@@ -1,6 +1,6 @@
 #include "Stdafx.h"
-#include "IO/JavaProperties.h"
 #include "IO/Path.h"
+#include "IO/Java/JavaProperties.h"
 #include "Manage/Computer.h"
 #include "Manage/ComputerUser.h"
 #include "Manage/Process.h"
@@ -9,7 +9,7 @@
 Net::Spring::SpringBootApplication::SpringBootApplication(Text::CStringNN appName) : consoleLog(console)
 {
 	this->log.AddLogHandler(this->consoleLog, IO::LogHandler::LogLevel::Raw);
-	this->cfg = IO::JavaProperties::ParseAppProp();
+	this->cfg = IO::Java::JavaProperties::ParseAppProp();
 	this->activeProfile = Text::String::New(UTF8STRC("default"));
 	NN<IO::ConfigFile> cfg;
 	if (this->cfg.SetTo(cfg))
@@ -38,7 +38,7 @@ Net::Spring::SpringBootApplication::SpringBootApplication(Text::CStringNN appNam
 		sptr2 = sarr[0].ConcatTo(sptr);
 		sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".properties"));
 		NN<IO::ConfigFile> nncfg;
-		if (this->cfg.SetTo(nncfg) && IO::JavaProperties::Parse(CSTRP(sbuff, sptr2)).SetTo(cfg))
+		if (this->cfg.SetTo(nncfg) && IO::Java::JavaProperties::Parse(CSTRP(sbuff, sptr2)).SetTo(cfg))
 		{
 			nncfg->MergeConfig(cfg);
 			cfg.Delete();

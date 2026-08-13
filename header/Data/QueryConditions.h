@@ -32,6 +32,7 @@ namespace Data
 			Float64Object,
 			TimestampObject,
 			NumberCondition,
+			NumberBetween,
 			TimeCondition,
 			NullCondition
 		};
@@ -302,6 +303,30 @@ namespace Data
 			CompareCondition GetCond() const { return this->cond; }
 		};
 
+		class NumberBetweenCondition : public BooleanObject
+		{
+		private:
+			NN<NumberObject> left;
+			NN<NumberObject> middle;
+			NN<NumberObject> right;
+
+		public:
+			NumberBetweenCondition(NN<NumberObject> left, NN<NumberObject> middle, NN<NumberObject> right) { this->left = left; this->middle = middle; this->right = right; }
+			virtual ~NumberBetweenCondition() { this->left.Delete(); this->middle.Delete(); this->right.Delete(); }
+
+			virtual ObjectType GetType() const { return ObjectType::NumberBetween; }
+			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, NumberBetweenCondition(NN<NumberObject>::ConvertFrom(this->left->Clone()), NN<NumberObject>::ConvertFrom(this->middle->Clone()), NN<NumberObject>::ConvertFrom(this->right->Clone()))); return cond; }
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const { return this->left->CanWhereClause(maxDBItem) && this->middle->CanWhereClause(maxDBItem) && this->right->CanWhereClause(maxDBItem); }
+			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
+			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
+			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
+
+			NN<NumberObject> GetLeft() const { return this->left; }
+			NN<NumberObject> GetMiddle() const { return this->middle; }
+			NN<NumberObject> GetRight() const { return this->right; }
+		};
+
 		class TimeCondition : public BooleanObject
 		{
 		private:
@@ -503,16 +528,19 @@ namespace Data
 		NN<QueryConditions> Int32GT(Text::CStringNN fieldName, Int32 val);
 		NN<QueryConditions> Int32LT(Text::CStringNN fieldName, Int32 val);
 		NN<QueryConditions> Int32In(Text::CStringNN fieldName, NN<Data::ArrayListNative<Int32>> val);
+		NN<QueryConditions> Int32Between(Text::CStringNN fieldName, Int32 val1, Int32 val2);
 		NN<QueryConditions> Int64Equals(Text::CStringNN fieldName, Int64 val);
 		NN<QueryConditions> Int64GE(Text::CStringNN fieldName, Int64 val);
 		NN<QueryConditions> Int64LE(Text::CStringNN fieldName, Int64 val);
 		NN<QueryConditions> Int64GT(Text::CStringNN fieldName, Int64 val);
 		NN<QueryConditions> Int64LT(Text::CStringNN fieldName, Int64 val);
+		NN<QueryConditions> Int64Between(Text::CStringNN fieldName, Int64 val1, Int64 val2);
 		NN<QueryConditions> DoubleEquals(Text::CStringNN fieldName, Double val);
 		NN<QueryConditions> DoubleGE(Text::CStringNN fieldName, Double val);
 		NN<QueryConditions> DoubleLE(Text::CStringNN fieldName, Double val);
 		NN<QueryConditions> DoubleGT(Text::CStringNN fieldName, Double val);
 		NN<QueryConditions> DoubleLT(Text::CStringNN fieldName, Double val);
+		NN<QueryConditions> DoubleBetween(Text::CStringNN fieldName, Double val1, Double val2);
 		NN<QueryConditions> StrIn(Text::CStringNN fieldName, NN<Data::ArrayListArr<const UTF8Char>> vals);
 		NN<QueryConditions> StrNotIn(Text::CStringNN fieldName, NN<Data::ArrayListArr<const UTF8Char>> vals);
 		NN<QueryConditions> StrContains(Text::CStringNN fieldName, Text::CStringNN val);
@@ -525,7 +553,7 @@ namespace Data
 		static Text::CStringNN CompareConditionGetStr(CompareCondition cond);
 		static Bool ObjectValid(NN<Data::VariObject> obj, NN<Data::ArrayListNN<Conditions::BooleanObject>> conditionList, OutParam<Bool> outVal);
 		static Bool ObjectValid(NN<Data::ObjectGetter> getter, NN<Data::ArrayListNN<Conditions::BooleanObject>> conditionList, OutParam<Bool> outVal);
-		static Optional<QueryConditions> ParseStr(Text::CStringNN s, DB::SQLType sqlType);
+		static Optional<QueryConditions> ParseStr(Text::CStringNN s, DB::SQLType sqlType, Int8 tzQhr);
 	private:
 		static NN<Conditions::TimeObject> TSField(Text::CStringNN fieldName);
 		static NN<Conditions::NumberObject> NumField(Text::CStringNN fieldName);
