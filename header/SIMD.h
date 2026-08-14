@@ -290,6 +290,7 @@ typedef int16x8_t Int16x8;
 typedef uint16x8_t UInt16x8;
 typedef int32x4_t Int32x4;
 typedef uint32x4_t UInt32x4;
+typedef uint64x2_t UInt64x2;
 //typedef __m256i Int32x8;
 
 #define PUInt8x4Clear() vdup_n_u8(0)
@@ -309,6 +310,7 @@ typedef uint32x4_t UInt32x4;
 #define PUInt16x8SetA(v) vdupq_n_u16(v)
 #define PInt32x4SetA(v) vdupq_n_s32(v)
 #define PUInt32x4SetA(v) vdupq_n_u32(v)
+#define PUInt64x2Set(v1, v2) vcombine_u64(vcreate_u64(v1), vcreate_u64(v2))
 #if defined(_M_ARM64) || defined(_M_ARM64EC)
 #define PLoadUInt8x4(ptr) vreinterpret_u32_u8(vld1_u32((const UInt32*)ptr))
 #define PLoadUInt8x8(ptr) (*(uint8x8_t*)(ptr))
@@ -375,11 +377,13 @@ typedef uint32x4_t UInt32x4;
 #define PCONVI16x8_U(v) vreinterpretq_s16_u16(v)
 #define PCONVU16x4_I(v) vreinterpret_u16_s16(v)
 #define PCONVU16x8_I(v) vreinterpretq_u16_s16(v)
-#define PEXTW4(v, i) vget_lane_s16(v, i)
-#define PEXTW8(v, i) vgetq_lane_s16(v, i)
+#define PEXTUB16(v, i) vgetq_lane_u8(v, i)
 #define PEXTUW4(v, i) vget_lane_u16(v, i)
 #define PEXTUW8(v, i) vgetq_lane_u16(v, i)
+#define PEXTW4(v, i) vget_lane_s16(v, i)
+#define PEXTW8(v, i) vgetq_lane_s16(v, i)
 #define PEXTD4(v, i) vgetq_lane_s32(v, i)
+#define PEXTUQ2(v, i) vgetq_lane_u64(v, i)
 #define PINSUW4(v, i, iv) vset_lane_u16(iv, v, i)
 
 UInt8x8 FORCEINLINE PUNPCKBB8(UInt8x4 v1, UInt8x4 v2)
@@ -457,6 +461,37 @@ Int32x4 FORCEINLINE PUNPCKWD4(Int16x4 v1, Int16x4 v2)
 #define PSALW4(v1, cnt) vshl_n_s16(v1, cnt)
 #define PSHRW4(v1, cnt) vshr_n_u16(v1, cnt)
 #define PSHRW8(v1, cnt) vshrq_n_u16(v1, cnt)
+
+template <int cnt> UInt8x16 FORCEINLINE SIMD_shift_by_byte(UInt8x16 v1)
+{
+	if (cnt == 0)
+	{
+		return v1;
+	}
+	else if (cnt < 16)
+	{
+		return vextq_u8(v1, v1, cnt);
+	}
+	else
+	{
+		return vdupq_n_u8(0);
+	}
+}
+#define PSHRBytes(v1, cnt) SIMD_shift_by_byte<cnt>(v1)
+
+template <int cnt> UInt8x16 FORCEINLINE SIMD_shift_by_bit(UInt8x16 v1)
+{
+	UInt64x2 src = vreinterpretq_u64_u8(v1);
+	UInt64x2 shifted = vshrq_n_u64(src, cnt);
+	UInt64x2 spill = vshlq_n_u64(src, 64 - cnt);
+	spill = vextq_u64(spill, spill, 1);
+	UInt64 maskArray[2] = { 0xFFFFFFFFFFFFFFFFULL, 0x0ULL };
+	UInt64x2 mask = vld1q_u64(maskArray);
+	spill = vandq_u64(spill, mask);
+	return vorrq_u64(shifted, spill);
+}
+#define PSHRDQ(v1, cnt) SIMD_shift_by_bit<cnt>(v1)
+
 #define PSARW4(v1, cnt) vshr_n_s16(v1, cnt)
 #define PSARW8(v1, cnt) vshrq_n_s16(v1, cnt)
 #define PSARD4(v1, cnt) vshrq_n_s32(v1, cnt)
@@ -464,6 +499,7 @@ Int32x4 FORCEINLINE PUNPCKWD4(Int16x4 v1, Int16x4 v2)
 #define PSARSDW8(v1, v2, cnt) vcombine_s16(vqshrn_n_s32(v1, cnt), vqshrn_n_s32(v2, cnt))
 #define PANDW8(v1, v2) vandq_s16(v1, v2)
 #define PANDUD4(v1, v2) vandq_u32(v1, v2)
+#define PXORUB16(v1, v2) veorq_u8(v1, v2)
 #define PXORUD4(v1, v2) veorq_u32(v1, v2)
 UInt8x4 FORCEINLINE PSHRADDWB4(UInt16x4 v1, UInt16x4 v2, const Int32 cnt)
 {
@@ -546,6 +582,11 @@ Int32x4 FORCEINLINE PMADDWD(Int16x8 v1, Int16x8 v2)
 #define SI32ToU8x8(v1, v2) vmovn_u16(vreinterpretq_s16_u16(vcombine_s16(vqmovn_s32(v1), vqmovn_s32(v2))))
 #define SI32ToI16x4(v1) vqmovn_s32(v1)
 #define SI32ToI16x8(v1, v2) vcombine_s16(vqmovn_s32(v1), vqmovn_s32(v2))
+UInt8x16 FORCEINLINE BSWAP128(UInt8x16 v)
+{
+	UInt8x16 rev64 = vrev64q_u8(v);
+	return vcombine_u8(vget_high_u8(rev64), vget_low_u8(rev64));
+}
 
 /*#define PResetAVX() _mm256_zeroupper()
 #define PInt32x8Clear() _mm256_setzero_si256()

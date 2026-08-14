@@ -22,7 +22,6 @@ Manage::CPUInfo::CPUInfo()
 	this->familyId = 0;
 	this->model = 0;
 	this->steppingId = 0;
-	this->clsData = 0;
 }
 
 Manage::CPUVendor::CPU_BRAND Manage::CPUInfo::GetBrand()
@@ -68,8 +67,6 @@ void Manage::CPUInfo::GetFeatureFlags(OutParam<Int32> flag1, OutParam<Int32> fla
 
 Manage::CPUInfo::~CPUInfo()
 {
-	if (this->clsData)
-		Text::StrDelNew((const UTF8Char*)this->clsData);
 }
 
 UIntOS Manage::CPUInfo::GetInfoCnt()
@@ -94,11 +91,7 @@ Bool Manage::CPUInfo::GetInfoName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 
 UnsafeArrayOpt<UTF8Char> Manage::CPUInfo::GetCPUName(UnsafeArray<UTF8Char> sbuff)
 {
-	if (this->clsData)
-	{
-		return Text::StrConcat(sbuff, (const UTF8Char*)this->clsData);
-	}
-	return 0;
+	return nullptr;
 }
 
 Bool Manage::CPUInfo::GetCPURatio(OutParam<Int32> ratio)

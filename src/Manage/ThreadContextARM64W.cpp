@@ -28,272 +28,272 @@ UIntOS Manage::ThreadContextARM64::GetRegisterCnt() const
 	return cnt;
 }
 
-UnsafeArrayOpt<UTF8Char> Manage::ThreadContextARM64::GetRegister(UIntOS index, UnsafeArray<UTF8Char> buff, UInt8 *regVal, UInt32 *regBitCount) const
+UnsafeArrayOpt<UTF8Char> Manage::ThreadContextARM64::GetRegister(UIntOS index, UnsafeArray<UTF8Char> buff, UnsafeArray<UInt8> regVal, OutParam<UInt32> regBitCount) const
 {
 	switch (index)
 	{
 	case 0:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X0;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X0;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X0"));
 	case 1:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X1;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X1;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X1"));
 	case 2:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X2;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X2;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X2"));
 	case 3:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X3;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X3;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X3"));
 	case 4:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X4;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X4;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X4"));
 	case 5:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X5;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X5;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X5"));
 	case 6:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X6;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X6;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X6"));
 	case 7:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X7;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X7;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X7"));
 	case 8:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X8;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X8;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X8"));
 	case 9:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X9;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X9;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X9"));
 	case 10:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X10;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X10;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X10"));
 	case 11:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X11;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X11;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X11"));
 	case 12:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X12;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X12;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X12"));
 	case 13:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X13;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X13;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X13"));
 	case 14:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X14;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X14;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X14"));
 	case 15:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X15;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X15;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X15"));
 	case 16:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X16;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X16;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X16"));
 	case 17:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X17;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X17;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X17"));
 	case 18:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X18;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X18;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X18"));
 	case 19:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X19;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X19;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X19"));
 	case 20:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X20;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X20;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X20"));
 	case 21:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X21;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X21;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X21"));
 	case 22:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X22;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X22;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X22"));
 	case 23:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X24;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X23;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X23"));
 	case 24:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X24;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X24;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X24"));
 	case 25:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X25;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X25;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X25"));
 	case 26:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X26;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X26;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X26"));
 	case 27:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X27;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X27;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X27"));
 	case 28:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->X28;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->X28;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("X28"));
 	case 29:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->Sp;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->Sp;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("Sp"));
 	case 30:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->Lr;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->Lr;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("Lr"));
 	case 31:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->Pc;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->Pc;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("Pc"));
 	case 32:
-		*(UInt64*)regVal = ((CONTEXT_TYPE*)this->context)->Fp;
-		*regBitCount = 64;
+		*(UInt64*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->Fp;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("Fp"));
 	case 33:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[0];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[0];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q0"));
 	case 34:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[1];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[1];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q1"));
 	case 35:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[2];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[2];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q2"));
 	case 36:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[3];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[3];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q3"));
 	case 37:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[4];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[4];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q4"));
 	case 38:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[5];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[5];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q5"));
 	case 39:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[6];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[6];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q6"));
 	case 40:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[7];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[7];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q7"));
 	case 41:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[8];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[8];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q8"));
 	case 42:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[9];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[9];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q9"));
 	case 43:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[10];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[10];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q10"));
 	case 44:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[11];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[11];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q11"));
 	case 45:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[12];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[12];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q12"));
 	case 46:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[13];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[13];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q13"));
 	case 47:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[14];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[14];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q14"));
 	case 48:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[15];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[15];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q15"));
 	case 49:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[16];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[16];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q16"));
 	case 50:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[17];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[17];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q17"));
 	case 51:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[18];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[18];
+		regBitCount.Set(128)	;
 		return Text::StrConcatC(buff, UTF8STRC("Q18"));
 	case 52:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[19];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[19];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q19"));
 	case 53:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[20];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[20];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q20"));
 	case 54:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[21];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[21];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q21"));
 	case 55:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[22];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[22];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q22"));
 	case 56:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[23];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[23];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q23"));
 	case 57:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[24];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[24];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q24"));
 	case 58:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[25];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[25];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q25"));
 	case 59:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[26];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[26];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q26"));
 	case 60:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[27];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[27];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q27"));
 	case 61:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[28];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[28];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q28"));
 	case 62:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[29];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[29];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q29"));
 	case 63:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[30];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[30];
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("Q30"));
 	case 64:
-		*(ARM64_NT_NEON128*)regVal = ((CONTEXT_TYPE*)this->context)->V[31];
-		*regBitCount = 128;
+		*(ARM64_NT_NEON128*)&regVal[0] = ((CONTEXT_TYPE*)this->context)->V[31];
+		regBitCount.Set(128)	;
 		return Text::StrConcatC(buff, UTF8STRC("Q31"));
 	default:
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -309,7 +309,7 @@ void Manage::ThreadContextARM64::ToString(NN<Text::StringBuilderUTF8> sb) const
 
 	while (i < j)
 	{
-		if (this->GetRegister(i, sbuff, regBuff, &bitCnt).SetTo(sptr))
+		if (this->GetRegister(i, sbuff, regBuff, bitCnt).SetTo(sptr))
 		{
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" = "));
 			k = bitCnt >> 3;
@@ -379,7 +379,7 @@ NN<Manage::ThreadContext> Manage::ThreadContextARM64::Clone() const
 
 Bool Manage::ThreadContextARM64::GetRegs(NN<Manage::Dasm::Dasm_Regs> regs) const
 {
-	NN<Manage::DasmARM64::DasmARM64_Regs> r = NN<Manage::DasmARM64::DasmARM64_Regs>::ConvertFrom(regs);
+	NN<Manage::DasmARM64::Registers> r = NN<Manage::DasmARM64::Registers>::ConvertFrom(regs);
 	r->X0 = ((CONTEXT_TYPE*)this->context)->X0;
 	r->X1 = ((CONTEXT_TYPE*)this->context)->X1;
 	r->X2 = ((CONTEXT_TYPE*)this->context)->X2;

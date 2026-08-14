@@ -115,5 +115,9 @@ Bool Sync::ThreadUtil::SetName(Text::CStringNN name)
 
 AnyType Sync::ThreadUtil::GetCurrAddr()
 {
+#if defined(_MSC_VER)
+	return _ReturnAddress();
+#else
 	return __builtin_extract_return_addr (__builtin_return_address (0));
+#endif
 }

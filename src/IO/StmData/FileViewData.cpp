@@ -6,7 +6,7 @@
 
 IO::StmData::FileViewData::FileViewData(UnsafeArray<const UTF8Char> fname)
 {
-	fdh = 0;
+	fdh = nullptr;
 	NN<IO::ViewFileBuffer> file;
 	NEW_CLASSNN(file, IO::ViewFileBuffer(fname));
 	if (file->GetPointer().IsNull())
