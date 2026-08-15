@@ -24,6 +24,7 @@ namespace SSWR
 		private:
 			struct SQLSession
 			{
+				NN<AVIRDBCheckChgForm> me;
 				UIntOS mode;
 				Optional<IO::Stream> stm;
 				UIntOS totalCnt;
@@ -104,7 +105,7 @@ namespace SSWR
 			Bool dataFileNoHeader;
 
 			Optional<DB::ReadingDB> dataConn;
-			Int8 connTz;
+			Int8 dataTz;
 
 			static void __stdcall OnDataFileClk(AnyType userObj);
 			static void __stdcall OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files);
@@ -116,18 +117,13 @@ namespace SSWR
 			static void __stdcall OnDataConnSelChg(AnyType userObj, Bool newState);
 			static void __stdcall OnDataConnCboSelChg(AnyType userObj);
 			static void __stdcall OnDataSchemaSelChg(AnyType userObj);
-			Optional<Text::String> GetNewText(UIntOS colIndex);
-			NN<Text::String> GetNewTextNN(UIntOS colIndex);
 			Bool LoadDataFile(Text::CStringNN fileName);
-			Bool InitConn(NN<DB::ReadingDB> conn, Int8 connTz);
+			Bool InitDataConn(NN<DB::ReadingDB> conn, Int8 connTz);
 			Bool InitSchema(Text::CString schema);
-			Bool GetColIndex(NN<Data::ArrayListNative<UIntOS>> colInd, NN<DB::TableDef> destTable, Text::CString srcSchema, Text::CStringNN srcTable);
-			Bool IsColIndexValid(NN<Data::ArrayListNative<UIntOS>> colInd, NN<DB::TableDef> destTable);
 			Bool CheckDataFile();
 			Bool GenerateSQL(DB::SQLType sqlType, Bool axisAware, NN<SQLSession> sess);
-			Bool NextSQL(Text::CStringNN sql, NN<SQLSession> sess);
+			static Bool __stdcall NextSQL(AnyType userObj, Text::CStringNN sql);
 			void UpdateStatus(NN<SQLSession> sess);
-			static void __stdcall AppendCol(NN<DB::SQLBuilder> sql, NN<DB::ColDef> col, Optional<Text::String> s, Int8 tzQhr, UInt32 srid);
 			Text::CStringNN GetNullText();
 			DB::SQLType GetDBSQLType();
 		public:

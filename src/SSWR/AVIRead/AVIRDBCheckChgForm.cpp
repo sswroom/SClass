@@ -1,8 +1,7 @@
 #include "Stdafx.h"
-#include "Data/FastStringMapObj.hpp"
-#include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/ColDef.h"
 #include "DB/CSVFile.h"
+#include "DB/DBChangeChecker.h"
 #include "DB/DBConn.h"
 #include "DB/DBTool.h"
 #include "DB/TableDef.h"
@@ -10,19 +9,10 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
-#include "Math/CoordinateSystemConverter.h"
-#include "Math/CoordinateSystemManager.h"
-#include "Math/MSGeography.h"
-#include "Math/WKTReader.h"
-#include "Math/WKTWriter.h"
 #include "SSWR/AVIRead/AVIRDBAssignColumnForm.h"
 #include "SSWR/AVIRead/AVIRDBCheckChgForm.h"
 #include "Text/UTF8Writer.h"
 #include "UI/GUIFileDialog.h"
-
-#define SRID 4326
-#define TEXT_COL (UIntOS)-3
-#define UNKNOWN_COL (UIntOS)-2
 
 void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataFileClk(AnyType userObj)
 {
@@ -210,7 +200,8 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataTableChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
-	if (me->dataConn.IsNull())
+	NN<DB::ReadingDB> dataConn;
+	if (!me->dataConn.SetTo(dataConn))
 	{
 		//me->ui->ShowMsgOK(CSTR("Please load data file first"), CSTR("Check Table Changes"), me);
 		return;
@@ -230,13 +221,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataTableChg(AnyType userObj
 		//me->ui->ShowMsgOK(CSTR("Error in getting table name"), CSTR("Check Table Changes"), me);
 		return;
 	}
-	NN<DB::TableDef> table;
-	if (!me->db->GetTableDef(me->schema, me->table).SetTo(table))
-	{
-		return;
-	}
-	me->GetColIndex(me->colInd, table, schema, sbTable.ToCString());
-	table.Delete();
+	DB::DBChangeChecker checker(me->db, me->schema, me->table);
+	checker.SetDataTable(dataConn, schema, sbTable.ToCString(), 0, me->dataFileNoHeader);
+	checker.InitColMapping(me->colInd);
 }
 
 void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnAssignColClicked(AnyType userObj)
@@ -268,7 +255,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnAssignColClicked(AnyType use
 	{
 		return;
 	}
-	SSWR::AVIRead::AVIRDBAssignColumnForm frm(nullptr, me->ui, me->core, table, dataFile, dataSchema, sbTable.ToCString(), me->dataFileNoHeader, me->connTz, me->colInd, me->colStr);
+	SSWR::AVIRead::AVIRDBAssignColumnForm frm(nullptr, me->ui, me->core, table, dataFile, dataSchema, sbTable.ToCString(), me->dataFileNoHeader, me->dataTz, me->colInd, me->colStr);
 	frm.ShowDialog(me);
 	table.Delete();
 }
@@ -286,7 +273,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataConnSelChg(AnyType userO
 			NN<DB::ReadingDB> conn;
 			if (me->dataConn.SetTo(conn))
 			{
-				me->InitConn(conn, conn->GetTzQhr());
+				me->InitDataConn(conn, conn->GetTzQhr());
 			}
 		}
 		else
@@ -314,7 +301,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataConnCboSelChg(AnyType us
 		{
 			me->inited = false;
 			me->radDataConn->Select();
-			me->InitConn(conn, conn->GetTzQhr());
+			me->InitDataConn(conn, conn->GetTzQhr());
 			me->inited = true;
 		}
 	}
@@ -329,24 +316,6 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataSchemaSelChg(AnyType use
 		me->cboDataSchema->GetText(sb);
 		me->InitSchema(sb.ToCString());
 	}
-}
-
-Optional<Text::String> SSWR::AVIRead::AVIRDBCheckChgForm::GetNewText(UIntOS colIndex)
-{
-	NN<Text::String> s;
-	if (this->colStr.GetItem(colIndex).SetTo(s))
-		return s->Clone();
-	else
-		return nullptr;
-}
-
-NN<Text::String> SSWR::AVIRead::AVIRDBCheckChgForm::GetNewTextNN(UIntOS colIndex)
-{
-	NN<Text::String> s;
-	if (this->colStr.GetItem(colIndex).SetTo(s))
-		return s->Clone();
-	else
-		return Text::String::NewEmpty();
 }
 
 Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
@@ -383,7 +352,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		this->relDataFile = csv;
 		this->dataFileNoHeader = noHeader;
 		this->cboNullCol->SetSelectedIndex(0);
-		return this->InitConn(csv, csvTZ);
+		return this->InitDataConn(csv, csvTZ);
 	}
 	else
 	{
@@ -408,7 +377,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 			this->relDataFile = nndataFile;
 			this->dataFileNoHeader = false;
 			this->cboNullCol->SetSelectedIndex(3);
-			return this->InitConn(nndataFile, csvTZ);
+			return this->InitDataConn(nndataFile, csvTZ);
 		}
 		else
 		{
@@ -419,9 +388,9 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 	}
 }
 
-Bool SSWR::AVIRead::AVIRDBCheckChgForm::InitConn(NN<DB::ReadingDB> conn, Int8 connTz)
+Bool SSWR::AVIRead::AVIRDBCheckChgForm::InitDataConn(NN<DB::ReadingDB> conn, Int8 connTz)
 {
-	this->connTz = connTz;
+	this->dataTz = connTz;
 	this->dataConn = conn;
 	this->dataFileNoHeader = false;
 	Data::ArrayListStringNN schemaNames;
@@ -482,109 +451,10 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::InitSchema(Text::CString schema)
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NN<Data::ArrayListNative<UIntOS>> colInd, NN<DB::TableDef> destTable, Text::CString srcSchema, Text::CStringNN srcTable)
-{
-	colInd->Clear();
-	UIntOS i = 0;
-	UIntOS destCnt = destTable->GetColCnt();
-	UIntOS k;
-	UIntOS srcCnt;
-	UTF8Char sbuff[512];
-	UnsafeArray<UTF8Char> sptr;
-	NN<DB::ColDef> col;
-	NN<DB::DBReader> r;
-	while (i < destCnt)
-	{
-		colInd->Add(this->dataFileNoHeader?i:UNKNOWN_COL);
-		i++;
-	}
-
-	NN<DB::ReadingDB> dataConn;
-	if (!this->dataConn.SetTo(dataConn) || !dataConn->QueryTableData(srcSchema, srcTable, nullptr, 0, 1, nullptr, nullptr).SetTo(r))
-	{
-		return false;
-	}
-	srcCnt = r->ColCount();
-	if (!this->dataFileNoHeader)
-	{
-		k = 0;
-		while (k < srcCnt)
-		{
-			if (r->GetName(k, sbuff).SetTo(sptr))
-			{
-				i = 0;
-				while (i < destCnt)
-				{
-					if (destTable->GetCol(i).SetTo(col) && col->GetColName()->EqualsICase(sbuff, (UIntOS)(sptr - sbuff)))
-					{
-						colInd->SetItem(i, k);
-						break;
-					}
-					i++;
-				}
-			}
-/*			if (!found)
-			{
-				Text::StringBuilderUTF8 sb;
-				sb.AppendC(UTF8STRC("Data File Column "));
-				sb.AppendUIntOS(k);
-				if (sptr)
-				{
-					sb.AppendC(UTF8STRC(" ("));
-					sb.Append(CSTRP(sbuff, sptr));
-					sb.AppendUTF8Char(')');
-				}
-				sb.AppendC(UTF8STRC(" not found"));
-				this->dataFile->CloseReader(r);
-				table.Delete();
-				SDEL_CLASS(srcDBCond);
-				SDEL_CLASS(dataDBCond);
-				this->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), this);
-				return false;
-			}*/
-			k++;
-		}
-	}
-	dataConn->CloseReader(r);
-	return true;
-}
-
-Bool SSWR::AVIRead::AVIRDBCheckChgForm::IsColIndexValid(NN<Data::ArrayListNative<UIntOS>> colInd, NN<DB::TableDef> destTable)
-{
-	UIntOS j = colInd->GetCount();
-	if (j == 0)
-	{
-		this->ui->ShowMsgOK(CSTR("Error in reading database structure"), CSTR("DB Check Change"), this);
-		return false;
-	}
-	NN<DB::ColDef> col;
-	UIntOS i = 0;
-	while (i < j)
-	{
-		if (colInd->GetItem(i) == UNKNOWN_COL)
-		{
-			Text::StringBuilderUTF8 sb;
-			sb.Append(CSTR("Unknown column found: "));
-			if (destTable->GetCol(i).SetTo(col))
-			{
-				sb.Append(col->GetColName());
-			}
-			else
-			{
-				sb.Append(CSTR("Column "));
-				sb.AppendUIntOS(i);
-			}
-			this->ui->ShowMsgOK(sb.ToCString(), CSTR("DB Check Change"), this);
-			return false;
-		}
-		i++;
-	}
-	return true;
-}
-
 Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 {
 	Text::CStringNN nullStr = this->GetNullText();
+	DB::DBChangeChecker checker(this->db, this->schema, this->table);
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	NN<DB::ReadingDB> dataConn;
@@ -599,9 +469,6 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		this->ui->ShowMsgOK(CSTR("Error in getting table name"), CSTR("Check Table Changes"), this);
 		return false;
 	}
-	Bool srConv = this->chkGeomConv->IsChecked();
-	Bool simpleShape = this->chkGeomSimpleShape->IsChecked();
-	Bool fixError = this->chkGeomFixError->IsChecked();
 	Text::StringBuilderUTF8 sbSchema;
 	Text::CString dataSchema = nullptr;
 	if (this->cboDataSchema->GetCount() > 0)
@@ -611,13 +478,14 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 			dataSchema = sbSchema.ToCString();
 		}
 	}
+	checker.SetDataTable(dataConn, dataSchema, sbTable.ToCString(), this->dataTz, this->dataFileNoHeader);
 	Optional<Data::QueryConditions> srcDBCond = nullptr;
 	Optional<Data::QueryConditions> dataDBCond = nullptr;
 	Text::StringBuilderUTF8 sbFilter;
 	this->txtSrcFilter->GetText(sbFilter);
 	if (sbFilter.GetLength() > 0)
 	{
-		srcDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType(), this->connTz);
+		srcDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType(), this->db->GetTzQhr());
 		if (srcDBCond.IsNull())
 		{
 			this->ui->ShowMsgOK(CSTR("Error in parsing source filter"), CSTR("Check Table Changes"), this);
@@ -628,7 +496,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	this->txtDataFilter->GetText(sbFilter);
 	if (sbFilter.GetLength() > 0)
 	{
-		dataDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType(), this->connTz);
+		dataDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType(), this->dataTz);
 		if (dataDBCond.IsNull())
 		{
 			srcDBCond.Delete();
@@ -636,602 +504,42 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 			return false;
 		}
 	}
-	Int8 csvTZ = this->db->GetTzQhr();
-	DB::SQLType sqlType = this->GetDBSQLType();
-	Bool no3DGeometry = DB::DBUtil::IsNo3DGeometry(sqlType);
-	this->connTz = csvTZ;
-	NN<DB::TableDef> table;;
-	if (!this->db->GetTableDef(this->schema, this->table).SetTo(table))
-	{
-		srcDBCond.Delete();
-		dataDBCond.Delete();
-		this->ui->ShowMsgOK(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
-		return false;
-	}
-	Optional<Math::CoordinateSystem> csysDB = nullptr;
-	Optional<Math::CoordinateSystem> csysSrc = nullptr;
-	NN<Math::CoordinateSystem> nncsysDB;
-	NN<Math::CoordinateSystem> nncsysSrc;
-	Text::StringBuilderUTF8 sb;
-	UIntOS keyCol1 = this->cboKeyCol1->GetSelectedItem().GetUIntOS();
-	UIntOS keyDCol1;
-	UIntOS keyCol2 = this->cboKeyCol2->GetSelectedItem().GetUIntOS();
-	UIntOS keyDCol2;
-	UIntOS i;
-	UIntOS k;
-	UIntOS dbCnt;
-	UIntOS srcCnt;
-	Data::FastStringMapObj<Optional<Text::String>*> csvData;
-	Optional<Text::String>* rowData;
-	NN<DB::ColDef> col;
-	NN<DB::DBReader> r;
-	if (!this->IsColIndexValid(this->colInd, table))
-	{
-		srcDBCond.Delete();
-		dataDBCond.Delete();
-		table.Delete();
-		return false;
-	}
-	if (!dataConn->QueryTableData(dataSchema, sbTable.ToCString(), nullptr, 0, 0, nullptr, dataDBCond).SetTo(r))
-	{
-		srcDBCond.Delete();
-		dataDBCond.Delete();
-		table.Delete();
-		this->ui->ShowMsgOK(CSTR("Error in reading data file"), CSTR("Check Table Changes"), this);
-		return false;
-	}
-	dbCnt = table->GetColCnt();
-	srcCnt = r->ColCount();
-	keyDCol1 = this->colInd.GetItem(keyCol1);
-	if (keyCol2 == INVALID_INDEX)
-	{
-		keyDCol2 = INVALID_INDEX;
-	}
-	else
-	{
-		keyDCol2 = this->colInd.GetItem(keyCol2);
-	}
-
-	if (this->dataFileNoHeader)
-	{
-		if (dbCnt != srcCnt)
-		{
-			sb.ClearStr();
-			sb.AppendC(UTF8STRC("Column Count does not match, dbCnt = "));
-			sb.AppendUIntOS(dbCnt);
-			sb.AppendC(UTF8STRC(", srcCnt = "));
-			sb.AppendUIntOS(srcCnt);
-			this->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), this);
-			dataConn->CloseReader(r);
-			table.Delete();
-			srcDBCond.Delete();
-			dataDBCond.Delete();
-			return false;
-		}
-	}
-	else
-	{
-		if (keyCol1 != INVALID_INDEX && keyDCol1 == INVALID_INDEX)
-		{
-			this->ui->ShowMsgOK(CSTR("Key Column not found in data file"), CSTR("Check Table Changes"), this);
-			dataConn->CloseReader(r);
-			table.Delete();
-			srcDBCond.Delete();
-			dataDBCond.Delete();
-			return false;
-		}
-	}
-	UIntOS dataFileRowCnt = 0;
-	UIntOS noChgCnt = 0;
-	UIntOS updateCnt = 0;
-	UIntOS newRowCnt = 0;
-	UIntOS delRowCnt = 0;
-	Bool succ = true;
-	NN<Text::String> s;
-	NN<Text::String> id;
-	Text::StringBuilderUTF8 sbId;
-	while (r->ReadNext())
-	{
-		dataFileRowCnt++;
-		if (r->ColCount() >= srcCnt)
-		{
-			if (keyCol1 == INVALID_INDEX)
-			{
-				newRowCnt++;
-			}
-			else
-			{
-				if (keyDCol1 == TEXT_COL)
-				{
-					id = this->GetNewTextNN(keyCol1);
-				}
-				else
-				{
-					id = r->GetNewStrNN(keyDCol1);
-				}
-				if (keyDCol2 == INVALID_INDEX && (id->leng == 0 || id->Equals(UTF8STRC("0"))))
-				{
-					id->Release();
-					newRowCnt++;
-				}
-				else
-				{
-					sbId.ClearStr();
-					sbId.Append(id);
-					if (keyDCol2 != INVALID_INDEX)
-					{
-						sbId.AppendC(UTF8STRC("_ _"));
-						if (keyDCol2 == TEXT_COL)
-						{
-							if (this->colStr.GetItem(keyCol2).SetTo(s))
-								sbId.Append(s);
-						}
-						else
-						{
-							r->GetStr(keyDCol2, sbId);
-						}
-					}
-					rowData = MemAlloc(Optional<Text::String>, dbCnt);
-					i = 0;
-					while (i < dbCnt)
-					{
-						k = this->colInd.GetItem(i);
-						rowData[i] = nullptr;
-						if (k != INVALID_INDEX)
-						{
-							if (k == TEXT_COL)
-							{
-								rowData[i] = this->GetNewText(i);
-							}
-							else
-							{
-								rowData[i] = r->GetNewStr(k);
-							}
-							if (rowData[i].SetTo(s))
-							{
-								if (s->Equals(nullStr.v, nullStr.leng))
-								{
-									s->Release();
-									rowData[i] = nullptr;
-								}
-								else if (table->GetCol(i).SetTo(col))
-								{
-									if (s->leng == 0)
-									{
-										switch (col->GetColType())
-										{
-										case DB::DBUtil::CT_VarUTF8Char:
-										case DB::DBUtil::CT_VarUTF16Char:
-										case DB::DBUtil::CT_VarUTF32Char:
-										case DB::DBUtil::CT_UTF8Char:
-										case DB::DBUtil::CT_UTF16Char:
-										case DB::DBUtil::CT_UTF32Char:
-										case DB::DBUtil::CT_Binary:
-											break;
-										case DB::DBUtil::CT_Vector:
-										case DB::DBUtil::CT_Date:
-										case DB::DBUtil::CT_DateTime:
-										case DB::DBUtil::CT_DateTimeTZ:
-										case DB::DBUtil::CT_Decimal:
-										case DB::DBUtil::CT_Double:
-										case DB::DBUtil::CT_Float:
-										case DB::DBUtil::CT_UInt16:
-										case DB::DBUtil::CT_Int16:
-										case DB::DBUtil::CT_UInt32:
-										case DB::DBUtil::CT_Int32:
-										case DB::DBUtil::CT_Byte:
-										case DB::DBUtil::CT_UInt64:
-										case DB::DBUtil::CT_Int64:
-										case DB::DBUtil::CT_Bool:
-										case DB::DBUtil::CT_UUID:
-										case DB::DBUtil::CT_Unknown:
-										default:
-											s->Release();
-											rowData[i] = nullptr;
-											break;
-										}
-									}
-									else if (col->GetColType() == DB::DBUtil::CT_Vector && (srConv || simpleShape || fixError))
-									{
-										NN<Math::Geometry::Vector2D> vec;
-										if (r->GetVector(k).SetTo(vec))
-										{
-											Bool updated = false;
-											if (vec->HasCurve() && simpleShape)
-											{
-												NN<Math::Geometry::Vector2D> vec2;
-//												printf("Found curve\n");
-												if (vec->ToSimpleShape().SetTo(vec2))
-												{
-//													printf("Converted to simple shape: %s\n", Math::Geometry::Vector2D::VectorTypeGetName(vec2->GetVectorType()).v.Ptr());
-													vec.Delete();
-													vec = vec2;
-													updated = true;
-												}
-											}
-											if (fixError)
-											{
-												if (vec->FixError())
-												{
-													updated = true;
-												}
-											}
-											if (srConv)
-											{
-												UInt32 srcSRID = vec->GetSRID();
-												UInt32 destSRID = col->GetGeometrySRID();
-												if (srcSRID != 0 && srcSRID != destSRID)
-												{
-													if (!csysDB.SetTo(nncsysDB))
-													{
-														nncsysDB = Math::CoordinateSystemManager::SRCreateCSysOrDef(destSRID);
-														csysDB = nncsysDB;
-													}
-													if (csysSrc.SetTo(nncsysSrc))
-													{
-														if (nncsysSrc->GetSRID() != srcSRID)
-														{
-															nncsysSrc.Delete();
-															nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
-															csysSrc = nncsysSrc;
-														}
-													}
-													else
-													{
-														nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
-														csysSrc = nncsysSrc;
-													}
-													Math::CoordinateSystemConverter csysConv(nncsysSrc, nncsysDB);
-													vec->Convert(csysConv);
-													updated = true;
-												}
-											}
-											if (updated)
-											{
-												sb.ClearStr();
-												Math::WKTWriter writer;
-												writer.ToText(sb, vec);
-												OPTSTR_DEL(rowData[i]);
-												rowData[i] = Text::String::New(sb.ToCString());
-											}
-											vec.Delete();
-										}
-									}
-									else if (col->GetColType() == DB::DBUtil::CT_Binary)
-									{
-										UIntOS binSize = r->GetBinarySize(k);
-										UnsafeArray<UInt8> binBuff = MemAllocArr(UInt8, binSize);
-										binSize = r->GetBinary(k, binBuff);
-										sb.ClearStr();
-										sb.AppendHexBuff(binBuff, binSize, 0, Text::LineBreakType::None);
-										OPTSTR_DEL(rowData[i]);
-										rowData[i] = Text::String::New(sb.ToCString());
-										MemFreeArr(binBuff);
-									}
-								}
-							}
-						}
-						i++;
-					}
-					rowData = csvData.PutC(sbId.ToCString(), rowData);
-					if (rowData)
-					{
-						i = dbCnt;
-						while (i-- > 0)
-						{
-							OPTSTR_DEL(rowData[i]);
-						}
-						MemFree(rowData);
-
-						Text::StringBuilderUTF8 sb;
-						sb.Append(CSTR("Data File Key duplicate ("));
-						sb.Append(sbId.ToCString());
-						sb.AppendUTF8Char(')');
-						this->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), this);
-						id->Release();
-						succ = false;
-						break;
-					}
-					id->Release();
-				}
-			}
-		}
-	}
-	dataConn->CloseReader(r);
-
-	if (succ && keyCol1 != INVALID_INDEX)
-	{
-		if (!this->db->QueryTableData(this->schema, this->table, nullptr, 0, 0, nullptr, srcDBCond).SetTo(r))
-		{
-			this->ui->ShowMsgOK(CSTR("Error in getting table data"), CSTR("Check Table Changes"), this);
-			succ = false;
-		}
-		else
-		{
-			Data::ArrayListStringNN idList;
-			while (r->ReadNext())
-			{
-				if (!r->GetNewStr(keyCol1).SetTo(id))
-				{
-					this->ui->ShowMsgOK(CSTR("Source Key is null"), CSTR("Check Table Changes"), this);
-					succ = false;
-					break;
-				}
-				sbId.ClearStr();
-				sbId.Append(id);
-				if (keyCol2 != INVALID_INDEX)
-				{
-					sbId.AppendC(UTF8STRC("_ _"));
-					r->GetStr(keyCol2, sbId);
-				}
-				if (idList.SortedIndexOfC(sbId.ToCString()) >= 0)
-				{
-					sbFilter.ClearStr();
-					sbFilter.AppendC(UTF8STRC("Source Key duplicate ("));
-					sbFilter.Append(sbId);
-					sbFilter.AppendUTF8Char(')');
-					this->ui->ShowMsgOK(sbFilter.ToCString(), CSTR("Check Table Changes"), this);
-					succ = false;
-					break;
-				}
-				rowData = csvData.GetC(sbId.ToCString());
-				idList.SortedInsert(Text::String::New(sbId.ToCString()));
-				id->Release();
-				if (rowData)
-				{
-					NN<Text::String> rowDataStr;
-					Bool diff = false;
-					i = 0;
-					while (i < dbCnt)
-					{
-						if (this->colInd.GetItem(i) == INVALID_INDEX)
-						{
-
-						}
-						else if (r->IsNull(i))
-						{
-							if (rowData[i].IsNull())
-							{
-
-							}
-							else
-							{
-								diff = true;
-								break;
-							}
-						}
-						else if (!rowData[i].SetTo(rowDataStr))
-						{
-							diff = true;
-							break;
-						}
-						else if (table->GetCol(i).SetTo(col))
-						{
-							switch (col->GetColType())
-							{
-							case DB::DBUtil::CT_VarUTF8Char:
-							case DB::DBUtil::CT_VarUTF16Char:
-							case DB::DBUtil::CT_VarUTF32Char:
-							case DB::DBUtil::CT_UTF8Char:
-							case DB::DBUtil::CT_UTF16Char:
-							case DB::DBUtil::CT_UTF32Char:
-								id = r->GetNewStrNN(i);
-								if (!id->Equals(rowDataStr->v, rowDataStr->leng))
-								{
-									diff = true;
-								}
-								id->Release();
-								break;
-							case DB::DBUtil::CT_Date:
-								{
-									Data::Date ts1 = r->GetTimestamp(i).ToDate();
-									Data::Date ts2 = Data::Timestamp::FromStr(rowDataStr->ToCString(), this->connTz).ToDate();
-									if (ts1.GetTotalDays() != ts2.GetTotalDays())
-									{
-										diff = true;
-									}
-								}
-								break;
-							case DB::DBUtil::CT_DateTime:
-							case DB::DBUtil::CT_DateTimeTZ:
-								{
-									Data::Timestamp ts1 = r->GetTimestamp(i);
-									Data::Timestamp ts2 = Data::Timestamp::FromStr(rowDataStr->ToCString(), this->connTz);
-									if (ts1.DiffSec(ts2) != 0)
-									{
-										diff = true;
-									}
-								}
-								break;
-							case DB::DBUtil::CT_Float:
-								{
-									Double v1 = r->GetDblOrNAN(i);
-									Double v2 = rowDataStr->ToDoubleOrNAN();
-									if (!Math::NearlyEquals(v1, v2, 0.000001))
-									{
-										diff = true;
-									}
-								}
-								break;
-							case DB::DBUtil::CT_Decimal:
-							case DB::DBUtil::CT_Double:
-								{
-									Double v1 = r->GetDblOrNAN(i);
-									Double v2 = rowDataStr->ToDoubleOrNAN();
-									if (!Math::NearlyEqualsDbl(v1, v2))
-									{
-										diff = true;
-									}
-								}
-								break;
-							case DB::DBUtil::CT_UInt16:
-							case DB::DBUtil::CT_Int16:
-							case DB::DBUtil::CT_UInt32:
-							case DB::DBUtil::CT_Int32:
-							case DB::DBUtil::CT_Byte:
-								{
-									Int32 v1 = r->GetInt32(i);
-									Int32 v2 = rowDataStr->ToInt32();
-									if (v1 != v2)
-									{
-										diff = true;
-									}
-								}
-								break;
-							case DB::DBUtil::CT_UInt64:
-							case DB::DBUtil::CT_Int64:
-								{
-									Int64 v1 = r->GetInt64(i);
-									Int64 v2 = rowDataStr->ToInt64();
-									if (v1 != v2)
-									{
-										diff = true;
-									}
-								}
-								break;
-							case DB::DBUtil::CT_Bool:
-								{
-									Bool v1 = r->GetBool(i);
-									Bool v2 = rowDataStr->v[0] == 't' || rowDataStr->v[0] == 'T' || rowDataStr->ToInt32() != 0;
-									if (v1 != v2)
-									{
-										diff = true;
-									}
-								}
-								break;
-							case DB::DBUtil::CT_Vector:
-								{
-									NN<Math::Geometry::Vector2D> vec1;
-									if (r->GetVector(i).SetTo(vec1))
-									{
-										vec1->SetSRID(col->GetGeometrySRID());
-										NN<Math::Geometry::Vector2D> vec2;
-										Math::WKTReader reader(vec1->GetSRID());
-										if (!reader.ParseWKT(rowDataStr->v).SetTo(vec2))
-										{
-											diff = true;
-										}
-										else
-										{
-											if (!vec1->Equals(vec2, false, true, no3DGeometry))
-											{
-												diff = true;
-											}
-											vec2.Delete();
-										}
-										vec1.Delete();
-									}
-									else
-									{
-										diff = true;
-									}
-								}
-								break;
-							case DB::DBUtil::CT_Binary:
-								{
-									UIntOS binSize = r->GetBinarySize(i);
-									UnsafeArray<UInt8> binBuff = MemAllocArr(UInt8, binSize);
-									binSize = r->GetBinary(i, binBuff);
-									UIntOS bin2Size = rowDataStr->leng >> 1;
-									UnsafeArray<UInt8> bin2Buff = MemAllocArr(UInt8, bin2Size);
-									bin2Size = Text::StrHex2Bytes(rowDataStr->v, bin2Buff);
-									if (!Text::StrEqualsC(binBuff, binSize, bin2Buff, bin2Size))
-									{
-										diff = true;
-									}
-									MemFreeArr(binBuff);
-									MemFreeArr(bin2Buff);
-								}
-								break;
-							case DB::DBUtil::CT_UUID:
-								{
-									Data::UUID uuid1;
-									Data::UUID uuid2;
-									r->GetUUID(i, uuid1);
-									uuid2.SetValue(rowDataStr->ToCString());
-									if (!uuid1.Equals(uuid2))
-									{
-										diff = true;
-									}
-								}
-								break;
-							case DB::DBUtil::CT_Unknown:
-							default:
-								diff = true;
-								break;
-							}
-							if (diff)
-							{
-								break;
-							}
-						}
-						else
-						{
-							diff = true;
-							break;
-						}
-						i++;
-					}
-					if (diff)
-					{
-						updateCnt++;
-					}
-					else
-					{
-						noChgCnt++;
-					}
-				}
-				else
-				{
-					delRowCnt++;
-				}
-			}
-			this->db->CloseReader(r);
-
-			newRowCnt += dataFileRowCnt + delRowCnt - idList.GetCount();
-			idList.FreeAll();
-		}
-	}
-
-	k = csvData.GetCount();
-	while (k-- > 0)
-	{
-		rowData = csvData.GetItem(k);
-		i = dbCnt;
-		while (i-- > 0)
-		{
-			OPTSTR_DEL(rowData[i]);
-		}
-		MemFree(rowData);
-	}
-	table.Delete();
-	srcDBCond.Delete();
-	dataDBCond.Delete();
-	csysSrc.Delete();
-	csysDB.Delete();
+	checker.SetNullStr(nullStr);
+	checker.SetKeyCols(this->cboKeyCol1->GetSelectedItem().GetUIntOS(), this->cboKeyCol2->GetSelectedItem().GetUIntOS());
+	checker.SetSrcCond(srcDBCond);
+	checker.SetDataCond(dataDBCond);
+	checker.SetColMapping(this->colInd, this->colStr);
+	checker.SetSRConv(this->chkGeomConv->IsChecked());
+	checker.SetSimpleShape(this->chkGeomSimpleShape->IsChecked());
+	checker.SetFixError(this->chkGeomFixError->IsChecked());
+	Bool succ = checker.CheckChange();
 	if (succ)
 	{
-		sptr = Text::StrUIntOS(sbuff, dataFileRowCnt);
+		sptr = Text::StrUIntOS(sbuff, checker.GetDataFileRowCnt());
 		this->txtDataFileRow->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrUIntOS(sbuff, noChgCnt);
+		sptr = Text::StrUIntOS(sbuff, checker.GetNoChgCnt());
 		this->txtNoChg->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrUIntOS(sbuff, updateCnt);
+		sptr = Text::StrUIntOS(sbuff, checker.GetUpdateCnt());
 		this->txtUpdated->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrUIntOS(sbuff, newRowCnt);
+		sptr = Text::StrUIntOS(sbuff, checker.GetNewRowCnt());
 		this->txtNewRow->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrUIntOS(sbuff, delRowCnt);
+		sptr = Text::StrUIntOS(sbuff, checker.GetDelRowCnt());
 		this->txtDeletedRow->SetText(CSTRP(sbuff, sptr));
-		return true;
 	}
 	else
 	{
-		return false;
+		Optional<Text::String> errMsg = checker.GetLastError();
+		this->ui->ShowMsgOK(OPTSTR_CSTR(errMsg).Or(CSTR("Unknown Error")), CSTR("Check Table Changes"), this);
 	}
+	srcDBCond.Delete();
+	dataDBCond.Delete();
+	return succ;
 }
 
 Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool axisAware, NN<SQLSession> sess)
 {
 	Text::CStringNN nullStr = this->GetNullText();
+	DB::DBChangeChecker checker(this->db, this->schema, this->table);
 	NN<DB::ReadingDB> dataConn;
 	if (!this->dataConn.SetTo(dataConn))
 	{
@@ -1253,16 +561,15 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 			dataSchema = sbSchema.ToCString();
 		}
 	}
+	checker.SetDataTable(dataConn, dataSchema, sbTable.ToCString(), this->dataTz, this->dataFileNoHeader);
+	sess->me = *this;
 	Optional<Data::QueryConditions> srcDBCond = nullptr;
 	Optional<Data::QueryConditions> dataDBCond = nullptr;
-	Bool srConv = this->chkGeomConv->IsChecked();
-	Bool simpleShape = this->chkGeomSimpleShape->IsChecked();
-	Bool fixError = this->chkGeomFixError->IsChecked();
 	Text::StringBuilderUTF8 sbFilter;
 	this->txtSrcFilter->GetText(sbFilter);
 	if (sbFilter.GetLength() > 0)
 	{
-		srcDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType(), this->connTz);
+		srcDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType(), this->db->GetTzQhr());
 		if (srcDBCond.IsNull())
 		{
 			this->ui->ShowMsgOK(CSTR("Error in parsing source filter"), CSTR("Check Table Changes"), this);
@@ -1273,7 +580,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	this->txtDataFilter->GetText(sbFilter);
 	if (sbFilter.GetLength() > 0)
 	{
-		dataDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType(), this->connTz);
+		dataDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType(), this->dataTz);
 		if (dataDBCond.IsNull())
 		{
 			this->ui->ShowMsgOK(CSTR("Error in parsing data filter"), CSTR("Check Table Changes"), this);
@@ -1281,1119 +588,31 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 			return false;
 		}
 	}
-	NN<DB::TableDef> table;
-	NN<DB::ColDef> col;
-	UInt32 dbSrid = 0;
-	Optional<Math::CoordinateSystem> csysDB = nullptr;
-	Optional<Math::CoordinateSystem> csysSrc = nullptr;
-	NN<Math::CoordinateSystem> nncsysDB;
-	NN<Math::CoordinateSystem> nncsysSrc;
-	Text::StringBuilderUTF8 sb;
-	if (dataConn->GetTableDef(dataSchema, sbTable.ToCString()).SetTo(table))
+	checker.SetNullStr(nullStr);
+	checker.SetKeyCols(this->cboKeyCol1->GetSelectedItem().GetUIntOS(), this->cboKeyCol2->GetSelectedItem().GetUIntOS());
+	checker.SetSrcCond(srcDBCond);
+	checker.SetDataCond(dataDBCond);
+	checker.SetColMapping(this->colInd, this->colStr);
+	checker.SetSRConv(this->chkGeomConv->IsChecked());
+	checker.SetSimpleShape(this->chkGeomSimpleShape->IsChecked());
+	checker.SetFixError(this->chkGeomFixError->IsChecked());
+	Bool succ = checker.GenerateSQL(sqlType, axisAware, NextSQL, sess);
+	if (!succ)
 	{
-		UIntOS i = table->GetColCnt();
-		while (i-- > 0)
+		NN<Text::String> errMsg;
+		if (checker.GetLastError().SetTo(errMsg))
 		{
-			if (table->GetCol(i).SetTo(col) && col->GetColType() == DB::DBUtil::CT_Vector)
-			{
-				dbSrid = col->GetGeometrySRID();
-				break;
-			}
+			this->ui->ShowMsgOK(errMsg->ToCString(), CSTR("Check Table Changes"), this);
 		}
-		table.Delete();
-	}
-	if (!this->db->GetTableDef(this->schema, this->table).SetTo(table))
-	{
-		this->ui->ShowMsgOK(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
-		srcDBCond.Delete();
-		dataDBCond.Delete();
-		return false;
-	}
-	Bool succ = true;
-	Bool intKey = false;
-	Bool no3DGeometry = DB::DBUtil::IsNo3DGeometry(this->GetDBSQLType());
-	Text::StringBuilderUTF8 sbId;
-	UIntOS keyCol1 = this->cboKeyCol1->GetSelectedItem().GetUIntOS();
-	UIntOS keyDCol1;
-	UIntOS keyCol2 = this->cboKeyCol2->GetSelectedItem().GetUIntOS();
-	UIntOS keyDCol2;
-	UIntOS i = 0;
-	UIntOS dbCnt = table->GetColCnt();
-	while (i < dbCnt)
-	{
-		if (table->GetCol(i).SetTo(col))
-		{
-			DB::DBUtil::ColType colType = col->GetColType();
-			if (i == keyCol1 && keyCol2 == INVALID_INDEX)
-			{
-				switch (colType)
-				{
-				case DB::DBUtil::CT_Bool:
-				case DB::DBUtil::CT_Byte:
-				case DB::DBUtil::CT_Int16:
-				case DB::DBUtil::CT_Int32:
-				case DB::DBUtil::CT_Int64:
-				case DB::DBUtil::CT_UInt16:
-				case DB::DBUtil::CT_UInt32:
-				case DB::DBUtil::CT_UInt64:
-					intKey = true;
-					break;
-				case DB::DBUtil::CT_Unknown:
-				case DB::DBUtil::CT_UTF8Char:
-				case DB::DBUtil::CT_UTF16Char:
-				case DB::DBUtil::CT_UTF32Char:
-				case DB::DBUtil::CT_VarUTF8Char:
-				case DB::DBUtil::CT_VarUTF16Char:
-				case DB::DBUtil::CT_VarUTF32Char:
-				case DB::DBUtil::CT_Date:
-				case DB::DBUtil::CT_DateTime:
-				case DB::DBUtil::CT_DateTimeTZ:
-				case DB::DBUtil::CT_Double:
-				case DB::DBUtil::CT_Float:
-				case DB::DBUtil::CT_Decimal:
-				case DB::DBUtil::CT_Binary:
-				case DB::DBUtil::CT_UUID:
-				case DB::DBUtil::CT_Vector:
-					break;
-				}
-			}
-			if (colType == DB::DBUtil::CT_Vector)
-			{
-				UInt32 srid = col->GetGeometrySRID();
-				if (srid != 0)
-				{
-					dbSrid = srid;
-				}
-			}
-		}
-		i++;
-	}
-	if (dbSrid == 0)
-	{
-		dbSrid = SRID;
-	}
-	UIntOS k;
-	UIntOS srcCnt;
-	Data::FastStringMapObj<Optional<Text::String>*> csvData;
-	Optional<Text::String>* rowData;
-	NN<DB::DBReader> r;
-	if (!this->IsColIndexValid(this->colInd, table))
-	{
-		srcDBCond.Delete();
-		dataDBCond.Delete();
-		table.Delete();
-		return false;
-	}
-	if (!dataConn->QueryTableData(dataSchema, sbTable.ToCString(), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
-	{
-		table.Delete();
-		srcDBCond.Delete();
-		dataDBCond.Delete();
-		this->ui->ShowMsgOK(CSTR("Error in reading data file"), CSTR("Check Table Changes"), this);
-		return false;
-	}
-	srcCnt = r->ColCount();
-	keyDCol1 = this->colInd.GetItem(keyCol1);
-	if (keyCol2 == INVALID_INDEX)
-	{
-		keyDCol2 = INVALID_INDEX;
-	}
-	else
-	{
-		keyDCol2 = this->colInd.GetItem(keyCol2);
-	}
-
-	if (this->dataFileNoHeader)
-	{
-		if (dbCnt != srcCnt)
-		{
-			this->ui->ShowMsgOK(CSTR("Column Count does not match"), CSTR("Check Table Changes"), this);
-			dataConn->CloseReader(r);
-			table.Delete();
-			srcDBCond.Delete();
-			dataDBCond.Delete();
-			return false;
-		}
-	}
-	else
-	{
-		if (keyCol1 != INVALID_INDEX && keyDCol1 == INVALID_INDEX)
-		{
-			this->ui->ShowMsgOK(CSTR("Key Column not found in data file"), CSTR("Check Table Changes"), this);
-			dataConn->CloseReader(r);
-			table.Delete();
-			srcDBCond.Delete();
-			dataDBCond.Delete();
-			return false;
-		}
-	}
-	DB::SQLBuilder sql(sqlType, axisAware, Data::DateTimeUtil::GetLocalTzQhr());
-	Bool genInsert;
-	Bool colFound;
-	NN<Text::String> s;
-	NN<Text::String> s2;
-	Optional<Text::String> ops;
-//	NN<Text::String> id;
-	while (r->ReadNext())
-	{
-		if (r->ColCount() >= srcCnt)
-		{
-			genInsert = false;
-			if (keyCol1 == INVALID_INDEX)
-			{
-				genInsert = true;
-			}
-			else
-			{
-				if (keyDCol1 == TEXT_COL)
-				{
-					s = this->GetNewTextNN(keyCol1);
-				}
-				else
-				{
-					s = r->GetNewStrNN(keyDCol1);
-				}
-				if (keyDCol2 == INVALID_INDEX && (s->leng == 0 || s->Equals(UTF8STRC("0"))))
-				{
-					s->Release();
-					genInsert = true;
-				}
-				else
-				{
-					sbId.ClearStr();
-					sbId.Append(s);
-					if (keyDCol2 != INVALID_INDEX)
-					{
-						sbId.AppendC(UTF8STRC("_ _"));
-						if (keyDCol2 == TEXT_COL)
-						{
-							if (this->GetNewText(keyCol2).SetTo(s2))
-							{
-								sbId.Append(s2);
-							}
-						}
-						else
-						{
-							r->GetStr(keyDCol2, sbId);
-						}
-					}
-					rowData = MemAlloc(Optional<Text::String>, dbCnt);
-					i = 0;
-					while (i < dbCnt)
-					{
-						k = this->colInd.GetItem(i);
-						if (k == INVALID_INDEX)
-						{
-							rowData[i] = nullptr;
-						}
-						else
-						{
-							if (k == TEXT_COL)
-							{
-								rowData[i] = this->GetNewText(i).OrNull();
-							}
-							else
-							{
-								rowData[i] = r->GetNewStr(this->colInd.GetItem(i)).OrNull();
-							}
-							if (rowData[i].SetTo(s2))
-							{
-								if (s2->Equals(nullStr.v, nullStr.leng))
-								{
-									s2->Release();
-									rowData[i] = nullptr;
-								}
-								else if (s2->leng == 0)
-								{
-									switch (table->GetCol(i).SetTo(col)?col->GetColType():DB::DBUtil::CT_Unknown)
-									{
-									case DB::DBUtil::CT_VarUTF8Char:
-									case DB::DBUtil::CT_VarUTF16Char:
-									case DB::DBUtil::CT_VarUTF32Char:
-									case DB::DBUtil::CT_UTF8Char:
-									case DB::DBUtil::CT_UTF16Char:
-									case DB::DBUtil::CT_UTF32Char:
-									case DB::DBUtil::CT_Binary:
-										break;
-									case DB::DBUtil::CT_Date:
-									case DB::DBUtil::CT_DateTime:
-									case DB::DBUtil::CT_DateTimeTZ:
-									case DB::DBUtil::CT_Decimal:
-									case DB::DBUtil::CT_Double:
-									case DB::DBUtil::CT_Float:
-									case DB::DBUtil::CT_UInt16:
-									case DB::DBUtil::CT_Int16:
-									case DB::DBUtil::CT_UInt32:
-									case DB::DBUtil::CT_Int32:
-									case DB::DBUtil::CT_Byte:
-									case DB::DBUtil::CT_UInt64:
-									case DB::DBUtil::CT_Int64:
-									case DB::DBUtil::CT_Bool:
-									case DB::DBUtil::CT_Vector:
-									case DB::DBUtil::CT_UUID:
-									case DB::DBUtil::CT_Unknown:
-									default:
-										s2->Release();
-										rowData[i] = nullptr;
-										break;
-									}
-								}
-								else if (table->GetCol(i).SetTo(col))
-								{
-									if ((srConv || simpleShape || fixError) && col->GetColType() == DB::DBUtil::CT_Vector)
-									{
-										NN<Math::Geometry::Vector2D> vec;
-										if (r->GetVector(this->colInd.GetItem(i)).SetTo(vec))
-										{
-											Bool updated = false;
-											if (vec->HasCurve() && simpleShape)
-											{
-												NN<Math::Geometry::Vector2D> vec2;
-												if (vec->ToSimpleShape().SetTo(vec2))
-												{
-													vec.Delete();
-													vec = vec2;
-													updated = true;
-												}
-											}
-											if (fixError)
-											{
-												if (vec->FixError())
-												{
-													updated = true;
-												}
-											}
-											if (srConv)
-											{
-												UInt32 srcSRID = vec->GetSRID();
-												UInt32 destSRID = col->GetGeometrySRID();
-												if (srcSRID != 0 && srcSRID != destSRID)
-												{
-													if (!csysDB.SetTo(nncsysDB))
-													{
-														nncsysDB = Math::CoordinateSystemManager::SRCreateCSysOrDef(destSRID);
-														csysDB = nncsysDB;
-													}
-													if (csysSrc.SetTo(nncsysSrc))
-													{
-														if (nncsysSrc->GetSRID() != srcSRID)
-														{
-															nncsysSrc.Delete();
-															nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
-															csysSrc = nncsysSrc;
-														}
-													}
-													else
-													{
-														nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
-														csysSrc = nncsysSrc;
-													}
-													Math::CoordinateSystemConverter csysConv(nncsysSrc, nncsysDB);
-													vec->Convert(csysConv);
-													updated = true;
-												}
-											}
-											if (updated)
-											{
-												sb.ClearStr();
-												Math::WKTWriter writer;
-												writer.ToText(sb, vec);
-												s2->Release();
-												rowData[i] = Text::String::New(sb.ToCString()).Ptr();
-											}
-											vec.Delete();
-										}
-									}
-									else if (col->GetColType() == DB::DBUtil::CT_Binary)
-									{
-										UIntOS binSize = r->GetBinarySize(this->colInd.GetItem(i));
-										if (binSize > 0)
-										{
-											UnsafeArray<UInt8> binBuff = MemAlloc(UInt8, binSize);
-											binSize = r->GetBinary(this->colInd.GetItem(i), binBuff);
-											sb.ClearStr();
-											sb.AppendHexBuff(binBuff, binSize, 0, Text::LineBreakType::None);
-											s2->Release();
-											rowData[i] = Text::String::New(sb.ToCString());
-											MemFreeArr(binBuff);
-										}
-									}
-								}
-							}
-						}
-
-						i++;
-					}
-					rowData = csvData.PutC(sbId.ToCString(), rowData);
-					s->Release();
-					if (rowData)
-					{
-						i = dbCnt;
-						while (i-- > 0)
-						{
-							OPTSTR_DEL(rowData[i]);
-						}
-						MemFree(rowData);
-					}
-				}
-			}
-			if (genInsert)
-			{
-				sql.Clear();
-				sql.AppendCmdC(CSTR("insert into "));
-				Text::CStringNN schema;
-				if (this->schema.SetTo(schema) && schema.leng > 0 && DB::DBUtil::HasSchema(sqlType))
-				{
-					sql.AppendCol(schema.v);
-					sql.AppendCmdC(CSTR("."));
-				}
-				sql.AppendCol(this->table.v);
-				sql.AppendCmdC(CSTR(" ("));
-				colFound = false;
-				i = 0;
-				while (i < dbCnt)
-				{
-					if ((i != keyCol1 || keyCol2 != INVALID_INDEX) && this->colInd.GetItem(i) != INVALID_INDEX && table->GetCol(i).SetTo(col))
-					{
-						if (colFound) sql.AppendCmdC(CSTR(", "));
-						colFound = true;
-						sql.AppendCol(col->GetColName()->v);
-					}
-					i++;
-				}
-				sql.AppendCmdC(CSTR(") values ("));
-				colFound = false;
-				i = 0;
-				while (i < dbCnt)
-				{
-					if ((i != keyCol1 || keyCol2 != INVALID_INDEX) && this->colInd.GetItem(i) != INVALID_INDEX && table->GetCol(i).SetTo(col))
-					{
-						if (colFound) sql.AppendCmdC(CSTR(", "));
-						colFound = true;
-						ops = r->GetNewStr(this->colInd.GetItem(i));
-						if (ops.SetTo(s) && s->Equals(nullStr.v, nullStr.leng))
-						{
-							sql.AppendNull();
-						}
-						else if (col->GetColType() == DB::DBUtil::CT_Vector)
-						{
-							NN<Math::Geometry::Vector2D> vec;
-							if (r->GetVector(this->colInd.GetItem(i)).SetTo(vec))
-							{
-								if (vec->HasCurve() && simpleShape)
-								{
-									NN<Math::Geometry::Vector2D> vec2;
-									if (vec->ToSimpleShape().SetTo(vec2))
-									{
-										vec.Delete();
-										vec = vec2;
-									}
-								}
-								if (fixError)
-								{
-									vec->FixError();
-								}
-								if (srConv)
-								{
-									UInt32 srcSRID = vec->GetSRID();
-									UInt32 destSRID = col->GetGeometrySRID();
-									if (srcSRID != 0 && srcSRID != destSRID)
-									{
-										if (!csysDB.SetTo(nncsysDB))
-										{
-											nncsysDB = Math::CoordinateSystemManager::SRCreateCSysOrDef(destSRID);
-											csysDB = nncsysDB;
-										}
-										if (csysSrc.SetTo(nncsysSrc))
-										{
-											if (nncsysSrc->GetSRID() != srcSRID)
-											{
-												nncsysSrc.Delete();
-												nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
-												csysSrc = nncsysSrc;
-											}
-										}
-										else
-										{
-											nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
-											csysSrc = nncsysSrc;
-										}
-										Math::CoordinateSystemConverter csysConv(nncsysSrc, nncsysDB);
-										vec->Convert(csysConv);
-									}
-								}
-								sql.AppendVector(vec);
-								vec.Delete();
-							}
-							else
-							{
-								AppendCol(sql, col, ops, this->connTz, dbSrid);
-							}
-						}
-						else
-						{
-							AppendCol(sql, col, ops, this->connTz, dbSrid);
-						}
-						OPTSTR_DEL(ops);
-					}
-					i++;
-				}
-				sql.AppendCmdC(CSTR(")"));
-				if (!NextSQL(sql.ToCString(), sess))
-				{
-					succ = false;
-					break;
-				}
-			}
-		}
-	}
-	dataConn->CloseReader(r);
-
-	if (keyCol1 != INVALID_INDEX)
-	{
-		if (!this->db->QueryTableData(this->schema, this->table, nullptr, 0, 0, nullptr, srcDBCond).SetTo(r))
-		{
-			this->ui->ShowMsgOK(CSTR("Error in getting table data"), CSTR("Check Table Changes"), this);
-		}
-		else
-		{
-			NN<Text::String> id1;
-			Optional<Text::String> id2;
-			Data::ArrayListStringNN idList;
-			Data::ArrayListStringNN sqlList;
-			while (r->ReadNext())
-			{
-				sbId.ClearStr();
-				id1 = r->GetNewStrNN(keyCol1);
-				sbId.Append(id1);
-				id2 = nullptr;
-				if (keyCol2 != INVALID_INDEX)
-				{
-					sbId.AppendC(UTF8STRC("_ _"));
-					id2 = r->GetNewStrNN(keyCol2);
-					sbId.AppendOpt(id2);
-				}
-				rowData = csvData.GetC(sbId.ToCString());
-				idList.Add(Text::String::New(sbId.ToCString()));
-				if (rowData)
-				{
-					Bool diff = false;
-					sql.Clear();
-					sql.AppendCmdC(CSTR("update "));
-					Text::CStringNN schema;
-					if (this->schema.SetTo(schema) && schema.leng > 0 && DB::DBUtil::HasSchema(sqlType))
-					{
-						sql.AppendCol(schema.v);
-						sql.AppendCmdC(CSTR("."));
-					}
-					sql.AppendCol(this->table.v);
-					sql.AppendCmdC(CSTR(" set "));
-
-					i = 0;
-					while (i < dbCnt)
-					{
-						if (this->colInd.GetItem(i) == INVALID_INDEX)
-						{
-
-						}
-						else if (r->IsNull(i))
-						{
-							if (!rowData[i].SetTo(s2))
-							{
-
-							}
-							else
-							{
-								if (table->GetCol(i).SetTo(col))
-								{
-									switch (col->GetColType())
-									{
-									case DB::DBUtil::CT_VarUTF8Char:
-									case DB::DBUtil::CT_VarUTF16Char:
-									case DB::DBUtil::CT_VarUTF32Char:
-									case DB::DBUtil::CT_UTF8Char:
-									case DB::DBUtil::CT_UTF16Char:
-									case DB::DBUtil::CT_UTF32Char:
-										if (diff)
-										{
-											sql.AppendCmdC(CSTR(", "));
-										}
-										else
-										{
-											diff = true;
-										}
-										sql.AppendCol(col->GetColName()->v);
-										sql.AppendCmdC(CSTR(" = "));
-										sql.AppendStr(rowData[i]);
-										break;
-									case DB::DBUtil::CT_Date:
-										{
-											Data::Date ts2 = Data::Timestamp::FromStr(s2->ToCString(), this->connTz).ToDate();
-											if (diff)
-											{
-												sql.AppendCmdC(CSTR(", "));
-											}
-											else
-											{
-												diff = true;
-											}
-											sql.AppendCol(col->GetColName()->v);
-											sql.AppendCmdC(CSTR(" = "));
-											sql.AppendDate(ts2);
-										}
-										break;
-									case DB::DBUtil::CT_DateTime:
-									case DB::DBUtil::CT_DateTimeTZ:
-										{
-											Data::Timestamp ts2 = Data::Timestamp::FromStr(s2->ToCString(), this->connTz);
-											if (diff)
-											{
-												sql.AppendCmdC(CSTR(", "));
-											}
-											else
-											{
-												diff = true;
-											}
-											sql.AppendCol(col->GetColName()->v);
-											sql.AppendCmdC(CSTR(" = "));
-											sql.AppendTS(ts2);
-										}
-										break;
-									case DB::DBUtil::CT_Double:
-									case DB::DBUtil::CT_Float:
-									case DB::DBUtil::CT_Decimal:
-										{
-											Double v2 = s2->ToDoubleOrNAN();
-											if (diff)
-											{
-												sql.AppendCmdC(CSTR(", "));
-											}
-											else
-											{
-												diff = true;
-											}
-											sql.AppendCol(col->GetColName()->v);
-											sql.AppendCmdC(CSTR(" = "));
-											sql.AppendNDbl(v2);
-										}
-										break;
-									case DB::DBUtil::CT_UInt16:
-									case DB::DBUtil::CT_Int16:
-									case DB::DBUtil::CT_UInt32:
-									case DB::DBUtil::CT_Int32:
-									case DB::DBUtil::CT_Byte:
-										{
-											Int32 v2 = s2->ToInt32();
-											if (diff)
-											{
-												sql.AppendCmdC(CSTR(", "));
-											}
-											else
-											{
-												diff = true;
-											}
-											sql.AppendCol(col->GetColName()->v);
-											sql.AppendCmdC(CSTR(" = "));
-											sql.AppendInt32(v2);
-										}
-										break;
-									case DB::DBUtil::CT_UInt64:
-									case DB::DBUtil::CT_Int64:
-										{
-											Int64 v2 = s2->ToInt64();
-											if (diff)
-											{
-												sql.AppendCmdC(CSTR(", "));
-											}
-											else
-											{
-												diff = true;
-											}
-											sql.AppendCol(col->GetColName()->v);
-											sql.AppendCmdC(CSTR(" = "));
-											sql.AppendInt64(v2);
-										}
-										break;
-									case DB::DBUtil::CT_Bool:
-										{
-											Bool v2 = s2->v[0] == 't' || s2->v[0] == 'T' || s2->ToInt32() != 0;
-											if (diff)
-											{
-												sql.AppendCmdC(CSTR(", "));
-											}
-											else
-											{
-												diff = true;
-											}
-											sql.AppendCol(col->GetColName()->v);
-											sql.AppendCmdC(CSTR(" = "));
-											sql.AppendBool(v2);
-										}
-										break;
-									case DB::DBUtil::CT_Vector:
-										{
-											NN<Math::Geometry::Vector2D> vec2;;
-											Math::WKTReader reader(dbSrid);
-											if (!reader.ParseWKT(s2->v).SetTo(vec2))
-											{
-											}
-											else
-											{
-												if (diff)
-												{
-													sql.AppendCmdC(CSTR(", "));
-												}
-												else
-												{
-													diff = true;
-												}
-												sql.AppendCol(col->GetColName()->v);
-												sql.AppendCmdC(CSTR(" = "));
-												sql.AppendVector(vec2);
-												vec2.Delete();
-											}
-										}
-										break;
-									case DB::DBUtil::CT_Binary:
-										{
-											UnsafeArray<UInt8> binBuff = MemAllocArr(UInt8, s2->leng >> 1);
-											UIntOS binLeng = s2->Hex2Bytes(binBuff);
-											if (diff)
-											{
-												sql.AppendCmdC(CSTR(", "));
-											}
-											else
-											{
-												diff = true;
-											}
-											sql.AppendCol(col->GetColName()->v);
-											sql.AppendCmdC(CSTR(" = "));
-											sql.AppendBinary(UnsafeArray<const UInt8>(binBuff), binLeng);
-											MemFreeArr(binBuff);
-										}
-										break;
-									case DB::DBUtil::CT_UUID:
-										{
-											Data::UUID uuid2;
-											uuid2.SetValue(s2->ToCString());
-										}
-										break;
-									case DB::DBUtil::CT_Unknown:
-									default:
-										break;
-									}
-								}
-							}
-						}
-						else if (!rowData[i].SetTo(s2))
-						{
-							if (diff)
-							{
-								sql.AppendCmdC(CSTR(", "));
-							}
-							else
-							{
-								diff = true;
-							}
-							if (table->GetCol(i).SetTo(col))
-								sql.AppendCol(col->GetColName()->v);
-							sql.AppendCmdC(CSTR(" = "));
-							sql.AppendNull();
-						}
-						else if (table->GetCol(i).SetTo(col))
-						{
-							switch (col->GetColType())
-							{
-							case DB::DBUtil::CT_VarUTF8Char:
-							case DB::DBUtil::CT_VarUTF16Char:
-							case DB::DBUtil::CT_VarUTF32Char:
-							case DB::DBUtil::CT_UTF8Char:
-							case DB::DBUtil::CT_UTF16Char:
-							case DB::DBUtil::CT_UTF32Char:
-								s = r->GetNewStrNN(i);
-								if (!s->Equals(s2->v, s2->leng))
-								{
-									if (diff)
-									{
-										sql.AppendCmdC(CSTR(", "));
-									}
-									else
-									{
-										diff = true;
-									}
-									sql.AppendCol(col->GetColName()->v);
-									sql.AppendCmdC(CSTR(" = "));
-									sql.AppendStr(rowData[i]);
-								}
-								s->Release();
-								break;
-							case DB::DBUtil::CT_Date:
-								{
-									Data::Date ts1 = r->GetTimestamp(i).ToDate();
-									Data::Date ts2 = Data::Timestamp::FromStr(s2->ToCString(), this->connTz).ToDate();
-									if (ts1.GetTotalDays() != ts2.GetTotalDays())
-									{
-										if (diff)
-										{
-											sql.AppendCmdC(CSTR(", "));
-										}
-										else
-										{
-											diff = true;
-										}
-										sql.AppendCol(col->GetColName()->v);
-										sql.AppendCmdC(CSTR(" = "));
-										sql.AppendDate(ts2);
-									}
-								}
-								break;
-							case DB::DBUtil::CT_DateTime:
-							case DB::DBUtil::CT_DateTimeTZ:
-								{
-									Data::Timestamp ts1 = r->GetTimestamp(i);
-									Data::Timestamp ts2 = Data::Timestamp::FromStr(s2->ToCString(), this->connTz);
-									if (ts1.DiffSec(ts2) != 0)
-									{
-										if (diff)
-										{
-											sql.AppendCmdC(CSTR(", "));
-										}
-										else
-										{
-											diff = true;
-										}
-										sql.AppendCol(col->GetColName()->v);
-										sql.AppendCmdC(CSTR(" = "));
-										sql.AppendTS(ts2);
-									}
-								}
-								break;
-							case DB::DBUtil::CT_Double:
-							case DB::DBUtil::CT_Float:
-							case DB::DBUtil::CT_Decimal:
-								{
-									Double v1 = r->GetDblOrNAN(i);
-									Double v2 = s2->ToDoubleOrNAN();
-									if (!Math::NearlyEqualsDbl(v1, v2))
-									{
-										if (diff)
-										{
-											sql.AppendCmdC(CSTR(", "));
-										}
-										else
-										{
-											diff = true;
-										}
-										sql.AppendCol(col->GetColName()->v);
-										sql.AppendCmdC(CSTR(" = "));
-										sql.AppendNDbl(v2);
-									}
-								}
-								break;
-							case DB::DBUtil::CT_UInt16:
-							case DB::DBUtil::CT_Int16:
-							case DB::DBUtil::CT_UInt32:
-							case DB::DBUtil::CT_Int32:
-							case DB::DBUtil::CT_Byte:
-								{
-									Int32 v1 = r->GetInt32(i);
-									Int32 v2 = s2->ToInt32();
-									if (v1 != v2)
-									{
-										if (diff)
-										{
-											sql.AppendCmdC(CSTR(", "));
-										}
-										else
-										{
-											diff = true;
-										}
-										sql.AppendCol(col->GetColName()->v);
-										sql.AppendCmdC(CSTR(" = "));
-										sql.AppendInt32(v2);
-									}
-								}
-								break;
-							case DB::DBUtil::CT_UInt64:
-							case DB::DBUtil::CT_Int64:
-								{
-									Int64 v1 = r->GetInt64(i);
-									Int64 v2 = s2->ToInt64();
-									if (v1 != v2)
-									{
-										if (diff)
-										{
-											sql.AppendCmdC(CSTR(", "));
-										}
-										else
-										{
-											diff = true;
-										}
-										sql.AppendCol(col->GetColName()->v);
-										sql.AppendCmdC(CSTR(" = "));
-										sql.AppendInt64(v2);
-									}
-								}
-								break;
-							case DB::DBUtil::CT_Bool:
-								{
-									Bool v1 = r->GetBool(i);
-									Bool v2 = s2->v[0] == 't' || s2->v[0] == 'T' || s2->ToInt32() != 0;
-									if (v1 != v2)
-									{
-										if (diff)
-										{
-											sql.AppendCmdC(CSTR(", "));
-										}
-										else
-										{
-											diff = true;
-										}
-										sql.AppendCol(col->GetColName()->v);
-										sql.AppendCmdC(CSTR(" = "));
-										sql.AppendBool(v2);
-									}
-								}
-								break;
-							case DB::DBUtil::CT_Vector:
-								{
-									NN<Math::Geometry::Vector2D> vec1;
-									NN<Math::Geometry::Vector2D> vec2;
-									if (r->GetVector(i).SetTo(vec1))
-									{
-										vec1->SetSRID(dbSrid);
-										Math::WKTReader reader(vec1->GetSRID());
-										if (!reader.ParseWKT(s2->v).SetTo(vec2))
-										{
-											printf("Error in parsing WKT: %s\r\n", s2->v.Ptr());
-										}
-										else
-										{
-											if (!vec1->Equals(vec2, false, true, no3DGeometry))
-											{
-												if (diff)
-												{
-													sql.AppendCmdC(CSTR(", "));
-												}
-												else
-												{
-													diff = true;
-												}
-												sql.AppendCol(col->GetColName()->v);
-												sql.AppendCmdC(CSTR(" = "));
-												sql.AppendVector(vec2.Ptr());
-											}
-											vec2.Delete();
-										}
-										vec1.Delete();
-									}
-								}
-								break;
-							case DB::DBUtil::CT_Binary:
-								{
-									UIntOS binLeng1 = r->GetBinarySize(i);
-									UnsafeArray<UInt8> binBuff1 = MemAllocArr(UInt8, binLeng1);
-									binLeng1 = r->GetBinary(i, binBuff1);
-									UIntOS binLeng2;
-									UnsafeArray<UInt8> binBuff2 = MemAllocArr(UInt8, s2->leng >> 1);
-									binLeng2 = s2->Hex2Bytes(binBuff2);
-									if (Text::StrEqualsC(binBuff1, binLeng1, binBuff2, binLeng2))
-									{
-									}
-									else
-									{
-										if (diff)
-										{
-											sql.AppendCmdC(CSTR(", "));
-										}
-										else
-										{
-											diff = true;
-										}
-										sql.AppendCol(col->GetColName()->v);
-										sql.AppendCmdC(CSTR(" = "));
-										sql.AppendBinary(UnsafeArray<const UInt8>(binBuff2), binLeng2);
-									}	
-									MemFreeArr(binBuff1);
-									MemFreeArr(binBuff2);
-								}
-								break;
-							case DB::DBUtil::CT_UUID:
-								{
-									Data::UUID uuid1;
-									Data::UUID uuid2;
-									r->GetUUID(i, uuid1);
-									uuid2.SetValue(s2->ToCString());
-									if (!uuid1.Equals(uuid2))
-									{
-									}
-								}
-								break;
-							case DB::DBUtil::CT_Unknown:
-							default:
-								break;
-							}
-						}
-						i++;
-					}
-					if (diff)
-					{
-						sql.AppendCmdC(CSTR(" where "));
-						if (table->GetCol(keyCol1).SetTo(col))
-							sql.AppendCol(col->GetColName()->v);
-						sql.AppendCmdC(CSTR(" = "));
-						if (intKey)
-						{
-							sql.AppendInt64(id1->ToInt64());
-						}
-						else
-						{
-							sql.AppendStr(id1);
-						}
-						if (keyCol2 != INVALID_INDEX)
-						{
-							sql.AppendCmdC(CSTR(" and "));
-							if (table->GetCol(keyCol2).SetTo(col))
-								sql.AppendCol(col->GetColName()->v);
-							sql.AppendCmdC(CSTR(" = "));
-							sql.AppendStr(id2);
-						}
-						sqlList.Add(Text::String::New(sql.ToCString()));
-					}
-				}
-				else
-				{
-					sql.Clear();
-					sql.AppendCmdC(CSTR("delete from "));
-					Text::CStringNN schema;
-					if (this->schema.SetTo(schema) && schema.leng > 0 && DB::DBUtil::HasSchema(sqlType))
-					{
-						sql.AppendCol(schema.v);
-						sql.AppendCmdC(CSTR("."));
-					}
-					sql.AppendCol(this->table.v);
-					sql.AppendCmdC(CSTR(" where "));
-					if (table->GetCol(keyCol1).SetTo(col))
-						sql.AppendCol(col->GetColName()->v);
-					sql.AppendCmdC(CSTR(" = "));
-					if (intKey)
-					{
-						sql.AppendInt64(id1->ToInt64());
-					}
-					else
-					{
-						sql.AppendStr(id1);
-					}
-					if (keyCol2 != INVALID_INDEX)
-					{
-						sql.AppendCmdC(CSTR(" and "));
-						if (table->GetCol(keyCol2).SetTo(col))
-							sql.AppendCol(col->GetColName()->v);
-						sql.AppendCmdC(CSTR(" = "));
-						sql.AppendStr(id2);
-					}
-					sqlList.Add(Text::String::New(sql.ToCString()));
-				}
-				id1->Release();
-				OPTSTR_DEL(id2);
-			}
-			this->db->CloseReader(r);
-			if (succ)
-			{
-				UIntOS i = 0;
-				UIntOS j = sqlList.GetCount();
-				while (i < j)
-				{
-					if (!NextSQL(sqlList.GetItemNoCheck(i)->ToCString(), sess))
-					{
-						succ = false;
-						break;
-					}
-					i++;
-				}
-			}
-			sqlList.FreeAll();
-
-			if (succ)
-			{
-				Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(idList, idList);
-				k = 0;
-				srcCnt = csvData.GetCount();
-				while (k < srcCnt)
-				{
-					if (csvData.GetKey(k).SetTo(s) && idList.SortedIndexOf(s) < 0)
-					{
-						rowData = csvData.GetItem(k);
-						sql.Clear();
-						sql.AppendCmdC(CSTR("insert into "));
-						Text::CStringNN schema;
-						if (this->schema.SetTo(schema) && schema.leng > 0 && DB::DBUtil::HasSchema(sqlType))
-						{
-							sql.AppendCol(schema.v);
-							sql.AppendCmdC(CSTR("."));
-						}
-						sql.AppendCol(this->table.v);
-						sql.AppendCmdC(CSTR(" ("));
-						colFound = false;
-						i = 0;
-						while (i < dbCnt)
-						{
-							if (this->colInd.GetItem(i) != INVALID_INDEX && table->GetCol(i).SetTo(col))
-							{
-								if (colFound) sql.AppendCmdC(CSTR(", "));
-								colFound = true;
-								sql.AppendCol(col->GetColName()->v);
-							}
-							i++;
-						}
-						sql.AppendCmdC(CSTR(") values ("));
-						colFound = false;
-						i = 0;
-						while (i < dbCnt)
-						{
-							if (this->colInd.GetItem(i) != INVALID_INDEX && table->GetCol(i).SetTo(col))
-							{
-								if (colFound) sql.AppendCmdC(CSTR(", "));
-								colFound = true;
-								AppendCol(sql, col, rowData[i], this->connTz, dbSrid);
-							}
-							i++;
-						}
-						sql.AppendCmdC(CSTR(")"));
-						if (!NextSQL(sql.ToCString(), sess))
-						{
-							succ = false;
-							break;
-						}
-					}
-					k++;
-				}
-			}
-			idList.FreeAll();
-		}
-	}
-	
-	k = csvData.GetCount();
-	while (k-- > 0)
-	{
-		rowData = csvData.GetItem(k);
-		i = dbCnt;
-		while (i-- > 0)
-		{
-			OPTSTR_DEL(rowData[i]);
-		}
-		MemFree(rowData);
 	}
 	srcDBCond.Delete();
 	dataDBCond.Delete();
-	table.Delete();
-	csysSrc.Delete();
-	csysDB.Delete();
 	return succ;
 }
 
-Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, NN<SQLSession> sess)
+Bool __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(AnyType userObj, Text::CStringNN sql)
 {
+	NN<SQLSession> sess = userObj.GetNN<SQLSession>();
 	NN<DB::DBConn> db;
 	NN<IO::Stream> stm;
 	if (sess->mode == 0 && sess->stm.SetTo(stm))
@@ -2414,12 +633,12 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, NN<SQLSessi
 		if (db->ExecuteNonQuery(sql) >= 0)
 		{
 			sess->totalCnt++;
-			this->UpdateStatus(sess);
+			sess->me->UpdateStatus(sess);
 			return true;
 		}
 		Text::StringBuilderUTF8 sb;
 		db->GetLastErrorMsg(sb);
-		this->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), this);
+		sess->me->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), sess->me);
 		return false;
 	}
 	else if (sess->mode == 2 && sess->db.SetTo(db))
@@ -2432,14 +651,14 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, NN<SQLSessi
 				if (db->ExecuteNonQuery(sql) >= 0)
 				{
 					sess->totalCnt++;
-					this->UpdateStatus(sess);
+					sess->me->UpdateStatus(sess);
 					return true;
 				}
 				else
 				{
 					Text::StringBuilderUTF8 sb;
 					db->GetLastErrorMsg(sb);
-					this->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), this);
+					sess->me->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), sess->me);
 					return false;
 				}
 			}
@@ -2460,14 +679,14 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, NN<SQLSessi
 					sess->totalCnt += sess->nInsert;
 					sess->nInsert = 0;
 					sess->sbInsert->ClearStr();
-					this->UpdateStatus(sess);
+					sess->me->UpdateStatus(sess);
 					return true;
 				}
 				else
 				{
 					Text::StringBuilderUTF8 sb;
 					db->GetLastErrorMsg(sb);
-					this->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), this);
+					sess->me->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), sess->me);
 					return false;
 				}
 			}
@@ -2476,12 +695,12 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, NN<SQLSessi
 		else if (db->ExecuteNonQuery(sql) >= 0)
 		{
 			sess->totalCnt++;
-			this->UpdateStatus(sess);
+			sess->me->UpdateStatus(sess);
 			return true;
 		}
 		Text::StringBuilderUTF8 sb;
 		db->GetLastErrorMsg(sb);
-		this->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), this);
+		sess->me->ui->ShowMsgOK(sb.ToCString(), CSTR("Check Table Changes"), sess->me);
 		return false;
 	}
 	else
@@ -2502,94 +721,6 @@ void SSWR::AVIRead::AVIRDBCheckChgForm::UpdateStatus(NN<SQLSession> sess)
 		this->txtStatus->SetText(sb.ToCString());
 		this->ui->ProcessMessages();
 	}
-}
-
-void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(NN<DB::SQLBuilder> sql, NN<DB::ColDef> col, Optional<Text::String> s, Int8 tzQhr, UInt32 srid)
-{
-	NN<Text::String> nns;
-	if (!s.SetTo(nns))
-	{
-		sql->AppendNull();
-		return;
-	}
-
-	switch (col->GetColType())
-	{
-	case DB::DBUtil::CT_VarUTF8Char:
-	case DB::DBUtil::CT_VarUTF16Char:
-	case DB::DBUtil::CT_VarUTF32Char:
-	case DB::DBUtil::CT_UTF8Char:
-	case DB::DBUtil::CT_UTF16Char:
-	case DB::DBUtil::CT_UTF32Char:
-		sql->AppendStr(nns);
-		break;
-	case DB::DBUtil::CT_Date:
-		sql->AppendDate(Data::Timestamp::FromStr(nns->ToCString(), tzQhr).ToDate());
-		break;
-	case DB::DBUtil::CT_DateTime:
-	case DB::DBUtil::CT_DateTimeTZ:
-		sql->AppendTS(Data::Timestamp::FromStr(nns->ToCString(), tzQhr));
-		break;
-	case DB::DBUtil::CT_Double:
-	case DB::DBUtil::CT_Float:
-	case DB::DBUtil::CT_Decimal:
-		sql->AppendDbl(nns->ToDoubleOrNAN());
-		break;
-	case DB::DBUtil::CT_UInt16:
-	case DB::DBUtil::CT_Int16:
-	case DB::DBUtil::CT_UInt32:
-	case DB::DBUtil::CT_Int32:
-	case DB::DBUtil::CT_Byte:
-		sql->AppendInt32(nns->ToInt32());
-		break;
-	case DB::DBUtil::CT_UInt64:
-	case DB::DBUtil::CT_Int64:
-		sql->AppendInt64(nns->ToInt64());
-		break;
-	case DB::DBUtil::CT_Bool:
-		if (nns->v[0] >= '0' && nns->v[0] <= '9')
-		{
-			sql->AppendBool(nns->ToInt32() != 0);
-		}
-		else
-		{
-			sql->AppendBool(nns->v[0] == 't' || nns->v[0] == 'T');
-		}
-		break;
-	case DB::DBUtil::CT_Vector:
-		if (nns->StartsWith(UTF8STRC("0x")))
-		{
-			UInt8 *buff = MemAlloc(UInt8, nns->leng >> 1);
-			UIntOS buffSize = Text::StrHex2Bytes(&nns->v[2], buff);
-			Optional<Math::Geometry::Vector2D> vec2 = Math::MSGeography::ParseBinary(buff, buffSize, 0);
-			MemFree(buff);
-			sql->AppendVector(vec2);
-			vec2.Delete();
-		}
-		else
-		{
-			Optional<Math::Geometry::Vector2D> vec2;
-			Math::WKTReader reader((srid == 0)?col->GetGeometrySRID():srid);
-			vec2 = reader.ParseWKT(nns->v);
-			sql->AppendVector(vec2);
-			vec2.Delete();
-		}
-		break;
-	case DB::DBUtil::CT_Binary:
-		{
-			UnsafeArray<UInt8> buff = MemAllocArr(UInt8, nns->leng >> 1);
-			UIntOS buffSize = Text::StrHex2Bytes(nns->v, buff);
-			sql->AppendBinary(UnsafeArray<const UInt8>(buff), buffSize);
-			MemFreeArr(buff);
-		}
-		break;
-	case DB::DBUtil::CT_UUID:
-		break;
-	case DB::DBUtil::CT_Unknown:
-	default:
-		break;
-	}
-
 }
 
 Text::CStringNN SSWR::AVIRead::AVIRDBCheckChgForm::GetNullText()

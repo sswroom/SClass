@@ -201,6 +201,7 @@ QuickBubbleSort.o: ../../src/Data/Sort/QuickBubbleSort.cpp
 ColDef.o: ../../src/DB/ColDef.cpp
 CSVFile.o: ../../src/DB/CSVFile.cpp
 DBCache.o: ../../src/DB/DBCache.cpp
+DBChangeChecker.o: ../../src/DB/DBChangeChecker.cpp
 DBConfig.o: ../../src/DB/DBConfig.cpp
 DBConn.o: ../../src/DB/DBConn.cpp
 DBClassBuilder.o: ../../src/DB/DBClassBuilder.cpp

@@ -2029,6 +2029,8 @@ DB/CSVFile.h:
 @CSVFile.o
 DB/DBCache.h:
 @DBCache.o
+DB/DBChangeChecker.h:
+@DBChangeChecker.o
 DB/DBClassBuilder.h:
 @DBClassBuilder.o
 DB/DBClassReader.hpp:
