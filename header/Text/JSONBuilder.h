@@ -59,10 +59,13 @@ namespace Text
 		Bool ArrayAddStrOpt(Optional<Text::PString> val);
 		Bool ArrayAddStrOpt(Optional<Text::String> val);
 		Bool ArrayAddStrUTF8(UnsafeArrayOpt<const UTF8Char> val);
+		Bool ArrayAddTSStr(Data::Timestamp ts);
+		Bool ArrayAddDateStr(Data::Date dat);
 		Bool ArrayAddNull();
 		Bool ArrayAddCoord2D(Math::Coord2DDbl coord);
 		Bool ArrayAddVector3(Math::Vector3 vec3);
 		Bool ArrayAddFeature(NN<Map::MapDrawLayer> layer, Int64 id, Optional<Map::NameArray> nameArr, NN<Map::GetObjectSess> sess);
+		Bool ArrayAddGeometry(NN<Math::Geometry::Vector2D> vec);
 		Bool ArrayAdd(NN<Text::JSONArray> arr);
 		Bool ArrayBeginObject();
 		Bool ArrayBeginArray();

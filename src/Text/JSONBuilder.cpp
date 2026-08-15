@@ -501,6 +501,34 @@ Bool Text::JSONBuilder::ArrayAddStrUTF8(UnsafeArrayOpt<const UTF8Char> val)
 	return true;
 }
 
+Bool Text::JSONBuilder::ArrayAddTSStr(Data::Timestamp ts)
+{
+	if (this->currType != OT_ARRAY)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendUTF8Char(',');
+	}
+	this->AppendTSStr(ts);
+	return true;
+}
+
+Bool Text::JSONBuilder::ArrayAddDateStr(Data::Date dat)
+{
+	if (this->currType != OT_ARRAY)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendUTF8Char(',');
+	}
+	this->AppendDateStr(dat);
+	return true;
+}
+
 Bool Text::JSONBuilder::ArrayAddNull()
 {
 	if (this->currType != OT_ARRAY)
@@ -608,6 +636,20 @@ Bool Text::JSONBuilder::ArrayAddFeature(NN<Map::MapDrawLayer> layer, Int64 id, O
 	this->sb.AppendC(UTF8STRC("},\"geometry\":"));
 	this->AppendGeometry(vec);
 	this->sb.AppendUTF8Char('}');
+	return true;
+}
+
+Bool Text::JSONBuilder::ArrayAddGeometry(NN<Math::Geometry::Vector2D> vec)
+{
+	if (this->currType != OT_ARRAY)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendUTF8Char(',');
+	}
+	this->AppendGeometry(vec);
 	return true;
 }
 
