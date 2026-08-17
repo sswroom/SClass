@@ -156,6 +156,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 				}
 
 				this->ProcessResponse();
+				lineStart = i;
 			}
 		}
 
@@ -790,11 +791,11 @@ Bool Net::WebServer::WebConnection::AddDefHeaders(NN<Net::WebServer::WebRequest>
 	}
 	else if (req->GetProtocol() == Net::WebServer::WebRequest::RequestProtocol::HTTP1_0)
 	{
-	 	cliKA = req->GetSHeader(CSTR("Connection")).SetTo(connHdr) && connHdr->Equals(UTF8STRC("keep-alive"));
+	 	cliKA = req->GetSHeader(CSTR("Connection")).SetTo(connHdr) && connHdr->EqualsICase(UTF8STRC("keep-alive"));
 	}
 	else
 	{
-		if (req->GetSHeader(CSTR("Connection")).SetTo(connHdr) && connHdr->Equals(UTF8STRC("close")))
+		if (req->GetSHeader(CSTR("Connection")).SetTo(connHdr) && connHdr->EqualsICase(UTF8STRC("close")))
 		{
 			cliKA = false;
 		}
