@@ -244,6 +244,7 @@ namespace Text
 		JSONType GetArrayType(UIntOS index);
 		Optional<JSONBase> GetArrayValue(UIntOS index);
 		Optional<JSONObject> GetArrayObject(UIntOS index);
+		Optional<JSONArray> GetArrayArray(UIntOS index);
 		Double GetArrayDoubleOrNAN(UIntOS index);
 		Double GetArrayDoubleOr(UIntOS index, Double v);
 		Optional<Text::String> GetArrayString(UIntOS index);

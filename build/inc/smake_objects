@@ -221,6 +221,7 @@ DBUtil.o: ../../src/DB/DBUtil.cpp
 ForeignKeyDef.o: ../../src/DB/ForeignKeyDef.cpp
 JavaDBUtil.o: ../../src/DB/JavaDBUtil.cpp
 JSONDB.o: ../../src/DB/JSONDB.cpp
+JSONDB2.o: ../../src/DB/JSONDB2.cpp
 MDBFileConn.o: ../../src/DB/MDBFileConn.cpp
 !-lodbc32
 MDBFileConnL.o: ../../src/DB/MDBFileConn.cpp

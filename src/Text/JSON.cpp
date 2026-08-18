@@ -1828,6 +1828,14 @@ Optional<Text::JSONObject> Text::JSONArray::GetArrayObject(UIntOS index)
 	return nullptr;
 }
 
+Optional<Text::JSONArray> Text::JSONArray::GetArrayArray(UIntOS index)
+{
+	NN<Text::JSONBase> o;
+	if (this->GetArrayValue(index).SetTo(o) && o->GetType() == Text::JSONType::Array)
+		return NN<Text::JSONArray>::ConvertFrom(o);
+	return nullptr;
+}
+
 Double Text::JSONArray::GetArrayDoubleOrNAN(UIntOS index)
 {
 	NN<Text::JSONBase> baseObj;

@@ -2071,6 +2071,8 @@ DB/JavaDBUtil.h:
 @JavaDBUtil.o
 DB/JSONDB.h:
 @JSONDB.o
+DB/JSONDB2.h:
+@JSONDB2.o
 DB/MSSQLConn.h:
 @MSSQLConn.o
 DB/MySQLMaintance.h:
