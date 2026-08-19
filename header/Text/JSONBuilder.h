@@ -64,7 +64,7 @@ namespace Text
 		Bool ArrayAddNull();
 		Bool ArrayAddCoord2D(Math::Coord2DDbl coord);
 		Bool ArrayAddVector3(Math::Vector3 vec3);
-		Bool ArrayAddFeature(NN<Map::MapDrawLayer> layer, Int64 id, Optional<Map::NameArray> nameArr, NN<Map::GetObjectSess> sess);
+		Bool ArrayAddFeature(NN<Map::MapDrawLayer> layer, Int64 id, Optional<Map::NameArray> nameArr, NN<Math::Geometry::Vector2D> vec);
 		Bool ArrayAddGeometry(NN<Math::Geometry::Vector2D> vec);
 		Bool ArrayAdd(NN<Text::JSONArray> arr);
 		Bool ArrayBeginObject();
