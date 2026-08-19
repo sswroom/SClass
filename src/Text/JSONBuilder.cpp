@@ -581,12 +581,9 @@ Bool Text::JSONBuilder::ArrayAddVector3(Math::Vector3 vec3)
 	return true;
 }
 
-Bool Text::JSONBuilder::ArrayAddFeature(NN<Map::MapDrawLayer> layer, Int64 id, Optional<Map::NameArray> nameArr, NN<Map::GetObjectSess> sess)
+Bool Text::JSONBuilder::ArrayAddFeature(NN<Map::MapDrawLayer> layer, Int64 id, Optional<Map::NameArray> nameArr, NN<Math::Geometry::Vector2D> vec)
 {
-	NN<Math::Geometry::Vector2D> vec;
 	if (this->currType != OT_ARRAY)
-		return false;
-	if (!layer->GetNewVectorById(sess, id).SetTo(vec))
 		return false;
 	if (this->isFirst)
 		this->isFirst = false;
