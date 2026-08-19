@@ -22,7 +22,6 @@ public:
 
 	virtual ~JSONDB2Reader()
 	{
-		this->tab.Delete();
 	}
 
 	virtual Bool ReadNext()
@@ -120,6 +119,8 @@ public:
 		if (!this->rows->GetArrayArray(this->currRow).SetTo(row) || !this->tab->GetCol(colIndex).SetTo(colDef))
 			return nullptr;
 		if (!row->GetArrayValue(colIndex).SetTo(val))
+			return nullptr;
+		else if (val->GetType() == Text::JSONType::Null)
 			return nullptr;
 		Text::StringBuilderUTF8 sb;
 		val->ToString(sb);
@@ -264,6 +265,11 @@ public:
 			item->SetNull();
 			return true;
 		}
+		if (val->GetType() == Text::JSONType::Null)
+		{
+			item->SetNull();
+			return true;
+		}
 		DB::DBUtil::ColType colType = colDef->GetColType();
 		switch (colType)
 		{
@@ -376,8 +382,11 @@ public:
 	{
 		NN<Text::JSONArray> row;
 		if (!this->rows->GetArrayArray(this->currRow).SetTo(row) || this->tab->GetCol(colIndex).IsNull())
+		{
 			return true;
-		return row->GetArrayValue(colIndex).IsNull();
+		}
+		NN<Text::JSONBase> val;
+		return !row->GetArrayValue(colIndex).SetTo(val) || val->GetType() == Text::JSONType::Null;
 	}
 
 	virtual UnsafeArrayOpt<UTF8Char> GetName(UIntOS colIndex, UnsafeArray<UTF8Char> buff)
@@ -537,6 +546,9 @@ DB::JSONDB2::JSONDB2(Text::CString schemaName, Text::CStringNN tableName, NN<Tex
 DB::JSONDB2::~JSONDB2()
 {
 	this->rows->EndUse();
+	this->headers.FreeAll();
+	this->types.FreeAll();
+	OPTSTR_DEL(this->schemaName);
 }
 
 UIntOS DB::JSONDB2::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)

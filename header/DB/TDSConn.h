@@ -14,6 +14,7 @@ namespace DB
 		NN<ClassData> clsData;
 		Sync::Mutex cmdMut;
 		DB::SQLType sqlType;
+		Optional<Text::String> lastError;
 
 	public:
 		TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CStringNN userName, Text::CStringNN password, NN<IO::LogTool> log, Optional<Text::StringBuilderUTF8> errMsg);
@@ -24,6 +25,7 @@ namespace DB
 		Optional<Text::String> GetConnDB() const;
 		NN<Text::String> GetConnUID() const;
 		NN<Text::String> GetConnPWD() const;
+		void SetErrorMessage(Int32 msgNo, UnsafeArray<Char> msg);
 
 		virtual DB::SQLType GetSQLType() const;
 		virtual ConnType GetConnType() const;

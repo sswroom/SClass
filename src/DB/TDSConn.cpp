@@ -885,6 +885,11 @@ int TDSConnErrHdlr(DBPROCESS * dbproc, int severity, int dberr, int oserr, char 
 
 int TDSConnMsgHdlr(DBPROCESS * dbproc, DBINT msgno, int msgstate, int severity, char *msgtext, char *srvname, char *proc, int line)
 {
+	DB::TDSConn *conn = (DB::TDSConn*)dbgetuserdata(dbproc);
+	if (severity >= 10)
+	{
+		conn->SetErrorMessage(msgno, msgtext);
+	}
 #if defined(VERBOSE)
 	printf("TDS: Messages, msgno = %d, msgstate = %d, severity = %d, server = %s, msg: %s\r\n", msgno, msgstate, severity, srvname, msgtext);
 #endif
@@ -900,6 +905,7 @@ DB::TDSConn::TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text
 		dbmsghandle(TDSConnMsgHdlr);
 		inited = true;
 	}
+	this->lastError = nullptr;
 	this->sqlType = SQLType::MSSQL;
 	this->clsData = MemAllocNN(ClassData);
 	this->clsData->dbproc = 0;
@@ -939,6 +945,7 @@ DB::TDSConn::~TDSConn()
 	this->clsData->password->Release();
 	OPTSTR_DEL(this->clsData->database);
 	MemFreeNN(this->clsData);
+	OPTSTR_DEL(this->lastError);
 }
 
 Bool DB::TDSConn::IsConnected() const
@@ -964,6 +971,12 @@ NN<Text::String> DB::TDSConn::GetConnUID() const
 NN<Text::String> DB::TDSConn::GetConnPWD() const
 {
 	return this->clsData->password;
+}
+
+void DB::TDSConn::SetErrorMessage(Int32 msgNo, UnsafeArray<Char> msg)
+{
+	OPTSTR_DEL(this->lastError);
+	this->lastError = Text::String::NewNotNullSlow(UnsafeArray<UTF8Char>::ConvertFrom(msg));
 }
 
 DB::SQLType DB::TDSConn::GetSQLType() const
@@ -1015,7 +1028,7 @@ Optional<DB::DBReader> DB::TDSConn::ExecuteReader(Text::CStringNN sql)
 		return nullptr;
 	this->cmdMut.Lock();
 #if defined(VERBOSE)
-	printf("TDS: Execute SQL: %s\r\n", sql.v);
+	printf("TDS: Execute SQL: %s\r\n", sql.v.Ptr());
 #endif
 	dbcmd(this->clsData->dbproc, (const Char*)sql.v.Ptr());
 	RETCODE ret = dbsqlexec(this->clsData->dbproc);
@@ -1041,7 +1054,7 @@ void DB::TDSConn::CloseReader(NN<DBReader> r)
 
 void DB::TDSConn::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
-	///////////////////////////////////////
+	str->AppendOpt(this->lastError);
 }
 
 Bool DB::TDSConn::IsLastDataError()
