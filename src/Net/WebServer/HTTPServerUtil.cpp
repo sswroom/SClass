@@ -442,5 +442,5 @@ Bool Net::WebServer::HTTPServerUtil::AllowDeflate(Net::BrowserInfo::BrowserType 
 
 Bool Net::WebServer::HTTPServerUtil::AllowKA(Net::BrowserInfo::BrowserType browser)
 {
-	return browser == Net::BrowserInfo::BT_UNKNOWN || browser == Net::BrowserInfo::BT_SSWR;
+	return true;//browser == Net::BrowserInfo::BT_UNKNOWN || browser == Net::BrowserInfo::BT_SSWR;
 }

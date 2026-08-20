@@ -256,6 +256,12 @@ void DB::DBChangeChecker::SetFixError(Bool fixError)
 
 Bool DB::DBChangeChecker::InitColMapping(NN<Data::ArrayListNative<UIntOS>> colInd)
 {
+	return this->InitColMapping(colInd, DB::DBChangeChecker::UNKNOWN_COL, nullptr);
+}
+
+Bool DB::DBChangeChecker::InitColMapping(NN<Data::ArrayListNative<UIntOS>> colInd, UIntOS defColInd, Optional<IO::LogTool> log)
+{
+	NN<IO::LogTool> nnlog;
 	NN<DB::ReadingDB> dataConn;
 	Text::CString dataSchema;
 	Text::CStringNN dataTable;
@@ -284,7 +290,7 @@ Bool DB::DBChangeChecker::InitColMapping(NN<Data::ArrayListNative<UIntOS>> colIn
 	NN<DB::DBReader> r;
 	while (i < destCnt)
 	{
-		colInd->Add(this->dataFileNoHeader?i:DB::DBChangeChecker::UNKNOWN_COL);
+		colInd->Add(this->dataFileNoHeader?i:defColInd);
 		i++;
 	}
 
@@ -299,6 +305,7 @@ Bool DB::DBChangeChecker::InitColMapping(NN<Data::ArrayListNative<UIntOS>> colIn
 		k = 0;
 		while (k < srcCnt)
 		{
+			Bool found = false;
 			if (r->GetName(k, sbuff).SetTo(sptr))
 			{
 				i = 0;
@@ -307,9 +314,18 @@ Bool DB::DBChangeChecker::InitColMapping(NN<Data::ArrayListNative<UIntOS>> colIn
 					if (srcTableDef->GetCol(i).SetTo(col) && col->GetColName()->EqualsICase(sbuff, (UIntOS)(sptr - sbuff)))
 					{
 						colInd->SetItem(i, k);
+						found = true;
 						break;
 					}
 					i++;
+				}
+				if (log.SetTo(nnlog) && !found)
+				{
+					Text::StringBuilderUTF8 sb;
+					sb.AppendC(UTF8STRC("Data File Column ["));
+					sb.AppendP(sbuff, sptr);
+					sb.AppendC(UTF8STRC("] not found"));
+					nnlog->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 				}
 			}
 /*			if (!found)

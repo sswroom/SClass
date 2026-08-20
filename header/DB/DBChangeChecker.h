@@ -2,6 +2,7 @@
 #define _SM_DB_DBCHANGECHECKER
 #include "DB/ReadingDB.h"
 #include "DB/SQLBuilder.h"
+#include "IO/LogTool.h"
 
 namespace DB
 {
@@ -11,6 +12,7 @@ namespace DB
 		typedef Bool (CALLBACKFUNC SQLHandler)(AnyType userObj, Text::CStringNN sql);
 		static const UIntOS TEXT_COL = (UIntOS)-3;
 		static const UIntOS UNKNOWN_COL = (UIntOS)-2;
+		static const UIntOS IGNORE_COL = (UIntOS)-1;
 	private:
 		Optional<Text::String> lastError;
 		UIntOS dataFileRowCnt;
@@ -61,6 +63,7 @@ namespace DB
 		void SetFixError(Bool fixError);
 
 		Bool InitColMapping(NN<Data::ArrayListNative<UIntOS>> colInd);
+		Bool InitColMapping(NN<Data::ArrayListNative<UIntOS>> colInd, UIntOS defColInd, Optional<IO::LogTool> log);
 		Bool CheckChange();
 		Bool GenerateSQL(DB::SQLType sqlType, Bool axisAware, SQLHandler sqlHdlr, AnyType userObj);
 
