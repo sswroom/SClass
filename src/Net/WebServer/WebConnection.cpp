@@ -156,7 +156,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 				}
 
 				this->ProcessResponse();
-				lineStart = i;
+				lineStart = this->buffSize; //i
 			}
 		}
 
