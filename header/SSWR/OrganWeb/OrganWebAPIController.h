@@ -62,7 +62,7 @@ namespace SSWR
 			void AppendGroupInfo(NN<Text::JSONBuilder> json, NN<GroupInfo> group);
 			void AddSpeciesList(NN<Text::JSONBuilder> json, NN<Data::ArrayListNN<SpeciesInfo>> speciesList, NN<Sync::RWMutexUsage> mutUsage);
 			static void AppendUser(NN<Text::JSONBuilder> json, NN<WebUserInfo> user);
-			void AppendSpeciesDispInfo(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<Sync::RWMutexUsage> mutUsage);
+			void AppendSpeciesDispInfo(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<Sync::RWMutexUsage> mutUsage, Optional<BookInfo> selectedBook);
 			void AppendSpeciesInfo(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<Sync::RWMutexUsage> mutUsage);
 			void AppendDataFiles(NN<Text::JSONBuilder> json, NN<Data::FastMapNN<Data::Timestamp, DataFileInfo>> dataFiles, Int64 startTime, Int64 endTime, Bool includeCont);
 			void AppendLocator(NN<Text::JSONBuilder> json, NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, NN<CategoryInfo> cate);

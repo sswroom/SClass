@@ -79,13 +79,18 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcLoginInfo(NN<Net::WebSe
 			UIntOS i = 0;
 			UIntOS j = pickObjs->GetCount();
 			Sync::RWMutexUsage mutUsage;
+			Optional<BookInfo> selectedBook = nullptr;
+			if (user->userType == UserType::Admin)
+			{
+				selectedBook = me->env->BookGetSelected(mutUsage);
+			}
 			NN<SpeciesInfo> sp;
 			while (i < j)
 			{
 				if (me->env->SpeciesGet(mutUsage, pickObjs->GetItem(i)).SetTo(sp))
 				{
 					json.ArrayBeginObject();
-					me->AppendSpeciesDispInfo(json, sp, mutUsage);
+					me->AppendSpeciesDispInfo(json, sp, mutUsage, selectedBook);
 					json.ObjectEnd();
 					mutUsage.EndUse();
 				}
@@ -1646,6 +1651,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupDetail(NN<Net::Web
 				break;
 		}
 		json.ArrayEnd();
+		Optional<BookInfo> selectedBook = nullptr;
+		if (isAdmin)
+		{
+			selectedBook = me->env->BookGetSelected(groupMutUsage);
+		}
 		UIntOS i = 0;
 		UIntOS j = group->species.GetCount();
 		json.ObjectBeginArray(CSTR("childSpecies"));
@@ -1653,7 +1663,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupDetail(NN<Net::Web
 		{
 			NN<SpeciesInfo> sp = group->species.GetItemNoCheck(i);
 			json.ArrayBeginObject();
-			me->AppendSpeciesDispInfo(json, sp, groupMutUsage);
+			me->AppendSpeciesDispInfo(json, sp, groupMutUsage, selectedBook);
 			json.ObjectEnd();
 			i++;
 		}
@@ -1799,6 +1809,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupSearch(NN<Net::Web
 		Data::ArrayListNN<SpeciesInfo> speciesObjs;
 		Data::ArrayListDbl groupIndice;
 		Data::ArrayListNN<GroupInfo> groupObjs;
+		Optional<BookInfo> selectedBook = nullptr;
+		if (isAdmin)
+		{
+			selectedBook = me->env->BookGetSelected(groupMutUsage);
+		}
 		NN<SpeciesInfo> sp;
 		me->env->SearchInGroup(groupMutUsage, group, searchStr->v, searchStr->leng, speciesIndice, speciesObjs, groupIndice, groupObjs, env.user);
 
@@ -1812,7 +1827,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupSearch(NN<Net::Web
 		{
 			sp = speciesObjs.GetItemNoCheck(i);
 			json.ArrayBeginObject();
-			me->AppendSpeciesDispInfo(json, sp, groupMutUsage);
+			me->AppendSpeciesDispInfo(json, sp, groupMutUsage, selectedBook);
 			json.ObjectEnd();
 			i++;
 		}
@@ -2787,7 +2802,7 @@ void SSWR::OrganWeb::OrganWebAPIController::AppendUser(NN<Text::JSONBuilder> jso
 	json->ObjectAddStr(CSTR("watermark"), user->watermark);
 }
 
-void SSWR::OrganWeb::OrganWebAPIController::AppendSpeciesDispInfo(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<Sync::RWMutexUsage> mutUsage)
+void SSWR::OrganWeb::OrganWebAPIController::AppendSpeciesDispInfo(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<Sync::RWMutexUsage> mutUsage, Optional<BookInfo> selectedBook)
 {
 	NN<Text::String> s;
 	json->ObjectAddInt32(CSTR("id"), species->speciesId);
@@ -2824,13 +2839,31 @@ void SSWR::OrganWeb::OrganWebAPIController::AppendSpeciesDispInfo(NN<Text::JSONB
 	{
 		json->ObjectAddStr(CSTR("photo"), s);
 	}
+	NN<BookInfo> book;
+	if (selectedBook.SetTo(book))
+	{
+		Bool found = false;
+		UIntOS i = species->books.GetCount();
+		while (i-- > 0)
+		{
+			if (species->books.GetItemNoCheck(i)->bookId == book->id)
+			{
+				found = true;
+				break;
+			}
+		}
+		if (found)
+		{
+			json->ObjectAddBool(CSTR("inBook"), true);
+		}
+	}
 }
 
 void SSWR::OrganWeb::OrganWebAPIController::AppendSpeciesInfo(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<Sync::RWMutexUsage> mutUsage)
 {
 	UIntOS i;
 	UIntOS j;
-	this->AppendSpeciesDispInfo(json, species, mutUsage);
+	this->AppendSpeciesDispInfo(json, species, mutUsage, nullptr);
 	json->ObjectAddStr(CSTR("descript"), species->descript);
 	json->ObjectAddStrOpt(CSTR("poiImg"), species->poiImg);
 	json->ObjectAddInt32(CSTR("flags"), species->flags);

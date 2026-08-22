@@ -7,7 +7,7 @@
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	Text::CStringNN filePath = CSTR("/media/sswroom/Extreme SSD/PictureProc/IMG_0003.HEIC");
+	Text::CStringNN filePath = CSTR("/mnt/QDisk1/Data/UserFile/1/202607/1785386552000_BCFAAD18.jpg");
 	IO::StmData::FileData fd(filePath, false);
 	Media::PhotoInfo photoInfo(fd);
 	Text::StringBuilderUTF8 sb;

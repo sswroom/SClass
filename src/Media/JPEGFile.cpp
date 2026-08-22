@@ -324,6 +324,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NN<IO::StreamData> fd, OutParam<Optional<
 	icc.Set(nullptr);
 	width.Set(0);
 	height.Set(0);
+	Bool foundSize = false;
 
 	ofst = 2;
 	while (ofst < fd->GetDataSize())
@@ -430,12 +431,15 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NN<IO::StreamData> fd, OutParam<Optional<
 			height.Set(ReadMUInt16(&buff[1]));
 			width.Set(ReadMUInt16(&buff[3]));
 			ofst += j + 4;
-			return true;
+			foundSize = true;
+			break;
+		case 0xda: //sos
+			return foundSize;
 		default:
 			return false;
 		}
 	}
-	return true;
+	return foundSize;
 }
 
 void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, UIntOS buffSize, Optional<Media::RasterImage> oriImg)
