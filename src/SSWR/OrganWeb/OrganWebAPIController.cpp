@@ -1487,9 +1487,13 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupAdd(NN<Net::WebSer
 		{
 			groupFlags = (GroupFlags)(groupFlags | GF_ADMIN_ONLY);
 		}
-		if (me->env->GroupAdd(mutUsage, engName->ToCString(), chiName->ToCString(), parentId, descript->ToCString(), groupType, cateId, groupFlags))
+		Int32 id;
+		if ((id = me->env->GroupAdd(mutUsage, engName->ToCString(), chiName->ToCString(), parentId, descript->ToCString(), groupType, cateId, groupFlags)) != 0)
 		{
-			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"ok\"}"));
+			Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+			json.ObjectAddInt32(CSTR("id"), id);
+			json.ObjectAddStr(CSTR("status"), CSTR("ok"));
+			return me->ResponseJSON(req, resp, 0, json.Build());
 		}
 		else
 		{
@@ -2917,7 +2921,6 @@ void SSWR::OrganWeb::OrganWebAPIController::AppendSpeciesDispInfo(NN<Text::JSONB
 			if (i != 2)
 				break;
 		}
-		json->ObjectAddStr(CSTR("dispName"), species->descript);
 	}
 	NN<BookInfo> book;
 	if (selectedBook.SetTo(book))
