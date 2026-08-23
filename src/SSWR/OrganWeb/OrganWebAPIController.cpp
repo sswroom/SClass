@@ -2080,6 +2080,65 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcSpeciesDelete(NN<Net::W
 	}
 }
 
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcSpeciesBook(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	NN<WebUserInfo> user;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	if (!env.user.SetTo(user) || user->userType != UserType::Admin)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
+		return true;
+	}
+	req->ParseHTTPForm();
+	Int32 id;
+	Int32 cateId;
+	Int32 groupId;
+	NN<Text::String> bookName;
+	if (req->GetHTTPFormInt32(CSTR("id"), id) &&
+		req->GetHTTPFormInt32(CSTR("cateId"), cateId) &&
+		req->GetHTTPFormInt32(CSTR("groupId"), groupId) &&
+		req->GetHTTPFormStr(CSTR("bookName")).SetTo(bookName) && bookName->leng > 2)
+	{
+		Sync::RWMutexUsage mutUsage;
+		NN<GroupInfo> group;
+		NN<SpeciesInfo> sp;
+		if (!me->env->GroupGet(mutUsage, groupId).SetTo(group))
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+		if (group->cateId != cateId)
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+		if (!me->env->SpeciesGet(mutUsage, id).SetTo(sp) || sp->groupId != groupId || sp->cateId != cateId)
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+
+		if (me->env->BookAddSpecies(mutUsage, sp->speciesId, bookName, false))
+		{
+			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"ok\"}"));
+		}
+		else
+		{
+			return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\", \"message\": \"Error adding species to book\"}"));
+		}
+	}
+	else
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
+}
+
 Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPick(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
 	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
@@ -2997,6 +3056,7 @@ SSWR::OrganWeb::OrganWebAPIController::OrganWebAPIController(NN<Net::WebServer::
 	this->AddService(CSTR("/api/speciesadd"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesAdd);
 	this->AddService(CSTR("/api/speciesmodify"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesModify);
 	this->AddService(CSTR("/api/speciesdelete"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesDelete);
+	this->AddService(CSTR("/api/speciesbook"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesBook);
 	this->AddService(CSTR("/api/pick"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPick);
 	this->AddService(CSTR("/api/pickall"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPickAll);
 	this->AddService(CSTR("/api/groupplace"), Net::WebUtil::RequestMethod::HTTP_POST, SvcGroupPlace);
