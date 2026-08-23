@@ -2898,11 +2898,32 @@ void SSWR::OrganWeb::OrganWebAPIController::AppendSpeciesDispInfo(NN<Text::JSONB
 	{
 		json->ObjectAddStr(CSTR("photo"), s);
 	}
+	UIntOS i;
+	if (species->descript->leng > species->sciName->leng)
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.Append(species->descript);
+		Text::PString sarr[2];
+		sarr[1] = sb;
+		UIntOS len = species->sciName->leng;
+		while (true)
+		{
+			i = Text::StrSplitLineP(sarr, 2, sarr[1]);
+			if (sarr[0].StartsWith(species->sciName) && sarr[0].v[len] == ' ' && (sarr[0].v[len + 1] == '(' || Text::CharUtil::IsUpperCase(sarr[0].v[len + 1])))
+			{
+				json->ObjectAddStr(CSTR("fullName"), sarr[0].ToCString());
+				break;
+			}
+			if (i != 2)
+				break;
+		}
+		json->ObjectAddStr(CSTR("dispName"), species->descript);
+	}
 	NN<BookInfo> book;
 	if (selectedBook.SetTo(book))
 	{
 		Bool found = false;
-		UIntOS i = species->books.GetCount();
+		i = species->books.GetCount();
 		while (i-- > 0)
 		{
 			if (species->books.GetItemNoCheck(i)->bookId == book->id)

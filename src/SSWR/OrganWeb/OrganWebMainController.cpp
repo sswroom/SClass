@@ -1077,7 +1077,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NN<Net::Web
 			s->Release();
 		}
 		writer.WriteLine(CSTR("/></td></tr>"));
-		writer.Write(CSTR("<tr><td>Description</td><td><textarea name=\"descr\" rows=\"4\" cols=\"40\">"));
+		writer.Write(CSTR("<tr><td>Description</td><td><textarea name=\"descr\" rows=\"4\" cols=\"60\">"));
 		if (descr->leng > 0)
 		{
 			s = Text::XML::ToNewHTMLElementText(descr->v);
