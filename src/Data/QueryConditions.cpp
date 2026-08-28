@@ -1,6 +1,10 @@
 #include "Stdafx.h"
 #include "Data/QueryConditions.h"
 #include "DB/SQL/SQLUtil.h"
+#include "DB/SQL/SQLValueF64.h"
+#include "DB/SQL/SQLValueI32.h"
+#include "DB/SQL/SQLValueI64.h"
+#include "DB/SQL/SQLValueString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringTool.h"
@@ -1996,8 +2000,8 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbField;
 	UnsafeArray<const UTF8Char> sql = s.v;
-	NN<Data::VariItem> item;
-	NN<Data::VariItem> item2;
+	NN<DB::SQL::SQLValue> item;
+	NN<DB::SQL::SQLValue> item2;
 	NN<Data::QueryConditions> cond;
 	NEW_CLASSNN(cond, Data::QueryConditions());
 	while (true)
@@ -2017,11 +2021,11 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 				cond.Delete();
 				return nullptr;
 			}
-			Data::ArrayListNN<Data::VariItem> items;
+			Data::ArrayListNN<DB::SQL::SQLValue> items;
 			while (true)
 			{
 				sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
-				if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
+				if (!DB::SQL::SQLUtil::ParseNativeValue(sb.ToCString(), sqlType).SetTo(item))
 				{
 					items.DeleteAll();
 					cond.Delete();
@@ -2031,57 +2035,57 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 				sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
 				if (sb.Equals(UTF8STRC(")")))
 				{
-					Data::VariItem::ItemType itemType = item->GetItemType();
-					if (itemType == Data::VariItem::ItemType::Str)
+					DB::SQL::SQLValue::ValueType itemType = item->GetValueType();
+					if (itemType == DB::SQL::SQLValue::ValueType::String)
 					{
 						Data::ArrayListArr<const UTF8Char> vals;
-						Data::ArrayIterator<NN<Data::VariItem>> it = items.Iterator();
-						NN<Data::VariItem> item;
+						Data::ArrayIterator<NN<DB::SQL::SQLValue>> it = items.Iterator();
+						NN<DB::SQL::SQLValue> item;
 						while (it.HasNext())
 						{
 							item = it.Next();
-							if (item->GetItemType() != itemType)
+							if (item->GetValueType() != itemType)
 							{
 								items.DeleteAll();
 								cond.Delete();
 								return nullptr;
 							}
-							vals.Add(item->GetItemValue().str->v);
+							vals.Add(NN<DB::SQL::SQLValueString>::ConvertFrom(item)->GetValue()->v);
 						}
 						cond->StrIn(sbField.ToCString(), vals);
 						items.DeleteAll();
 						break;
 					}
-					else if (itemType == Data::VariItem::ItemType::I32 || itemType == Data::VariItem::ItemType::I64 || itemType == Data::VariItem::ItemType::F64)
+					else if (itemType == DB::SQL::SQLValue::ValueType::I32 || itemType == DB::SQL::SQLValue::ValueType::I64 || itemType == DB::SQL::SQLValue::ValueType::F64)
 					{
 						Data::ArrayListNative<Int32> i32List;
 						Data::ArrayListNative<Int64> i64List;
 						Data::ArrayListNative<Double> dblList;
 						Bool hasI64 = false;
 						Bool hasF64 = false;
-						Data::ArrayIterator<NN<Data::VariItem>> it = items.Iterator();
-						NN<Data::VariItem> item;
+						Data::ArrayIterator<NN<DB::SQL::SQLValue>> it = items.Iterator();
+						NN<DB::SQL::SQLValue> item;
 						while (it.HasNext())
 						{
 							item = it.Next();
-							if (item->GetItemType() == Data::VariItem::ItemType::I32)
+							if (item->GetValueType() == DB::SQL::SQLValue::ValueType::I32)
 							{
-								i32List.Add(item->GetAsI32());
-								i64List.Add(item->GetAsI32());
-								dblList.Add(item->GetAsF64());
+								i32List.Add(NN<DB::SQL::SQLValueI32>::ConvertFrom(item)->GetValue());
+								i64List.Add(NN<DB::SQL::SQLValueI32>::ConvertFrom(item)->GetValue());
+								dblList.Add(NN<DB::SQL::SQLValueI32>::ConvertFrom(item)->GetValue());
 							}
-							else if (item->GetItemType() == Data::VariItem::ItemType::I64)
+							else if (item->GetValueType() == DB::SQL::SQLValue::ValueType::I64)
 							{
-								i32List.Add(item->GetAsI32());
-								i64List.Add(item->GetAsI64());
-								dblList.Add(item->GetAsF64());
+								i32List.Add((Int32)NN<DB::SQL::SQLValueI64>::ConvertFrom(item)->GetValue());
+								i64List.Add(NN<DB::SQL::SQLValueI64>::ConvertFrom(item)->GetValue());
+								dblList.Add((Double)NN<DB::SQL::SQLValueI64>::ConvertFrom(item)->GetValue());
 								hasI64 = true;
 							}
-							else if (item->GetItemType() == Data::VariItem::ItemType::F64)
+							else if (item->GetValueType() == DB::SQL::SQLValue::ValueType::F64)
 							{
-								i32List.Add(item->GetAsI32());
-								i64List.Add(item->GetAsI64());
-								dblList.Add(item->GetAsF64());
+								i32List.Add((Int32)NN<DB::SQL::SQLValueF64>::ConvertFrom(item)->GetValue());
+								i64List.Add((Int64)NN<DB::SQL::SQLValueF64>::ConvertFrom(item)->GetValue());
+								dblList.Add(NN<DB::SQL::SQLValueF64>::ConvertFrom(item)->GetValue());
 								hasF64 = true;
 							}
 							else
@@ -2141,11 +2145,11 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 					cond.Delete();
 					return nullptr;
 				}
-				Data::ArrayListNN<Data::VariItem> items;
+				Data::ArrayListNN<DB::SQL::SQLValue> items;
 				while (true)
 				{
 					sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
-					if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
+					if (!DB::SQL::SQLUtil::ParseNativeValue(sb.ToCString(), sqlType).SetTo(item))
 					{
 						items.DeleteAll();
 						cond.Delete();
@@ -2155,22 +2159,22 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 					sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
 					if (sb.Equals(UTF8STRC(")")))
 					{
-						Data::VariItem::ItemType itemType = item->GetItemType();
-						if (itemType == Data::VariItem::ItemType::Str)
+						DB::SQL::SQLValue::ValueType itemType = item->GetValueType();
+						if (itemType == DB::SQL::SQLValue::ValueType::String)
 						{
 							Data::ArrayListArr<const UTF8Char> vals;
-							Data::ArrayIterator<NN<Data::VariItem>> it = items.Iterator();
-							NN<Data::VariItem> item;
+							Data::ArrayIterator<NN<DB::SQL::SQLValue>> it = items.Iterator();
+							NN<DB::SQL::SQLValue> item;
 							while (it.HasNext())
 							{
 								item = it.Next();
-								if (item->GetItemType() != itemType)
+								if (item->GetValueType() != itemType)
 								{
 									items.DeleteAll();
 									cond.Delete();
 									return nullptr;
 								}
-								vals.Add(item->GetItemValue().str->v);
+								vals.Add(NN<DB::SQL::SQLValueString>::ConvertFrom(item)->GetValue()->v);
 							}
 							cond->StrNotIn(sbField.ToCString(), vals);
 							items.DeleteAll();
@@ -2203,27 +2207,27 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 		else if (sb.Equals(UTF8STRC("=")))
 		{
 			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
-			if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
+			if (!DB::SQL::SQLUtil::ParseNativeValue(sb.ToCString(), sqlType).SetTo(item))
 			{
 				cond.Delete();
 				return nullptr;
 			}
-			Data::VariItem::ItemType itemType = item->GetItemType();
-			if (itemType == Data::VariItem::ItemType::Str)
+			DB::SQL::SQLValue::ValueType itemType = item->GetValueType();
+			if (itemType == DB::SQL::SQLValue::ValueType::String)
 			{
-				cond->StrEquals(sbField.ToCString(), item->GetItemValue().str->ToCString());
+				cond->StrEquals(sbField.ToCString(), NN<DB::SQL::SQLValueString>::ConvertFrom(item)->GetValue()->ToCString());
 			}
-			else if (itemType == Data::VariItem::ItemType::I32)
+			else if (itemType == DB::SQL::SQLValue::ValueType::I32)
 			{
-				cond->Int32Equals(sbField.ToCString(), item->GetItemValue().i32);
+				cond->Int32Equals(sbField.ToCString(), NN<DB::SQL::SQLValueI32>::ConvertFrom(item)->GetValue());
 			}
-			else if (itemType == Data::VariItem::ItemType::I64)
+			else if (itemType == DB::SQL::SQLValue::ValueType::I64)
 			{
-				cond->Int64Equals(sbField.ToCString(), item->GetItemValue().i64);
+				cond->Int64Equals(sbField.ToCString(), NN<DB::SQL::SQLValueI64>::ConvertFrom(item)->GetValue());
 			}
-			else if (itemType == Data::VariItem::ItemType::F64)
+			else if (itemType == DB::SQL::SQLValue::ValueType::F64)
 			{
-				cond->DoubleEquals(sbField.ToCString(), item->GetItemValue().f64);
+				cond->DoubleEquals(sbField.ToCString(), NN<DB::SQL::SQLValueF64>::ConvertFrom(item)->GetValue());
 			}
 			else
 			{
@@ -2236,23 +2240,23 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 		else if (sb.Equals(UTF8STRC(">")))
 		{
 			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
-			if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
+			if (!DB::SQL::SQLUtil::ParseNativeValue(sb.ToCString(), sqlType).SetTo(item))
 			{
 				cond.Delete();
 				return nullptr;
 			}
-			Data::VariItem::ItemType itemType = item->GetItemType();
-			if (itemType == Data::VariItem::ItemType::I32)
+			DB::SQL::SQLValue::ValueType itemType = item->GetValueType();
+			if (itemType == DB::SQL::SQLValue::ValueType::I32)
 			{
-				cond->Int32GT(sbField.ToCString(), item->GetItemValue().i32);
+				cond->Int32GT(sbField.ToCString(), NN<DB::SQL::SQLValueI32>::ConvertFrom(item)->GetValue());
 			}
-			else if (itemType == Data::VariItem::ItemType::I64)
+			else if (itemType == DB::SQL::SQLValue::ValueType::I64)
 			{
-				cond->Int64GT(sbField.ToCString(), item->GetItemValue().i64);
+				cond->Int64GT(sbField.ToCString(), NN<DB::SQL::SQLValueI64>::ConvertFrom(item)->GetValue());
 			}
-			else if (itemType == Data::VariItem::ItemType::F64)
+			else if (itemType == DB::SQL::SQLValue::ValueType::F64)
 			{
-				cond->DoubleGT(sbField.ToCString(), item->GetItemValue().f64);
+				cond->DoubleGT(sbField.ToCString(), NN<DB::SQL::SQLValueF64>::ConvertFrom(item)->GetValue());
 			}
 			else
 			{
@@ -2265,23 +2269,23 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 		else if (sb.Equals(UTF8STRC("<")))
 		{
 			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
-			if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
+			if (!DB::SQL::SQLUtil::ParseNativeValue(sb.ToCString(), sqlType).SetTo(item))
 			{
 				cond.Delete();
 				return nullptr;
 			}
-			Data::VariItem::ItemType itemType = item->GetItemType();
-			if (itemType == Data::VariItem::ItemType::I32)
+			DB::SQL::SQLValue::ValueType itemType = item->GetValueType();
+			if (itemType == DB::SQL::SQLValue::ValueType::I32)
 			{
-				cond->Int32LT(sbField.ToCString(), item->GetItemValue().i32);
+				cond->Int32LT(sbField.ToCString(), NN<DB::SQL::SQLValueI32>::ConvertFrom(item)->GetValue());
 			}
-			else if (itemType == Data::VariItem::ItemType::I64)
+			else if (itemType == DB::SQL::SQLValue::ValueType::I64)
 			{
-				cond->Int64LT(sbField.ToCString(), item->GetItemValue().i64);
+				cond->Int64LT(sbField.ToCString(), NN<DB::SQL::SQLValueI64>::ConvertFrom(item)->GetValue());
 			}
-			else if (itemType == Data::VariItem::ItemType::F64)
+			else if (itemType == DB::SQL::SQLValue::ValueType::F64)
 			{
-				cond->DoubleLT(sbField.ToCString(), item->GetItemValue().f64);
+				cond->DoubleLT(sbField.ToCString(), NN<DB::SQL::SQLValueF64>::ConvertFrom(item)->GetValue());
 			}
 			else
 			{
@@ -2294,23 +2298,23 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 		else if (sb.Equals(UTF8STRC(">=")))
 		{
 			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
-			if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
+			if (!DB::SQL::SQLUtil::ParseNativeValue(sb.ToCString(), sqlType).SetTo(item))
 			{
 				cond.Delete();
 				return nullptr;
 			}
-			Data::VariItem::ItemType itemType = item->GetItemType();
-			if (itemType == Data::VariItem::ItemType::I32)
+			DB::SQL::SQLValue::ValueType itemType = item->GetValueType();
+			if (itemType == DB::SQL::SQLValue::ValueType::I32)
 			{
-				cond->Int32GE(sbField.ToCString(), item->GetItemValue().i32);
+				cond->Int32GE(sbField.ToCString(), NN<DB::SQL::SQLValueI32>::ConvertFrom(item)->GetValue());
 			}
-			else if (itemType == Data::VariItem::ItemType::I64)
+			else if (itemType == DB::SQL::SQLValue::ValueType::I64)
 			{
-				cond->Int64GE(sbField.ToCString(), item->GetItemValue().i64);
+				cond->Int64GE(sbField.ToCString(), NN<DB::SQL::SQLValueI64>::ConvertFrom(item)->GetValue());
 			}
-			else if (itemType == Data::VariItem::ItemType::F64)
+			else if (itemType == DB::SQL::SQLValue::ValueType::F64)
 			{
-				cond->DoubleGE(sbField.ToCString(), item->GetItemValue().f64);
+				cond->DoubleGE(sbField.ToCString(), NN<DB::SQL::SQLValueF64>::ConvertFrom(item)->GetValue());
 			}
 			else
 			{
@@ -2323,23 +2327,23 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 		else if (sb.Equals(UTF8STRC("<=")))
 		{
 			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
-			if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
+			if (!DB::SQL::SQLUtil::ParseNativeValue(sb.ToCString(), sqlType).SetTo(item))
 			{
 				cond.Delete();
 				return nullptr;
 			}
-			Data::VariItem::ItemType itemType = item->GetItemType();
-			if (itemType == Data::VariItem::ItemType::I32)
+			DB::SQL::SQLValue::ValueType itemType = item->GetValueType();
+			if (itemType == DB::SQL::SQLValue::ValueType::I32)
 			{
-				cond->Int32LE(sbField.ToCString(), item->GetItemValue().i32);
+				cond->Int32LE(sbField.ToCString(), NN<DB::SQL::SQLValueI32>::ConvertFrom(item)->GetValue());
 			}
-			else if (itemType == Data::VariItem::ItemType::I64)
+			else if (itemType == DB::SQL::SQLValue::ValueType::I64)
 			{
-				cond->Int64LE(sbField.ToCString(), item->GetItemValue().i64);
+				cond->Int64LE(sbField.ToCString(), NN<DB::SQL::SQLValueI64>::ConvertFrom(item)->GetValue());
 			}
-			else if (itemType == Data::VariItem::ItemType::F64)
+			else if (itemType == DB::SQL::SQLValue::ValueType::F64)
 			{
-				cond->DoubleLE(sbField.ToCString(), item->GetItemValue().f64);
+				cond->DoubleLE(sbField.ToCString(), NN<DB::SQL::SQLValueF64>::ConvertFrom(item)->GetValue());
 			}
 			else
 			{
@@ -2352,7 +2356,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 		else if (sb.EqualsICase(UTF8STRC("BETWEEN")))
 		{
 			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
-			if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
+			if (!DB::SQL::SQLUtil::ParseNativeValue(sb.ToCString(), sqlType).SetTo(item))
 			{
 				cond.Delete();
 				return nullptr;
@@ -2365,18 +2369,18 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 				return nullptr;
 			}
 			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
-			if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item2))
+			if (!DB::SQL::SQLUtil::ParseNativeValue(sb.ToCString(), sqlType).SetTo(item2))
 			{
 				item.Delete();
 				cond.Delete();
 				return nullptr;
 			}
-			Data::VariItem::ItemType itemType = item->GetItemType();
-			Data::VariItem::ItemType item2Type = item2->GetItemType();
-			if (itemType == Data::VariItem::ItemType::Str && item2Type == Data::VariItem::ItemType::Str)
+			DB::SQL::SQLValue::ValueType itemType = item->GetValueType();
+			DB::SQL::SQLValue::ValueType item2Type = item2->GetValueType();
+			if (itemType == DB::SQL::SQLValue::ValueType::String && item2Type == DB::SQL::SQLValue::ValueType::String)
 			{
-				Data::Timestamp t1 = Data::Timestamp::FromStr(item->GetItemValue().str->ToCString(), tzQhr);
-				Data::Timestamp t2 = Data::Timestamp::FromStr(item2->GetItemValue().str->ToCString(), tzQhr);
+				Data::Timestamp t1 = Data::Timestamp::FromStr(NN<DB::SQL::SQLValueString>::ConvertFrom(item)->GetValue()->ToCString(), tzQhr);
+				Data::Timestamp t2 = Data::Timestamp::FromStr(NN<DB::SQL::SQLValueString>::ConvertFrom(item2)->GetValue()->ToCString(), tzQhr);
 				if (t1.NotNull() && t2.NotNull())
 				{
 					cond->TimeBetween(sbField.ToCString(), t1, t2);
@@ -2389,19 +2393,19 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 					return nullptr;
 				}
 			}
-			else if (itemType == Data::VariItem::ItemType::I32)
+			else if (itemType == DB::SQL::SQLValue::ValueType::I32)
 			{
-				if (item2Type == Data::VariItem::ItemType::I32)
+				if (item2Type == DB::SQL::SQLValue::ValueType::I32)
 				{
-					cond->Int32Between(sbField.ToCString(), item->GetItemValue().i32, item2->GetItemValue().i32);
+					cond->Int32Between(sbField.ToCString(), NN<DB::SQL::SQLValueI32>::ConvertFrom(item)->GetValue(), NN<DB::SQL::SQLValueI32>::ConvertFrom(item2)->GetValue());
 				}
-				else if (item2Type == Data::VariItem::ItemType::I64)
+				else if (item2Type == DB::SQL::SQLValue::ValueType::I64)
 				{
-					cond->Int64Between(sbField.ToCString(), item->GetItemValue().i32, item2->GetItemValue().i64);
+					cond->Int64Between(sbField.ToCString(), NN<DB::SQL::SQLValueI32>::ConvertFrom(item)->GetValue(), NN<DB::SQL::SQLValueI64>::ConvertFrom(item2)->GetValue());
 				}
-				else if (item2Type == Data::VariItem::ItemType::F64)
+				else if (item2Type == DB::SQL::SQLValue::ValueType::F64)
 				{
-					cond->DoubleBetween(sbField.ToCString(), item->GetItemValue().i32, item2->GetItemValue().f64);
+					cond->DoubleBetween(sbField.ToCString(), NN<DB::SQL::SQLValueI32>::ConvertFrom(item)->GetValue(), NN<DB::SQL::SQLValueF64>::ConvertFrom(item2)->GetValue());
 				}
 				else
 				{
@@ -2411,19 +2415,19 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 					return nullptr;
 				}
 			}
-			else if (itemType == Data::VariItem::ItemType::I64)
+			else if (itemType == DB::SQL::SQLValue::ValueType::I64)
 			{
-				if (item2Type == Data::VariItem::ItemType::I32)
+				if (item2Type == DB::SQL::SQLValue::ValueType::I32)
 				{
-					cond->Int64Between(sbField.ToCString(), item->GetItemValue().i64, item2->GetItemValue().i32);
+					cond->Int64Between(sbField.ToCString(), NN<DB::SQL::SQLValueI64>::ConvertFrom(item)->GetValue(), NN<DB::SQL::SQLValueI32>::ConvertFrom(item2)->GetValue());
 				}
-				else if (item2Type == Data::VariItem::ItemType::I64)
+				else if (item2Type == DB::SQL::SQLValue::ValueType::I64)
 				{
-					cond->Int64Between(sbField.ToCString(), item->GetItemValue().i64, item2->GetItemValue().i64);
+					cond->Int64Between(sbField.ToCString(), NN<DB::SQL::SQLValueI64>::ConvertFrom(item)->GetValue(), NN<DB::SQL::SQLValueI64>::ConvertFrom(item2)->GetValue());
 				}
-				else if (item2Type == Data::VariItem::ItemType::F64)
+				else if (item2Type == DB::SQL::SQLValue::ValueType::F64)
 				{
-					cond->DoubleBetween(sbField.ToCString(), (Double)item->GetItemValue().i64, item2->GetItemValue().f64);
+					cond->DoubleBetween(sbField.ToCString(), (Double)NN<DB::SQL::SQLValueI64>::ConvertFrom(item)->GetValue(), NN<DB::SQL::SQLValueF64>::ConvertFrom(item2)->GetValue());
 				}
 				else
 				{
@@ -2433,19 +2437,19 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 					return nullptr;
 				}
 			}
-			else if (itemType == Data::VariItem::ItemType::F64)
+			else if (itemType == DB::SQL::SQLValue::ValueType::F64)
 			{
-				if (item2Type == Data::VariItem::ItemType::I32)
+				if (item2Type == DB::SQL::SQLValue::ValueType::I32)
 				{
-					cond->DoubleBetween(sbField.ToCString(), item->GetItemValue().f64, (Double)item2->GetItemValue().i32);
+					cond->DoubleBetween(sbField.ToCString(), NN<DB::SQL::SQLValueF64>::ConvertFrom(item)->GetValue(), (Double)NN<DB::SQL::SQLValueI32>::ConvertFrom(item2)->GetValue());
 				}
-				else if (item2Type == Data::VariItem::ItemType::I64)
+				else if (item2Type == DB::SQL::SQLValue::ValueType::I64)
 				{
-					cond->DoubleBetween(sbField.ToCString(), item->GetItemValue().f64, (Double)item2->GetItemValue().i64);
+					cond->DoubleBetween(sbField.ToCString(), NN<DB::SQL::SQLValueF64>::ConvertFrom(item)->GetValue(), (Double)NN<DB::SQL::SQLValueI64>::ConvertFrom(item2)->GetValue());
 				}
-				else if (item2Type == Data::VariItem::ItemType::F64)
+				else if (item2Type == DB::SQL::SQLValue::ValueType::F64)
 				{
-					cond->DoubleBetween(sbField.ToCString(), item->GetItemValue().f64, item2->GetItemValue().f64);
+					cond->DoubleBetween(sbField.ToCString(), NN<DB::SQL::SQLValueF64>::ConvertFrom(item)->GetValue(), NN<DB::SQL::SQLValueF64>::ConvertFrom(item2)->GetValue());
 				}
 				else
 				{

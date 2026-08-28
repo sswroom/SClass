@@ -101,6 +101,7 @@
 #include "Parser/FileParser/SPKParser.h"
 #include "Parser/FileParser/SPREDParser.h"
 #include "Parser/FileParser/SQLiteParser.h"
+#include "Parser/FileParser/SQLParser.h"
 #include "Parser/FileParser/SZSParser.h"
 #include "Parser/FileParser/TARParser.h"
 #include "Parser/FileParser/TGAParser.h"
@@ -381,6 +382,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASSNN(parser, Parser::FileParser::MTKGPSParser());
 	this->AddFileParser(parser);
 	NEW_CLASSNN(parser, Parser::FileParser::PDFParser());
+	this->AddFileParser(parser);
+	NEW_CLASSNN(parser, Parser::FileParser::SQLParser());
 	this->AddFileParser(parser);
 	NEW_CLASSNN(parser, Parser::FileParser::CCacheV2Parser());
 	this->AddFileParser(parser);

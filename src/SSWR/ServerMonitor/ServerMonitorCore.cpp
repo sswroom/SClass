@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/Bcrypt.h"
 #include "DB/SQLiteFile.h"
-#include "DB/SQL/CreateTableCommand.h"
+#include "DB/SQL/SQLCreateTableCommand.h"
 #include "IO/FileStream.h"
 #include "IO/IniFile.h"
 #include "IO/Path.h"
@@ -174,7 +174,7 @@ SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore() : checkThread(CheckT
 					tabDef.AddCol(DB::ColDef::Create(CSTR("username"))->ColType(DB::DBUtil::ColType::CT_VarUTF8Char)->ColSize(64)->NotNull(true)->PK(true));
 					tabDef.AddCol(DB::ColDef::Create(CSTR("password"))->ColType(DB::DBUtil::ColType::CT_VarUTF8Char)->ColSize(512)->NotNull(true));
 					tabDef.AddCol(DB::ColDef::Create(CSTR("role"))->ColType(DB::DBUtil::ColType::CT_Int32)->NotNull(true));
-					DB::SQL::CreateTableCommand cmd(tabDef, false);
+					DB::SQL::SQLCreateTableCommand cmd(tabDef, false);
 					DB::SQLBuilder sql(db->GetSQLType(), db->IsAxisAware(), db->GetTzQhr());
 					sql.AppendSQLCommand(cmd);
 					db->ExecuteNonQuery(sql.ToCString());
@@ -231,7 +231,7 @@ SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore() : checkThread(CheckT
 					tabDef.AddCol(DB::ColDef::Create(CSTR("target"))->ColType(DB::DBUtil::ColType::CT_VarUTF8Char)->ColSize(1024)->NotNull(true));
 					tabDef.AddCol(DB::ColDef::Create(CSTR("intervalMS"))->ColType(DB::DBUtil::ColType::CT_Int32)->NotNull(true));
 					tabDef.AddCol(DB::ColDef::Create(CSTR("timeoutMS"))->ColType(DB::DBUtil::ColType::CT_Int32)->NotNull(true));
-					DB::SQL::CreateTableCommand cmd(tabDef, false);
+					DB::SQL::SQLCreateTableCommand cmd(tabDef, false);
 					DB::SQLBuilder sql(db->GetSQLType(), db->IsAxisAware(), db->GetTzQhr());
 					sql.AppendSQLCommand(cmd);
 					db->ExecuteNonQuery(sql.ToCString());
@@ -259,7 +259,7 @@ SSWR::ServerMonitor::ServerMonitorCore::ServerMonitorCore() : checkThread(CheckT
 					tabDef.AddCol(DB::ColDef::Create(CSTR("type"))->ColType(DB::DBUtil::ColType::CT_Int32)->NotNull(true));
 					tabDef.AddCol(DB::ColDef::Create(CSTR("settings"))->ColType(DB::DBUtil::ColType::CT_VarUTF8Char)->ColSize(2048)->NotNull(true));
 					tabDef.AddCol(DB::ColDef::Create(CSTR("targets"))->ColType(DB::DBUtil::ColType::CT_VarUTF8Char)->ColSize(2048)->NotNull(true));
-					DB::SQL::CreateTableCommand cmd(tabDef, false);
+					DB::SQL::SQLCreateTableCommand cmd(tabDef, false);
 					DB::SQLBuilder sql(db->GetSQLType(), db->IsAxisAware(), db->GetTzQhr());
 					sql.AppendSQLCommand(cmd);
 					db->ExecuteNonQuery(sql.ToCString());

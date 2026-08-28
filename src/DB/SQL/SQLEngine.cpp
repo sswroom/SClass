@@ -5,7 +5,7 @@
 #include "DB/SQL/SQLEngineActionReader.h"
 #include "DB/SQL/SQLEngineDBTable.h"
 #include "DB/SQL/SQLStringReader.h"
-#include "DB/SQL/UseCommand.h"
+#include "DB/SQL/SQLUseCommand.h"
 #include "IO/Path.h"
 
 #define VERBOSE
@@ -1034,7 +1034,7 @@ Optional<DB::DBReader> DB::SQL::SQLEngine::ExecuteReader(Text::CStringNN sql)
 	}
 	else if (cmd->GetCommandType() == DB::SQL::CommandType::Use)
 	{
-		NN<DB::SQL::UseCommand> useCmd = NN<DB::SQL::UseCommand>::ConvertFrom(cmd);
+		NN<DB::SQL::SQLUseCommand> useCmd = NN<DB::SQL::SQLUseCommand>::ConvertFrom(cmd);
 		if (this->ChangeDatabase(useCmd->GetDBName()->ToCString()))
 		{
 			cmd.Delete();

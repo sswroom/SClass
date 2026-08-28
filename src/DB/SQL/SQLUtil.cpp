@@ -1,5 +1,11 @@
 #include "Stdafx.h"
+#include "DB/SQL/SQLFunctionValue.h"
+#include "DB/SQL/SQLObjectPath.h"
 #include "DB/SQL/SQLUtil.h"
+#include "DB/SQL/SQLValueF64.h"
+#include "DB/SQL/SQLValueI32.h"
+#include "DB/SQL/SQLValueI64.h"
+#include "DB/SQL/SQLValueString.h"
 
 UnsafeArray<const UTF8Char> DB::SQL::SQLUtil::ParseNextWord(UnsafeArray<const UTF8Char> sql, NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType)
 {
@@ -42,6 +48,15 @@ UnsafeArray<const UTF8Char> DB::SQL::SQLUtil::ParseNextWord(UnsafeArray<const UT
 					sql++;
 				}
 			}
+		}
+		else if (c == ';')
+		{
+			sql--;
+			if (strStart.SetTo(nns))
+			{
+				sb->AppendP(nns, sql);
+			}
+			return sql;
 		}
 		else if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
 		{
@@ -147,30 +162,120 @@ UnsafeArray<const UTF8Char> DB::SQL::SQLUtil::ParseNextWord(UnsafeArray<const UT
 	}
 }
 
-Optional<Data::VariItem> DB::SQL::SQLUtil::ParseValue(Text::CStringNN val, DB::SQLType sqlType)
+Optional<DB::SQL::SQLValue> DB::SQL::SQLUtil::ParseNativeValue(Text::CStringNN val, DB::SQLType sqlType)
 {
-	NN<Data::VariItem> item;
+	NN<SQLValue> item;
 	Int32 i32;
 	Int64 i64;
 	Double dblVal;
 	if (val.leng > 1 && val.v[0] == '\'' && val.v[val.leng - 1] == '\'')
 	{
-		NN<Text::String> s = Text::String::New(val.v + 1, val.leng - 2);
-		item = Data::VariItem::NewStr(s);
-		s->Release();
+		NEW_CLASSNN(item, DB::SQL::SQLValueString(Text::CStringNN(val.v + 1, val.leng - 2)));
 		return item;
 	}
 	else if (val.ToInt32(i32))
 	{
-		return Data::VariItem::NewI32(i32);
+		NEW_CLASSNN(item, DB::SQL::SQLValueI32(i32));
+		return item;
 	}
 	else if (val.ToInt64(i64))
 	{
-		return Data::VariItem::NewI64(i64);
+		NEW_CLASSNN(item, DB::SQL::SQLValueI64(i64));
+		return item;
 	}
 	else if (val.ToDouble(dblVal))
 	{
-		return Data::VariItem::NewF64(dblVal);
+		NEW_CLASSNN(item, DB::SQL::SQLValueF64(dblVal));
+		return item;
+	}
+	return nullptr;
+}
+
+Optional<DB::SQL::SQLValue> DB::SQL::SQLUtil::ParseValueAndNext(InOutParam<UnsafeArray<const UTF8Char>> sql, NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType)
+{
+	UnsafeArray<const UTF8Char> nextSql;
+	UnsafeArray<const UTF8Char> sqlPtr = sql.Get();
+	sqlPtr = ParseNextWord(sqlPtr, sb, sqlType);
+	if (sb->GetLength() == 0)
+		return nullptr;
+	NN<SQLValue> val;
+	if (ParseNativeValue(sb->ToCString(), sqlType).SetTo(val))
+	{
+		sql.Set(sqlPtr);
+		return val;
+	}
+	NN<SQLObjectPath> objPath;
+	NN<SQLObjectPath> childPath;
+	NEW_CLASSNN(objPath, SQLObjectPath(sb->ToCString(), nullptr));
+	while (true)
+	{
+		nextSql = ParseNextWord(sqlPtr, sb, sqlType);
+		if (sb->GetLength() == 0)
+		{
+			sql.Set(sqlPtr);
+			objPath.Delete();
+			return nullptr;
+		}
+		if (sb->Equals(UTF8STRC(".")))
+		{
+			sqlPtr = ParseNextWord(nextSql, sb, sqlType);
+			if (sb->GetLength() == 0)
+			{
+				sql.Set(sqlPtr);
+				objPath.Delete();
+				return nullptr;
+			}
+			NEW_CLASSNN(childPath, SQLObjectPath(sb->ToCString(), objPath));
+			objPath = childPath;
+		}
+		else if (sb->Equals(UTF8STRC("(")))
+		{
+			sqlPtr = nextSql;
+			NN<SQLFunctionValue> func;
+			NN<SQLValue> param;
+			NEW_CLASSNN(func, SQLFunctionValue(objPath));
+			if (!ParseValueAndNext(sqlPtr, sb, sqlType).SetTo(param))
+			{
+				sqlPtr = ParseNextWord(sqlPtr, sb, sqlType);
+				if (!sb->Equals(UTF8STRC(")")))
+				{
+					sql.Set(sqlPtr);
+					func.Delete();
+					return nullptr;
+				}
+				sql.Set(sqlPtr);
+				return func;
+			}
+			func->AddParam(param);
+			while (true)
+			{
+				sqlPtr = ParseNextWord(sqlPtr, sb, sqlType);
+				if (sb->Equals(UTF8STRC(")")))
+				{
+					sql.Set(sqlPtr);
+					return func;
+				}
+				else if (!sb->Equals(UTF8STRC(",")))
+				{
+					sql.Set(sqlPtr);
+					func.Delete();
+					return nullptr;
+				}
+				if (!ParseValueAndNext(sqlPtr, sb, sqlType).SetTo(param))
+				{
+					sql.Set(sqlPtr);
+					func.Delete();
+					return nullptr;
+				}
+				func->AddParam(param);
+			}
+			return nullptr;
+		}
+		else
+		{
+			sql.Set(sqlPtr);
+			return objPath;
+		}
 	}
 	return nullptr;
 }

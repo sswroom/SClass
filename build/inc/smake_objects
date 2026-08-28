@@ -296,16 +296,27 @@ $-I /opt/local/include/freetds
 !-lsybdb
 TextDB.o: ../../src/DB/TextDB.cpp
 WorkbookDB.o: ../../src/DB/WorkbookDB.cpp
-CreateTableCommand.o: ../../src/DB/SQL/CreateTableCommand.cpp
-ShowDatabasesCommand.o: ../../src/DB/SQL/ShowDatabasesCommand.cpp
 SQLCommand.o: ../../src/DB/SQL/SQLCommand.cpp
+SQLComment.o: ../../src/DB/SQL/SQLComment.cpp
+SQLCreateTableCommand.o: ../../src/DB/SQL/SQLCreateTableCommand.cpp
 SQLEmbeddedReader.o: ../../src/DB/SQL/SQLEmbeddedReader.cpp
 SQLEngine.o: ../../src/DB/SQL/SQLEngine.cpp
 SQLEngineActionReader.o: ../../src/DB/SQL/SQLEngineActionReader.cpp
 SQLEngineDBTable.o: ../../src/DB/SQL/SQLEngineDBTable.cpp
+SQLFile.o: ../../src/DB/SQL/SQLFile.cpp
+SQLFunctionValue.o: ../../src/DB/SQL/SQLFunctionValue.cpp
+SQLMetaCommand.o: ../../src/DB/SQL/SQLMetaCommand.cpp
+SQLObjectPath.o: ../../src/DB/SQL/SQLObjectPath.cpp
+SQLSelectCommand.o: ../../src/DB/SQL/SQLSelectCommand.cpp
+SQLSetConfigCommand.o: ../../src/DB/SQL/SQLSetConfigCommand.cpp
+SQLShowDatabasesCommand.o: ../../src/DB/SQL/SQLShowDatabasesCommand.cpp
 SQLStringReader.o: ../../src/DB/SQL/SQLStringReader.cpp
+SQLUseCommand.o: ../../src/DB/SQL/SQLUseCommand.cpp
 SQLUtil.o: ../../src/DB/SQL/SQLUtil.cpp
-UseCommand.o: ../../src/DB/SQL/UseCommand.cpp
+SQLValueF64.o: ../../src/DB/SQL/SQLValueF64.cpp
+SQLValueI32.o: ../../src/DB/SQL/SQLValueI32.cpp
+SQLValueI64.o: ../../src/DB/SQL/SQLValueI64.cpp
+SQLValueString.o: ../../src/DB/SQL/SQLValueString.cpp
 
 BMPExporter.o: ../../src/Exporter/BMPExporter.cpp
 CIPExporter.o: ../../src/Exporter/CIPExporter.cpp
@@ -1913,6 +1924,7 @@ SPDParser.o: ../../src/Parser/FileParser/SPDParser.cpp
 SPKParser.o: ../../src/Parser/FileParser/SPKParser.cpp
 SPREDParser.o: ../../src/Parser/FileParser/SPREDParser.cpp
 SQLiteParser.o: ../../src/Parser/FileParser/SQLiteParser.cpp
+SQLParser.o: ../../src/Parser/FileParser/SQLParser.cpp
 SZSParser.o: ../../src/Parser/FileParser/SZSParser.cpp
 TARParser.o: ../../src/Parser/FileParser/TARParser.cpp
 TGAParser.o: ../../src/Parser/FileParser/TGAParser.cpp

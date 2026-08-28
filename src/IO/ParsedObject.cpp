@@ -66,6 +66,8 @@ Text::CStringNN IO::ParserTypeGetName(ParserType pt)
 		return CSTR("CesiumTile");
 	case ParserType::DataRateCalc:
 		return CSTR("DataRateCalc");
+	case ParserType::SQLFile:
+		return CSTR("SQLFile");
 	case ParserType::Unknown:
 	default:
 		return CSTR("Unknwon");

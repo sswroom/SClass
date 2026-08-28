@@ -1,10 +1,11 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "DB/SQL/CreateTableCommand.h"
-#include "DB/SQL/ShowDatabasesCommand.h"
 #include "DB/SQL/SQLCommand.h"
+#include "DB/SQL/SQLCreateTableCommand.h"
+#include "DB/SQL/SQLSetConfigCommand.h"
+#include "DB/SQL/SQLShowDatabasesCommand.h"
+#include "DB/SQL/SQLUseCommand.h"
 #include "DB/SQL/SQLUtil.h"
-#include "DB/SQL/UseCommand.h"
 #include "Text/CharUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -135,7 +136,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 							}
 							else if (sb.Equals(UTF8STRC(")")))
 							{
-								NEW_CLASSOPT(cmd, DB::SQL::CreateTableCommand(tab, true));
+								NEW_CLASSOPT(cmd, DB::SQL::SQLCreateTableCommand(tab, true));
 								tabUsed = true;
 								break;
 							}
@@ -163,7 +164,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 								{
 									if (brkCnt == 0)
 									{
-										NEW_CLASSOPT(cmd, DB::SQL::CreateTableCommand(tab, true));
+										NEW_CLASSOPT(cmd, DB::SQL::SQLCreateTableCommand(tab, true));
 										tabUsed = true;
 										break;
 									}
@@ -376,7 +377,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 								else if (sb.Equals(UTF8STRC(")")))
 								{
 									tab->AddCol(col);
-									NEW_CLASSOPT(cmd, DB::SQL::CreateTableCommand(tab, true));
+									NEW_CLASSOPT(cmd, DB::SQL::SQLCreateTableCommand(tab, true));
 									tabUsed = true;
 									break;
 								}
@@ -416,7 +417,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 		sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 		if (sb.EqualsICase(UTF8STRC("DATABASES")))
 		{
-			NEW_CLASSOPT(cmd, DB::SQL::ShowDatabasesCommand());
+			NEW_CLASSOPT(cmd, DB::SQL::SQLShowDatabasesCommand());
 			sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 			if (sb.leng == 0)
 			{
@@ -445,7 +446,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 		else
 		{
 			SQLUtil::ParseColumnWord(sb, sqlType);
-			NEW_CLASSOPT(cmd, DB::SQL::UseCommand(sb.ToCString()));
+			NEW_CLASSOPT(cmd, DB::SQL::SQLUseCommand(sb.ToCString()));
 			sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 			if (sb.leng == 0)
 			{
@@ -455,6 +456,56 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 				printf("SQLCommand: Unknown word after use: %s\r\n", sb.ToPtr());
 			}
 		}
+	}
+	else if (sb.EqualsICase(UTF8STRC("SET")))
+	{
+		sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+		if (sb.GetLength() == 0)
+		{
+			printf("SQLCommand: Missing database name\r\n");
+			return nullptr;
+		}
+		DB::SQL::SQLSetConfigCommand::ConfigLife cfgLife = DB::SQL::SQLSetConfigCommand::ConfigLife::Default;
+		if (sb.EqualsICase(UTF8STRC("SESSION")))
+		{
+			cfgLife = DB::SQL::SQLSetConfigCommand::ConfigLife::Session;
+			sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+		}
+		else if (sb.EqualsICase(UTF8STRC("LOCAL")))
+		{
+			cfgLife = DB::SQL::SQLSetConfigCommand::ConfigLife::Local;
+			sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+		}
+		if (sb.GetLength() == 0)
+		{
+			printf("SQLCommand: Missing config name\r\n");
+			return nullptr;
+		}
+		NN<Text::String> cfgName = Text::String::New(sb.ToCString());
+		sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+		if (!sb.Equals(UTF8STRC("=")) && !sb.EqualsICase(UTF8STRC("TO")))
+		{
+			printf("SQLCommand: Expected '=' or 'TO', now is %s\r\n", sb.ToPtr());
+			cfgName->Release();
+			return nullptr;
+		}
+		Text::CString cfgVal = nullptr;
+		sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+		if (sb.GetLength() == 0)
+		{
+			printf("SQLCommand: Missing config value\r\n");
+			cfgName->Release();
+			return nullptr;
+		}
+		else if (sb.EqualsICase(UTF8STRC("DEFAULT")))
+		{
+		}
+		else
+		{
+			cfgVal = sb.ToCString();
+		}
+		NEW_CLASSOPT(cmd, DB::SQL::SQLSetConfigCommand(cfgLife, cfgName, cfgVal));
+		cfgName->Release();
 	}
 	else
 	{

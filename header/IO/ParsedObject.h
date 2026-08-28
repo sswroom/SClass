@@ -39,8 +39,9 @@ namespace IO
 		SeleniumIDE,
 		CesiumTile,
 		DataRateCalc,
+		SQLFile,
 
-		LastType = DataRateCalc
+		LastType = SQLFile
 	};
 
 	Text::CStringNN ParserTypeGetName(ParserType pt);

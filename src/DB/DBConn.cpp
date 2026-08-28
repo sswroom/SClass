@@ -4,7 +4,7 @@
 #include "DB/DBConn.h"
 #include "DB/DBReader.h"
 #include "DB/TableDef.h"
-#include "DB/SQL/CreateTableCommand.h"
+#include "DB/SQL/SQLCreateTableCommand.h"
 #include "DB/SQL/SQLCommand.h"
 #include "Text/MyString.h"
 #include <stdio.h>
@@ -291,7 +291,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 		{
 			if (cmd->GetCommandType() == DB::SQL::CommandType::CreateTable)
 			{
-				tab = NN<DB::SQL::CreateTableCommand>::ConvertFrom(cmd)->GetTableDef()->Clone().Ptr();
+				tab = NN<DB::SQL::SQLCreateTableCommand>::ConvertFrom(cmd)->GetTableDef()->Clone().Ptr();
 			}
 			cmd.Delete();
 		}

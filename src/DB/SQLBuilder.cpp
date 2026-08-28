@@ -3,7 +3,7 @@
 #include "DB/ReadingDBTool.h"
 #include "DB/SQLBuilder.h"
 #include "DB/TableDef.h"
-#include "DB/SQL/CreateTableCommand.h"
+#include "DB/SQL/SQLCreateTableCommand.h"
 #include "Text/MyStringW.h"
 
 DB::SQLBuilder::SQLBuilder(DB::SQLType sqlType, Bool axisAware, Int32 tzQhr)
@@ -218,7 +218,7 @@ void DB::SQLBuilder::AppendSQLCommand(NN<SQL::SQLCommand> cmd)
 {
 	if (cmd->GetCommandType() == SQL::CommandType::CreateTable)
 	{
-		NN<SQL::CreateTableCommand> createCmd = NN<SQL::CreateTableCommand>::ConvertFrom(cmd);
+		NN<SQL::SQLCreateTableCommand> createCmd = NN<SQL::SQLCreateTableCommand>::ConvertFrom(cmd);
 		NN<DB::TableDef> tableDef = createCmd->GetTableDef();
 		NN<DB::ColDef> col;
 		this->sb.Append(CSTR("create table "));

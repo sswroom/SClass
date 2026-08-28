@@ -11,7 +11,11 @@ namespace DB
 		{
 			CreateTable,
 			ShowDatabases,
-			Use
+			Use,
+			Comment,
+			MetaCommand,
+			SetConfig,
+			Select
 		};
 		class SQLCommand
 		{
@@ -20,7 +24,7 @@ namespace DB
 		public:
 			virtual ~SQLCommand() {};
 
-			virtual CommandType GetCommandType() = 0;
+			virtual CommandType GetCommandType() const = 0;
 
 			static Optional<SQLCommand> Parse(UnsafeArray<const UTF8Char> sql, DB::SQLType sqlType);
 		};
