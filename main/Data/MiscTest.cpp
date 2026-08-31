@@ -30,6 +30,7 @@
 #include "Math/WKBWriter.h"
 #include "Math/WKTReader.h"
 #include "Media/DrawEngineFactory.h"
+#include "Media/DRMMonitorSurfaceMgr.h"
 #include "Media/PaperSize.h"
 #include "Media/Printer.h"
 #include "Media/SVGDocument.h"
@@ -1545,9 +1546,27 @@ Int32 ReportBuilderTest()
 	return 0;
 }
 
+Int32 DRMSurfaceTest()
+{
+	Media::ColorManager colorMgr;
+	Media::DRMMonitorSurfaceMgr mgr(0, nullptr, colorMgr);
+	printf("Monitor Count = %d\r\n", (UInt32)mgr.GetMonitorCount());
+	NN<Media::MonitorSurface> primarySurface;
+	if (mgr.CreatePrimarySurface((MonitorHandle*)1, nullptr, Media::RotateType::None).SetTo(primarySurface))
+	{
+		printf("PrimarySurface created\n");
+		primarySurface.Delete();
+	}
+	else
+	{
+		printf("Error in creating primary surface\n");
+	}
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UIntOS testType = 39;
+	UIntOS testType = 40;
 	switch (testType)
 	{
 	case 0:
@@ -1630,6 +1649,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return MD5CompareTest();
 	case 39:
 		return ReportBuilderTest();
+	case 40:
+		return DRMSurfaceTest();
 	default:
 		return 0;
 	}

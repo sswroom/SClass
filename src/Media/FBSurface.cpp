@@ -35,6 +35,8 @@ Bool Media::FBSurface::UpdateToScreen(Bool waitForVBlank)
 		return true;
 	}
 	if (waitForVBlank) this->WaitForVBlank();
+//	this->clsData->vinfo.yoffset = (this->clsData->vinfo.yoffset == 0) ? this->clsData->vinfo.yres : 0;
+//	ioctl(this->clsData->fd, FBIOPAN_DISPLAY, &this->clsData->vinfo);
 	return write(this->clsData->ttyfd, " \r", 2) == 2;
 }
 
@@ -107,7 +109,7 @@ Media::FBSurface::~FBSurface()
 		munmap(this->clsData->dataPtr, this->clsData->vinfo.yres * this->clsData->finfo.line_length);
 		close(this->clsData->fd);
 	}
-	if (this->clsData->fd >= 0)
+	if (this->clsData->ttyfd >= 0)
 	{
 		close(this->clsData->ttyfd);
 	}

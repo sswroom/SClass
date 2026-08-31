@@ -13,12 +13,12 @@ namespace Media
 		NN<ClassData> clsData;
 
 	public:
-		DRMSurface(Int32 fd, MonitorHandle *hMon, NN<const Media::ColorProfile> color, Double dpi);
+		DRMSurface(Int32 fd, Optional<MonitorHandle> hMon, NN<const Media::ColorProfile> color, Double dpi);
 		virtual ~DRMSurface();
 
 		Bool IsError();
 		
-		virtual NN<Media::RasterImage> Clone() const;
+		virtual NN<Media::Image> Clone() const;
 		virtual Media::RasterImage::ImageClass GetImageClass() const;
 		virtual void GetRasterData(UnsafeArray<UInt8> destBuff, IntOS left, IntOS top, UIntOS width, UIntOS height, UIntOS destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 
@@ -31,7 +31,7 @@ namespace Media
 		virtual void UnlockSurface();
 
 		virtual void SetSurfaceBugMode(Bool surfaceBugMode);
-		void SetBuffSurface(Media::MonitorSurface *buffSurface);
+		void SetBuffSurface(Optional<Media::MonitorSurface> buffSurface);
 	};
 }
 #endif

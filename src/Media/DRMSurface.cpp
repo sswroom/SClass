@@ -13,10 +13,10 @@
 struct Media::DRMSurface::ClassData
 {
 	Int32 drmFd;
-	MonitorHandle *hMon;
+	Optional<MonitorHandle> hMon;
 	UInt8 *dataPtr;
 	UIntOS dataBpl;
-	Media::MonitorSurface *buffSurface;
+	Optional<Media::MonitorSurface> buffSurface;
 	drmModeModeInfo modeInfo;
 	UInt32 fbId;
 	UInt32 handle;
@@ -25,14 +25,14 @@ struct Media::DRMSurface::ClassData
 	UInt32 connId;
 };
 
-Media::DRMSurface::DRMSurface(Int32 fd, MonitorHandle *hMon, NN<const Media::ColorProfile> color, Double dpi)
+Media::DRMSurface::DRMSurface(Int32 fd, Optional<MonitorHandle> hMon, NN<const Media::ColorProfile> color, Double dpi)
 {
 	this->clsData = MemAllocNN(ClassData);
 	this->clsData->drmFd = fd;
 	this->clsData->hMon = hMon;
 	this->clsData->dataPtr = 0;
 	this->clsData->dataBpl = 0;
-	this->clsData->buffSurface = 0;
+	this->clsData->buffSurface = nullptr;
 	this->clsData->oldCtrc = 0;
 	this->clsData->crtcId = 0;
 	this->clsData->connId = 0;
@@ -42,7 +42,7 @@ Media::DRMSurface::DRMSurface(Int32 fd, MonitorHandle *hMon, NN<const Media::Col
 	{
 		return;
 	}
-	IntOS monIndex = -1 + (IntOS)hMon;
+	IntOS monIndex = -1 + (IntOS)hMon.OrNull();
 	drmModeConnectorPtr connector;
 	drmModeEncoderPtr enc;
 	IntOS cnt = 0;
@@ -69,9 +69,9 @@ Media::DRMSurface::DRMSurface(Int32 fd, MonitorHandle *hMon, NN<const Media::Col
 					this->info.dispSize.y = connector->modes[0].vdisplay;
 					this->info.storeSize = this->info.dispSize; //(UIntOS)this->clsData->dataBpl / (this->info->storeBPP >> 3);
 					this->info.byteSize = this->info.storeSize.x * this->info.storeSize.y * (this->info.storeBPP >> 3);
-					this->info.par2 = 1.0;
 					this->info.hdpi = dpi;
 					this->info.vdpi = dpi;
+					this->info.SetPAR(1.0);
 					this->info.color.Set(color);
 
 					this->clsData->connId = connector->connector_id;
@@ -144,7 +144,7 @@ Media::DRMSurface::DRMSurface(Int32 fd, MonitorHandle *hMon, NN<const Media::Col
 	this->clsData->oldCtrc = drmModeGetCrtc(fd, this->clsData->crtcId);
 	if (drmModeSetCrtc(fd, this->clsData->crtcId, this->clsData->fbId, 0, 0, &this->clsData->connId, 1, &this->clsData->modeInfo))
 	{
-		printf("drmModeSetCrtc Failed: %x\r\n", errno);
+		printf("drmModeSetCrtc Failed: %d\r\n", errno);
 	}
 }
 
@@ -175,7 +175,7 @@ Bool Media::DRMSurface::IsError()
 	return this->clsData->dataPtr == 0;
 }
 
-NN<Media::RasterImage> Media::DRMSurface::Clone() const
+NN<Media::Image> Media::DRMSurface::Clone() const
 {
 	NN<Media::DRMSurface> surface;
 	NEW_CLASSNN(surface, Media::DRMSurface(this->clsData->drmFd, this->clsData->hMon, this->info.color, this->info.hdpi));
@@ -215,9 +215,10 @@ void *Media::DRMSurface::GetHandle()
 
 Bool Media::DRMSurface::DrawFromBuff()
 {
-	if (this->clsData->buffSurface)
+	NN<Media::MonitorSurface> buffSurface;
+	if (this->clsData->buffSurface.SetTo(buffSurface))
 	{
-		this->clsData->buffSurface->GetRasterData(this->clsData->dataPtr, 0, 0, this->info.dispSize.x, this->info.dispSize.y, this->clsData->dataBpl, false, Media::RotateType::None);
+		buffSurface->GetRasterData(this->clsData->dataPtr, 0, 0, this->info.dispSize.x, this->info.dispSize.y, this->clsData->dataBpl, false, Media::RotateType::None);
 		return true;
 	}
 	return false;
@@ -258,8 +259,8 @@ Bool Media::DRMSurface::DrawFromSurface(NN<Media::MonitorSurface> surface, Math:
 		}
 		if ((IntOS)buffW > 0 && (IntOS)buffH > 0)
 		{
-			surface->GetRasterData(this->clsData->dataPtr + destY * (Int32)this->clsData->finfo.line_length + destX * ((IntOS)this->info.storeBPP >> 3),
-				drawX, drawY, buffW, buffH, this->clsData->finfo.line_length, false, Media::RotateType::None);
+			surface->GetRasterData(this->clsData->dataPtr + destY * (Int32)this->clsData->dataBpl + destX * ((IntOS)this->info.storeBPP >> 3),
+				drawX, drawY, buffW, buffH, this->clsData->dataBpl, false, Media::RotateType::None);
 
 			if (clearScn)
 			{
@@ -306,7 +307,7 @@ void Media::DRMSurface::SetSurfaceBugMode(Bool surfaceBugMode)
 
 }
 
-void Media::DRMSurface::SetBuffSurface(Media::MonitorSurface *buffSurface)
+void Media::DRMSurface::SetBuffSurface(Optional<Media::MonitorSurface> buffSurface)
 {
 	this->clsData->buffSurface = buffSurface;
 }

@@ -289,7 +289,7 @@ void Media::V4LVideoCapture::SetPreferSize(Math::Size2D<UIntOS> size, UInt32 fou
 	fmt.fmt.pix.priv = 0;
 	if (ioctl(this->fd, VIDIOC_S_FMT, &fmt) != 0)
 	{
-		printf("Error in s_fmt %d\r\n", errno);
+		printf("V4LVideoCapture: Error in s_fmt %d\r\n", errno);
 	}
 
 	MemClear(&parm, sizeof(parm));
@@ -302,7 +302,7 @@ void Media::V4LVideoCapture::SetPreferSize(Math::Size2D<UIntOS> size, UInt32 fou
 	parm.parm.capture.readbuffers = 4;
 	if (ioctl(this->fd, VIDIOC_S_PARM, &parm) != 0)
 	{
-		printf("Error in s_parm %d\r\n", errno);
+		printf("V4LVideoCapture: Error in s_parm %d\r\n", errno);
 	}
 }
 
