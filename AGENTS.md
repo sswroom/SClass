@@ -3,12 +3,17 @@
 This is a C++ framework support multi-platform and minimum dependencies.
 ​
 ## Structure
-- `build/` - Build config for each platform
+- `build/` - Build configurations:
+  - Native build directories (e.g., Linux_dbg_x64, Windows_x64) for building and running on the same platform
+  - Cross-compile directories (e.g., cc_windows_x64, cc_Linux_ARM) where you build on one platform to run on another
+  - Native build directories contain both Makefile and SMake.cfg
+  - Cross-compile directories contain SMake.cfg only (Makefiles in cc_* directories are old residuals and not maintained)
+  - Makefile in native build directories is used to build applications with smake, and can also build smake itself with "make smake"
 - `header/` - Header files
-- `src/` - Source files
+- `src/` - Source files (including platform-specific code in subsystem/*_xxx.cpp or subsystem/*_xxx.asm where _xxx represents subsystem/device names like Win64, SysV64, MT7620, etc.)
 - `Java/` - Java sources for Java platform
-- `main/` - Source files for each program entry point
-- `startup/` - Platform entry point
+- `main/` - Source files for each program entry point (executables)
+- `startup/` - Platform entry point code
 - `ThirdParty/` - Embedded third-party libraries
 ​
 ## Conventions
@@ -18,9 +23,12 @@ This is a C++ framework support multi-platform and minimum dependencies.
 ​
 ## Commands
 * smake all: Build all programs and do self test
+* smake test: Build all test objects
 
 ## Build System
-The build system uses `smake` with two key configuration files in `build/inc/`:
+The build system uses `smake` which loads `SMake.cfg` in the current directory first, then includes other files specified in it.
+The two key configuration files are `smake_common` and `smake_objects` (typically found in `build/inc/` and included via the SMake.cfg chain).
+- Objects are only compiled if referenced in code or explicitly requested via `smake ObjectName`
 
 ### smake_common
 - Contains header file declarations
@@ -46,4 +54,6 @@ The build system uses `smake` with two key configuration files in `build/inc/`:
 3. Objects are only compiled if referenced in code or explicitly requested via `smake ObjectName`
 
 ## Testing
-* No specific testing instructions found
+* Run `smake test` to build all test objects
+* After building, programs are located at ./bin/, object files are located at ./obj/ (relative to the build directory)
+* Individual test programs can be run directly from the ./bin/ directory after building
