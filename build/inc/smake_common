@@ -2127,6 +2127,8 @@ DB/SQL/SQLFile.h:
 @SQLFile.o
 DB/SQL/SQLFunctionValue.h:
 @SQLFunctionValue.o
+DB/SQL/SQLInsertCommand.h:
+@SQLInsertCommand.o
 DB/SQL/SQLMetaCommand.h:
 @SQLMetaCommand.o
 DB/SQL/SQLObjectPath.h:
@@ -2144,12 +2146,16 @@ DB/SQL/SQLUseCommand.h:
 DB/SQL/SQLUtil.h:
 @SQLUtil.o
 DB/SQL/SQLValue.h:
+DB/SQL/SQLValueBool.h:
+@SQLValueBool.o
 DB/SQL/SQLValueF64.h:
 @SQLValueF64.o
 DB/SQL/SQLValueI32.h:
 @SQLValueI32.o
 DB/SQL/SQLValueI64.h:
 @SQLValueI64.o
+DB/SQL/SQLValueNull.h:
+@SQLValueNull.o
 DB/SQL/SQLValueString.h:
 @SQLValueString.o
 

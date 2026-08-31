@@ -2,9 +2,11 @@
 #include "DB/SQL/SQLFunctionValue.h"
 #include "DB/SQL/SQLObjectPath.h"
 #include "DB/SQL/SQLUtil.h"
+#include "DB/SQL/SQLValueBool.h"
 #include "DB/SQL/SQLValueF64.h"
 #include "DB/SQL/SQLValueI32.h"
 #include "DB/SQL/SQLValueI64.h"
+#include "DB/SQL/SQLValueNull.h"
 #include "DB/SQL/SQLValueString.h"
 
 UnsafeArray<const UTF8Char> DB::SQL::SQLUtil::ParseNextWord(UnsafeArray<const UTF8Char> sql, NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType)
@@ -55,6 +57,10 @@ UnsafeArray<const UTF8Char> DB::SQL::SQLUtil::ParseNextWord(UnsafeArray<const UT
 			if (strStart.SetTo(nns))
 			{
 				sb->AppendP(nns, sql);
+			}
+			else
+			{
+				sb->AppendUTF8Char(c);
 			}
 			return sql;
 		}
@@ -187,6 +193,25 @@ Optional<DB::SQL::SQLValue> DB::SQL::SQLUtil::ParseNativeValue(Text::CStringNN v
 	{
 		NEW_CLASSNN(item, DB::SQL::SQLValueF64(dblVal));
 		return item;
+	}
+	else if (val.EqualsICase(UTF8STRC("TRUE")))
+	{
+		NEW_CLASSNN(item, DB::SQL::SQLValueBool(true));
+		return item;
+	}
+	else if (val.EqualsICase(UTF8STRC("FALSE")))
+	{
+		NEW_CLASSNN(item, DB::SQL::SQLValueBool(false));
+		return item;
+	}
+	else if (val.EqualsICase(UTF8STRC("NULL")))
+	{
+		NEW_CLASSNN(item, DB::SQL::SQLValueNull());
+		return item;
+	}
+	else
+	{
+		return nullptr;
 	}
 	return nullptr;
 }

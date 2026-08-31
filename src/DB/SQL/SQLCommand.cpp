@@ -2,6 +2,8 @@
 #include "MyMemory.h"
 #include "DB/SQL/SQLCommand.h"
 #include "DB/SQL/SQLCreateTableCommand.h"
+#include "DB/SQL/SQLInsertCommand.h"
+#include "DB/SQL/SQLSelectCommand.h"
 #include "DB/SQL/SQLSetConfigCommand.h"
 #include "DB/SQL/SQLShowDatabasesCommand.h"
 #include "DB/SQL/SQLUseCommand.h"
@@ -506,6 +508,204 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 		}
 		NEW_CLASSOPT(cmd, DB::SQL::SQLSetConfigCommand(cfgLife, cfgName, cfgVal));
 		cfgName->Release();
+	}
+	else if (sb.EqualsICase(UTF8STRC("SELECT")))
+	{
+		NN<SQLSelectCommand> selCmd;
+		NEW_CLASSNN(selCmd, DB::SQL::SQLSelectCommand());
+		cmd = selCmd;
+		NN<SQLValue> val;
+		while (true)
+		{
+			if (!SQLUtil::ParseValueAndNext(sql, sb, sqlType).SetTo(val))
+			{
+				printf("SQLCommand: Select list is not supported\r\n");
+				cmd.Delete();
+				return nullptr;
+			}
+			sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (sb.Equals(UTF8STRC(",")))
+			{
+				selCmd->AddColumn(val, nullptr);
+			}
+			else if (sb.EqualsICase(UTF8STRC("FROM")) || sb.EqualsICase(UTF8STRC("WHERE")) || sb.EqualsICase(UTF8STRC("GROUP")) || sb.EqualsICase(UTF8STRC("ORDER")) || sb.EqualsICase(UTF8STRC("LIMIT")))
+			{
+				selCmd->AddColumn(val, nullptr);
+				break;
+			}
+			else if (sb.Equals(UTF8STRC(";")) || sb.Equals(UTF8STRC(")")))
+			{
+				selCmd->AddColumn(val, nullptr);
+				return selCmd;
+			}
+			else
+			{
+				if (sb.EqualsICase(UTF8STRC("AS")))
+				{
+					sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+				}
+				if (sb.GetLength() == 0)
+				{
+					printf("SQLCommand: Missing column alias\r\n");
+					cmd.Delete();
+					val.Delete();
+					return nullptr;
+				}
+				else if (IsPunctuation(sb.ToString()))
+				{
+					printf("SQLCommand: Expect column alias, now is %s\r\n", sb.ToPtr());
+					cmd.Delete();
+					val.Delete();
+					return nullptr;
+				}
+				else
+				{
+					selCmd->AddColumn(val, sb.ToCString());
+				}
+			}
+		}
+		printf("SQLCommand: Not support select command after select list: %s\r\n", sb.v.Ptr());
+		cmd.Delete();
+		return nullptr;
+	}
+	else if (sb.EqualsICase(UTF8STRC("INSERT")))
+	{
+		sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+		if (!sb.EqualsICase(UTF8STRC("INTO")))
+		{
+			printf("SQLCommand: Expected 'INTO' after INSERT, now is %s\r\n", sb.ToPtr());
+			return nullptr;
+		}
+		sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+		if (sb.GetLength() == 0)
+		{
+			printf("SQLCommand: Missing table name after INSERT\r\n");
+			return nullptr;
+		}
+		NN<DB::SQL::SQLObjectPath> objPath;
+		NN<DB::SQL::SQLObjectPath> childPath;
+		NEW_CLASSNN(objPath, DB::SQL::SQLObjectPath(sb.ToCString(), nullptr));
+		while (true)
+		{
+			sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (sb.Equals(UTF8STRC(".")))
+			{
+				sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+				if (sb.GetLength() == 0)
+				{
+					objPath.Delete();
+					return nullptr;
+				}
+				NEW_CLASSNN(childPath, SQLObjectPath(sb.ToCString(), objPath));
+				objPath = childPath;
+			}
+			else if (sb.Equals(UTF8STRC("(")))
+			{
+				break;
+			}
+			else
+			{
+				printf("SQLCommand: Unknown word after table name: %s\r\n", sb.ToPtr());
+				objPath.Delete();
+				return nullptr;
+			}
+		}
+
+		NN<SQLInsertCommand> insCmd;
+		NEW_CLASSNN(insCmd, DB::SQL::SQLInsertCommand(objPath));
+		cmd = insCmd;
+		while (true)
+		{
+			sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (sb.GetLength() == 0)
+			{
+				printf("SQLCommand: Missing table name\r\n");
+				cmd.Delete();
+				return nullptr;
+			}
+			insCmd->AddColumn(sb.ToCString());
+			sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (sb.Equals(UTF8STRC(",")))
+			{
+			}
+			else if (sb.Equals(UTF8STRC(")")))
+			{
+				break;
+			}
+			else
+			{
+				printf("SQLCommand: Unknown word after column name: %s\r\n", sb.ToPtr());
+				cmd.Delete();
+				return nullptr;
+			}
+		}
+		sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+		if (!sb.EqualsICase(UTF8STRC("VALUES")))
+		{
+			printf("SQLCommand: Expected 'VALUES' after column list, now is %s\r\n", sb.ToPtr());
+			cmd.Delete();
+			return nullptr;
+		}
+		Data::ArrayListNN<SQLValue> row;
+		while (true)
+		{
+			sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (!sb.Equals(UTF8STRC("(")))
+			{
+				printf("SQLCommand: Expected '(' for value list, now is %s\r\n", sb.ToPtr());
+				cmd.Delete();
+				return nullptr;
+			}
+			while (true)
+			{
+				NN<SQLValue> val;
+				if (!SQLUtil::ParseValueAndNext(sql, sb, sqlType).SetTo(val))
+				{
+					printf("SQLCommand: Value list is not supported\r\n");
+					cmd.Delete();
+					return nullptr;
+				}
+				row.Add(val);
+				sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+				if (sb.Equals(UTF8STRC(",")))
+				{
+				}
+				else if (sb.Equals(UTF8STRC(")")))
+				{
+					break;
+				}
+				else
+				{
+					printf("SQLCommand: Unknown word after value: %s\r\n", sb.ToPtr());
+					cmd.Delete();
+					row.DeleteAll();
+					return nullptr;
+				}
+			}
+			if (row.GetCount() != insCmd->GetColumnCount())
+			{
+				printf("SQLCommand: Value count %d not match column count %d\r\n", (UInt32)row.GetCount(), (UInt32)insCmd->GetColumnCount());
+				cmd.Delete();
+				row.DeleteAll();
+				return nullptr;
+			}
+			insCmd->AddRow(row);
+			row.Clear();
+			sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (sb.Equals(UTF8STRC(",")))
+			{
+			}
+			else if (sb.Equals(UTF8STRC(";")))
+			{
+				return insCmd;
+			}
+			else
+			{
+				printf("SQLCommand: Unknown word after value list: %s\r\n", sb.ToPtr());
+				cmd.Delete();
+				return nullptr;
+			}
+		}
 	}
 	else
 	{

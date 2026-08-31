@@ -8,6 +8,8 @@ DB::SQL::SQLFunctionValue::SQLFunctionValue(NN<SQLObjectPath> objPath)
 
 DB::SQL::SQLFunctionValue::~SQLFunctionValue()
 {
+	this->objectPath.Delete();
+	this->paramList.DeleteAll();
 }
 
 DB::SQL::SQLValue::ValueType DB::SQL::SQLFunctionValue::GetValueType() const

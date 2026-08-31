@@ -15,7 +15,8 @@ namespace DB
 			Comment,
 			MetaCommand,
 			SetConfig,
-			Select
+			Select,
+			Insert
 		};
 		class SQLCommand
 		{

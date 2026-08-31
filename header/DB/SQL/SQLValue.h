@@ -14,8 +14,10 @@ namespace DB
 				I32,
 				I64,
 				F64,
+				Bool,
 				Function,
-				ObjectPath
+				ObjectPath,
+				Null
 			};
 		public:
 			virtual ~SQLValue() {};

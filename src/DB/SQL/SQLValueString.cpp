@@ -8,6 +8,7 @@ DB::SQL::SQLValueString::SQLValueString(Text::CStringNN value)
 
 DB::SQL::SQLValueString::~SQLValueString()
 {
+	this->value->Release();
 }
 
 DB::SQL::SQLValue::ValueType DB::SQL::SQLValueString::GetValueType() const

@@ -11,13 +11,16 @@ namespace DB
 		{
 		private:
 			Data::ArrayListNN<SQLCommand> sqlList;
+			SQLType sqlType;
 		public:
 			SQLFile(NN<Text::String> sourceName);
 			SQLFile(const Text::CStringNN &sourceName);
 			virtual ~SQLFile();
 			
 			virtual IO::ParserType GetParserType() const;
+			void SetSQLType(SQLType sqlType);
 			void AddSQL(NN<SQLCommand> sql);
+			SQLType GetSQLType() const;
 		};
 	}
 }
