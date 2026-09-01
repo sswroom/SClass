@@ -5,9 +5,11 @@
 #include "DB/DBReader.h"
 #include "DB/ReadingDBTool.h"
 #include "DB/TableDef.h"
+#include "Map/ESRI/FileGDBUtil.h"
 #include "Math/CoordinateSystemConverter.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/MSGeography.h"
+#include "Math/WKBReader.h"
 #include "Math/WKTReader.h"
 #include "Math/WKTWriter.h"
 
@@ -149,8 +151,7 @@ void __stdcall DB::DBChangeChecker::AppendCol(NN<DB::SQLBuilder> sql, NN<DB::Col
 		else
 		{
 			Optional<Math::Geometry::Vector2D> vec2;
-			Math::WKTReader reader((srid == 0)?col->GetGeometrySRID():srid);
-			vec2 = reader.ParseWKT(nns->v);
+			vec2 = String2Vector(nns, (srid == 0)?col->GetGeometrySRID():srid);
 			sql->AppendVector(vec2);
 			vec2.Delete();
 		}
@@ -169,6 +170,39 @@ void __stdcall DB::DBChangeChecker::AppendCol(NN<DB::SQLBuilder> sql, NN<DB::Col
 	default:
 		break;
 	}
+}
+
+Optional<Math::Geometry::Vector2D> DB::DBChangeChecker::String2Vector(NN<Text::String> str, UInt32 srid)
+{
+	Math::WKTReader reader(srid);
+	NN<Math::Geometry::Vector2D> vec;
+	if (reader.ParseWKT(str->v).SetTo(vec))
+	{
+		return vec;
+	}
+	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, str->leng >> 1);
+	UIntOS buffLen;
+	if (str->StartsWith(CSTR("0x")))
+	{
+		buffLen = Text::StrHex2Bytes(&str->v[2], buff);
+	}
+	else
+	{
+		buffLen = str->Hex2Bytes(buff);
+	}
+	if (Map::ESRI::FileGDBUtil::ParseSDERecord(Data::ByteArrayR(buff, buffLen)).SetTo(vec))
+	{
+		MemFreeArr(buff);
+		return vec;
+	}
+	Math::WKBReader wkb(srid);
+	if (wkb.ParseWKB(buff, buffLen, 0).SetTo(vec))
+	{
+		MemFreeArr(buff);
+		return vec;
+	}
+	MemFreeArr(buff);
+	return nullptr;
 }
 
 DB::DBChangeChecker::DBChangeChecker(NN<DB::ReadingDB> srcDB, Text::CString srcSchema, Text::CStringNN srcTable)
@@ -839,8 +873,7 @@ Bool DB::DBChangeChecker::CheckChange()
 									{
 										vec1->SetSRID(col->GetGeometrySRID());
 										NN<Math::Geometry::Vector2D> vec2;
-										Math::WKTReader reader(vec1->GetSRID());
-										if (!reader.ParseWKT(rowDataStr->v).SetTo(vec2))
+										if (!String2Vector(rowDataStr, vec1->GetSRID()).SetTo(vec2))
 										{
 											diff = true;
 										}
@@ -1628,8 +1661,7 @@ Bool DB::DBChangeChecker::GenerateSQL(DB::SQLType sqlType, Bool axisAware, SQLHa
 									case DB::DBUtil::CT_Vector:
 										{
 											NN<Math::Geometry::Vector2D> vec2;;
-											Math::WKTReader reader(dbSrid);
-											if (!reader.ParseWKT(s2->v).SetTo(vec2))
+											if (!String2Vector(s2, dbSrid).SetTo(vec2))
 											{
 											}
 											else
@@ -1857,8 +1889,7 @@ Bool DB::DBChangeChecker::GenerateSQL(DB::SQLType sqlType, Bool axisAware, SQLHa
 									if (r->GetVector(i).SetTo(vec1))
 									{
 										vec1->SetSRID(dbSrid);
-										Math::WKTReader reader(vec1->GetSRID());
-										if (!reader.ParseWKT(s2->v).SetTo(vec2))
+										if (!String2Vector(s2, vec1->GetSRID()).SetTo(vec2))
 										{
 											printf("Error in parsing WKT: %s\r\n", s2->v.Ptr());
 										}

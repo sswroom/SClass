@@ -83,6 +83,7 @@ DB::SQL::SQLFileDB::SQLFileDB(NN<SQLFile> sqlFile) : DB::ReadingDB(sqlFile->GetS
 DB::SQL::SQLFileDB::~SQLFileDB()
 {
 	this->sqlFile.Delete();
+	this->schemaMap.FreeAll(FreeSchemaInfo);
 }
 		
 UIntOS DB::SQL::SQLFileDB::QuerySchemaNames(NN<Data::ArrayListStringNN> names)
@@ -117,14 +118,13 @@ UIntOS DB::SQL::SQLFileDB::QueryTableNames(Text::CString schemaName, NN<Data::Ar
 
 Optional<DB::DBReader> DB::SQL::SQLFileDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> colNames, UIntOS dataOfst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
-	(void)ordering;
 	NN<TableInfo> tableInfo;
 	if (!this->GetTableInfo(schemaName, tableName).SetTo(tableInfo))
 	{
 		return nullptr;
 	}
 	NN<SQLFileDBReader> r;
-	NEW_CLASSNN(r, SQLFileDBReader(tableInfo, colNames, dataOfst, maxCnt, condition, this->tzQhr));
+	NEW_CLASSNN(r, SQLFileDBReader(tableInfo, colNames, dataOfst, maxCnt, condition, ordering, this->tzQhr));
 	return r;
 }
 

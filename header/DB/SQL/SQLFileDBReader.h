@@ -27,7 +27,7 @@ namespace DB
 			Int32 GetSourceColIndex(NN<SQLInsertCommand> insertCmd, Text::CStringNN colName) const;
 			Optional<SQLValue> GetSQLValue(UIntOS colIndex) const;
 		public:
-			SQLFileDBReader(NN<SQLFileDB::TableInfo> tableInfo, Optional<Data::ArrayListStringNN> colNames, UIntOS dataOfst, UIntOS maxCnt, Optional<Data::QueryConditions> condition, Int8 tzQhr);
+			SQLFileDBReader(NN<SQLFileDB::TableInfo> tableInfo, Optional<Data::ArrayListStringNN> colNames, UIntOS dataOfst, UIntOS maxCnt, Optional<Data::QueryConditions> condition, Text::CString ordering, Int8 tzQhr);
 			virtual ~SQLFileDBReader();
 
 			virtual Bool ReadNext();

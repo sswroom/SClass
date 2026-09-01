@@ -22,6 +22,7 @@ namespace DB
 		{
 		private:
 			static Bool IsPunctuation(UnsafeArray<const UTF8Char> s);
+			static void ParseColumnName(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType);
 		public:
 			virtual ~SQLCommand() {};
 

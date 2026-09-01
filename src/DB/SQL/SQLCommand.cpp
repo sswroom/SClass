@@ -19,6 +19,16 @@ Bool DB::SQL::SQLCommand::IsPunctuation(UnsafeArray<const UTF8Char> s)
 	return Text::CharUtil::IsPunctuation(s[0]) && s[1] == 0;
 }
 
+void DB::SQL::SQLCommand::ParseColumnName(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType)
+{
+	UTF8Char c = sb->v[0];
+	if (c == '\"' && sqlType == DB::SQLType::PostgreSQL && sb->EndsWith('\"') && sb->leng > 1)
+	{
+		sb->RemoveChars(1);
+		sb->SetSubstr(1);
+	}
+}
+
 Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8Char> sql, DB::SQLType sqlType)
 {
 #if defined(VERBOSE)
@@ -623,6 +633,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 				cmd.Delete();
 				return nullptr;
 			}
+			ParseColumnName(sb, sqlType);
 			insCmd->AddColumn(sb.ToCString());
 			sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 			if (sb.Equals(UTF8STRC(",")))

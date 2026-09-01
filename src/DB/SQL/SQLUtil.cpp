@@ -17,6 +17,7 @@ UnsafeArray<const UTF8Char> DB::SQL::SQLUtil::ParseNextWord(UnsafeArray<const UT
 	UTF8Char endChar = 0;
 	UTF8Char escChar = 0;
 	UTF8Char c;
+	Bool isNumber = false;
 	while (true)
 	{
 		c = *sql++;
@@ -133,11 +134,25 @@ UnsafeArray<const UTF8Char> DB::SQL::SQLUtil::ParseNextWord(UnsafeArray<const UT
 				return sql;
 			}
 		}
+		else if (c == '.' && !isNumber)
+		{
+			if (strStart.SetTo(nns))
+			{
+				sb->AppendC(nns, (UIntOS)(sql - nns - 1));
+				return sql - 1;
+			}
+			else
+			{
+				sb->AppendUTF8Char(c);
+				return sql;
+			}
+		}
 		else
 		{
 			if (strStart.IsNull())
 			{
 				strStart = sql - 1;
+				isNumber = (c >= '0' && c <= '9');
 				if (c == '\'')
 				{
 					endChar = '\'';

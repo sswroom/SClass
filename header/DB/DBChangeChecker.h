@@ -48,6 +48,7 @@ namespace DB
 		Optional<Text::String> GetNewText(UIntOS colIndex) const;
 		NN<Text::String> GetNewTextNN(UIntOS colIndex) const;
 		static void __stdcall AppendCol(NN<DB::SQLBuilder> sql, NN<DB::ColDef> col, Optional<Text::String> s, Int8 tzQhr, UInt32 srid);
+		static Optional<Math::Geometry::Vector2D> String2Vector(NN<Text::String> str, UInt32 srid);
 	public:
 		DBChangeChecker(NN<DB::ReadingDB> srcDB, Text::CString srcSchema, Text::CStringNN srcTable);
 		~DBChangeChecker();

@@ -6,11 +6,13 @@
 #include "DB/SQL/SQLValueI32.h"
 #include "DB/SQL/SQLValueI64.h"
 #include "DB/SQL/SQLValueString.h"
+#include "Map/ESRI/FileGDBUtil.h"
+#include "Math/WKBReader.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-DB::SQL::SQLFileDBReader::SQLFileDBReader(NN<SQLFileDB::TableInfo> tableInfo, Optional<Data::ArrayListStringNN> colNames, UIntOS dataOfst, UIntOS maxCnt, Optional<Data::QueryConditions> condition, Int8 tzQhr) : colIndexMap(16)
+DB::SQL::SQLFileDBReader::SQLFileDBReader(NN<SQLFileDB::TableInfo> tableInfo, Optional<Data::ArrayListStringNN> colNames, UIntOS dataOfst, UIntOS maxCnt, Optional<Data::QueryConditions> condition, Text::CString ordering, Int8 tzQhr) : colIndexMap(16)
 {
 	this->tableInfo = tableInfo;
 	this->currRow = nullptr;
@@ -395,21 +397,83 @@ Bool DB::SQL::SQLFileDBReader::GetBool(UIntOS colIndex)
 
 UIntOS DB::SQL::SQLFileDBReader::GetBinarySize(UIntOS colIndex)
 {
-	(void)colIndex;
-	return 0;
+	NN<SQLValue> sqlValue;
+	if (!this->GetSQLValue(colIndex).SetTo(sqlValue))
+		return 0;
+	switch (sqlValue->GetValueType())
+	{
+	case SQLValue::ValueType::String:
+		return NN<SQLValueString>::ConvertFrom(sqlValue)->GetValue()->leng >> 1;
+	case SQLValue::ValueType::Bool:
+	case SQLValue::ValueType::I32:
+	case SQLValue::ValueType::I64:
+	case SQLValue::ValueType::F64:
+	case SQLValue::ValueType::Function:
+	case SQLValue::ValueType::ObjectPath:
+	case SQLValue::ValueType::Null:
+	default:
+		return 0;
+	}
 }
 
 UIntOS DB::SQL::SQLFileDBReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 {
-	(void)colIndex;
-	(void)buff;
-	return 0;
+	NN<SQLValue> sqlValue;
+	if (!this->GetSQLValue(colIndex).SetTo(sqlValue))
+		return 0;
+	switch (sqlValue->GetValueType())
+	{
+	case SQLValue::ValueType::String:
+		return NN<SQLValueString>::ConvertFrom(sqlValue)->GetValue()->Hex2Bytes(buff);
+	case SQLValue::ValueType::Bool:
+	case SQLValue::ValueType::I32:
+	case SQLValue::ValueType::I64:
+	case SQLValue::ValueType::F64:
+	case SQLValue::ValueType::Function:
+	case SQLValue::ValueType::ObjectPath:
+	case SQLValue::ValueType::Null:
+	default:
+		return 0;
+	}
 }
 
 Optional<Math::Geometry::Vector2D> DB::SQL::SQLFileDBReader::GetVector(UIntOS colIndex)
 {
-	(void)colIndex;
-	return nullptr;
+	NN<SQLValue> sqlValue;
+	if (!this->GetSQLValue(colIndex).SetTo(sqlValue))
+		return nullptr;
+	switch (sqlValue->GetValueType())
+	{
+	case SQLValue::ValueType::String:
+	{
+		NN<Text::String> str = NN<SQLValueString>::ConvertFrom(sqlValue)->GetValue();
+		UnsafeArray<UInt8> buff = MemAllocArr(UInt8, str->leng >> 1);
+		UIntOS buffLen = str->Hex2Bytes(buff);
+		NN<Math::Geometry::Vector2D> vec;
+		if (Map::ESRI::FileGDBUtil::ParseSDERecord(Data::ByteArrayR(buff, buffLen)).SetTo(vec))
+		{
+			MemFreeArr(buff);
+			return vec;
+		}
+		Math::WKBReader reader(0);
+		if (reader.ParseWKB(buff, buffLen, 0).SetTo(vec))
+		{
+			MemFreeArr(buff);
+			return vec;
+		}
+		MemFreeArr(buff);
+		return nullptr;
+	}
+	case SQLValue::ValueType::Bool:
+	case SQLValue::ValueType::I32:
+	case SQLValue::ValueType::I64:
+	case SQLValue::ValueType::F64:
+	case SQLValue::ValueType::Function:
+	case SQLValue::ValueType::ObjectPath:
+	case SQLValue::ValueType::Null:
+	default:
+		return nullptr;
+	}
 }
 
 Bool DB::SQL::SQLFileDBReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
