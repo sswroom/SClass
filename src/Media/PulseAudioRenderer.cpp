@@ -26,6 +26,8 @@ struct Media::PulseAudioRenderer::ClassData
 	pa_stream *stream;
 };
 
+void PulseAudioRenderer_WriteFunc(pa_stream *s, size_t length, void *userdata);
+
 static Bool PulseAudioRenderer_WaitContextReady(pa_mainloop *mainloop, pa_context *context)
 {
 	while (true)
@@ -44,6 +46,36 @@ static Bool PulseAudioRenderer_WaitContextReady(pa_mainloop *mainloop, pa_contex
 			return false;
 		}
 	}
+}
+
+static Bool PulseAudioRenderer_WaitStreamReady(pa_mainloop *mainloop, pa_stream *stream)
+{
+	while (true)
+	{
+		pa_stream_state_t st = pa_stream_get_state(stream);
+		if (st == PA_STREAM_READY)
+		{
+			return true;
+		}
+		if (!PA_STREAM_IS_GOOD(st))
+		{
+			return false;
+		}
+		if (pa_mainloop_iterate(mainloop, 1, 0) < 0)
+		{
+			return false;
+		}
+	}
+}
+
+static pa_stream *PulseAudioRenderer_CreateStream(pa_context *context, pa_sample_spec *sampleSpec, void *userObj)
+{
+	pa_stream *stream = pa_stream_new(context, "Stream", sampleSpec, 0);
+	if (stream)
+	{
+		pa_stream_set_write_callback(stream, PulseAudioRenderer_WriteFunc, userObj);
+	}
+	return stream;
 }
 
 void PulseAudioRenderer_WriteFunc(pa_stream *s, size_t length, void *userdata) {
@@ -270,7 +302,6 @@ Bool Media::PulseAudioRenderer::IsError()
 
 Bool Media::PulseAudioRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 {
-	printf("PulseAudioRenderer: BindAudio called\r\n");
 	Media::AudioFormat fmt;
 	if (this->thread.IsRunning())
 	{
@@ -363,12 +394,11 @@ Bool Media::PulseAudioRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 	{
 		return false;
 	}
-	this->clsData->stream = pa_stream_new(this->clsData->context, "Stream", &this->clsData->sampleSpec, 0);
+	this->clsData->stream = PulseAudioRenderer_CreateStream(this->clsData->context, &this->clsData->sampleSpec, this);
 	if (this->clsData->stream == 0)
 	{
 		return false;
 	}
-	pa_stream_set_write_callback(this->clsData->stream, PulseAudioRenderer_WriteFunc, this);
 	this->audsrc = audsrc;
 	this->resampler = nullptr;
 
@@ -438,22 +468,35 @@ void Media::PulseAudioRenderer::Start()
 	const Char *sinkName = (const Char*)OPTSTR_CSTR(this->devName).v.Ptr();
 	if (pa_stream_connect_playback(this->clsData->stream, sinkName, &attr, streamFlags, 0, 0) == 0)
 	{
-		this->thread.Start();
-	}
-	else
-	{
-		if (sinkName != 0)
+		if (PulseAudioRenderer_WaitStreamReady(this->clsData->mainloop, this->clsData->stream))
 		{
-			printf("PulseAudioRenderer: Playback failed on sink %s: %s, retrying default sink\r\n", sinkName, pa_strerror(pa_context_errno(this->clsData->context)));
-			if (pa_stream_connect_playback(this->clsData->stream, 0, &attr, streamFlags, 0, 0) == 0)
+			this->thread.Start();
+			return;
+		}
+		printf("PulseAudioRenderer: Stream did not become ready on sink %s\r\n", sinkName ? sinkName : "(default)");
+	}
+
+	if (sinkName != 0)
+	{
+		printf("PulseAudioRenderer: Playback failed on sink %s: %s, retrying default sink\r\n", sinkName, pa_strerror(pa_context_errno(this->clsData->context)));
+		if (this->clsData->stream)
+		{
+			pa_stream_disconnect(this->clsData->stream);
+			pa_stream_unref(this->clsData->stream);
+			this->clsData->stream = 0;
+		}
+		this->clsData->stream = PulseAudioRenderer_CreateStream(this->clsData->context, &this->clsData->sampleSpec, this);
+		if (this->clsData->stream && pa_stream_connect_playback(this->clsData->stream, 0, &attr, streamFlags, 0, 0) == 0)
+		{
+			if (PulseAudioRenderer_WaitStreamReady(this->clsData->mainloop, this->clsData->stream))
 			{
 				printf("PulseAudioRenderer: Playback started on default sink\r\n");
 				this->thread.Start();
 				return;
 			}
 		}
-		printf("PulseAudioRenderer: Playback failed: %s\r\n", pa_strerror(pa_context_errno(this->clsData->context)));
 	}
+	printf("PulseAudioRenderer: Playback failed: %s\r\n", pa_strerror(pa_context_errno(this->clsData->context)));
 }
 
 void Media::PulseAudioRenderer::Stop()
