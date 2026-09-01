@@ -3,6 +3,7 @@
 #include "Math/Math_C.h"
 #include "Media/JPEGFile.h"
 #include "Media/PhotoInfo.h"
+#include "Parser/FileParser/AVIFParser.h"
 #include "Parser/FileParser/HEIFParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyStringFloat.h"
@@ -79,7 +80,7 @@ Media::PhotoInfo::PhotoInfo(NN<IO::StreamData> fd)
 	this->lens = nullptr;
 	this->succ = false;
 
-	if (Media::JPEGFile::ParseJPEGHeaders(fd, exif, xmf, icc, width, height) || Parser::FileParser::HEIFParser::ParseHeaders(fd, exif, xmf, icc, width, height))
+	if (Media::JPEGFile::ParseJPEGHeaders(fd, exif, xmf, icc, width, height) || Parser::FileParser::AVIFParser::ParseHeaders(fd, exif, xmf, icc, width, height) || Parser::FileParser::HEIFParser::ParseHeaders(fd, exif, xmf, icc, width, height))
 	{	
 		Text::CStringNN ctxt;
 		Data::DateTime dt;

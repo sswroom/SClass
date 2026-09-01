@@ -1821,6 +1821,9 @@ AOSParser.o: ../../src/Parser/FileParser/AOSParser.cpp
 ASN1Parser.o: ../../src/Parser/FileParser/ASN1Parser.cpp
 AUIParser.o: ../../src/Parser/FileParser/AUIParser.cpp
 AVIParser.o: ../../src/Parser/FileParser/AVIParser.cpp
+AVIFParser.o: ../../src/Parser/FileParser/AVIFParser.cpp
+!-lavif
+AVIFParser_Null.o: ../../src/Parser/FileParser/AVIFParser_Null.cpp
 B3DMParser.o: ../../src/Parser/FileParser/B3DMParser.cpp
 BMPParser.o: ../../src/Parser/FileParser/BMPParser.cpp
 BSAParser.o: ../../src/Parser/FileParser/BSAParser.cpp

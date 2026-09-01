@@ -33,7 +33,6 @@ void Parser::FileParser::HEIFParser::PrepareSelector(NN<IO::FileSelector> select
 	{
 		selector->AddFilter(CSTR("*.heic"), CSTR("HEIC"));
 		selector->AddFilter(CSTR("*.heif"), CSTR("HEIF"));
-		selector->AddFilter(CSTR("*.avif"), CSTR("AVIF"));
 	}
 }
 

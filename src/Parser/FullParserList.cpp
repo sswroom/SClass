@@ -10,6 +10,7 @@
 #include "Parser/FileParser/ASN1Parser.h"
 #include "Parser/FileParser/AUIParser.h"
 #include "Parser/FileParser/AVIParser.h"
+#include "Parser/FileParser/AVIFParser.h"
 #include "Parser/FileParser/B3DMParser.h"
 #include "Parser/FileParser/BMPParser.h"
 #include "Parser/FileParser/BSAParser.h"
@@ -263,6 +264,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASSNN(parser, Parser::FileParser::JP2Parser());
 	this->AddFileParser(parser);
 	NEW_CLASSNN(parser, Parser::FileParser::WebPParser());
+	this->AddFileParser(parser);
+	NEW_CLASSNN(parser, Parser::FileParser::AVIFParser());
 	this->AddFileParser(parser);
 	NEW_CLASSNN(parser, Parser::FileParser::HEIFParser());
 	this->AddFileParser(parser);

@@ -122,6 +122,9 @@ Net/WLANLinuxMTKInterface.h:
 
 Parser/FileParser/HEIFParser.h:
 @HEIFParser.o
+Parser/FileParser/AVIFParser.h:
+@?(NO_AVIF == 0)AVIFParser.o
+@?(NO_AVIF > 0)AVIFParser_Null.o
 Parser/FileParser/JP2Parser.h:
 @JP2Parser.o
 Parser/FileParser/JPGParser.h:
