@@ -117,13 +117,13 @@ void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 		err = snd_pcm_reset((snd_pcm_t*)me->hand);
 		if (err < 0)
 		{
-			printf("Error: snd_pcm_reset, %d, %s\r\n", err, snd_strerror(err));
+			printf("ALSARenderer: snd_pcm_reset, %d, %s\r\n", err, snd_strerror(err));
 		}
 		snd_async_handler_t *ahandler;
 		err = snd_async_add_pcm_handler(&ahandler, (snd_pcm_t*)me->hand, ALSARenderer_Event, me.Ptr());
 		if (err < 0)
 		{
-			printf("Error: snd_async_add_pcm_handler, %d, %s\r\n", err, snd_strerror(err));
+			printf("ALSARenderer: snd_async_add_pcm_handler, %d, %s\r\n", err, snd_strerror(err));
 		}
 		lastT = thisT = GetCurrTime(me->hand);
 		refStart = thisT - audStartTime;
@@ -151,7 +151,7 @@ void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 		err = snd_pcm_prepare((snd_pcm_t*)me->hand);
 		if (err < 0)
 		{
-			printf("Error: snd_pcm_prepare, %d %s\r\n", err, snd_strerror(err));
+			printf("ALSARenderer: snd_pcm_prepare, %d %s\r\n", err, snd_strerror(err));
 		}
 		i = 0;
 		while (i < 2)
@@ -203,14 +203,14 @@ void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 				}
 				if (i < 0)
 				{
-					printf("Error: snd_pcm_avail_update, %d %s\r\n", i, snd_strerror(i));
+					printf("ALSARenderer: snd_pcm_avail_update, %d %s\r\n", i, snd_strerror(i));
 					snd_pcm_state_t state = ALSARenderer_GetState(me->hand);
 					if (state == SND_PCM_STATE_XRUN)
 					{
 						err = snd_pcm_prepare((snd_pcm_t*)me->hand);
 						if (err < 0)
 						{
-							printf("Error: snd_pcm_prepare, %d %s\r\n", err, snd_strerror(err));
+							printf("ALSARenderer: snd_pcm_prepare, %d %s\r\n", err, snd_strerror(err));
 						}
 						
 					}
@@ -358,7 +358,7 @@ Data::Duration Media::ALSARenderer::GetCurrTime(void *hand)
 	err = snd_pcm_status((snd_pcm_t*)hand, status);
 	if (err < 0)
 	{
-		printf("Error: snd_pcm_status, %d\r\n", err);
+		printf("ALSARenderer: snd_pcm_status, %d\r\n", err);
 	}
 	else
 	{
@@ -416,20 +416,20 @@ Bool Media::ALSARenderer::SetHWParams(NN<Media::AudioSource> audsrc, void *h)
 	err = snd_pcm_hw_params_malloc(&params);
 	if (err < 0)
 	{
-		printf("Error: snd_pcm_hw_params_malloc, err = %d\r\n", err);
+		printf("ALSARenderer: snd_pcm_hw_params_malloc, err = %d\r\n", err);
 		return false;
 	}
 	err = snd_pcm_hw_params_any(hand, params);
 	if (err < 0)
 	{
-		printf("Error: snd_pcm_hw_params_any, err = %d\r\n", err);
+		printf("ALSARenderer: snd_pcm_hw_params_any, err = %d\r\n", err);
 		snd_pcm_hw_params_free(params);
 		return false;
 	}
 	err = snd_pcm_hw_params_set_access(hand, params, SND_PCM_ACCESS_RW_INTERLEAVED);
 	if (err < 0)
 	{
-		printf("Error: snd_pcm_hw_params_set_access, err = %d\r\n", err);
+		printf("ALSARenderer: snd_pcm_hw_params_set_access, err = %d\r\n", err);
 		snd_pcm_hw_params_free(params);
 		return false;
 	}
@@ -437,13 +437,13 @@ Bool Media::ALSARenderer::SetHWParams(NN<Media::AudioSource> audsrc, void *h)
 	err = snd_pcm_hw_params_set_rate_near(hand, params, &rrate, 0);
 	if (err < 0)
 	{
-		printf("Error: snd_pcm_hw_params_set_rate_near, err = %d\r\n", err);
+		printf("ALSARenderer: snd_pcm_hw_params_set_rate_near, err = %d\r\n", err);
 		snd_pcm_hw_params_free(params);
 		return false;
 	}
 	if (rrate != fmt.frequency)
 	{
-		printf("ALSA: Sample rate conversion required: %d -> %d\r\n", fmt.frequency, rrate);
+		printf("ALSARenderer: Sample rate conversion required: %d -> %d\r\n", fmt.frequency, rrate);
 		fmt.frequency = rrate;
 		this->resampleFreq = rrate;
 	}
@@ -468,11 +468,11 @@ Bool Media::ALSARenderer::SetHWParams(NN<Media::AudioSource> audsrc, void *h)
 		}
 		else
 		{
-			printf("Error: snd_pcm_hw_params_set_format(%d), err = %d (%s)\r\n", sndFmt, err, snd_strerror(err));
+			printf("ALSARenderer: snd_pcm_hw_params_set_format(%d), err = %d (%s)\r\n", sndFmt, err, snd_strerror(err));
 			snd_pcm_hw_params_free(params);
 			return false;
 		}
-		printf("Data Convert required, bit count = %d > %d\r\n", fmt.bitpersample, this->dataBits);
+		printf("ALSARenderer: Data Convert required, bit count = %d > %d\r\n", fmt.bitpersample, this->dataBits);
 	}
 	err = snd_pcm_hw_params_set_channels(hand, params, fmt.nChannels);
 	if (err < 0)
@@ -482,20 +482,20 @@ Bool Media::ALSARenderer::SetHWParams(NN<Media::AudioSource> audsrc, void *h)
 			err = snd_pcm_hw_params_set_channels(hand, params, 2);
 			if (err < 0)
 			{
-				printf("Error: snd_pcm_hw_params_set_channels (%d), err = %d %s\r\n", fmt.nChannels, err, snd_strerror(err));
+				printf("ALSARenderer: snd_pcm_hw_params_set_channels (%d), err = %d %s\r\n", fmt.nChannels, err, snd_strerror(err));
 				snd_pcm_hw_params_free(params);
 				return false;
 			}
 			else
 			{
-				printf("Data Convert required, NChannel = %d > %d\r\n", fmt.nChannels, 2);
+				printf("ALSARenderer: Data Convert required, NChannel = %d > %d\r\n", fmt.nChannels, 2);
 				this->dataConv = true;
 				this->dataNChannel = 2;
 			}
 		}
 		else
 		{
-			printf("Error: snd_pcm_hw_params_set_channels (%d), err = %d %s\r\n", fmt.nChannels, err, snd_strerror(err));
+			printf("ALSARenderer: snd_pcm_hw_params_set_channels (%d), err = %d %s\r\n", fmt.nChannels, err, snd_strerror(err));
 			snd_pcm_hw_params_free(params);
 			return false;
 		}
@@ -506,20 +506,20 @@ Bool Media::ALSARenderer::SetHWParams(NN<Media::AudioSource> audsrc, void *h)
 		err = snd_pcm_hw_params_set_buffer_size_near(hand, params, &usize);
 		if (err < 0)
 		{
-			printf("Error: snd_pcm_hw_params_set_buffer_size_near, err = %d\r\n", err);
+			printf("ALSARenderer: snd_pcm_hw_params_set_buffer_size_near, err = %d\r\n", err);
 		}
 		usize = usize >> 1;
 		err = snd_pcm_hw_params_set_period_size_near(hand, params, &usize, 0);
 		if (err < 0)
 		{
-			printf("Error: snd_pcm_hw_params_set_period_size_near, err = %d\r\n", err);
+			printf("ALSARenderer: snd_pcm_hw_params_set_period_size_near, err = %d\r\n", err);
 		}
 	}
 
 	err = snd_pcm_hw_params(hand, params);
 	if (err < 0)
 	{
-		printf("Error: snd_pcm_hw_params, err = %d (%s)\r\n", err, snd_strerror(err));
+		printf("ALSARenderer: snd_pcm_hw_params, err = %d (%s)\r\n", err, snd_strerror(err));
 		snd_pcm_hw_params_free(params);
 		return false;
 	}
@@ -732,11 +732,11 @@ Bool Media::ALSARenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 	err = snd_pcm_open(&hand, cbuff, SND_PCM_STREAM_PLAYBACK, mode);
 	if (err < 0)
 	{
-		printf("Error: snd_pcm_open(%s), err = %d %s, try default\r\n", cbuff, err, snd_strerror(err));
+		printf("ALSARenderer: snd_pcm_open(%s), err = %d %s, try default\r\n", cbuff, err, snd_strerror(err));
 		err = snd_pcm_open(&hand, "default", SND_PCM_STREAM_PLAYBACK, mode);
 		if (err < 0)
 		{
-			printf("Error: snd_pcm_open(default), err = %d %s\r\n", err, snd_strerror(err));
+			printf("ALSARenderer: snd_pcm_open(default), err = %d %s\r\n", err, snd_strerror(err));
 			return false;
 		}
 	}
@@ -749,7 +749,7 @@ Bool Media::ALSARenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 	err = snd_pcm_sw_params_malloc(&swparams);
 	if (err < 0)
 	{
-		printf("Error: snd_pcm_sw_params_malloc, err = %d\r\n", err);
+		printf("ALSARenderer: snd_pcm_sw_params_malloc, err = %d\r\n", err);
 		snd_pcm_close(hand);
 		return false;
 	}
@@ -757,7 +757,7 @@ Bool Media::ALSARenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 	err = snd_pcm_sw_params_current(hand, swparams);
 	if (err < 0)
 	{
-		printf("Error: snd_pcm_sw_params_current, err = %d\r\n", err);
+		printf("ALSARenderer: snd_pcm_sw_params_current, err = %d\r\n", err);
 		snd_pcm_sw_params_free(swparams);
 		snd_pcm_close(hand);
 		return false;
@@ -765,7 +765,7 @@ Bool Media::ALSARenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 	err = snd_pcm_sw_params_set_avail_min(hand, swparams, (this->buffTime * fmt.frequency / 2000));
 	if (err < 0)
 	{
-		printf("Error: snd_pcm_sw_params_set_avail_min, err = %d\r\n", err);
+		printf("ALSARenderer: snd_pcm_sw_params_set_avail_min, err = %d\r\n", err);
 		snd_pcm_sw_params_free(swparams);
 		snd_pcm_close(hand);
 		return false;
@@ -773,7 +773,7 @@ Bool Media::ALSARenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 	err = snd_pcm_sw_params(hand, swparams);
 	if (err < 0)
 	{
-		printf("Error: snd_sw_params_current, err = %d\r\n", err);
+		printf("ALSARenderer: snd_sw_params_current, err = %d\r\n", err);
 		snd_pcm_sw_params_free(swparams);
 		snd_pcm_close(hand);
 		return false;

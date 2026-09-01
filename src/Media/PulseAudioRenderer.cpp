@@ -26,6 +26,26 @@ struct Media::PulseAudioRenderer::ClassData
 	pa_stream *stream;
 };
 
+static Bool PulseAudioRenderer_WaitContextReady(pa_mainloop *mainloop, pa_context *context)
+{
+	while (true)
+	{
+		pa_context_state_t st = pa_context_get_state(context);
+		if (st == PA_CONTEXT_READY)
+		{
+			return true;
+		}
+		if (!PA_CONTEXT_IS_GOOD(st))
+		{
+			return false;
+		}
+		if (pa_mainloop_iterate(mainloop, 1, 0) < 0)
+		{
+			return false;
+		}
+	}
+}
+
 void PulseAudioRenderer_WriteFunc(pa_stream *s, size_t length, void *userdata) {
 	Media::PulseAudioRenderer *me = (Media::PulseAudioRenderer*)userdata;
 
@@ -35,287 +55,62 @@ void PulseAudioRenderer_WriteFunc(pa_stream *s, size_t length, void *userdata) {
 void __stdcall Media::PulseAudioRenderer::PlayThread(NN<Sync::Thread> thread)
 {
 	NN<Media::PulseAudioRenderer> me = thread->GetUserObj().GetNN<Media::PulseAudioRenderer>();
-	int ret;
-	pa_mainloop_run(me->clsData->mainloop, &ret);
-/*	Media::AudioFormat af;
-	Int32 i;
-	UInt32 refStart;
-	UInt32 audStartTime;	
+	Media::AudioFormat af;
 	UIntOS readBuffLeng = BUFFLENG;
-	UIntOS outBuffLeng;
-	UIntOS outBitPerSample;
-	UIntOS outNChannels;
 	UIntOS minLeng;
-	UInt32 thisT;
-	UInt32 lastT;
+	Bool needNotify = false;
+	NN<Media::AudioSource> audsrc;
+	NN<Media::RefClock> clk;
 
+	if (!me->audsrc.SetTo(audsrc))
 	{
-		Sync::Event evt;
+		return;
+	}
 
-		me->threadInit = true;
-		me->audsrc->GetFormat(&af);
-		if (me->buffTime)
-		{
-			readBuffLeng = (me->buffTime * af.frequency / 1000) * af.align;
-		}
-		i = 4;
-		audStartTime = me->audsrc->GetCurrTime();
-		minLeng = me->audsrc->GetMinBlockSize();
-		if (minLeng > readBuffLeng)
-			readBuffLeng = minLeng;
+	Sync::Event evt;
+	audsrc->GetFormat(af);
+	if (me->buffTime)
+	{
+		readBuffLeng = (me->buffTime * af.frequency / 1000) * af.align;
+	}
+	minLeng = audsrc->GetMinBlockSize();
+	if (minLeng > readBuffLeng)
+		readBuffLeng = minLeng;
 
-		me->clk->Start(audStartTime);
-		me->playing = true;
-		me->audsrc->Start(&evt, readBuffLeng);
+	if (me->clk.SetTo(clk))
+	{
+		clk->Start(audsrc->GetCurrTime());
+	}
+	audsrc->Start(&evt, readBuffLeng);
 
-		if (me->dataConv)
+	while (!thread->IsStopping())
+	{
+		int ret;
+		if (pa_mainloop_iterate(me->clsData->mainloop, 1, &ret) < 0)
 		{
-			outBuffLeng = readBuffLeng * me->dataBits / af.bitpersample;
-			outBitPerSample = me->dataBits;
-			outNChannels = me->dataNChannel;
+			break;
 		}
-		else
+		if (me->clsData->stream)
 		{
-			outBuffLeng = readBuffLeng;
-			outBitPerSample = af.bitpersample;
-			outNChannels = af.nChannels;
-		}
-
-		int err;
-		err = snd_pcm_reset((snd_pcm_t*)me->hand);
-		if (err < 0)
-		{
-			printf("Error: snd_pcm_reset, %d, %s\r\n", err, snd_strerror(err));
-		}
-		snd_async_handler_t *ahandler;
-		err = snd_async_add_pcm_handler(&ahandler, (snd_pcm_t*)me->hand, ALSARenderer_Event, me);
-		if (err < 0)
-		{
-			printf("Error: snd_async_add_pcm_handler, %d, %s\r\n", err, snd_strerror(err));
-		}
-		lastT = thisT = GetCurrTime(me->hand);
-		refStart = thisT - audStartTime;
-
-		UIntOS buffSize[2];
-		UIntOS outSize[2];
-		UInt8 *outBuff[2];
-		IntOS nextBlock;
-		UIntOS readSize = 0;
-		UInt8 *readBuff = 0;
-		Bool isFirst = true;
-		if (me->dataConv)
-		{
-			readBuff = MemAlloc(UInt8, readBuffLeng);
-		}
-		nextBlock = 0;
-		i = 2;
-		while (i-- > 0)
-		{
-	//		dataExist[i] = false;
-			buffSize[i] = 0;
-			outSize[i] = 0;
-			outBuff[i] = MemAlloc(UInt8, outBuffLeng);
-		}
-		err = snd_pcm_prepare((snd_pcm_t*)me->hand);
-		if (err < 0)
-		{
-			printf("Error: snd_pcm_prepare, %d %s\r\n", err, snd_strerror(err));
-		}
-		i = 0;
-		while (i < 2)
-		{
-			if (me->dataConv)
+			pa_stream_state_t st = pa_stream_get_state(me->clsData->stream);
+			if (st == PA_STREAM_FAILED || st == PA_STREAM_TERMINATED)
 			{
-				readSize = me->audsrc->ReadBlockLPCM(Data::ByteArray(readBuff, readBuffLeng), &af);
-				if (af.bitpersample == me->dataBits && af.formatId == 1)
-				{
-					buffSize[i] = Media::LPCMConverter::ChannelReduce(me->dataBits, af.nChannels, readBuff, readSize, me->dataNChannel, outBuff[i]);
-				}
-				else
-				{
-					buffSize[i] = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, me->dataBits, outBuff[i]);
-					if (af.nChannels != me->dataNChannel)
-					{
-						buffSize[i] = Media::LPCMConverter::ChannelReduce(me->dataBits, af.nChannels, outBuff[i], buffSize[i], me->dataNChannel, outBuff[i]);
-					}
-				}
+				break;
 			}
-			else
-			{
-				buffSize[i] = me->audsrc->ReadBlockLPCM(Data::ByteArray(outBuff[i], outBuffLeng), &af);
-			}
-			outSize[i] = 0;
-	//		dataExist[i] = true;
-			i++;
-		}
-
-		if (me->nonBlock)
-		{
-			while (!me->stopPlay)
-			{
-				if (isFirst)
-				{
-					isFirst = false;
-					if (me->buffTime)
-					{
-						i = (Int32)(me->buffTime * af.frequency / 1000);
-					}
-					else
-					{
-						i = (Int32)(af.frequency >> 1);
-					}
-				}
-				else
-				{
-					i = (Int32)snd_pcm_avail_update((snd_pcm_t*)me->hand);
-				}
-				if (i < 0)
-				{
-					printf("Error: snd_pcm_avail_update, %d %s\r\n", i, snd_strerror(i));
-					snd_pcm_state_t state = ALSARenderer_GetState(me->hand);
-					if (state == SND_PCM_STATE_XRUN)
-					{
-						err = snd_pcm_prepare((snd_pcm_t*)me->hand);
-						if (err < 0)
-						{
-							printf("Error: snd_pcm_prepare, %d %s\r\n", err, snd_strerror(err));
-						}
-						
-					}
-				}
-				i = (Int32)(i * (IntOS)(outBitPerSample >> 3) * (IntOS)outNChannels);
-				while (i > 0)
-				{
-					if (buffSize[nextBlock] == 0)
-					{
-						me->stopPlay = true;
-						me->audsrc->Stop();
-						break;
-					}
-					if ((UIntOS)i >= buffSize[nextBlock] - outSize[nextBlock])
-					{
-						err = (int)snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / outNChannels);
-						if (err < 0)
-						{
-							printf("snd_pcm_writei(%d) return %d\r\n", (Int32)((buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / outNChannels), err);
-						}
-						i -= (Int32)(buffSize[nextBlock] - outSize[nextBlock]);
-
-						if (me->dataConv)
-						{
-							readSize = me->audsrc->ReadBlockLPCM(Data::ByteArray(readBuff, readBuffLeng), &af);
-							if (af.bitpersample == me->dataBits && af.formatId == 1)
-							{
-								buffSize[nextBlock] = Media::LPCMConverter::ChannelReduce(me->dataBits, af.nChannels, readBuff, readSize, me->dataNChannel, outBuff[nextBlock]);
-							}
-							else
-							{
-								buffSize[nextBlock] = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, me->dataBits, outBuff[nextBlock]);
-								if (af.nChannels != me->dataNChannel)
-								{
-									buffSize[nextBlock] = Media::LPCMConverter::ChannelReduce(me->dataBits, af.nChannels, outBuff[nextBlock], buffSize[nextBlock], me->dataNChannel, outBuff[nextBlock]);
-								}
-							}
-						}
-						else
-						{
-							buffSize[nextBlock] = me->audsrc->ReadBlockLPCM(Data::ByteArray(outBuff[nextBlock], outBuffLeng), &af);
-						}
-						outSize[nextBlock] = 0;
-		//				dataExist[nextBlock] = true;
-
-						nextBlock = (nextBlock + 1) & 1;
-					}
-					else
-					{
-						snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (UInt32)i / (outBitPerSample >> 3) / outNChannels);
-		//				printf("snd_pcm_writei(%d) return %d\r\n", (Int32)(i / (outBitPerSample >> 3) / outNChannels), (Int32)ret);
-						outSize[nextBlock] += (UInt32)i;
-						i = 0;
-						break;
-					}
-				}
-
-				thisT = GetCurrTime(me->hand);
-				if (thisT != 0)
-				{
-					if (lastT > thisT)
-					{
-			//			waveOutReset((HWAVEOUT)me->hwo);
-			//			waveOutRestart((HWAVEOUT)me->hwo);
-						lastT = thisT = GetCurrTime(me->hand);
-						refStart = thisT - me->audsrc->GetCurrTime();
-					}
-					else
-					{
-						me->clk->Start(thisT - refStart);
-						lastT = thisT;
-					}
-				}
-				else
-				{
-					lastT = thisT;
-				}
-				
-				me->playEvt->Wait(1000);
-			}
-		}
-		else
-		{
-			while (!me->stopPlay)
-			{
-				if (buffSize[nextBlock] == 0)
-				{
-					me->stopPlay = true;
-					me->audsrc->Stop();
-					break;
-				}
-				snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / outNChannels);
-	//			printf("snd_pcm_writei(%d) return %d\r\n", (Int32)((buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / outNChannels), (Int32)ret);
-				i -= (Int32)(buffSize[nextBlock] - outSize[nextBlock]);
-
-				if (me->dataConv)
-				{
-					readSize = me->audsrc->ReadBlockLPCM(Data::ByteArray(readBuff, readBuffLeng), &af);
-					if (af.bitpersample == me->dataBits && af.formatId == 1)
-					{
-						buffSize[nextBlock] = Media::LPCMConverter::ChannelReduce(me->dataBits, af.nChannels, readBuff, readSize, me->dataNChannel, outBuff[nextBlock]);
-					}
-					else
-					{
-						buffSize[nextBlock] = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, me->dataBits, outBuff[nextBlock]);
-						if (af.nChannels != me->dataNChannel)
-						{
-							buffSize[nextBlock] = Media::LPCMConverter::ChannelReduce(me->dataBits, af.nChannels, outBuff[nextBlock], buffSize[nextBlock], me->dataNChannel, outBuff[nextBlock]);
-						}
-					}
-				}
-				else
-				{
-					buffSize[nextBlock] = me->audsrc->ReadBlockLPCM(Data::ByteArray(outBuff[nextBlock], outBuffLeng), &af);
-				}
-				outSize[nextBlock] = 0;
-	//				dataExist[nextBlock] = true;
-
-				nextBlock = (nextBlock + 1) & 1;
-			}
-		}
-		snd_pcm_drop((snd_pcm_t*)me->hand);
-		snd_pcm_reset((snd_pcm_t*)me->hand);
-
-		i = 2;
-		while (i-- > 0)
-		{
-			MemFree(outBuff[i]);
-		}
-
-		if (readBuff)
-		{
-			MemFree(readBuff);
-			readBuff = 0;
 		}
 	}
-	me->playing = false;*/
+
+	audsrc->Stop();
+	if (audsrc->IsEnd())
+	{
+		needNotify = true;
+	}
+
+	if (needNotify && me->endHdlr)
+	{
+		me->endHdlr(me->endHdlrObj);
+	}
+
 }
 
 UInt32 Media::PulseAudioRenderer::GetCurrTime(void *stream)
@@ -443,7 +238,7 @@ Media::PulseAudioRenderer::PulseAudioRenderer(UnsafeArrayOpt<const UTF8Char> dev
 	this->audsrc = nullptr;
 	this->resampler = nullptr;
 	this->endHdlr = 0;
-	this->buffTime = 500;
+	this->buffTime = 100;
 	this->clsData = MemAllocNN(ClassData);
 	this->nonBlock = false;
 	this->dataConv = false;
@@ -475,6 +270,7 @@ Bool Media::PulseAudioRenderer::IsError()
 
 Bool Media::PulseAudioRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 {
+	printf("PulseAudioRenderer: BindAudio called\r\n");
 	Media::AudioFormat fmt;
 	if (this->thread.IsRunning())
 	{
@@ -494,6 +290,12 @@ Bool Media::PulseAudioRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 	NN<Media::AudioSource> nnaudsrc;
 	if (!audsrc.SetTo(nnaudsrc))
 		return false;
+
+	if (!PulseAudioRenderer_WaitContextReady(this->clsData->mainloop, this->clsData->context))
+	{
+		printf("PulseAudioRenderer: Context not ready in BindAudio: %s\r\n", pa_strerror(pa_context_errno(this->clsData->context)));
+		return false;
+	}
 
 	nnaudsrc->GetFormat(fmt);
 	if (fmt.formatId == 1)
@@ -567,6 +369,8 @@ Bool Media::PulseAudioRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 		return false;
 	}
 	pa_stream_set_write_callback(this->clsData->stream, PulseAudioRenderer_WriteFunc, this);
+	this->audsrc = audsrc;
+	this->resampler = nullptr;
 
 	this->resampleFreq = 0;
 	this->dataConv = false;
@@ -592,9 +396,63 @@ void Media::PulseAudioRenderer::Start()
 		return;
 	if (this->clsData->stream == 0)
 		return;
-	if (pa_stream_connect_playback(this->clsData->stream, (const Char*)OPTSTR_CSTR(this->devName).v.Ptr(), 0, PA_STREAM_NOFLAGS, 0, 0) == 0)
+	if (!PulseAudioRenderer_WaitContextReady(this->clsData->mainloop, this->clsData->context))
+	{
+		printf("PulseAudioRenderer: Context not ready in Start: %s\r\n", pa_strerror(pa_context_errno(this->clsData->context)));
+		return;
+	}
+
+	pa_buffer_attr attr;
+	MemClear(&attr, sizeof(attr));
+	UIntOS frameSizeOS = pa_frame_size(&this->clsData->sampleSpec);
+	UInt32 frameSize;
+	if (frameSizeOS > 0xffffffffU)
+	{
+		frameSize = 0xffffffffU;
+	}
+	else
+	{
+		frameSize = (UInt32)frameSizeOS;
+	}
+	if (frameSize == 0)
+	{
+		frameSize = 4;
+	}
+	UInt64 targetUS = ((this->buffTime ? this->buffTime : 100) * 1000ULL);
+	attr.maxlength = (UInt32)-1;
+	attr.tlength = (UInt32)pa_usec_to_bytes(targetUS, &this->clsData->sampleSpec);
+	if (attr.tlength < frameSize * 4)
+	{
+		attr.tlength = frameSize * 4;
+	}
+	attr.minreq = attr.tlength >> 2;
+	if (attr.minreq < frameSize)
+	{
+		attr.minreq = frameSize;
+	}
+	attr.prebuf = 0;
+	attr.fragsize = (UInt32)-1;
+
+	pa_stream_flags_t streamFlags = (pa_stream_flags_t)(PA_STREAM_ADJUST_LATENCY | PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE);
+
+	const Char *sinkName = (const Char*)OPTSTR_CSTR(this->devName).v.Ptr();
+	if (pa_stream_connect_playback(this->clsData->stream, sinkName, &attr, streamFlags, 0, 0) == 0)
 	{
 		this->thread.Start();
+	}
+	else
+	{
+		if (sinkName != 0)
+		{
+			printf("PulseAudioRenderer: Playback failed on sink %s: %s, retrying default sink\r\n", sinkName, pa_strerror(pa_context_errno(this->clsData->context)));
+			if (pa_stream_connect_playback(this->clsData->stream, 0, &attr, streamFlags, 0, 0) == 0)
+			{
+				printf("PulseAudioRenderer: Playback started on default sink\r\n");
+				this->thread.Start();
+				return;
+			}
+		}
+		printf("PulseAudioRenderer: Playback failed: %s\r\n", pa_strerror(pa_context_errno(this->clsData->context)));
 	}
 }
 
@@ -647,5 +505,75 @@ void Media::PulseAudioRenderer::SetBufferTime(UInt32 ms)
 
 void Media::PulseAudioRenderer::WriteStream(UIntOS length)
 {
-	//////////////////////////////////////
+	NN<Media::AudioSource> audsrc;
+	if (!this->audsrc.SetTo(audsrc) || this->clsData->stream == 0)
+	{
+		return;
+	}
+
+	Media::AudioFormat af;
+	audsrc->GetFormat(af);
+	UInt8 *outBuff = MemAlloc(UInt8, length);
+	UIntOS outSize = 0;
+
+	if (this->dataConv)
+	{
+		UIntOS readBuffLeng = length;
+		if (this->dataBits > 0 && this->dataNChannel > 0)
+		{
+			readBuffLeng = length * af.bitpersample * af.nChannels / this->dataBits / this->dataNChannel;
+			if (readBuffLeng == 0)
+			{
+				readBuffLeng = af.align;
+			}
+		}
+		if (readBuffLeng < af.align)
+		{
+			readBuffLeng = af.align;
+		}
+		else
+		{
+			readBuffLeng = readBuffLeng / af.align * af.align;
+		}
+
+		UInt8 *readBuff = MemAlloc(UInt8, readBuffLeng);
+		UIntOS readSize = audsrc->ReadBlockLPCM(Data::ByteArray(readBuff, readBuffLeng), af);
+		if (af.bitpersample == this->dataBits && af.formatId == 1)
+		{
+			outSize = Media::LPCMConverter::ChannelReduce(this->dataBits, af.nChannels, readBuff, readSize, this->dataNChannel, outBuff);
+		}
+		else
+		{
+			outSize = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, this->dataBits, outBuff);
+			if (af.nChannels != this->dataNChannel)
+			{
+				outSize = Media::LPCMConverter::ChannelReduce(this->dataBits, af.nChannels, outBuff, outSize, this->dataNChannel, outBuff);
+			}
+		}
+		MemFree(readBuff);
+	}
+	else
+	{
+		outSize = audsrc->ReadBlockLPCM(Data::ByteArray(outBuff, length), af);
+	}
+
+	if (outSize > length)
+	{
+		outSize = length;
+	}
+	if (outSize < length)
+	{
+		MemClear(&outBuff[outSize], length - outSize);
+	}
+
+	if (pa_stream_write(this->clsData->stream, outBuff, length, MemFree, 0, PA_SEEK_RELATIVE) != 0)
+	{
+		MemFree(outBuff);
+	}
+
+	if (outSize == 0)
+	{
+		audsrc->Stop();
+		this->thread.BeginStop();
+	}
 }
