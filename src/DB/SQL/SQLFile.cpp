@@ -35,3 +35,13 @@ DB::SQLType DB::SQL::SQLFile::GetSQLType() const
 {
 	return this->sqlType;
 }
+
+UIntOS DB::SQL::SQLFile::GetCount() const
+{
+	return this->sqlList.GetCount();
+}
+
+Optional<DB::SQL::SQLCommand> DB::SQL::SQLFile::GetSQL(UIntOS index) const
+{
+	return this->sqlList.GetItem(index);
+}

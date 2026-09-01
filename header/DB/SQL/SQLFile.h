@@ -21,6 +21,8 @@ namespace DB
 			void SetSQLType(SQLType sqlType);
 			void AddSQL(NN<SQLCommand> sql);
 			SQLType GetSQLType() const;
+			UIntOS GetCount() const;
+			Optional<SQLCommand> GetSQL(UIntOS index) const;
 		};
 	}
 }

@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "DB/SQL/SQLComment.h"
 #include "DB/SQL/SQLFile.h"
+#include "DB/SQL/SQLFileDB.h"
 #include "DB/SQL/SQLMetaCommand.h"
 #include "IO/StreamDataStream.h"
 #include "Parser/FileParser/SQLParser.h"
@@ -93,6 +94,12 @@ Optional<IO::ParsedObject> Parser::FileParser::SQLParser::ParseFileHdr(NN<IO::St
 				return nullptr;
 			}
 		}
+	}
+	if (targetType == IO::ParserType::Unknown || targetType == IO::ParserType::ReadingDB)
+	{
+		NN<DB::SQL::SQLFileDB> sqlFileDB;
+		NEW_CLASSNN(sqlFileDB, DB::SQL::SQLFileDB(sqlFile));
+		return sqlFileDB;
 	}
 	return sqlFile;
 }

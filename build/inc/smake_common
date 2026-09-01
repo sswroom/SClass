@@ -2125,6 +2125,10 @@ DB/SQL/SQLEngineReader.h:
 DB/SQL/SQLEngineTable.h:
 DB/SQL/SQLFile.h:
 @SQLFile.o
+DB/SQL/SQLFileDB.h:
+@SQLFileDB.o
+DB/SQL/SQLFileDBReader.h:
+@SQLFileDBReader.o
 DB/SQL/SQLFunctionValue.h:
 @SQLFunctionValue.o
 DB/SQL/SQLInsertCommand.h:

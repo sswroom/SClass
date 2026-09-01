@@ -304,6 +304,8 @@ SQLEngine.o: ../../src/DB/SQL/SQLEngine.cpp
 SQLEngineActionReader.o: ../../src/DB/SQL/SQLEngineActionReader.cpp
 SQLEngineDBTable.o: ../../src/DB/SQL/SQLEngineDBTable.cpp
 SQLFile.o: ../../src/DB/SQL/SQLFile.cpp
+SQLFileDB.o: ../../src/DB/SQL/SQLFileDB.cpp
+SQLFileDBReader.o: ../../src/DB/SQL/SQLFileDBReader.cpp
 SQLFunctionValue.o: ../../src/DB/SQL/SQLFunctionValue.cpp
 SQLInsertCommand.o: ../../src/DB/SQL/SQLInsertCommand.cpp
 SQLMetaCommand.o: ../../src/DB/SQL/SQLMetaCommand.cpp
