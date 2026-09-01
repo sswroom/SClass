@@ -361,7 +361,10 @@ GUITIFExporterNull.o: ../../src/Exporter/GUITIFExporterNull.cpp
 GUITIFExporterW.o: ../../src/Exporter/GUITIFExporterW.cpp
 HEIFExporter.o: ../../src/Exporter/HEIFExporter.cpp
 !-lheif
+AVIFExporter.o: ../../src/Exporter/AVIFExporter.cpp
+!-lavif
 HEIFExporter_Null.o: ../../src/Exporter/HEIFExporter_Null.cpp
+AVIFExporter_Null.o: ../../src/Exporter/AVIFExporter_Null.cpp
 ICOExporter.o: ../../src/Exporter/ICOExporter.cpp
 KMLExporter.o: ../../src/Exporter/KMLExporter.cpp
 MapCSVExporter.o: ../../src/Exporter/MapCSVExporter.cpp

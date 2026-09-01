@@ -24,6 +24,9 @@ DB/TDSConn.h:
 @?(NO_TDS == 0)TDSConn.o
 @?(NO_TDS > 0)TDSConn_Null.o
 
+Exporter/AVIFExporter.h:
+@?(NO_AVIF == 0)AVIFExporter.o
+@?(NO_AVIF > 0)AVIFExporter_Null.o
 Exporter/HEIFExporter.h:
 @?(NO_HEIF == 0)HEIFExporter.o
 @?(NO_HEIF > 0)HEIFExporter_Null.o

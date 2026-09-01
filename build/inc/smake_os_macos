@@ -22,6 +22,8 @@ DB/PostgreSQLConn.h:
 DB/TDSConn.h:
 @TDSConnMac.o
 
+Exporter/AVIFExporter.h:
+@AVIFExporter.o
 Exporter/HEIFExporter.h:
 @HEIFExporter.o
 Exporter/WebPExporter.h:

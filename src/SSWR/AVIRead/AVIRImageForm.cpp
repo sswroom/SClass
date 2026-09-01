@@ -76,7 +76,10 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 			sb.AppendC(UTF8STRC(", "));
 			sb.AppendIntOS(yPos);
 			sb.AppendC(UTF8STRC(")"));
-			if (rasterImg->info.pf == Media::PF_PAL_1 || rasterImg->info.pf == Media::PF_PAL_W1)
+			switch (rasterImg->info.pf)
+			{
+			case Media::PF_PAL_1:
+			case Media::PF_PAL_W1:
 			{
 				UInt8 i = 0;
 				UInt8 *p;
@@ -131,8 +134,10 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 					dG = 0;
 					dB = 0;
 				}
+				break;
 			}
-			else if (rasterImg->info.pf == Media::PF_PAL_2 || rasterImg->info.pf == Media::PF_PAL_W2)
+			case Media::PF_PAL_2:
+			case Media::PF_PAL_W2:
 			{
 				UInt8 i = 0;
 				UInt8 *p;
@@ -175,8 +180,10 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 					dG = 0;
 					dB = 0;
 				}
+				break;
 			}
-			else if (rasterImg->info.pf == Media::PF_PAL_4 || rasterImg->info.pf == Media::PF_PAL_W4)
+			case Media::PF_PAL_4:
+			case Media::PF_PAL_W4:
 			{
 				UInt8 i = 0;
 				UInt8 *p;
@@ -213,8 +220,10 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 					dG = 0;
 					dB = 0;
 				}
+				break;
 			}
-			else if (rasterImg->info.pf == Media::PF_PAL_8 || rasterImg->info.pf == Media::PF_PAL_W8)
+			case Media::PF_PAL_8:
+			case Media::PF_PAL_W8:
 			{
 				UInt8 *p;
 				sb.AppendC(UTF8STRC(", I"));
@@ -241,8 +250,9 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 					dG = 0;
 					dB = 0;
 				}
+				break;
 			}
-			else if (rasterImg->info.pf == Media::PF_PAL_1_A1)
+			case Media::PF_PAL_1_A1:
 			{
 				UInt8 i = 0;
 				UInt8 a = 0;
@@ -305,8 +315,9 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 					dG = 0;
 					dB = 0;
 				}
+				break;
 			}
-			else if (rasterImg->info.pf == Media::PF_PAL_2_A1)
+			case Media::PF_PAL_2_A1:
 			{
 				UInt8 i = 0;
 				UInt8 a = 0;
@@ -376,8 +387,9 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 					dG = 0;
 					dB = 0;
 				}
+				break;
 			}
-			else if (rasterImg->info.pf == Media::PF_PAL_4_A1)
+			case Media::PF_PAL_4_A1:
 			{
 				UInt8 i = 0;
 				UInt8 a = 0;
@@ -441,8 +453,9 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 					dG = 0;
 					dB = 0;
 				}
+				break;
 			}
-			else if (rasterImg->info.pf == Media::PF_PAL_8_A1)
+			case Media::PF_PAL_8_A1:
 			{
 				UInt8 *p;
 				UInt8 a = 0;
@@ -469,8 +482,9 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 					dG = 0;
 					dB = 0;
 				}
+				break;
 			}
-			else if (rasterImg->info.pf == Media::PF_LE_R5G5B5)
+			case Media::PF_LE_R5G5B5:
 			{
 				sb.AppendC(UTF8STRC(", R"));
 				UInt16 p = ReadUInt16(pixel);
@@ -482,8 +496,9 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 				dR = ((p >> 10) & 0x1f) / 31.0;
 				dG = ((p >> 5) & 0x1f) / 31.0;
 				dB = (p & 0x1f) / 31.0;
+				break;
 			}
-			else if (rasterImg->info.pf == Media::PF_LE_R5G6B5)
+			case Media::PF_LE_R5G6B5:
 			{
 				sb.AppendC(UTF8STRC(", R"));
 				UInt16 p = ReadUInt16(pixel);
@@ -495,9 +510,9 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 				dR = ((p >> 11) & 0x1f) / 31.0;
 				dG = ((p >> 5) & 0x3f) / 63.0;
 				dB = (p & 0x1f) / 31.0;
+				break;
 			}
-			else if (rasterImg->info.pf == Media::PF_B8G8R8)
-			{
+			case Media::PF_B8G8R8:
 				sb.AppendC(UTF8STRC(", R"));
 				sb.AppendU32(pixel[2]);
 				sb.AppendC(UTF8STRC("G"));
@@ -507,23 +522,46 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 				dR = pixel[2] / 255.0;
 				dG = pixel[1] / 255.0;
 				dB = pixel[0] / 255.0;
-			}
-			else if (rasterImg->info.pf == Media::PF_B8G8R8A8)
-			{
+				break;
+			case Media::PF_B8G8R8A8:
+			case Media::PF_B8G8R8A1:
 				sb.AppendC(UTF8STRC(", A"));
 				sb.AppendU32(pixel[3]);
 				sb.AppendC(UTF8STRC("R"));
 				sb.AppendU32(pixel[2]);
-				sb.AppendC(UTF8STRC("B"));
+				sb.AppendC(UTF8STRC("G"));
 				sb.AppendU32(pixel[1]);
 				sb.AppendC(UTF8STRC("B"));
 				sb.AppendU32(pixel[0]);
 				dR = pixel[2] / 255.0;
 				dG = pixel[1] / 255.0;
 				dB = pixel[0] / 255.0;
-			}
-			else if (rasterImg->info.pf == Media::PF_LE_B16G16R16)
-			{
+				break;
+			case Media::PF_R8G8B8:
+				sb.AppendC(UTF8STRC(", R"));
+				sb.AppendU32(pixel[0]);
+				sb.AppendC(UTF8STRC("G"));
+				sb.AppendU32(pixel[1]);
+				sb.AppendC(UTF8STRC("B"));
+				sb.AppendU32(pixel[2]);
+				dR = pixel[0] / 255.0;
+				dG = pixel[1] / 255.0;
+				dB = pixel[2] / 255.0;
+				break;
+			case Media::PF_R8G8B8A8:
+				sb.AppendC(UTF8STRC(", A"));
+				sb.AppendU32(pixel[3]);
+				sb.AppendC(UTF8STRC("R"));
+				sb.AppendU32(pixel[0]);
+				sb.AppendC(UTF8STRC("G"));
+				sb.AppendU32(pixel[1]);
+				sb.AppendC(UTF8STRC("B"));
+				sb.AppendU32(pixel[2]);
+				dR = pixel[0] / 255.0;
+				dG = pixel[1] / 255.0;
+				dB = pixel[2] / 255.0;
+				break;
+			case Media::PF_LE_B16G16R16:
 				sb.AppendC(UTF8STRC(", R"));
 				sb.AppendU32(ReadUInt16(&pixel[4]));
 				sb.AppendC(UTF8STRC("G"));
@@ -533,9 +571,8 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 				dR = ReadUInt16(&pixel[4]) / 65535.0;
 				dG = ReadUInt16(&pixel[2]) / 65535.0;
 				dB = ReadUInt16(&pixel[0]) / 65535.0;
-			}
-			else if (rasterImg->info.pf == Media::PF_LE_B16G16R16A16)
-			{
+				break;
+			case Media::PF_LE_B16G16R16A16:
 				sb.AppendC(UTF8STRC(", A"));
 				sb.AppendU32(ReadUInt16(&pixel[6]));
 				sb.AppendC(UTF8STRC("R"));
@@ -547,8 +584,32 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 				dR = ReadUInt16(&pixel[4]) / 65535.0;
 				dG = ReadUInt16(&pixel[2]) / 65535.0;
 				dB = ReadUInt16(&pixel[0]) / 65535.0;
-			}
-			else if (rasterImg->info.pf == Media::PF_LE_A2B10G10R10)
+				break;
+			case Media::PF_LE_R16G16B16:
+				sb.AppendC(UTF8STRC(", R"));
+				sb.AppendU32(ReadUInt16(&pixel[0]));
+				sb.AppendC(UTF8STRC("G"));
+				sb.AppendU32(ReadUInt16(&pixel[2]));
+				sb.AppendC(UTF8STRC("B"));
+				sb.AppendU32(ReadUInt16(&pixel[4]));
+				dR = ReadUInt16(&pixel[0]) / 65535.0;
+				dG = ReadUInt16(&pixel[2]) / 65535.0;
+				dB = ReadUInt16(&pixel[4]) / 65535.0;
+				break;
+			case Media::PF_LE_R16G16B16A16:
+				sb.AppendC(UTF8STRC(", A"));
+				sb.AppendU32(ReadUInt16(&pixel[6]));
+				sb.AppendC(UTF8STRC("R"));
+				sb.AppendU32(ReadUInt16(&pixel[0]));
+				sb.AppendC(UTF8STRC("G"));
+				sb.AppendU32(ReadUInt16(&pixel[2]));
+				sb.AppendC(UTF8STRC("B"));
+				sb.AppendU32(ReadUInt16(&pixel[4]));
+				dR = ReadUInt16(&pixel[0]) / 65535.0;
+				dG = ReadUInt16(&pixel[2]) / 65535.0;
+				dB = ReadUInt16(&pixel[4]) / 65535.0;
+				break;
+			case Media::PF_LE_A2B10G10R10:
 			{
 				UInt32 p = ReadUInt32(&pixel[0]);
 				sb.AppendC(UTF8STRC(", A"));
@@ -562,25 +623,23 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 				dR = (p & 0x3ff) / 1023.0;
 				dG = ((p >> 10) & 0x3ff) / 1023.0;
 				dB = ((p >> 20) & 0x3ff) / 1023.0;
+				break;
 			}
-			else if (rasterImg->info.pf == Media::PF_W8A8)
-			{
+			case Media::PF_W8A8:
 				sb.AppendC(UTF8STRC(", A"));
 				sb.AppendU32(pixel[1]);
 				dR = pixel[0] / 255.0;
 				dG = dR;
 				dB = dR;
-			}
-			else if (rasterImg->info.pf == Media::PF_LE_W16)
-			{
+				break;
+			case Media::PF_LE_W16:
 				sb.AppendC(UTF8STRC(", W"));
 				sb.AppendU32(ReadUInt16(&pixel[0]));
 				dR = ReadUInt16(&pixel[0]) / 65535.0;
 				dG = dR;
 				dB = dR;
-			}
-			else if (rasterImg->info.pf == Media::PF_LE_W16A16)
-			{
+				break;
+			case Media::PF_LE_W16A16:
 				sb.AppendC(UTF8STRC(", A"));
 				sb.AppendU32(ReadUInt16(&pixel[2]));
 				sb.AppendC(UTF8STRC(", W"));
@@ -588,9 +647,8 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 				dR = ReadUInt16(&pixel[0]) / 65535.0;
 				dG = dR;
 				dB = dR;
-			}
-			else if (rasterImg->info.pf == Media::PF_LE_FB32G32R32A32)
-			{
+				break;
+			case Media::PF_LE_FB32G32R32A32:
 				sb.AppendC(UTF8STRC(", A"));
 				Text::SBAppendF32(sb, ReadFloat(&pixel[12]));
 				sb.AppendC(UTF8STRC(" R"));
@@ -602,12 +660,64 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 				dR = ReadFloat(&pixel[8]);
 				dG = ReadFloat(&pixel[4]);
 				dB = ReadFloat(&pixel[0]);
-			}
-			else
-			{
+				break;
+			case Media::PF_LE_FB32G32R32:
+				sb.AppendC(UTF8STRC(", R"));
+				Text::SBAppendF32(sb, ReadFloat(&pixel[8]));
+				sb.AppendC(UTF8STRC(" G"));
+				Text::SBAppendF32(sb, ReadFloat(&pixel[4]));
+				sb.AppendC(UTF8STRC(" B"));
+				Text::SBAppendF32(sb, ReadFloat(&pixel[0]));
+				dR = ReadFloat(&pixel[8]);
+				dG = ReadFloat(&pixel[4]);
+				dB = ReadFloat(&pixel[0]);
+				break;
+			case Media::PF_LE_FR32G32B32A32:
+				sb.AppendC(UTF8STRC(", A"));
+				Text::SBAppendF32(sb, ReadFloat(&pixel[12]));
+				sb.AppendC(UTF8STRC(" R"));
+				Text::SBAppendF32(sb, ReadFloat(&pixel[0]));
+				sb.AppendC(UTF8STRC(" G"));
+				Text::SBAppendF32(sb, ReadFloat(&pixel[4]));
+				sb.AppendC(UTF8STRC(" B"));
+				Text::SBAppendF32(sb, ReadFloat(&pixel[8]));
+				dR = ReadFloat(&pixel[0]);
+				dG = ReadFloat(&pixel[4]);
+				dB = ReadFloat(&pixel[8]);
+				break;
+			case Media::PF_LE_FR32G32B32:
+				sb.AppendC(UTF8STRC(", R"));
+				Text::SBAppendF32(sb, ReadFloat(&pixel[0]));
+				sb.AppendC(UTF8STRC(" G"));
+				Text::SBAppendF32(sb, ReadFloat(&pixel[4]));
+				sb.AppendC(UTF8STRC(" B"));
+				Text::SBAppendF32(sb, ReadFloat(&pixel[8]));
+				dR = ReadFloat(&pixel[0]);
+				dG = ReadFloat(&pixel[4]);
+				dB = ReadFloat(&pixel[8]);
+				break;
+			case Media::PF_LE_FW32A32:
+				sb.AppendC(UTF8STRC(", A"));
+				Text::SBAppendF32(sb, ReadFloat(&pixel[4]));
+				sb.AppendC(UTF8STRC(" W"));
+				Text::SBAppendF32(sb, ReadFloat(&pixel[0]));
+				dR = ReadFloat(&pixel[0]);
+				dG = dR;
+				dB = dR;
+				break;
+			case Media::PF_LE_FW32:
+				sb.AppendC(UTF8STRC(", W"));
+				Text::SBAppendF32(sb, ReadFloat(&pixel[0]));
+				dR = ReadFloat(&pixel[0]);
+				dG = dR;
+				dB = dR;
+				break;
+			case Media::PF_UNKNOWN:
+			default:
 				dR = 0;
 				dG = 0;
 				dB = 0;
+				break;
 			}
 			if (me->imgList->HasThermoImage())
 			{

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Exporter/AVIFExporter.h"
 #include "Exporter/BMPExporter.h"
 #include "Exporter/CIPExporter.h"
 #include "Exporter/CURExporter.h"
@@ -114,6 +115,8 @@ Exporter::ExporterList::ExporterList()
 	NEW_CLASSNN(exporter, Exporter::SFVExporter());
 	this->exporters.Add(exporter);
 	NEW_CLASSNN(exporter, Exporter::WebPExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::AVIFExporter());
 	this->exporters.Add(exporter);
 	NEW_CLASSNN(exporter, Exporter::HEIFExporter());
 	this->exporters.Add(exporter);

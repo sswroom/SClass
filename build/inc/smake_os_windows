@@ -30,6 +30,8 @@ DB/PostgreSQLConn.h:
 DB/TDSConn.h:
 @TDSConn_Null.o
 
+Exporter/AVIFExporter.h:
+@AVIFExporter_Null.o
 Exporter/HEIFExporter.h:
 @HEIFExporter_Null.o
 Exporter/WebPExporter.h:
