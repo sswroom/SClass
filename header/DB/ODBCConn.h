@@ -83,6 +83,7 @@ namespace DB
 		UnsafeArray<UTF8Char> ShowTablesCmd(UnsafeArray<UTF8Char> sbuff);
 
 		Optional<DBReader> GetTablesInfo(Text::CString schemaName);
+		virtual UIntOS QuerySchemaNames(NN<Data::ArrayListStringNN> names);
 		virtual UIntOS QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 

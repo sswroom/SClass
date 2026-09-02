@@ -112,3 +112,8 @@ Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Tex
 {
 	return nullptr;
 }
+
+Bool DB::TDSConn::IsSupported()
+{
+	return false;
+}

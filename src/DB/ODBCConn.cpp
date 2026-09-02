@@ -5,8 +5,10 @@
 #include "DB/DBConn.h"
 #include "DB/DBTool.h"
 #include "DB/ODBCConn.h"
+#include "Map/ESRI/FileGDBUtil.h"
 #include "Math/Math_C.h"
 #include "Math/MSGeography.h"
+#include "Math/WKBReader.h"
 #include "Math/WKTWriter.h"
 #include "Math/Geometry/Point.h"
 #include "Net/MySQLUtil.h"
@@ -99,6 +101,10 @@ void DB::ODBCConn::UpdateConnInfo()
 		{
 			this->sqlType = DB::SQLType::MSSQL;
 		}
+		else if (Text::StrStartsWithICaseC(buff, (UIntOS)buffSize, UTF8STRC("psqlodbc")))
+		{
+			this->sqlType = DB::SQLType::PostgreSQL;
+		}
 		else
 		{
 		}
@@ -178,7 +184,7 @@ Bool DB::ODBCConn::Connect(Optional<Text::String> dsn, Optional<Text::String> ui
 		this->connErr = CE_ALLOC_DBC;
 		return false;
 	}
-	ret = SQLSetConnectAttr(hConn, SQL_LOGIN_TIMEOUT, (SQLPOINTER)&timeOut, 0);
+	ret = SQLSetConnectAttr(hConn, SQL_LOGIN_TIMEOUT, (SQLPOINTER)&timeOut, SQL_IS_INTEGER);
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
 		SQLFreeHandle(SQL_HANDLE_DBC, hConn);
@@ -285,7 +291,7 @@ Bool DB::ODBCConn::Connect(NN<Text::String> connStr)
 		this->connErr = CE_ALLOC_DBC;
 		return false;
 	}
-	ret = SQLSetConnectAttr(hConn, SQL_LOGIN_TIMEOUT, (SQLPOINTER)&timeOut, 0);
+	ret = SQLSetConnectAttr(hConn, SQL_LOGIN_TIMEOUT, (SQLPOINTER)&timeOut, SQL_IS_INTEGER);
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
 		SQLFreeHandle(SQL_HANDLE_DBC, hConn);
@@ -983,6 +989,61 @@ Optional<DB::DBReader> DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 	NN<DB::ODBCReader> r;
 	NEW_CLASSNN(r, DB::ODBCReader(this, hStmt, this->enableDebug, this->tzQhr));
 	return r;
+}
+
+UIntOS DB::ODBCConn::QuerySchemaNames(NN<Data::ArrayListStringNN> names)
+{
+	if (this->sqlType == DB::SQLType::PostgreSQL)
+	{
+		NN<DB::DBReader> r;
+		if (this->ExecuteReader(CSTR("SELECT nspname FROM pg_catalog.pg_namespace")).SetTo(r))
+		{
+			UIntOS ret = 0;
+			NN<Text::String> s;
+			while (r->ReadNext())
+			{
+				if (r->GetNewStr(0).SetTo(s))
+				{
+					names->Add(s);
+					ret++;
+				}
+			}
+			this->CloseReader(r);
+			return ret;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else if (this->sqlType == DB::SQLType::MSSQL)
+	{
+		NN<DB::DBReader> r;
+		if (this->ExecuteReader(CSTR("select s.name from sys.schemas s")).SetTo(r))
+		{
+			UIntOS ret = 0;
+			NN<Text::String> s;
+			while (r->ReadNext())
+			{
+				if (r->GetNewStr(0).SetTo(s))
+				{
+					names->Add(s);
+					ret++;
+				}
+			}
+			this->CloseReader(r);
+			return ret;
+		}
+		else
+		{
+			return 0;
+		}
+		return 0;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 UIntOS DB::ODBCConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
@@ -2327,6 +2388,29 @@ Optional<Math::Geometry::Vector2D> DB::ODBCReader::GetVector(UIntOS colIndex)
 			}
 			UInt32 srId;
 			return Math::MSGeography::ParseBinary(buffPtr, dataSize, srId);
+		}
+		else
+		{
+			return nullptr;
+		}
+	}
+	else if (this->conn->GetSQLType() == DB::SQLType::PostgreSQL)
+	{
+		if (this->colDatas[colIndex].colType == DB::DBUtil::CT_Binary || this->colDatas[colIndex].colType == DB::DBUtil::CT_Vector)
+		{
+			UIntOS dataSize = (UIntOS)this->colDatas[colIndex].dataVal;
+			UnsafeArray<UInt8> buffPtr;
+			if (!this->colDatas[colIndex].colData.GetArrayOpt<UInt8>().SetTo(buffPtr))
+			{
+				return nullptr;
+			}
+			NN<Math::Geometry::Vector2D> vec;
+			Math::WKBReader reader(0);
+			if (reader.ParseWKB(buffPtr, dataSize, 0).SetTo(vec) || Map::ESRI::FileGDBUtil::ParseSDERecord(Data::ByteArrayR(buffPtr, dataSize)).SetTo(vec))
+			{
+				return vec;
+			}
+			return nullptr;
 		}
 		else
 		{

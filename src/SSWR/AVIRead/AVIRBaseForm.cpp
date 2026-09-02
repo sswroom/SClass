@@ -235,6 +235,7 @@
 #include "SSWR/AVIRead/AVIRStreamTermForm.h"
 #include "SSWR/AVIRead/AVIRSudokuForm.h"
 #include "SSWR/AVIRead/AVIRSyslogServerForm.h"
+#include "SSWR/AVIRead/AVIRSystemLogForm.h"
 #include "SSWR/AVIRead/AVIRTCPLoadBalancerForm.h"
 #include "SSWR/AVIRead/AVIRTCPPortScanForm.h"
 #include "SSWR/AVIRead/AVIRTCPSpdCliForm.h"
@@ -570,7 +571,8 @@ typedef enum
 	MNU_PYTHON,
 	MNU_KEYTEST,
 	MNU_LOGZIPPER,
-	MNU_JAVASPRING
+	MNU_JAVASPRING,
+	MNU_SYSTEM_LOG
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -1025,6 +1027,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Help"));
 	mnu->AddItem(CSTR("&About..."), MNU_ABOUT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("System Log"), MNU_SYSTEM_LOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	this->SetMenu(this->mnuMain);
 }
@@ -3317,6 +3320,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRJavaSpringForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJavaSpringForm(nullptr, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_SYSTEM_LOG:
+		{
+			NN<SSWR::AVIRead::AVIRSystemLogForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSystemLogForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

@@ -1225,3 +1225,8 @@ Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Tex
 	}
 	return this->ExecuteReader(sb.ToCString());
 }
+
+Bool DB::TDSConn::IsSupported()
+{
+	return true;
+}

@@ -611,6 +611,10 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(Optional<UI::GUIClientControl> parent, NN<
 		this->btnSQL->HandleButtonClick(OnSQLClicked, this);
 		this->txtSQL = ui->NewTextBox(this->tpSQL, CSTR(""), true);
 		this->txtSQL->SetDockType(UI::GUIControl::DOCK_FILL);
+
+		this->tpLog = this->tcDB->AddTabPage(CSTR("Log"));
+		this->logger = UI::ListBoxLogger::CreateUI(*this, ui, this->tpLog, 200, false);
+		this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 	}
 
 	NN<UI::GUIMenu> mnu;
@@ -670,6 +674,8 @@ SSWR::AVIRead::AVIRDBForm::~AVIRDBForm()
 		dbt->ReleaseDatabaseNames(this->dbNames);
 		dbt.Delete();
 		this->dbt = nullptr;
+		this->log.RemoveLogHandler(this->logger);
+		this->logger.Delete();
 	}
 	else if (this->needRelease)
 	{

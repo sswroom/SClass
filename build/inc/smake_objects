@@ -276,6 +276,8 @@ PostgreSQLConn.o: ../../src/DB/PostgreSQLConn.cpp
 $`$(PKG-CONFIG) --cflags libpq`
 !`$(PKG-CONFIG) --libs libpq`
 PostgreSQLConnNul.o: ../../src/DB/PostgreSQLConnNul.cpp
+PostgreSQLTCPConn.o: ../../src/DB/PostgreSQLTCPConn.cpp
+PostgreSQLUtil.o: ../../src/DB/PostgreSQLUtil.cpp
 ReadingDB.o: ../../src/DB/ReadingDB.cpp
 ReadingDBTool.o: ../../src/DB/ReadingDBTool.cpp
 SDFFile.o: ../../src/DB/SDFFile.cpp
@@ -1615,7 +1617,6 @@ MSGraphClient.o: ../../src/Net/MSGraphClient.cpp
 MySQLServer.o: ../../src/Net/MySQLServer.cpp
 MySQLTCPClient.o: ../../src/Net/MySQLTCPClient.cpp
 MySQLUtil.o: ../../src/Net/MySQLUtil.cpp
-PostgreSQLTCPConn.o: ../../src/DB/PostgreSQLTCPConn.cpp
 NetBIOSScanner.o: ../../src/Net/NetBIOSScanner.cpp
 NetBIOSUtil.o: ../../src/Net/NetBIOSUtil.cpp
 NTPClient.o: ../../src/Net/NTPClient.cpp
@@ -2311,6 +2312,7 @@ AVIRSudokuForm.o: ../../src/SSWR/AVIRead/AVIRSudokuForm.cpp
 AVIRSudokuImportForm.o: ../../src/SSWR/AVIRead/AVIRSudokuImportForm.cpp
 AVIRSyslogServerForm.o: ../../src/SSWR/AVIRead/AVIRSyslogServerForm.cpp
 AVIRSystemInfoLogForm.o: ../../src/SSWR/AVIRead/AVIRSystemInfoLogForm.cpp
+AVIRSystemLogForm.o: ../../src/SSWR/AVIRead/AVIRSystemLogForm.cpp
 AVIRTableMsgForm.o: ../../src/SSWR/AVIRead/AVIRTableMsgForm.cpp
 AVIRTCPLoadBalancerForm.o: ../../src/SSWR/AVIRead/AVIRTCPLoadBalancerForm.cpp
 AVIRTCPPortScanForm.o: ../../src/SSWR/AVIRead/AVIRTCPPortScanForm.cpp
