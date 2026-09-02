@@ -28,7 +28,7 @@ DB/TDSConn.h:
 
 Exporter/AVIFExporter.h:
 @?(NO_AVIF == 0)AVIFExporter.o
-@?(NO_AVIF > 0)AVIFExporter_Null
+@?(NO_AVIF > 0)AVIFExporter_Null.o
 Exporter/HEIFExporter.h:
 @HEIFExporter.o
 Exporter/WebPExporter.h:
