@@ -1101,6 +1101,17 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPhotoDetail(NN<Net::Web
 			return true;
 		}
 
+		json.ObjectBeginObject(CSTR("cate"));
+		json.ObjectAddInt32(CSTR("cateId"), cate->cateId);
+		json.ObjectAddStr(CSTR("chiName"), cate->chiName);
+		json.ObjectAddStr(CSTR("dirName"), cate->dirName);
+		json.ObjectAddInt32(CSTR("flags"), cate->flags);
+		json.ObjectEnd();
+
+		json.ObjectBeginObject(CSTR("sp"));
+		me->AppendSpeciesDispInfo(json, species, mutUsage, nullptr);
+		json.ObjectEnd();
+		Bool owner = false;
 		if (req->GetHTTPFormInt32(CSTR("fileId"), fileId))
 		{
 			Bool found = false;
@@ -1119,7 +1130,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPhotoDetail(NN<Net::Web
 			}
 			if (found)
 			{
-
+				NN<WebUserInfo> user;
+				if (env.user.SetTo(user) && user->id == userFile->webuserId)
+				{
+					owner = true;
+				}
+				json.ObjectAddStrOpt(CSTR("descript"), userFile->descript);
 				if (userFile->fileType == FileType::Audio)
 				{
 					sptr = me->env->UserfileGetPath(sbuff, userFile);
@@ -1159,15 +1175,29 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPhotoDetail(NN<Net::Web
 					Media::PhotoInfo info(fd);
 					if (info.HasInfo())
 					{
+						Data::DateTime dt;
 						Text::StringBuilderUTF8 sb;
 						info.ToString(sb);
-						json.ObjectAddStr(CSTR("photoInfo"), sb.ToCString());
+						json.ObjectAddStr(CSTR("photoSpec"), sb.ToCString());
+						if (info.GetPhotoDate(dt))
+							json.ObjectAddTSStr(CSTR("photoDate"), dt.ToTimestamp());
 						json.ObjectAddUInt64(CSTR("imgWidth"), info.GetWidth());
 						json.ObjectAddUInt64(CSTR("imgHeight"), info.GetHeight());
 					}
 				}
-
 			}
+			if (i < j - 1)
+			{
+				json.ObjectAddInt32(CSTR("nextType"), 1);
+				json.ObjectAddInt32(CSTR("nextId"), species->files.GetItemNoCheck(i + 1)->id);
+			}
+			else if (species->wfiles.GetCount() != 0)
+			{
+				NN<WebFileInfo> wfile;
+				wfile = species->wfiles.GetItemNoCheck(0);
+				json.ObjectAddInt32(CSTR("nextType"), 2);
+				json.ObjectAddInt32(CSTR("nextId"), wfile->id);
+			}			
 		}
 		else if (req->GetHTTPFormInt32(CSTR("fileWId"), fileId))
 		{
@@ -1196,13 +1226,19 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPhotoDetail(NN<Net::Web
 				{
 					Text::StringBuilderUTF8 sb;
 					info.ToString(sb);
-					json.ObjectAddStr(CSTR("photoInfo"), sb.ToCString());
+					json.ObjectAddStr(CSTR("photoSpec"), sb.ToCString());
 					json.ObjectAddUInt64(CSTR("imgWidth"), info.GetWidth());
 					json.ObjectAddUInt64(CSTR("imgHeight"), info.GetHeight());
 				}
+				i = (UIntOS)species->wfiles.GetIndex(fileId);
+				if (i < species->wfiles.GetCount() - 1)
+				{
+					json.ObjectAddInt32(CSTR("nextType"), 2);
+					json.ObjectAddInt32(CSTR("nextId"), species->wfiles.GetItemNoCheck(i + 1)->id);
+				}
 			}
 		}
-
+		json.ObjectAddBool(CSTR("isOwner"), owner);
 		return me->ResponseJSON(req, resp, 0, json.Build());
 	}
 	else

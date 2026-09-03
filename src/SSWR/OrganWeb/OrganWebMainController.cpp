@@ -2141,8 +2141,8 @@ SSWR::OrganWeb::OrganWebMainController::OrganWebMainController(NN<Net::WebServer
 	this->AddService(CSTR("/species.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpecies);
 	this->AddService(CSTR("/speciesmod.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSpeciesMod);
 	this->AddService(CSTR("/speciesmod.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesMod);
-	this->AddService(CSTR("/photodetail.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDetail);
-	this->AddService(CSTR("/photodetail.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoDetail);
+	this->AddService(CSTR("/photodetail2.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDetail);
+	this->AddService(CSTR("/photodetail2.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoDetail);
 }
 
 SSWR::OrganWeb::OrganWebMainController::~OrganWebMainController()
