@@ -59,6 +59,7 @@ namespace SSWR
 
 			static void __stdcall OnMyStackChg(AnyType userObj);
 			static void __stdcall OnMyStackDblClk(AnyType userObj, UIntOS index);
+			static void __stdcall OnThreadContext(NN<Manage::ThreadContext> context, AnyType userObj);
 		public:
 			AVIRThreadInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Manage::Process> proc, NN<Manage::SymbolResolver> symbol, UInt32 threadId);
 			virtual ~AVIRThreadInfoForm();

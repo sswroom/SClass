@@ -269,6 +269,11 @@ Optional<DB::DBReader> DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 	return nullptr;
 }
 
+UIntOS DB::ODBCConn::QuerySchemaNames(NN<Data::ArrayListStringNN> names)
+{
+	return 0;
+}
+
 UIntOS DB::ODBCConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	return 0;

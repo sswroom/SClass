@@ -1352,3 +1352,8 @@ Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(Text::CStringNN serverName
 	NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
 	return db;
 }
+
+Bool DB::PostgreSQLConn::IsSupported()
+{
+	return true;
+}

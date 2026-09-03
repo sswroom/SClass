@@ -33,12 +33,13 @@ namespace DB
 		UIntOS ReadPacket(NN<Net::TCPClient> cli, UnsafeArray<UInt8> buff, UIntOS buffSize);
 		Bool SendPacket(NN<Net::TCPClient> cli, UInt8 msgType, UnsafeArray<UInt8> data, UIntOS dataLen);
 		Bool ParseAuthentication(NN<Net::TCPClient> cli);
+		Bool ParseSCRAMSHA256(NN<Net::TCPClient> cli, UIntOS mechanismListLen);
 		Bool ParseBackendKeyData(NN<Net::TCPClient> cli);
 		Bool SendStartupPacket(NN<Net::TCPClient> cli, Text::CString user, Text::CStringNN database);
-		Bool ParseRowDescription(NN<Net::TCPClient> cli, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods);
+		Bool ParseRowDescription(NN<Net::TCPClient> cli, UIntOS dataLen, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods);
 		Bool ParseDataRow(NN<Net::TCPClient> cli, UIntOS colCount, NN<Data::ArrayListObj<UnsafeArrayOpt<UInt8>>> values, NN<Data::ArrayListNative<UInt32>> lengths);
-		Bool ParseCommandComplete(NN<Net::TCPClient> cli, OutParam<IntOS> rowChanged);
-		Bool ParseErrorResponse(NN<Net::TCPClient> cli, NN<Text::StringBuilderUTF8> errMsg);
+		Bool ParseCommandComplete(NN<Net::TCPClient> cli, UIntOS dataLen, OutParam<IntOS> rowChanged);
+		Bool ParseErrorResponse(NN<Net::TCPClient> cli, UIntOS dataLen, NN<Text::StringBuilderUTF8> errMsg);
 
 	public:
 		PostgreSQLTCPConn(NN<Net::TCPClientFactory> clif, NN<Text::String> server, UInt16 port, Optional<Text::String> uid, Optional<Text::String> pwd, NN<Text::String> database, NN<IO::LogTool> log);

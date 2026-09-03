@@ -5,6 +5,7 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/CSVFile.h"
 #include "DB/MSSQLConn.h"
+#include "DB/PostgreSQLTCPConn.h"
 #include "IO/BufferedOutputStream.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/ConsoleLogHandler.h"
@@ -1564,9 +1565,31 @@ Int32 DRMSurfaceTest()
 	return 0;
 }
 
+Int32 PostgreSQLTCPTest()
+{
+	Net::OSSocketFactory sockf(true);
+	Net::TCPClientFactory clif(sockf);
+	IO::LogTool log;
+	IO::ConsoleWriter console;
+	IO::ConsoleLogHandler logHdlr(console);
+	log.AddLogHandler(logHdlr, IO::LogHandler::LogLevel::Raw);
+	DB::PostgreSQLTCPConn conn(clif, CSTR("192.168.1.126"), 5432, CSTR("postgres"), CSTR("postgres"), CSTR("gdb"), log);
+	NN<DB::DBReader> r;
+	if (conn.QueryTableData(CSTR("gisportal"), CSTR("had_data_update"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
+	{
+		conn.CloseReader(r);
+		log.LogMessage(CSTR("Query successful"), IO::LogHandler::LogLevel::Action);
+	}
+	else
+	{
+		log.LogMessage(CSTR("Query failed"), IO::LogHandler::LogLevel::Error);
+	}
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UIntOS testType = 40;
+	UIntOS testType = 41;
 	switch (testType)
 	{
 	case 0:
@@ -1651,6 +1674,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return ReportBuilderTest();
 	case 40:
 		return DRMSurfaceTest();
+	case 41:
+		return PostgreSQLTCPTest();
 	default:
 		return 0;
 	}

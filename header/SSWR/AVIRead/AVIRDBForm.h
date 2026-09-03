@@ -16,6 +16,7 @@
 #include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
 #include "UI/GUIVSplitter.h"
+#include "UI/ListBoxLogger.h"
 
 namespace SSWR
 {
@@ -39,6 +40,9 @@ namespace SSWR
 			NN<UI::GUIPanel> pnlSQLCtrl;
 			NN<UI::GUIButton> btnSQL;
 			NN<UI::GUITextBox> txtSQL;
+
+			NN<UI::GUITabPage> tpLog;
+			NN<UI::ListBoxLogger> logger;
 
 			NN<UI::GUIMainMenu> mnuMain;
 

@@ -8,7 +8,7 @@ Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt
 {
 	Text::CStringNN nnuserName;
 	Text::CStringNN nnpassword;
-	if (IsNative() && userName.SetTo(nnuserName) && password.SetTo(nnpassword))
+	if (TDSConn::IsSupported() && userName.SetTo(nnuserName) && password.SetTo(nnpassword))
 	{
 		NN<DB::TDSConn> conn;
 		NEW_CLASSNN(conn, DB::TDSConn(serverHost, port, encrypt, database, nnuserName, nnpassword, log, errMsg));
@@ -133,7 +133,7 @@ Optional<DB::DBTool> DB::MSSQLConn::CreateDBToolTCP(Text::CStringNN serverHost, 
 
 Optional<Text::String> DB::MSSQLConn::GetDriverNameNew()
 {
-	if (IsNative())
+	if (TDSConn::IsSupported())
 	{
 		return Text::String::New(UTF8STRC("FreeTDS (Native)"));
 	}
@@ -161,13 +161,4 @@ Optional<Text::String> DB::MSSQLConn::GetDriverNameNew()
 		}
 	}
 	return driverName;
-}
-
-Bool DB::MSSQLConn::IsNative()
-{
-#if defined(WIN32) && !defined(__CYGWIN__)
-	return false;
-#else
-	return true;
-#endif
 }

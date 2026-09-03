@@ -1,13 +1,19 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/DateTime.h"
+#include "Data/RandomBytesGenerator.h"
+#include "Crypto/Hash/HMAC.h"
+#include "Crypto/Hash/SHA256.h"
+#include "Crypto/PBKDF2.h"
 #include "DB/DBTool.h"
 #include "DB/PostgreSQLTCPConn.h"
+#include "Crypto/Hash/MD5.h"
 #include "Net/SocketUtil.h"
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
+#include "Text/TextBinEnc/Base64Enc.h"
 
 UIntOS DB::PostgreSQLTCPConn::ReadPacket(NN<Net::TCPClient> cli, UnsafeArray<UInt8> buff, UIntOS buffSize)
 {		
@@ -27,24 +33,25 @@ UIntOS DB::PostgreSQLTCPConn::ReadPacket(NN<Net::TCPClient> cli, UnsafeArray<UIn
 Bool DB::PostgreSQLTCPConn::SendPacket(NN<Net::TCPClient> cli, UInt8 msgType, UnsafeArray<UInt8> data, UIntOS dataLen)
 {
 	UInt32 packetLen = (UInt32)(dataLen + 4);
-	UInt8 packet[512];
+	UnsafeArray<UInt8> packet = MemAllocArr(UInt8, dataLen + 5);
 	packet[0] = msgType;
-	WriteMInt32(packet + 1, packetLen);
+	WriteMInt32(packet.Ptr() + 1, packetLen);
 	if (dataLen > 0)
 	{
-		MemCopyO(packet + 5, data.Ptr(), dataLen);
+		MemCopyO(packet.Ptr() + 5, data.Ptr(), dataLen);
 	}
 	
-	UIntOS written = cli->Write(Data::ByteArray(packet, packetLen));
-	return written == packetLen;
+	UIntOS written = cli->Write(Data::ByteArray(packet, dataLen + 5));
+	MemFreeArr(packet);
+	return written == dataLen + 5;
 }
 
 Bool DB::PostgreSQLTCPConn::SendStartupPacket(NN<Net::TCPClient> cli, Text::CString user, Text::CStringNN database)
 {
 	UInt8 packet[1024];
-	UnsafeArray<UInt8> p = packet + 8;
+	UnsafeArray<UInt8> p = packet + 4;
 	
-	WriteMInt32(&p[0], 80877103);
+	WriteMInt32(&p[0], 196608); // Protocol version 3.0
 	p += 4;
 	
 	Text::CStringNN nnuser;
@@ -61,10 +68,374 @@ Bool DB::PostgreSQLTCPConn::SendStartupPacket(NN<Net::TCPClient> cli, Text::CStr
 	UInt32 packetLen = (UInt32)(p - packet);
 	WriteMInt32(packet, packetLen);
 	
-	return this->SendPacket(cli, 0, packet, packetLen);
+	return cli->Write(Data::ByteArray(packet, packetLen)) == packetLen;
 }
 
 Bool DB::PostgreSQLTCPConn::ParseAuthentication(NN<Net::TCPClient> cli)
+{
+	UInt8 buff[5];
+	while (true)
+	{
+		if (this->ReadPacket(cli, buff, 5) != 5 || buff[0] != 'R')
+			{
+				this->log->LogMessage(CSTR("Failed to read authentication packet"), IO::LogHandler::LogLevel::Error);
+				return false;
+			}
+		
+		UInt32 len = ReadMUInt32(buff + 1);
+		if (len < 8 || this->ReadPacket(cli, buff, 4) != 4)
+			{
+				this->log->LogMessage(CSTR("Invalid authentication packet length"), IO::LogHandler::LogLevel::Error);
+				return false;
+			}
+		
+		switch (ReadMInt32(buff))
+		{
+		case 0:
+			return true;
+		case 10:
+			if (!this->ParseSCRAMSHA256(cli, len - 8))
+			{
+				return false;
+			}
+			break;
+		case 5:
+			{
+				UInt8 salt[4];
+				if (len != 12 || this->ReadPacket(cli, salt, 4) != 4)
+				{
+					this->log->LogMessage(CSTR("Failed to read MD5 salt"), IO::LogHandler::LogLevel::Error);
+					return false;
+				}
+				
+				NN<Text::String> nnuid;
+				NN<Text::String> nnpwd;
+				if (!this->uid.SetTo(nnuid) || !this->pwd.SetTo(nnpwd))
+				{
+					this->log->LogMessage(CSTR("User name or password is missing"), IO::LogHandler::LogLevel::Error);
+					return false;
+				}
+				
+				static const UTF8Char hexChars[] = "0123456789abcdef";
+				UInt8 hash[16];
+				UTF8Char hashText[32];
+				Crypto::Hash::MD5 md5;
+				md5.Calc(nnpwd->v, nnpwd->leng);
+				md5.Calc(nnuid->v, nnuid->leng);
+				md5.GetValue(hash);
+				for (UIntOS i = 0; i < 16; i++)
+				{
+					hashText[i * 2] = hexChars[hash[i] >> 4];
+					hashText[i * 2 + 1] = hexChars[hash[i] & 15];
+				}
+				md5.Clear();
+				md5.Calc((const UInt8*)hashText, 32);
+				md5.Calc(salt, 4);
+				md5.GetValue(hash);
+				
+				UInt8 response[36];
+				response[0] = 'm';
+				response[1] = 'd';
+				response[2] = '5';
+				for (UIntOS i = 0; i < 16; i++)
+				{
+					response[3 + i * 2] = (UInt8)hexChars[hash[i] >> 4];
+					response[3 + i * 2 + 1] = (UInt8)hexChars[hash[i] & 15];
+				}
+				response[35] = 0;
+				if (!this->SendPacket(cli, 'p', response, 36))
+				{
+					return false;
+				}
+			}
+			break;
+		default:
+				
+			this->log->LogMessage(Text::StringBuilderUTF8().Append(CSTR("Unsupported authentication type: "))->AppendI32(ReadMInt32(buff))->ToCString(), IO::LogHandler::LogLevel::Error);
+			return false;
+		}
+	}
+}
+
+Bool DB::PostgreSQLTCPConn::ParseSCRAMSHA256(NN<Net::TCPClient> cli, UIntOS mechanismListLen)
+{
+	UnsafeArray<UInt8> mechanismList = MemAllocArr(UInt8, mechanismListLen);
+	if (this->ReadPacket(cli, mechanismList, mechanismListLen) != mechanismListLen)
+	{
+		MemFreeArr(mechanismList);
+		this->log->LogMessage(CSTR("Failed to read SASL mechanism list"), IO::LogHandler::LogLevel::Error);
+		return false;
+	}
+	Bool hasSCRAMSHA256 = false;
+	UIntOS listOfst = 0;
+	while (listOfst < mechanismListLen && mechanismList[listOfst] != 0)
+	{
+		UIntOS mechanismLen = 0;
+		while (listOfst + mechanismLen < mechanismListLen && mechanismList[listOfst + mechanismLen] != 0)
+		{
+			mechanismLen++;
+		}
+		if (mechanismLen == 13 && Text::StrEqualsC((const UTF8Char*)&mechanismList[listOfst], mechanismLen, UTF8STRC("SCRAM-SHA-256")))
+		{
+			hasSCRAMSHA256 = true;
+			break;
+		}
+		listOfst += mechanismLen + 1;
+	}
+	MemFreeArr(mechanismList);
+	if (!hasSCRAMSHA256)
+	{
+		this->log->LogMessage(CSTR("PostgreSQL server does not offer SCRAM-SHA-256 authentication"), IO::LogHandler::LogLevel::Error);
+		return false;
+	}
+
+	NN<Text::String> nnuid;
+	NN<Text::String> nnpwd;
+	if (!this->uid.SetTo(nnuid) || !this->pwd.SetTo(nnpwd))
+	{
+		this->log->LogMessage(CSTR("User name or password is missing"), IO::LogHandler::LogLevel::Error);
+		return false;
+	}
+
+	UInt8 nonceBytes[18];
+	Data::RandomBytesGenerator random;
+	random.NextBytes(nonceBytes, sizeof(nonceBytes));
+	Text::StringBuilderUTF8 nonce;
+	Text::TextBinEnc::Base64Enc base64;
+	base64.EncodeBin(nonce, nonceBytes, sizeof(nonceBytes));
+	Text::StringBuilderUTF8 clientFirstBare;
+	clientFirstBare.AppendC(UTF8STRC("n="));
+	for (UIntOS i = 0; i < nnuid->leng; i++)
+	{
+		if (nnuid->v[i] == ',')
+		{
+			clientFirstBare.AppendC(UTF8STRC("=2C"));
+		}
+		else if (nnuid->v[i] == '=')
+		{
+			clientFirstBare.AppendC(UTF8STRC("=3D"));
+		}
+		else
+		{
+			clientFirstBare.AppendUTF8Char(nnuid->v[i]);
+		}
+	}
+	clientFirstBare.AppendC(UTF8STRC(",r="));
+	clientFirstBare.Append(nonce.ToCString());
+	Text::StringBuilderUTF8 clientFirst;
+	clientFirst.AppendC(UTF8STRC("n,,"));
+	clientFirst.Append(clientFirstBare.ToCString());
+
+	UIntOS initialDataLen = 13 + 1 + 4 + clientFirst.GetLength();
+	UnsafeArray<UInt8> initialData = MemAllocArr(UInt8, initialDataLen);
+	MemCopyNO(initialData.Ptr(), "SCRAM-SHA-256", 13);
+	initialData[13] = 0;
+	WriteMInt32(initialData.Ptr() + 14, (Int32)clientFirst.GetLength());
+	MemCopyNO(initialData.Ptr() + 18, clientFirst.v.Ptr(), clientFirst.GetLength());
+	Bool sent = this->SendPacket(cli, 'p', initialData, initialDataLen);
+	MemFreeArr(initialData);
+	if (!sent)
+	{
+		return false;
+	}
+
+	UInt8 packetHeader[5];
+	if (this->ReadPacket(cli, packetHeader, 5) != 5)
+	{
+		this->log->LogMessage(CSTR("Failed to read SASL continuation"), IO::LogHandler::LogLevel::Error);
+		return false;
+	}
+	if (packetHeader[0] == 'E')
+	{
+		Text::StringBuilderUTF8 errMsg;
+		if (this->ParseErrorResponse(cli, ReadMUInt32(packetHeader + 1) - 4, errMsg))
+		{
+			this->log->LogMessage(errMsg.ToCString(), IO::LogHandler::LogLevel::Error);
+		}
+		return false;
+	}
+	if (packetHeader[0] != 'R')
+	{
+		this->log->LogMessage(CSTR("Unexpected PostgreSQL SASL response"), IO::LogHandler::LogLevel::Error);
+		return false;
+	}
+	UInt32 packetLen = ReadMUInt32(packetHeader + 1);
+	if (packetLen < 8 || this->ReadPacket(cli, packetHeader, 4) != 4 || ReadMInt32(packetHeader) != 11)
+	{
+		this->log->LogMessage(CSTR("Invalid SASL continuation"), IO::LogHandler::LogLevel::Error);
+		return false;
+	}
+	UIntOS serverFirstLen = packetLen - 8;
+	UnsafeArray<UTF8Char> serverFirst = MemAllocArr(UTF8Char, serverFirstLen);
+	if (this->ReadPacket(cli, (UnsafeArray<UInt8>)serverFirst, serverFirstLen) != serverFirstLen)
+	{
+		MemFreeArr(serverFirst);
+		this->log->LogMessage(CSTR("Failed to read SASL server-first message"), IO::LogHandler::LogLevel::Error);
+		return false;
+	}
+
+	UnsafeArrayOpt<const UTF8Char> serverNonce = nullptr;
+	UIntOS serverNonceLen = 0;
+	UnsafeArrayOpt<const UTF8Char> saltText = nullptr;
+	UIntOS saltTextLen = 0;
+	UIntOS iterationCount = 0;
+	for (UIntOS ofst = 0; ofst + 2 <= serverFirstLen; )
+	{
+		UIntOS valueOfst = ofst + 2;
+		UIntOS valueLen = 0;
+		while (valueOfst + valueLen < serverFirstLen && serverFirst[valueOfst + valueLen] != ',')
+		{
+			valueLen++;
+		}
+		if (serverFirst[ofst + 1] != '=')
+		{
+			MemFreeArr(serverFirst);
+			return false;
+		}
+		if (serverFirst[ofst] == 'r')
+		{
+			serverNonce = UnsafeArray<const UTF8Char>(serverFirst + valueOfst);
+			serverNonceLen = valueLen;
+		}
+		else if (serverFirst[ofst] == 's')
+		{
+			saltText = UnsafeArray<const UTF8Char>(serverFirst + valueOfst);
+			saltTextLen = valueLen;
+		}
+		else if (serverFirst[ofst] == 'i')
+		{
+			for (UIntOS i = 0; i < valueLen; i++)
+			{
+				if (serverFirst[valueOfst + i] < '0' || serverFirst[valueOfst + i] > '9')
+				{
+					MemFreeArr(serverFirst);
+					return false;
+				}
+				iterationCount = iterationCount * 10 + (UIntOS)(serverFirst[valueOfst + i] - '0');
+			}
+		}
+		ofst = valueOfst + valueLen + 1;
+	}
+	UnsafeArray<const UTF8Char> nnServerNonce;
+	UnsafeArray<const UTF8Char> nnSaltText;
+	if (!serverNonce.SetTo(nnServerNonce) || !saltText.SetTo(nnSaltText) || iterationCount == 0 || serverNonceLen <= nonce.GetLength() || !Text::StrStartsWithC(nnServerNonce, serverNonceLen, nonce.v, nonce.GetLength()))
+	{
+		MemFreeArr(serverFirst);
+		this->log->LogMessage(CSTR("Invalid SASL server-first message"), IO::LogHandler::LogLevel::Error);
+		return false;
+	}
+
+	UnsafeArray<UInt8> salt = MemAllocArr(UInt8, saltTextLen * 3 / 4);
+	UIntOS saltLen = base64.DecodeBin(Text::CStringNN(nnSaltText, saltTextLen), salt);
+	UInt8 saltedPassword[32];
+	Crypto::Hash::SHA256 sha256;
+	Crypto::Hash::HMAC hmacPassword(sha256, nnpwd->v, nnpwd->leng);
+	Crypto::PBKDF2::Calc(salt, saltLen, iterationCount, sizeof(saltedPassword), hmacPassword, saltedPassword);
+	MemFreeArr(salt);
+
+	UInt8 clientKey[32];
+	UInt8 storedKey[32];
+	UInt8 clientSignature[32];
+	UInt8 clientProof[32];
+	UInt8 serverKey[32];
+	UInt8 expectedServerSignature[32];
+	Crypto::Hash::HMAC hmacClientKey(sha256, saltedPassword, sizeof(saltedPassword));
+	hmacClientKey.Calc((const UInt8*)"Client Key", 10);
+	hmacClientKey.GetValue(clientKey);
+	Crypto::Hash::HMAC hmacServerKey(sha256, saltedPassword, sizeof(saltedPassword));
+	hmacServerKey.Calc((const UInt8*)"Server Key", 10);
+	hmacServerKey.GetValue(serverKey);
+	sha256.Clear();
+	sha256.Calc(clientKey, sizeof(clientKey));
+	sha256.GetValue(storedKey);
+	Text::StringBuilderUTF8 clientFinalWithoutProof;
+	clientFinalWithoutProof.AppendC(UTF8STRC("c=biws,r="));
+	clientFinalWithoutProof.AppendC(nnServerNonce, serverNonceLen);
+	Text::StringBuilderUTF8 authMessage;
+	authMessage.Append(clientFirstBare.ToCString());
+	authMessage.AppendUTF8Char(',');
+	authMessage.AppendC(serverFirst, serverFirstLen);
+	authMessage.AppendUTF8Char(',');
+	authMessage.Append(clientFinalWithoutProof.ToCString());
+	Crypto::Hash::HMAC hmacSignature(sha256, storedKey, sizeof(storedKey));
+	hmacSignature.Calc(authMessage.v, authMessage.GetLength());
+	hmacSignature.GetValue(clientSignature);
+	Crypto::Hash::HMAC hmacServerSignature(sha256, serverKey, sizeof(serverKey));
+	hmacServerSignature.Calc(authMessage.v, authMessage.GetLength());
+	hmacServerSignature.GetValue(expectedServerSignature);
+	for (UIntOS i = 0; i < sizeof(clientProof); i++)
+	{
+		clientProof[i] = clientKey[i] ^ clientSignature[i];
+	}
+	Text::StringBuilderUTF8 clientFinal;
+	clientFinal.Append(clientFinalWithoutProof.ToCString());
+	clientFinal.AppendC(UTF8STRC(",p="));
+	base64.EncodeBin(clientFinal, clientProof, sizeof(clientProof));
+	MemFreeArr(serverFirst);
+	if (!this->SendPacket(cli, 'p', (UnsafeArray<UInt8>)clientFinal.v, clientFinal.GetLength()))
+	{
+		return false;
+	}
+
+	if (this->ReadPacket(cli, packetHeader, 5) != 5)
+	{
+		this->log->LogMessage(CSTR("Failed to read SASL final message"), IO::LogHandler::LogLevel::Error);
+		return false;
+	}
+	if (packetHeader[0] == 'E')
+	{
+		Text::StringBuilderUTF8 errMsg;
+		if (this->ParseErrorResponse(cli, ReadMUInt32(packetHeader + 1) - 4, errMsg))
+		{
+			this->log->LogMessage(errMsg.ToCString(), IO::LogHandler::LogLevel::Error);
+		}
+		return false;
+	}
+	UInt32 serverFinalPacketLen = ReadMUInt32(packetHeader + 1);
+	if (packetHeader[0] != 'R' || serverFinalPacketLen < 8 || this->ReadPacket(cli, packetHeader, 4) != 4 || ReadMInt32(packetHeader) != 12)
+	{
+		this->log->LogMessage(CSTR("Invalid SASL final message"), IO::LogHandler::LogLevel::Error);
+		return false;
+	}
+	UIntOS serverFinalLen = serverFinalPacketLen - 8;
+	UnsafeArray<UTF8Char> serverFinal = MemAllocArr(UTF8Char, serverFinalLen);
+	Bool readFinal = this->ReadPacket(cli, (UnsafeArray<UInt8>)serverFinal, serverFinalLen) == serverFinalLen;
+	if (!readFinal)
+	{
+		MemFreeArr(serverFinal);
+		this->log->LogMessage(CSTR("Failed to read SASL final data"), IO::LogHandler::LogLevel::Error);
+		return false;
+	}
+	if (serverFinalLen < 3 || serverFinal[0] != 'v' || serverFinal[1] != '=')
+	{
+		MemFreeArr(serverFinal);
+		this->log->LogMessage(CSTR("PostgreSQL SASL authentication failed"), IO::LogHandler::LogLevel::Error);
+		return false;
+	}
+	UIntOS serverSignatureLen = base64.CalcBinSize(Text::CStringNN(serverFinal + 2, serverFinalLen - 2));
+	UInt8 serverSignature[32];
+	if (serverSignatureLen != sizeof(serverSignature))
+	{
+		MemFreeArr(serverFinal);
+		this->log->LogMessage(CSTR("Invalid SASL server signature"), IO::LogHandler::LogLevel::Error);
+		return false;
+	}
+	base64.DecodeBin(Text::CStringNN(serverFinal + 2, serverFinalLen - 2), serverSignature);
+	MemFreeArr(serverFinal);
+	UInt8 signatureDiff = 0;
+	for (UIntOS i = 0; i < sizeof(serverSignature); i++)
+	{
+		signatureDiff |= serverSignature[i] ^ expectedServerSignature[i];
+	}
+	if (signatureDiff != 0)
+	{
+		this->log->LogMessage(CSTR("Invalid SASL server signature"), IO::LogHandler::LogLevel::Error);
+		return false;
+	}
+	return true;
+}
+
+Bool DB::PostgreSQLTCPConn::ParseBackendKeyData(NN<Net::TCPClient> cli)
 {
 	UInt8 buff[8];
 	if (this->ReadPacket(cli, buff, 8) != 8)
@@ -72,57 +443,14 @@ Bool DB::PostgreSQLTCPConn::ParseAuthentication(NN<Net::TCPClient> cli)
 		return false;
 	}
 	
-	UInt32 len = ReadMUInt32(buff + 4);
-	if (len < 8)
-	{
-		return false;
-	}
-	
-	Int32 authType = ReadMInt32(buff);
-	switch (authType)
-	{
-		case 0:
-			return true;
-		case 5:
-			if (len < 12)
-			{
-				return false;
-			}
-			UInt8 salt[4];
-			if (this->ReadPacket(cli, salt, 4) != 4)
-			{
-				return false;
-			}
-			break;
-		default:
-			return false;
-	}
+	this->backendPID = ReadMUInt32(buff);
+	this->cancelKey = ReadMInt32(buff + 4);
 	return true;
 }
 
-Bool DB::PostgreSQLTCPConn::ParseBackendKeyData(NN<Net::TCPClient> cli)
+Bool DB::PostgreSQLTCPConn::ParseRowDescription(NN<Net::TCPClient> cli, UIntOS dataLen, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods)
 {
-	UInt8 buff[12];
-	if (this->ReadPacket(cli, buff, 12) != 12)
-	{
-		return false;
-	}
-	
-	this->backendPID = ReadMUInt32(buff + 4);
-	this->cancelKey = ReadMInt32(buff + 8);
-	return true;
-}
-
-Bool DB::PostgreSQLTCPConn::ParseRowDescription(NN<Net::TCPClient> cli, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods)
-{
-	UInt8 buff[4];
-	if (this->ReadPacket(cli, buff, 4) != 4)
-	{
-		return false;
-	}
-	
-	UInt32 len = ReadMUInt32(buff);
-	if (len < 4)
+	if (dataLen < 2)
 	{
 		return false;
 	}
@@ -153,15 +481,15 @@ Bool DB::PostgreSQLTCPConn::ParseRowDescription(NN<Net::TCPClient> cli, NN<Data:
 		}
 		colNames->Add(Text::String::New(nameBuff, (UIntOS)(p - nameBuff)));
 		
-		UInt8 typeInfo[12];
-		if (this->ReadPacket(cli, typeInfo, 12) != 12)
+		UInt8 typeInfo[18];
+		if (this->ReadPacket(cli, typeInfo, 18) != 18)
 		{
 			return false;
 		}
-		types->Add(ReadMUInt32(typeInfo));
-		typeMods->Add(ReadMInt32(typeInfo + 4));
+		types->Add(ReadMUInt32(typeInfo + 6));
+		typeMods->Add(ReadMInt32(typeInfo + 12));
 		
-		UInt16 fmtCode = ReadMUInt16(typeInfo + 8);
+		UInt16 fmtCode = ReadMUInt16(typeInfo + 16);
 		if (fmtCode != 0)
 		{
 			return false;
@@ -174,11 +502,10 @@ Bool DB::PostgreSQLTCPConn::ParseRowDescription(NN<Net::TCPClient> cli, NN<Data:
 Bool DB::PostgreSQLTCPConn::ParseDataRow(NN<Net::TCPClient> cli, UIntOS colCount, NN<Data::ArrayListObj<UnsafeArrayOpt<UInt8>>> values, NN<Data::ArrayListNative<UInt32>> lengths)
 {
 	UInt8 buff[4];
-	if (this->ReadPacket(cli, buff, 4) != 4)
+	if (this->ReadPacket(cli, buff, 2) != 2 || ReadMUInt16(buff) != colCount)
 	{
 		return false;
 	}
-	
 	for (UIntOS i = 0; i < colCount; i++)
 	{
 		Int32 valLen;
@@ -214,30 +541,23 @@ Bool DB::PostgreSQLTCPConn::ParseDataRow(NN<Net::TCPClient> cli, UIntOS colCount
 	return true;
 }
 
-Bool DB::PostgreSQLTCPConn::ParseCommandComplete(NN<Net::TCPClient> cli, OutParam<IntOS> rowChanged)
+Bool DB::PostgreSQLTCPConn::ParseCommandComplete(NN<Net::TCPClient> cli, UIntOS dataLen, OutParam<IntOS> rowChanged)
 {
 	rowChanged.Set(0);
-	
-	UInt8 buff[4];
-	if (this->ReadPacket(cli, buff, 4) != 4)
+	if (dataLen < 1)
 	{
 		return false;
 	}
-	
-	UInt32 len = ReadMUInt32(buff);
-	if (len < 5)
+	UnsafeArray<UTF8Char> buff = MemAllocArr(UTF8Char, dataLen);
+	if (this->ReadPacket(cli, (UnsafeArray<UInt8>)buff, dataLen) != dataLen)
 	{
-		return false;
-	}
-	
-	UIntOS readSize = len - 4;
-	if (this->ReadPacket(cli, buff, readSize) != readSize)
-	{
+		MemFreeArr(buff);
 		return false;
 	}
 	
 	Text::StringBuilderUTF8 sb;
-	sb.AppendSlow((const UTF8Char*)buff);
+	sb.AppendC(buff, dataLen - 1);
+	MemFreeArr(buff);
 	
 	if (sb.EndsWith(CSTR("1")))
 	{
@@ -260,49 +580,45 @@ Bool DB::PostgreSQLTCPConn::ParseCommandComplete(NN<Net::TCPClient> cli, OutPara
 	return true;
 }
 
-Bool DB::PostgreSQLTCPConn::ParseErrorResponse(NN<Net::TCPClient> cli, NN<Text::StringBuilderUTF8> errMsg)
+Bool DB::PostgreSQLTCPConn::ParseErrorResponse(NN<Net::TCPClient> cli, UIntOS dataLen, NN<Text::StringBuilderUTF8> errMsg)
 {
 	errMsg->ClearStr();
-	
-	UInt8 buff[4];
-	if (this->ReadPacket(cli, buff, 4) != 4)
+	if (dataLen == 0)
 	{
 		return false;
 	}
-	
-	UInt32 len = ReadMUInt32(buff);
-	if (len < 5)
-	{
-		return false;
-	}
-	
-	UIntOS readSize = len - 4;
-	UnsafeArray<UInt8> data = MemAllocArr(UInt8, readSize);
-	if (this->ReadPacket(cli, data, readSize) != readSize)
+	UnsafeArray<UInt8> data = MemAllocArr(UInt8, dataLen);
+	if (this->ReadPacket(cli, data, dataLen) != dataLen)
 	{
 		MemFreeArr(data);
 		return false;
 	}
 	
 	UnsafeArray<UTF8Char> p = (UnsafeArray<UTF8Char>)data.Ptr();
-	while (*p != 0)
+	UnsafeArray<UTF8Char> dataEnd = p + dataLen;
+	while (p < dataEnd && *p != 0)
 	{
-		switch (*p)
+		UTF8Char fieldType = *p++;
+		UnsafeArray<UTF8Char> fieldValue = p;
+		while (p < dataEnd && *p != 0) p++;
+		if (p == dataEnd)
+		{
+			MemFreeArr(data);
+			return false;
+		}
+		switch (fieldType)
 		{
 			case 'M':
-				p++;
-				errMsg->AppendSlow(UnsafeArray<const UTF8Char>(p));
+				errMsg->AppendC(fieldValue, (UIntOS)(p - fieldValue));
 				break;
 			case 'S':
-				p++;
 				if (errMsg->GetLength() > 0)
 				{
 					errMsg->AppendC(UTF8STRC("\n"));
 				}
-				errMsg->AppendSlow(UnsafeArray<const UTF8Char>(p));
+				errMsg->AppendC(fieldValue, (UIntOS)(p - fieldValue));
 				break;
 		}
-		while (*p != 0) p++;
 		p++;
 	}
 	
@@ -321,20 +637,14 @@ Bool DB::PostgreSQLTCPConn::Connect()
 	Net::SocketUtil::AddressInfo addr;
 	if (!this->clif->GetSocketFactory()->DNSResolveIP(server->ToCString(), addr))
 	{
-		if (log->HasHandler())
-		{
-			log->LogMessage(CSTR("Failed to resolve PostgreSQL server address"), IO::LogHandler::LogLevel::Error);
-		}
+		log->LogMessage(CSTR("Failed to resolve PostgreSQL server address"), IO::LogHandler::LogLevel::Error);
 		return false;
 	}
 	cli = this->clif->Create(addr, this->port, 60000);
 	if (cli->IsConnectError())
 	{
 		cli.Delete();
-		if (log->HasHandler())
-		{
-			log->LogMessage(CSTR("Failed to connect to PostgreSQL server"), IO::LogHandler::LogLevel::Error);
-		}
+		log->LogMessage(CSTR("Failed to connect to PostgreSQL server"), IO::LogHandler::LogLevel::Error);
 		return false;
 	}
 	
@@ -343,41 +653,81 @@ Bool DB::PostgreSQLTCPConn::Connect()
 	if (!this->SendStartupPacket(cli, OPTSTR_CSTR(this->uid), database->ToCString()))
 	{
 		this->Close();
-		if (log->HasHandler())
-		{
-			log->LogMessage(CSTR("Failed to send startup packet"), IO::LogHandler::LogLevel::Error);
-		}
+		log->LogMessage(CSTR("Failed to send startup packet"), IO::LogHandler::LogLevel::Error);
 		return false;
 	}
 	
 	if (!this->ParseAuthentication(cli))
 	{
 		this->Close();
-		if (log->HasHandler())
-		{
-			log->LogMessage(CSTR("Authentication failed"), IO::LogHandler::LogLevel::Error);
-		}
+		log->LogMessage(CSTR("Authentication failed"), IO::LogHandler::LogLevel::Error);
 		return false;
 	}
 	
-	if (!this->ParseBackendKeyData(cli))
+	Bool gotBackendKey = false;
+	while (true)
 	{
-		this->Close();
-		if (log->HasHandler())
+		UInt8 buff[5];
+		if (this->ReadPacket(cli, buff, 5) != 5)
 		{
-			log->LogMessage(CSTR("Failed to parse backend key data"), IO::LogHandler::LogLevel::Error);
+			this->Close();
+			log->LogMessage(CSTR("Failed to read PostgreSQL startup response"), IO::LogHandler::LogLevel::Error);
+			return false;
 		}
-		return false;
+		UInt32 len = ReadMUInt32(buff + 1);
+		if (len < 4)
+		{
+			this->Close();
+			log->LogMessage(CSTR("Invalid PostgreSQL startup response length"), IO::LogHandler::LogLevel::Error);
+			return false;
+		}
+		UIntOS dataLen = len - 4;
+		switch (buff[0])
+		{
+		case 'K':
+			if (dataLen != 8 || !this->ParseBackendKeyData(cli))
+			{
+				this->Close();
+				log->LogMessage(CSTR("Failed to parse backend key data"), IO::LogHandler::LogLevel::Error);
+				return false;
+			}
+			gotBackendKey = true;
+			break;
+		case 'Z':
+			if (dataLen != 1 || this->ReadPacket(cli, buff, 1) != 1 || !gotBackendKey)
+			{
+				this->Close();
+				log->LogMessage(CSTR("Invalid PostgreSQL startup completion"), IO::LogHandler::LogLevel::Error);
+				return false;
+			}
+			isTran = false;
+			log->LogMessage(CSTR("PostgreSQL DB Connected"), IO::LogHandler::LogLevel::Raw);
+			return true;
+		case 'E':
+			{
+				Text::StringBuilderUTF8 errMsg;
+				if (this->ParseErrorResponse(cli, dataLen, errMsg))
+				{
+					log->LogMessage(errMsg.ToCString(), IO::LogHandler::LogLevel::Error);
+				}
+			}
+			this->Close();
+			return false;
+		default:
+			{
+				UnsafeArray<UInt8> data = MemAllocArr(UInt8, dataLen);
+				Bool readSucc = this->ReadPacket(cli, data, dataLen) == dataLen;
+				MemFreeArr(data);
+				if (!readSucc)
+				{
+					this->Close();
+					log->LogMessage(CSTR("Failed to read PostgreSQL startup response data"), IO::LogHandler::LogLevel::Error);
+					return false;
+				}
+			}
+			break;
+		}
 	}
-	
-	isTran = false;
-	
-	if (log->HasHandler())
-	{
-		log->LogMessage(CSTR("PostgreSQL DB Connected"), IO::LogHandler::LogLevel::Raw);
-	}
-	
-	return true;
 }
 
 void DB::PostgreSQLTCPConn::InitConnection()
@@ -402,6 +752,7 @@ DB::PostgreSQLTCPConn::PostgreSQLTCPConn(NN<Net::TCPClientFactory> clif, NN<Text
 	this->uid = Text::String::CopyOrNull(uid);
 	this->pwd = Text::String::CopyOrNull(pwd);
 	this->log = log;
+	this->connCli = nullptr;
 	this->tzQhr = 0;
 	
 	if (Connect())
@@ -419,6 +770,7 @@ DB::PostgreSQLTCPConn::PostgreSQLTCPConn(NN<Net::TCPClientFactory> clif, Text::C
 	this->uid = Text::String::NewOrNull(uid);
 	this->pwd = Text::String::NewOrNull(pwd);
 	this->log = log;
+	this->connCli = nullptr;
 	this->tzQhr = 0;
 	
 	if (this->Connect())
@@ -460,10 +812,7 @@ void DB::PostgreSQLTCPConn::Close()
 		this->connCli.Delete();
 		this->connCli = nullptr;
 		
-		if (this->log->HasHandler())
-		{
-			this->log->LogMessage(CSTR("PostgreSQL DB Disconnected"), IO::LogHandler::LogLevel::Raw);
-		}
+		this->log->LogMessage(CSTR("PostgreSQL DB Disconnected"), IO::LogHandler::LogLevel::Raw);
 	}
 }
 
@@ -481,14 +830,12 @@ void DB::PostgreSQLTCPConn::Dispose()
 		return -2;
 	}
 	
-	UInt32 sqlLen = (UInt32)sql.leng;
-	UnsafeArray<UInt8> packet = MemAllocArr(UInt8, 6 + sqlLen);
-	packet[0] = 'Q';
-	WriteMInt32(&packet[1], 6 + sqlLen);
-	packet[5] = '\0';  // unnamed statement
-	sql.ConcatTo(&packet[6]);
+	UIntOS packetLen = sql.leng + 1;
+	UnsafeArray<UInt8> packet = MemAllocArr(UInt8, packetLen);
+	sql.ConcatTo(packet);
+	packet[sql.leng] = 0;
 	
-	if (!this->SendPacket(cli, 'Q', packet, 6 + sqlLen))
+	if (!this->SendPacket(cli, 'Q', packet, packetLen))
 	{
 		MemFreeArr(packet);
 		return -2;
@@ -503,28 +850,29 @@ void DB::PostgreSQLTCPConn::Dispose()
 		{
 			return -2;
 		}
+		UIntOS dataLen = ReadMUInt32(buff + 1) - 4;
 		
 		switch (buff[0])
 		{
 			case 'C':
-				if (!this->ParseCommandComplete(cli, rowChanged))
+				if (!this->ParseCommandComplete(cli, dataLen, rowChanged))
 				{
 					return -2;
 				}
 				break;
 			case 'Z':
-				WriteMInt32(buff + 4, ReadMInt32(buff + 4));
+				if (dataLen != 1 || this->ReadPacket(cli, buff, 1) != 1)
+				{
+					return -2;
+				}
 				return rowChanged;
 			case 'E':
 				{
 					Text::StringBuilderUTF8 errMsg;
-					if (this->ParseErrorResponse(cli, errMsg))
+					if (this->ParseErrorResponse(cli, dataLen, errMsg))
 					{
 						this->lastDataError = DataError::ExecSQLError;
-						if (this->log->HasHandler())
-						{
-							this->log->LogMessage(errMsg.ToCString(), IO::LogHandler::LogLevel::Error);
-						}
+						this->log->LogMessage(errMsg.ToCString(), IO::LogHandler::LogLevel::Error);
 					}
 				}
 				return -2;
@@ -547,14 +895,12 @@ void DB::PostgreSQLTCPConn::Dispose()
 		return nullptr;
 	}
 	
-	UInt32 sqlLen = (UInt32)sql.leng;
-	UnsafeArray<UInt8> packet = MemAllocArr(UInt8, 6 + sqlLen);
-	packet[0] = 'Q';
-	WriteMInt32(&packet[1], 6 + sqlLen);
-	packet[5] = '\0';  // unnamed statement
-	sql.ConcatTo(&packet[6]);
+	UIntOS packetLen = sql.leng + 1;
+	UnsafeArray<UInt8> packet = MemAllocArr(UInt8, packetLen);
+	sql.ConcatTo(packet);
+	packet[sql.leng] = 0;
 	
-	if (!this->SendPacket(cli, 'Q', packet, 6 + sqlLen))
+	if (!this->SendPacket(cli, 'Q', packet, packetLen))
 	{
 		MemFreeArr(packet);
 		return nullptr;
@@ -577,18 +923,19 @@ void DB::PostgreSQLTCPConn::Dispose()
 		{
 			return nullptr;
 		}
+		UIntOS dataLen = ReadMUInt32(buff + 1) - 4;
 		
 		switch (buff[0])
 		{
 			case 'C':
-				if (!this->ParseCommandComplete(cli, rowChanged))
+				if (!this->ParseCommandComplete(cli, dataLen, rowChanged))
 				{
 					return nullptr;
 				}
 				break;
 			case 'T':
 				hasResult = true;
-				if (!this->ParseRowDescription(cli, colNames, types, typeMods))
+				if (!this->ParseRowDescription(cli, dataLen, colNames, types, typeMods))
 				{
 					return nullptr;
 				}
@@ -612,18 +959,18 @@ void DB::PostgreSQLTCPConn::Dispose()
 				}
 				break;
 			case 'Z':
-				WriteMInt32(buff + 4, ReadMInt32(buff + 4));
+				if (dataLen != 1 || this->ReadPacket(cli, buff, 1) != 1)
+				{
+					return nullptr;
+				}
 				goto done_reading;
 			case 'E':
 				{
 					Text::StringBuilderUTF8 errMsg;
-					if (this->ParseErrorResponse(cli, errMsg))
+					if (this->ParseErrorResponse(cli, dataLen, errMsg))
 					{
 						this->lastDataError = DataError::ExecSQLError;
-						if (this->log->HasHandler())
-						{
-							this->log->LogMessage(errMsg.ToCString(), IO::LogHandler::LogLevel::Error);
-						}
+						this->log->LogMessage(errMsg.ToCString(), IO::LogHandler::LogLevel::Error);
 					}
 				}
 				return nullptr;

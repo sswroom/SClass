@@ -2081,6 +2081,8 @@ DB/PageRequest.h:
 @PageRequest.o
 DB/PostgreSQLTCPConn.h:
 @PostgreSQLTCPConn.o
+DB/PostgreSQLUtil.h:
+@PostgreSQLUtil.o
 DB/ReadingDB.h:
 @ReadingDB.o
 DB/ReadingDBTool.h:
@@ -5133,6 +5135,8 @@ SSWR/AVIRead/AVIRSyslogServerForm.h:
 @AVIRSyslogServerForm.o
 SSWR/AVIRead/AVIRSystemInfoLogForm.h:
 @AVIRSystemInfoLogForm.o
+SSWR/AVIRead/AVIRSystemLogForm.h:
+@AVIRSystemLogForm.o
 SSWR/AVIRead/AVIRTableMsgForm.h:
 @AVIRTableMsgForm.o
 SSWR/AVIRead/AVIRTCPLoadBalancerForm.h:

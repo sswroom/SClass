@@ -1,5 +1,5 @@
-#ifndef _SM_DB_MDBFILE
-#define _SM_DB_MDBFILE
+#ifndef _SM_DB_MSSQLCONN
+#define _SM_DB_MSSQLCONN
 #include "DB/DBTool.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -11,7 +11,6 @@ namespace DB
 		static Optional<DB::DBConn> OpenConnTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NN<IO::LogTool> log, Optional<Text::StringBuilderUTF8> errMsg, Bool continueOnConnError = false);
 		static Optional<DB::DBTool> CreateDBToolTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NN<IO::LogTool> log, Text::CString logPrefix, Bool continueOnConnError = false);
 		static Optional<Text::String> GetDriverNameNew();
-		static Bool IsNative();
 	};
 }
 #endif

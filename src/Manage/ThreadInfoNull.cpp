@@ -27,9 +27,9 @@ Manage::ThreadInfo::~ThreadInfo()
 	this->hand = nullptr;
 }
 
-Optional<Manage::ThreadContext> Manage::ThreadInfo::GetThreadContext()
+Bool Manage::ThreadInfo::GetThreadContext(ContextHandler hdlr, AnyType userObj)
 {
-	return nullptr;
+	return false;
 }
 
 UInt64 Manage::ThreadInfo::GetStartAddress()
