@@ -10,7 +10,7 @@ namespace Manage
 {
 	class ExceptionLogger
 	{
-	private:
+	public:
 		static void WriteContext(NN<IO::Writer> writer, NN<IO::Stream> stm, NN<Manage::ThreadContext> context, NN<Manage::AddressResolver> addrResol);
 		static void WriteStackTrace(NN<IO::Writer> writer, NN<Manage::StackTracer> tracer, NN<Manage::AddressResolver> addrResol);
 	public:

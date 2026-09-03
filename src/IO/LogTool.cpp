@@ -20,6 +20,35 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 
+struct LogTool_State
+{
+	NN<IO::LogTool> me;
+	IO::LogHandler::LogLevel level;
+};
+
+void __stdcall LogTool_ContextHandler(NN<Manage::ThreadContext> context, AnyType userObj)
+{
+	NN<LogTool_State> state = userObj.GetNN<LogTool_State>();
+	Manage::Process proc;
+	Manage::SymbolResolver addrResol(proc);
+	Manage::StackTracer tracer(context);
+	if (tracer.IsSupported())
+	{
+		Text::StringBuilderUTF8 sb;
+		while (tracer.GoToNextLevel())
+		{
+			if (sb.GetLength() > 0)
+			{
+				sb.Append(CSTR("\r\n\t"));
+			}
+			sb.AppendHex64(tracer.GetCurrentAddr());
+			sb.AppendC(UTF8STRC(" "));
+			addrResol.ResolveNameSB(sb, tracer.GetCurrentAddr());
+		}
+		state->me->LogMessage(sb.ToCString(), state->level);
+	}
+}
+
 void IO::LogTool::HandlerClose()
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
@@ -171,26 +200,10 @@ void IO::LogTool::LogStackTrace(LogHandler::LogLevel level)
 	NN<Manage::ThreadInfo> thread;
 	if (Manage::ThreadInfo::GetCurrThread().SetTo(thread))
 	{
-		Manage::Process proc;
-		Manage::SymbolResolver addrResol(proc);
-		Optional<Manage::ThreadContext> tContext = thread->GetThreadContext();
-		Manage::StackTracer tracer(tContext);
-		if (tracer.IsSupported())
-		{
-			Text::StringBuilderUTF8 sb;
-			while (tracer.GoToNextLevel())
-			{
-				if (sb.leng > 0)
-				{
-					sb.Append(CSTR("\r\n\t"));
-				}
-				sb.AppendHex64(tracer.GetCurrentAddr());
-				sb.AppendC(UTF8STRC(" "));
-				addrResol.ResolveNameSB(sb, tracer.GetCurrentAddr());
-			}
-			this->LogMessage(sb.ToCString(), level);
-		}
-		tContext.Delete();
+		LogTool_State state;
+		state.me = *this;
+		state.level = level;
+		thread->GetThreadContext(LogTool_ContextHandler, &state);
 		thread.Delete();
 	}
 

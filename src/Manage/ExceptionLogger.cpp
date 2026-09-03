@@ -11,6 +11,41 @@
 #include "Text/UTF8Writer.h"
 
 #define STACKDUMPSIZE 4096
+struct ExceptionLoggerState
+{
+	NN<Manage::SymbolResolver> symResol;
+	NN<Text::StringBuilderUTF8> sb;
+	NN<Text::UTF8Writer> writer;
+};
+
+void __stdcall ExceptionLogger_ContextHandler(NN<Manage::ThreadContext> context, AnyType userObj)
+{
+	NN<ExceptionLoggerState> state = userObj.GetNN<ExceptionLoggerState>();
+	state->sb->ClearStr();
+	state->sb->AppendC(UTF8STRC("Curr address 0x"));
+	state->sb->AppendHexOS(context->GetInstAddr());
+	state->sb->AppendC(UTF8STRC(" "));
+	state->symResol->ResolveNameSB(state->sb, context->GetInstAddr());
+	state->writer->WriteLine(state->sb->ToCString());
+
+	{
+		Manage::StackTracer tracer(context);
+		Manage::ExceptionLogger::WriteStackTrace(state->writer, tracer, state->symResol);
+	}
+}
+
+struct ExceptionLoggerContextState
+{
+	NN<Manage::SymbolResolver> symResol;
+	NN<IO::Stream> fs;
+	NN<Text::UTF8Writer> writer;
+};
+
+void __stdcall ExceptionLogger_ContextHandler2(NN<Manage::ThreadContext> context, AnyType userObj)
+{
+	NN<ExceptionLoggerContextState> state = userObj.GetNN<ExceptionLoggerContextState>();
+	Manage::ExceptionLogger::WriteContext(state->writer, state->fs, context, state->symResol);
+}
 
 void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream> stm, NN<Manage::ThreadContext> context, NN<Manage::AddressResolver> addrResol)
 {
@@ -398,7 +433,6 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 	{
 		Data::ArrayListNN<Manage::ThreadInfo> threadList;
 		NN<Manage::ThreadInfo> thread;
-		NN<Manage::ThreadContext> tCont;
 		UInt64 startAddr;
 		proc.GetThreads(threadList);
 		i = 0;
@@ -436,22 +470,11 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 
 			if (!thread->IsCurrThread())
 			{
+				ExceptionLoggerState state;
+				state.symResol = symResol;
+				state.sb = sb;
 				thread->Suspend();
-				if (thread->GetThreadContext().SetTo(tCont))
-				{
-					sb.ClearStr();
-					sb.AppendC(UTF8STRC("Curr address 0x"));
-					sb.AppendHexOS(tCont->GetInstAddr());
-					sb.AppendC(UTF8STRC(" "));
-					symResol.ResolveNameSB(sb, tCont->GetInstAddr());
-					writer.WriteLine(sb.ToCString());
-
-					{
-						Manage::StackTracer tracer(tCont);
-						WriteStackTrace(writer, tracer, symResol);
-					}
-					tCont.Delete();
-				}
+				thread->GetThreadContext(ExceptionLogger_ContextHandler, &state);
 				thread->Resume();
 			}
 			else
@@ -486,7 +509,6 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 	{
 		Data::ArrayListNN<Manage::ThreadInfo> threadList;
 		NN<Manage::ThreadInfo> thread;
-		NN<Manage::ThreadContext> tCont;
 		proc.GetThreads(threadList);
 		i = 0;
 		j = threadList.GetCount();
@@ -503,11 +525,11 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 				sb.AppendC(UTF8STRC(")"));
 				writer.WriteLine(sb.ToCString());
 
-				if (thread->GetThreadContext().SetTo(tCont))
-				{
-					WriteContext(writer, fs, tCont, symResol);
-					tCont.Delete();
-				}
+				ExceptionLoggerContextState state;
+				state.symResol = symResol;
+				state.fs = fs;
+				state.writer = writer;
+				thread->GetThreadContext(ExceptionLogger_ContextHandler2, &state);
 			}
 			thread.Delete();
 			i++;

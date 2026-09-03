@@ -166,19 +166,31 @@ Manage::ThreadInfo::~ThreadInfo()
 	}
 }
 
-Optional<Manage::ThreadContext> Manage::ThreadInfo::GetThreadContext()
+Bool Manage::ThreadInfo::GetThreadContext(ContextHandler hdlr, AnyType userObj)
 {
-	Optional<Manage::ThreadContext> outContext;
+	NN<Manage::ThreadContext> outContext;
 
 	if (GetCurrentThreadId() ==  this->threadId)
 	{
-		return GetThreadContextHand(threadId, procId, this->hand);
+		if (GetThreadContextHand(threadId, procId, this->hand).SetTo(outContext))
+		{
+			hdlr(outContext, userObj);
+			outContext.Delete();
+			return true;
+		}
+		return false;
 	}
 
 	SuspendThread((HANDLE)this->hand.OrNull());
-	outContext = GetThreadContextHand(threadId, procId, this->hand);
+	if (GetThreadContextHand(threadId, procId, this->hand).SetTo(outContext))
+	{
+		hdlr(outContext, userObj);
+		outContext.Delete();
+		ResumeThread((HANDLE)this->hand.OrNull());
+		return true;
+	}
 	ResumeThread((HANDLE)this->hand.OrNull());
-	return outContext;
+	return false;
 }
 
 typedef LONG    NTSTATUS;
