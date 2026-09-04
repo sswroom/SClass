@@ -15,6 +15,11 @@
 
 #include <stdio.h>
 
+struct Manage::CPUInfo::ClassData
+{
+	Optional<Text::String> cpuName;
+};
+
 Manage::CPUInfoDetail::CPUInfoDetail()
 {
 	this->cpuModel = nullptr;
@@ -49,13 +54,14 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 		}
 		fs.SeekFromBeginning(0);
 		this->cpuModel = Manage::CPUDB::ParseCPUInfo(fs);
-		if (this->cpuModel.v == 0)
+		if (this->cpuModel.v.IsNull())
 		{
-			if (this->clsData && Text::StrEquals((const UTF8Char*)this->clsData, (const UTF8Char*)"spade"))
+			NN<Text::String> s;
+			if (this->clsData->cpuName.SetTo(s) && s->Equals(UTF8STRC("spade")))
 			{
 				this->cpuModel = CSTR("MSM8255");
 			}
-			else if (this->clsData && Text::StrEquals((const UTF8Char*)this->clsData, (const UTF8Char*)"Sony Mobile fusion3"))
+			else if (this->clsData->cpuName.SetTo(s) && s->Equals(UTF8STRC("Sony Mobile fusion3")))
 			{
 				this->cpuModel = CSTR("APQ8064");
 			}
