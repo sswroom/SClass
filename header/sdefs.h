@@ -646,10 +646,19 @@ UIntOS __inline MulDivUOS(UIntOS x, UIntOS y, UIntOS z)
 #define BSWAPU64(v) __builtin_bswap64(v)
 #if __GNUC__ >= 5
 #define MyADD_UOS(v1, v2, outPtr) __builtin_add_overflow(v1, v2, outPtr)
+#if defined(CPU_X86_64) || defined(CPU_X86_32)
 #if _OSINT_SIZE == 64
 #define MyADC_UOS(v1, v2, c, cout) __builtin_addcll(v1, v2, c, cout)
 #else
 #define MyADC_UOS(v1, v2, c, cout) __builtin_addcl(v1, v2, c, cout)
+#endif
+#else
+UIntOS __inline MyADC_UOS(UIntOS v1, UIntOS v2, Bool c, UIntOS* cout)
+{
+	v1 += v2 + c;
+	*cout = v1 < v2;
+	return v1;
+}
 #endif
 #else
 Bool __inline MyADD_UOS(UIntOS v1, UIntOS v2, UIntOS* outPtr)
@@ -662,17 +671,26 @@ Bool __inline MyADD_UOS(UIntOS v1, UIntOS v2, UIntOS* outPtr)
 UIntOS __inline MyADC_UOS(UIntOS v1, UIntOS v2, Bool c, UIntOS* cout)
 {
 	v1 += v2 + c;
-	*cout = v1 < v2
+	*cout = v1 < v2;
 	return v1;
 }
 #endif
 
 #if __GNUC__ > 4
 #define MySUB_UOS(v1, v2, outPtr) __builtin_sub_overflow(v1, v2, outPtr)
+#if defined(CPU_X86_64) || defined(CPU_X86_32)
 #if _OSINT_SIZE == 64
 #define MySBB_UOS(v1, v2, c, cout) __builtin_subcll(v1, v2, c, cout)
 #else
 #define MySBB_UOS(v1, v2, c, cout) __builtin_subcl(v1, v2, c, cout)
+#endif
+#else
+UIntOS __inline MySBB_UOS(UIntOS v1, UIntOS v2, Bool c, UIntOS* cout)
+{
+	v2 = v1 - v2 - c;
+	*cout = v1 < v2;
+	return v1;
+}
 #endif
 #else
 Bool __inline MySUB_UOS(UIntOS v1, UIntOS v2, UIntOS* outPtr)
