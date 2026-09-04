@@ -9,6 +9,12 @@
 #if defined(__APPLE__)
 #include <sys/sysctl.h>
 #endif
+
+struct Manage::CPUInfo::ClassData
+{
+	Optional<Text::String> cpuName;
+};
+
 Manage::CPUInfo::CPUInfo()
 {
 	this->infoCnt = 0;
@@ -16,14 +22,15 @@ Manage::CPUInfo::CPUInfo()
 	this->familyId = 0;
 	this->model = 0;
 	this->steppingId = 0;
-	this->clsData = 0;
+	this->clsData = MemAllocNN(ClassData);
+	this->clsData->cpuName = nullptr;
 
 #if defined(__APPLE__)
 	UTF8Char sbuff[256];
 	size_t size = sizeof(sbuff);
 	if (sysctlbyname("machdep.cpu.brand_string", sbuff, &size, 0, 0) == 0)
 	{
-		this->clsData = (void*)Text::StrCopyNewC(sbuff, size).Ptr();
+		this->clsData->cpuName = Text::String::New(sbuff, size);
 		if (Text::StrStartsWithC(sbuff, (UIntOS)size, UTF8STRC("Apple")))
 		{
 			this->brand = Manage::CPUVendor::CB_APPLE;
@@ -50,9 +57,8 @@ Manage::CPUInfo::CPUInfo()
 				i = sb.IndexOf(UTF8STRC(": "));
 				if (i != INVALID_INDEX && sysType <= 1)
 				{
-					if (this->clsData)
-						Text::StrDelNew((const UTF8Char*)this->clsData);
-					this->clsData = (void*)Text::StrCopyNew(sb.ToString() + i + 2).Ptr();
+					OPTSTR_DEL(this->clsData->cpuName);
+					this->clsData->cpuName = Text::String::New(sb.ToCString().Substring(i + 2));
 					sysType = 2;
 				}
 				if (sb.IndexOf(UTF8STRC(": BCM")) != INVALID_INDEX)
@@ -103,9 +109,8 @@ Manage::CPUInfo::CPUInfo()
 					this->brand = Manage::CPUVendor::CB_ATHEROS;
 				}
 				i = sb.IndexOf(UTF8STRC(": "));
-				if (this->clsData)
-					Text::StrDelNew((const UTF8Char*)this->clsData);
-				this->clsData = (void*)Text::StrCopyNew(sb.ToString() + i + 2).Ptr();
+				OPTSTR_DEL(this->clsData->cpuName);
+				this->clsData->cpuName = Text::String::New(sb.ToCString().Substring(i + 2));
 				sysType = 3;
 			}
 			else if (sb.StartsWith(UTF8STRC("CPU architecture")))
@@ -128,9 +133,8 @@ Manage::CPUInfo::CPUInfo()
 				i = sb.IndexOf(UTF8STRC(": "));
 				if (i != INVALID_INDEX && sysType <= 0)
 				{
-					if (this->clsData)
-						Text::StrDelNew((const UTF8Char*)this->clsData);
-					this->clsData = (void*)Text::StrCopyNew(sb.ToString() + i + 2).Ptr();
+					OPTSTR_DEL(this->clsData->cpuName);
+					this->clsData->cpuName = Text::String::New(sb.ToCString().Substring(i + 2));
 					sysType = 1;
 				}
 			}
@@ -187,9 +191,8 @@ void Manage::CPUInfo::GetFeatureFlags(OutParam<Int32> flag1, OutParam<Int32> fla
 
 Manage::CPUInfo::~CPUInfo()
 {
-	if (this->clsData)
-		Text::StrDelNew((const UTF8Char*)this->clsData);
-	this->clsData = 0;
+	OPTSTR_DEL(this->clsData->cpuName);
+	MemFreeNN(this->clsData);
 }
 
 UIntOS Manage::CPUInfo::GetInfoCnt()
@@ -214,9 +217,10 @@ Bool Manage::CPUInfo::GetInfoName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 
 UnsafeArrayOpt<UTF8Char> Manage::CPUInfo::GetCPUName(UnsafeArray<UTF8Char> sbuff)
 {
-	if (this->clsData)
+	NN<Text::String> cpuName;
+	if (this->clsData->cpuName.SetTo(cpuName))
 	{
-		return Text::StrConcat(sbuff, (const UTF8Char*)this->clsData);
+		return cpuName->ConcatTo(sbuff);
 	}
 	return nullptr;
 }
