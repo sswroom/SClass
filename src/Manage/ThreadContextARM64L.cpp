@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
-#include "Manage/DasmARM.h"
+#include "Manage/DasmARM64.h"
 #include "Manage/ThreadContextARM64.h"
 #include <sys/ucontext.h>
 
@@ -308,7 +308,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextARM64::GetRegister(UIntOS index, U
 		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("PState"));
 	default:
-		return 0;
+		return nullptr;
 	}
 #endif
 }
@@ -432,7 +432,9 @@ Bool Manage::ThreadContextARM64::GetRegs(NN<Manage::Dasm::Dasm_Regs> regs) const
 
 Optional<Manage::Dasm> Manage::ThreadContextARM64::CreateDasm() const
 {
-	return 0;
+	NN<Manage::DasmARM64> dasm;
+	NEW_CLASSNN(dasm, Manage::DasmARM64());
+	return dasm;
 }
 
 void *Manage::ThreadContextARM64::GetContext() const
