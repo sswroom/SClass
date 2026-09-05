@@ -83,7 +83,7 @@ extern "C" void MemClear(void *buff, UIntOS count);
 #define MemClear(buff, count) memset(buff, 0, count);
 #endif
 //FORCEINLINE void MemCopyNOShort(UnsafeArray<void> destPtr, UnsafeArray<const void> srcPtr, UIntOS len) { memcpy(destPtr.Ptr(), srcPtr.Ptr(), len); }
-#define MemCopyNOShort(destPtr, srcPtr, len) memcpy(destPtr, srcPtr, len)
+#define MemCopyNOShort(destPtr, srcPtr, len) memcpy(destPtr, srcPtr, (size_t)(len))
 
 #if defined(HAS_ASM32)
 extern "C"
