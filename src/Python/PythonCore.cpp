@@ -22,52 +22,92 @@ Python::PythonCore::~PythonCore()
 
 Optional<Python::PythonObject> Python::PythonCore::GetConstNone() const
 {
+#if PY_VERSION_HEX >= 0x030D0000
 	return PythonObject::FromPtr(Py_GetConstant(Py_CONSTANT_NONE));
+#else
+	return PythonObject::FromPtr(Py_None);
+#endif
 }
 
 Optional<Python::PythonObject> Python::PythonCore::GetConstFalse() const
 {
+#if PY_VERSION_HEX >= 0x030D0000
 	return PythonObject::FromPtr(Py_GetConstant(Py_CONSTANT_FALSE));
+#else
+	return PythonObject::FromPtr(Py_False);
+#endif
 }
 
 Optional<Python::PythonObject> Python::PythonCore::GetConstTrue() const
 {
+#if PY_VERSION_HEX >= 0x030D0000
 	return PythonObject::FromPtr(Py_GetConstant(Py_CONSTANT_TRUE));
+#else
+	return PythonObject::FromPtr(Py_True);
+#endif
 }
 
 Optional<Python::PythonObject> Python::PythonCore::GetConstEllipsis() const
 {
+#if PY_VERSION_HEX >= 0x030D0000
 	return PythonObject::FromPtr(Py_GetConstant(Py_CONSTANT_ELLIPSIS));
+#else
+	return PythonObject::FromPtr(Py_Ellipsis);
+#endif
 }
 
 Optional<Python::PythonObject> Python::PythonCore::GetConstNotImplemented() const
 {
+#if PY_VERSION_HEX >= 0x030D0000
 	return PythonObject::FromPtr(Py_GetConstant(Py_CONSTANT_NOT_IMPLEMENTED));
+#else
+	return PythonObject::FromPtr(Py_NotImplemented);
+#endif
 }
 
 Optional<Python::PythonObject> Python::PythonCore::GetConstZero() const
 {
+#if PY_VERSION_HEX >= 0x030D0000
 	return PythonObject::FromPtr(Py_GetConstant(Py_CONSTANT_ZERO));
+#else
+	return PythonObject::FromPtr(PyLong_FromLong(0));
+#endif
 }
 
 Optional<Python::PythonObject> Python::PythonCore::GetConstOne() const
 {
+#if PY_VERSION_HEX >= 0x030D0000
 	return PythonObject::FromPtr(Py_GetConstant(Py_CONSTANT_ONE));
+#else
+	return PythonObject::FromPtr(PyLong_FromLong(1));
+#endif
 }
 
 Optional<Python::PythonObject> Python::PythonCore::GetConstEmptyStr() const
 {
+#if PY_VERSION_HEX >= 0x030D0000
 	return PythonObject::FromPtr(Py_GetConstant(Py_CONSTANT_EMPTY_STR));
+#else
+	return PythonObject::FromPtr(PyUnicode_FromString(""));
+#endif
 }
 
 Optional<Python::PythonObject> Python::PythonCore::GetConstEmptyBytes() const
 {
+#if PY_VERSION_HEX >= 0x030D0000
 	return PythonObject::FromPtr(Py_GetConstant(Py_CONSTANT_EMPTY_BYTES));
+#else
+	return PythonObject::FromPtr(PyBytes_FromString(""));
+#endif
 }
 
 Optional<Python::PythonObject> Python::PythonCore::GetConstEmptyTuple() const
 {
+#if PY_VERSION_HEX >= 0x030D0000
 	return PythonObject::FromPtr(Py_GetConstant(Py_CONSTANT_EMPTY_TUPLE));
+#else
+	return PythonObject::FromPtr(PyTuple_New(0));
+#endif
 }
 
 Int32 Python::PythonCore::RunString(UnsafeArray<const UTF8Char> s)
