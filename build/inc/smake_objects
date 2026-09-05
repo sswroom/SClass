@@ -634,7 +634,7 @@ SystemInfoAndroid.o: ../../src/IO/SystemInfoAndroid.cpp
 SystemInfoEurotech.o: ../../src/IO/SystemInfoEurotech.cpp
 SystemInfoFreeBSD.o: ../../src/IO/SystemInfoFreeBSD.cpp
 SystemInfoLog.o: ../../src/IO/SystemInfoLog.cpp
-SystemInfoLx86.o: ../../src/IO/SystemInfoLx86.cpp
+SystemInfoL.o: ../../src/IO/SystemInfoL.cpp
 SystemInfoMLW.o: ../../src/IO/SystemInfoMLW.cpp
 SystemInfoMultitech.o: ../../src/IO/SystemInfoMultitech.cpp
 SystemInfoNetComm.o: ../../src/IO/SystemInfoNetComm.cpp
