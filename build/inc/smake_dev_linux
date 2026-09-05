@@ -4,7 +4,7 @@ IO/GPUManager.h:
 IO/RobustelInfo.h:
 @RobustelInfo_Null.o
 IO/SystemInfo.h:
-@SystemInfoLx86.o
+@SystemInfoL.o
 
 Media/CameraManager.h:
 @CameraManagerNul.o

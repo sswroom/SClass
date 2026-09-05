@@ -6,7 +6,6 @@
 
 IO::SystemInfo::SystemInfo()
 {
-	this->clsData = 0;
 }
 
 IO::SystemInfo::~SystemInfo()
@@ -15,12 +14,12 @@ IO::SystemInfo::~SystemInfo()
 
 UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> sbuff)
 {
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformSN(UnsafeArray<UTF8Char> sbuff)
 {
-	return 0;
+	return nullptr;
 }
 
 UInt64 IO::SystemInfo::GetTotalMemSize()
