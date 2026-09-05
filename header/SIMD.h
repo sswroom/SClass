@@ -486,7 +486,7 @@ template <int cnt> UInt8x16 FORCEINLINE SIMD_shift_by_bit(UInt8x16 v1)
 	UInt64x2 spill = vshlq_n_u64(src, 64 - cnt);
 	spill = vextq_u64(spill, spill, 1);
 	UInt64 maskArray[2] = { 0xFFFFFFFFFFFFFFFFULL, 0x0ULL };
-	UInt64x2 mask = vld1q_u64(maskArray);
+	UInt64x2 mask = vld1q_u64((uint64_t*)maskArray);
 	spill = vandq_u64(spill, mask);
 	return vorrq_u64(shifted, spill);
 }

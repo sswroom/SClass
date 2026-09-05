@@ -1275,7 +1275,7 @@ Bool DasmARM_87(NN<Manage::DasmARM::Session> sess)
 	UInt32 *regPtrs;
 	UInt32 *regPtrs2;
 	UInt32 *regPtrd;
-	UInt32 addr;
+	//UInt32 addr;
 	sess->regs.PC += 4;
 	switch (sess->codeBuff[2] & 0xf0)
 	{
@@ -1286,7 +1286,7 @@ Bool DasmARM_87(NN<Manage::DasmARM::Session> sess)
 		sess->sbuff = DasmARM_ParseReg32(sess, sess->sbuff, (sess->codeBuff[2] & 0xf), &regPtrs);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", +"));
 		sess->sbuff = DasmARM_ParseReg32(sess, sess->sbuff, (sess->codeBuff[0] & 0xf), &regPtrs2);
-		addr = DasmARM_ParseImmShift(sess, *regPtrs2);
+		DasmARM_ParseImmShift(sess, *regPtrs2); //addr = 
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("]\r\n"));
 		return true;
 	case 0x90:
@@ -1302,7 +1302,7 @@ Bool DasmARM_87(NN<Manage::DasmARM::Session> sess)
 			sess->sbuff = DasmARM_ParseReg32(sess, sess->sbuff, (sess->codeBuff[2] & 0xf), &regPtrs);
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", +"));
 			sess->sbuff = DasmARM_ParseReg32(sess, sess->sbuff, (sess->codeBuff[0] & 0xf), &regPtrs2);
-			addr = DasmARM_ParseImmShift(sess, *regPtrs2);
+			DasmARM_ParseImmShift(sess, *regPtrs2); //addr = 
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("]\r\n"));
 	/*		*regPtrd = val;
 			if (regPtrd == 15)
