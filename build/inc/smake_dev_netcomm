@@ -5,8 +5,6 @@ IO/GPUManager.h:
 @GPUManagerNull.o
 IO/RobustelInfo.h:
 @RobustelInfo_Null.o
-IO/SMBIOSUtil.h:
-@SMBIOSUtilNull.o
 IO/SystemInfo.h:
 @SystemInfoNetComm.o
 

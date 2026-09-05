@@ -16,8 +16,6 @@ IO/RobustelInfo.h:
 @RobustelInfo.o
 IO/RobustelStatus.h:
 @RobustelStatus.o
-IO/SMBIOSUtil.h:
-@SMBIOSUtilNull.o
 IO/SystemInfo.h:
 @SystemInfoEurotech.o
 

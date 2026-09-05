@@ -55,6 +55,8 @@ IO/SensorManager.h:
 @SensorManagerNull.o
 IO/ServiceManager.h:
 @ServiceManagerNull.o
+IO/SMBIOSUtil.h:
+@SMBIOSUtilMac.o
 IO/USBInfo.h:
 @USBInfoMac.o
 IO/Watchdog.h:

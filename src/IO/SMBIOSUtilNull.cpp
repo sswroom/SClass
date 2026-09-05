@@ -3,5 +3,5 @@
 
 Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 {
-	return 0;
+	return nullptr;
 }

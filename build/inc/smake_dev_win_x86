@@ -3,8 +3,6 @@ IO/GPUManager.h:
 @GPUManagerW.o
 IO/RobustelInfo.h:
 @RobustelInfo_Null.o
-IO/SMBIOSUtil.h:
-@SMBIOSUtilW.o
 IO/SystemInfo.h:
 @SystemInfoW.o
 

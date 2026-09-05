@@ -57,6 +57,8 @@ IO/SensorUnknownAndroid.h:
 @SensorUnknownAndroid.o
 IO/ServiceManager.h:
 @ServiceManagerNull.o
+IO/SMBIOSUtil.h:
+@SMBIOSUtilNull.o
 IO/USBInfo.h:
 @USBInfoL.o
 IO/Watchdog.h:

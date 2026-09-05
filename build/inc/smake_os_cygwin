@@ -78,6 +78,8 @@ IO/SensorWin.h:
 @SensorWin.o
 IO/ServiceManager.h:
 @ServiceManagerW.o
+IO/SMBIOSUtil.h:
+@SMBIOSUtilW.o
 IO/USBInfo.h:
 @USBInfoW.o
 IO/Watchdog.h:

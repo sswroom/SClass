@@ -70,6 +70,8 @@ IO/SensorManager.h:
 @SensorManagerNull.o
 IO/ServiceManager.h:
 @ServiceManagerL.o
+IO/SMBIOSUtil.h:
+@SMBIOSUtilL.o
 IO/USBInfo.h:
 @USBInfoL.o
 IO/Watchdog.h:

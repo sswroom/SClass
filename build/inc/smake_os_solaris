@@ -50,6 +50,8 @@ IO/SDCardMgr.h:
 @SDCardMgrL.o
 IO/SensorManager.h:
 @SensorManagerNull.o
+IO/SMBIOSUtil.h:
+@SMBIOSUtilNull.o
 IO/USBInfo.h:
 @USBInfoL.o
 IO/Watchdog.h:
