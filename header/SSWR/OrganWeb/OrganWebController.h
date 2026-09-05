@@ -26,7 +26,7 @@ namespace SSWR
 			static UIntOS GetPerPage(Bool isMobile);
 			Optional<Net::WebServer::WebSession> ParseRequestEnv(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<RequestEnv> env, Bool keepSess);
 
-			static void ResponseMstm(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<IO::MemoryStream> mstm, Text::CStringNN contType);
+			static void ResponseMstm(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<IO::MemoryStream> mstm, Text::CStringNN contType, Bool noCache);
 
 			void WriteHeaderPart1(NN<IO::Writer> writer, UnsafeArray<const UTF8Char> title, Bool isMobile);
 			void WriteHeaderPart2(NN<IO::Writer> writer, Optional<WebUserInfo> user, UnsafeArrayOpt<const UTF8Char> onLoadFunc);

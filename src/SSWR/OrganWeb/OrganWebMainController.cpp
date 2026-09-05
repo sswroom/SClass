@@ -813,7 +813,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 
 		me->WriteFooter(writer);
 		mutUsage.EndUse();
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"), true);
 		return true;
 	}
 	else
@@ -1110,7 +1110,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NN<Net::Web
 		writer.WriteLine(CSTR("</table></form>"));
 		me->WriteFooter(writer);
 		mutUsage.EndUse();
-		ResponseMstm(req, resp, mstm, CSTR("text/html"));
+		ResponseMstm(req, resp, mstm, CSTR("text/html"), true);
 		return true;
 	}
 	else
@@ -1531,7 +1531,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 
 				me->WriteFooter(writer);
 				mutUsage.EndUse();
-				ResponseMstm(req, resp, mstm, CSTR("text/html"));
+				ResponseMstm(req, resp, mstm, CSTR("text/html"), true);
 				return true;
 			}
 			else
@@ -1753,7 +1753,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 
 				me->WriteFooter(writer);
 				mutUsage.EndUse();
-				ResponseMstm(req, resp, mstm, CSTR("text/html"));
+				ResponseMstm(req, resp, mstm, CSTR("text/html"), true);
 				return true;
 			}
 			else
@@ -1918,7 +1918,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 
 					me->WriteFooter(writer);
 					mutUsage.EndUse();
-					ResponseMstm(req, resp, mstm, CSTR("text/html"));
+					ResponseMstm(req, resp, mstm, CSTR("text/html"), true);
 
 					srcURL->Release();
 					imgURL->Release();
@@ -2116,7 +2116,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 
 					me->WriteFooter(writer);
 					mutUsage.EndUse();
-					ResponseMstm(req, resp, mstm, CSTR("text/html"));
+					ResponseMstm(req, resp, mstm, CSTR("text/html"), true);
 
 					fileNameList.FreeAll();
 					return true;

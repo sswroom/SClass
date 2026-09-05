@@ -59,10 +59,16 @@ Optional<Net::WebServer::WebSession> SSWR::OrganWeb::OrganWebController::ParseRe
 	return nullptr;
 }
 
-void SSWR::OrganWeb::OrganWebController::ResponseMstm(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<IO::MemoryStream> mstm, Text::CStringNN contType)
+void SSWR::OrganWeb::OrganWebController::ResponseMstm(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<IO::MemoryStream> mstm, Text::CStringNN contType, Bool noCache)
 {
 	resp->AddDefHeaders(req);
 	resp->AddContentType(contType);
+	if (noCache)
+	{
+		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache, no-store, must-revalidate"));
+		resp->AddHeader(CSTR("Pragma"), CSTR("no-cache"));
+		resp->AddHeader(CSTR("Expires"), CSTR("0"));
+	}
 	mstm->SeekFromBeginning(0);
 	Net::WebServer::HTTPServerUtil::SendContent(req, resp, contType, mstm->GetLength(), mstm);
 }

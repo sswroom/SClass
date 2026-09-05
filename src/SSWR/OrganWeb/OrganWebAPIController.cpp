@@ -1381,6 +1381,80 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPhotoPos(NN<Net::WebSer
 	return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\"}"));
 }
 
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPhotoSetDesc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	Int32 id;
+	NN<Text::String> descript;
+	NN<WebUserInfo> user;
+	req->ParseHTTPForm();
+	if (env.user.SetTo(user) && req->GetHTTPFormInt32(CSTR("id"), id) && req->GetHTTPFormStr(CSTR("descript")).SetTo(descript))
+	{
+		Sync::RWMutexUsage mutUsage;
+		NN<UserFileInfo> file;
+		if (me->env->UserfileGet(mutUsage, id).SetTo(file) && (user->userType == UserType::Admin || file->webuserId == user->id))
+		{
+			if (me->env->UserfileUpdateDesc(mutUsage, id, descript->ToCString()))
+			{
+				return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"ok\"}"));
+			}
+		}
+	}
+	return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\"}"));
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPhotoRotate(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	Int32 id;
+	NN<WebUserInfo> user;
+	req->ParseHTTPForm();
+	if (env.user.SetTo(user) && req->GetHTTPFormInt32(CSTR("id"), id))
+	{
+		Sync::RWMutexUsage mutUsage;
+		NN<UserFileInfo> file;
+		if (me->env->UserfileGet(mutUsage, id).SetTo(file) && (user->userType == UserType::Admin || file->webuserId == user->id))
+		{
+			if (me->env->UserfileUpdateRotType(mutUsage, id, (file->rotType + 1) & 3))
+			{
+				return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"ok\"}"));
+			}
+		}
+	}
+	return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\"}"));
+}
+
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPhotoSetSpPhoto(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	Int32 id;
+	Int32 speciesId;
+	NN<WebUserInfo> user;
+	req->ParseHTTPForm();
+	if (env.user.SetTo(user) && req->GetHTTPFormInt32(CSTR("id"), id) && req->GetHTTPFormInt32(CSTR("speciesId"), speciesId))
+	{
+		Sync::RWMutexUsage mutUsage;
+		NN<UserFileInfo> file;
+		if (me->env->UserfileGet(mutUsage, id).SetTo(file) && (user->userType == UserType::Admin || file->webuserId == user->id))
+		{
+			if (me->env->SpeciesSetPhotoId(mutUsage, speciesId, id))
+			{
+				return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"ok\"}"));
+			}
+		}
+	}
+	return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\"}"));
+}
+
 Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcUnfinPeak(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
 	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
@@ -3104,6 +3178,9 @@ SSWR::OrganWeb::OrganWebAPIController::OrganWebAPIController(NN<Net::WebServer::
 	this->AddService(CSTR("/api/photoupload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUpload);
 	this->AddService(CSTR("/api/photoname"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoName);
 	this->AddService(CSTR("/api/photopos"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoPos);
+	this->AddService(CSTR("/api/photosetdesc"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoSetDesc);
+	this->AddService(CSTR("/api/photorotate"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoRotate);
+	this->AddService(CSTR("/api/photosetspphoto"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoSetSpPhoto);
 	this->AddService(CSTR("/api/unfinpeak"), Net::WebUtil::RequestMethod::HTTP_GET, SvcUnfinPeak);
 	this->AddService(CSTR("/api/updatepeak"), Net::WebUtil::RequestMethod::HTTP_POST, SvcUpdatePeak);
 	this->AddService(CSTR("/api/grouptypes"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupTypes);

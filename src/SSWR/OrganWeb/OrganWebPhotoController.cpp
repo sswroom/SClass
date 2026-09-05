@@ -389,12 +389,16 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::W
 							exporter.SetParamInt32(param, 0, 95);
 							exporter.ExportFile(mstm, CSTR(""), nimgList, param);
 							exporter.DeleteParam(param);
-							ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
 
 							if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize() && mstm.GetLength() > 0)
 							{
+								ResponseMstm(req, resp, mstm, CSTR("image/jpeg"), false);
 								IO::FileStream fs({sbuff, (UIntOS)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 								fs.Write(mstm.GetArray());
+							}
+							else
+							{
+								ResponseMstm(req, resp, mstm, CSTR("image/jpeg"), true);
 							}
 						}
 					}
@@ -685,10 +689,10 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 
 							IO::MemoryStream mstm;
 							gimg->SaveJPG(mstm);
-							ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
 
 							if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 							{
+								ResponseMstm(req, resp, mstm, CSTR("image/jpeg"), false);
 								if (mstm.GetLength() == 0)
 								{
 									printf("Error in exporting to JPG WM: %d x %d %s\r\n", (UInt32)simg->info.dispSize.x, (UInt32)simg->info.dispSize.y, Media::PixelFormatGetName(simg->info.pf).v.Ptr());
@@ -703,6 +707,10 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 										this->env->UserFilePrevUpdated(mutUsage, userFile);
 									}
 								}
+							}
+							else
+							{
+								ResponseMstm(req, resp, mstm, CSTR("image/jpeg"), true);
 							}
 
 							dimg.Delete();
@@ -724,10 +732,10 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 						exporter.SetParamInt32(param, 0, 95);
 						exporter.ExportFile(mstm, CSTR(""), nimgList, param);
 						exporter.DeleteParam(param);
-						ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
 
 						if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 						{
+							ResponseMstm(req, resp, mstm, CSTR("image/jpeg"), false);
 							if (mstm.GetLength() == 0)
 							{
 								printf("Error in exporting to JPG: %d x %d %s\r\n", (UInt32)simg->info.dispSize.x, (UInt32)simg->info.dispSize.y, Media::PixelFormatGetName(simg->info.pf).v.Ptr());
@@ -742,6 +750,10 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 									this->env->UserFilePrevUpdated(mutUsage, userFile);
 								}
 							}
+						}
+						else
+						{
+							ResponseMstm(req, resp, mstm, CSTR("image/jpeg"), true);
 						}
 					}
 				}
@@ -950,10 +962,10 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 						exporter.SetParamInt32(param, 0, 95);
 						exporter.ExportFile(mstm, CSTR(""), nimgList, param);
 						exporter.DeleteParam(param);
-						ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
 
 						if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 						{
+							ResponseMstm(req, resp, mstm, CSTR("image/jpeg"), false);
 							IO::FileStream fs({sbuff2, (UIntOS)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 							buff = mstm.GetBuff(buffSize);
 							fs.Write(Data::ByteArrayR(buff, buffSize));
@@ -961,6 +973,10 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 							{
 								this->env->WebFilePrevUpdated(mutUsage, wfile);
 							}
+						}
+						else
+						{
+							ResponseMstm(req, resp, mstm, CSTR("image/jpeg"), true);
 						}
 					}
 					else
