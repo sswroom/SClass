@@ -554,6 +554,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 						writer.Write(s->ToCString());
 						s->Release();
 					}
+					if (userFile->tag.SetTo(s) && s->leng > 0)
+					{
+						writer.Write(CSTR(" <a style=\"color: #337a4b\">"));
+						s = Text::XML::ToNewHTMLBodyText(s->v);
+						writer.Write(s->ToCString());
+						s->Release();
+						writer.Write(CSTR("</a>"));
+					}
 					if (user->userType == UserType::Admin)
 					{
 						writer.Write(CSTR("</label>"));
@@ -579,6 +587,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 				{
 					sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd zzzz");
 					writer.Write(CSTRP(sbuff2, sptr2));
+					if (userFile->tag.SetTo(s) && s->leng > 0)
+					{
+						writer.Write(CSTR(" <a style=\"color: #337a4b\">"));
+						s = Text::XML::ToNewHTMLBodyText(s->v);
+						writer.Write(s->ToCString());
+						s->Release();
+						writer.Write(CSTR("</a>"));
+					}
 				}
 				writer.WriteLine(CSTR("</center></td>"));
 
@@ -637,15 +653,34 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 				s->Release();
 				writer.Write(CSTR(" border=\"0\">"));
 				writer.Write(CSTR("</a>"));
+				Bool newLine = false;
 				if (env.user.SetTo(user) && user->userType == UserType::Admin)
 				{
 					if (wfile->location->leng > 0)
 					{
 						writer.Write(CSTR("<br/>"));
+						newLine = true;
 						s = Text::XML::ToNewHTMLBodyText(wfile->location->v);
 						writer.Write(s->ToCString());
 						s->Release();
 					}
+				}
+				if (wfile->tag.SetTo(s) && s->leng > 0)
+				{
+					if (!newLine)
+					{
+						writer.Write(CSTR("<br/>"));
+						newLine = true;
+					}
+					else
+					{
+						writer.Write(CSTR(" "));
+					}
+					writer.Write(CSTR("<a style=\"color: #337a4b\">"));
+					s = Text::XML::ToNewHTMLBodyText(s->v);
+					writer.Write(s->ToCString());
+					s->Release();
+					writer.Write(CSTR("</a>"));
 				}
 				writer.WriteLine(CSTR("</center></td>"));
 
@@ -1120,7 +1155,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NN<Net::Web
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+/*Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
 	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
 	RequestEnv env;
@@ -2133,7 +2168,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 	}
 	resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 	return true;
-}
+}*/
 
 SSWR::OrganWeb::OrganWebMainController::OrganWebMainController(NN<Net::WebServer::MemoryWebSessionManager> sessMgr, NN<OrganWebEnv> env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize)
 {
@@ -2141,8 +2176,8 @@ SSWR::OrganWeb::OrganWebMainController::OrganWebMainController(NN<Net::WebServer
 	this->AddService(CSTR("/species.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpecies);
 	this->AddService(CSTR("/speciesmod.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSpeciesMod);
 	this->AddService(CSTR("/speciesmod.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesMod);
-	this->AddService(CSTR("/photodetail2.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDetail);
-	this->AddService(CSTR("/photodetail2.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoDetail);
+	//this->AddService(CSTR("/photodetail2.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDetail);
+	//this->AddService(CSTR("/photodetail2.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoDetail);
 }
 
 SSWR::OrganWeb::OrganWebMainController::~OrganWebMainController()

@@ -135,12 +135,14 @@ namespace SSWR
 			Bool SpeciesDelete(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId);
 			Bool SpeciesMerge(NN<Sync::RWMutexUsage> mutUsage, Int32 srcSpeciesId, Int32 destSpeciesId, Int32 cateId);
 			Bool SpeciesAddWebfile(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CStringNN imgURL, Text::CStringNN sourceURL, Text::CStringNN location);
+			Bool SpeciesUpdateWebTag(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 webfileId, Text::CString tag);
 			Optional<UserFileInfo> UserfileGetCheck(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, Optional<WebUserInfo> currUser, InOutParam<UnsafeArray<UTF8Char>> filePathOut);
 			Optional<UserFileInfo> UserfileGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
 			UnsafeArray<UTF8Char> UserfileGetPath(UnsafeArray<UTF8Char> sbuff, NN<const UserFileInfo> userfile);
 			Int32 UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 userId, Int32 spId, Text::CStringNN fileName, UnsafeArray<const UInt8> fileCont, UIntOS fileSize, Bool mustHaveCamera, Optional<Text::String> location);
 			Bool UserfileMove(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId);
 			Bool UserfileUpdateDesc(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Text::CString descr);
+			Bool UserfileUpdateTag(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Text::CString tag);
 			Bool UserfileUpdateRotType(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 rotType);
 			Bool UserfileUpdatePos(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Data::Timestamp captureTime, Double lat, Double lon, LocType locType);
 			Bool SpeciesBookIsExist(NN<Sync::RWMutexUsage> mutUsage, Text::CStringNN speciesName, NN<Text::StringBuilderUTF8> bookNameOut);

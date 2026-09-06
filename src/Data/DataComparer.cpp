@@ -237,3 +237,16 @@ IntOS Data::DataComparer::Compare(NN<Data::ReadonlyArray<UInt8>> val1, NN<Data::
 {
 	return Text::StrCompareFastC(val1->GetArray(), val1->GetCount(), val2->GetArray(), val2->GetCount());
 }
+
+Bool Data::DataComparer::Equals(Optional<Text::String> val1, Optional<Text::String> val2)
+{
+	if (val1 == val2)
+		return true;
+	NN<Text::String> str1;
+	NN<Text::String> str2;
+	if (!val1.SetTo(str1))
+		return false;
+	else if (!val2.SetTo(str2))
+		return false;
+	return str1->Equals(str2);
+}

@@ -187,7 +187,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadSpecies()
 		}
 	}
 
-	if (db->ExecuteReader(CSTR("select id, species_id, crcVal, imgUrl, srcUrl, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, location from webfile")).SetTo(r))
+	if (db->ExecuteReader(CSTR("select id, species_id, crcVal, imgUrl, srcUrl, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, location, tag, tagDefault from webfile")).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
@@ -204,6 +204,8 @@ void SSWR::OrganWeb::OrganWebEnv::LoadSpecies()
 				wfile->cropRight = r->GetDblOr(8, 0);
 				wfile->cropBottom = r->GetDblOr(9, 0);
 				wfile->location = r->GetNewStrBNN(10, sb);
+				wfile->tag = r->GetNewStrB(11, sb);
+				wfile->tagDefault = r->GetBool(12);
 				sp->wfiles.Put(wfile->id, wfile);
 			}
 		}
@@ -381,7 +383,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NN<Sync::RWMutexUsage> mutUsage)
 		db->CloseReader(r);
 	}
 
-	if (db->ExecuteReader(CSTR("select id, fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, descript, location, camera, locType from userfile")).SetTo(r))
+	if (db->ExecuteReader(CSTR("select id, fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, descript, location, camera, locType, tag, tagDefault from userfile")).SetTo(r))
 	{
 		NN<UserFileInfo> userFile;
 		NN<SpeciesInfo> species;
@@ -420,6 +422,8 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NN<Sync::RWMutexUsage> mutUsage)
 				userFile->location = r->GetNewStrB(18, sb);
 				userFile->camera = r->GetNewStrB(19, sb);
 				userFile->locType = (LocType)r->GetInt32(20);
+				userFile->tag = r->GetNewStrB(21, sb);
+				userFile->tagDefault = r->GetBool(22);
 				if (this->spMap.Get(userFile->speciesId).SetTo(species))
 				{
 					species->files.Add(userFile);
@@ -623,6 +627,7 @@ void SSWR::OrganWeb::OrganWebEnv::FreeSpecies()
 			wfile->imgUrl->Release();
 			wfile->srcUrl->Release();
 			wfile->location->Release();
+			OPTSTR_DEL(wfile->tag);
 			MemFreeNN(wfile);
 		}
 		sp.Delete();
@@ -715,6 +720,7 @@ void SSWR::OrganWeb::OrganWebEnv::FreeUsers()
 			OPTSTR_DEL(userFile->descript);
 			OPTSTR_DEL(userFile->location);
 			OPTSTR_DEL(userFile->camera);
+			OPTSTR_DEL(userFile->tag);
 			MemFreeNN(userFile);
 		}
 
@@ -2047,6 +2053,8 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(NN<Sync::RWMutexUsage> mutUs
 		wfile->cropTop = 0;
 		wfile->cropRight = 0;
 		wfile->cropBottom = 0;
+		wfile->tag = nullptr;
+		wfile->tagDefault = false;
 
 		UTF8Char sbuff2[512];
 		UnsafeArray<UTF8Char> sptr2;
@@ -2089,6 +2097,66 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(NN<Sync::RWMutexUsage> mutUs
 	{
 		return false;
 	}
+}
+
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesUpdateWebTag(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 webfileId, Text::CString tag)
+{
+	NN<DB::DBTool> db;
+	if (!this->db.SetTo(db))
+		return false;
+	mutUsage->ReplaceMutex(this->dataMut, true);
+	NN<SpeciesInfo> species;
+	if (!this->spMap.Get(speciesId).SetTo(species))
+	{
+		return false;
+	}
+	NN<WebFileInfo> wfile;
+	if (!species->wfiles.Get(webfileId).SetTo(wfile))
+	{
+		return false;
+	}
+	Text::CStringNN nntag;
+	if (!tag.SetTo(nntag) || nntag.leng == 0)
+	{
+		if (wfile->tag.IsNull())
+		{
+			return true;
+		}
+		DB::SQLBuilder sql(db);
+		sql.AppendCmdC(CSTR("update webfile set tag = "));
+		sql.AppendStrC(nullptr);
+		sql.AppendCmdC(CSTR(", tagDefault = "));
+		sql.AppendBool(false);
+		sql.AppendCmdC(CSTR(" where id = "));
+		sql.AppendInt32(webfileId);
+		if (db->ExecuteNonQuery(sql.ToCString()) > 0)
+		{
+			OPTSTR_DEL(wfile->tag);
+			wfile->tagDefault = false;
+			return true;
+		}
+		return false;
+	}
+	NN<Text::String> webFileTag;
+	if (wfile->tag.SetTo(webFileTag) && webFileTag->Equals(nntag))
+	{
+		return true;
+	}
+	DB::SQLBuilder sql(db);
+	sql.AppendCmdC(CSTR("update webfile set tag = "));
+	sql.AppendStrC(nntag);
+	sql.AppendCmdC(CSTR(", tagDefault = "));
+	sql.AppendBool(false);
+	sql.AppendCmdC(CSTR(" where id = "));
+	sql.AppendInt32(webfileId);
+	if (db->ExecuteNonQuery(sql.ToCString()) > 0)
+	{
+		OPTSTR_DEL(wfile->tag);
+		wfile->tag = Text::String::New(nntag);
+		wfile->tagDefault = false;
+		return true;
+	}
+	return false;
 }
 
 Optional<SSWR::OrganWeb::UserFileInfo> SSWR::OrganWeb::OrganWebEnv::UserfileGetCheck(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, Optional<WebUserInfo> currUser, InOutParam<UnsafeArray<UTF8Char>> filePathOut)
@@ -2841,6 +2909,61 @@ Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateDesc(NN<Sync::RWMutexUsage> mutU
 	{
 		OPTSTR_DEL(userFile->descript);
 		userFile->descript = Text::String::NewOrNull(descr);
+		return true;
+	}
+	return false;
+}
+
+Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateTag(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Text::CString tag)
+{
+	NN<DB::DBTool> db;
+	if (!this->db.SetTo(db))
+		return false;
+	mutUsage->ReplaceMutex(this->dataMut, true);
+	NN<UserFileInfo> userFile;
+	if (!this->userFileMap.Get(userfileId).SetTo(userFile))
+	{
+		return false;
+	}
+	Text::CStringNN nntag;
+	if (!tag.SetTo(nntag) || nntag.leng == 0)
+	{
+		if (userFile->tag.IsNull())
+		{
+			return true;
+		}
+		DB::SQLBuilder sql(db);
+		sql.AppendCmdC(CSTR("update userfile set tag = "));
+		sql.AppendStrC(nullptr);
+		sql.AppendCmdC(CSTR(", tagDefault = "));
+		sql.AppendBool(false);
+		sql.AppendCmdC(CSTR(" where id = "));
+		sql.AppendInt32(userfileId);
+		if (db->ExecuteNonQuery(sql.ToCString()) > 0)
+		{
+			OPTSTR_DEL(userFile->tag);
+			userFile->tagDefault = false;
+			return true;
+		}
+		return false;
+	}
+	NN<Text::String> userFileTag;
+	if (userFile->tag.SetTo(userFileTag) && userFileTag->Equals(nntag))
+	{
+		return true;
+	}
+	DB::SQLBuilder sql(db);
+	sql.AppendCmdC(CSTR("update userfile set tag = "));
+	sql.AppendStrC(nntag);
+	sql.AppendCmdC(CSTR(", tagDefault = "));
+	sql.AppendBool(false);
+	sql.AppendCmdC(CSTR(" where id = "));
+	sql.AppendInt32(userfileId);
+	if (db->ExecuteNonQuery(sql.ToCString()) > 0)
+	{
+		OPTSTR_DEL(userFile->tag);
+		userFile->tag = Text::String::New(nntag);
+		userFile->tagDefault = false;
 		return true;
 	}
 	return false;

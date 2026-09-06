@@ -30,6 +30,7 @@ namespace Data
 		static IntOS Compare(NN<Data::ReadonlyArray<UInt8>> val1, NN<Data::ReadonlyArray<UInt8>> val2);
 
 		static Bool NearlyEquals(Double val1, Double val2);
+		static Bool Equals(Optional<Text::String> val1, Optional<Text::String> val2);
 	};
 }
 #endif

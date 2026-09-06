@@ -10,6 +10,7 @@
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
 
+//#define VERBOSE
 //http://stackoverflow.com/questions/662565/how-to-create-huffman-tree-from-ffc4-dht-header-in-jpeg-file
 //http://u88.n24.queensu.ca/exiftool/forum/index.php?topic=4898.0 FLIR
 
@@ -319,6 +320,9 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NN<IO::StreamData> fd, OutParam<Optional<
 	if (buff[0] != 0xff || buff[1] != 0xd8)
 		return false;
 
+	Optional<Media::EXIFData> optExif = nullptr;
+	Optional<Text::XMLDocument> optXmf = nullptr;
+	Optional<Media::ICCProfile> optIcc = nullptr;
 	exif.Set(nullptr);
 	xmf.Set(nullptr);
 	icc.Set(nullptr);
@@ -330,9 +334,25 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NN<IO::StreamData> fd, OutParam<Optional<
 	while (ofst < fd->GetDataSize())
 	{
 		if (fd->GetRealData(ofst, 4, BYTEARR(buff)) != 4)
+		{
+#if defined(VERBOSE)			
+			printf("JPEGFile: Failed to read 4 bytes at offset %llu\n", ofst);
+#endif
+			optExif.Delete();
+			optXmf.Delete();
+			optIcc.Delete();
 			return false;
+		}
 		if (buff[0] != 0xff)
+		{
+#if defined(VERBOSE)			
+			printf("JPEGFile: Invalid marker at offset %llu\n", ofst);
+#endif
+			optExif.Delete();
+			optXmf.Delete();
+			optIcc.Delete();
 			return false;
+		}
 
 		j = (UInt32)((buff[2] << 8) | buff[3]) - 2;
 		switch (buff[1])
@@ -352,19 +372,27 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NN<IO::StreamData> fd, OutParam<Optional<
 				}
 				else
 				{
+#if defined(VERBOSE)
+					printf("JPEGFile: Unknown byte order at offset %llu\n", ofst);
+#endif
+					optExif.Delete();
+					optXmf.Delete();
+					optIcc.Delete();
 					return false;
 				}
-				if (bo->GetUInt16(&buff[8]) != 42)
+				if (bo->GetUInt16(&buff[8]) != 42 || bo->GetUInt32(&buff[10]) != 8)
 				{
 					bo.Delete();
+#if defined(VERBOSE)			
+					printf("JPEGFile: Invalid TIFF header at offset %llu\n", ofst);
+#endif
+					optExif.Delete();
+					optXmf.Delete();
+					optIcc.Delete();
 					return false;
 				}
-				if (bo->GetUInt32(&buff[10]) != 8)
-				{
-					bo.Delete();
-					return false;
-				}
-				exif.Set(Media::EXIFData::ParseIFD(fd, ofst + 18, bo, nextOfst, ofst + 10));
+				optExif.Delete();
+				optExif = Media::EXIFData::ParseIFD(fd, ofst + 18, bo, nextOfst, ofst + 10);
 				bo.Delete();
 				ofst += j + 4;
 			}
@@ -377,7 +405,8 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NN<IO::StreamData> fd, OutParam<Optional<
 				NEW_CLASSNN(doc, Text::XMLDocument());
 				if (doc->ParseBuff(encFact, tagBuff.Arr(), j - 29))
 				{
-					xmf.Set(doc);
+					optXmf.Delete();
+					optXmf = doc;
 				}
 				else
 				{
@@ -399,12 +428,16 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NN<IO::StreamData> fd, OutParam<Optional<
 				NN<Media::ICCProfile> newIcc;
 				if (Media::ICCProfile::Parse(Data::ByteArrayR(&tagBuff[14], j - 14)).SetTo(newIcc))
 				{
-					icc.Set(newIcc);
+					optIcc.Delete();
+					optIcc = newIcc;
 				}
 			}
 			ofst += j + 4;
 			break;
 		}
+		case 0xc4: //dht
+		case 0xdb: //dqt
+		case 0xdd: //DRI
 		case 0xe0: //APP0
 		case 0xe3: //APP3
 		case 0xe4: //APP4
@@ -419,8 +452,6 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NN<IO::StreamData> fd, OutParam<Optional<
 		case 0xed: //APP13
 		case 0xee: //APP14
 		case 0xef: //APP15
-		case 0xdb: //dqt
-		case 0xc4: //dht
 			ofst += j + 4;
 			break;
 		case 0xc0:
@@ -434,10 +465,32 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NN<IO::StreamData> fd, OutParam<Optional<
 			foundSize = true;
 			break;
 		case 0xda: //sos
-			return foundSize;
+			ofst = fd->GetDataSize();
+			break;
 		default:
+#if defined(VERBOSE)
+			printf("JPEGFile: Unknown marker 0x%02x\n", buff[1]);
+#endif
+			optExif.Delete();
+			optIcc.Delete();
+			optXmf.Delete();
 			return false;
 		}
+	}
+	if (foundSize)
+	{
+		exif.Set(optExif);
+		icc.Set(optIcc);
+		xmf.Set(optXmf);
+	}
+	else
+	{
+#if defined(VERBOSE)
+		printf("JPEGFile: C0-C3 marker not found\n");
+#endif
+		optExif.Delete();
+		optIcc.Delete();
+		optXmf.Delete();
 	}
 	return foundSize;
 }

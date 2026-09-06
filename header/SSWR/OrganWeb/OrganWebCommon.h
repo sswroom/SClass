@@ -102,6 +102,13 @@ namespace SSWR
 			Int32 locId;
 			Int32 cateId;
 		} TripInfo;
+
+		struct TagStatus
+		{
+			Optional<Text::String> tag;
+			Bool webFile;
+			Int32 defId;
+		};
 		
 		typedef struct
 		{
@@ -126,6 +133,8 @@ namespace SSWR
 			Optional<Text::String> location;
 			Optional<Text::String> camera;
 			LocType locType;
+			Optional<Text::String> tag;
+			Bool tagDefault;
 		} UserFileInfo;
 
 		typedef struct
@@ -140,6 +149,8 @@ namespace SSWR
 			Double cropTop;
 			Double cropRight;
 			Double cropBottom;
+			Optional<Text::String> tag;
+			Bool tagDefault;
 		} WebFileInfo;
 
 		struct DataFileInfo
