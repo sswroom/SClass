@@ -2022,7 +2022,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupSpecies(NN<Net::We
 						}
 						else
 						{
-							json.ObjectAddInt32(CSTR("photoId"), sp->photoId);
+							json.ObjectAddInt32(CSTR("photoId"), tagStatus->defId);
 						}
 						json.ObjectEnd();
 						k++;
