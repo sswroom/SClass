@@ -1494,6 +1494,42 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPhotoSetSpPhoto(NN<Net:
 	return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\"}"));
 }
 
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPhotoTagDef(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	Int32 id;
+	Int32 speciesId;
+	NN<WebUserInfo> user;
+	req->ParseHTTPForm();
+	if (env.user.SetTo(user) && req->GetHTTPFormInt32(CSTR("speciesId"), speciesId))
+	{
+		if (req->GetHTTPFormInt32(CSTR("id"), id))
+		{
+			Sync::RWMutexUsage mutUsage;
+			NN<UserFileInfo> file;
+			if (me->env->UserfileGet(mutUsage, id).SetTo(file) && (user->userType == UserType::Admin || file->webuserId == user->id))
+			{
+				if (me->env->SpeciesSetTagDef(mutUsage, speciesId, id))
+				{
+					return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"ok\"}"));
+				}
+			}
+		}
+		else if (req->GetHTTPFormInt32(CSTR("fileWId"), id) && (user->userType == UserType::Admin))
+		{
+			Sync::RWMutexUsage mutUsage;
+			if (me->env->SpeciesWSetTagDef(mutUsage, speciesId, id))
+			{
+				return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"ok\"}"));
+			}
+		}
+	}
+	return me->ResponseJSON(req, resp, 0, CSTR("{\"status\": \"failed\"}"));
+}
+
 Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcUnfinPeak(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
 	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
@@ -1815,9 +1851,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupDetail(NN<Net::Web
 		while (i < j)
 		{
 			NN<SpeciesInfo> sp = group->species.GetItemNoCheck(i);
-			json.ArrayBeginObject();
-			me->AppendSpeciesDispInfo(json, sp, groupMutUsage, selectedBook);
-			json.ObjectEnd();
+			me->AppendArraySpeciesDispInfo(json, sp, groupMutUsage, selectedBook);
 			i++;
 		}
 		json.ArrayEnd();
@@ -1849,6 +1883,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupSpecies(NN<Net::We
 	me->ParseRequestEnv(req, resp, env, false);
 	Int32 groupId;
 	Int32 cateId;
+	Optional<BookInfo> selectedBook = nullptr;
 	Bool isAdmin = false;
 	if (env.user.SetTo(user) && user->userType == UserType::Admin)
 	{
@@ -1882,6 +1917,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupSpecies(NN<Net::We
 	}
 	else
 	{
+		if (isAdmin)
+		{
+			selectedBook = me->env->BookGetSelected(groupMutUsage);
+		}
 		Data::StringMapNN<SpeciesInfo> spMap;
 		NN<SpeciesInfo> sp;
 		me->env->GetGroupSpecies(groupMutUsage, group, spMap, env.user);
@@ -1893,126 +1932,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcGroupSpecies(NN<Net::We
 			sp = spMap.GetItemNoCheck(i);
 			if (inclAll || ((sp->flags & 9) != 0))
 			{
-				NN<TagStatus> tagStatus;
-				Data::ArrayListNN<TagStatus> tags;
-				NN<UserFileInfo> userFile;
-				NN<WebFileInfo> webFile;
-				Bool found;
-				UIntOS m;
-				UIntOS k = 0;
-				UIntOS l = sp->files.GetCount();
-				while (k < l)
-				{
-					userFile = sp->files.GetItemNoCheck(k);
-					found = false;
-					m = tags.GetCount();
-					while (m-- > 0)
-					{
-						tagStatus = tags.GetItemNoCheck(m);
-						if (Data::DataComparer::Equals(tagStatus->tag, userFile->tag))
-						{
-							found = true;
-							if (userFile->tagDefault || sp->photoId == userFile->id)
-							{
-								tagStatus->defId = userFile->id;
-								tagStatus->webFile = false;
-							}
-							break;
-						}
-					}
-					if (!found)
-					{
-						tagStatus = MemAllocNN(TagStatus);
-						tagStatus->tag = userFile->tag;
-						tagStatus->defId = userFile->id;
-						tagStatus->webFile = false;
-						tags.Add(tagStatus);
-					}
-					k++;
-				}
-
-				k = 0;
-				l = sp->wfiles.GetCount();
-				while (k < l)
-				{
-					webFile = sp->wfiles.GetItemNoCheck(k);
-					found = false;
-					m = tags.GetCount();
-					while (m-- > 0)
-					{
-						tagStatus = tags.GetItemNoCheck(m);
-						if (Data::DataComparer::Equals(tagStatus->tag, webFile->tag))
-						{
-							found = true;
-							if (webFile->tagDefault || sp->photoWId == webFile->id)
-							{
-								tagStatus->defId = webFile->id;
-								tagStatus->webFile = true;
-							}
-							break;
-						}
-					}
-					if (!found)
-					{
-						tagStatus = MemAllocNN(TagStatus);
-						tagStatus->tag = webFile->tag;
-						tagStatus->defId = webFile->id;
-						tagStatus->webFile = true;
-						tags.Add(tagStatus);
-					}
-					k++;
-				}
-				
-				k = 0;
-				l = tags.GetCount();
-				if (l == 0)
-				{
-					json.ArrayBeginObject();
-					json.ObjectAddInt32(CSTR("id"), sp->speciesId);
-					json.ObjectAddInt32(CSTR("cateId"), sp->cateId);
-					json.ObjectAddInt32(CSTR("groupId"), sp->groupId);
-					json.ObjectAddStr(CSTR("sciName"), sp->sciName);
-					json.ObjectAddStr(CSTR("engName"), sp->engName);
-					json.ObjectAddStr(CSTR("chiName"), sp->chiName);
-					if (sp->photoId != 0)
-					{
-						json.ObjectAddInt32(CSTR("photoId"), sp->photoId);
-					}
-					else if (sp->photoWId != 0)
-					{
-						json.ObjectAddInt32(CSTR("photoWId"), sp->photoWId);
-					}
-					else
-					{
-						json.ObjectAddStrOpt(CSTR("photo"), sp->photo);
-					}
-					json.ObjectEnd();
-				}
-				else
-				{
-					while (k < l)
-					{
-						tagStatus = tags.GetItemNoCheck(k);
-						json.ArrayBeginObject();
-						json.ObjectAddInt32(CSTR("id"), sp->speciesId);
-						json.ObjectAddInt32(CSTR("cateId"), sp->cateId);
-						json.ObjectAddInt32(CSTR("groupId"), sp->groupId);
-						json.ObjectAddStr(CSTR("sciName"), sp->sciName);
-						json.ObjectAddStr(CSTR("engName"), sp->engName);
-						json.ObjectAddStr(CSTR("chiName"), sp->chiName);
-						json.ObjectAddStrOpt(CSTR("tag"), tagStatus->tag);
-						if (tagStatus->webFile)
-						{
-							json.ObjectAddInt32(CSTR("photoWId"), tagStatus->defId);
-						}
-						else
-						{
-							json.ObjectAddInt32(CSTR("photoId"), tagStatus->defId);
-						}
-						json.ObjectEnd();
-						k++;
-					}
-				}
+				me->AppendArraySpeciesDispInfo(json, sp, groupMutUsage, selectedBook);
 			}
 			i++;
 		}
@@ -2396,14 +2316,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcSpeciesDetail(NN<Net::W
 {
 	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
 	RequestEnv env;
-	NN<WebUserInfo> user;
 	me->ParseRequestEnv(req, resp, env, false);
-
-	Bool isAdmin = false;
-	if (env.user.SetTo(user) && user->userType == UserType::Admin)
-	{
-		isAdmin = true;
-	}
 	req->ParseHTTPForm();
 	Int32 id;
 	Int32 cateId;
@@ -3275,6 +3188,222 @@ void SSWR::OrganWeb::OrganWebAPIController::AppendSpeciesDispInfo(NN<Text::JSONB
 		if (found)
 		{
 			json->ObjectAddBool(CSTR("inBook"), true);
+		}
+	}
+}
+
+void SSWR::OrganWeb::OrganWebAPIController::AppendArraySpeciesDispInfo(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<Sync::RWMutexUsage> mutUsage, Optional<BookInfo> selectedBook)
+{
+	NN<TagStatus> tagStatus;
+	Data::ArrayListNN<TagStatus> tags;
+	NN<UserFileInfo> userFile;
+	NN<WebFileInfo> webFile;
+	NN<BookInfo> book;
+	Bool found;
+	UIntOS i;
+	UIntOS m;
+	UIntOS k = 0;
+	UIntOS l = species->files.GetCount();
+	while (k < l)
+	{
+		userFile = species->files.GetItemNoCheck(k);
+		found = false;
+		m = tags.GetCount();
+		while (m-- > 0)
+		{
+			tagStatus = tags.GetItemNoCheck(m);
+			if (Data::DataComparer::Equals(tagStatus->tag, userFile->tag))
+			{
+				found = true;
+				if (userFile->tagDefault || species->photoId == userFile->id)
+				{
+					tagStatus->defId = userFile->id;
+					tagStatus->webFile = false;
+				}
+				break;
+			}
+		}
+		if (!found)
+		{
+			tagStatus = MemAllocNN(TagStatus);
+			tagStatus->tag = userFile->tag;
+			tagStatus->defId = userFile->id;
+			tagStatus->webFile = false;
+			tags.Add(tagStatus);
+		}
+		k++;
+	}
+
+	k = 0;
+	l = species->wfiles.GetCount();
+	while (k < l)
+	{
+		webFile = species->wfiles.GetItemNoCheck(k);
+		found = false;
+		m = tags.GetCount();
+		while (m-- > 0)
+		{
+			tagStatus = tags.GetItemNoCheck(m);
+			if (Data::DataComparer::Equals(tagStatus->tag, webFile->tag))
+			{
+				found = true;
+				if (webFile->tagDefault || species->photoWId == webFile->id)
+				{
+					tagStatus->defId = webFile->id;
+					tagStatus->webFile = true;
+				}
+				break;
+			}
+		}
+		if (!found)
+		{
+			tagStatus = MemAllocNN(TagStatus);
+			tagStatus->tag = webFile->tag;
+			tagStatus->defId = webFile->id;
+			tagStatus->webFile = true;
+			tags.Add(tagStatus);
+		}
+		k++;
+	}
+	
+	if (species->files.GetCount() > 0)
+	{
+		if ((species->flags & SSWR::OrganWeb::SF_HAS_MYPHOTO) == 0)
+		{
+			this->env->SpeciesSetFlags(mutUsage, species->speciesId, (SSWR::OrganWeb::SpeciesFlags)(species->flags | SSWR::OrganWeb::SF_HAS_MYPHOTO));
+			this->env->GroupAddCounts(mutUsage, species->groupId, 0, (species->flags & SSWR::OrganWeb::SF_HAS_WEBPHOTO)?0:1, 1);
+		}
+	}
+	else
+	{
+		if (species->flags & SSWR::OrganWeb::SF_HAS_MYPHOTO)
+		{
+			this->env->SpeciesSetFlags(mutUsage, species->speciesId, (SSWR::OrganWeb::SpeciesFlags)(species->flags & ~SSWR::OrganWeb::SF_HAS_MYPHOTO));
+			this->env->GroupAddCounts(mutUsage, species->groupId, 0, (species->flags & SSWR::OrganWeb::SF_HAS_WEBPHOTO)?0:(UIntOS)-1, (UIntOS)-1);
+		}
+	}
+
+	k = 0;
+	l = tags.GetCount();
+	if (l == 0)
+	{
+		json->ArrayBeginObject();
+		json->ObjectAddInt32(CSTR("id"), species->speciesId);
+		json->ObjectAddInt32(CSTR("cateId"), species->cateId);
+		json->ObjectAddInt32(CSTR("groupId"), species->groupId);
+		json->ObjectAddStr(CSTR("sciName"), species->sciName);
+		json->ObjectAddStr(CSTR("engName"), species->engName);
+		json->ObjectAddStr(CSTR("chiName"), species->chiName);
+		if (species->photoId != 0)
+		{
+			json->ObjectAddInt32(CSTR("photoId"), species->photoId);
+		}
+		else if (species->photoWId != 0)
+		{
+			json->ObjectAddInt32(CSTR("photoWId"), species->photoWId);
+		}
+		else
+		{
+			json->ObjectAddStrOpt(CSTR("photo"), species->photo);
+		}
+		if (species->descript->leng > species->sciName->leng)
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.Append(species->descript);
+			Text::PString sarr[2];
+			sarr[1] = sb;
+			UIntOS len = species->sciName->leng;
+			while (true)
+			{
+				i = Text::StrSplitLineP(sarr, 2, sarr[1]);
+				if (sarr[0].StartsWith(species->sciName) && sarr[0].v[len] == ' ' && (sarr[0].v[len + 1] == '(' || Text::CharUtil::IsUpperCase(sarr[0].v[len + 1])))
+				{
+					json->ObjectAddStr(CSTR("fullName"), sarr[0].ToCString());
+					break;
+				}
+				if (i != 2)
+					break;
+			}
+		}
+		if (selectedBook.SetTo(book))
+		{
+			Bool found = false;
+			i = species->books.GetCount();
+			while (i-- > 0)
+			{
+				if (species->books.GetItemNoCheck(i)->bookId == book->id)
+				{
+					found = true;
+					break;
+				}
+			}
+			if (found)
+			{
+				json->ObjectAddBool(CSTR("inBook"), true);
+			}
+		}
+		json->ObjectEnd();
+	}
+	else
+	{
+		while (k < l)
+		{
+			tagStatus = tags.GetItemNoCheck(k);
+			json->ArrayBeginObject();
+			json->ObjectAddInt32(CSTR("id"), species->speciesId);
+			json->ObjectAddInt32(CSTR("cateId"), species->cateId);
+			json->ObjectAddInt32(CSTR("groupId"), species->groupId);
+			json->ObjectAddStr(CSTR("sciName"), species->sciName);
+			json->ObjectAddStr(CSTR("engName"), species->engName);
+			json->ObjectAddStr(CSTR("chiName"), species->chiName);
+			json->ObjectAddStrOpt(CSTR("tag"), tagStatus->tag);
+			if (tagStatus->webFile)
+			{
+				json->ObjectAddInt32(CSTR("photoWId"), tagStatus->defId);
+			}
+			else
+			{
+				json->ObjectAddInt32(CSTR("photoId"), tagStatus->defId);
+			}
+			if (species->descript->leng > species->sciName->leng)
+			{
+				Text::StringBuilderUTF8 sb;
+				sb.Append(species->descript);
+				Text::PString sarr[2];
+				sarr[1] = sb;
+				UIntOS len = species->sciName->leng;
+				while (true)
+				{
+					i = Text::StrSplitLineP(sarr, 2, sarr[1]);
+					if (sarr[0].StartsWith(species->sciName) && sarr[0].v[len] == ' ' && (sarr[0].v[len + 1] == '(' || Text::CharUtil::IsUpperCase(sarr[0].v[len + 1])))
+					{
+						json->ObjectAddStr(CSTR("fullName"), sarr[0].ToCString());
+						break;
+					}
+					if (i != 2)
+						break;
+				}
+			}
+			if (selectedBook.SetTo(book))
+			{
+				Bool found = false;
+				i = species->books.GetCount();
+				while (i-- > 0)
+				{
+					if (species->books.GetItemNoCheck(i)->bookId == book->id)
+					{
+						found = true;
+						break;
+					}
+				}
+				if (found)
+				{
+					json->ObjectAddBool(CSTR("inBook"), true);
+				}
+			}
+			json->ObjectEnd();
+			MemFreeNN(tagStatus);
+			k++;
 		}
 	}
 }

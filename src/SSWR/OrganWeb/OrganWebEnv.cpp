@@ -1683,6 +1683,170 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoWId(NN<Sync::RWMutexUsage> mutU
 	}
 }
 
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetTagDef(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 fileId)
+{
+	NN<DB::DBTool> db;
+	if (!this->db.SetTo(db))
+		return false;
+	mutUsage->ReplaceMutex(this->dataMut, true);
+	NN<SpeciesInfo> species;
+	if (!this->spMap.Get(speciesId).SetTo(species))
+		return false;
+	Optional<UserFileInfo> optfile = nullptr;
+	NN<UserFileInfo> targetFile;
+	NN<UserFileInfo> nnfile;
+	NN<WebFileInfo> webFile;
+	UIntOS i = 0;
+	UIntOS j = species->files.GetCount();
+	while (i < j)
+	{
+		targetFile = species->files.GetItemNoCheck(i);
+		if (targetFile->id == fileId)
+		{
+			optfile = targetFile;
+			break;
+		}
+		i++;
+	}
+	if (!optfile.SetTo(targetFile))
+		return false;
+	if (targetFile->tagDefault)
+		return true;
+	DB::SQLBuilder sql(db);
+	sql.AppendCmdC(CSTR("update userfile set tagDefault = "));
+	sql.AppendBool(true);
+	sql.AppendCmdC(CSTR(" where id = "));
+	sql.AppendInt32(fileId);
+	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	{
+		targetFile->tagDefault = true;
+	}
+	else
+	{
+		return false;
+	}
+	i = 0;
+	while (i < j)
+	{
+		nnfile = species->files.GetItemNoCheck(i);
+		if (nnfile->id != targetFile->id && nnfile->tagDefault && Data::DataComparer::Equals(nnfile->tag, targetFile->tag))
+		{
+			sql.Clear();
+			sql.AppendCmdC(CSTR("update userfile set tagDefault = "));
+			sql.AppendBool(false);
+			sql.AppendCmdC(CSTR(" where id = "));
+			sql.AppendInt32(nnfile->id);
+			if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+			{
+				nnfile->tagDefault = false;
+			}
+		}
+		i++;
+	}
+	i = 0;
+	j = species->wfiles.GetCount();
+	while (i < j)
+	{
+		webFile = species->wfiles.GetItemNoCheck(i);
+		if (webFile->tagDefault && Data::DataComparer::Equals(webFile->tag, targetFile->tag))
+		{
+			sql.Clear();
+			sql.AppendCmdC(CSTR("update webfile set tagDefault = "));
+			sql.AppendBool(false);
+			sql.AppendCmdC(CSTR(" where id = "));
+			sql.AppendInt32(webFile->id);
+			if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+			{
+				webFile->tagDefault = false;
+			}
+		}
+		i++;
+	}
+	return true;
+}
+
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesWSetTagDef(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 webFileId)
+{
+	NN<DB::DBTool> db;
+	if (!this->db.SetTo(db))
+		return false;
+	mutUsage->ReplaceMutex(this->dataMut, true);
+	NN<SpeciesInfo> species;
+	if (!this->spMap.Get(speciesId).SetTo(species))
+		return false;
+	Optional<WebFileInfo> optfile = nullptr;
+	NN<WebFileInfo> targetFile;
+	NN<UserFileInfo> nnfile;
+	NN<WebFileInfo> webFile;
+	UIntOS i = 0;
+	UIntOS j = species->wfiles.GetCount();
+	while (i < j)
+	{
+		targetFile = species->wfiles.GetItemNoCheck(i);
+		if (targetFile->id == webFileId)
+		{
+			optfile = targetFile;
+			break;
+		}
+		i++;
+	}
+	if (!optfile.SetTo(targetFile))
+		return false;
+	if (targetFile->tagDefault)
+		return true;
+	DB::SQLBuilder sql(db);
+	sql.AppendCmdC(CSTR("update webfile set tagDefault = "));
+	sql.AppendBool(true);
+	sql.AppendCmdC(CSTR(" where id = "));
+	sql.AppendInt32(webFileId);
+	if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+	{
+		targetFile->tagDefault = true;
+	}
+	else
+	{
+		return false;
+	}
+	i = 0;
+	while (i < j)
+	{
+		nnfile = species->files.GetItemNoCheck(i);
+		if (nnfile->tagDefault && Data::DataComparer::Equals(nnfile->tag, targetFile->tag))
+		{
+			sql.Clear();
+			sql.AppendCmdC(CSTR("update userfile set tagDefault = "));
+			sql.AppendBool(false);
+			sql.AppendCmdC(CSTR(" where id = "));
+			sql.AppendInt32(nnfile->id);
+			if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+			{
+				nnfile->tagDefault = false;
+			}
+		}
+		i++;
+	}
+	i = 0;
+	j = species->wfiles.GetCount();
+	while (i < j)
+	{
+		webFile = species->wfiles.GetItemNoCheck(i);
+		if (webFile->id != targetFile->id && webFile->tagDefault && Data::DataComparer::Equals(webFile->tag, targetFile->tag))
+		{
+			sql.Clear();
+			sql.AppendCmdC(CSTR("update webfile set tagDefault = "));
+			sql.AppendBool(false);
+			sql.AppendCmdC(CSTR(" where id = "));
+			sql.AppendInt32(webFile->id);
+			if (db->ExecuteNonQuery(sql.ToCString()) >= 0)
+			{
+				webFile->tagDefault = false;
+			}
+		}
+		i++;
+	}
+	return true;
+}
+
 Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetFlags(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, SpeciesFlags flags)
 {
 	NN<DB::DBTool> db;
