@@ -48,6 +48,7 @@ namespace SSWR
 			static Bool __stdcall SvcSpeciesModify(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent);
 			static Bool __stdcall SvcSpeciesDelete(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent);
 			static Bool __stdcall SvcSpeciesBook(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent);
+			static Bool __stdcall SvcSpeciesDetail(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent);
 			static Bool __stdcall SvcPick(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent);
 			static Bool __stdcall SvcPickAll(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent);
 			static Bool __stdcall SvcGroupPlace(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent);
@@ -71,6 +72,7 @@ namespace SSWR
 			void AppendSpeciesInfo(NN<Text::JSONBuilder> json, NN<SpeciesInfo> species, NN<Sync::RWMutexUsage> mutUsage);
 			void AppendDataFiles(NN<Text::JSONBuilder> json, NN<Data::FastMapNN<Data::Timestamp, DataFileInfo>> dataFiles, Int64 startTime, Int64 endTime, Bool includeCont);
 			void AppendLocator(NN<Text::JSONBuilder> json, NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, NN<CategoryInfo> cate);
+			void AppendUserFileDispInfo(NN<Text::JSONBuilder> json, NN<UserFileInfo> userFile, NN<SpeciesInfo> sp, Optional<WebUserInfo> user);
 			static Bool ResponseJSON(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, IntOS cacheAge, Text::CStringNN json);
 		public:
 			OrganWebAPIController(NN<Net::WebServer::MemoryWebSessionManager> sessMgr, NN<OrganWebEnv> env, UInt32 scnSize);

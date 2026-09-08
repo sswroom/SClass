@@ -12,10 +12,10 @@ mctlop1:
 	mov	x4, x0
 	mov	x5, x1
 mctlop2:
-	vld2.16	{d0,d1}, [x4]
-	vst2.16	{d0,d1}, [x5]
-	add	x4, x4, #16
-	add	x5, x5, #16
+	vld2.16	{q0,q1}, [x4], #32
+	vld2.16	{q2,q3}, [x4], #32
+	vst2.16	{q0,q1}, [x5], #32
+	vst2.16	{q2,q3}, [x5], #32
 	cmp	x4, x2
 	bne	mctlop2
 	sub	x3, x3, #1
@@ -34,8 +34,7 @@ Benchmark_MemWriteTest:
 mwtlop1:
 	mov	x0, x1
 mwtlop2:
-	vst2.16	{d0,d1}, [x0]
-	add	x0, x0, #16
+	vst2.16	{q0,q1}, [x0], #32
 	cmp	x0, x2
 	bne	mwtlop2
 	sub	x3, x3, #1
@@ -54,8 +53,7 @@ Benchmark_MemReadTest:
 mrtlop1:
 	mov	x1, x0
 mrtlop2:
-	vld2.16	{d0,d1}, [x1]
-	add	x1, x1, #16
+	vld2.16	{q0,q1}, [x1], #32
 	cmp	x1, x2
 	bne	mrtlop2
 	sub	x3, x3, #1

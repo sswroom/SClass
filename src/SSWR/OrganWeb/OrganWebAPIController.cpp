@@ -112,22 +112,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcLoginInfo(NN<Net::WebSe
 				if (me->env->UserfileGet(mutUsage, pickObjs->GetItem(i)).SetTo(userFile) && me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
 				{
 					json.ArrayBeginObject();
-					json.ObjectAddInt32(CSTR("id"), userFile->id);
-					json.ObjectAddInt32(CSTR("speciesId"), userFile->speciesId);
-					json.ObjectAddInt32(CSTR("cateId"), sp->cateId);
-					json.ObjectAddInt32(CSTR("rotType"), userFile->rotType);
-					json.ObjectAddInt64(CSTR("fileTimeTicks"), userFile->fileTimeTicks);
-					if (userFile->webuserId == user->id)
-					{
-						json.ObjectAddStrOpt(CSTR("location"), userFile->location);
-					}
-					json.ObjectAddStrOpt(CSTR("descript"), userFile->descript);
-					if (userFile->webuserId == user->id)
-					{
-						json.ObjectAddStrOpt(CSTR("oriFileName"), userFile->oriFileName);
-					}
-					json.ObjectAddFloat64(CSTR("lat"), userFile->lat);
-					json.ObjectAddFloat64(CSTR("lon"), userFile->lon);
+					me->AppendUserFileDispInfo(json, userFile, sp, user);
 					json.ObjectEnd();
 					mutUsage.EndUse();
 				}
@@ -2407,6 +2392,94 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcSpeciesBook(NN<Net::Web
 	}
 }
 
+Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcSpeciesDetail(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+{
+	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
+	RequestEnv env;
+	NN<WebUserInfo> user;
+	me->ParseRequestEnv(req, resp, env, false);
+
+	Bool isAdmin = false;
+	if (env.user.SetTo(user) && user->userType == UserType::Admin)
+	{
+		isAdmin = true;
+	}
+	req->ParseHTTPForm();
+	Int32 id;
+	Int32 cateId;
+	Int32 groupId;
+	if (req->GetHTTPFormInt32(CSTR("id"), id) &&
+		req->GetHTTPFormInt32(CSTR("cateId"), cateId) &&
+		req->GetHTTPFormInt32(CSTR("groupId"), groupId))
+	{
+		Sync::RWMutexUsage mutUsage;
+		NN<GroupInfo> group;
+		NN<SpeciesInfo> sp;
+		NN<CategoryInfo> cate;
+		if (!me->env->GroupGet(mutUsage, groupId).SetTo(group))
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+		if (group->cateId != cateId)
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+		if (!me->env->SpeciesGet(mutUsage, id).SetTo(sp) || sp->groupId != groupId || sp->cateId != cateId || !me->env->CateGet(mutUsage, cateId).SetTo(cate))
+		{
+			mutUsage.EndUse();
+			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+			return true;
+		}
+
+		Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+		json.ObjectBeginObject(CSTR("sp"));
+		me->AppendSpeciesInfo(json, sp, mutUsage);
+		json.ObjectEnd();
+		json.ObjectBeginArray(CSTR("locators"));
+		me->AppendLocator(json, mutUsage, group, cate);
+		json.ArrayEnd();
+		UIntOS i;
+		UIntOS j;
+		NN<UserFileInfo> userFile;
+		NN<WebFileInfo> webFile;
+		json.ObjectBeginArray(CSTR("userFiles"));
+		i = 0;
+		j = sp->files.GetCount();
+		while (i < j)
+		{
+			userFile = sp->files.GetItemNoCheck(i);
+			json.ArrayBeginObject();
+
+			me->AppendUserFileDispInfo(json, userFile, sp, env.user);
+			json.ObjectEnd();
+			i++;
+		}
+		json.ArrayEnd();
+		json.ObjectBeginArray(CSTR("webFiles"));
+		i = 0;
+		j = sp->wfiles.GetCount();
+		while (i < j)
+		{
+			webFile = sp->wfiles.GetItemNoCheck(i);
+			json.ArrayBeginObject();
+			json.ObjectAddInt32(CSTR("id"), webFile->id);
+			json.ObjectAddStrOpt(CSTR("tag"), webFile->tag);
+			json.ObjectEnd();
+			i++;
+		}
+		json.ArrayEnd();
+		return me->ResponseJSON(req, resp, 0, json.Build());
+	}
+	else
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
+}
+
 Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcPick(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
 	NN<SSWR::OrganWeb::OrganWebAPIController> me = NN<SSWR::OrganWeb::OrganWebAPIController>::ConvertFrom(parent);
@@ -3301,6 +3374,31 @@ void SSWR::OrganWeb::OrganWebAPIController::AppendLocator(NN<Text::JSONBuilder> 
 	}
 }
 
+void SSWR::OrganWeb::OrganWebAPIController::AppendUserFileDispInfo(NN<Text::JSONBuilder> json, NN<UserFileInfo> userFile, NN<SpeciesInfo> sp, Optional<WebUserInfo> user)
+{
+	NN<WebUserInfo> nnuser;
+	json->ObjectAddInt32(CSTR("id"), userFile->id);
+	json->ObjectAddInt32(CSTR("speciesId"), userFile->speciesId);
+	json->ObjectAddInt32(CSTR("cateId"), sp->cateId);
+	json->ObjectAddInt32(CSTR("rotType"), userFile->rotType);
+	json->ObjectAddInt64(CSTR("fileTimeTicks"), userFile->fileTimeTicks);
+	if (user.SetTo(nnuser) && (userFile->webuserId == nnuser->id || nnuser->userType == UserType::Admin))
+	{
+		json->ObjectAddStrOpt(CSTR("location"), userFile->location);
+	}
+	json->ObjectAddStrOpt(CSTR("descript"), userFile->descript);
+	if (user.SetTo(nnuser) && (userFile->webuserId == nnuser->id || nnuser->userType == UserType::Admin))
+	{
+		json->ObjectAddStrOpt(CSTR("oriFileName"), userFile->oriFileName);
+	}
+	json->ObjectAddFloat64(CSTR("lat"), userFile->lat);
+	json->ObjectAddFloat64(CSTR("lon"), userFile->lon);
+	if (userFile->tag.NotNull())
+	{
+		json->ObjectAddStrOpt(CSTR("tag"), userFile->tag);
+	}
+}
+
 Bool SSWR::OrganWeb::OrganWebAPIController::ResponseJSON(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, IntOS cacheAge, Text::CStringNN json)
 {
 	resp->EnableWriteBuffer();
@@ -3349,6 +3447,7 @@ SSWR::OrganWeb::OrganWebAPIController::OrganWebAPIController(NN<Net::WebServer::
 	this->AddService(CSTR("/api/speciesmodify"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesModify);
 	this->AddService(CSTR("/api/speciesdelete"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesDelete);
 	this->AddService(CSTR("/api/speciesbook"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesBook);
+	this->AddService(CSTR("/api/speciesdetail"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesDetail);
 	this->AddService(CSTR("/api/pick"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPick);
 	this->AddService(CSTR("/api/pickall"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPickAll);
 	this->AddService(CSTR("/api/groupplace"), Net::WebUtil::RequestMethod::HTTP_POST, SvcGroupPlace);
