@@ -4518,6 +4518,12 @@ Python/PythonModule.h:
 Python/PythonObject.h:
 @?(NO_PYTHON == 0)PythonObject.o
 @?(NO_PYTHON > 0)PythonObjectNull.o
+Python/PythonSklearn.h:
+@?(NO_PYTHON == 0)PythonSklearn.o
+@?(NO_PYTHON > 0)PythonSklearnNull.o
+Python/PythonSklearnLinearModel.h:
+@?(NO_PYTHON == 0)PythonSklearnLinearModel.o
+@?(NO_PYTHON > 0)PythonSklearnLinearModelNull.o
 Python/PythonType.h:
 @PythonType.o
 Python/PythonUnicode.h:
