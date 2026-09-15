@@ -48,6 +48,22 @@ Optional<Python::PythonDict> Python::PythonModule::GetDict() const
 	return nullptr;
 }
 
+Optional<Python::PythonObject> Python::PythonModule::GetVariable(Text::CStringNN name) const
+{
+	PyObject *value = PyObject_GetAttrString(this->clsData->obj, (const Char*)name.v.Ptr());
+	if (value)
+	{
+		NN<PythonObject> nnvalue;
+		if (PythonObject::FromPtr(value).SetTo(nnvalue))
+		{
+			return nnvalue;
+		}
+		Py_DECREF(value);
+		return nullptr;
+	}
+	return nullptr;
+}
+
 Python::ObjectType Python::PythonModule::GetObjectType() const
 {
 	return ObjectType::Module;

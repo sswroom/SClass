@@ -1998,6 +1998,14 @@ PythonObject.o: ../../src/Python/PythonObject.cpp
 $`$(PKG-CONFIG) --cflags python3-embed`
 !`$(PKG-CONFIG) --libs python3-embed`
 PythonObjectNull.o: ../../src/Python/PythonObjectNull.cpp
+PythonSklearn.o: ../../src/Python/PythonSklearn.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
+PythonSklearnNull.o: ../../src/Python/PythonSklearnNull.cpp
+PythonSklearnLinearModel.o: ../../src/Python/PythonSklearnLinearModel.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
+PythonSklearnLinearModelNull.o: ../../src/Python/PythonSklearnLinearModelNull.cpp
 PythonType.o: ../../src/Python/PythonType.cpp
 $`$(PKG-CONFIG) --cflags python3-embed`
 !`$(PKG-CONFIG) --libs python3-embed`

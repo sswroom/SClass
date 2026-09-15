@@ -10,6 +10,7 @@
                 "${workspaceFolder}/ThirdParty/adl",
                 "${workspaceFolder}/ThirdParty/webdriverxx/include",
                 "/usr/include/**",
+                "/usr/include/python3.14",
                 "/usr/lib/x86_64-linux-gnu/**",
                 "/usr/lib/jvm/java-17-openjdk-amd64/include",
                 "/usr/lib/jvm/java-17-openjdk-amd64/include/linux"

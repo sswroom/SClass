@@ -14,6 +14,7 @@ namespace Python
 		UnsafeArrayOpt<const UTF8Char> GetName() const;
 		UnsafeArrayOpt<const UTF8Char> GetFileName() const;
 		Optional<PythonDict> GetDict() const;
+		Optional<PythonObject> GetVariable(Text::CStringNN name) const;
 		virtual ObjectType GetObjectType() const;
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
