@@ -23,7 +23,7 @@ Text::ChineseInfo::~ChineseInfo()
 	this->fs.Delete();
 }
 
-Bool Text::ChineseInfo::GetCharInfo(UInt32 charCode, CharacterInfo *chInfo)
+Bool Text::ChineseInfo::GetCharInfo(UInt32 charCode, NN<CharacterInfo> chInfo)
 {
 	UInt64 startOfst = ((UInt64)charCode) << 8;
 	Bool fromFile = false;
@@ -93,13 +93,15 @@ Bool Text::ChineseInfo::GetCharInfo(UInt32 charCode, CharacterInfo *chInfo)
 		chInfo->cantonPronun[3] = 0;
 		chInfo->radical = 0;
 		chInfo->strokeCount = 0;
+		chInfo->charType = CT_UNKNOWN;
+		chInfo->mainChar = false;
 		MemClear(&this->currCharBuff[0], 256);
 		this->currCharCode = charCode;
 	}
 	return true;
 }
 
-Bool Text::ChineseInfo::SetCharInfo(UInt32 charCode, CharacterInfo *chInfo)
+Bool Text::ChineseInfo::SetCharInfo(UInt32 charCode, NN<CharacterInfo> chInfo)
 {
 	UInt8 buff[256];
 	UInt64 startOfst = ((UInt64)charCode) << 8;
@@ -197,7 +199,7 @@ Bool Text::ChineseInfo::SetCharInfo(UInt32 charCode, CharacterInfo *chInfo)
 	return true;
 }
 
-Bool Text::ChineseInfo::GetRelatedChars(UInt32 charCode, Data::ArrayListNative<UInt32> *relatedChars)
+Bool Text::ChineseInfo::GetRelatedChars(UInt32 charCode, NN<Data::ArrayListNative<UInt32>> relatedChars)
 {
 	UInt8 buff[256];
 	UInt64 startOfst = ((UInt64)charCode) << 8;

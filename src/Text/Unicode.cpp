@@ -376,3 +376,17 @@ Optional<Text::Unicode::Block> Text::Unicode::GetBlock(UInt32 code)
 	}
 	return nullptr;
 }
+
+Optional<Text::Unicode::Block> Text::Unicode::GetBlockByIndex(UIntOS index)
+{
+	if (index < (sizeof(blocks) / sizeof(blocks[0])))
+	{
+		return blocks[index];
+	}
+	return nullptr;
+}
+
+UIntOS Text::Unicode::GetBlockCount()
+{
+	return sizeof(blocks) / sizeof(blocks[0]);
+}

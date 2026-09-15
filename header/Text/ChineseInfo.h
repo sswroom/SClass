@@ -120,9 +120,9 @@ namespace Text
 		ChineseInfo();
 		~ChineseInfo();
 
-		Bool GetCharInfo(UInt32 charCode, CharacterInfo *chInfo);
-		Bool SetCharInfo(UInt32 charCode, CharacterInfo *chInfo);
-		Bool GetRelatedChars(UInt32 charCode, Data::ArrayListNative<UInt32> *relatedChars);
+		Bool GetCharInfo(UInt32 charCode, NN<CharacterInfo> chInfo);
+		Bool SetCharInfo(UInt32 charCode, NN<CharacterInfo> chInfo);
+		Bool GetRelatedChars(UInt32 charCode, NN<Data::ArrayListNative<UInt32>> relatedChars);
 		Bool AddRelation(UInt32 charCode, UInt32 relatedCharCode);
 
 		//UnsafeArray<UTF8Char> AppendCharCode(UnsafeArray<UTF8Char> buff, UInt32 charCode);

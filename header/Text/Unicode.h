@@ -18,6 +18,8 @@ namespace Text
 		static Block blocks[];
 	public:
 		static Optional<Block> GetBlock(UInt32 code);
+		static Optional<Block> GetBlockByIndex(UIntOS index);
+		static UIntOS GetBlockCount();
 	};
 }
 #endif

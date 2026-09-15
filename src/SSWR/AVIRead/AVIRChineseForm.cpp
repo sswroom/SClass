@@ -33,6 +33,14 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharChg(AnyType userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharBlockChg(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
+	NN<Text::Unicode::Block> blk = me->cboCharBlock->GetSelectedItem().GetNN<Text::Unicode::Block>();
+	me->UpdateChar(blk->beginCode);
+	me->txtRadical->Focus();
+}
+
 UI::EventState __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharMouseDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIControl::MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
@@ -143,7 +151,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(AnyType userObj)
 			else
 			{
 				Data::ArrayListNative<UInt32> relatedList;
-				me->chinese->GetRelatedChars(me->currChar, &relatedList);
+				me->chinese->GetRelatedChars(me->currChar, relatedList);
 				i = relatedList.GetCount();
 				while (i-- > 0)
 				{
@@ -155,7 +163,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(AnyType userObj)
 
 				relatedList.Clear();
 				relatedList.Add((UInt32)v);
-				me->chinese->GetRelatedChars(me->currChar, &relatedList);
+				me->chinese->GetRelatedChars(me->currChar, relatedList);
 
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Are you sure that \""));
@@ -187,7 +195,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedGoClicked(AnyType userOb
 {
 	NN<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
 	Data::ArrayListNative<UInt32> relatedChars;
-	me->chinese->GetRelatedChars(me->currChar, &relatedChars);
+	me->chinese->GetRelatedChars(me->currChar, relatedChars);
 	if (relatedChars.GetCount() > 0)
 	{
 		me->UpdateChar(relatedChars.GetItem(0));
@@ -277,7 +285,7 @@ Bool SSWR::AVIRead::AVIRChineseForm::SaveChar()
 	}
 	chInfo.charType = (Text::ChineseInfo::CharType)this->cboCharType->GetSelectedItem().GetIntOS();
 	chInfo.mainChar = this->chkMainChar->IsChecked();
-	return this->chinese->SetCharInfo(this->currChar, &chInfo);
+	return this->chinese->SetCharInfo(this->currChar, chInfo);
 }
 
 void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
@@ -370,7 +378,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
 
 		Text::StringBuilderUTF8 sb;
 		Text::ChineseInfo::CharacterInfo chInfo;
-		this->chinese->GetCharInfo(charCode, &chInfo);
+		this->chinese->GetCharInfo(charCode, chInfo);
 		sptr = Text::StrUInt32(sbuff, chInfo.strokeCount);
 		this->txtStrokeCount->SetText(CSTRP(sbuff, sptr));
 		if (chInfo.radical == 0)
@@ -485,7 +493,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateRelation()
 		Data::ArrayListNative<UInt32> relatedChars;
 		UIntOS i;
 		UIntOS j;
-		this->chinese->GetRelatedChars(this->currChar, &relatedChars);
+		this->chinese->GetRelatedChars(this->currChar, relatedChars);
 		i = 0;
 		j = relatedChars.GetCount();
 		while (i < j)
@@ -525,38 +533,55 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(Optional<UI::GUIClientControl> p
 	mnu->AddItem(CSTR("Related"), MNU_RELATED, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_R);
 	this->SetMenu(this->mnuMain);
 
+	this->lblCharBlock = ui->NewLabel(*this, CSTR("Block"));
+	this->lblCharBlock->SetRect(4, 4, 100, 23, false);
+	this->cboCharBlock = ui->NewComboBox(*this, false);
+	this->cboCharBlock->SetRect(104, 4, 100, 23, false);
+	NN<Text::Unicode::Block> blk;
+	UIntOS i = 0;
+	UIntOS j = Text::Unicode::GetBlockCount();
+	while (i < j)
+	{
+		if (Text::Unicode::GetBlockByIndex(i).SetTo(blk))
+		{
+			this->cboCharBlock->AddItem(Text::CStringNN(blk->name, blk->nameLen), blk);
+		}
+		i++;
+	}
+	this->cboCharBlock->SetSelectedIndex(0);
+	this->cboCharBlock->HandleSelectionChange(OnCharBlockChg, this);
 	this->lblCharCode = ui->NewLabel(*this, CSTR("Char Code"));
-	this->lblCharCode->SetRect(4, 4, 100, 23, false);
+	this->lblCharCode->SetRect(4, 28, 100, 23, false);
 	this->txtCharCode = ui->NewTextBox(*this, CSTR("0"));
-	this->txtCharCode->SetRect(104, 4, 100, 23, false);
+	this->txtCharCode->SetRect(104, 28, 100, 23, false);
 	this->txtCharCode->SetReadOnly(true);
 	this->btnPasteCharCode = ui->NewButton(*this, CSTR("Paste"));
-	this->btnPasteCharCode->SetRect(204, 4, 75, 23, false);
+	this->btnPasteCharCode->SetRect(204, 28, 75, 23, false);
 	this->btnPasteCharCode->HandleButtonClick(OnPasteCharCodeClicked, this);
 	this->btnCharPrev = ui->NewButton(*this, CSTR("Prev"));
-	this->btnCharPrev->SetRect(104, 28, 55, 23, false);
+	this->btnCharPrev->SetRect(104, 52, 55, 23, false);
 	this->btnCharPrev->HandleButtonClick(OnCharPrevClicked, this);
 	this->btnCharNext = ui->NewButton(*this, CSTR("Next"));
-	this->btnCharNext->SetRect(164, 28, 55, 23, false);
+	this->btnCharNext->SetRect(164, 52, 55, 23, false);
 	this->btnCharNext->HandleButtonClick(OnCharNextClicked, this);
 	this->lblChar = ui->NewLabel(*this, CSTR("Character"));
-	this->lblChar->SetRect(4, 52, 100, 23, false);
+	this->lblChar->SetRect(4, 76, 100, 23, false);
 	this->txtChar = ui->NewTextBox(*this, CSTR(""));
-	this->txtChar->SetRect(104, 52, 23, 23, false);
+	this->txtChar->SetRect(104, 76, 23, 23, false);
 	this->txtChar->HandleTextChanged(OnCharChg, this);
 	this->txtChar->Focus();
 	this->lblRelatedCurr = ui->NewLabel(*this, CSTR("Related (Curr)"));
-	this->lblRelatedCurr->SetRect(4, 100, 100, 23, false);
+	this->lblRelatedCurr->SetRect(4, 124, 100, 23, false);
 	this->txtRelatedCurr = ui->NewTextBox(*this, CSTR(""));
-	this->txtRelatedCurr->SetRect(104, 100, 100, 23, false);
+	this->txtRelatedCurr->SetRect(104, 124, 100, 23, false);
 	this->txtRelatedCurr->SetReadOnly(true);
 	this->lblRelatedAdd = ui->NewLabel(*this, CSTR("Related (Add)"));
-	this->lblRelatedAdd->SetRect(4, 124, 100, 23, false);
+	this->lblRelatedAdd->SetRect(4, 148, 100, 23, false);
 	this->txtRelatedAdd = ui->NewTextBox(*this, CSTR(""));
-	this->txtRelatedAdd->SetRect(104, 124, 23, 23, false);
+	this->txtRelatedAdd->SetRect(104, 148, 23, 23, false);
 	this->txtRelatedAdd->HandleTextChanged(OnRelatedAddChg, this);
 	this->btnRelatedGo = ui->NewButton(*this, CSTR("Show Related"));
-	this->btnRelatedGo->SetRect(128, 124, 95, 23, false);
+	this->btnRelatedGo->SetRect(128, 148, 95, 23, false);
 	this->btnRelatedGo->HandleButtonClick(OnRelatedGoClicked, this);
 	this->pbChar = ui->NewPictureBoxSimple(*this, this->deng, true);
 	this->pbChar->SetRect(284, 4, 256, 256, false);

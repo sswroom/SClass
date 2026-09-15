@@ -313,7 +313,7 @@ void UI::GUIControl::InitFont()
 	this->hFont = font;
 #if GDK_VERSION_AFTER(3, 16)
 	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
-	builder.NewStyle(CSTR("label"), nullptr);
+	builder.NewStyle(CSTR("label, entry"), nullptr);
 	if (this->fontName.SetTo(nns)) builder.AddFontFamily(nns->v);
 	if (this->fontHeightPt != 0) builder.AddFontSize(this->fontHeightPt * this->hdpi / this->ddpi, Math::Unit::Distance::DU_PIXEL);
 	if (this->fontIsBold) builder.AddFontWeight(Text::CSSBuilder::FONT_WEIGHT_BOLD);
@@ -322,7 +322,8 @@ void UI::GUIControl::InitFont()
 	GtkCssProvider *styleProvider = gtk_css_provider_new();
 	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString().Ptr(), -1, 0);
 	gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
-	gtk_widget_reset_style(widget);
+	//gtk_widget_reset_style(widget);
+	g_object_unref(styleProvider);
 #else
 	gtk_widget_override_font((GtkWidget*)this->GetDisplayHandle().OrNull(), font);
 #endif
