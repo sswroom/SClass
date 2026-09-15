@@ -239,6 +239,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 		sb.AppendC(UTF8STRC(" "));
 		sb.AppendC(species->engName->v, species->engName->leng);
 		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
+		writer.Write(CSTR("<script type=\"module\" src=\"/app/species.js\"></script>\n"));
 		writer.Write(CSTR("<center><h1>"));
 		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 		writer.Write(s->ToCString());
