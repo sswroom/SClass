@@ -56,11 +56,11 @@ Optional<IO::ParsedObject> Parser::FileParser::PCXParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 
-	imgWidth = ReadUInt16(&hdr[8]) - (UInt32)ReadUInt16(&hdr[4]) + 1;
-	imgHeight = ReadUInt16(&hdr[10]) - (UInt32)ReadUInt16(&hdr[6]) + 1;
+	imgWidth = ReadLUInt16(&hdr[8]) - (UInt32)ReadLUInt16(&hdr[4]) + 1;
+	imgHeight = ReadLUInt16(&hdr[10]) - (UInt32)ReadLUInt16(&hdr[6]) + 1;
 	bppl = hdr[3];
 	ncp = hdr[65];
-	bpl = ReadUInt16(&hdr[66]);
+	bpl = ReadLUInt16(&hdr[66]);
 	bpp = bppl * ncp;
 	bplp = bpl * ncp;
 //	return 0;

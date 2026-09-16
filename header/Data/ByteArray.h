@@ -251,13 +251,13 @@ namespace Data
 		void WriteI16(UIntOS ofst, Int16 val)
 		{
 			CheckError(ofst + 2);
-			WriteInt16(&buff[ofst], val);
+			WriteLInt16(&buff[ofst], val);
 		}
 
 		void WriteU16(UIntOS ofst, UInt16 val)
 		{
 			CheckError(ofst + 2);
-			WriteUInt16(&buff[ofst], val);
+			WriteLUInt16(&buff[ofst], val);
 		}
 
 		void WriteMI16(UIntOS ofst, Int16 val)
@@ -287,13 +287,13 @@ namespace Data
 		void WriteI32(UIntOS ofst, Int32 val)
 		{
 			CheckError(ofst + 4);
-			WriteInt32(&buff[ofst], val);
+			WriteLInt32(&buff[ofst], val);
 		}
 
 		void WriteU32(UIntOS ofst, UInt32 val)
 		{
 			CheckError(ofst + 4);
-			WriteUInt32(&buff[ofst], val);
+			WriteLUInt32(&buff[ofst], val);
 		}
 
 		void WriteMI32(UIntOS ofst, Int32 val)

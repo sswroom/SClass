@@ -338,7 +338,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 				cli->Close();
 				return;
 			}
-			packetSize = ReadUInt24(&data->buff[0]);
+			packetSize = ReadLUInt24(&data->buff[0]);
 			if (packetSize > data->param.clientMaxPacketSize - 4)
 			{
 				cli->Close();
@@ -355,14 +355,14 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 				UIntOS authLen = 0;
 				Text::StringBuilderUTF8 sb;
 
-				data->clientCap = ReadUInt32(&data->buff[4]);
+				data->clientCap = ReadLUInt32(&data->buff[4]);
 				if (data->clientCap & Net::MySQLUtil::CLIENT_PROTOCOL_41)
 				{
-					if (data->param.clientMaxPacketSize != ReadUInt32(&data->buff[8]))
+					if (data->param.clientMaxPacketSize != ReadLUInt32(&data->buff[8]))
 					{
-						if (data->param.clientMaxPacketSize < ReadUInt32(&data->buff[8]))
+						if (data->param.clientMaxPacketSize < ReadLUInt32(&data->buff[8]))
 						{
-							data->param.clientMaxPacketSize = ReadUInt32(&data->buff[8]);
+							data->param.clientMaxPacketSize = ReadLUInt32(&data->buff[8]);
 							UnsafeArray<UInt8> newBuff = MemAllocArr(UInt8, data->param.clientMaxPacketSize + 2048);
 							MemCopyNO(newBuff.Ptr(), &data->buff[0], data->buffSize);
 							MemFreeArr(data->buff);
@@ -370,7 +370,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 						}
 						else
 						{
-							data->param.clientMaxPacketSize = ReadUInt32(&data->buff[8]);
+							data->param.clientMaxPacketSize = ReadLUInt32(&data->buff[8]);
 						}
 					}
 					data->clientCS = data->buff[12];
@@ -450,7 +450,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 				else
 				{
 					data->clientCap = data->clientCap & 0xffff;
-					data->param.clientMaxPacketSize = ReadUInt24(&data->buff[6]);
+					data->param.clientMaxPacketSize = ReadLUInt24(&data->buff[6]);
 					sb.AppendC(UTF8STRC("Handshake Response 320"));
 					sb.AppendC(UTF8STRC("\r\nCapability Flags = 0x"));
 					sb.AppendHex16((UInt16)data->clientCap);
@@ -499,7 +499,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 					sbuff[4] = 0;
 					sbuff[5] = 0;
 					sbuff[6] = 0;
-					WriteInt16(&sbuff[7], 2);
+					WriteLInt16(&sbuff[7], 2);
 					sbuff[9] = 0;
 					sbuff[10] = 0;
 					cli->Write(Data::ByteArrayR(sbuff, 11));
@@ -517,10 +517,10 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 					sptr = Text::StrConcatC(sptr, UTF8STRC("'@'"));
 					sptr = Net::SocketUtil::GetAddrName(sptr, addr).Or(sptr);
 					*sptr++ = '\'';
-					WriteInt24(sbuff, (sptr - sbuff - 4));
+					WriteLInt24(sbuff, (sptr - sbuff - 4));
 					sbuff[3] = 2;
 					sbuff[4] = 0xff;
-					WriteInt16(&sbuff[5], 0x6A2);
+					WriteLInt16(&sbuff[5], 0x6A2);
 					cli->Write(Data::ByteArrayR(sbuff, (UIntOS)(sptr - sbuff)));
 					data->mode = -1;
 					#if defined(VERBOSE)
@@ -539,7 +539,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 		UIntOS i = 0;
 		while (i + 5 <= data->buffSize)
 		{
-			UInt32 packetSize = ReadUInt32(&data->buff[i]);
+			UInt32 packetSize = ReadLUInt32(&data->buff[i]);
 			UInt8 packetType = data->buff[i + 4];
 			if (i + packetSize + 4 <= data->buffSize)
 			{
@@ -566,10 +566,10 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 								sbuff[4] = 0;
 								sptr = Net::MySQLUtil::AppendLenencInt(&sbuff[5], (UIntOS)r->GetRowChanged());
 								sptr = Net::MySQLUtil::AppendLenencInt(sptr, 0); //last insert-id
-								WriteInt16(&sptr[0], 0x4002);
-								WriteInt16(&sptr[2], 0);
+								WriteLInt16(&sptr[0], 0x4002);
+								WriteLInt16(&sptr[2], 0);
 								sptr += 4;
-								WriteInt24(&sbuff[0], sptr - sbuff - 4);
+								WriteLInt24(&sbuff[0], sptr - sbuff - 4);
 								cli->Write(Data::ByteArrayR(sbuff, (UIntOS)(sptr - sbuff)));
 								#if defined(VERBOSE)
 								printf("COM_QUERY OK, row changed = %d\r\n", (int)r->GetRowChanged());
@@ -589,7 +589,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 */
 								sbuff[3] = seqId++;
 								sptr = Net::MySQLUtil::AppendLenencInt(&sbuff[4], r->ColCount());
-								WriteInt24(&sbuff[0], sptr - sbuff - 4);
+								WriteLInt24(&sbuff[0], sptr - sbuff - 4);
 								cli->Write(Data::ByteArrayR(sbuff, (UIntOS)(sptr - sbuff)));
 								#if defined(VERBOSE)
 								printf("COM_QUERY OK, column_count = %d\r\n", (int)r->ColCount());
@@ -614,8 +614,8 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 									sptr = Net::MySQLUtil::AppendLenencStrC(sptr, nullptr, 0); //org_name
 
 									sptr = Net::MySQLUtil::AppendLenencInt(sptr, 12);
-									WriteInt16(&sptr[0], data->clientCS);
-									WriteUInt32(&sptr[2], (UInt32)col.GetColSize());
+									WriteLInt16(&sptr[0], data->clientCS);
+									WriteLUInt32(&sptr[2], (UInt32)col.GetColSize());
 
 									DB::DBUtil::ColType colType = col.GetColType();
 									sptr[6] = Net::MySQLUtil::ColType2MySQLType(colType);
@@ -645,7 +645,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 									{
 										flags |= 1024;
 									}
-									WriteInt32(&sptr[7], flags);
+									WriteLInt32(&sptr[7], flags);
 									if (colType == DB::DBUtil::CT_VarUTF8Char || colType == DB::DBUtil::CT_VarUTF16Char || colType == DB::DBUtil::CT_VarUTF32Char || colType == DB::DBUtil::CT_Double || colType == DB::DBUtil::CT_Float)
 									{
 										digits = 31;
@@ -655,7 +655,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 									sptr[11] = 0;
 									sptr += 12;
 
-									WriteInt24(&sbuff[0], sptr - sbuff - 4);
+									WriteLInt24(&sbuff[0], sptr - sbuff - 4);
 									cli->Write(Data::ByteArrayR(sbuff, (UIntOS)(sptr - sbuff)));
 									#if defined(VERBOSE)
 									printf("COM_QUERY column: %s\r\n", col.GetColName()->v.Ptr());
@@ -667,11 +667,11 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 /*
 05 00 00 03 FE 00 00 02 00 
 */
-								WriteInt24(&sbuff[0], 5);
+								WriteLInt24(&sbuff[0], 5);
 								sbuff[3] = seqId++;
 								sbuff[4] = 0xfe;
-								WriteInt16(&sbuff[5], 0);
-								WriteInt16(&sbuff[7], 2);
+								WriteLInt16(&sbuff[5], 0);
+								WriteLInt16(&sbuff[7], 2);
 								cli->Write(Data::ByteArrayR(sbuff, 9));
 								#if defined(VERBOSE)
 								printf("COM_QUERY EOF (Columns)\r\n");
@@ -703,7 +703,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 										j++;
 									}
 
-									WriteInt24(&sbuff[0], sptr - sbuff - 4);
+									WriteLInt24(&sbuff[0], sptr - sbuff - 4);
 									cli->Write(Data::ByteArrayR(sbuff, (UIntOS)(sptr - sbuff)));
 									#if defined(VERBOSE)
 									printf("COM_QUERY return row\r\n");
@@ -713,11 +713,11 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 /*
 05 00 00 05 FE 00 00 02 00
 */								
-								WriteInt24(&sbuff[0], 5);
+								WriteLInt24(&sbuff[0], 5);
 								sbuff[3] = seqId++;
 								sbuff[4] = 0xfe;
-								WriteInt16(&sbuff[5], 0);
-								WriteInt16(&sbuff[7], 2);
+								WriteLInt16(&sbuff[5], 0);
+								WriteLInt16(&sbuff[7], 2);
 								cli->Write(Data::ByteArrayR(sbuff, 9));
 								#if defined(VERBOSE)
 								printf("COM_QUERY EOF (Rows)\r\n");
@@ -730,10 +730,10 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 							UTF8Char sbuff[2048];
 							UnsafeArray<UTF8Char> sptr;
 							sptr = me->dbms->GetErrMessage(data->connId, &sbuff[7]);
-							WriteInt24(sbuff, (sptr - sbuff - 4));
+							WriteLInt24(sbuff, (sptr - sbuff - 4));
 							sbuff[3] = 1;
 							sbuff[4] = 0xff;
-							WriteInt16(&sbuff[5], 0x416);
+							WriteLInt16(&sbuff[5], 0x416);
 							cli->Write(Data::ByteArrayR(sbuff, (UIntOS)(sptr - sbuff)));
 							#if defined(VERBOSE)
 							printf("COM_QUERY failure\r\n");
@@ -804,14 +804,14 @@ void __stdcall Net::MySQLServer::OnClientConn(NN<Socket> s, AnyType userObj)
 
 	buff[4] = 10;
 	bptr = me->dbms->GetVersion()->ConcatTo(Text::StrConcatC(&buff[5], UTF8STRC(MYSQLVERSION))) + 1;
-	WriteInt32(&bptr[0], data->connId);
+	WriteLInt32(&bptr[0], data->connId);
 	MemCopyNO(&bptr[4], data->authPluginData, 8);
 	bptr += 12;
 	bptr[0] = 0; //filter_1
-	WriteInt16(&bptr[1], (data->capability & 0xffff));
+	WriteLInt16(&bptr[1], (data->capability & 0xffff));
 	bptr[3] = 45; //character set = 45 (utf8mb4)
-	WriteInt16(&bptr[4], 2); //status flags = AUTOCOMMIT
-	WriteInt16(&bptr[6], (data->capability >> 16));
+	WriteLInt16(&bptr[4], 2); //status flags = AUTOCOMMIT
+	WriteLInt16(&bptr[6], (data->capability >> 16));
 	bptr[8] = 21;
 	MemClear(&bptr[9], 10);
 	bptr += 19;
@@ -819,7 +819,7 @@ void __stdcall Net::MySQLServer::OnClientConn(NN<Socket> s, AnyType userObj)
 	bptr[12] = 0;
 	bptr += 13;
 	bptr = Text::StrConcatC(bptr, UTF8STRC("mysql_native_password")) + 1;
-	WriteInt32(buff, (Int32)(bptr - buff - 4));
+	WriteLInt32(buff, (Int32)(bptr - buff - 4));
 	cli->Write(Data::ByteArrayR(buff, (UIntOS)(bptr - buff)));
 }
 

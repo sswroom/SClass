@@ -17,7 +17,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 	UInt8 buff[64];
 	console->WriteLine(CSTR("ByteTool:"));
-	WriteInt16(&buff[1], 0x1234);
+	WriteLInt16(&buff[1], 0x1234);
 	if (buff[1] == 0x34 && buff[2] == 0x12)
 	{
 		console->WriteLine(CSTR("WriteInt16: Valid"));
@@ -40,7 +40,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console->ResetTextColor();
 	}
 
-	WriteInt24(&buff[1], 0x123456);
+	WriteLInt24(&buff[1], 0x123456);
 	if (buff[1] == 0x56 && buff[2] == 0x34 && buff[3] == 0x12)
 	{
 		console->WriteLine(CSTR("WriteInt24: Valid"));
@@ -63,7 +63,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console->ResetTextColor();
 	}
 
-	WriteInt32(&buff[1], 0x12345678);
+	WriteLInt32(&buff[1], 0x12345678);
 	if (buff[1] == 0x78 && buff[2] == 0x56 && buff[3] == 0x34 && buff[4] == 0x12)
 	{
 		console->WriteLine(CSTR("WriteInt32: Valid"));
@@ -87,7 +87,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 
 #if defined(HAS_INT64)
-	WriteInt64(&buff[1], 0x1234567890123456LL);
+	WriteLInt64(&buff[1], 0x1234567890123456LL);
 	if (buff[1] == 0x56 && buff[2] == 0x34 && buff[3] == 0x12 && buff[4] == 0x90 && buff[5] == 0x78 && buff[6] == 0x56 && buff[7] == 0x34 && buff[8] == 0x12)
 	{
 		console->WriteLine(CSTR("WriteInt64: Valid"));
@@ -119,7 +119,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	buff[6] = 0x12;
 	buff[7] = 0x34;
 	buff[8] = 0x56;
-	if (ReadInt16(&buff[1]) == 0x3412)
+	if (ReadLInt16(&buff[1]) == 0x3412)
 	{
 		console->WriteLine(CSTR("ReadInt16: Valid"));
 	}
@@ -139,7 +139,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console->WriteLine(CSTR("ReadMInt16: Invalid"));
 		console->ResetTextColor();
 	}
-	if (ReadInt24(&buff[1]) == 0x563412)
+	if (ReadLInt24(&buff[1]) == 0x563412)
 	{
 		console->WriteLine(CSTR("ReadInt24: Valid"));
 	}
@@ -159,7 +159,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console->WriteLine(CSTR("ReadMInt24: Invalid"));
 		console->ResetTextColor();
 	}
-	if (ReadInt32(&buff[1]) == 0x78563412)
+	if (ReadLInt32(&buff[1]) == 0x78563412)
 	{
 		console->WriteLine(CSTR("ReadInt32: Valid"));
 	}
@@ -180,7 +180,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console->ResetTextColor();
 	}
 #if defined(HAS_INT64)
-	if (ReadInt64(&buff[1]) == 0x5634129078563412LL)
+	if (ReadLInt64(&buff[1]) == 0x5634129078563412LL)
 	{
 		console->WriteLine(CSTR("ReadInt64: Valid"));
 	}

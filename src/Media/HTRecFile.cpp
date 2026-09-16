@@ -590,13 +590,13 @@ Media::HTRecFile::HTRecFile(NN<IO::StreamData> stmData) : DB::ReadingDB(stmData-
 	{
 		return;
 	}
-	UInt32 recCnt = ReadUInt16(&buff[83]);
+	UInt32 recCnt = ReadLUInt16(&buff[83]);
 	if (stmData->GetDataSize() != 96 + recCnt * 3)
 		return;
 	UTF8Char sbuff[37];
 	const WChar *wptr;
 	UnsafeArray<UTF8Char> dptr;
-	this->time1TS = ReadUInt32(&buff[0x04]); //Server Recv Time
+	this->time1TS = ReadLUInt32(&buff[0x04]); //Server Recv Time
 	this->address = buff[8];
 	Text::StrConcatC(sbuff, &buff[9], 10);
 	this->serialNo = Text::StrCopyNew(sbuff).Ptr();
@@ -619,14 +619,14 @@ Media::HTRecFile::HTRecFile(NN<IO::StreamData> stmData) : DB::ReadingDB(stmData-
 		}
 	}
 	this->testName = Text::StrCopyNew(sbuff).Ptr();
-	this->totalRecords = ReadUInt16(&buff[0x3b]);
-	this->recInterval = ReadUInt16(&buff[0x3d]);
-	this->tempAlarmL = ReadUInt16(&buff[0x41]) - 400;
-	this->tempAlarmH = ReadUInt16(&buff[0x43]) - 400;
-	this->rhAlarmL = ReadUInt16(&buff[0x45]);
-	this->rhAlarmH = ReadUInt16(&buff[0x47]);
-	this->time2TS = ReadUInt32(&buff[0x4a]); //Setting Time
-	this->time3TS = ReadUInt32(&buff[0x4f]); //Start Time
+	this->totalRecords = ReadLUInt16(&buff[0x3b]);
+	this->recInterval = ReadLUInt16(&buff[0x3d]);
+	this->tempAlarmL = ReadLUInt16(&buff[0x41]) - 400;
+	this->tempAlarmH = ReadLUInt16(&buff[0x43]) - 400;
+	this->rhAlarmL = ReadLUInt16(&buff[0x45]);
+	this->rhAlarmH = ReadLUInt16(&buff[0x47]);
+	this->time2TS = ReadLUInt32(&buff[0x4a]); //Setting Time
+	this->time3TS = ReadLUInt32(&buff[0x4f]); //Start Time
 	this->recCount = recCnt;
 	
 	if (this->time3TS + (Int64)(this->recCount * this->recInterval) > this->time1TS)

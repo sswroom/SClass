@@ -27,24 +27,24 @@ Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 			{
 				if (buffSize >= 30 && Text::StrStartsWithC(&buffTmp[16], buffSize - 16, UTF8STRC("_DMI_")))
 				{
-					ofst = 0;//ReadUInt32(&buffTmp[0x18]);
-					buffSize = ReadUInt16(&buffTmp[0x16]);
+					ofst = 0;//ReadLUInt32(&buffTmp[0x18]);
+					buffSize = ReadLUInt16(&buffTmp[0x16]);
 				}
 			}
 			else if (Text::StrStartsWithC(buffTmp, buffSize, UTF8STRC("_SM3_")))
 			{
 				if (buffSize >= 24)
 				{
-					ofst = 0;//ReadInt64(&buffTmp[0x10]);
-					buffSize = ReadUInt32(&buffTmp[0x0c]);
+					ofst = 0;//ReadLInt64(&buffTmp[0x10]);
+					buffSize = ReadLUInt32(&buffTmp[0x0c]);
 				}
 			}
 			else if (Text::StrStartsWithC(buffTmp, buffSize, UTF8STRC("_DMI_")))
 			{
 				if (buffSize >= 16)
 				{
-					ofst = 0;//ReadUInt32(&buffTmp[0x08]);
-					buffSize = ReadUInt16(&buffTmp[0x06]);
+					ofst = 0;//ReadLUInt32(&buffTmp[0x08]);
+					buffSize = ReadLUInt16(&buffTmp[0x06]);
 				}
 			}
 

@@ -36,7 +36,7 @@ Optional<IO::ParsedObject> Parser::FileParser::HTRecParser::ParseFileHdr(NN<IO::
 	{
 		return nullptr;
 	}
-	UInt32 recCnt = ReadUInt16(&hdr[83]);
+	UInt32 recCnt = ReadLUInt16(&hdr[83]);
 	if (fd->GetDataSize() != 96 + recCnt * 3)
 		return nullptr;
 

@@ -61,7 +61,7 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(NN<FrameDetail> frame, Un
 				frame->AddUInt(ofst + 11, 1, CSTR("Reserved"), buff[ofst + 11]);
 				frame->AddUInt(ofst + 12, 1, CSTR("Start frequency for secondary curve"), (UIntOS)buff[ofst + 12] * 2);
 				frame->AddFloat(ofst + 13, 1, CSTR("GTF C value"), buff[ofst + 13] * 0.5);
-				frame->AddUInt(ofst + 14, 2, CSTR("GTF M value"), ReadUInt16(&buff[ofst + 14]));
+				frame->AddUInt(ofst + 14, 2, CSTR("GTF M value"), ReadLUInt16(&buff[ofst + 14]));
 				frame->AddUInt(ofst + 16, 1, CSTR("GTF K value"), buff[ofst + 16]);
 				frame->AddFloat(ofst + 17, 1, CSTR("GTF J value"), (buff[ofst + 17] * 0.5));
 				break;
@@ -112,7 +112,7 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(NN<FrameDetail> frame, Un
 	}
 	else
 	{
-		frame->AddFloat(ofst, 2, CSTR("Pixel clock (MHz)"), ReadUInt16(&buff[ofst]) * 0.01);
+		frame->AddFloat(ofst, 2, CSTR("Pixel clock (MHz)"), ReadLUInt16(&buff[ofst]) * 0.01);
 		frame->AddUInt(ofst + 2, 1, CSTR("Horizontal active pixels"), buff[ofst + 2] + ((UIntOS)(buff[ofst + 4] & 0xF0)) * 16);
 		frame->AddUInt(ofst + 3, 1, CSTR("Horizontal blanking pixels"), buff[ofst + 3] + ((UIntOS)(buff[ofst + 4] & 0xF)) * 256);
 		frame->AddHex8(ofst + 4, CSTR("Horizontal pixels msbits"), buff[ofst + 4]);
@@ -209,7 +209,7 @@ void IO::FileAnalyse::EDIDFileAnalyse::RemoveNonASCII(UnsafeArray<UTF8Char> sbuf
 IO::FileAnalyse::EDIDFileAnalyse::EDIDFileAnalyse(NN<IO::StreamData> fd)
 {
 	UInt8 buff[128];
-	if (fd->GetRealData(0, 128, BYTEARR(buff)) != 128 || ReadMInt32(buff) != 0xFFFFFF || ReadUInt32(&buff[4]) != 0xFFFFFF || (((UIntOS)buff[126] + 1) << 7) > fd->GetDataSize() || (fd->GetDataSize() & 127))
+	if (fd->GetRealData(0, 128, BYTEARR(buff)) != 128 || ReadMInt32(buff) != 0xFFFFFF || ReadLUInt32(&buff[4]) != 0xFFFFFF || (((UIntOS)buff[126] + 1) << 7) > fd->GetDataSize() || (fd->GetDataSize() & 127))
 	{
 		this->fd = nullptr;
 		this->blockCnt = 0;
@@ -315,8 +315,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFram
 		sbuff[2] = (UTF8Char)(0x40 + (buff[9] & 0x1f));
 		sbuff[3] = 0;
 		frame->AddField(8, 2, CSTR("Manufacturer ID"), Text::CStringNN(sbuff, 3));
-		frame->AddHex16(10, CSTR("Manufacturer product code"), ReadUInt16(&buff[10]));
-		frame->AddUInt(12, 4, CSTR("Serial number"), ReadUInt32(&buff[12]));
+		frame->AddHex16(10, CSTR("Manufacturer product code"), ReadLUInt16(&buff[10]));
+		frame->AddUInt(12, 4, CSTR("Serial number"), ReadLUInt32(&buff[12]));
 		frame->AddUInt(16, 1, CSTR("Week of manufacture"), buff[16]);
 		frame->AddUInt(17, 1, CSTR("Year of manufacture"), (UIntOS)buff[17] + 1990);
 		frame->AddUInt(18, 1, CSTR("EDID version"), buff[18]);

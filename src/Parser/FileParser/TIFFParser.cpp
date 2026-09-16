@@ -630,7 +630,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						i = imgWidth * imgHeight;
 						while (i-- > 0)
 						{
-							WriteUInt16(&imgData[0], ReadMUInt16(&imgData[0]));
+							WriteLUInt16(&imgData[0], ReadMUInt16(&imgData[0]));
 							imgData += 2;
 						}
 					}
@@ -1429,7 +1429,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						i = imgWidth * imgHeight;
 						while (i-- > 0)
 						{
-							WriteFloat(&imgData[0], bo->GetFloat16(srcPtr + 0));
+							WriteLFloat(&imgData[0], bo->GetFloat16(srcPtr + 0));
 							srcPtr += 2;
 							imgData += 4;
 						}
@@ -1441,7 +1441,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						i = imgWidth * imgHeight;
 						while (i-- > 0)
 						{
-							WriteFloat(&imgData[0], bo->GetFloat24(srcPtr + 0));
+							WriteLFloat(&imgData[0], bo->GetFloat24(srcPtr + 0));
 							srcPtr += 3;
 							imgData += 4;
 						}
@@ -1453,7 +1453,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						i = imgWidth * imgHeight;
 						while (i-- > 0)
 						{
-							WriteFloat(&imgData[0], bo->GetFloat32(srcPtr + 0));
+							WriteLFloat(&imgData[0], bo->GetFloat32(srcPtr + 0));
 							srcPtr += 4;
 							imgData += 4;
 						}
@@ -1471,8 +1471,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat16(wPtr));
-								WriteFloat(&imgData[4], bo->GetFloat16(aPtr));
+								WriteLFloat(&imgData[0], bo->GetFloat16(wPtr));
+								WriteLFloat(&imgData[4], bo->GetFloat16(aPtr));
 								wPtr += 2;
 								aPtr += 2;
 								imgData += 8;
@@ -1485,8 +1485,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat16(srcPtr + 0));
-								WriteFloat(&imgData[4], bo->GetFloat16(srcPtr + 2));
+								WriteLFloat(&imgData[0], bo->GetFloat16(srcPtr + 0));
+								WriteLFloat(&imgData[4], bo->GetFloat16(srcPtr + 2));
 								srcPtr += 4;
 								imgData += 8;
 							}
@@ -1502,8 +1502,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat24(wPtr));
-								WriteFloat(&imgData[4], bo->GetFloat24(aPtr));
+								WriteLFloat(&imgData[0], bo->GetFloat24(wPtr));
+								WriteLFloat(&imgData[4], bo->GetFloat24(aPtr));
 								wPtr += 3;
 								aPtr += 3;
 								imgData += 8;
@@ -1516,8 +1516,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat24(srcPtr + 0));
-								WriteFloat(&imgData[4], bo->GetFloat24(srcPtr + 3));
+								WriteLFloat(&imgData[0], bo->GetFloat24(srcPtr + 0));
+								WriteLFloat(&imgData[4], bo->GetFloat24(srcPtr + 3));
 								srcPtr += 6;
 								imgData += 8;
 							}
@@ -1533,8 +1533,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat32(wPtr));
-								WriteFloat(&imgData[4], bo->GetFloat32(aPtr));
+								WriteLFloat(&imgData[0], bo->GetFloat32(wPtr));
+								WriteLFloat(&imgData[4], bo->GetFloat32(aPtr));
 								wPtr += 4;
 								aPtr += 4;
 								imgData += 8;
@@ -1547,8 +1547,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat32(srcPtr + 0));
-								WriteFloat(&imgData[4], bo->GetFloat32(srcPtr + 4));
+								WriteLFloat(&imgData[0], bo->GetFloat32(srcPtr + 0));
+								WriteLFloat(&imgData[4], bo->GetFloat32(srcPtr + 4));
 								srcPtr += 8;
 								imgData += 8;
 							}
@@ -1568,9 +1568,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat16(bPtr));
-								WriteFloat(&imgData[4], bo->GetFloat16(gPtr));
-								WriteFloat(&imgData[8], bo->GetFloat16(rPtr));
+								WriteLFloat(&imgData[0], bo->GetFloat16(bPtr));
+								WriteLFloat(&imgData[4], bo->GetFloat16(gPtr));
+								WriteLFloat(&imgData[8], bo->GetFloat16(rPtr));
 								rPtr += 2;
 								gPtr += 2;
 								bPtr += 2;
@@ -1584,9 +1584,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat16(srcPtr + 4));
-								WriteFloat(&imgData[4], bo->GetFloat16(srcPtr + 2));
-								WriteFloat(&imgData[8], bo->GetFloat16(srcPtr + 0));
+								WriteLFloat(&imgData[0], bo->GetFloat16(srcPtr + 4));
+								WriteLFloat(&imgData[4], bo->GetFloat16(srcPtr + 2));
+								WriteLFloat(&imgData[8], bo->GetFloat16(srcPtr + 0));
 								srcPtr += 6;
 								imgData += 12;
 							}
@@ -1603,9 +1603,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat24(bPtr));
-								WriteFloat(&imgData[4], bo->GetFloat24(gPtr));
-								WriteFloat(&imgData[8], bo->GetFloat24(rPtr));
+								WriteLFloat(&imgData[0], bo->GetFloat24(bPtr));
+								WriteLFloat(&imgData[4], bo->GetFloat24(gPtr));
+								WriteLFloat(&imgData[8], bo->GetFloat24(rPtr));
 								rPtr += 3;
 								gPtr += 3;
 								bPtr += 3;
@@ -1619,9 +1619,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat24(srcPtr + 6));
-								WriteFloat(&imgData[4], bo->GetFloat24(srcPtr + 3));
-								WriteFloat(&imgData[8], bo->GetFloat24(srcPtr + 0));
+								WriteLFloat(&imgData[0], bo->GetFloat24(srcPtr + 6));
+								WriteLFloat(&imgData[4], bo->GetFloat24(srcPtr + 3));
+								WriteLFloat(&imgData[8], bo->GetFloat24(srcPtr + 0));
 								srcPtr += 9;
 								imgData += 12;
 							}
@@ -1638,9 +1638,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat32(bPtr));
-								WriteFloat(&imgData[4], bo->GetFloat32(gPtr));
-								WriteFloat(&imgData[8], bo->GetFloat32(rPtr));
+								WriteLFloat(&imgData[0], bo->GetFloat32(bPtr));
+								WriteLFloat(&imgData[4], bo->GetFloat32(gPtr));
+								WriteLFloat(&imgData[8], bo->GetFloat32(rPtr));
 								rPtr += 4;
 								gPtr += 4;
 								bPtr += 4;
@@ -1654,9 +1654,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat32(srcPtr + 8));
-								WriteFloat(&imgData[4], bo->GetFloat32(srcPtr + 4));
-								WriteFloat(&imgData[8], bo->GetFloat32(srcPtr + 0));
+								WriteLFloat(&imgData[0], bo->GetFloat32(srcPtr + 8));
+								WriteLFloat(&imgData[4], bo->GetFloat32(srcPtr + 4));
+								WriteLFloat(&imgData[8], bo->GetFloat32(srcPtr + 0));
 								srcPtr += 12;
 								imgData += 12;
 							}
@@ -1677,10 +1677,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat16(bPtr));
-								WriteFloat(&imgData[4], bo->GetFloat16(gPtr));
-								WriteFloat(&imgData[8], bo->GetFloat16(rPtr));
-								WriteFloat(&imgData[12], bo->GetFloat16(aPtr));
+								WriteLFloat(&imgData[0], bo->GetFloat16(bPtr));
+								WriteLFloat(&imgData[4], bo->GetFloat16(gPtr));
+								WriteLFloat(&imgData[8], bo->GetFloat16(rPtr));
+								WriteLFloat(&imgData[12], bo->GetFloat16(aPtr));
 								rPtr += 2;
 								gPtr += 2;
 								bPtr += 2;
@@ -1695,10 +1695,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat16(srcPtr + 4));
-								WriteFloat(&imgData[4], bo->GetFloat16(srcPtr + 2));
-								WriteFloat(&imgData[8], bo->GetFloat16(srcPtr + 0));
-								WriteFloat(&imgData[12], bo->GetFloat16(srcPtr + 6));
+								WriteLFloat(&imgData[0], bo->GetFloat16(srcPtr + 4));
+								WriteLFloat(&imgData[4], bo->GetFloat16(srcPtr + 2));
+								WriteLFloat(&imgData[8], bo->GetFloat16(srcPtr + 0));
+								WriteLFloat(&imgData[12], bo->GetFloat16(srcPtr + 6));
 								srcPtr += 8;
 								imgData += 16;
 							}
@@ -1716,10 +1716,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat24(bPtr));
-								WriteFloat(&imgData[4], bo->GetFloat24(gPtr));
-								WriteFloat(&imgData[8], bo->GetFloat24(rPtr));
-								WriteFloat(&imgData[12], bo->GetFloat24(aPtr));
+								WriteLFloat(&imgData[0], bo->GetFloat24(bPtr));
+								WriteLFloat(&imgData[4], bo->GetFloat24(gPtr));
+								WriteLFloat(&imgData[8], bo->GetFloat24(rPtr));
+								WriteLFloat(&imgData[12], bo->GetFloat24(aPtr));
 								rPtr += 3;
 								gPtr += 3;
 								bPtr += 3;
@@ -1734,10 +1734,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat24(srcPtr + 6));
-								WriteFloat(&imgData[4], bo->GetFloat24(srcPtr + 3));
-								WriteFloat(&imgData[8], bo->GetFloat24(srcPtr + 0));
-								WriteFloat(&imgData[12], bo->GetFloat24(srcPtr + 9));
+								WriteLFloat(&imgData[0], bo->GetFloat24(srcPtr + 6));
+								WriteLFloat(&imgData[4], bo->GetFloat24(srcPtr + 3));
+								WriteLFloat(&imgData[8], bo->GetFloat24(srcPtr + 0));
+								WriteLFloat(&imgData[12], bo->GetFloat24(srcPtr + 9));
 								srcPtr += 12;
 								imgData += 16;
 							}
@@ -1755,10 +1755,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat32(bPtr));
-								WriteFloat(&imgData[4], bo->GetFloat32(gPtr));
-								WriteFloat(&imgData[8], bo->GetFloat32(rPtr));
-								WriteFloat(&imgData[12], bo->GetFloat32(aPtr));
+								WriteLFloat(&imgData[0], bo->GetFloat32(bPtr));
+								WriteLFloat(&imgData[4], bo->GetFloat32(gPtr));
+								WriteLFloat(&imgData[8], bo->GetFloat32(rPtr));
+								WriteLFloat(&imgData[12], bo->GetFloat32(aPtr));
 								rPtr += 4;
 								gPtr += 4;
 								bPtr += 4;
@@ -1773,10 +1773,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat32(srcPtr + 8));
-								WriteFloat(&imgData[4], bo->GetFloat32(srcPtr + 4));
-								WriteFloat(&imgData[8], bo->GetFloat32(srcPtr + 0));
-								WriteFloat(&imgData[12], bo->GetFloat32(srcPtr + 12));
+								WriteLFloat(&imgData[0], bo->GetFloat32(srcPtr + 8));
+								WriteLFloat(&imgData[4], bo->GetFloat32(srcPtr + 4));
+								WriteLFloat(&imgData[8], bo->GetFloat32(srcPtr + 0));
+								WriteLFloat(&imgData[12], bo->GetFloat32(srcPtr + 12));
 								srcPtr += 16;
 								imgData += 16;
 							}
@@ -1860,7 +1860,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					i = imgWidth * imgHeight;
 					while (i-- > 0)
 					{
-						WriteInt16(&imgData[0], ReadMInt16(&imgData[0]));
+						WriteLInt16(&imgData[0], ReadMInt16(&imgData[0]));
 						imgData += 2;
 					}
 				}
@@ -1896,8 +1896,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						while (i-- > 0)
 						{
-							WriteInt16(&imgData[0], ReadMInt16(wPtr));
-							WriteInt16(&imgData[2], ReadMInt16(aPtr));
+							WriteLInt16(&imgData[0], ReadMInt16(wPtr));
+							WriteLInt16(&imgData[2], ReadMInt16(aPtr));
 							wPtr += 2;
 							aPtr += 2;
 							imgData += 4;
@@ -1907,8 +1907,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 					while (i-- > 0)
 					{
-						WriteInt16(&imgData[0], ReadInt16(wPtr.Ptr()));
-						WriteInt16(&imgData[2], ReadInt16(aPtr.Ptr()));
+						WriteLInt16(&imgData[0], ReadLInt16(wPtr.Ptr()));
+						WriteLInt16(&imgData[2], ReadLInt16(aPtr.Ptr()));
 						wPtr += 2;
 						aPtr += 2;
 						imgData += 4;
@@ -1923,8 +1923,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						i = imgWidth * imgHeight;
 						while (i-- > 0)
 						{
-							WriteInt16(&imgData[0], ReadMInt16(&imgData[0]));
-							WriteInt16(&imgData[2], ReadMInt16(&imgData[2]));
+							WriteLInt16(&imgData[0], ReadMInt16(&imgData[0]));
+							WriteLInt16(&imgData[2], ReadMInt16(&imgData[2]));
 							imgData += 4;
 						}
 					}
@@ -2007,9 +2007,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						while (i-- > 0)
 						{
-							WriteInt16(&imgData[0], ReadMInt16(bPtr));
-							WriteInt16(&imgData[2], ReadMInt16(gPtr));
-							WriteInt16(&imgData[4], ReadMInt16(rPtr));
+							WriteLInt16(&imgData[0], ReadMInt16(bPtr));
+							WriteLInt16(&imgData[2], ReadMInt16(gPtr));
+							WriteLInt16(&imgData[4], ReadMInt16(rPtr));
 							bPtr += 2;
 							gPtr += 2;
 							rPtr += 2;
@@ -2020,9 +2020,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						while (i-- > 0)
 						{
-							WriteInt16(&imgData[0], ReadInt16(bPtr.Ptr()));
-							WriteInt16(&imgData[2], ReadInt16(gPtr.Ptr()));
-							WriteInt16(&imgData[4], ReadInt16(rPtr.Ptr()));
+							WriteLInt16(&imgData[0], ReadLInt16(bPtr.Ptr()));
+							WriteLInt16(&imgData[2], ReadLInt16(gPtr.Ptr()));
+							WriteLInt16(&imgData[4], ReadLInt16(rPtr.Ptr()));
 							bPtr += 2;
 							gPtr += 2;
 							rPtr += 2;
@@ -2040,9 +2040,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						while (i-- > 0)
 						{
 							tmpByte = ReadMInt16(&imgData[0]);
-							WriteInt16(&imgData[0], ReadMInt16(&imgData[4]));
-							WriteInt16(&imgData[2], ReadMInt16(&imgData[2]));
-							WriteInt16(&imgData[4], tmpByte);
+							WriteLInt16(&imgData[0], ReadMInt16(&imgData[4]));
+							WriteLInt16(&imgData[2], ReadMInt16(&imgData[2]));
+							WriteLInt16(&imgData[4], tmpByte);
 							imgData += 6;
 						}
 					}
@@ -2050,9 +2050,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						while (i-- > 0)
 						{
-							tmpByte = ReadInt16(&imgData[0]);
-							WriteInt16(&imgData[0], ReadInt16(&imgData[4]));
-							WriteInt16(&imgData[4], tmpByte);
+							tmpByte = ReadLInt16(&imgData[0]);
+							WriteLInt16(&imgData[0], ReadLInt16(&imgData[4]));
+							WriteLInt16(&imgData[4], tmpByte);
 							imgData += 6;
 						}
 					}
@@ -2072,10 +2072,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						while (i-- > 0)
 						{
-							WriteInt16(&imgData[0], ReadMInt16(bPtr));
-							WriteInt16(&imgData[2], ReadMInt16(gPtr));
-							WriteInt16(&imgData[4], ReadMInt16(rPtr));
-							WriteInt16(&imgData[6], ReadMInt16(aPtr));
+							WriteLInt16(&imgData[0], ReadMInt16(bPtr));
+							WriteLInt16(&imgData[2], ReadMInt16(gPtr));
+							WriteLInt16(&imgData[4], ReadMInt16(rPtr));
+							WriteLInt16(&imgData[6], ReadMInt16(aPtr));
 							bPtr += 2;
 							gPtr += 2;
 							rPtr += 2;
@@ -2087,10 +2087,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						while (i-- > 0)
 						{
-							WriteInt16(&imgData[0], ReadInt16(bPtr.Ptr()));
-							WriteInt16(&imgData[2], ReadInt16(gPtr.Ptr()));
-							WriteInt16(&imgData[4], ReadInt16(rPtr.Ptr()));
-							WriteInt16(&imgData[6], ReadInt16(aPtr.Ptr()));
+							WriteLInt16(&imgData[0], ReadLInt16(bPtr.Ptr()));
+							WriteLInt16(&imgData[2], ReadLInt16(gPtr.Ptr()));
+							WriteLInt16(&imgData[4], ReadLInt16(rPtr.Ptr()));
+							WriteLInt16(&imgData[6], ReadLInt16(aPtr.Ptr()));
 							bPtr += 2;
 							gPtr += 2;
 							rPtr += 2;
@@ -2109,10 +2109,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						while (i-- > 0)
 						{
 							tmpByte = ReadMInt16(&imgData[0]);
-							WriteInt16(&imgData[0], ReadMInt16(&imgData[4]));
-							WriteInt16(&imgData[2], ReadMInt16(&imgData[2]));
-							WriteInt16(&imgData[4], tmpByte);
-							WriteInt16(&imgData[6], ReadMInt16(&imgData[6]));
+							WriteLInt16(&imgData[0], ReadMInt16(&imgData[4]));
+							WriteLInt16(&imgData[2], ReadMInt16(&imgData[2]));
+							WriteLInt16(&imgData[4], tmpByte);
+							WriteLInt16(&imgData[6], ReadMInt16(&imgData[6]));
 							imgData += 8;
 						}
 					}
@@ -2120,9 +2120,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						while (i-- > 0)
 						{
-							tmpByte = ReadInt16(&imgData[0]);
-							WriteInt16(&imgData[0], ReadInt16(&imgData[4]));
-							WriteInt16(&imgData[4], tmpByte);
+							tmpByte = ReadLInt16(&imgData[0]);
+							WriteLInt16(&imgData[0], ReadLInt16(&imgData[4]));
+							WriteLInt16(&imgData[4], tmpByte);
 							imgData += 8;
 						}
 					}

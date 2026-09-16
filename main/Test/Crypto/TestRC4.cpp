@@ -13,10 +13,10 @@ void TestEncode(UInt32 val, UIntOS bitCnt, IO::Writer *writer)
 	UInt8 dataBuff[16];
 	UInt8 outBuff[16];
 	UIntOS outSize;
-	WriteUInt32(&dataBuff[0], val);
-	WriteUInt32(&dataBuff[4], val);
-	WriteUInt32(&dataBuff[8], val);
-	WriteUInt32(&dataBuff[12], val);
+	WriteLUInt32(&dataBuff[0], val);
+	WriteLUInt32(&dataBuff[4], val);
+	WriteLUInt32(&dataBuff[8], val);
+	WriteLUInt32(&dataBuff[12], val);
 	outSize = rc4.Encrypt(dataBuff, 16, outBuff);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("DEC "));

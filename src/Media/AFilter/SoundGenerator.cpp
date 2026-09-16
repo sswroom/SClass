@@ -58,18 +58,18 @@ UIntOS Media::AFilter::SoundGenerator::ReadBlock(Data::ByteArray blk)
 			j = this->format.nChannels;
 			while (j-- > 0)
 			{
-				v2 = sndBuff[i] * 32768.0 + ReadInt16(&blk[l]);
+				v2 = sndBuff[i] * 32768.0 + ReadLInt16(&blk[l]);
 				if (v2 >= 32767.0)
 				{
-					WriteInt16(&blk[l], 32767);
+					WriteLInt16(&blk[l], 32767);
 				}
 				else if (v2 <= -32768.0)
 				{
-					WriteInt16(&blk[l], -32768);
+					WriteLInt16(&blk[l], -32768);
 				}
 				else
 				{
-					WriteInt16(&blk[l], Double2Int32(v2));
+					WriteLInt16(&blk[l], Double2Int32(v2));
 				}
 				l += 2;
 			}

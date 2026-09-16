@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::DTSParser::GetParserType()
 
 Optional<IO::ParsedObject> Parser::FileParser::DTSParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
-	if (ReadUInt32(&hdr[0]) != 0x180FE7F || (hdr[4] & 0xfc) != 0xfc)
+	if (ReadLUInt32(&hdr[0]) != 0x180FE7F || (hdr[4] & 0xfc) != 0xfc)
 	{
 		return nullptr;
 	}

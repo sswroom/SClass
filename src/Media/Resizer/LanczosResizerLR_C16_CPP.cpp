@@ -32,10 +32,10 @@ void LanczosResizerLR_C16_horizontal_filter(UInt8 *inPt, UInt8 *outPt,IntOS widt
 			j = tap;
 			while (j-- > 0)
 			{
-				bval += ReadInt16(&inPt[currIndex[0] + 0]) * currWeight[0] + ReadInt16(&inPt[currIndex[1] + 0]) * currWeight[1];
-				gval += ReadInt16(&inPt[currIndex[0] + 2]) * currWeight[2] + ReadInt16(&inPt[currIndex[1] + 2]) * currWeight[3];
-				rval += ReadInt16(&inPt[currIndex[0] + 4]) * currWeight[4] + ReadInt16(&inPt[currIndex[1] + 4]) * currWeight[5];
-				aval += ReadInt16(&inPt[currIndex[0] + 6]) * currWeight[6] + ReadInt16(&inPt[currIndex[1] + 6]) * currWeight[7];
+				bval += ReadLInt16(&inPt[currIndex[0] + 0]) * currWeight[0] + ReadLInt16(&inPt[currIndex[1] + 0]) * currWeight[1];
+				gval += ReadLInt16(&inPt[currIndex[0] + 2]) * currWeight[2] + ReadLInt16(&inPt[currIndex[1] + 2]) * currWeight[3];
+				rval += ReadLInt16(&inPt[currIndex[0] + 4]) * currWeight[4] + ReadLInt16(&inPt[currIndex[1] + 4]) * currWeight[5];
+				aval += ReadLInt16(&inPt[currIndex[0] + 6]) * currWeight[6] + ReadLInt16(&inPt[currIndex[1] + 6]) * currWeight[7];
 				currIndex += 2;
 				currWeight += 8;
 			}
@@ -59,10 +59,10 @@ void LanczosResizerLR_C16_horizontal_filter(UInt8 *inPt, UInt8 *outPt,IntOS widt
 				aval = -32768;
 			else if (aval > 32767)
 				aval = 32767;
-			WriteInt16(&outPt[0], bval);
-			WriteInt16(&outPt[2], gval);
-			WriteInt16(&outPt[4], rval);
-			WriteInt16(&outPt[6], aval);
+			WriteLInt16(&outPt[0], bval);
+			WriteLInt16(&outPt[2], gval);
+			WriteLInt16(&outPt[4], rval);
+			WriteLInt16(&outPt[6], aval);
 			outPt += 8;
 		}
 		inPt += sstep;
@@ -99,10 +99,10 @@ void LanczosResizerLR_C16_vertical_filter(UInt8 *inPt, UInt8 *outPt, IntOS width
 			j = tap;
 			while (j-- > 0)
 			{
-				bval += ReadInt16(&currIn[currIndex[0] + 0]) * currWeight[0] + ReadInt16(&currIn[currIndex[1] + 0]) * currWeight[1];
-				gval += ReadInt16(&currIn[currIndex[0] + 2]) * currWeight[2] + ReadInt16(&currIn[currIndex[1] + 2]) * currWeight[3];
-				rval += ReadInt16(&currIn[currIndex[0] + 4]) * currWeight[4] + ReadInt16(&currIn[currIndex[1] + 4]) * currWeight[5];
-				aval += ReadInt16(&currIn[currIndex[0] + 6]) * currWeight[6] + ReadInt16(&currIn[currIndex[1] + 6]) * currWeight[7];
+				bval += ReadLInt16(&currIn[currIndex[0] + 0]) * currWeight[0] + ReadLInt16(&currIn[currIndex[1] + 0]) * currWeight[1];
+				gval += ReadLInt16(&currIn[currIndex[0] + 2]) * currWeight[2] + ReadLInt16(&currIn[currIndex[1] + 2]) * currWeight[3];
+				rval += ReadLInt16(&currIn[currIndex[0] + 4]) * currWeight[4] + ReadLInt16(&currIn[currIndex[1] + 4]) * currWeight[5];
+				aval += ReadLInt16(&currIn[currIndex[0] + 6]) * currWeight[6] + ReadLInt16(&currIn[currIndex[1] + 6]) * currWeight[7];
 				currIndex += 2;
 				currWeight += 8;
 			}
@@ -128,10 +128,10 @@ void LanczosResizerLR_C16_vertical_filter(UInt8 *inPt, UInt8 *outPt, IntOS width
 				rval = 32767;
 			else
 				rval = rval & 65535;
-			v  = ReadUInt16(&rgbTable[bval * 2 + 0]);
-			v |= ReadUInt16(&rgbTable[gval * 2 + 131072]);
-			v |= ReadUInt16(&rgbTable[rval * 2 + 262144]);
-			WriteInt16(&outPt[0], v);
+			v  = ReadLUInt16(&rgbTable[bval * 2 + 0]);
+			v |= ReadLUInt16(&rgbTable[gval * 2 + 131072]);
+			v |= ReadLUInt16(&rgbTable[rval * 2 + 262144]);
+			WriteLInt16(&outPt[0], v);
 			currIn += 8;
 			outPt += 2;
 		}
@@ -152,10 +152,10 @@ void LanczosResizerLR_C16_collapse(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS
 		i = width;
 		while (i-- > 0)
 		{
-			v  = ReadUInt16(&rgbTable[ReadUInt16(&inPt[0]) * 2 + 0]);
-			v |= ReadUInt16(&rgbTable[ReadUInt16(&inPt[2]) * 2 + 131072]);
-			v |= ReadUInt16(&rgbTable[ReadUInt16(&inPt[4]) * 2 + 262144]);
-			WriteInt16(outPt, v);
+			v  = ReadLUInt16(&rgbTable[ReadLUInt16(&inPt[0]) * 2 + 0]);
+			v |= ReadLUInt16(&rgbTable[ReadLUInt16(&inPt[2]) * 2 + 131072]);
+			v |= ReadLUInt16(&rgbTable[ReadLUInt16(&inPt[4]) * 2 + 262144]);
+			WriteLInt16(outPt, v);
 			inPt += 8;
 			outPt += 2;
 		}

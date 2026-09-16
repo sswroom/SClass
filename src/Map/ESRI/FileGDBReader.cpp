@@ -121,7 +121,7 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 					return false;
 				}
 
-				this->currOfst = ReadUInt32(&this->indexBuff[this->indexNext * 5 + 1]);
+				this->currOfst = ReadLUInt32(&this->indexBuff[this->indexNext * 5 + 1]);
 				this->currOfst = (this->currOfst << 8) + this->indexBuff[this->indexNext * 5];
 				this->indexNext++;
 				this->objectId = (Int32)this->indexNext;
@@ -132,7 +132,7 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 						return false;
 					}
 					this->rowOfst = this->currOfst;
-					Int32 size = ReadInt32(sizeBuff);
+					Int32 size = ReadLInt32(sizeBuff);
 					if (size < 0)
 					{
 						return false;
@@ -158,7 +158,7 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 				{
 					return false;
 				}
-				Int32 size = ReadInt32(sizeBuff);
+				Int32 size = ReadLInt32(sizeBuff);
 				if (size < 0)
 				{
 					this->currOfst += 4 + (UInt32)(-size);
@@ -315,15 +315,15 @@ Int32 Map::ESRI::FileGDBReader::GetInt32(UIntOS colIndex)
 	switch (field->fieldType)
 	{
 	case 0:
-		return ReadInt16(&this->rowData[this->fieldOfst[fieldIndex]]);
+		return ReadLInt16(&this->rowData[this->fieldOfst[fieldIndex]]);
 	case 1:
-		return ReadInt32(&this->rowData[this->fieldOfst[fieldIndex]]);
+		return ReadLInt32(&this->rowData[this->fieldOfst[fieldIndex]]);
 	case 2:
-		return Double2Int32(ReadFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Double2Int32(ReadLFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
 	case 3:
-		return Double2Int32(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Double2Int32(ReadLDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
 	case 5:
-		return (Int32)ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]);
+		return (Int32)ReadLDouble(&this->rowData[this->fieldOfst[fieldIndex]]);
 	case 6:
 		return this->objectId;
 	case 4:
@@ -354,15 +354,15 @@ Int64 Map::ESRI::FileGDBReader::GetInt64(UIntOS colIndex)
 	switch (field->fieldType)
 	{
 	case 0:
-		return ReadInt16(&this->rowData[this->fieldOfst[fieldIndex]]);
+		return ReadLInt16(&this->rowData[this->fieldOfst[fieldIndex]]);
 	case 1:
-		return ReadInt32(&this->rowData[this->fieldOfst[fieldIndex]]);
+		return ReadLInt32(&this->rowData[this->fieldOfst[fieldIndex]]);
 	case 2:
-		return Double2Int64(ReadFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Double2Int64(ReadLFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
 	case 3:
-		return Double2Int64(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Double2Int64(ReadLDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
 	case 5:
-		return (Int64)ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]);
+		return (Int64)ReadLDouble(&this->rowData[this->fieldOfst[fieldIndex]]);
 	case 6:
 		return this->objectId;
 	case 4:
@@ -405,16 +405,16 @@ Bool Map::ESRI::FileGDBReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF
 	switch (field->fieldType)
 	{
 	case 0:
-		sb->AppendI16(ReadInt16(&this->rowData[this->fieldOfst[fieldIndex]]));
+		sb->AppendI16(ReadLInt16(&this->rowData[this->fieldOfst[fieldIndex]]));
 		return true;
 	case 1:
-		sb->AppendI32(ReadInt32(&this->rowData[this->fieldOfst[fieldIndex]]));
+		sb->AppendI32(ReadLInt32(&this->rowData[this->fieldOfst[fieldIndex]]));
 		return true;
 	case 2:
-		Text::SBAppendF32(sb, ReadFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
+		Text::SBAppendF32(sb, ReadLFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
 		return true;
 	case 3:
-		Text::SBAppendF64(sb, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+		Text::SBAppendF64(sb, ReadLDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
 		return true;
 	case 12:
 	case 4:
@@ -423,7 +423,7 @@ Bool Map::ESRI::FileGDBReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF
 		return true;
 	case 5:
 		{
-			sb->AppendTSNoZone(Text::XLSUtil::Number2Timestamp(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]])).RoundToS());
+			sb->AppendTSNoZone(Text::XLSUtil::Number2Timestamp(ReadLDouble(&this->rowData[this->fieldOfst[fieldIndex]])).RoundToS());
 		}
 		return true;
 	case 6:
@@ -480,16 +480,16 @@ Optional<Text::String> Map::ESRI::FileGDBReader::GetNewStr(UIntOS colIndex)
 	switch (field->fieldType)
 	{
 	case 0:
-		sptr = Text::StrInt16(sbuff, ReadInt16(&this->rowData[this->fieldOfst[fieldIndex]]));
+		sptr = Text::StrInt16(sbuff, ReadLInt16(&this->rowData[this->fieldOfst[fieldIndex]]));
 		return Text::String::NewP(sbuff, sptr);
 	case 1:
-		sptr = Text::StrInt32(sbuff, ReadInt32(&this->rowData[this->fieldOfst[fieldIndex]]));
+		sptr = Text::StrInt32(sbuff, ReadLInt32(&this->rowData[this->fieldOfst[fieldIndex]]));
 		return Text::String::NewP(sbuff, sptr);
 	case 2:
-		sptr = Text::StrDouble(sbuff, ReadFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
+		sptr = Text::StrDouble(sbuff, ReadLFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
 		return Text::String::NewP(sbuff, sptr);
 	case 3:
-		sptr = Text::StrDouble(sbuff, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+		sptr = Text::StrDouble(sbuff, ReadLDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
 		return Text::String::NewP(sbuff, sptr);
 	case 12:
 	case 4:
@@ -497,7 +497,7 @@ Optional<Text::String> Map::ESRI::FileGDBReader::GetNewStr(UIntOS colIndex)
 		return Text::String::New(&this->rowData[ofst], (UIntOS)v);
 	case 5:
 		{
-			sptr = Text::XLSUtil::Number2Timestamp(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]])).RoundToS().ToString(sbuff);
+			sptr = Text::XLSUtil::Number2Timestamp(ReadLDouble(&this->rowData[this->fieldOfst[fieldIndex]])).RoundToS().ToString(sbuff);
 			return Text::String::NewP(sbuff, sptr);
 		}
 	case 6:
@@ -567,7 +567,7 @@ Data::Timestamp Map::ESRI::FileGDBReader::GetTimestamp(UIntOS colIndex)
 	switch (field->fieldType)
 	{
 	case 5:
-		return Text::XLSUtil::Number2Timestamp(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]])).RoundToS();
+		return Text::XLSUtil::Number2Timestamp(ReadLDouble(&this->rowData[this->fieldOfst[fieldIndex]])).RoundToS();
 	case 4:
 	case 12:
 		{
@@ -596,15 +596,15 @@ Double Map::ESRI::FileGDBReader::GetDblOrNAN(UIntOS colIndex)
 	switch (field->fieldType)
 	{
 	case 0:
-		return ReadInt16(&this->rowData[this->fieldOfst[fieldIndex]]);
+		return ReadLInt16(&this->rowData[this->fieldOfst[fieldIndex]]);
 	case 1:
-		return ReadInt32(&this->rowData[this->fieldOfst[fieldIndex]]);
+		return ReadLInt32(&this->rowData[this->fieldOfst[fieldIndex]]);
 	case 2:
-		return ReadFloat(&this->rowData[this->fieldOfst[fieldIndex]]);
+		return ReadLFloat(&this->rowData[this->fieldOfst[fieldIndex]]);
 	case 3:
-		return ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]);
+		return ReadLDouble(&this->rowData[this->fieldOfst[fieldIndex]]);
 	case 5:
-		return ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]);
+		return ReadLDouble(&this->rowData[this->fieldOfst[fieldIndex]]);
 	case 6:
 		return this->objectId;
 	case 4:
@@ -1138,17 +1138,17 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UIntOS co
 					type = this->rowData[ofst];
 					if (type == 1) //esriSegmentArc
 					{
-						curve.AddArc((UIntOS)uv, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadUInt32(&this->rowData[ofst + 17]));
+						curve.AddArc((UIntOS)uv, Math::Coord2DDbl(ReadLDouble(&this->rowData[ofst + 1]), ReadLDouble(&this->rowData[ofst + 9])), ReadLUInt32(&this->rowData[ofst + 17]));
 						ofst += 21;
 					}
 					else if (type == 4) //esriSegmentBezier3Curve
 					{
-						curve.AddBezier3Curve((UIntOS)uv, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 17]), ReadDouble(&this->rowData[ofst + 25])));
+						curve.AddBezier3Curve((UIntOS)uv, Math::Coord2DDbl(ReadLDouble(&this->rowData[ofst + 1]), ReadLDouble(&this->rowData[ofst + 9])), Math::Coord2DDbl(ReadLDouble(&this->rowData[ofst + 17]), ReadLDouble(&this->rowData[ofst + 25])));
 						ofst += 33;
 					}
 					else if (type == 5) //esriSegmentEllipticArc
 					{
-						curve.AddEllipticArc((UIntOS)uv, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadDouble(&this->rowData[ofst + 17]), ReadDouble(&this->rowData[ofst + 25]), ReadDouble(&this->rowData[ofst + 33]), ReadUInt32(&this->rowData[ofst + 41]));
+						curve.AddEllipticArc((UIntOS)uv, Math::Coord2DDbl(ReadLDouble(&this->rowData[ofst + 1]), ReadLDouble(&this->rowData[ofst + 9])), ReadLDouble(&this->rowData[ofst + 17]), ReadLDouble(&this->rowData[ofst + 25]), ReadLDouble(&this->rowData[ofst + 33]), ReadLUInt32(&this->rowData[ofst + 41]));
 						ofst += 45;
 					}
 					else
@@ -1276,17 +1276,17 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UIntOS co
 					type = this->rowData[ofst];
 					if (type == 1) //esriSegmentArc
 					{
-						curve.AddArc((UIntOS)startIndex, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadUInt32(&this->rowData[ofst + 17]));
+						curve.AddArc((UIntOS)startIndex, Math::Coord2DDbl(ReadLDouble(&this->rowData[ofst + 1]), ReadLDouble(&this->rowData[ofst + 9])), ReadLUInt32(&this->rowData[ofst + 17]));
 						ofst += 21;
 					}
 					else if (type == 4) //esriSegmentBezier3Curve
 					{
-						curve.AddBezier3Curve((UIntOS)startIndex, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 17]), ReadDouble(&this->rowData[ofst + 25])));
+						curve.AddBezier3Curve((UIntOS)startIndex, Math::Coord2DDbl(ReadLDouble(&this->rowData[ofst + 1]), ReadLDouble(&this->rowData[ofst + 9])), Math::Coord2DDbl(ReadLDouble(&this->rowData[ofst + 17]), ReadLDouble(&this->rowData[ofst + 25])));
 						ofst += 33;
 					}
 					else if (type == 5) //esriSegmentEllipticArc
 					{
-						curve.AddEllipticArc((UIntOS)startIndex, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadDouble(&this->rowData[ofst + 17]), ReadDouble(&this->rowData[ofst + 25]), ReadDouble(&this->rowData[ofst + 33]), ReadUInt32(&this->rowData[ofst + 41]));
+						curve.AddEllipticArc((UIntOS)startIndex, Math::Coord2DDbl(ReadLDouble(&this->rowData[ofst + 1]), ReadLDouble(&this->rowData[ofst + 9])), ReadLDouble(&this->rowData[ofst + 17]), ReadLDouble(&this->rowData[ofst + 25]), ReadLDouble(&this->rowData[ofst + 33]), ReadLUInt32(&this->rowData[ofst + 41]));
 						ofst += 45;
 					}
 					else
@@ -1359,16 +1359,16 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UIntOS colIndex, NN<Data::VariItem> i
 	switch (field->fieldType)
 	{
 	case 0:
-		item->SetI16(ReadInt16(&this->rowData[this->fieldOfst[fieldIndex]]));
+		item->SetI16(ReadLInt16(&this->rowData[this->fieldOfst[fieldIndex]]));
 		return true;
 	case 1:
-		item->SetI32(ReadInt32(&this->rowData[this->fieldOfst[fieldIndex]]));
+		item->SetI32(ReadLInt32(&this->rowData[this->fieldOfst[fieldIndex]]));
 		return true;
 	case 2:
-		item->SetF32(ReadFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
+		item->SetF32(ReadLFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
 		return true;
 	case 3:
-		item->SetF64(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+		item->SetF64(ReadLDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
 		return true;
 	case 12:
 	case 4:
@@ -1381,7 +1381,7 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UIntOS colIndex, NN<Data::VariItem> i
 		}
 	case 5:
 		{
-			item->SetDate(Text::XLSUtil::Number2Timestamp(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]])).RoundToS());
+			item->SetDate(Text::XLSUtil::Number2Timestamp(ReadLDouble(&this->rowData[this->fieldOfst[fieldIndex]])).RoundToS());
 			return true;
 		}
 	case 6:
@@ -1464,13 +1464,13 @@ NN<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(Text::CStringNN name)
 	switch (field->fieldType)
 	{
 	case 0:
-		return Data::VariItem::NewI16(ReadInt16(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Data::VariItem::NewI16(ReadLInt16(&this->rowData[this->fieldOfst[fieldIndex]]));
 	case 1:
-		return Data::VariItem::NewI32(ReadInt32(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Data::VariItem::NewI32(ReadLInt32(&this->rowData[this->fieldOfst[fieldIndex]]));
 	case 2:
-		return Data::VariItem::NewF32(ReadFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Data::VariItem::NewF32(ReadLFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
 	case 3:
-		return Data::VariItem::NewF64(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Data::VariItem::NewF64(ReadLDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
 	case 12:
 	case 4:
 		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
@@ -1479,7 +1479,7 @@ NN<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(Text::CStringNN name)
 		}
 	case 5:
 		{
-			return Data::VariItem::NewTS(Text::XLSUtil::Number2Timestamp(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]])).RoundToS());
+			return Data::VariItem::NewTS(Text::XLSUtil::Number2Timestamp(ReadLDouble(&this->rowData[this->fieldOfst[fieldIndex]])).RoundToS());
 		}
 	case 6:
 		return Data::VariItem::NewI32(this->objectId);
@@ -1718,7 +1718,7 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 		{
 			if (field->defSize == 2)
 			{
-				sptr = Text::StrInt16(sbuff, ReadInt16(&valArr[0]));
+				sptr = Text::StrInt16(sbuff, ReadLInt16(&valArr[0]));
 				colDef->SetDefVal(CSTRP(sbuff, sptr));
 			}
 		}
@@ -1726,7 +1726,7 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 		{
 			if (field->defSize == 4)
 			{
-				sptr = Text::StrInt32(sbuff, ReadInt32(&valArr[0]));
+				sptr = Text::StrInt32(sbuff, ReadLInt32(&valArr[0]));
 				colDef->SetDefVal(CSTRP(sbuff, sptr));
 			}
 		}
@@ -1734,7 +1734,7 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 		{
 			if (field->defSize == 4)
 			{
-				sptr = Text::StrDouble(sbuff, ReadFloat(&valArr[0]));
+				sptr = Text::StrDouble(sbuff, ReadLFloat(&valArr[0]));
 				colDef->SetDefVal(CSTRP(sbuff, sptr));
 			}
 		}
@@ -1742,7 +1742,7 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 		{
 			if (field->defSize == 8)
 			{
-				sptr = Text::StrDouble(sbuff, ReadDouble(&valArr[0]));
+				sptr = Text::StrDouble(sbuff, ReadLDouble(&valArr[0]));
 				colDef->SetDefVal(CSTRP(sbuff, sptr));
 			}
 		}
@@ -1757,7 +1757,7 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 			if (field->defSize == 8)
 			{
 				Data::DateTime dt;
-				Text::XLSUtil::Number2Date(dt, ReadDouble(&valArr[0]));
+				Text::XLSUtil::Number2Date(dt, ReadLDouble(&valArr[0]));
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				colDef->SetDefVal(CSTRP(sbuff, sptr));
 			}

@@ -239,7 +239,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SLOCParser::ParseFileHdr(NN<IO::S
 
 	if (fileSize < 252)
 		return nullptr;
-	if (ReadInt64(&hdr[0]) != devId || ReadInt64(&hdr[84]) != devId || ReadInt64(&hdr[168]) != devId)
+	if (ReadLInt64(&hdr[0]) != devId || ReadLInt64(&hdr[84]) != devId || ReadLInt64(&hdr[168]) != devId)
 		return nullptr;
 
 	NN<Map::GPSTrack> track;
@@ -256,16 +256,16 @@ Optional<IO::ParsedObject> Parser::FileParser::SLOCParser::ParseFileHdr(NN<IO::S
 	{
 		ExtraInfo extInfo;
 		fd->GetRealData(currPos, 84, BYTEARR(buff));
-		extInfo.termId = ReadInt64(&buff[0]);
-		rec.pos.SetLat(ReadInt32(&buff[8]) / 200000.0);
-		rec.pos.SetLon(ReadInt32(&buff[12]) / 200000.0);
-		rec.speed = ReadUInt16(&buff[16]) * 0.01;
-		rec.heading = ReadUInt16(&buff[18]) * 0.01;
-		rec.recTime = Data::TimeInstant(ReadUInt32(&buff[20]), 0);
-		rec.altitude = ReadInt16(&buff[24]);
-		extInfo.status = ReadUInt32(&buff[26]);
-		extInfo.inStatus = ReadUInt32(&buff[30]);
-		extInfo.outStatus = ReadUInt32(&buff[34]);
+		extInfo.termId = ReadLInt64(&buff[0]);
+		rec.pos.SetLat(ReadLInt32(&buff[8]) / 200000.0);
+		rec.pos.SetLon(ReadLInt32(&buff[12]) / 200000.0);
+		rec.speed = ReadLUInt16(&buff[16]) * 0.01;
+		rec.heading = ReadLUInt16(&buff[18]) * 0.01;
+		rec.recTime = Data::TimeInstant(ReadLUInt32(&buff[20]), 0);
+		rec.altitude = ReadLInt16(&buff[24]);
+		extInfo.status = ReadLUInt32(&buff[26]);
+		extInfo.inStatus = ReadLUInt32(&buff[30]);
+		extInfo.outStatus = ReadLUInt32(&buff[34]);
 		rec.nSateUsedGPS = buff[38];
 		rec.nSateUsed = buff[38];
 		rec.nSateUsedGLO = 0;
@@ -278,18 +278,18 @@ Optional<IO::ParsedObject> Parser::FileParser::SLOCParser::ParseFileHdr(NN<IO::S
 		rec.valid = buff[39] & 1;
 		extInfo.fixMode = buff[40];
 		extInfo.gpsFix = buff[41];
-		extInfo.pdop = ReadInt16(&buff[42]) * 0.1;
-		extInfo.hdop = ReadInt16(&buff[44]) * 0.1;
-		extInfo.vdop = ReadInt16(&buff[46]) * 0.1;
-		extInfo.adc1 = ReadInt32(&buff[48]);
-		extInfo.adc2 = ReadInt32(&buff[52]);
-		extInfo.devType = ReadInt32(&buff[56]);
-		extInfo.temper1 = ReadInt32(&buff[60]) * 0.1;
-		extInfo.temper2 = ReadInt32(&buff[64]) * 0.1;
-		extInfo.temper3 = ReadInt32(&buff[68]) * 0.1;
+		extInfo.pdop = ReadLInt16(&buff[42]) * 0.1;
+		extInfo.hdop = ReadLInt16(&buff[44]) * 0.1;
+		extInfo.vdop = ReadLInt16(&buff[46]) * 0.1;
+		extInfo.adc1 = ReadLInt32(&buff[48]);
+		extInfo.adc2 = ReadLInt32(&buff[52]);
+		extInfo.devType = ReadLInt32(&buff[56]);
+		extInfo.temper1 = ReadLInt32(&buff[60]) * 0.1;
+		extInfo.temper2 = ReadLInt32(&buff[64]) * 0.1;
+		extInfo.temper3 = ReadLInt32(&buff[68]) * 0.1;
 		extInfo.cliIP = ReadNUInt32(&buff[72]);
-		extInfo.cliPort = ReadUInt16(&buff[76]);
-		extInfo.recvTimeTS = ReadUInt32(&buff[78]);
+		extInfo.cliPort = ReadLUInt16(&buff[76]);
+		extInfo.recvTimeTS = ReadLUInt32(&buff[78]);
 		i = track->AddRecord(rec);
 		track->SetExtraDataIndex(i, (UInt8*)&extInfo, sizeof(extInfo));
 		currPos += 84;

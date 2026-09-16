@@ -277,7 +277,7 @@ Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilde
 						{
 							sb->AppendHexBuff(rawdata, (UIntOS)leng, ' ', Text::LineBreakType::CRLF);
 /*							Data::DateTime dt;
-							dt.SetUnixTimestamp(ReadInt64(rawdata));
+							dt.SetUnixTimestamp(ReadLInt64(rawdata));
 							sb->Append(&dt);*/
 						}
 						else if (Text::StrEqualsCh(typeName, "x-special/gnome-copied-files"))

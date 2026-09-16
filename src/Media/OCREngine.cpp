@@ -104,7 +104,7 @@ Bool Media::OCREngine::SetParsingImage(NN<Media::StaticImage> img)
 		UIntOS wordCnt = wpl * img->info.dispSize.y;
 		while (wordCnt-- > 0)
 		{
-			WriteMUInt32(data, ReadUInt32(data));
+			WriteMUInt32(data, ReadLUInt32(data));
 			data += 4;
 		}
 	}
@@ -132,7 +132,7 @@ Bool Media::OCREngine::SetOCVFrame(NN<Media::OpenCV::OCVFrame> frame)
 	UIntOS wordCnt = wpl * frame->GetHeight();
 	while (wordCnt-- > 0)
 	{
-		WriteMUInt32(data, ReadUInt32(data));
+		WriteMUInt32(data, ReadLUInt32(data));
 		data += 4;
 	}
 	if (this->clsData->currImg)

@@ -47,6 +47,9 @@
 #include "Net/Google/GoogleIdentityToolkit.h"
 #include "Net/Google/GoogleOAuth2.h"
 #include "Net/Google/GoogleServiceAccount.h"
+#include "Net/WebServer/HTTPDirectoryHandler.h"
+#include "Net/WebServer/HTTPServerUtil.h"
+#include "Net/WebServer/WebListener.h"
 #include "Parser/FullParserList.h"
 #include "Parser/ObjParser/FileGDB2Parser.h"
 #include "Sync/SimpleThread.h"
@@ -1587,9 +1590,57 @@ Int32 PostgreSQLTCPTest()
 	return 0;
 }
 
+class HTTPClientCertHandler : public Net::WebServer::WebStandardHandler
+{
+public:
+	HTTPClientCertHandler()
+	{
+
+	}
+
+	virtual ~HTTPClientCertHandler()
+	{
+
+	}
+
+	virtual Bool ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
+	{
+		NN<Crypto::Cert::X509Cert> cert;
+		if (req->GetClientCert().SetTo(cert))
+		{
+			Text::StringBuilderUTF8 sb;
+			cert->ToString(sb);
+			return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/plain"), sb.ToCString());
+		}
+		else
+		{
+			return resp->ResponseError(req, Net::WebStatus::SC_UNAUTHORIZED);
+		}
+	}
+};
+
+Int32 HTTPClientCertTest(NN<Core::ProgControl> progCtrl)
+{
+	Net::OSSocketFactory sockf(true);
+	Net::TCPClientFactory clif(sockf);
+	NN<Net::SSLEngine> ssl;
+	if (Net::SSLEngineFactory::Create(clif, false).SetTo(ssl))
+	{
+		ssl->ServerSetCerts(CSTR("/home/sswroom/Progs/VCClass/keystore/localhost.crt"), CSTR("/home/sswroom/Progs/VCClass/keystore/localhost.key"));
+		ssl->ServerSetRequireClientCert(Net::SSLEngine::ClientCertType::MustExist);
+		NN<Net::WebServer::WebListener> listener;
+		HTTPClientCertHandler hdlr;
+		NEW_CLASSNN(listener, Net::WebServer::WebListener(clif, ssl, hdlr, 8080, 30, 1, 4, CSTR("test/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+		progCtrl->WaitForExit(progCtrl);
+		listener.Delete();
+		ssl.Delete();
+	}
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UIntOS testType = 41;
+	UIntOS testType = 42;
 	switch (testType)
 	{
 	case 0:
@@ -1676,6 +1727,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return DRMSurfaceTest();
 	case 41:
 		return PostgreSQLTCPTest();
+	case 42:
+		return HTTPClientCertTest(progCtrl);
 	default:
 		return 0;
 	}

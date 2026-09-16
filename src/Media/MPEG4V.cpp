@@ -11,7 +11,7 @@ Bool Media::MPEG4V::GetPAR(UnsafeArray<UInt8> frame, Int32 frameSize, OutParam<I
 	}
 	while (i-- > 0)
 	{
-		if (ReadInt32(&frame[0]) == 0x20010000)
+		if (ReadLInt32(&frame[0]) == 0x20010000)
 		{
 			Int32 pw;
 			Int32 ph;

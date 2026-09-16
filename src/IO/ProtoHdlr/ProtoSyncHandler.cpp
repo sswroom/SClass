@@ -32,17 +32,17 @@ UIntOS IO::ProtoHdlr::ProtoSyncHandler::ParseProtocol(NN<IO::Stream> stm, AnyTyp
 		found = false;
 		if (*(Int16*)&buff[0] == *(Int16*)"Sy")
 		{
-			UInt32 packetSize = ReadUInt16(&buff[2]);
+			UInt32 packetSize = ReadLUInt16(&buff[2]);
 			if (packetSize <= 8192)
 			{
 				if (packetSize > buff.GetSize())
 					return buff.GetSize();
 
 				crcVal = this->crc.CalcDirect(buff.Arr().Ptr(), packetSize - 2);
-				if ((crcVal & 0xffff) == ReadUInt16(&buff[packetSize - 2]))
+				if ((crcVal & 0xffff) == ReadLUInt16(&buff[packetSize - 2]))
 				{
-					Int32 cmdType = ReadUInt16(&buff[4]);
-					Int32 seqId = ReadUInt16(&buff[6]);
+					Int32 cmdType = ReadLUInt16(&buff[4]);
+					Int32 seqId = ReadLUInt16(&buff[6]);
 					this->listener->DataParsed(stm, stmObj, cmdType, seqId, &buff[8], packetSize - 10);
 
 					found = true;
@@ -62,15 +62,15 @@ UIntOS IO::ProtoHdlr::ProtoSyncHandler::ParseProtocol(NN<IO::Stream> stm, AnyTyp
 UIntOS IO::ProtoHdlr::ProtoSyncHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize, AnyType stmData)
 {
 	*(Int16*)&buff[0] = *(Int16*)"Sy";
-	WriteInt16(&buff[2], (Int16)(cmdSize + 10));
-	WriteInt16(&buff[4], cmdType);
-	WriteInt16(&buff[6], seqId);
+	WriteLInt16(&buff[2], (Int16)(cmdSize + 10));
+	WriteLInt16(&buff[4], cmdType);
+	WriteLInt16(&buff[6], seqId);
 	if (cmdSize > 0)
 	{
 		MemCopyNO(&buff[8], cmd.Ptr(), cmdSize);
 	}
 	UInt32 crcVal;
 	crcVal = this->crc.CalcDirect(buff, cmdSize + 8);
-	WriteInt16(&buff[cmdSize + 8], crcVal);
+	WriteLInt16(&buff[cmdSize + 8], crcVal);
 	return cmdSize + 10;
 }

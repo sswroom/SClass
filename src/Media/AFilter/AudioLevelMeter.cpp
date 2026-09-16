@@ -98,7 +98,7 @@ UIntOS Media::AFilter::AudioLevelMeter::ReadBlock(Data::ByteArray blk)
 				{
 					status[j].levelChanged = true;
 				}
-				v = ReadInt16(&blk[i]);
+				v = ReadLInt16(&blk[i]);
 				soundBuff[k + j] = v;
 				if (v > status[j].maxLevel)
 				{

@@ -23,7 +23,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 		if (cmdSize >= 12)
 		{
 			Bool valid = true;
-			dev = me->GetDevice(ReadUInt64(&cmd[0]));
+			dev = me->GetDevice(ReadLUInt64(&cmd[0]));
 			sensorType = ST_CUSTOM;
 			readingTypes[0] = RT_ONOFF;
 			dev->param = cmd[8];
@@ -56,7 +56,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 	case 0xc3:
 		if (cmdSize >= 17)
 		{
-			me->dongleId = ReadUInt64(&cmd[3]);
+			me->dongleId = ReadLUInt64(&cmd[3]);
 			if (cmd[16] == 4)
 			{
 				me->dongleBaudRate = 115200;
@@ -111,25 +111,25 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 	case 0xc6:
 		if (cmdSize >= 17)
 		{
-			dev = me->GetDevice(ReadUInt64(&cmd[0]));
-			if (dev->shortAddr != ReadUInt16(&cmd[8]))
+			dev = me->GetDevice(ReadLUInt64(&cmd[0]));
+			if (dev->shortAddr != ReadLUInt16(&cmd[8]))
 			{
-				dev->shortAddr = ReadUInt16(&cmd[8]);
+				dev->shortAddr = ReadLUInt16(&cmd[8]);
 				me->hdlr->DeviceUpdated(dev->devId, dev->shortAddr);
 			}
 			dev->devType = (DeviceType)cmd[10];
 			dev->sensorCount = cmd[11];
 			dev->versionMajor = cmd[12];
 			dev->versionMinor = cmd[13];
-			dev->param = ReadInt16(&cmd[14]);
+			dev->param = ReadLInt16(&cmd[14]);
 			dev->sensorType = cmd[16];
 		}
 		else if (cmdSize >= 14)
 		{
-			dev = me->GetDevice(ReadUInt64(&cmd[0]));
-			if (dev->shortAddr != ReadUInt16(&cmd[8]))
+			dev = me->GetDevice(ReadLUInt64(&cmd[0]));
+			if (dev->shortAddr != ReadLUInt16(&cmd[8]))
 			{
-				dev->shortAddr = ReadUInt16(&cmd[8]);
+				dev->shortAddr = ReadLUInt16(&cmd[8]);
 				me->hdlr->DeviceUpdated(dev->devId, dev->shortAddr);
 			}
 			dev->devType = (DeviceType)cmd[10];
@@ -141,10 +141,10 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 	case 0xdc:
 		if (cmdSize >= 10)
 		{
-			dev = me->GetDevice(ReadUInt64(&cmd[0]));
-			if (dev->shortAddr != ReadUInt16(&cmd[8]))
+			dev = me->GetDevice(ReadLUInt64(&cmd[0]));
+			if (dev->shortAddr != ReadLUInt16(&cmd[8]))
 			{
-				dev->shortAddr = ReadUInt16(&cmd[8]);
+				dev->shortAddr = ReadLUInt16(&cmd[8]);
 				me->hdlr->DeviceUpdated(dev->devId, dev->shortAddr);
 			}
 			dev->devType = IO::SNBDongle::DT_UNKNOWN;
@@ -157,7 +157,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 		if (cmdSize >= 14)
 		{
 			Bool valid = false;
-			dev = me->GetDevice(ReadUInt64(&cmd[1]));
+			dev = me->GetDevice(ReadLUInt64(&cmd[1]));
 			switch (cmd[0])
 			{
 			case 3:
@@ -172,14 +172,14 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 					readingVals[0] = 0;
 				}
 				readingTypes[1] = RT_VOLTAGE;
-				readingVals[1] = ReadUInt16(&cmd[10]) * 0.001;
+				readingVals[1] = ReadLUInt16(&cmd[10]) * 0.001;
 				k = 2;
 				valid = true;
 				break;
 			case 4:
 				sensorType = ST_MOTION;
 				readingTypes[0] = RT_VOLTAGE;
-				readingVals[0] = ReadUInt16(&cmd[10]) * 0.001;
+				readingVals[0] = ReadLUInt16(&cmd[10]) * 0.001;
 				readingTypes[1] = RT_MOVING_SENSOR;
 				readingVals[1] = cmd[9];
 				k = 2;
@@ -188,7 +188,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 			case 32:
 				sensorType = ST_WATERSENSOR;
 				readingTypes[0] = RT_VOLTAGE;
-				readingVals[0] = ReadUInt16(&cmd[10]) * 0.001;
+				readingVals[0] = ReadLUInt16(&cmd[10]) * 0.001;
 				readingTypes[1] = RT_ALERT;
 				readingVals[1] = 1;
 				k = 2;
@@ -207,11 +207,11 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 					{
 					case RT_TEMPERATURE:
 					case RT_AIR_HUMIDITY:
-						readingVals[k] = ReadInt16(&cmd[i + 1]) * 0.01;
+						readingVals[k] = ReadLInt16(&cmd[i + 1]) * 0.01;
 						break;
 					case RT_AIR_HCHO:
 					case RT_AIR_VOC:
-						readingVals[k] = ReadInt16(&cmd[i + 1]) * 0.001;
+						readingVals[k] = ReadLInt16(&cmd[i + 1]) * 0.001;
 						break;
 					case RT_UNKNOWN:
 					case RT_GAS_CH4:
@@ -232,7 +232,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 					case RT_POWER:
 					case RT_ALERT:
 					default:
-						readingVals[k] = ReadInt16(&cmd[i + 1]);
+						readingVals[k] = ReadLInt16(&cmd[i + 1]);
 						break;
 					}
 					i += 3;
@@ -245,7 +245,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 				if (dev->handType == SNBDongle::HT_MOTION)
 				{
 					readingTypes[0] = RT_VOLTAGE;
-					readingVals[0] = ReadUInt16(&cmd[10]) * 0.001;
+					readingVals[0] = ReadLUInt16(&cmd[10]) * 0.001;
 					readingTypes[1] = RT_MOVING_SENSOR;
 					readingVals[1] = cmd[9];
 					k = 2;
@@ -254,7 +254,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 				else if (dev->handType == SNBDongle::HT_WATERLEAKAGE)
 				{
 					readingTypes[0] = RT_VOLTAGE;
-					readingVals[0] = ReadUInt16(&cmd[10]) * 0.001;
+					readingVals[0] = ReadLUInt16(&cmd[10]) * 0.001;
 					readingTypes[1] = RT_ALERT;
 					readingVals[1] = 0;
 					k = 2;
@@ -271,7 +271,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 						readingTypes[0] = RT_UNKNOWN;
 						readingVals[0] = cmd[9];
 						readingTypes[1] = RT_VOLTAGE;
-						readingVals[1] = ReadUInt16(&cmd[10]) * 0.001;
+						readingVals[1] = ReadLUInt16(&cmd[10]) * 0.001;
 						k = 2;
 					}
 				}
@@ -281,7 +281,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 					{
 						valid = true;
 						readingTypes[0] = RT_TEMPERATURE;
-						readingVals[0] = ReadInt16(&cmd[9]) * 0.1;
+						readingVals[0] = ReadLInt16(&cmd[9]) * 0.1;
 						readingTypes[1] = RT_AIR_HUMIDITY;
 						readingVals[1] = cmd[13];
 						if (readingVals[1] > 100)
@@ -298,9 +298,9 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 					{
 						valid = true;
 						readingTypes[0] = RT_VOLTAGE;
-						readingVals[0] = ReadInt16(&cmd[10]) * 0.001;
+						readingVals[0] = ReadLInt16(&cmd[10]) * 0.001;
 						readingTypes[1] = RT_TEMPERATURE;
-						readingVals[1] = ReadInt16(&cmd[14]) * 0.01;
+						readingVals[1] = ReadLInt16(&cmd[14]) * 0.01;
 						readingTypes[2] = RT_AIR_HUMIDITY;
 						readingVals[2] = cmd[17];
 						if (readingVals[2] > 100)
@@ -317,11 +317,11 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 					{
 						valid = true;
 						readingTypes[0] = RT_VOLTAGE;
-						readingVals[0] = ReadInt16(&cmd[10]) * 0.001;
+						readingVals[0] = ReadLInt16(&cmd[10]) * 0.001;
 						readingTypes[1] = RT_TEMPERATURE;
-						readingVals[1] = ReadInt16(&cmd[14]) * 0.01;
+						readingVals[1] = ReadLInt16(&cmd[14]) * 0.01;
 						readingTypes[2] = RT_AIR_HUMIDITY;
-						readingVals[2] = ReadInt16(&cmd[17]) * 0.01;
+						readingVals[2] = ReadLInt16(&cmd[17]) * 0.01;
 						if (readingVals[2] > 100)
 						{
 							readingTypes[1] = RT_UNKNOWN;
@@ -333,11 +333,11 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 					{
 						valid = true;
 						readingTypes[0] = RT_VOLTAGE;
-						readingVals[0] = ReadInt16(&cmd[10]) * 0.001;
+						readingVals[0] = ReadLInt16(&cmd[10]) * 0.001;
 						readingTypes[1] = RT_TEMPERATURE;
-						readingVals[1] = ReadInt16(&cmd[14]) * 0.01;
+						readingVals[1] = ReadLInt16(&cmd[14]) * 0.01;
 						readingTypes[2] = RT_AIR_HUMIDITY;
-						readingVals[2] = ReadInt16(&cmd[17]) * 0.01;
+						readingVals[2] = ReadLInt16(&cmd[17]) * 0.01;
 						if (readingVals[2] > 100)
 						{
 							readingTypes[1] = RT_UNKNOWN;
@@ -352,9 +352,9 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 					{
 						valid = true;
 						readingTypes[0] = RT_VOLTAGE;
-						readingVals[0] = ReadInt16(&cmd[10]) * 0.001;
+						readingVals[0] = ReadLInt16(&cmd[10]) * 0.001;
 						readingTypes[1] = RT_ALERT;
-						readingVals[1] = ReadInt16(&cmd[14]) != 2;
+						readingVals[1] = ReadLInt16(&cmd[14]) != 2;
 						k = 2;
 					}
 				}
@@ -369,7 +369,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 	case 0xe7:
 		if (cmdSize >= 24)
 		{
-			dev = me->GetDevice(ReadUInt64(&cmd[0]));
+			dev = me->GetDevice(ReadLUInt64(&cmd[0]));
 			sensorType = ST_CUSTOM;
 			if (dev->handType == IO::SNBDongle::HT_MOBILEPLUG)
 			{
@@ -389,7 +389,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UIn
 					readingVals[0] = 0;
 				}
 				readingTypes[1] = RT_POWER;
-				readingVals[1] = ReadInt32(&cmd[16]) * 0.1;
+				readingVals[1] = ReadLInt32(&cmd[16]) * 0.1;
 				me->hdlr->DeviceSensor(dev->devId, sensorType, 2, readingTypes, readingVals);
 			}
 		}
@@ -514,7 +514,7 @@ void IO::SNBDongle::SendSetReportTime(UInt64 devId, Int32 interval)
 		if (interval <= 0)
 			return;
 
-		WriteUInt64(&buff[0], dev->devId);
+		WriteLUInt64(&buff[0], dev->devId);
 		buff[8] = 0xe3;
 		buff[9] = 2;
 		buff[10] = 0x2a;
@@ -529,9 +529,9 @@ void IO::SNBDongle::SendSetReportTime(UInt64 devId, Int32 interval)
 		if (interval <= 0)
 			return;
 
-		WriteInt64(&buff[0], devId);
+		WriteLInt64(&buff[0], devId);
 		buff[8] = 0xe0;
-		WriteInt16(&buff[9], interval | 0x4000);
+		WriteLInt16(&buff[9], interval | 0x4000);
 		this->proto->SendCommand(0xb1, 11, buff);
 	}*/
 }
@@ -539,7 +539,7 @@ void IO::SNBDongle::SendSetReportTime(UInt64 devId, Int32 interval)
 void IO::SNBDongle::SendGetReportTime(UInt64 devId)
 {
 	UInt8 buff[9];
-	WriteUInt64(&buff[0], devId);
+	WriteLUInt64(&buff[0], devId);
 	buff[8] = 0xe0;
 	this->proto->SendCommand(0xb2, 9, buff);
 }
@@ -555,8 +555,8 @@ Bool IO::SNBDongle::SendDevTurnOn(UInt64 devId)
 		{
 			return false;
 		}
-		WriteUInt16(&buff[0], dev->shortAddr);
-		WriteUInt64(&buff[2], dev->devId);
+		WriteLUInt16(&buff[0], dev->shortAddr);
+		WriteLUInt64(&buff[2], dev->devId);
 		buff[10] = 1;
 		buff[11] = 1;
 		buff[12] = 0;
@@ -577,8 +577,8 @@ Bool IO::SNBDongle::SendDevTurnOff(UInt64 devId)
 		{
 			return false;
 		}
-		WriteUInt16(&buff[0], dev->shortAddr);
-		WriteUInt64(&buff[2], dev->devId);
+		WriteLUInt16(&buff[0], dev->shortAddr);
+		WriteLUInt64(&buff[2], dev->devId);
 		buff[10] = 1;
 		buff[11] = 2;
 		buff[12] = 0;
@@ -599,7 +599,7 @@ Bool IO::SNBDongle::SendDevGetStatus(UInt64 devId)
 		{
 			return false;
 		}
-		WriteUInt16(&buff[0], dev->shortAddr);
+		WriteLUInt16(&buff[0], dev->shortAddr);
 		this->proto->SendCommand(0xe7, 2, buff);
 		return true;
 	}

@@ -105,18 +105,18 @@ Bool IO::Device::BME280::Reset()
 	}
 	else
 	{
-		this->t1 = ReadUInt16(&buff[0]);
-		this->t2 = ReadInt16(&buff[2]);
-		this->t3 = ReadInt16(&buff[4]);
-		this->p1 = ReadUInt16(&buff[6]);
-		this->p2 = ReadInt16(&buff[8]);
-		this->p3 = ReadInt16(&buff[10]);
-		this->p4 = ReadInt16(&buff[12]);
-		this->p5 = ReadInt16(&buff[14]);
-		this->p6 = ReadInt16(&buff[16]);
-		this->p7 = ReadInt16(&buff[18]);
-		this->p8 = ReadInt16(&buff[20]);
-		this->p9 = ReadInt16(&buff[22]);
+		this->t1 = ReadLUInt16(&buff[0]);
+		this->t2 = ReadLInt16(&buff[2]);
+		this->t3 = ReadLInt16(&buff[4]);
+		this->p1 = ReadLUInt16(&buff[6]);
+		this->p2 = ReadLInt16(&buff[8]);
+		this->p3 = ReadLInt16(&buff[10]);
+		this->p4 = ReadLInt16(&buff[12]);
+		this->p5 = ReadLInt16(&buff[14]);
+		this->p6 = ReadLInt16(&buff[16]);
+		this->p7 = ReadLInt16(&buff[18]);
+		this->p8 = ReadLInt16(&buff[20]);
+		this->p9 = ReadLInt16(&buff[22]);
 		this->h1 = buff[25];
 	}
 
@@ -126,7 +126,7 @@ Bool IO::Device::BME280::Reset()
 	}
 	else
 	{
-		this->h2 = ReadUInt16(&buff[0]);
+		this->h2 = ReadLUInt16(&buff[0]);
 		this->h3 = buff[2];
 		this->h4 = (UInt16)((buff[3] << 4) | (buff[4] & 0xf));
 		this->h5 = (UInt16)((buff[4] >> 4) | (buff[5] << 4));

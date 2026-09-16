@@ -41,12 +41,12 @@ Optional<IO::ParsedObject> Parser::FileParser::MRGParser::ParseFileHdr(NN<IO::St
 	UTF8Char name[65];
 	UnsafeArray<UTF8Char> sptr;
 
-	if (ReadUInt32(&hdr[0]) != 0x3067726D || ReadUInt32(&hdr[4]) != 0x31)
+	if (ReadLUInt32(&hdr[0]) != 0x3067726D || ReadLUInt32(&hdr[4]) != 0x31)
 	{
 		return nullptr;
 	}
 
-	startOfst = ReadUInt32(&hdr[8]);
+	startOfst = ReadLUInt32(&hdr[8]);
 	currOfst = startOfst;
 	hdrOfst = 16;
 	Text::Encoding enc(932);

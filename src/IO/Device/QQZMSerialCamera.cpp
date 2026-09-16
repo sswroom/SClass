@@ -69,8 +69,8 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(AnyType userObj)
 						}
 						else
 						{
-							me->imgSize = ReadUInt32(&buff[i + 3]);
-							me->imgPackets = ReadUInt16(&buff[i + 7]);
+							me->imgSize = ReadLUInt32(&buff[i + 3]);
+							me->imgPackets = ReadLUInt16(&buff[i + 7]);
 							i += 10;
 
 //							printf("Picture Info: Size = %d, nPackets = %d\r\n", me->imgSize, me->imgPackets);
@@ -91,7 +91,7 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(AnyType userObj)
 								cmdBuff[0] = 'U';
 								cmdBuff[1] = 'E';
 								cmdBuff[2] = me->cameraId;
-								WriteInt16(&cmdBuff[3], 1);
+								WriteLInt16(&cmdBuff[3], 1);
 								cmdBuff[5] = '#';
 								me->stm->Write(Data::ByteArrayR(cmdBuff, 6));
 							}
@@ -107,8 +107,8 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(AnyType userObj)
 						{
 							break;
 						}
-						Int32 packNum = ReadUInt16(&buff[i + 3]);
-						UInt32 packSize = ReadUInt16(&buff[i + 5]);
+						Int32 packNum = ReadLUInt16(&buff[i + 3]);
+						UInt32 packSize = ReadLUInt16(&buff[i + 5]);
 						if (packSize > 1024 || packSize <= 0)
 						{
 							i++;
@@ -133,7 +133,7 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(AnyType userObj)
 									cmdBuff[0] = 'U';
 									cmdBuff[1] = 'E';
 									cmdBuff[2] = me->cameraId;
-									WriteInt16(&cmdBuff[3], me->imgNextPacket);
+									WriteLInt16(&cmdBuff[3], me->imgNextPacket);
 									cmdBuff[5] = '#';
 									me->stm->Write(Data::ByteArrayR(cmdBuff, 6));
 								}
@@ -221,7 +221,7 @@ Bool IO::Device::QQZMSerialCamera::CapturePhoto(NN<IO::Stream> outStm)
 	cmdBuff[1] = 'H';
 	cmdBuff[2] = this->cameraId;
 	cmdBuff[3] = 48 + IMAGESIZE;
-	WriteInt16(&cmdBuff[4], PACKETSIZE); //package size
+	WriteLInt16(&cmdBuff[4], PACKETSIZE); //package size
 	cmdBuff[6] = '#';
 	dt.SetCurrTimeUTC();
 	currTime = dt.ToTicks();

@@ -329,14 +329,14 @@ public:
 		case SYBREAL:
 			if (!cols[colIndex].buff.SetTo(colBuff))
 				return false;
-			sb->AppendDouble(ReadFloat(&colBuff[0]));
+			sb->AppendDouble(ReadLFloat(&colBuff[0]));
 			return true;
 		case SYBDECIMAL:
 		case SYBNUMERIC:
 		case SYBFLT8:
 			if (!cols[colIndex].buff.SetTo(colBuff))
 				return false;
-			sb->AppendDouble(ReadDouble(&colBuff[0]));
+			sb->AppendDouble(ReadLDouble(&colBuff[0]));
 			return true;
 #if defined(SYBMSDATE)
 		case SYBMSDATE:
@@ -423,14 +423,14 @@ public:
 		case SYBREAL:
 			if (!cols[colIndex].buff.SetTo(colBuff))
 				return nullptr;
-			sptr = Text::StrDouble(sbuff, ReadFloat(&colBuff[0]));
+			sptr = Text::StrDouble(sbuff, ReadLFloat(&colBuff[0]));
 			return Text::String::NewP(sbuff, sptr);
 		case SYBDECIMAL:
 		case SYBNUMERIC:
 		case SYBFLT8:
 			if (!cols[colIndex].buff.SetTo(colBuff))
 				return nullptr;
-			sptr = Text::StrDouble(sbuff, ReadDouble(&colBuff[0]));
+			sptr = Text::StrDouble(sbuff, ReadLDouble(&colBuff[0]));
 			return Text::String::NewP(sbuff, sptr);
 #if defined(SYBMSDATE)
 		case SYBMSDATE:
@@ -511,13 +511,13 @@ public:
 		case SYBREAL:
 			if (!cols[colIndex].buff.SetTo(colBuff))
 				return nullptr;
-			return Text::StrDouble(buff, ReadFloat(&colBuff[0]));
+			return Text::StrDouble(buff, ReadLFloat(&colBuff[0]));
 		case SYBDECIMAL:
 		case SYBNUMERIC:
 		case SYBFLT8:
 			if (!cols[colIndex].buff.SetTo(colBuff))
 				return nullptr;
-			return Text::StrDouble(buff, ReadDouble(&colBuff[0]));
+			return Text::StrDouble(buff, ReadLDouble(&colBuff[0]));
 #if defined(SYBMSDATE)
 		case SYBMSDATE:
 		case SYBMSTIME:
@@ -553,8 +553,8 @@ public:
 			return nullptr;
 		if (cols[colIndex].type == SYBDATETIME)
 		{
-			Int64 secs = (-25567 + ReadInt32(&colBuff[0])) * 86400;
-			UInt32 t = ReadUInt32(&colBuff[4]);
+			Int64 secs = (-25567 + ReadLInt32(&colBuff[0])) * 86400;
+			UInt32 t = ReadLUInt32(&colBuff[4]);
 			secs += t / 300;
 			t = (t % 300) * 10000000 / 3;
 			return Data::Timestamp(Data::TimeInstant(secs - this->tzQhr * 900, t), this->tzQhr);
@@ -701,21 +701,21 @@ public:
 		case SYBREAL:
 			if (!cols[colIndex].buff.SetTo(colBuff))
 				return false;
-			item->SetF32(ReadFloat(&colBuff[0]));
+			item->SetF32(ReadLFloat(&colBuff[0]));
 			return true;
 		case SYBDECIMAL:
 		case SYBNUMERIC:
 		case SYBFLT8:
 			if (!cols[colIndex].buff.SetTo(colBuff))
 				return false;
-			item->SetF64(ReadDouble(&colBuff[0]));
+			item->SetF64(ReadLDouble(&colBuff[0]));
 			return true;
 		case SYBDATETIME:
 		{
 			if (!cols[colIndex].buff.SetTo(colBuff))
 				return false;
-			Int64 secs = (-25567 + ReadInt32(&colBuff[0])) * 86400;
-			UInt32 t = ReadUInt32(&colBuff[4]);
+			Int64 secs = (-25567 + ReadLInt32(&colBuff[0])) * 86400;
+			UInt32 t = ReadLUInt32(&colBuff[4]);
 			secs += t / 300;
 			t = (t % 300) * 10000000 / 3;
 			item->SetDate(Data::Timestamp(Data::TimeInstant(secs - this->tzQhr * 900, t), this->tzQhr));

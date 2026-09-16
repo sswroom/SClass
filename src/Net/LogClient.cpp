@@ -122,7 +122,7 @@ UInt32 __stdcall Net::LogClient::SendThread(AnyType userObj)
 					msgLen = msg->leng;
 					buff1 = MemAlloc(UInt8, 8 + msgLen);
 					buff2 = MemAlloc(UInt8, 18 + msgLen);
-					WriteInt64(buff1, msgTime);
+					WriteLInt64(buff1, msgTime);
 					MemCopyNO(&buff1[8], msg->v.Ptr(), msgLen);
 					buffSize = me->protoHdlr.BuildPacket(buff2, 2, 0, buff1, msgLen + 8, 0);
 					cli->Write(Data::ByteArrayR(buff2, buffSize));
@@ -205,7 +205,7 @@ void Net::LogClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTyp
 		break;
 	case 3: //Log Reply
 		{
-			Int64 msgTime = ReadInt64(&cmd[0]);
+			Int64 msgTime = ReadLInt64(&cmd[0]);
 			Sync::MutexUsage mutUsage(this->mut);
 			if (msgTime == this->dateList.GetItem(0).ToTicks())
 			{

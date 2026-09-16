@@ -634,7 +634,7 @@ Bool IO::Device::MTKGPSNMEA::ParseBlock(UnsafeArray<UInt8> block, NN<Map::GPSTra
 			recStart = currOfst;
 //			if (bitmask & 1) // UTC
 //			{
-				rec.recTime = Data::TimeInstant(ReadUInt32(&block[currOfst]), 0);
+				rec.recTime = Data::TimeInstant(ReadLUInt32(&block[currOfst]), 0);
 				currOfst += 4;
 				while (rec.recTime < minTime)
 				{

@@ -27,11 +27,11 @@
 UIntOS Manage::MonConn::BuildPacket(UnsafeArray<UInt8> outbuff, UnsafeArray<UInt8> data, UIntOS dataSize, UInt16 cmdType, UInt16 cmdSeq)
 {
 	WriteNUInt16(&outbuff[0], ReadNUInt16((const UInt8*)"sM"));
-	WriteUInt16(&outbuff[2], (UInt16)(dataSize + 10));
-	WriteUInt16(&outbuff[4], cmdType);
-	WriteUInt16(&outbuff[6], cmdSeq);
+	WriteLUInt16(&outbuff[2], (UInt16)(dataSize + 10));
+	WriteLUInt16(&outbuff[4], cmdType);
+	WriteLUInt16(&outbuff[6], cmdSeq);
 	MemCopyNO(&outbuff[8], &data[0], dataSize);
-	WriteUInt16(&outbuff[dataSize + 8], CalCheck(outbuff));
+	WriteLUInt16(&outbuff[dataSize + 8], CalCheck(outbuff));
 	return dataSize + 10;
 }
 
@@ -80,14 +80,14 @@ UnsafeArrayOpt<UInt8> Manage::MonConn::FindPacket(UnsafeArray<UInt8> buff, UIntO
 	{
 		if (ReadNUInt16(&buff[i]) == ReadNUInt16((const UInt8*)"sM"))
 		{
-			UInt32 psize = ReadUInt16(&buff[i + 2]);
+			UInt32 psize = ReadLUInt16(&buff[i + 2]);
 			if (psize <= 3000)
 			{
 				if (psize > buffSize - i)
 					return &buff[i];
 
 				UInt16 chkVal = CalCheck(&buff[i]);
-				if (chkVal == ReadUInt16(&buff[i + psize - 2]))
+				if (chkVal == ReadLUInt16(&buff[i + psize - 2]))
 					return &buff[i];
 			}
 			i++;
@@ -104,21 +104,21 @@ Bool Manage::MonConn::IsCompletePacket(UnsafeArray<UInt8> buff, UIntOS buffSize)
 		return false;
 	if (ReadNUInt16(&buff[0]) != ReadNUInt16((const UInt8*)"sM"))
 		return false;
-	packSize = ReadUInt16(&buff[2]);
+	packSize = ReadLUInt16(&buff[2]);
 	if (packSize > 3000)
 		return false;
 	if (packSize > buffSize)
 		return false;
-	if (ReadUInt16(&buff[packSize - 2]) == CalCheck(buff))
+	if (ReadLUInt16(&buff[packSize - 2]) == CalCheck(buff))
 		return true;
 	return false;
 }
 
 void Manage::MonConn::ParsePacket(UnsafeArray<UInt8> buff, OutParam<UInt16> cmdSize, OutParam<UInt16> cmdType, OutParam<UInt16> cmdSeq, OutParam<UnsafeArray<UInt8>> cmdData)
 {
-	cmdSize.Set(ReadUInt16(&buff[2]));
-	cmdType.Set(ReadUInt16(&buff[4]));
-	cmdSeq.Set(ReadUInt16(&buff[6]));
+	cmdSize.Set(ReadLUInt16(&buff[2]));
+	cmdType.Set(ReadLUInt16(&buff[4]));
+	cmdSeq.Set(ReadLUInt16(&buff[6]));
 	cmdData.Set(&buff[8]);
 }
 
@@ -172,7 +172,7 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(AnyType conn)
 								UnsafeArray<UInt8> lastCmd;
 								if (me->cmdList.GetCount() && me->cmdList.GetItem(0).SetTo(lastCmd))
 								{
-									if ((cmdType & 0x7fff) == ReadUInt16(&lastCmd[4]) && cmdSeq == ReadUInt16(&lastCmd[6]))
+									if ((cmdType & 0x7fff) == ReadLUInt16(&lastCmd[4]) && cmdSeq == ReadLUInt16(&lastCmd[6]))
 									{
 										me->cmdList.RemoveAt(0);
 										MemFreeArr(lastCmd);
@@ -182,9 +182,9 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(AnyType conn)
 
 										if (cmdType == 0x8000)
 										{
-											if (ReadUInt16(&data[0]) != 0)
+											if (ReadLUInt16(&data[0]) != 0)
 											{
-												me->hdlr(Manage::MON_EVT_PROCESS_START_ERR, ReadUInt16(&data[0]), me->userObj);
+												me->hdlr(Manage::MON_EVT_PROCESS_START_ERR, ReadLUInt16(&data[0]), me->userObj);
 											}
 										}
 									}
@@ -261,7 +261,7 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(AnyType conn)
 					{
 						me->requesting = true;
 						me->lastReqTime.SetCurrTimeUTC();
-						cli->Write(Data::ByteArrayR(data, ReadUInt16(&data[2])));
+						cli->Write(Data::ByteArrayR(data, ReadLUInt16(&data[2])));
 					}
 				}
 			}
@@ -378,8 +378,8 @@ void Manage::MonConn::StartProcess(Int32 name)
 {
 	UIntOS procId = Manage::Process::GetCurrProcId();
 	UInt8 buff[8];
-	WriteUInt32(&buff[0], (UInt32)procId);
-	WriteInt32(&buff[4], name);
+	WriteLUInt32(&buff[0], (UInt32)procId);
+	WriteLInt32(&buff[4], name);
 	AddCommand(buff, 8, 0);
 }
 
@@ -387,7 +387,7 @@ void Manage::MonConn::EndProcess()
 {
 	UIntOS procId = Manage::Process::GetCurrProcId();
 	UInt8 buff[4];
-	WriteUInt32(&buff[0], (UInt32)procId);
+	WriteLUInt32(&buff[0], (UInt32)procId);
 	AddCommand(buff, 4, 1);
 }
 
@@ -395,8 +395,8 @@ void Manage::MonConn::StartTCPPort(UInt16 portNum)
 {
 	UIntOS procId = Manage::Process::GetCurrProcId();
 	UInt8 buff[6];
-	WriteUInt32(&buff[0], (UInt32)procId);
-	WriteUInt16(&buff[4], portNum);
+	WriteLUInt32(&buff[0], (UInt32)procId);
+	WriteLUInt16(&buff[4], portNum);
 	AddCommand(buff, 6, 2);
 }
 
@@ -404,8 +404,8 @@ void Manage::MonConn::StartUDPPort(UInt16 portNum)
 {
 	UIntOS procId = Manage::Process::GetCurrProcId();
 	UInt8 buff[6];
-	WriteUInt32(&buff[0], (UInt32)procId);
-	WriteUInt16(&buff[4], portNum);
+	WriteLUInt32(&buff[0], (UInt32)procId);
+	WriteLUInt16(&buff[4], portNum);
 	AddCommand(buff, 6, 3);
 }
 
@@ -413,10 +413,10 @@ void Manage::MonConn::AddLogMessage(Int32 name, Int32 name2, UInt16 logLevel, Te
 {
 	UIntOS procId = Manage::Process::GetCurrProcId();
 	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, 14 + msg.leng + 1);
-	WriteUInt32(&buff[0], (UInt32)procId);
-	WriteInt32(&buff[4], name);
-	WriteInt32(&buff[8], name2);
-	WriteUInt16(&buff[12], logLevel);
+	WriteLUInt32(&buff[0], (UInt32)procId);
+	WriteLInt32(&buff[4], name);
+	WriteLInt32(&buff[8], name2);
+	WriteLUInt16(&buff[12], logLevel);
 	msg.ConcatTo((UTF8Char*)&buff[14]);
 	AddCommand(buff, 14 + msg.leng, 4);
 	MemFreeArr(buff);

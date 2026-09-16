@@ -206,7 +206,7 @@ void SSWR::DataSync::SyncServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, 
 			NN<ServerInfo> svr;
 			if (data->serverId == 0 && cmdSize > 5 && (UIntOS)(cmd[4] + 4) <= cmdSize)
 			{
-				Int32 serverId = ReadInt32(&cmd[0]);
+				Int32 serverId = ReadLInt32(&cmd[0]);
 				Sync::RWMutexUsage svrMutUsage(this->svrMut, false);
 				if (this->svrMap.Get(serverId).SetTo(svr))
 				{

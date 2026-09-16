@@ -50,7 +50,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SZSParser::ParseFileHdr(NN<IO::St
 
 	if (!Text::StrStartsWithC(&hdr[0], 16, UTF8STRC("SZS100__")))
 		return nullptr;
-	fileCnt = ReadInt32(&hdr[12]);
+	fileCnt = ReadLInt32(&hdr[12]);
 	if (fileCnt <= 0)
 		return nullptr;
 	Text::Encoding enc(932);
@@ -62,8 +62,8 @@ Optional<IO::ParsedObject> Parser::FileParser::SZSParser::ParseFileHdr(NN<IO::St
 	{
 		fd->GetRealData(ofst, 272, BYTEARR(fileBuff));
 
-		fileOfst = ReadUInt64(&fileBuff[256]);
-		fileSize = ReadUInt64(&fileBuff[264]);
+		fileOfst = ReadLUInt64(&fileBuff[256]);
+		fileSize = ReadLUInt64(&fileBuff[264]);
 		if (fileOfst < minOfst || (fileOfst + fileSize) > fileLen)
 		{
 			pf.Delete();

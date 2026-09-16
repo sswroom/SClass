@@ -8,9 +8,9 @@
 #include "Text/MyString.h"
 #include "Text/Cpp/CppDemangler.h"
 
-Int64 __stdcall Parser::FileParser::ELFParser::TReadInt64(UnsafeArray<const UInt8> pVal)
+Int64 __stdcall Parser::FileParser::ELFParser::TReadLInt64(UnsafeArray<const UInt8> pVal)
 {
-	return ReadInt64(pVal.Ptr());
+	return ReadLInt64(pVal.Ptr());
 }
 
 Int64 __stdcall Parser::FileParser::ELFParser::TReadMInt64(UnsafeArray<const UInt8> pVal)
@@ -18,9 +18,9 @@ Int64 __stdcall Parser::FileParser::ELFParser::TReadMInt64(UnsafeArray<const UIn
 	return ReadMInt64(pVal.Ptr());
 }
 
-Int32 __stdcall Parser::FileParser::ELFParser::TReadInt32(UnsafeArray<const UInt8> pVal)
+Int32 __stdcall Parser::FileParser::ELFParser::TReadLInt32(UnsafeArray<const UInt8> pVal)
 {
-	return ReadInt32(pVal.Ptr());
+	return ReadLInt32(pVal.Ptr());
 }
 
 Int32 __stdcall Parser::FileParser::ELFParser::TReadMInt32(UnsafeArray<const UInt8> pVal)
@@ -28,9 +28,9 @@ Int32 __stdcall Parser::FileParser::ELFParser::TReadMInt32(UnsafeArray<const UIn
 	return ReadMInt32(pVal.Ptr());
 }
 
-Int16 __stdcall Parser::FileParser::ELFParser::TReadInt16(UnsafeArray<const UInt8> pVal)
+Int16 __stdcall Parser::FileParser::ELFParser::TReadLInt16(UnsafeArray<const UInt8> pVal)
 {
-	return ReadInt16(pVal.Ptr());
+	return ReadLInt16(pVal.Ptr());
 }
 
 Int16 __stdcall Parser::FileParser::ELFParser::TReadMInt16(UnsafeArray<const UInt8> pVal)
@@ -95,9 +95,9 @@ Optional<IO::ParsedObject> Parser::FileParser::ELFParser::ParseFileHdr(NN<IO::St
 	if (hdr[5] == 1)
 	{
 		exef->AddProp(CSTR("Endianness"), CSTR("1 (Little)"));
-		readInt64 = TReadInt64;
-		readInt32 = TReadInt32;
-		readInt16 = TReadInt16;
+		readInt64 = TReadLInt64;
+		readInt32 = TReadLInt32;
+		readInt16 = TReadLInt16;
 	}
 	else if (hdr[5] == 2)
 	{
@@ -110,9 +110,9 @@ Optional<IO::ParsedObject> Parser::FileParser::ELFParser::ParseFileHdr(NN<IO::St
 	{
 		sptr = Text::StrUInt32(sbuff, hdr[5]);
 		exef->AddProp(CSTR("Endianness"), CSTRP(sbuff, sptr));
-		readInt64 = TReadInt64;
-		readInt32 = TReadInt32;
-		readInt16 = TReadInt16;
+		readInt64 = TReadLInt64;
+		readInt32 = TReadLInt32;
+		readInt16 = TReadLInt16;
 	}
 	sptr = Text::StrUInt32(sbuff, hdr[6]);
 	exef->AddProp(CSTR("Format Version"), CSTRP(sbuff, sptr));

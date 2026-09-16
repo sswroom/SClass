@@ -98,7 +98,7 @@ void Crypto::Hash::MD5::GetValue(UnsafeArray<UInt8> buff) const
 		{
 			calBuff[i++] = 0;
 		}
-		WriteUInt64(&calBuff[56], msgLeng);
+		WriteLUInt64(&calBuff[56], msgLeng);
 		MD5_CalcBlock(v, calBuff, 1);
 	}
 	else
@@ -113,13 +113,13 @@ void Crypto::Hash::MD5::GetValue(UnsafeArray<UInt8> buff) const
 		MD5_CalcBlock(v, calBuff, 1);
 
 		MemClear(calBuff, 56);
-		WriteUInt64(&calBuff[56], msgLeng);
+		WriteLUInt64(&calBuff[56], msgLeng);
 		MD5_CalcBlock(v, calBuff, 1);
 	}
-	WriteUInt32(&buff[0], v[0]);
-	WriteUInt32(&buff[4], v[1]);
-	WriteUInt32(&buff[8], v[2]);
-	WriteUInt32(&buff[12], v[3]);
+	WriteLUInt32(&buff[0], v[0]);
+	WriteLUInt32(&buff[4], v[1]);
+	WriteLUInt32(&buff[8], v[2]);
+	WriteLUInt32(&buff[12], v[3]);
 }
 
 UIntOS Crypto::Hash::MD5::GetBlockSize() const

@@ -759,11 +759,11 @@ extern "C" void LanczosResizerLR_C32_CPU_collapse(UInt8 *inPt, UInt8 *outPt, UIn
 		i = width;
 		while (i-- > 0)
 		{
-			v  = ReadUInt32(&rgbTable[ReadUInt16(&inPt[0]) * 4 + 0]);
-			v |= ReadUInt32(&rgbTable[ReadUInt16(&inPt[2]) * 4 + 262144]);
-			v |= ReadUInt32(&rgbTable[ReadUInt16(&inPt[4]) * 4 + 524288]);
-			v |= ReadUInt32(&rgbTable[ReadUInt16(&inPt[6]) * 4 + 786432]);
-			WriteUInt32(outPt, v);
+			v  = ReadLUInt32(&rgbTable[ReadLUInt16(&inPt[0]) * 4 + 0]);
+			v |= ReadLUInt32(&rgbTable[ReadLUInt16(&inPt[2]) * 4 + 262144]);
+			v |= ReadLUInt32(&rgbTable[ReadLUInt16(&inPt[4]) * 4 + 524288]);
+			v |= ReadLUInt32(&rgbTable[ReadLUInt16(&inPt[6]) * 4 + 786432]);
+			WriteLUInt32(outPt, v);
 			inPt += 8;
 			outPt += 4;
 		}
@@ -783,10 +783,10 @@ extern "C" void LanczosResizerLR_C32_CPU_collapse_na(UInt8 *inPt, UInt8 *outPt, 
 		i = width;
 		while (i-- > 0)
 		{
-			v  = ReadUInt32(&rgbTable[ReadUInt16(&inPt[0]) * 4 + 0]) | 0xff000000;
-			v |= ReadUInt32(&rgbTable[ReadUInt16(&inPt[2]) * 4 + 262144]);
-			v |= ReadUInt32(&rgbTable[ReadUInt16(&inPt[4]) * 4 + 524288]);
-			WriteUInt32(outPt, v);
+			v  = ReadLUInt32(&rgbTable[ReadLUInt16(&inPt[0]) * 4 + 0]) | 0xff000000;
+			v |= ReadLUInt32(&rgbTable[ReadLUInt16(&inPt[2]) * 4 + 262144]);
+			v |= ReadLUInt32(&rgbTable[ReadLUInt16(&inPt[4]) * 4 + 524288]);
+			WriteLUInt32(outPt, v);
 			inPt += 8;
 			outPt += 4;
 		}

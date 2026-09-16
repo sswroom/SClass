@@ -234,7 +234,7 @@ void Net::RTPAACHandler::GetFormat(NN<Media::AudioFormat> format)
 	format->intType = Media::AudioFormat::IT_NORMAL;
 	format->extraSize = 2;
 	format->extra = MemAlloc(UInt8, 2);
-	WriteInt16(format->extra, this->config);
+	WriteLInt16(format->extra, this->config);
 	format->bitRate = 128000;
 }
 

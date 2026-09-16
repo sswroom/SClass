@@ -177,7 +177,7 @@ Bool IO::Device::AM2315GPIO::ReadWord(UInt8 regAddr, UInt8 *data)
 	this->crc.Clear();
 	this->crc.Calc(buff, 4);
 	this->crc.GetValue((UInt8*)&crcVal);
-	if (((UInt16)~crcVal) == ReadUInt16(&buff[4]))
+	if (((UInt16)~crcVal) == ReadLUInt16(&buff[4]))
 	{
 		data[0] = buff[2];
 		data[1] = buff[3];
@@ -185,7 +185,7 @@ Bool IO::Device::AM2315GPIO::ReadWord(UInt8 regAddr, UInt8 *data)
 	}
 	else
 	{
-		printf("ReadWord: CRC Error %X != %X\r\n", ((UInt16)~crcVal), ReadUInt16(&buff[4]));
+		printf("ReadWord: CRC Error %X != %X\r\n", ((UInt16)~crcVal), ReadLUInt16(&buff[4]));
 		return false;
 	}
 }

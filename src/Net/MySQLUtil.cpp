@@ -19,17 +19,17 @@ UnsafeArray<const UInt8> Net::MySQLUtil::ReadLenencInt(UnsafeArray<const UInt8> 
 	}
 	else if (buff[0] == 252)
 	{
-		val.Set(ReadUInt16(&buff[1]));
+		val.Set(ReadLUInt16(&buff[1]));
 		buff += 3;
 	}
 	else if (buff[0] == 253)
 	{
-		val.Set(ReadUInt24(&buff[1]));
+		val.Set(ReadLUInt24(&buff[1]));
 		buff += 4;
 	}
 	else if (buff[0] == 254)
 	{
-		val.Set(ReadUInt64(&buff[1]));
+		val.Set(ReadLUInt64(&buff[1]));
 		buff += 9;
 	}
 	else
@@ -50,19 +50,19 @@ UnsafeArray<UInt8> Net::MySQLUtil::AppendLenencInt(UnsafeArray<UInt8> buff, UInt
 	else if (val < 0x10000)
 	{
 		buff[0] = 0xfc;
-		WriteUInt16(&buff[1], (UInt16)val);
+		WriteLUInt16(&buff[1], (UInt16)val);
 		return buff + 3;
 	}
 	else if (val < 0x1000000)
 	{
 		buff[0] = 0xfd;
-		WriteInt24(&buff[1], (UInt32)val);
+		WriteLInt24(&buff[1], (UInt32)val);
 		return buff + 4;
 	}
 	else
 	{
 		buff[0] = 0xfe;
-		WriteUInt64(&buff[1], val);
+		WriteLUInt64(&buff[1], val);
 		return buff + 9;
 	}
 }

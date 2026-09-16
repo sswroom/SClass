@@ -52,7 +52,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	if (ReadNUInt32(&hdr[8]) != *(UInt32*)"WAVE")
 		return nullptr;
-	fileSize = ReadUInt32(&hdr[4]) + 8;
+	fileSize = ReadLUInt32(&hdr[4]) + 8;
 
 	NN<Media::MediaFile> vid;
 	Data::ByteBuffer fmt;
@@ -63,8 +63,8 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 		
 		if (ReadNUInt32(&chunkBuff[0]) == *(UInt32*)"fmt ")
 		{
-			fmt.ChangeSizeAndClear(ReadUInt32(&chunkBuff[4]));
-			fd->GetRealData(currPos + 8, ReadUInt32(&chunkBuff[4]), fmt);
+			fmt.ChangeSizeAndClear(ReadLUInt32(&chunkBuff[4]));
+			fd->GetRealData(currPos + 8, ReadLUInt32(&chunkBuff[4]), fmt);
 		}
 		else if (ReadNUInt32(&chunkBuff[0]) == *(UInt32*)"data")
 		{
@@ -74,18 +74,18 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 				{
 					Media::AudioFormat af;
 					af.formatId = 1;
-					af.nChannels = ReadUInt16(&fmt[2]);
-					af.frequency = ReadUInt32(&fmt[4]);
-					af.bitpersample = ReadUInt16(&fmt[14]);
+					af.nChannels = ReadLUInt16(&fmt[2]);
+					af.frequency = ReadLUInt32(&fmt[4]);
+					af.bitpersample = ReadLUInt16(&fmt[14]);
 					af.bitRate = af.frequency * af.nChannels * af.bitpersample;
-					af.align = ReadUInt16(&fmt[12]);
+					af.align = ReadLUInt16(&fmt[12]);
 					af.other = 0;
 					af.intType = Media::AudioFormat::IT_NORMAL;
 					af.extraSize = 0;
 					af.extra = 0;
 
 					NN<Media::LPCMSource> src;
-					NEW_CLASSNN(src, Media::LPCMSource(fd, currPos + 8, ReadUInt32(&chunkBuff[4]), af, fd->GetFullName()));
+					NEW_CLASSNN(src, Media::LPCMSource(fd, currPos + 8, ReadLUInt32(&chunkBuff[4]), af, fd->GetFullName()));
 
 					NEW_CLASSNN(vid, Media::MediaFile(fd->GetFullName()));
 					vid->AddSource(src, 0);
@@ -95,7 +95,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 				{
 					NN<Media::AudioBlockSource> src;
 					Media::BlockParser::AC3BlockParser ac3Parser;
-					NN<IO::StreamData> data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
+					NN<IO::StreamData> data = fd->GetPartialData(currPos + 8, ReadLUInt32(&chunkBuff[4]));
 					if (ac3Parser.ParseStreamData(data).SetTo(src))
 					{
 						data.Delete();
@@ -113,7 +113,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 				{
 					NN<Media::AudioBlockSource> src;
 					Media::BlockParser::MP3BlockParser mp3Parser;
-					NN<IO::StreamData> data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
+					NN<IO::StreamData> data = fd->GetPartialData(currPos + 8, ReadLUInt32(&chunkBuff[4]));
 					if (mp3Parser.ParseStreamData(data).SetTo(src))
 					{
 						data.Delete();
@@ -131,7 +131,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 				{
 					NN<Media::AudioBlockSource> src;
 					Media::BlockParser::MP2BlockParser mp2Parser;
-					NN<IO::StreamData> data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
+					NN<IO::StreamData> data = fd->GetPartialData(currPos + 8, ReadLUInt32(&chunkBuff[4]));
 					if (mp2Parser.ParseStreamData(data).SetTo(src))
 					{
 						data.Delete();
@@ -151,7 +151,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 					af.FromWAVEFORMATEX(fmt.Arr().Ptr());
 					
 					NN<Media::AudioFixBlockSource> src;
-					NEW_CLASSNN(src, Media::AudioFixBlockSource(fd, currPos + 8, ReadUInt32(&chunkBuff[4]), af, fd->GetFullName()));
+					NEW_CLASSNN(src, Media::AudioFixBlockSource(fd, currPos + 8, ReadLUInt32(&chunkBuff[4]), af, fd->GetFullName()));
 
 					NEW_CLASSNN(vid, Media::MediaFile(fd->GetFullName()));
 					vid->AddSource(src, 0);
@@ -159,12 +159,12 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 				}
 			}
 		}
-		else if (ReadUInt32(&chunkBuff[0]) & 0x80808080)
+		else if (ReadLUInt32(&chunkBuff[0]) & 0x80808080)
 		{
 			return nullptr;
 		}
 
-		currPos += ReadUInt32(&chunkBuff[4]) + 8;
+		currPos += ReadLUInt32(&chunkBuff[4]) + 8;
 	}
 	return nullptr;
 }

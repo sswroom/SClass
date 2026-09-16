@@ -131,8 +131,8 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> 
 							succ = succ && (resp->Write(Data::ByteArrayR(compBuff, readSize)) == readSize);
 						}
 
-						WriteUInt32(&compBuff[0], crc.GetValueU32());
-						WriteInt32(&compBuff[4], (Int32)contLeng);
+						WriteLUInt32(&compBuff[0], crc.GetValueU32());
+						WriteLInt32(&compBuff[4], (Int32)contLeng);
 						succ = succ && (resp->Write(Data::ByteArrayR(compBuff, 8)) == 8);
 
 						contSent = true;
@@ -236,8 +236,8 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> 
 					{
 						succ = succ && (resp->Write(Data::ByteArrayR(compBuff, readSize)) == readSize);
 					}
-					WriteUInt32(&compBuff[0], crc.GetValueU32());
-					WriteInt32(&compBuff[4], (Int32)contLeng);
+					WriteLUInt32(&compBuff[0], crc.GetValueU32());
+					WriteLInt32(&compBuff[4], (Int32)contLeng);
 					succ = succ && (resp->Write(Data::ByteArrayR(compBuff, 8)) == 8);
 					contSent = true;
 					break;

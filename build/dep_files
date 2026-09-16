@@ -28,3 +28,6 @@ libfplus-dev
 nlohmann-json3-dev
 libdrm-dev
 libavif-dev
+
+libarmadillo-dev
+libcereal-dev

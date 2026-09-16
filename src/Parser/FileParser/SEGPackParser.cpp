@@ -43,7 +43,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SEGPackParser::ParseFileHdr(NN<IO
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC("SEG")))
 		return nullptr;
 
-	UInt32 hdrSize = ReadUInt32(&hdr[0]);
+	UInt32 hdrSize = ReadLUInt32(&hdr[0]);
 	if (hdrSize == 0 || hdrSize >= (fd->GetDataSize() - 4) || hdrSize > 1048576)
 	{
 		return nullptr;
@@ -60,9 +60,9 @@ Optional<IO::ParsedObject> Parser::FileParser::SEGPackParser::ParseFileHdr(NN<IO
 	fileOfst = 4 + hdrSize;
 	while (buffOfst < hdrSize)
 	{
-		UInt32 packSize = ReadUInt32(&buff[buffOfst]);
-		UInt32 thisOfst = ReadUInt32(&buff[buffOfst + 8]);
-		UInt32 thisSize = ReadUInt32(&buff[buffOfst + 12]);
+		UInt32 packSize = ReadLUInt32(&buff[buffOfst]);
+		UInt32 thisOfst = ReadLUInt32(&buff[buffOfst + 8]);
+		UInt32 thisSize = ReadLUInt32(&buff[buffOfst + 12]);
 		if (*(Int32*)&buff[buffOfst + 4] != 0 || packSize > 80 || packSize <= 17 || thisOfst != fileOfst || packSize + buffOfst > hdrSize)
 		{
 			pf.Delete();

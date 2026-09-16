@@ -15,9 +15,9 @@ void Media::TimedImageList::ScanFile()
 		fs->SeekFromBeginning(16);
 		while (fs->Read(BYTEARR(indexBuff)) == 32)
 		{
-			if (ReadUInt64(&indexBuff[16]) == currOfst + 32)
+			if (ReadLUInt64(&indexBuff[16]) == currOfst + 32)
 			{
-				Int64 imgSize = ReadInt64(&indexBuff[24]);
+				Int64 imgSize = ReadLInt64(&indexBuff[24]);
 				this->indexStm.Write(Data::ByteArrayR(indexBuff, 32));
 				currOfst += 32 + (UInt64)imgSize;
 				fs->SeekFromCurrent(imgSize);
@@ -50,8 +50,8 @@ Media::TimedImageList::TimedImageList(Text::CStringNN fileName)
 		hdr[1] = 'T';
 		hdr[2] = 'i';
 		hdr[3] = 'l';
-		WriteInt32(&hdr[4], 0x1);
-		WriteInt64(&hdr[8], 16);
+		WriteLInt32(&hdr[4], 0x1);
+		WriteLInt64(&hdr[8], 16);
 		fs->Write(Data::ByteArrayR(hdr, 16));
 		this->flags = 1;
 		this->currFileOfst = 16;
@@ -69,8 +69,8 @@ Media::TimedImageList::TimedImageList(Text::CStringNN fileName)
 			return;
 		}
 		this->fs = fs;
-		this->flags = ReadInt32(&hdr[4]);
-		this->currFileOfst = ReadUInt64(&hdr[8]);
+		this->flags = ReadLInt32(&hdr[4]);
+		this->currFileOfst = ReadLUInt64(&hdr[8]);
 		if (this->flags & 2)
 		{
 			UInt64 indexSize = fileSize - this->currFileOfst;
@@ -124,8 +124,8 @@ Media::TimedImageList::~TimedImageList()
 			hdr[1] = 'T';
 			hdr[2] = 'i';
 			hdr[3] = 'l';
-			WriteInt32(&hdr[4], this->flags | 2);
-			WriteUInt64(&hdr[8], this->currFileOfst);
+			WriteLInt32(&hdr[4], this->flags | 2);
+			WriteLUInt64(&hdr[8], this->currFileOfst);
 			fs->Write(Data::ByteArrayR(hdr, 16));
 		}
 		fs.Delete();
@@ -155,17 +155,17 @@ Bool Media::TimedImageList::AddImage(Int64 captureTimeTicks, UnsafeArray<const U
 		indexBuff[1] = 'T';
 		indexBuff[2] = 'i';
 		indexBuff[3] = 'l';
-		WriteInt32(&indexBuff[4], this->flags);
-		WriteUInt64(&indexBuff[8], this->currFileOfst);
+		WriteLInt32(&indexBuff[4], this->flags);
+		WriteLUInt64(&indexBuff[8], this->currFileOfst);
 		fs->Write(Data::ByteArrayR(indexBuff, 16));
 		fs->SeekFromBeginning(this->currFileOfst);
 		this->changed = true;
 	}
-	WriteInt64(&indexBuff[0], captureTimeTicks);
-	WriteInt32(&indexBuff[8], 0); //flags
-	WriteInt32(&indexBuff[12], imgFmt);
-	WriteUInt64(&indexBuff[16], this->currFileOfst + 32);
-	WriteUInt64(&indexBuff[24], imgSize);
+	WriteLInt64(&indexBuff[0], captureTimeTicks);
+	WriteLInt32(&indexBuff[8], 0); //flags
+	WriteLInt32(&indexBuff[12], imgFmt);
+	WriteLUInt64(&indexBuff[16], this->currFileOfst + 32);
+	WriteLUInt64(&indexBuff[24], imgSize);
 	succ = succ && (fs->Write(Data::ByteArrayR(indexBuff, 32)) == 32);
 	this->indexStm.Write(Data::ByteArrayR(indexBuff, 32));
 	succ = succ && (fs->Write(Data::ByteArrayR(imgBuff, imgSize)) == imgSize);

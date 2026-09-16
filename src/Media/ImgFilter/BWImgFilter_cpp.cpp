@@ -25,7 +25,7 @@ void BWImgFilter_ProcAYUV(UInt8 *imgData, UIntOS pxCnt)
 {
 	while (pxCnt-- > 0)
 	{
-		WriteInt16(&imgData[0], 0x8080);
+		WriteLInt16(&imgData[0], 0x8080);
 		imgData += 4;
 	}
 }
@@ -34,7 +34,7 @@ void BWImgFilter_ProcY416(UInt8 *imgData, UIntOS pxCnt)
 {
 	while (pxCnt-- > 0)
 	{
-		WriteUInt32(&imgData[0], 0x80008000);
+		WriteLUInt32(&imgData[0], 0x80008000);
 		imgData += 8;
 	}
 }

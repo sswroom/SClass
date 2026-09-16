@@ -231,6 +231,7 @@ MDBFileConnNul.o: ../../src/DB/MDBFileConnNul.cpp
 MongoDB.o: ../../src/DB/MongoDB.cpp
 $@($(PKG-CONFIG) --exists libmongoc-1.0) `$(PKG-CONFIG) --cflags libmongoc-1.0`
 $@($(PKG-CONFIG) --exists mongoc2) `$(PKG-CONFIG) --cflags mongoc2`
+$-Wno-conversion
 !@($(PKG-CONFIG) --exists libmongoc-1.0) -lmongoc-1.0
 !@($(PKG-CONFIG) --exists libmongoc-1.0) -lbson-1.0
 !@($(PKG-CONFIG) --exists mongoc2) -lmongoc2
@@ -1098,6 +1099,22 @@ Polyline.o: ../../src/Math/Geometry/Polyline.cpp
 Vector2D.o: ../../src/Math/Geometry/Vector2D.cpp
 VectorImage.o: ../../src/Math/Geometry/VectorImage.cpp
 VectorString.o: ../../src/Math/Geometry/VectorString.cpp
+MLLinearRegression.o: ../../src/Math/ML/MLLinearRegression.cpp
+$-I ../../ThirdParty/mlpack/src
+$-I ../../ThirdParty/ensmallen/include
+$-Wno-sign-conversion
+$-Wno-unused-function
+$-Wno-conversion
+$-Wno-switch-enum
+$-Wno-unknown-pragmas
+MLUtil.o: ../../src/Math/ML/MLUtil.cpp
+$-I ../../ThirdParty/mlpack/src
+$-I ../../ThirdParty/ensmallen/include
+$-Wno-sign-conversion
+$-Wno-unused-function
+$-Wno-conversion
+$-Wno-switch-enum
+$-Wno-unknown-pragmas
 Acceleration.o: ../../src/Math/Unit/Acceleration.cpp
 Angle.o: ../../src/Math/Unit/Angle.cpp
 ApparentPower.o: ../../src/Math/Unit/ApparentPower.cpp

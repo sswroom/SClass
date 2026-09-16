@@ -518,12 +518,12 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(NN<SSWR::SDNSProx
 			sbOut.AppendC(UTF8STRC("<br/>\r\n"));
 		}
 		sbOut.AppendC(UTF8STRC("<a href=\"/client?cliId="));
-		sbOut.AppendU32(ReadUInt32(cli->addr.addr));
+		sbOut.AppendU32(ReadLUInt32(cli->addr.addr));
 		sbOut.AppendC(UTF8STRC("\">"));
 		sbOut.AppendP(sbuff, sptr);
 		sbOut.AppendC(UTF8STRC("</a>"));
 
-		if (ReadUInt32(cli->addr.addr) == selCliId)
+		if (ReadLUInt32(cli->addr.addr) == selCliId)
 		{
 			selCli = cli;
 		}

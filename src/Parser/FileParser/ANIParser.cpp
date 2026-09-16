@@ -51,7 +51,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::St
 	{
 		return nullptr;
 	}
-	aniSize = ReadUInt32(&hdr[4]) + 8;
+	aniSize = ReadLUInt32(&hdr[4]) + 8;
 	UIntOS currOfst = 12;
 	NEW_CLASSNN(imgList, Media::ImageList(fd->GetFullName()));
 
@@ -60,7 +60,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::St
 		fd->GetRealData(currOfst, 12, BYTEARR(riffHdr));
 		if (ReadNUInt32(&riffHdr[0]) == *(UInt32*)"LIST" && ReadNUInt32(&riffHdr[8]) == *(UInt32*)"INFO")
 		{
-			buffSize = ReadUInt32(&riffHdr[4]) - 4;
+			buffSize = ReadLUInt32(&riffHdr[4]) - 4;
 			Data::ByteBuffer buff(buffSize);
 			buffOfst = 0;
 			fd->GetRealData(currOfst + 12, buffSize, buff);
@@ -86,15 +86,15 @@ Optional<IO::ParsedObject> Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::St
 		}
 		else if (ReadNUInt32(&riffHdr[0]) == *(UInt32*)"anih")
 		{
-			buffSize = ReadUInt32(&riffHdr[4]);
+			buffSize = ReadLUInt32(&riffHdr[4]);
 			Data::ByteBuffer buff(buffSize);
 			fd->GetRealData(currOfst + 8, buffSize, buff);
-			displayRate = ReadUInt32(&buff[28]);
-			nFrames = ReadUInt32(&buff[4]);
+			displayRate = ReadLUInt32(&buff[28]);
+			nFrames = ReadLUInt32(&buff[4]);
 		}
 		else if (ReadNUInt32(&riffHdr[0]) == *(UInt32*)"LIST" && ReadNUInt32(&riffHdr[8]) == *(UInt32*)"fram")
 		{
-			buffSize = ReadUInt32(&riffHdr[4]) - 4;
+			buffSize = ReadLUInt32(&riffHdr[4]) - 4;
 			Data::ByteBuffer buff(8);
 			buffOfst = 0;
 			while (buffOfst < buffSize)
@@ -117,7 +117,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::St
 					data.Delete();
 				}
 
-				buffOfst += ReadUInt32(&buff[4]) + 8;
+				buffOfst += ReadLUInt32(&buff[4]) + 8;
 				if (buffOfst & 1)
 				{
 					buffOfst += 1;
@@ -134,7 +134,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::St
 				currImage.Delete();
 			}
 		}
-		currOfst += ReadUInt32(&riffHdr[4]) + 8;
+		currOfst += ReadLUInt32(&riffHdr[4]) + 8;
 		if (currOfst & 1)
 		{
 			currOfst += 1;

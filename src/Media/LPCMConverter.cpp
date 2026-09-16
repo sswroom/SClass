@@ -137,9 +137,9 @@ UIntOS Media::LPCMConverter::ConvertF32_I16(UnsafeArray<UInt8> destBuff, UnsafeA
     UIntOS i = srcSize / 4;
     while (i-- > 0)
     {
-        Int32 v = Double2Int32(ReadFloat(&srcBuff[0]) * 32767.0);
+        Int32 v = Double2Int32(ReadLFloat(&srcBuff[0]) * 32767.0);
         Int16 v16 = SI32ToI16(v);
-        WriteInt16(&destBuff[0], v16);
+        WriteLInt16(&destBuff[0], v16);
 
         srcBuff += 4;
         destBuff += 2;
@@ -196,9 +196,9 @@ UIntOS Media::LPCMConverter::ConvertF32_I24(UnsafeArray<UInt8> destBuff, UnsafeA
     UIntOS i = srcSize / 4;
     while (i-- > 0)
     {
-		Double v = ReadFloat(&srcBuff[0]) * 8388607.0;
+		Double v = ReadLFloat(&srcBuff[0]) * 8388607.0;
 		Int32 v32 = Math::SDouble2Int24(v);
-        WriteInt32(&destBuff[0], v32);
+        WriteLInt32(&destBuff[0], v32);
 
         srcBuff += 4;
         destBuff += 4;
@@ -258,9 +258,9 @@ UIntOS Media::LPCMConverter::ConvertF32_I32(UnsafeArray<UInt8> destBuff, UnsafeA
     UIntOS i = srcSize / 4;
 	while (i-- > 0)
     {
-		Double v = ReadFloat(&srcBuff[0]) * 2147483647.0;
+		Double v = ReadLFloat(&srcBuff[0]) * 2147483647.0;
 		Int32 v32 = Math::SDouble2Int32(v);
-        WriteInt32(&destBuff[0], v32);
+        WriteLInt32(&destBuff[0], v32);
 
         srcBuff += 4;
         destBuff += 4;

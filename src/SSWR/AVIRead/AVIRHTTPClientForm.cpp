@@ -763,7 +763,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 						if (respSize > 16 && respData[0] == 0x1F && respData[1] == 0x8B && respData[2] == 0x8)
 						{
 							NN<IO::MemoryStream> mstm2;
-							NEW_CLASSNN(mstm2, IO::MemoryStream(ReadUInt32(&respData[respSize - 4])));
+							NEW_CLASSNN(mstm2, IO::MemoryStream(ReadLUInt32(&respData[respSize - 4])));
 							Data::Compress::Inflater inflate(mstm2, false);
 							i = 10;
 //							IO::StmData::MemoryDataRef mdata(&respData[i], respSize - i - 8);

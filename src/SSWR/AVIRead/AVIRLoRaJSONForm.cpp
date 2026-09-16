@@ -135,7 +135,7 @@ UInt32 SSWR::AVIRead::AVIRLoRaJSONForm::MACPayloadDetail(NN<Text::StringBuilderU
 	{
 		return 0;
 	}
-	UInt32 devAddr = ReadUInt32(&buff[0]);
+	UInt32 devAddr = ReadLUInt32(&buff[0]);
 	sb->AppendC(UTF8STRC("DevAddr = 0x"));
 	sb->AppendHex32(devAddr);
 	sb->AppendC(UTF8STRC("\r\nADR = "));
@@ -160,8 +160,8 @@ UInt32 SSWR::AVIRead::AVIRLoRaJSONForm::MACPayloadDetail(NN<Text::StringBuilderU
 	sb->AppendC(UTF8STRC("\r\nFOptsLen = "));
 	sb->AppendUIntOS(fOptsLen);
 	sb->AppendC(UTF8STRC("\r\nFCnt = "));
-	sb->AppendU16(ReadUInt16(&buff[5]));
-	fCnt.Set(ReadUInt16(&buff[5]));
+	sb->AppendU16(ReadLUInt16(&buff[5]));
+	fCnt.Set(ReadLUInt16(&buff[5]));
 	if (fOptsLen + 7 > buffSize)
 	{
 		sb->AppendC(UTF8STRC("\r\n"));

@@ -39,21 +39,21 @@ Optional<IO::ParsedObject> Parser::FileParser::X13Parser::ParseFileHdr(NN<IO::St
 	UTF8Char name[49];
 	UnsafeArray<UTF8Char> sptr;
 
-	if (ReadUInt32(&hdr[0]) != 0x4B434150 || (ReadUInt32(&hdr[4]) + ReadUInt32(&hdr[8])) != fd->GetDataSize() || (ReadUInt32(&hdr[8]) & 63) != 0)
+	if (ReadLUInt32(&hdr[0]) != 0x4B434150 || (ReadLUInt32(&hdr[4]) + ReadLUInt32(&hdr[8])) != fd->GetDataSize() || (ReadLUInt32(&hdr[8]) & 63) != 0)
 	{
 		return nullptr;
 	}
 
 	NN<IO::VirtualPackageFile> pf;
 	Text::Encoding enc;
-	Data::ByteBuffer recHdrs(ReadUInt32(&hdr[8]));
-	fd->GetRealData(ReadUInt32(&hdr[4]), ReadUInt32(&hdr[8]), recHdrs);
+	Data::ByteBuffer recHdrs(ReadLUInt32(&hdr[8]));
+	fd->GetRealData(ReadLUInt32(&hdr[4]), ReadLUInt32(&hdr[8]), recHdrs);
 	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	buffOfst = 0;
-	while (buffOfst < ReadUInt32(&hdr[8]))
+	while (buffOfst < ReadLUInt32(&hdr[8]))
 	{
 		sptr = enc.UTF8FromBytes(name, &recHdrs[buffOfst], 48, 0);
-		pf->AddData(fd, ReadUInt32(&recHdrs[buffOfst + 56]), ReadUInt32(&recHdrs[buffOfst + 60]), IO::PackFileItem::HeaderType::No, CSTRP(name, sptr), nullptr, nullptr, nullptr, 0);
+		pf->AddData(fd, ReadLUInt32(&recHdrs[buffOfst + 56]), ReadLUInt32(&recHdrs[buffOfst + 60]), IO::PackFileItem::HeaderType::No, CSTRP(name, sptr), nullptr, nullptr, nullptr, 0);
 		buffOfst += 64;
 	}
 	return pf;

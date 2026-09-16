@@ -18,35 +18,35 @@ Data::BinaryBuilder::~BinaryBuilder()
 void Data::BinaryBuilder::AppendI32(Int32 val)
 {
 	UInt8 buff[4];
-	WriteInt32(buff, val);
+	WriteLInt32(buff, val);
 	this->mstm.Write(Data::ByteArrayR(buff, 4));
 }
 
 void Data::BinaryBuilder::AppendU32(UInt32 val)
 {
 	UInt8 buff[4];
-	WriteUInt32(buff, val);
+	WriteLUInt32(buff, val);
 	this->mstm.Write(Data::ByteArrayR(buff, 4));
 }
 
 void Data::BinaryBuilder::AppendNI32(NInt32 val)
 {
 	UInt8 buff[4];
-	WriteInt32(buff, val.IntVal());
+	WriteLInt32(buff, val.IntVal());
 	this->mstm.Write(Data::ByteArrayR(buff, 4));
 }
 
 void Data::BinaryBuilder::AppendI64(Int64 val)
 {
 	UInt8 buff[8];
-	WriteInt64(buff, val);
+	WriteLInt64(buff, val);
 	this->mstm.Write(Data::ByteArrayR(buff, 8));
 }
 
 void Data::BinaryBuilder::AppendF64(Double val)
 {
 	UInt8 buff[8];
-	WriteDouble(buff, val);
+	WriteLDouble(buff, val);
 	this->mstm.Write(Data::ByteArrayR(buff, 8));
 }
 
@@ -56,13 +56,13 @@ void Data::BinaryBuilder::AppendStr(Text::CString s)
 	Text::CStringNN nns;
 	if (!s.SetTo(nns))
 	{
-		WriteInt32(buff, -1);
+		WriteLInt32(buff, -1);
 		this->mstm.Write(Data::ByteArrayR(buff, 2));
 		return;
 	}
 	if (nns.leng < 65534)
 	{
-		WriteInt16(buff, nns.leng);
+		WriteLInt16(buff, nns.leng);
 		this->mstm.Write(Data::ByteArrayR(buff, 2));
 		if (nns.leng > 0)
 		{
@@ -71,8 +71,8 @@ void Data::BinaryBuilder::AppendStr(Text::CString s)
 	}
 	else
 	{
-		WriteInt16(buff, -2);
-		WriteInt32(&buff[2], (Int32)(nns.leng - 65534));
+		WriteLInt16(buff, -2);
+		WriteLInt32(&buff[2], (Int32)(nns.leng - 65534));
 		this->mstm.Write(Data::ByteArrayR(buff, 6));
 		this->mstm.Write(nns.ToByteArray());
 	}
@@ -98,8 +98,8 @@ void Data::BinaryBuilder::AppendBool(Bool b)
 void Data::BinaryBuilder::AppendTS(Data::Timestamp ts)
 {
 	UInt8 buff[13];
-	WriteInt64(buff, ts.inst.sec);
-	WriteUInt32(&buff[8], ts.inst.nanosec);
+	WriteLInt64(buff, ts.inst.sec);
+	WriteLUInt32(&buff[8], ts.inst.nanosec);
 	buff[12] = (UInt8)ts.tzQhr;
 	this->mstm.Write(Data::ByteArrayR(buff, 13));
 }
@@ -107,7 +107,7 @@ void Data::BinaryBuilder::AppendTS(Data::Timestamp ts)
 void Data::BinaryBuilder::AppendDate(Data::Date dat)
 {
 	UInt8 buff[8];
-	WriteInt64(buff, dat.GetTotalDays());
+	WriteLInt64(buff, dat.GetTotalDays());
 	this->mstm.Write(Data::ByteArrayR(buff, 8));
 }
 

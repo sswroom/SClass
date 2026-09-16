@@ -367,7 +367,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 	}
 	fs.Read(Data::ByteArray(buff, 100));
 	fileLeng = ReadMUInt32(&buff[24]) * 2;
-	shpType = ReadInt32(&buff[32]);
+	shpType = ReadLInt32(&buff[32]);
 	filePos = 100;
 	nRecords = 0;
 	while (filePos < fileLeng)
@@ -412,8 +412,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 
 //			tmpWriter = New IO.StreamWriter(sourceFile.Substring(0, sourceFile.LastIndexOf(".")) + ".txt")
 
-			WriteUInt32(&buff[0], nRecords);
-			WriteInt32(&buff[4], shpType);
+			WriteLUInt32(&buff[0], nRecords);
+			WriteLInt32(&buff[4], shpType);
 			cip.Write(Data::ByteArrayR(buff, 8));
 			cix.Write(Data::ByteArrayR(buff, 4));
 			tRec = 0;
@@ -434,7 +434,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 
 				Int32 recSize = ReadMInt32(&buff[4]);
 				Bool chkVal = true;
-				if (recSize == 2 && ReadInt32(&buff[8]) == 0)
+				if (recSize == 2 && ReadLInt32(&buff[8]) == 0)
 				{
 //					tmpWriter.WriteLine(ControlChars.Tab + ControlChars.Tab + ControlChars.Tab)
 					if (dbfr.SetTo(r))
@@ -443,7 +443,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 					}
 					chkVal = false;
 				}
-				else if (ReadInt32(&buff[8]) != shpType)
+				else if (ReadLInt32(&buff[8]) != shpType)
 				{
 					fs.SeekFromCurrent(recSize * 2 - 4);
 //					tmpWriter.WriteLine(ControlChars.Tab + ControlChars.Tab + ControlChars.Tab)
@@ -456,10 +456,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				else
 				{
 					fs.Read(Data::ByteArray(&buff[12], 32));
-					xMin = ReadDouble(&buff[12]);
-					yMin = ReadDouble(&buff[20]);
-					xMax = ReadDouble(&buff[28]);
-					yMax = ReadDouble(&buff[36]);
+					xMin = ReadLDouble(&buff[12]);
+					yMin = ReadLDouble(&buff[20]);
+					xMax = ReadLDouble(&buff[28]);
+					yMax = ReadLDouble(&buff[36]);
 					if (Math::IsNAN(xMin))
 					{
 						if (dbfr.SetTo(r))
@@ -495,20 +495,20 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				if (chkVal)
 				{
 					fs.Read(Data::ByteArray(buff, 8));
-					nParts = ReadUInt32(&buff[0]);
-					nPoints = ReadUInt32(&buff[4]);
+					nParts = ReadLUInt32(&buff[0]);
+					nPoints = ReadLUInt32(&buff[4]);
 //					'tmpWriter.WriteLine(nParts.ToString() + ControlChars.Tab + nPoints.ToString())
 
-					WriteInt32(&buff[0], currRec);
-					WriteUInt32(&buff[4], cipPos);
+					WriteLInt32(&buff[0], currRec);
+					WriteLUInt32(&buff[4], cipPos);
 					cix.Write(Data::ByteArrayR(buff, 8));
 
-					WriteUInt32(&buff[4], nParts);
+					WriteLUInt32(&buff[4], nParts);
 					cip.Write(Data::ByteArrayR(buff, 8));
 					cipPos += 8;
 					outBuff = MemAlloc(UInt8, nParts * 4 + 4);
 					fs.Read(Data::ByteArray(outBuff, nParts * 4));
-					WriteUInt32(&outBuff[nParts * 4], nPoints);
+					WriteLUInt32(&outBuff[nParts * 4], nPoints);
 					cip.Write(Data::ByteArrayR(outBuff, nParts * 4 + 4));
 					cipPos += nParts * 4 + 4;
 					MemFree(outBuff);
@@ -516,10 +516,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 					if (isGrid80)
 					{
 						fs.Read(Data::ByteArray(&buff[16], 16));
-						currX = ReadDouble(&buff[16]);
-						currY = ReadDouble(&buff[24]);
-						WriteInt32(&buff[0], Double2Int32(currX));
-						WriteInt32(&buff[4], Double2Int32(currY));
+						currX = ReadLDouble(&buff[16]);
+						currY = ReadLDouble(&buff[24]);
+						WriteLInt32(&buff[0], Double2Int32(currX));
+						WriteLInt32(&buff[4], Double2Int32(currY));
 						cip.Write(Data::ByteArrayR(buff, 8));
 						cipPos += 8;
 						xMin = currX;
@@ -530,10 +530,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 						while (i < nPoints)
 						{
 							fs.Read(Data::ByteArray(&buff[16], 16));
-							currX = ReadDouble(&buff[16]);
-							currY = ReadDouble(&buff[24]);
-							WriteInt32(&buff[0], Double2Int32(currX));
-							WriteInt32(&buff[4], Double2Int32(currY));
+							currX = ReadLDouble(&buff[16]);
+							currY = ReadLDouble(&buff[24]);
+							WriteLInt32(&buff[0], Double2Int32(currX));
+							WriteLInt32(&buff[4], Double2Int32(currY));
 							cip.Write(Data::ByteArrayR(buff, 8));
 							cipPos += 8;
 
@@ -549,10 +549,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 //						Double lastX;
 //						Double lastY;
 						fs.Read(Data::ByteArray(&buff[16], 16));
-						currX = ReadDouble(&buff[16]);
-						currY = ReadDouble(&buff[24]);
-						WriteInt32(&buff[0], Double2Int32(currX * LATSCALE));
-						WriteInt32(&buff[4], Double2Int32(currY * LATSCALE));
+						currX = ReadLDouble(&buff[16]);
+						currY = ReadLDouble(&buff[24]);
+						WriteLInt32(&buff[0], Double2Int32(currX * LATSCALE));
+						WriteLInt32(&buff[4], Double2Int32(currY * LATSCALE));
 						cip.Write(Data::ByteArrayR(buff, 8));
 						cipPos += 8;
 						xMin = currX;
@@ -567,10 +567,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 						while (i < nPoints)
 						{
 							fs.Read(Data::ByteArray(&buff[16], 16));
-							currX = ReadDouble(&buff[16]);
-							currY = ReadDouble(&buff[24]);
-							WriteInt32(&buff[0], Double2Int32(currX * LATSCALE));
-							WriteInt32(&buff[4], Double2Int32(currY * LATSCALE));
+							currX = ReadLDouble(&buff[16]);
+							currY = ReadLDouble(&buff[24]);
+							WriteLInt32(&buff[0], Double2Int32(currX * LATSCALE));
+							WriteLInt32(&buff[4], Double2Int32(currY * LATSCALE));
 							cip.Write(Data::ByteArrayR(buff, 8));
 							cipPos += 8;
 							if (i == nPoints >> 1)
@@ -686,8 +686,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 			sb.Append(sourceFile);
 			progress->ProgressStart(sb.ToCString(), blks.GetCount());
 
-			WriteInt32(&buff[0], (Int32)blks.GetCount());
-			WriteInt32(&buff[4], blkScale);
+			WriteLInt32(&buff[0], (Int32)blks.GetCount());
+			WriteLInt32(&buff[4], blkScale);
 			blk.Write(Data::ByteArrayR(buff, 8));
 			cib.Write(Data::ByteArrayR(buff, 8));
 
@@ -696,15 +696,15 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 			while (i < j)
 			{
 				theBlk = blks.GetItem(i);
-				WriteInt32(&buff[0], (Int32)theBlk->records->GetCount());
-				WriteInt32(&buff[4], theBlk->blockX);
-				WriteInt32(&buff[8], theBlk->blockY);
+				WriteLInt32(&buff[0], (Int32)theBlk->records->GetCount());
+				WriteLInt32(&buff[4], theBlk->blockX);
+				WriteLInt32(&buff[8], theBlk->blockY);
 				blk.Write(Data::ByteArrayR(buff, 12));
 				k = 0;
 				l = theBlk->records->GetCount();
 				while (k < l)
 				{
-					WriteInt32(&buff[0], theBlk->records->GetItemNoCheck(k)->recId);
+					WriteLInt32(&buff[0], theBlk->records->GetItemNoCheck(k)->recId);
 					blk.Write(Data::ByteArrayR(buff, 4));
 					k++;
 				}
@@ -722,10 +722,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				theBlk = blks.GetItem(i);
 				cib.SeekFromBeginning(8 + i * 16);
 
-				WriteInt32(&buff[0], theBlk->blockX);
-				WriteInt32(&buff[4], theBlk->blockY);
-				WriteInt32(&buff[8], (Int32)theBlk->records->GetCount());
-				WriteInt32(&buff[12], (Int32)filePos);
+				WriteLInt32(&buff[0], theBlk->blockX);
+				WriteLInt32(&buff[4], theBlk->blockY);
+				WriteLInt32(&buff[8], (Int32)theBlk->records->GetCount());
+				WriteLInt32(&buff[12], (Int32)filePos);
 				cib.Write(Data::ByteArrayR(buff, 16));
 
 				cib.SeekFromBeginning(filePos);
@@ -734,7 +734,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				while (k < l)
 				{
 					strRec = theBlk->records->GetItemNoCheck(k);
-					WriteInt32(&buff[0], strRec->recId);
+					WriteLInt32(&buff[0], strRec->recId);
 					u16buff.ClearStr();
 					if (strRec->str.SetTo(str))
 					{
@@ -820,8 +820,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 			NN<StrRecord> strRec;
 
 			cipPos = 0;
-			WriteUInt32(&buff[0], nRecords);
-			WriteInt32(&buff[4], 1); //shpType;
+			WriteLUInt32(&buff[0], nRecords);
+			WriteLInt32(&buff[4], 1); //shpType;
 			cip.Write(Data::ByteArrayR(buff, 8));
 			cix.Write(Data::ByteArrayR(buff, 4));
 			cipPos += 8;
@@ -842,7 +842,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 
 				UInt32 recSize = ReadMUInt32(&buff[4]);
 				Bool chkVal = true;
-				if (recSize == 2 && ReadInt32(&buff[8]) == 0)
+				if (recSize == 2 && ReadLInt32(&buff[8]) == 0)
 				{
 					if (dbfr.SetTo(r))
 					{
@@ -857,18 +857,18 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 					fs.Read(Data::ByteArray(&buff[12], recSize * 2 - 4));
 					if (shpType == 11)
 					{
-						currX = ReadDouble(&buff[12]);
-						currY = ReadDouble(&buff[20]);
-	//					Double currZ = ReadDouble(&buff[28]);
+						currX = ReadLDouble(&buff[12]);
+						currY = ReadLDouble(&buff[20]);
+	//					Double currZ = ReadLDouble(&buff[28]);
 						if (recSize >= 18)
 						{
-	//						Double currM = ReadDouble(&buff[36]);
+	//						Double currM = ReadLDouble(&buff[36]);
 						}
 					}
 					else
 					{
-						currX = ReadDouble(&buff[12]);
-						currY = ReadDouble(&buff[20]);
+						currX = ReadLDouble(&buff[12]);
+						currY = ReadLDouble(&buff[20]);
 					}
 
 					NN<MapFilter> f;
@@ -892,20 +892,20 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 
 				if (chkVal)
 				{
-					WriteInt32(&buff[0], currRec);
-					WriteUInt32(&buff[4], cipPos);
+					WriteLInt32(&buff[0], currRec);
+					WriteLUInt32(&buff[4], cipPos);
 					cix.Write(Data::ByteArrayR(buff, 8));
 
-					WriteInt32(&buff[4], 1);
-					WriteInt32(&buff[8], 0);
-					WriteInt32(&buff[12], 1);
+					WriteLInt32(&buff[4], 1);
+					WriteLInt32(&buff[8], 0);
+					WriteLInt32(&buff[12], 1);
 					cip.Write(Data::ByteArrayR(buff, 16));
 					cipPos += 16;
 
 					if (isGrid80)
 					{
-						WriteInt32(&buff[0], Double2Int32(currX));
-						WriteInt32(&buff[4], Double2Int32(currY));
+						WriteLInt32(&buff[0], Double2Int32(currX));
+						WriteLInt32(&buff[4], Double2Int32(currY));
 						cip.Write(Data::ByteArrayR(buff, 8));
 
 						left = Double2Int32(currX) / blkScale;
@@ -915,8 +915,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 					}
 					else
 					{
-						WriteInt32(&buff[0], Double2Int32(currX * LATSCALE));
-						WriteInt32(&buff[4], Double2Int32(currY * LATSCALE));
+						WriteLInt32(&buff[0], Double2Int32(currX * LATSCALE));
+						WriteLInt32(&buff[4], Double2Int32(currY * LATSCALE));
 						cip.Write(Data::ByteArrayR(buff, 8));
 
 						left = Double2Int32(currX * LATSCALE) / blkScale;
@@ -1009,8 +1009,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 			sb.Append(sourceFile);
 			progress->ProgressStart(sb.ToCString(), blks.GetCount());
 
-			WriteInt32(&buff[0], (Int32)blks.GetCount());
-			WriteInt32(&buff[4], blkScale);
+			WriteLInt32(&buff[0], (Int32)blks.GetCount());
+			WriteLInt32(&buff[4], blkScale);
 			blk.Write(Data::ByteArrayR(buff, 8));
 			cib.Write(Data::ByteArrayR(buff, 8));
 
@@ -1019,15 +1019,15 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 			while (i < j)
 			{
 				theBlk = blks.GetItem(i);
-				WriteInt32(&buff[0], (Int32)theBlk->records->GetCount());
-				WriteInt32(&buff[4], theBlk->blockX);
-				WriteInt32(&buff[8], theBlk->blockY);
+				WriteLInt32(&buff[0], (Int32)theBlk->records->GetCount());
+				WriteLInt32(&buff[4], theBlk->blockX);
+				WriteLInt32(&buff[8], theBlk->blockY);
 				blk.Write(Data::ByteArrayR(buff, 12));
 				k = 0;
 				l = theBlk->records->GetCount();
 				while (k < l)
 				{
-					WriteInt32(&buff[0], theBlk->records->GetItemNoCheck(k)->recId);
+					WriteLInt32(&buff[0], theBlk->records->GetItemNoCheck(k)->recId);
 					blk.Write(Data::ByteArrayR(buff, 4));
 					k++;
 				}
@@ -1045,10 +1045,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				theBlk = blks.GetItem(i);
 				cib.SeekFromBeginning(8 + i * 16);
 
-				WriteInt32(&buff[0], theBlk->blockX);
-				WriteInt32(&buff[4], theBlk->blockY);
-				WriteInt32(&buff[8], (Int32)theBlk->records->GetCount());
-				WriteInt32(&buff[12], (Int32)filePos);
+				WriteLInt32(&buff[0], theBlk->blockX);
+				WriteLInt32(&buff[4], theBlk->blockY);
+				WriteLInt32(&buff[8], (Int32)theBlk->records->GetCount());
+				WriteLInt32(&buff[12], (Int32)filePos);
 				cib.Write(Data::ByteArrayR(buff, 16));
 
 				cib.SeekFromBeginning(filePos);
@@ -1057,7 +1057,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				while (k < l)
 				{
 					strRec = theBlk->records->GetItemNoCheck(k);
-					WriteInt32(&buff[0], strRec->recId);
+					WriteLInt32(&buff[0], strRec->recId);
 					u16buff.ClearStr();
 					if (strRec->str.SetTo(str))
 					{
@@ -1143,18 +1143,18 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(Text::CStringNN fileName, Bool u
 			this->ui->ShowMsgOK(CSTR("File is not valid shape file"), CSTR("Error"), this);
 			return 0;
 		}
-		xMin = ReadDouble(&buff[36]);
-		yMin = ReadDouble(&buff[44]);
-		xMax = ReadDouble(&buff[52]);
-		yMax = ReadDouble(&buff[60]);
-		shpType = ReadInt32(&buff[32]);
+		xMin = ReadLDouble(&buff[36]);
+		yMin = ReadLDouble(&buff[44]);
+		xMax = ReadLDouble(&buff[52]);
+		yMax = ReadLDouble(&buff[60]);
+		shpType = ReadLInt32(&buff[32]);
 		if (updateTxt)
 		{
 			sptr = Text::StrInt32(sbuff, ReadMInt32(&buff[24]) * 2);
 			this->txtFileLength->SetText(CSTRP(sbuff, sptr));
-			sptr = Text::StrInt32(sbuff, ReadInt32(&buff[28]));
+			sptr = Text::StrInt32(sbuff, ReadLInt32(&buff[28]));
 			this->txtVersion->SetText(CSTRP(sbuff, sptr));
-			this->txtShpType->SetText(this->typeName[ReadInt32(&buff[32])]);
+			this->txtShpType->SetText(this->typeName[ReadLInt32(&buff[32])]);
 			sptr = Text::StrDouble(sbuff, xMin);
 			this->txtXMin->SetText(CSTRP(sbuff, sptr));
 			sptr = Text::StrDouble(sbuff, yMin);
@@ -1164,13 +1164,13 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(Text::CStringNN fileName, Bool u
 			sptr = Text::StrDouble(sbuff, yMax);
 			this->txtYMax->SetText(CSTRP(sbuff, sptr));
 			this->isGrid80 = (xMin >= 180);
-			sptr = Text::StrDouble(sbuff, ReadDouble(&buff[68]));
+			sptr = Text::StrDouble(sbuff, ReadLDouble(&buff[68]));
 			this->txtZMin->SetText(CSTRP(sbuff, sptr));
-			sptr = Text::StrDouble(sbuff, ReadDouble(&buff[76]));
+			sptr = Text::StrDouble(sbuff, ReadLDouble(&buff[76]));
 			this->txtZMax->SetText(CSTRP(sbuff, sptr));
-			sptr = Text::StrDouble(sbuff, ReadDouble(&buff[84]));
+			sptr = Text::StrDouble(sbuff, ReadLDouble(&buff[84]));
 			this->txtMMin->SetText(CSTRP(sbuff, sptr));
-			sptr = Text::StrDouble(sbuff, ReadDouble(&buff[92]));
+			sptr = Text::StrDouble(sbuff, ReadLDouble(&buff[92]));
 			this->txtMMax->SetText(CSTRP(sbuff, sptr));
 			this->txtSource->SetText(fileName);
 			this->ClearFilter();

@@ -47,7 +47,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WebPParser::ParseFileHdr(NN<IO::S
 	UInt64 fileLen = fd->GetDataSize();
 	if (fileLen < 32 || fileLen > 104857600)
 		return nullptr;
-	if (ReadNInt32(&hdr[0]) != *(Int32*)"RIFF" || ReadUInt32(&hdr[4]) != (fileLen - 8) || ReadNInt32(&hdr[8]) != *(Int32*)"WEBP")
+	if (ReadNInt32(&hdr[0]) != *(Int32*)"RIFF" || ReadLUInt32(&hdr[4]) != (fileLen - 8) || ReadNInt32(&hdr[8]) != *(Int32*)"WEBP")
 		return nullptr;
 
 	Data::ByteBuffer fileData((UIntOS)fileLen);

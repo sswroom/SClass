@@ -30,7 +30,7 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(NN<Text::String> fileName)
 	}
 	UInt64 fileOfst = 0;
 	UInt64 fileLen = fd.GetDataSize();
-	if (ReadNInt32(hdr) == *(Int32*)"b3dm" && ReadUInt32(&hdr[4]) == 1 && ReadUInt32(&hdr[8]) == fileLen && ReadNInt32(&hdr[28]) == *(Int32*)"glTF" && ReadUInt32(&hdr[36]) == fileLen - 28)
+	if (ReadNInt32(hdr) == *(Int32*)"b3dm" && ReadLUInt32(&hdr[4]) == 1 && ReadLUInt32(&hdr[8]) == fileLen && ReadNInt32(&hdr[28]) == *(Int32*)"glTF" && ReadLUInt32(&hdr[36]) == fileLen - 28)
 	{
 		fileOfst = 28;
 		if (fd.GetRealData(28, 40, BYTEARR(hdr)) != 40)
@@ -39,22 +39,22 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(NN<Text::String> fileName)
 		}
 		fileLen -= 28;
 	}
-	else if (ReadNInt32(hdr) == *(Int32*)"glTF" && ReadUInt32(&hdr[8]) == fileLen)
+	else if (ReadNInt32(hdr) == *(Int32*)"glTF" && ReadLUInt32(&hdr[8]) == fileLen)
 	{
 	}
 	else
 	{
 		return false;
 	}
-	UInt32 ver = ReadUInt32(&hdr[4]);
-	UInt32 jsonLen = ReadUInt32(&hdr[12]);
+	UInt32 ver = ReadLUInt32(&hdr[4]);
+	UInt32 jsonLen = ReadLUInt32(&hdr[12]);
 	if (jsonLen + 20 > fileLen)
 	{
 		return false;
 	}
 	if (ver == 1)
 	{
-		if (ReadUInt32(&hdr[16]) != 0)
+		if (ReadLUInt32(&hdr[16]) != 0)
 		{
 			return false;
 		}

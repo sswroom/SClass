@@ -159,7 +159,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 	}
 
 	Text::Encoding enc(this->codePage);
-	avih = (MyAVIHeader*)MAlloc(i = ReadUInt32(&chunkBuffer[4]));
+	avih = (MyAVIHeader*)MAlloc(i = ReadLUInt32(&chunkBuffer[4]));
 	offset += fd->GetRealData(offset, i, Data::ByteArray((UInt8*)avih, i));
 
 	offset += fd->GetRealData(offset, 12, BYTEARR(chunkBuffer));
@@ -167,31 +167,31 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 	l = 0;
 	while (*(Int32*)chunkBuffer == *(Int32*)"LIST" && *(Int32*)&chunkBuffer[8] == *(Int32*)"strl")
 	{
-		Data::ByteBuffer buffer(i = ReadUInt32(&chunkBuffer[4]) - 4);
+		Data::ByteBuffer buffer(i = ReadLUInt32(&chunkBuffer[4]) - 4);
 		offset += fd->GetRealData(offset, i, buffer);
 		if (buffer.ReadI32(0) != *(Int32*)"strh")
 		{
 			l += 1;
 			continue;
 		}
-		MemCopyNO(&strl[l].strh, &buffer[8], ReadUInt32(&buffer[4]));
+		MemCopyNO(&strl[l].strh, &buffer[8], ReadLUInt32(&buffer[4]));
 
-		j = 8 + ReadUInt32(&buffer[4]);
+		j = 8 + ReadLUInt32(&buffer[4]);
 		if (*(Int32*)&buffer[j] != *(Int32*)"strf")
 		{
 			l += 1;
 			continue;
 		}
 
-		strl[l].strf = MemAlloc(UInt8, strl[l].strfSize = ReadUInt32(&buffer[j + 4]));
+		strl[l].strf = MemAlloc(UInt8, strl[l].strfSize = ReadLUInt32(&buffer[j + 4]));
 		MemCopyNO(strl[l].strf, &buffer[j + 8], strl[l].strfSize);
 		j += 8 + strl[l].strfSize;
-		if (ReadUInt32(&chunkBuffer[4]) - 4 > j)
+		if (ReadLUInt32(&chunkBuffer[4]) - 4 > j)
 			if (*(Int32*)&buffer[j] == *(Int32*)"JUNK")
-				j += ReadUInt32(&buffer[j + 4]) + 8;
-		if (ReadUInt32(&chunkBuffer[4]) - 4 > j)
+				j += ReadLUInt32(&buffer[j + 4]) + 8;
+		if (ReadLUInt32(&chunkBuffer[4]) - 4 > j)
 		{
-			strl[l].otherSize = ReadUInt32(&chunkBuffer[4]) - j - 4;
+			strl[l].otherSize = ReadLUInt32(&chunkBuffer[4]) - j - 4;
 			MemCopyNO(strl[l].others = MemAlloc(UInt8, strl[l].otherSize), &buffer[j], strl[l].otherSize);
 		}
 		else
@@ -204,25 +204,25 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 		l += 1;
 	}
 
-	while (offset <= ReadUInt32(&hdr[4]) + 4)
+	while (offset <= ReadLUInt32(&hdr[4]) + 4)
 	{
 		if (*(Int32*)chunkBuffer == *(Int32*)"idx1")
 		{
 			offset -= 8;
-			idx1.ChangeSizeAndClear(i = ReadUInt32(&chunkBuffer[4]) + 4);
+			idx1.ChangeSizeAndClear(i = ReadLUInt32(&chunkBuffer[4]) + 4);
 			offset += fd->GetRealData(offset, i, idx1);
 		}
 		else if (*(Int32*)chunkBuffer == *(Int32*)"LIST")
 		{
 			if (*(Int32*)&chunkBuffer[8] == *(Int32*)"INFO")
 			{
-				info.ChangeSizeAndClear(i = ReadUInt32(&chunkBuffer[4]));
-				WriteUInt32(&info[0], i);
+				info.ChangeSizeAndClear(i = ReadLUInt32(&chunkBuffer[4]));
+				WriteLUInt32(&info[0], i);
 				offset += fd->GetRealData(offset, i - 4, info.SubArray(4));
 			}
 			else if (*(Int32*)&chunkBuffer[8] == *(Int32*)"odml")
 			{
-				Data::ByteBuffer buffer(i = ReadUInt32(&chunkBuffer[4]) - 4);
+				Data::ByteBuffer buffer(i = ReadLUInt32(&chunkBuffer[4]) - 4);
 				offset += fd->GetRealData(offset, i, buffer);
 				l = 0;
 				while (l < i)
@@ -232,33 +232,33 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 //						frameCnt = *(Int64*)&buffer[l + 8];
 						break;
 					}
-					l += ReadUInt32(&buffer[l + 4]) + 8;
+					l += ReadLUInt32(&buffer[l + 4]) + 8;
 				}
 			}
 			else if (*(Int32*)&chunkBuffer[8] == *(Int32*)"movi")
 			{
 				base = offset;
-				offset += ReadUInt32(&chunkBuffer[4]) - 4;
+				offset += ReadLUInt32(&chunkBuffer[4]) - 4;
 			}
 			else
 			{
-				offset += ReadUInt32(&chunkBuffer[4]) - 4;
+				offset += ReadLUInt32(&chunkBuffer[4]) - 4;
 			}
 		}
 		else if (*(Int32*)chunkBuffer == *(Int32*)"JUNK")
 		{
-			offset += ReadUInt32(&chunkBuffer[4]) - 4;
+			offset += ReadLUInt32(&chunkBuffer[4]) - 4;
 		}
 		else if (*(Int32*)chunkBuffer == *(Int32*)"SMCH")
 		{
 			offset -= 4;
-			chap.ChangeSizeAndClear(i = ReadUInt32(&chunkBuffer[4]));
+			chap.ChangeSizeAndClear(i = ReadLUInt32(&chunkBuffer[4]));
 			offset += fd->GetRealData(offset, i, chap);
 			offset += offset & 1;
 		}
 		else
 		{
-			offset += ReadUInt32(&chunkBuffer[4]) - 4;
+			offset += ReadLUInt32(&chunkBuffer[4]) - 4;
 		}
 		offset += (i = (UInt32)fd->GetRealData(offset, 12, BYTEARR(chunkBuffer)));
 		if (i == 0)
@@ -297,7 +297,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 			{
 				if (*(Int32*)&strl[i].others[j] == *(Int32*)"strn")
 				{
-					sptr = enc.UTF8FromBytes(sbuff, &strl[i].others[j + 8], ReadUInt32(&strl[i].others[j + 4]), 0);
+					sptr = enc.UTF8FromBytes(sbuff, &strl[i].others[j + 8], ReadLUInt32(&strl[i].others[j + 4]), 0);
 					audsName = Text::String::NewP(sbuff, sptr);
 					j += *(UInt32*)&strl[i].others[j + 4] + 8;
 				}
@@ -305,7 +305,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 				{
 					idx1.Delete();
 					indx = (UInt8*)&strl[i].others[j + 8];
-					wLongsPerEntry = ReadUInt16(indx);
+					wLongsPerEntry = ReadLUInt16(indx);
 					if (wLongsPerEntry != 4 || indx[3] != 0)
 					{
 						error = true;
@@ -314,13 +314,13 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 					k = 0;
 					while (k < *(UInt32*)&indx[4])
 					{
-						Data::ByteBuffer buffer(l = ReadUInt32(&indx[(k << 4) + 32]));
-						if (l > fd->GetRealData(ReadUInt64(&indx[(k << 4) + 24]), l, buffer))
+						Data::ByteBuffer buffer(l = ReadLUInt32(&indx[(k << 4) + 32]));
+						if (l > fd->GetRealData(ReadLUInt64(&indx[(k << 4) + 24]), l, buffer))
 						{
 							break;
 						}
 
-						if (ReadUInt32(&buffer[4]) != ReadUInt32(&indx[(k << 4) + 32]) - 8 && ReadUInt32(&buffer[4]) != ReadUInt32(&indx[(k << 4) + 32]))
+						if (ReadLUInt32(&buffer[4]) != ReadLUInt32(&indx[(k << 4) + 32]) - 8 && ReadLUInt32(&buffer[4]) != ReadLUInt32(&indx[(k << 4) + 32]))
 						{
 							error = true;
 							break;
@@ -330,28 +330,28 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 							error = true;
 							break;
 						}
-						wLongsPerEntry = ReadUInt16(&buffer[8]);
+						wLongsPerEntry = ReadLUInt16(&buffer[8]);
 						if (wLongsPerEntry != 2)
 						{
 							error = true;
 							break;
 						}
 
-						base = ReadUInt64(&buffer[20]);
+						base = ReadLUInt64(&buffer[20]);
 						l = 32;
-						while (l < ReadUInt32(&indx[(k << 4) + 32]))
+						while (l < ReadLUInt32(&indx[(k << 4) + 32]))
 						{
-							if (ReadUInt32(&buffer[l]) || ReadUInt32(&buffer[l + 4]))
+							if (ReadLUInt32(&buffer[l]) || ReadLUInt32(&buffer[l + 4]))
 							{
-								ofsts->Add(base + ReadUInt32(&buffer[l]));
-								sizes->Add(ReadUInt32(&buffer[l + 4]));
+								ofsts->Add(base + ReadLUInt32(&buffer[l]));
+								sizes->Add(ReadLUInt32(&buffer[l + 4]));
 							}
 							l += 8;
 						}
 						k++;
 					}
 
-					j += ReadUInt32(&strl[i].others[j + 4]) + 8;
+					j += ReadLUInt32(&strl[i].others[j + 4]) + 8;
 				}
 				else if (*(Int32*)&strl[i].others[j] == *(Int32*)"strc")
 				{
@@ -360,21 +360,21 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 //					ccCoord = strl[i].others[j + 10];
 					if (*(Int32*)&strl[i].others[j + 4] >= 4)
 						ccFrameOrder = strl[i].others[j + 11];
-					j += ReadUInt32(&strl[i].others[j + 4]) + 8;
+					j += ReadLUInt32(&strl[i].others[j + 4]) + 8;
 				}
 				else if (*(Int32*)&strl[i].others[j] == *(Int32*)"vpar")
 				{
-					arTop = ReadUInt16(&strl[i].others[j + 8]);
-					arBottom = ReadUInt16(&strl[i].others[j + 10]);
-					arLeft = ReadUInt16(&strl[i].others[j + 12]);
-					arRight = ReadUInt16(&strl[i].others[j + 14]);
-					arARH = ReadUInt16(&strl[i].others[j + 16]);
-					arARV = ReadUInt16(&strl[i].others[j + 18]);
-					j += ReadUInt32(&strl[i].others[j + 4]) + 8;
+					arTop = ReadLUInt16(&strl[i].others[j + 8]);
+					arBottom = ReadLUInt16(&strl[i].others[j + 10]);
+					arLeft = ReadLUInt16(&strl[i].others[j + 12]);
+					arRight = ReadLUInt16(&strl[i].others[j + 14]);
+					arARH = ReadLUInt16(&strl[i].others[j + 16]);
+					arARV = ReadLUInt16(&strl[i].others[j + 18]);
+					j += ReadLUInt32(&strl[i].others[j + 4]) + 8;
 				}
 				else
 				{
-					j += ReadUInt32(&strl[i].others[j + 4]) + 8;
+					j += ReadLUInt32(&strl[i].others[j + 4]) + 8;
 				}
 				if (j & 1) j++;
 			}
@@ -382,7 +382,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 			if (idx1.GetSize() > 0)
 			{
 				k = 4;
-				l = ReadUInt32(&idx1[0]);
+				l = ReadLUInt32(&idx1[0]);
 				while (k < l)
 				{
 					if (*(Int16*)&idx1[k + 2] == *(Int16*)"dc" || *(Int16*)&idx1[k + 2] == *(Int16*)"db")
@@ -504,7 +504,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 			{
 				if (*(Int32*)&strl[i].others[j] == *(Int32*)"strn")
 				{
-					sptr = enc.UTF8FromBytes(sbuff, &strl[i].others[j + 8], ReadUInt32(&strl[i].others[j + 4]), 0);
+					sptr = enc.UTF8FromBytes(sbuff, &strl[i].others[j + 8], ReadLUInt32(&strl[i].others[j + 4]), 0);
 					audsName->Release();
 					audsName = Text::String::NewP(sbuff, sptr);
 					j += *(UInt32*)&strl[i].others[j + 4] + 8;
@@ -536,8 +536,8 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 					k = 0;
 					while (k < *(UInt32*)&indx[4])
 					{
-						Data::ByteBuffer buffer(l = ReadUInt32(&indx[(k << 4) + 32]));
-						if (l > fd->GetRealData(ReadUInt64(&indx[(k << 4) + 24]), l, buffer))
+						Data::ByteBuffer buffer(l = ReadLUInt32(&indx[(k << 4) + 32]));
+						if (l > fd->GetRealData(ReadLUInt64(&indx[(k << 4) + 24]), l, buffer))
 						{
 							break;
 						}
@@ -559,7 +559,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 							break;;
 						}
 
-						base = ReadUInt64(&buffer[20]);
+						base = ReadLUInt64(&buffer[20]);
 						if (fmt.formatId == 1 && blkData.SetTo(nnblkData))
 						{
 							l = 32;
@@ -619,14 +619,14 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 				{
 					IO::StmData::BlockStreamData blkData(fd);
 					k = 4;
-					l = ReadUInt32(&idx1[0]);
+					l = ReadLUInt32(&idx1[0]);
 					cmpTmp = *(Int32*)"00wb";
 					((Char*)&cmpTmp)[1] = (Char)('0' + (i % 10));
 					*(Char*)&cmpTmp = (Char)('0' + (i / 10));
 					while (k < l)
 					{
 						if (*(Int32*)&idx1[k] == cmpTmp)
-							blkData.Append(base + ReadUInt32(&idx1[k + 8]) + 4, ReadUInt32(&idx1[k + 12]));
+							blkData.Append(base + ReadLUInt32(&idx1[k + 8]) + 4, ReadLUInt32(&idx1[k + 12]));
 						k += 16;
 					}
 					NEW_CLASSOPT(lpcmData, Media::LPCMSource(blkData, 0,  blkData.GetDataSize(), fmt, audsName));
@@ -636,7 +636,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 					NEW_CLASSNN(nnaudsData, Media::AudioFrameSource(fd, fmt, audsName));
 					audsData = nnaudsData;
 					k = 4;
-					l = ReadUInt32(&idx1[0]);
+					l = ReadLUInt32(&idx1[0]);
 					cmpTmp = *(Int32*)"00wb";
 					((Char*)&cmpTmp)[1] = (Char)('0' + (i % 10));
 					*(Char*)&cmpTmp = (Char)('0' + (i / 10));
@@ -644,8 +644,8 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 					{
 						if (*(Int32*)&idx1[k] == cmpTmp)
 						{
-							totalSize += ReadUInt32(&idx1[k + 12]);
-							nnaudsData->AddBlock(base + ReadUInt32(&idx1[k + 8]) + 4, ReadUInt32(&idx1[k + 12]), EstimateDecodeSize(fmt, totalSize, ReadUInt32(&idx1[k + 12])));
+							totalSize += ReadLUInt32(&idx1[k + 12]);
+							nnaudsData->AddBlock(base + ReadLUInt32(&idx1[k + 8]) + 4, ReadLUInt32(&idx1[k + 12]), EstimateDecodeSize(fmt, totalSize, ReadLUInt32(&idx1[k + 12])));
 						}
 						k += 16;
 					}
@@ -685,8 +685,8 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 		i = 0;
 		while (i < dataCnt)
 		{
-			frameNum = ReadUInt32(&chap[i * 8 + 4]);
-			chapOfst = ReadUInt32(&chap[i * 8 + 8]);
+			frameNum = ReadLUInt32(&chap[i * 8 + 4]);
+			chapOfst = ReadLUInt32(&chap[i * 8 + 8]);
 			
 			chapTime = MulDivU32(frameNum, scale * 1000, rate);
 			if (chap[chapOfst] == 0xff && chap[chapOfst + 1] == 0xfe)

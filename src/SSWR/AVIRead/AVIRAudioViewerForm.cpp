@@ -99,7 +99,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 						j = 2 * currCh;
 						while (i < sz.x)
 						{
-							thisY = currY + channelH + ((ReadUInt16(&buff[j]) * channelH) >> 15);
+							thisY = currY + channelH + ((ReadLUInt16(&buff[j]) * channelH) >> 15);
 							gimg->DrawLine(UIntOS2Double(i - 1), UIntOS2Double(lastY), UIntOS2Double(i), UIntOS2Double(thisY), p);
 							
 							lastY = thisY;

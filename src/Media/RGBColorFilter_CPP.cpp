@@ -63,32 +63,32 @@ extern "C" void RGBColorFilter_ProcessImagePart(UInt8 *srcPtr, UInt8 *destPtr, I
 			i = width;
 			while (i-- > 0)
 			{
-				bv = *(Int16*)&lut[ReadUInt16(&srcPtr[0]) * 2];
+				bv = *(Int16*)&lut[ReadLUInt16(&srcPtr[0]) * 2];
 				maxV = bv;
 				minV = bv;
-				gv = *(Int16*)&lut[ReadUInt16(&srcPtr[2]) * 2];
+				gv = *(Int16*)&lut[ReadLUInt16(&srcPtr[2]) * 2];
 				if (gv > maxV) maxV = gv;
 				if (gv < minV) minV = gv;
-				rv = *(Int16*)&lut[ReadUInt16(&srcPtr[4]) * 2];
+				rv = *(Int16*)&lut[ReadLUInt16(&srcPtr[4]) * 2];
 				if (rv > maxV) maxV = rv;
 				if (rv < minV) minV = rv;
 				if (minV >= 8192)
 				{
-					WriteInt16(&destPtr[0], *(Int16*)&lut[147456]);
-					WriteInt16(&destPtr[2], *(Int16*)&lut[147456]);
-					WriteInt16(&destPtr[4], *(Int16*)&lut[147456]);
+					WriteLInt16(&destPtr[0], *(Int16*)&lut[147456]);
+					WriteLInt16(&destPtr[2], *(Int16*)&lut[147456]);
+					WriteLInt16(&destPtr[4], *(Int16*)&lut[147456]);
 				}
 				else if (maxV <= 8192)
 				{
-					WriteInt16(&destPtr[0], *(Int16*)&lut[131072 + 2 * (UInt16)bv]);
-					WriteInt16(&destPtr[2], *(Int16*)&lut[131072 + 2 * (UInt16)gv]);
-					WriteInt16(&destPtr[4], *(Int16*)&lut[131072 + 2 * (UInt16)rv]);
+					WriteLInt16(&destPtr[0], *(Int16*)&lut[131072 + 2 * (UInt16)bv]);
+					WriteLInt16(&destPtr[2], *(Int16*)&lut[131072 + 2 * (UInt16)gv]);
+					WriteLInt16(&destPtr[4], *(Int16*)&lut[131072 + 2 * (UInt16)rv]);
 				}
 				else
 				{
-					WriteInt16(&destPtr[0], *(Int16*)&lut[131072 + 2 * ((minV + (bv - minV) * (8192 - minV) / (maxV - minV)) & 0xffff)]);
-					WriteInt16(&destPtr[2], *(Int16*)&lut[131072 + 2 * ((minV + (gv - minV) * (8192 - minV) / (maxV - minV)) & 0xffff)]);
-					WriteInt16(&destPtr[4], *(Int16*)&lut[131072 + 2 * ((minV + (rv - minV) * (8192 - minV) / (maxV - minV)) & 0xffff)]);
+					WriteLInt16(&destPtr[0], *(Int16*)&lut[131072 + 2 * ((minV + (bv - minV) * (8192 - minV) / (maxV - minV)) & 0xffff)]);
+					WriteLInt16(&destPtr[2], *(Int16*)&lut[131072 + 2 * ((minV + (gv - minV) * (8192 - minV) / (maxV - minV)) & 0xffff)]);
+					WriteLInt16(&destPtr[4], *(Int16*)&lut[131072 + 2 * ((minV + (rv - minV) * (8192 - minV) / (maxV - minV)) & 0xffff)]);
 				}
 				srcPtr += 6;
 				destPtr += 6;
@@ -169,33 +169,33 @@ extern "C" void RGBColorFilter_ProcessImageHDRDLPart(UInt8 *srcPtr, UInt8 *destP
 			i = width;
 			while (i-- > 0)
 			{
-				bv = *(Int32*)&lut[262144 + ReadUInt16(&srcPtr[0]) * 4];
+				bv = *(Int32*)&lut[262144 + ReadLUInt16(&srcPtr[0]) * 4];
 				maxV = bv;
 				minV = bv;
-				gv = *(Int32*)&lut[262144 + ReadUInt16(&srcPtr[2]) * 4];
+				gv = *(Int32*)&lut[262144 + ReadLUInt16(&srcPtr[2]) * 4];
 				if (gv > maxV) maxV = gv;
 				if (gv < minV) minV = gv;
-				rv = *(Int32*)&lut[262144 + ReadUInt16(&srcPtr[4]) * 4];
+				rv = *(Int32*)&lut[262144 + ReadLUInt16(&srcPtr[4]) * 4];
 				if (rv > maxV) maxV = rv;
 				if (rv < minV) minV = rv;
 				minV = minV >> hdrLev;
 				if (minV >= 8192)
 				{
-					WriteInt16(&destPtr[0], *(Int16*)&lut[147456]);
-					WriteInt16(&destPtr[2], *(Int16*)&lut[147456]);
-					WriteInt16(&destPtr[4], *(Int16*)&lut[147456]);
+					WriteLInt16(&destPtr[0], *(Int16*)&lut[147456]);
+					WriteLInt16(&destPtr[2], *(Int16*)&lut[147456]);
+					WriteLInt16(&destPtr[4], *(Int16*)&lut[147456]);
 				}
 				else if (maxV <= 8192)
 				{
-					WriteInt16(&destPtr[0], *(Int16*)&lut[131072 + 2 * (bv & 0xffff)]);
-					WriteInt16(&destPtr[2], *(Int16*)&lut[131072 + 2 * (gv & 0xffff)]);
-					WriteInt16(&destPtr[4], *(Int16*)&lut[131072 + 2 * (rv & 0xffff)]);
+					WriteLInt16(&destPtr[0], *(Int16*)&lut[131072 + 2 * (bv & 0xffff)]);
+					WriteLInt16(&destPtr[2], *(Int16*)&lut[131072 + 2 * (gv & 0xffff)]);
+					WriteLInt16(&destPtr[4], *(Int16*)&lut[131072 + 2 * (rv & 0xffff)]);
 				}
 				else
 				{
-					WriteInt16(&destPtr[0], *(Int16*)&lut[131072 + 2 * ((minV + (bv - minV) * (8192 - minV) / (maxV - minV)) & 0xffff)]);
-					WriteInt16(&destPtr[2], *(Int16*)&lut[131072 + 2 * ((minV + (gv - minV) * (8192 - minV) / (maxV - minV)) & 0xffff)]);
-					WriteInt16(&destPtr[4], *(Int16*)&lut[131072 + 2 * ((minV + (rv - minV) * (8192 - minV) / (maxV - minV)) & 0xffff)]);
+					WriteLInt16(&destPtr[0], *(Int16*)&lut[131072 + 2 * ((minV + (bv - minV) * (8192 - minV) / (maxV - minV)) & 0xffff)]);
+					WriteLInt16(&destPtr[2], *(Int16*)&lut[131072 + 2 * ((minV + (gv - minV) * (8192 - minV) / (maxV - minV)) & 0xffff)]);
+					WriteLInt16(&destPtr[4], *(Int16*)&lut[131072 + 2 * ((minV + (rv - minV) * (8192 - minV) / (maxV - minV)) & 0xffff)]);
 				}
 				srcPtr += 6;
 				destPtr += 6;

@@ -61,7 +61,7 @@ Optional<IO::ParsedObject> Parser::FileParser::NS2Parser::ParseFileHdr(NN<IO::St
 
 	NN<IO::VirtualPackageFile> pf;
 	Text::Encoding enc(932);
-	hdrSize = ReadUInt32(&hdr[0]);
+	hdrSize = ReadLUInt32(&hdr[0]);
 	Data::ByteBuffer hdrBuff(hdrSize);
 	fd->GetRealData(0, hdrSize, hdrBuff);
 	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
@@ -84,7 +84,7 @@ Optional<IO::ParsedObject> Parser::FileParser::NS2Parser::ParseFileHdr(NN<IO::St
 		if ((UInt32)i >= hdrSize - 4)
 			break;
 		sptr = enc.UTF8FromBytes(sbuff, &hdrBuff[j], i - j, 0);
-		fileSize = ReadUInt32(&hdrBuff[i + 1]);
+		fileSize = ReadLUInt32(&hdrBuff[i + 1]);
 		pf->AddData(fd, fileOfst, fileSize, IO::PackFileItem::HeaderType::No, CSTRP(sbuff, sptr), nullptr, nullptr, nullptr, 0);
 		fileOfst += fileSize;
 		i += 5;

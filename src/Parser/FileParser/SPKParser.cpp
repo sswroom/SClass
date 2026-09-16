@@ -70,8 +70,8 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 	if (hdr[0] != 'S' || hdr[1] != 'm' || hdr[2] != 'p' || hdr[3] != 'f')
 		return nullptr;
 
-	flags = ReadInt32(&hdr[4]);
-	dirOfst = ReadUInt64(&hdr[8]);
+	flags = ReadLInt32(&hdr[4]);
+	dirOfst = ReadLUInt64(&hdr[8]);
 	fileSize = fd->GetDataSize();
 	if (dirOfst < 16 || dirOfst > fileSize)
 		return nullptr;
@@ -87,8 +87,8 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 		{
 			i = 16;
 		}
-		customType = ReadInt32(&hdr[i + 0]);
-		customSize = ReadUInt32(&hdr[i + 4]);
+		customType = ReadLInt32(&hdr[i + 0]);
+		customSize = ReadLUInt32(&hdr[i + 4]);
 		NN<Net::TCPClientFactory> clif;
 		NN<Parser::ParserList> parsers;
 		if (customType == 1 && fd->IsFullFile() && this->clif.SetTo(clif) && this->parsers.SetTo(parsers))
@@ -128,7 +128,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 	if (flags & 2)
 	{
 		UInt64 dirSize;
-		dirSize = ReadUInt64(&hdr[16]);
+		dirSize = ReadLUInt64(&hdr[16]);
 		while (dirOfst != 0 && dirSize >= 16 && dirOfst + dirSize <= fileSize)
 		{
 			Data::ByteBuffer dirBuff((UIntOS)dirSize);
@@ -136,7 +136,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 			i = 16;
 			while (i < dirSize)
 			{
-				fnameLen = ReadUInt16(&dirBuff[i + 24]);
+				fnameLen = ReadLUInt16(&dirBuff[i + 24]);
 				if (i + 26 + fnameLen > dirSize)
 					break;
 
@@ -176,7 +176,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 					}
 					else
 					{
-						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), IO::PackFileItem::HeaderType::No, CSTRP(sptr, sptrEnd), Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0), nullptr, nullptr, 0);
+						pf2->AddData(fd, ReadLUInt64(&dirBuff[i]), ReadLUInt64(&dirBuff[i + 8]), IO::PackFileItem::HeaderType::No, CSTRP(sptr, sptrEnd), Data::Timestamp(ReadLInt64(&dirBuff[i + 16]), 0), nullptr, nullptr, 0);
 						break;
 					}
 				}
@@ -184,8 +184,8 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 
 				i += 26 + fnameLen;
 			}
-			dirOfst = ReadUInt64(&dirBuff[0]);
-			dirSize = ReadUInt64(&dirBuff[8]);
+			dirOfst = ReadLUInt64(&dirBuff[0]);
+			dirSize = ReadLUInt64(&dirBuff[8]);
 		}
 	}
 	else
@@ -198,7 +198,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 			i = 0;
 			while (i < j)
 			{
-				fnameLen = ReadUInt16(&dirBuff[i + 24]);
+				fnameLen = ReadLUInt16(&dirBuff[i + 24]);
 				if (i + 26 + fnameLen > j)
 					break;
 
@@ -238,7 +238,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 					}
 					else
 					{
-						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), IO::PackFileItem::HeaderType::No, CSTRP(sptr, sptrEnd), Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0), nullptr, nullptr, 0);
+						pf2->AddData(fd, ReadLUInt64(&dirBuff[i]), ReadLUInt64(&dirBuff[i + 8]), IO::PackFileItem::HeaderType::No, CSTRP(sptr, sptrEnd), Data::Timestamp(ReadLInt64(&dirBuff[i + 16]), 0), nullptr, nullptr, 0);
 						break;
 					}
 				}

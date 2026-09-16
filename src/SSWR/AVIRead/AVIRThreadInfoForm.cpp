@@ -494,22 +494,22 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnThreadContext(NN<Manage::Thr
 		}
 		else if (bitCnt == 16)
 		{
-			sptr = Text::StrHexVal16(sbuff, ReadUInt16(buff));
+			sptr = Text::StrHexVal16(sbuff, ReadLUInt16(buff));
 			me->lvContext->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 		}
 		else if (bitCnt == 32)
 		{
-			sptr = Text::StrHexVal32(sbuff, ReadUInt32(buff));
+			sptr = Text::StrHexVal32(sbuff, ReadLUInt32(buff));
 			me->lvContext->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 		}
 		else if (bitCnt == 64)
 		{
-			sptr = Text::StrHexVal64(sbuff, ReadUInt64(buff));
+			sptr = Text::StrHexVal64(sbuff, ReadLUInt64(buff));
 			me->lvContext->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 		}
 		else if (bitCnt == 128)
 		{
-			sptr = Text::StrHexVal64(Text::StrHexVal64(sbuff, ReadUInt64(buff)), ReadUInt64(&buff[8]));
+			sptr = Text::StrHexVal64(Text::StrHexVal64(sbuff, ReadLUInt64(buff)), ReadLUInt64(&buff[8]));
 			me->lvContext->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 		}
 		else if (bitCnt == 80)

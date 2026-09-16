@@ -42,12 +42,12 @@ Optional<IO::ParsedObject> Parser::FileParser::IPACParser::ParseFileHdr(NN<IO::S
 	UTF8Char name[33];
 	UnsafeArray<UTF8Char> sptr;
 
-	if (ReadUInt32(&hdr[0]) != 0x43415049)
+	if (ReadLUInt32(&hdr[0]) != 0x43415049)
 	{
 		return nullptr;
 	}
 
-	recCnt = ReadUInt32(&hdr[4]);
+	recCnt = ReadLUInt32(&hdr[4]);
 	hdrOfst = 8;
 	currOfst = recCnt * 44 + 8;
 
@@ -59,14 +59,14 @@ Optional<IO::ParsedObject> Parser::FileParser::IPACParser::ParseFileHdr(NN<IO::S
 	while (i < recCnt)
 	{
 		fd->GetRealData(hdrOfst, 44, BYTEARR(rec));
-		startOfst = ReadUInt32(&rec[36]);
+		startOfst = ReadLUInt32(&rec[36]);
 		if (startOfst != currOfst)
 		{
 			pf.Delete();
 			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(name, rec, 32, 0);
-		currSize = ReadUInt32(&rec[40]);
+		currSize = ReadLUInt32(&rec[40]);
 
 		pf->AddData(fd, currOfst, currSize, IO::PackFileItem::HeaderType::No, CSTRP(name, sptr), nullptr, nullptr, nullptr, 0);
 		currOfst += currSize;

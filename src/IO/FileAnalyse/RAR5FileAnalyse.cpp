@@ -155,7 +155,7 @@ IO::FileAnalyse::RAR5FileAnalyse::RAR5FileAnalyse(NN<IO::StreamData> fd) : threa
 	this->fd = nullptr;
 	this->pauseParsing = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
-	if (ReadInt32(&buff[0]) != 0x21726152 || ReadInt32(&buff[4]) != 0x0001071A)
+	if (ReadLInt32(&buff[0]) != 0x21726152 || ReadLInt32(&buff[4]) != 0x0001071A)
 	{
 		return;
 	}
@@ -217,7 +217,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UIntOS index, NN<Text::Str
 	fd->GetRealData(pack->fileOfst, pack->headerSize, packBuff);
 
 	sb->AppendC(UTF8STRC("\r\nBlock CRC = 0x"));
-	sb->AppendHex32(ReadUInt32(&packBuff[0]));
+	sb->AppendHex32(ReadLUInt32(&packBuff[0]));
 	packPtr = packBuff + 4;
 	packEnd = packBuff + pack->headerSize;
 	packPtr = ReadVInt(packPtr, iVal);
@@ -363,13 +363,13 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UIntOS index, NN<Text::Str
 		if (headerFlags & 2)
 		{
 			sb->AppendC(UTF8STRC("\r\nmtime = "));
-			sb->AppendU32(ReadUInt32(&packPtr[0]));
+			sb->AppendU32(ReadLUInt32(&packPtr[0]));
 			packPtr += 4;
 		}
 		if (headerFlags & 4)
 		{
 			sb->AppendC(UTF8STRC("\r\nData CRC32 = 0x"));
-			sb->AppendHex32(ReadUInt32(&packPtr[0]));
+			sb->AppendHex32(ReadLUInt32(&packPtr[0]));
 			packPtr += 4;
 		}
 		packPtr = ReadVInt(packPtr, iVal);
@@ -426,7 +426,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UIntOS index, NN<Text::Str
 					{
 						if (headerFlags & 1)
 						{
-							ts = Data::Timestamp::FromEpochSec(ReadUInt32(&packPtr[0]), 0);
+							ts = Data::Timestamp::FromEpochSec(ReadLUInt32(&packPtr[0]), 0);
 							packPtr += 4;
 						}
 						else
@@ -441,7 +441,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UIntOS index, NN<Text::Str
 					{
 						if (headerFlags & 1)
 						{
-							ts = Data::Timestamp::FromEpochSec(ReadUInt32(&packPtr[0]), 0);
+							ts = Data::Timestamp::FromEpochSec(ReadLUInt32(&packPtr[0]), 0);
 							packPtr += 4;
 						}
 						else
@@ -456,7 +456,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UIntOS index, NN<Text::Str
 					{
 						if (headerFlags & 1)
 						{
-							ts = Data::Timestamp::FromEpochSec(ReadUInt32(&packPtr[0]), 0);
+							ts = Data::Timestamp::FromEpochSec(ReadLUInt32(&packPtr[0]), 0);
 							packPtr += 4;
 						}
 						else
@@ -496,25 +496,25 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UIntOS index, NN<Text::Str
 	}
 
 	/*	sb->AppendC(UTF8STRC("\r\nMicroSec Per Frame = "));
-	sb->AppendU32(ReadUInt32(&packBuff[0]));
+	sb->AppendU32(ReadLUInt32(&packBuff[0]));
 	sb->AppendC(UTF8STRC("\r\nMax Bytes Per Second = "));
-	sb->AppendU32(ReadUInt32(&packBuff[4]));
+	sb->AppendU32(ReadLUInt32(&packBuff[4]));
 	sb->AppendC(UTF8STRC("\r\nPadding Granularity = "));
-	sb->AppendU32(ReadUInt32(&packBuff[8]));
+	sb->AppendU32(ReadLUInt32(&packBuff[8]));
 	sb->AppendC(UTF8STRC("\r\nFlags = 0x"));
-	sb->AppendHex32(ReadUInt32(&packBuff[12]));
+	sb->AppendHex32(ReadLUInt32(&packBuff[12]));
 	sb->AppendC(UTF8STRC("\r\nTotal Frames = "));
-	sb->AppendU32(ReadUInt32(&packBuff[16]));
+	sb->AppendU32(ReadLUInt32(&packBuff[16]));
 	sb->AppendC(UTF8STRC("\r\nInitial Frames = "));
-	sb->AppendU32(ReadUInt32(&packBuff[20]));
+	sb->AppendU32(ReadLUInt32(&packBuff[20]));
 	sb->AppendC(UTF8STRC("\r\nStream Count = "));
-	sb->AppendU32(ReadUInt32(&packBuff[24]));
+	sb->AppendU32(ReadLUInt32(&packBuff[24]));
 	sb->AppendC(UTF8STRC("\r\nSuggested Buffer Size = "));
-	sb->AppendU32(ReadUInt32(&packBuff[28]));
+	sb->AppendU32(ReadLUInt32(&packBuff[28]));
 	sb->AppendC(UTF8STRC("\r\nWidth = "));
-	sb->AppendU32(ReadUInt32(&packBuff[32]));
+	sb->AppendU32(ReadLUInt32(&packBuff[32]));
 	sb->AppendC(UTF8STRC("\r\nHeight = "));
-	sb->AppendU32(ReadUInt32(&packBuff[36]));*/
+	sb->AppendU32(ReadLUInt32(&packBuff[36]));*/
 	return true;
 }
 
@@ -566,7 +566,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (pack->headerSize + pack->dataSize)));
 	Data::ByteBuffer packBuff(pack->headerSize);
 	fd->GetRealData(pack->fileOfst, pack->headerSize, packBuff);
-	frame->AddHex32(0, CSTR("Block CRC"), ReadUInt32(&packBuff[0]));
+	frame->AddHex32(0, CSTR("Block CRC"), ReadLUInt32(&packBuff[0]));
 	packPtr = packBuff + 4;
 	packEnd = packBuff + pack->headerSize;
 	packPtr = AddVInt(frame, (UIntOS)(packPtr - packBuff), CSTR("Header Size"), packPtr);
@@ -702,12 +702,12 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 		packPtr = AddVInt(frame, (UIntOS)(packPtr - packBuff), CSTR("Attributes"), packPtr, 0);
 		if (headerFlags & 2)
 		{
-			frame->AddUInt((UIntOS)(packPtr - packBuff), 4, CSTR("mtime"), ReadUInt32(&packPtr[0]));
+			frame->AddUInt((UIntOS)(packPtr - packBuff), 4, CSTR("mtime"), ReadLUInt32(&packPtr[0]));
 			packPtr += 4;
 		}
 		if (headerFlags & 4)
 		{
-			frame->AddHex32((UIntOS)(packPtr - packBuff), CSTR("Data CRC32"), ReadUInt32(&packPtr[0]));
+			frame->AddHex32((UIntOS)(packPtr - packBuff), CSTR("Data CRC32"), ReadLUInt32(&packPtr[0]));
 			packPtr += 4;
 		}
 		nextPtr = ReadVInt(packPtr, iVal);
@@ -773,7 +773,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 					{
 						if (headerFlags & 1)
 						{
-							dt.SetUnixTimestamp(ReadUInt32(&packPtr[0]));
+							dt.SetUnixTimestamp(ReadLUInt32(&packPtr[0]));
 							nextPtr2 = packPtr + 4;
 						}
 						else
@@ -789,7 +789,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 					{
 						if (headerFlags & 1)
 						{
-							dt.SetUnixTimestamp(ReadUInt32(&packPtr[0]));
+							dt.SetUnixTimestamp(ReadLUInt32(&packPtr[0]));
 							nextPtr2 = packPtr + 4;
 						}
 						else
@@ -805,7 +805,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 					{
 						if (headerFlags & 1)
 						{
-							dt.SetUnixTimestamp(ReadUInt32(&packPtr[0]));
+							dt.SetUnixTimestamp(ReadLUInt32(&packPtr[0]));
 							nextPtr2 = packPtr + 4;
 						}
 						else
@@ -828,25 +828,25 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 	}
 
 	/*	sb->AppendC(UTF8STRC("\r\nMicroSec Per Frame = "));
-	sb->AppendU32(ReadUInt32(&packBuff[0]));
+	sb->AppendU32(ReadLUInt32(&packBuff[0]));
 	sb->AppendC(UTF8STRC("\r\nMax Bytes Per Second = "));
-	sb->AppendU32(ReadUInt32(&packBuff[4]));
+	sb->AppendU32(ReadLUInt32(&packBuff[4]));
 	sb->AppendC(UTF8STRC("\r\nPadding Granularity = "));
-	sb->AppendU32(ReadUInt32(&packBuff[8]));
+	sb->AppendU32(ReadLUInt32(&packBuff[8]));
 	sb->AppendC(UTF8STRC("\r\nFlags = 0x"));
-	sb->AppendHex32(ReadUInt32(&packBuff[12]));
+	sb->AppendHex32(ReadLUInt32(&packBuff[12]));
 	sb->AppendC(UTF8STRC("\r\nTotal Frames = "));
-	sb->AppendU32(ReadUInt32(&packBuff[16]));
+	sb->AppendU32(ReadLUInt32(&packBuff[16]));
 	sb->AppendC(UTF8STRC("\r\nInitial Frames = "));
-	sb->AppendU32(ReadUInt32(&packBuff[20]));
+	sb->AppendU32(ReadLUInt32(&packBuff[20]));
 	sb->AppendC(UTF8STRC("\r\nStream Count = "));
-	sb->AppendU32(ReadUInt32(&packBuff[24]));
+	sb->AppendU32(ReadLUInt32(&packBuff[24]));
 	sb->AppendC(UTF8STRC("\r\nSuggested Buffer Size = "));
-	sb->AppendU32(ReadUInt32(&packBuff[28]));
+	sb->AppendU32(ReadLUInt32(&packBuff[28]));
 	sb->AppendC(UTF8STRC("\r\nWidth = "));
-	sb->AppendU32(ReadUInt32(&packBuff[32]));
+	sb->AppendU32(ReadLUInt32(&packBuff[32]));
 	sb->AppendC(UTF8STRC("\r\nHeight = "));
-	sb->AppendU32(ReadUInt32(&packBuff[36]));*/
+	sb->AppendU32(ReadLUInt32(&packBuff[36]));*/
 	return frame;
 }
 

@@ -15,21 +15,21 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(UnsafeArray<const
 	NN<Media::StaticImage> outImg;
 	Optional<Media::StaticImage> ret = nullptr;
 
-	if (ReadInt32(&dataBuff[0]) == 12)
+	if (ReadLInt32(&dataBuff[0]) == 12)
 	{
-		imgWidth = ReadInt16(&dataBuff[4]);
-		imgHeight = ReadInt16(&dataBuff[6]);
-		bpp = ReadUInt16(&dataBuff[10]);
+		imgWidth = ReadLInt16(&dataBuff[4]);
+		imgHeight = ReadLInt16(&dataBuff[6]);
+		bpp = ReadLUInt16(&dataBuff[10]);
 		imgPos = 12;
 	}
-	else if (ReadInt32(&dataBuff[0]) == 40)
+	else if (ReadLInt32(&dataBuff[0]) == 40)
 	{
-		imgWidth = ReadInt32(&dataBuff[4]);
-		imgHeight = ReadInt32(&dataBuff[8]);
-		bpp = ReadUInt16(&dataBuff[14]);
+		imgWidth = ReadLInt32(&dataBuff[4]);
+		imgHeight = ReadLInt32(&dataBuff[8]);
+		bpp = ReadLUInt16(&dataBuff[14]);
 		imgPos = 40;
-		hdpi = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, ReadInt32(&dataBuff[24]));
-		vdpi = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, ReadInt32(&dataBuff[28]));
+		hdpi = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, ReadLInt32(&dataBuff[24]));
+		vdpi = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, ReadLInt32(&dataBuff[28]));
 	}
 	else
 	{

@@ -52,12 +52,12 @@ Optional<IO::ParsedObject> Parser::FileParser::YKCParser::ParseFileHdr(NN<IO::St
 	{
 		return nullptr;
 	}
-	if (ReadInt32(&hdr[0]) != 0x30434b59 || ReadInt32(&hdr[4]) != 0x3130)
+	if (ReadLInt32(&hdr[0]) != 0x30434b59 || ReadLInt32(&hdr[4]) != 0x3130)
 		return nullptr;
-	if (ReadUInt32(&hdr[8]) != 24)
+	if (ReadLUInt32(&hdr[8]) != 24)
 		return nullptr;
-	recOfst = ReadUInt32(&hdr[16]);
-	recSize = ReadUInt32(&hdr[20]);
+	recOfst = ReadLUInt32(&hdr[16]);
+	recSize = ReadLUInt32(&hdr[20]);
 	if (recOfst + recSize != fd->GetDataSize())
 		return nullptr;
 	Data::ByteBuffer recBuff(recSize);
@@ -74,10 +74,10 @@ Optional<IO::ParsedObject> Parser::FileParser::YKCParser::ParseFileHdr(NN<IO::St
 	nextOfst = 24;
 	while (i < recSize)
 	{
-		fnameOfst = ReadUInt32(&recBuff[i]);
-		fnameSize = ReadUInt32(&recBuff[i + 4]);
-		fileOfst = ReadUInt32(&recBuff[i + 8]);
-		fileSize = ReadUInt32(&recBuff[i + 12]);
+		fnameOfst = ReadLUInt32(&recBuff[i]);
+		fnameSize = ReadLUInt32(&recBuff[i + 4]);
+		fileOfst = ReadLUInt32(&recBuff[i + 8]);
+		fileSize = ReadLUInt32(&recBuff[i + 12]);
 		if (fileOfst != nextOfst || fnameSize == 0 || fnameSize >= 256)
 		{
 			pf.Delete();

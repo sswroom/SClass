@@ -36,16 +36,16 @@ UIntOS IO::ProtoHdlr::ProtoSMonHandler::ParseProtocol(NN<IO::Stream> stm, AnyTyp
 		found = false;
 		if (*(Int16*)&buff[0] == *(Int16*)"Sm" && *(Int16*)&buff[2] == *(Int16*)"SM")
 		{
-			UInt32 packetSize = ReadUInt16(&buff[6]);
+			UInt32 packetSize = ReadLUInt16(&buff[6]);
 			if (packetSize >= 10 && packetSize <= 2048)
 			{
 				if (packetSize > buff.GetSize())
 					return buff.GetSize();
 
 				this->crc->Calc(buff.Arr().Ptr(), packetSize - 2, crcVal);
-				if (ReadMUInt16(&crcVal[2]) == ReadUInt16(&buff[packetSize - 2]))
+				if (ReadMUInt16(&crcVal[2]) == ReadLUInt16(&buff[packetSize - 2]))
 				{
-					this->listener->DataParsed(stm, stmObj, ReadUInt16(&buff[4]), 0, &buff[8], packetSize - 10);
+					this->listener->DataParsed(stm, stmObj, ReadLUInt16(&buff[4]), 0, &buff[8], packetSize - 10);
 
 					found = true;
 					buff += packetSize;
@@ -66,14 +66,14 @@ UIntOS IO::ProtoHdlr::ProtoSMonHandler::BuildPacket(UnsafeArray<UInt8> buff, Int
 	UInt8 crcVal[4];
 	*(Int16*)&buff[0] = *(Int16*)"Sm";
 	*(Int16*)&buff[2] = *(Int16*)"SM";
-	WriteInt16(&buff[4], cmdType);
-	WriteInt16(&buff[6], (Int16)(cmdSize + 10));
+	WriteLInt16(&buff[4], cmdType);
+	WriteLInt16(&buff[6], (Int16)(cmdSize + 10));
 	if (cmdSize > 0)
 	{
 		MemCopyNO(&buff[8], cmd.Ptr(), cmdSize);
 	}
 
 	this->crc->Calc(buff, cmdSize + 8, crcVal);
-	WriteInt16(&buff[cmdSize + 8], ReadMInt32(crcVal));
+	WriteLInt16(&buff[cmdSize + 8], ReadMInt32(crcVal));
 	return cmdSize + 10;
 }

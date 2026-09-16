@@ -4,3 +4,9 @@
 [submodule "ThirdParty/webdriverxx"]
 	path = ThirdParty/webdriverxx
 	url = https://github.com/sswroom/webdriverxx.git
+[submodule "ThirdParty/mlpack"]
+	path = ThirdParty/mlpack
+	url = https://github.com/mlpack/mlpack.git
+[submodule "ThirdParty/ensmallen"]
+	path = ThirdParty/ensmallen
+	url = https://github.com/mlpack/ensmallen.git

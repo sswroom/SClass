@@ -34,7 +34,7 @@ void __stdcall IO::FileAnalyse::SMTCFileAnalyse::ParseThread(NN<Sync::Thread> th
 		}
 		else if (data->type == 2 || data->type == 3)
 		{
-			data->size = 23 + (UIntOS)ReadUInt16(&packetHdr[21]);
+			data->size = 23 + (UIntOS)ReadLUInt16(&packetHdr[21]);
 		}
 		else
 		{
@@ -108,10 +108,10 @@ Bool IO::FileAnalyse::SMTCFileAnalyse::GetFrameName(UIntOS index, NN<Text::Strin
 	data = this->dataList.GetItemNoCheck(index - 1);
 	mutUsage.EndUse();
 	fd->GetRealData(data->ofst, 21, BYTEARR(hdr));
-	Data::Timestamp ts = Data::Timestamp(Data::TimeInstant(ReadInt64(&hdr[0]), ReadUInt32(&hdr[8])), Data::DateTimeUtil::GetLocalTzQhr());
+	Data::Timestamp ts = Data::Timestamp(Data::TimeInstant(ReadLInt64(&hdr[0]), ReadLUInt32(&hdr[8])), Data::DateTimeUtil::GetLocalTzQhr());
 	UInt32 ip;
 	UInt16 port;
-	Net::SocketFactory::FromSocketId(ReadUInt64(&hdr[12]), ip, port);
+	Net::SocketFactory::FromSocketId(ReadLUInt64(&hdr[12]), ip, port);
 	sb->AppendTSNoZone(ts);
 	sb->AppendC(UTF8STRC(", "));
 	sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip, port);

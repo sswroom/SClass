@@ -52,7 +52,7 @@ void Net::WhoisRecord::AddItem(UnsafeArray<const UTF8Char> item, UIntOS itemLen)
 					{
 						ip[j] = Text::StrToUInt8(sarr[j]);
 					}
-					this->startIP = ReadUInt32(ip);
+					this->startIP = ReadLUInt32(ip);
 					this->endIP = BSWAPU32(ReadMUInt32(ip) + (UInt32)(1 << (32 - bitCnt)) - 1);
 				}
 				else
@@ -87,7 +87,7 @@ void Net::WhoisRecord::AddItem(UnsafeArray<const UTF8Char> item, UIntOS itemLen)
 					{
 						ip[j] = Text::StrToUInt8(sarr[j]);
 					}
-					this->startIP = ReadUInt32(ip);
+					this->startIP = ReadLUInt32(ip);
 					this->endIP = BSWAPU32((UInt32)ReadMUInt32(ip) + (UInt32)(1 << (32 - bitCnt)) - 1);
 				}
 				else

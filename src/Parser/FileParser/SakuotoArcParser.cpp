@@ -44,10 +44,10 @@ Optional<IO::ParsedObject> Parser::FileParser::SakuotoArcParser::ParseFileHdr(NN
 	UInt32 nextOfst;
 	UTF16Char *fileName;
 
-	if (ReadInt32(&hdr[12]) != 0)
+	if (ReadLInt32(&hdr[12]) != 0)
 		return nullptr;
-	recCnt = ReadUInt32(&hdr[0]);
-	recSize = ReadUInt32(&hdr[4]);
+	recCnt = ReadLUInt32(&hdr[0]);
+	recSize = ReadLUInt32(&hdr[4]);
 	if (recCnt == 0 || recCnt >= 65536)
 		return nullptr;
 	if (recSize < recCnt * 10 || recSize >= 1048576)
@@ -69,8 +69,8 @@ Optional<IO::ParsedObject> Parser::FileParser::SakuotoArcParser::ParseFileHdr(NN
 	nextOfst = 0;
 	while (i < recSize)
 	{
-		fileSize = ReadUInt32(&recBuff[i]);
-		fileOfst = ReadUInt32(&recBuff[i + 4]);
+		fileSize = ReadLUInt32(&recBuff[i]);
+		fileOfst = ReadLUInt32(&recBuff[i + 4]);
 		if (fileOfst != nextOfst)
 		{
 			pf.Delete();

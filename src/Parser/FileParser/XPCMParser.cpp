@@ -42,15 +42,15 @@ Optional<IO::ParsedObject> Parser::FileParser::XPCMParser::ParseFileHdr(NN<IO::S
 {
 	if (*(Int32*)&hdr[0] != *(Int32*)"XPCM")
 		return nullptr;
-	if (ReadUInt64(&hdr[4]) != fd->GetDataSize() - 28)
+	if (ReadLUInt64(&hdr[4]) != fd->GetDataSize() - 28)
 		return nullptr;
 
 	NN<Media::MediaFile> vid;
 	Media::AudioFormat af;
-	af.formatId = ReadUInt16(&hdr[12]);
-	af.nChannels = ReadUInt16(&hdr[14]);
-	af.frequency = ReadUInt32(&hdr[16]);
-	af.bitpersample = ReadUInt16(&hdr[26]);
+	af.formatId = ReadLUInt16(&hdr[12]);
+	af.nChannels = ReadLUInt16(&hdr[14]);
+	af.frequency = ReadLUInt32(&hdr[16]);
+	af.bitpersample = ReadLUInt16(&hdr[26]);
 	af.bitRate = af.frequency * af.nChannels * af.bitpersample;
 	af.align = af.frequency * af.nChannels * (UInt32)(af.bitpersample >> 3);
 	af.other = 0;
@@ -59,7 +59,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XPCMParser::ParseFileHdr(NN<IO::S
 	af.extra = 0;
 
 	NN<Media::LPCMSource> src;
-	NEW_CLASSNN(src, Media::LPCMSource(fd, 28, ReadUInt32(&hdr[4]), af, fd->GetFullName()));
+	NEW_CLASSNN(src, Media::LPCMSource(fd, 28, ReadLUInt32(&hdr[4]), af, fd->GetFullName()));
 
 	NEW_CLASSNN(vid, Media::MediaFile(fd->GetFullName()));
 	vid->AddSource(src, 0);

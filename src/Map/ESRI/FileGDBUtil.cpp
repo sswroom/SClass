@@ -21,12 +21,12 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 	NN<FileGDBTableInfo> table = MemAllocNN(FileGDBTableInfo);
 	MemClear(table.Ptr(), sizeof(FileGDBTableInfo));
 	NEW_CLASSNN(table->fields, Data::ArrayListNN<FileGDBFieldInfo>());
-	UInt32 descSize = ReadUInt32(&fieldDesc[0]);
+	UInt32 descSize = ReadLUInt32(&fieldDesc[0]);
 	fieldDesc += 4;
 	table->geometryType = fieldDesc[4];
 	table->tableFlags = fieldDesc[5];
 	table->geometryFlags = fieldDesc[7];
-	UIntOS fieldCnt = ReadUInt16(&fieldDesc[8]);
+	UIntOS fieldCnt = ReadLUInt16(&fieldDesc[8]);
 	UIntOS ofst = 10;
 	Bool valid = true;
 	UnsafeArray<UInt8> valArr;
@@ -65,7 +65,7 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 				valid = false;
 				break;
 			}
-			field->fieldSize = ReadUInt32(&fieldDesc[ofst + 1]);
+			field->fieldSize = ReadLUInt32(&fieldDesc[ofst + 1]);
 			field->flags = fieldDesc[ofst + 5];
 			ofst += 6;
 		}
@@ -87,7 +87,7 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 		}
 		if (field->fieldType == 7)
 		{
-			UIntOS srsLen = ReadUInt16(&fieldDesc[ofst]);
+			UIntOS srsLen = ReadLUInt16(&fieldDesc[ofst]);
 			sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&fieldDesc[ofst + 2], srsLen >> 1);
 			*sptr = 0;
 			field->srsSize = srsLen;
@@ -98,57 +98,57 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 			ofst += 2 + srsLen;
 			UInt8 flags = fieldDesc[ofst];
 			ofst += 1;
-			table->xOrigin = ReadDouble(&fieldDesc[ofst]);
-			table->yOrigin = ReadDouble(&fieldDesc[ofst + 8]);
-			table->xyScale = ReadDouble(&fieldDesc[ofst + 16]);
+			table->xOrigin = ReadLDouble(&fieldDesc[ofst]);
+			table->yOrigin = ReadLDouble(&fieldDesc[ofst + 8]);
+			table->xyScale = ReadLDouble(&fieldDesc[ofst + 16]);
 			ofst += 24;
 			if (flags & HAS_M_FLAG)
 			{
-				table->mOrigin = ReadDouble(&fieldDesc[ofst]);
-				table->mScale = ReadDouble(&fieldDesc[ofst + 8]);
+				table->mOrigin = ReadLDouble(&fieldDesc[ofst]);
+				table->mScale = ReadLDouble(&fieldDesc[ofst + 8]);
 				ofst += 16;
 			}
 			if (flags & HAS_Z_FLAG)
 			{
-				table->zOrigin = ReadDouble(&fieldDesc[ofst]);
-				table->zScale = ReadDouble(&fieldDesc[ofst + 8]);
+				table->zOrigin = ReadLDouble(&fieldDesc[ofst]);
+				table->zScale = ReadLDouble(&fieldDesc[ofst + 8]);
 				ofst += 16;
 			}
-			table->xyTolerance = ReadDouble(&fieldDesc[ofst]);
+			table->xyTolerance = ReadLDouble(&fieldDesc[ofst]);
 			ofst += 8;
 			if (flags & HAS_M_FLAG)
 			{
-				table->mTolerance = ReadDouble(&fieldDesc[ofst]);
+				table->mTolerance = ReadLDouble(&fieldDesc[ofst]);
 				ofst += 8;
 			}
 			if (flags & HAS_Z_FLAG)
 			{
-				table->zTolerance = ReadDouble(&fieldDesc[ofst]);
+				table->zTolerance = ReadLDouble(&fieldDesc[ofst]);
 				ofst += 8;
 			}
-			table->xMin = ReadDouble(&fieldDesc[ofst]);
-			table->yMin = ReadDouble(&fieldDesc[ofst + 8]);
-			table->xMax = ReadDouble(&fieldDesc[ofst + 16]);
-			table->yMax = ReadDouble(&fieldDesc[ofst + 24]);
+			table->xMin = ReadLDouble(&fieldDesc[ofst]);
+			table->yMin = ReadLDouble(&fieldDesc[ofst + 8]);
+			table->xMax = ReadLDouble(&fieldDesc[ofst + 16]);
+			table->yMax = ReadLDouble(&fieldDesc[ofst + 24]);
 			ofst += 32;
 			if (table->geometryFlags & 0x80)
 			{
-				table->zMin = ReadDouble(&fieldDesc[ofst]);
-				table->zMax = ReadDouble(&fieldDesc[ofst + 8]);
+				table->zMin = ReadLDouble(&fieldDesc[ofst]);
+				table->zMax = ReadLDouble(&fieldDesc[ofst + 8]);
 				ofst += 16;
 			}
 			if (table->geometryFlags & 0x40)
 			{
-				table->mMin = ReadDouble(&fieldDesc[ofst]);
-				table->mMax = ReadDouble(&fieldDesc[ofst + 8]);
+				table->mMin = ReadLDouble(&fieldDesc[ofst]);
+				table->mMax = ReadLDouble(&fieldDesc[ofst + 8]);
 				ofst += 16;
 			}
-			UIntOS gridCnt = ReadUInt32(&fieldDesc[ofst + 1]);
+			UIntOS gridCnt = ReadLUInt32(&fieldDesc[ofst + 1]);
 			UIntOS i = 0;
 			ofst += 5;
 			while (i < gridCnt)
 			{
-				table->spatialGrid[i] = ReadDouble(&fieldDesc[ofst]);
+				table->spatialGrid[i] = ReadLDouble(&fieldDesc[ofst]);
 				ofst += 8;
 				i++;
 			}

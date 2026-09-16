@@ -156,34 +156,34 @@ void Media::RasterImage::InitGrayPal()
 	{
 		if (this->info.storeBPP == 1)
 		{
-			WriteUInt32(&pal[0], 0xff000000);
-			WriteUInt32(&pal[4], 0xffffffff);
+			WriteLUInt32(&pal[0], 0xff000000);
+			WriteLUInt32(&pal[4], 0xffffffff);
 		}
 		else if (this->info.storeBPP == 2)
 		{
-			WriteUInt32(&pal[0], 0xff000000);
-			WriteUInt32(&pal[4], 0xff555555);
-			WriteUInt32(&pal[8], 0xffaaaaaa);
-			WriteUInt32(&pal[12], 0xffffffff);
+			WriteLUInt32(&pal[0], 0xff000000);
+			WriteLUInt32(&pal[4], 0xff555555);
+			WriteLUInt32(&pal[8], 0xffaaaaaa);
+			WriteLUInt32(&pal[12], 0xffffffff);
 		}
 		else if (this->info.storeBPP == 4)
 		{
-			WriteUInt32(&pal[0], 0xff000000);
-			WriteUInt32(&pal[4], 0xff111111);
-			WriteUInt32(&pal[8], 0xff222222);
-			WriteUInt32(&pal[12], 0xff333333);
-			WriteUInt32(&pal[16], 0xff444444);
-			WriteUInt32(&pal[20], 0xff555555);
-			WriteUInt32(&pal[24], 0xff666666);
-			WriteUInt32(&pal[28], 0xff777777);
-			WriteUInt32(&pal[32], 0xff888888);
-			WriteUInt32(&pal[36], 0xff999999);
-			WriteUInt32(&pal[40], 0xffaaaaaa);
-			WriteUInt32(&pal[44], 0xffbbbbbb);
-			WriteUInt32(&pal[48], 0xffcccccc);
-			WriteUInt32(&pal[52], 0xffdddddd);
-			WriteUInt32(&pal[56], 0xffeeeeee);
-			WriteUInt32(&pal[60], 0xffffffff);
+			WriteLUInt32(&pal[0], 0xff000000);
+			WriteLUInt32(&pal[4], 0xff111111);
+			WriteLUInt32(&pal[8], 0xff222222);
+			WriteLUInt32(&pal[12], 0xff333333);
+			WriteLUInt32(&pal[16], 0xff444444);
+			WriteLUInt32(&pal[20], 0xff555555);
+			WriteLUInt32(&pal[24], 0xff666666);
+			WriteLUInt32(&pal[28], 0xff777777);
+			WriteLUInt32(&pal[32], 0xff888888);
+			WriteLUInt32(&pal[36], 0xff999999);
+			WriteLUInt32(&pal[40], 0xffaaaaaa);
+			WriteLUInt32(&pal[44], 0xffbbbbbb);
+			WriteLUInt32(&pal[48], 0xffcccccc);
+			WriteLUInt32(&pal[52], 0xffdddddd);
+			WriteLUInt32(&pal[56], 0xffeeeeee);
+			WriteLUInt32(&pal[60], 0xffffffff);
 		}
 		else if (this->info.storeBPP == 8)
 		{
@@ -193,7 +193,7 @@ void Media::RasterImage::InitGrayPal()
 			while (i < j)
 			{
 				UInt32 c = (UInt32)(i | (i << 8) | (i << 16) | 0xff000000);
-				WriteUInt32(&ptr[0], c);
+				WriteLUInt32(&ptr[0], c);
 				ptr += 4;
 				i++;
 			}

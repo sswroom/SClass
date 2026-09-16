@@ -67,7 +67,7 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 
 	Text::StrConcatC(&sptr[-3], UTF8STRC("dbf"));
 
-	if (ReadMInt32(&shpHdr[0]) != 9994 || ReadInt32(&shpHdr[28]) != 1000 || (ReadMUInt32(&shpHdr[24]) << 1) != data->GetDataSize())
+	if (ReadMInt32(&shpHdr[0]) != 9994 || ReadLInt32(&shpHdr[28]) != 1000 || (ReadMUInt32(&shpHdr[24]) << 1) != data->GetDataSize())
 	{
 		valid = 0;
 	}
@@ -84,10 +84,10 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 	NEW_CLASSNN(data, IO::StmData::BufferedStreamData(data->GetPartialData(0, data->GetDataSize())));
 	this->shpData = data;
 
-	this->min.x = ReadDouble(&shpHdr[36]);
-	this->min.y = ReadDouble(&shpHdr[44]);
-	this->max.x = ReadDouble(&shpHdr[52]);
-	this->max.y = ReadDouble(&shpHdr[60]);
+	this->min.x = ReadLDouble(&shpHdr[36]);
+	this->min.y = ReadLDouble(&shpHdr[44]);
+	this->max.x = ReadLDouble(&shpHdr[52]);
+	this->max.y = ReadLDouble(&shpHdr[60]);
 
 	if (max.x > 200000000 || min.x < -200000000 || max.y > 200000000 || min.y < -200000000)
 	{
@@ -139,8 +139,8 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 			currOfst += fileLen << 1;
 			if (*(Int32*)shpBuff == 1)
 			{
-				ptX->Add(ReadDouble(&shpBuff[4]));
-				ptY->Add(ReadDouble(&shpBuff[12]));
+				ptX->Add(ReadLDouble(&shpBuff[4]));
+				ptY->Add(ReadLDouble(&shpBuff[12]));
 			}
 			else
 			{
@@ -167,13 +167,13 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 				if (*(Int32*)shpBuff == 3)
 				{
 					rec = MemAllocNN(Map::SHPData::RecHdr);
-					rec->x1 = ReadDouble(&shpBuff[4]);
-					rec->y1 = ReadDouble(&shpBuff[12]);
-					rec->x2 = ReadDouble(&shpBuff[20]);
-					rec->y2 = ReadDouble(&shpBuff[28]);
+					rec->x1 = ReadLDouble(&shpBuff[4]);
+					rec->y1 = ReadLDouble(&shpBuff[12]);
+					rec->x2 = ReadLDouble(&shpBuff[20]);
+					rec->y2 = ReadLDouble(&shpBuff[28]);
 					rec->vec = nullptr;
-					rec->nPoint = ReadUInt32(&shpBuff[40]);
-					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
+					rec->nPoint = ReadLUInt32(&shpBuff[40]);
+					rec->nPtOfst = ReadLUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
 					rec->endOfst = (UInt32)currOfst + (fileLen << 1);
 					recs->Add(rec);
@@ -208,13 +208,13 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 				if (*(Int32*)shpBuff == 5)
 				{
 					rec = MemAllocNN(Map::SHPData::RecHdr);
-					rec->x1 = ReadDouble(&shpBuff[4]);
-					rec->y1 = ReadDouble(&shpBuff[12]);
-					rec->x2 = ReadDouble(&shpBuff[20]);
-					rec->y2 = ReadDouble(&shpBuff[28]);
+					rec->x1 = ReadLDouble(&shpBuff[4]);
+					rec->y1 = ReadLDouble(&shpBuff[12]);
+					rec->x2 = ReadLDouble(&shpBuff[20]);
+					rec->y2 = ReadLDouble(&shpBuff[28]);
 					rec->vec = nullptr;
-					rec->nPoint = ReadUInt32(&shpBuff[40]);
-					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
+					rec->nPoint = ReadLUInt32(&shpBuff[40]);
+					rec->nPtOfst = ReadLUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
 					rec->endOfst = (UInt32)currOfst + (fileLen << 1);
 					recs->Add(rec);
@@ -250,9 +250,9 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 			currOfst += fileLen << 1;
 			if (*(Int32*)shpBuff == 11)
 			{
-				ptX->Add(ReadDouble(&shpBuff[4]));
-				ptY->Add(ReadDouble(&shpBuff[12]));
-				ptZ->Add(ReadDouble(&shpBuff[20]));
+				ptX->Add(ReadLDouble(&shpBuff[4]));
+				ptY->Add(ReadLDouble(&shpBuff[12]));
+				ptZ->Add(ReadLDouble(&shpBuff[20]));
 			}
 			else
 			{
@@ -280,13 +280,13 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 				if (*(Int32*)shpBuff == 13)
 				{
 					rec = MemAllocNN(Map::SHPData::RecHdr);
-					rec->x1 = ReadDouble(&shpBuff[4]);
-					rec->y1 = ReadDouble(&shpBuff[12]);
-					rec->x2 = ReadDouble(&shpBuff[20]);
-					rec->y2 = ReadDouble(&shpBuff[28]);
+					rec->x1 = ReadLDouble(&shpBuff[4]);
+					rec->y1 = ReadLDouble(&shpBuff[12]);
+					rec->x2 = ReadLDouble(&shpBuff[20]);
+					rec->y2 = ReadLDouble(&shpBuff[28]);
 					rec->vec = nullptr;
-					rec->nPoint = ReadUInt32(&shpBuff[40]);
-					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
+					rec->nPoint = ReadLUInt32(&shpBuff[40]);
+					rec->nPtOfst = ReadLUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
 					rec->endOfst = (UInt32)currOfst + (fileLen << 1);
 					recs->Add(rec);
@@ -321,13 +321,13 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 				if (*(Int32*)shpBuff == 15)
 				{
 					rec = MemAllocNN(Map::SHPData::RecHdr);
-					rec->x1 = ReadDouble(&shpBuff[4]);
-					rec->y1 = ReadDouble(&shpBuff[12]);
-					rec->x2 = ReadDouble(&shpBuff[20]);
-					rec->y2 = ReadDouble(&shpBuff[28]);
+					rec->x1 = ReadLDouble(&shpBuff[4]);
+					rec->y1 = ReadLDouble(&shpBuff[12]);
+					rec->x2 = ReadLDouble(&shpBuff[20]);
+					rec->y2 = ReadLDouble(&shpBuff[28]);
 					rec->vec = nullptr;
-					rec->nPoint = ReadUInt32(&shpBuff[40]);
-					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
+					rec->nPoint = ReadLUInt32(&shpBuff[40]);
+					rec->nPtOfst = ReadLUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
 					rec->endOfst = (UInt32)currOfst + (fileLen << 1);
 					recs->Add(rec);

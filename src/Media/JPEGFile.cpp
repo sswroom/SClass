@@ -185,8 +185,8 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 					}
 					else if (tagBuff[blkOfst] == 2)
 					{
-						UInt32 innerW = ReadUInt16(&tagBuff[blkOfst + 2]);
-						UInt32 innerH = ReadUInt16(&tagBuff[blkOfst + 4]);
+						UInt32 innerW = ReadLUInt16(&tagBuff[blkOfst + 2]);
+						UInt32 innerH = ReadLUInt16(&tagBuff[blkOfst + 4]);
 						if (blkSize == innerW * innerH * 2 + 32)
 						{
 							imgList->SetThermoImage(Math::Size2D<UIntOS>(innerW, innerH), 16, &tagBuff[blkOfst + 32], 0.95, 0, 0, Media::ImageList::ThermoType::FLIR);
@@ -216,7 +216,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 											UIntOS pixelCnt = stImg->info.dispSize.CalcArea();
 											while (pixelCnt-- > 0)
 											{
-												WriteInt16(&imgPtr[0], ReadMInt16(imgPtr));
+												WriteLInt16(&imgPtr[0], ReadMInt16(imgPtr));
 												imgPtr += 2;
 											}
 											imgList->SetThermoImage(stImg->info.dispSize, 16, stImg->data, 0.95, 0, 0, Media::ImageList::ThermoType::FLIR);
@@ -569,11 +569,11 @@ void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, U
 					exifBuff[0] = 0xff;
 					exifBuff[1] = 0xe1;
 					WriteMInt16(&exifBuff[2], exifSize + 16);
-					WriteInt32(&exifBuff[4], ReadInt32((const UInt8*)"Exif"));
-					WriteInt16(&exifBuff[8], 0);
-					WriteInt16(&exifBuff[10], ReadInt16((const UInt8*)"II"));
-					WriteInt16(&exifBuff[12], 42);
-					WriteInt32(&exifBuff[14], 8);
+					WriteLInt32(&exifBuff[4], ReadLInt32((const UInt8*)"Exif"));
+					WriteLInt16(&exifBuff[8], 0);
+					WriteLInt16(&exifBuff[10], ReadLInt16((const UInt8*)"II"));
+					WriteLInt16(&exifBuff[12], 42);
+					WriteLInt32(&exifBuff[14], 8);
 					k = 8;
 					l = (UInt32)(endOfst + 8);
 					exif->ToExifBuff(&exifBuff[10], k, l);

@@ -84,9 +84,9 @@ UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::SearchName(UnsafeArray<UTF8
 		sent = false;
 		if (cli)
 		{
-			WriteInt32(&dataBuff[0], this->reqLat);
-			WriteInt32(&dataBuff[4], this->reqLon);
-			WriteUInt32(&dataBuff[8], this->reqLCID);
+			WriteLInt32(&dataBuff[0], this->reqLat);
+			WriteLInt32(&dataBuff[4], this->reqLon);
+			WriteLUInt32(&dataBuff[8], this->reqLCID);
 			cli->Write(Data::ByteArrayR(dataBuff2, this->protocol.BuildPacket(dataBuff2, 0, 0, dataBuff, 12, 0)));
 			sent = true;
 		}
@@ -137,9 +137,9 @@ UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::CacheName(UnsafeArray<UTF8C
 		sent = false;
 		if (cli)
 		{
-			WriteInt32(&dataBuff[0], this->reqLat);
-			WriteInt32(&dataBuff[4], this->reqLon);
-			WriteUInt32(&dataBuff[8], this->reqLCID);
+			WriteLInt32(&dataBuff[0], this->reqLat);
+			WriteLInt32(&dataBuff[4], this->reqLon);
+			WriteLUInt32(&dataBuff[8], this->reqLCID);
 			cli->Write(Data::ByteArrayR(dataBuff2, this->protocol.BuildPacket(dataBuff2, 2, 0, dataBuff, 12, 0)));
 			sent = true;
 		}
@@ -193,7 +193,7 @@ void Map::ReverseGeocoderServer::DataParsed(NN<IO::Stream> stm, AnyType cliObj, 
 	UnsafeArray<UTF8Char> reqBuff;
 	if (cmdType == 1)
 	{
-		if (this->reqBuff.SetTo(reqBuff) && ReadInt32(&cmd[0]) == this->reqLat && ReadInt32(&cmd[4]) == this->reqLon && ReadUInt32(&cmd[8]) == this->reqLCID)
+		if (this->reqBuff.SetTo(reqBuff) && ReadLInt32(&cmd[0]) == this->reqLat && ReadLInt32(&cmd[4]) == this->reqLon && ReadLUInt32(&cmd[8]) == this->reqLCID)
 		{
 			UIntOS strSize;
 			if ((cmd[12] & 0x80) != 0)
@@ -223,7 +223,7 @@ void Map::ReverseGeocoderServer::DataParsed(NN<IO::Stream> stm, AnyType cliObj, 
 	}
 	else if (cmdType == 3)
 	{
-		if (this->reqBuff.SetTo(reqBuff) && ReadInt32(&cmd[0]) == this->reqLat && ReadInt32(&cmd[4]) == this->reqLon && ReadUInt32(&cmd[8]) == this->reqLCID)
+		if (this->reqBuff.SetTo(reqBuff) && ReadLInt32(&cmd[0]) == this->reqLat && ReadLInt32(&cmd[4]) == this->reqLon && ReadLUInt32(&cmd[8]) == this->reqLCID)
 		{
 			UIntOS strSize;
 			if ((cmd[12] & 0x80) != 0)

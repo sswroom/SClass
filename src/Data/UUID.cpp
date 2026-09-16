@@ -49,9 +49,9 @@ void Data::UUID::SetValue(Text::CStringNN str)
 		MemClear(this->data, 16);
 		return;
 	}
-	WriteUInt32(&this->data[0], Text::StrHex2UInt32C(&str.v[0]));
-	WriteUInt16(&this->data[4], Text::StrHex2UInt16C(&str.v[9]));
-	WriteUInt16(&this->data[6], Text::StrHex2UInt16C(&str.v[14]));
+	WriteLUInt32(&this->data[0], Text::StrHex2UInt32C(&str.v[0]));
+	WriteLUInt16(&this->data[4], Text::StrHex2UInt16C(&str.v[9]));
+	WriteLUInt16(&this->data[6], Text::StrHex2UInt16C(&str.v[14]));
 	WriteMUInt16(&this->data[8], Text::StrHex2UInt16C(&str.v[19]));
 	Text::StrHex2Bytes(&str.v[24], &this->data[10]);
 }
@@ -64,8 +64,8 @@ UIntOS Data::UUID::GetValue(UnsafeArray<UInt8> buff) const
 
 IntOS Data::UUID::CompareTo(NN<UUID> uuid) const
 {
-	UInt32 v1 = ReadUInt32(&this->data[0]);
-	UInt32 v2 = ReadUInt32(&uuid->data[0]);
+	UInt32 v1 = ReadLUInt32(&this->data[0]);
+	UInt32 v2 = ReadLUInt32(&uuid->data[0]);
 	if (v1 > v2)
 	{
 		return 1;
@@ -74,8 +74,8 @@ IntOS Data::UUID::CompareTo(NN<UUID> uuid) const
 	{
 		return -1;
 	}
-	v1 = ReadUInt16(&this->data[4]);
-	v2 = ReadUInt16(&uuid->data[4]);
+	v1 = ReadLUInt16(&this->data[4]);
+	v2 = ReadLUInt16(&uuid->data[4]);
 	if (v1 > v2)
 	{
 		return 1;
@@ -84,8 +84,8 @@ IntOS Data::UUID::CompareTo(NN<UUID> uuid) const
 	{
 		return -1;
 	}
-	v1 = ReadUInt16(&this->data[6]);
-	v2 = ReadUInt16(&uuid->data[6]);
+	v1 = ReadLUInt16(&this->data[6]);
+	v2 = ReadLUInt16(&uuid->data[6]);
 	if (v1 > v2)
 	{
 		return 1;
@@ -121,17 +121,17 @@ IntOS Data::UUID::CompareTo(NN<UUID> uuid) const
 
 UInt32 Data::UUID::GetTimeLow() const
 {
-	return ReadUInt32(&this->data[0]);
+	return ReadLUInt32(&this->data[0]);
 }
 
 UInt16 Data::UUID::GetTimeMid() const
 {
-	return ReadUInt16(&this->data[4]);
+	return ReadLUInt16(&this->data[4]);
 }
 
 UInt16 Data::UUID::GetTimeHiAndVersion() const
 {
-	return ReadUInt16(&this->data[6]);
+	return ReadLUInt16(&this->data[6]);
 }
 
 UInt8 Data::UUID::GetClkSeqHiRes() const
@@ -156,11 +156,11 @@ UnsafeArray<const UInt8> Data::UUID::GetBytes() const
 
 void Data::UUID::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
-	sb->AppendHex32LC(ReadUInt32(&this->data[0]));
+	sb->AppendHex32LC(ReadLUInt32(&this->data[0]));
 	sb->AppendUTF8Char('-');
-	sb->AppendHex16LC(ReadUInt16(&this->data[4]));
+	sb->AppendHex16LC(ReadLUInt16(&this->data[4]));
 	sb->AppendUTF8Char('-');
-	sb->AppendHex16LC(ReadUInt16(&this->data[6]));
+	sb->AppendHex16LC(ReadLUInt16(&this->data[6]));
 	sb->AppendUTF8Char('-');
 	sb->AppendHex16LC(ReadMUInt16(&this->data[8]));
 	sb->AppendUTF8Char('-');
@@ -169,11 +169,11 @@ void Data::UUID::ToString(NN<Text::StringBuilderUTF8> sb) const
 
 UnsafeArray<UTF8Char> Data::UUID::ToString(UnsafeArray<UTF8Char> sbuff) const
 {
-	sbuff = Text::StrHexVal32LC(sbuff, ReadUInt32(&this->data[0]));
+	sbuff = Text::StrHexVal32LC(sbuff, ReadLUInt32(&this->data[0]));
 	*sbuff++ = '-';
-	sbuff = Text::StrHexVal16LC(sbuff, ReadUInt16(&this->data[4]));
+	sbuff = Text::StrHexVal16LC(sbuff, ReadLUInt16(&this->data[4]));
 	*sbuff++ = '-';
-	sbuff = Text::StrHexVal16LC(sbuff, ReadUInt16(&this->data[6]));
+	sbuff = Text::StrHexVal16LC(sbuff, ReadLUInt16(&this->data[6]));
 	*sbuff++ = '-';
 	sbuff = Text::StrHexVal16LC(sbuff, ReadMUInt16(&this->data[8]));
 	*sbuff++ = '-';

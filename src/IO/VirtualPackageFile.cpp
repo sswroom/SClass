@@ -474,8 +474,8 @@ UInt64 IO::VirtualPackageFile::GetPItemDataOfst(NN<const PackFileItem> itemObj) 
 		{
 			if (itemObj->fullFd->GetRealData(itemObj->fileOfst, 30, BYTEARR(hdrBuff)) != 30)
 				return itemObj->fileOfst;
-			UInt16 fnameLen = ReadUInt16(&hdrBuff[26]);
-			UInt16 extraLen = ReadUInt16(&hdrBuff[28]);
+			UInt16 fnameLen = ReadLUInt16(&hdrBuff[26]);
+			UInt16 extraLen = ReadLUInt16(&hdrBuff[28]);
 			return itemObj->fileOfst + 30 + fnameLen + extraLen;
 		}
 		return itemObj->fileOfst;

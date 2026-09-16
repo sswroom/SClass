@@ -46,12 +46,12 @@ Optional<IO::ParsedObject> Parser::FileParser::ZWEIParser::ParseFileHdr(NN<IO::S
 	UTF8Char name[14];
 	UnsafeArray<UTF8Char> sptr;
 
-	if (ReadUInt32(&hdr[0]) != 0xBC614E)
+	if (ReadLUInt32(&hdr[0]) != 0xBC614E)
 	{
 		return nullptr;
 	}
 
-	extCnt = ReadUInt32(&hdr[4]);
+	extCnt = ReadLUInt32(&hdr[4]);
 	if (extCnt <= 0 || extCnt > 64)
 	{
 		return nullptr;
@@ -71,7 +71,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZWEIParser::ParseFileHdr(NN<IO::S
 	buffOfst = 0;
 	while (i < extCnt)
 	{
-		fileOfst += ReadUInt32(&extHdrs[buffOfst + 8]) << 4;
+		fileOfst += ReadLUInt32(&extHdrs[buffOfst + 8]) << 4;
 		i++;
 		buffOfst += 12;
 	}
@@ -81,13 +81,13 @@ Optional<IO::ParsedObject> Parser::FileParser::ZWEIParser::ParseFileHdr(NN<IO::S
 	while (i < extCnt)
 	{
 
-		if (ReadUInt32(&extHdrs[buffOfst + 4]) != extOfst)
+		if (ReadLUInt32(&extHdrs[buffOfst + 4]) != extOfst)
 		{
 			pf.Delete();
 			return nullptr;
 		}
 
-		recCnt = ReadUInt32(&extHdrs[buffOfst + 8]);
+		recCnt = ReadLUInt32(&extHdrs[buffOfst + 8]);
 		if (recCnt <= 0 || recCnt > 65536)
 		{
 			pf.Delete();
@@ -100,7 +100,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZWEIParser::ParseFileHdr(NN<IO::S
 		recOfst = 0;
 		while (j < recCnt)
 		{
-			if (ReadUInt32(&recHdrs[recOfst + 12]) != fileOfst)
+			if (ReadLUInt32(&recHdrs[recOfst + 12]) != fileOfst)
 			{
 				pf.Delete();
 				return nullptr;
@@ -110,7 +110,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZWEIParser::ParseFileHdr(NN<IO::S
 			*sptr++ = '.';
 			sptr = Text::StrConcatC(sptr, &extHdrs[buffOfst], 4);
 			
-			fileSize = ReadUInt32(&recHdrs[recOfst + 8]);
+			fileSize = ReadLUInt32(&recHdrs[recOfst + 8]);
 			pf->AddData(fd, fileOfst, fileSize, IO::PackFileItem::HeaderType::No, CSTRP(name, sptr), nullptr, nullptr, nullptr, 0);
 			fileOfst += fileSize;
 

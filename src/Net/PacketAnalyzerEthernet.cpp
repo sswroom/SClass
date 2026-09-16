@@ -2646,7 +2646,7 @@ void Net::PacketAnalyzerEthernet::PacketLoRaMACGetDetail(UnsafeArray<const UInt8
 			buff[6] = packet[10];
 			buff[7] = packet[9];
 			frame->AddHexBuff(frameOfst + 1, 8, CSTR("DevEUI"), buff, 0, false);
-			frame->AddUInt(frameOfst + 17, 2, CSTR("DevNonce"), ReadUInt16(&packet[17]));
+			frame->AddUInt(frameOfst + 17, 2, CSTR("DevNonce"), ReadLUInt16(&packet[17]));
 		}
 		else
 		{

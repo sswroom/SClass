@@ -231,7 +231,7 @@ Int32 Math::TSPReader::GetInt32(UIntOS colIndex)
 		return 0;
 	if (colIndex == 0)
 	{
-		return ReadInt32(&this->currRowPtr[56]);
+		return ReadLInt32(&this->currRowPtr[56]);
 	}
 	return 0;
 }
@@ -242,7 +242,7 @@ Int64 Math::TSPReader::GetInt64(UIntOS colIndex)
 		return 0;
 	if (colIndex == 0)
 	{
-		return ReadInt32(&this->currRowPtr[56]);
+		return ReadLInt32(&this->currRowPtr[56]);
 	}
 	return 0;
 }
@@ -253,7 +253,7 @@ UnsafeArrayOpt<WChar> Math::TSPReader::GetStr(UIntOS colIndex, UnsafeArray<WChar
 		return nullptr;
 	if (colIndex == 0)
 	{
-		return Text::StrInt32(buff, ReadInt32(&this->currRowPtr[56]));
+		return Text::StrInt32(buff, ReadLInt32(&this->currRowPtr[56]));
 	}
 	else if (colIndex == 1)
 	{
@@ -263,48 +263,48 @@ UnsafeArrayOpt<WChar> Math::TSPReader::GetStr(UIntOS colIndex, UnsafeArray<WChar
 	{
 		Char sbuff[32];
 		Data::DateTime dt;
-		dt.SetTicks(ReadInt64(&this->currRowPtr[48]));
+		dt.SetTicks(ReadLInt64(&this->currRowPtr[48]));
 		dt.ToLocalTime();
 		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		return Text::StrConcatASCII(buff, sbuff);
 	}
 	else if (colIndex == 3)
 	{
-		return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[0]));
+		return Text::StrDoubleW(buff, ReadLDouble(&this->currRowPtr[0]));
 	}
 	else if (colIndex == 4)
 	{
-		return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[8]));
+		return Text::StrDoubleW(buff, ReadLDouble(&this->currRowPtr[8]));
 	}
 	else if (colIndex == 5)
 	{
-		return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[16]));
+		return Text::StrDoubleW(buff, ReadLDouble(&this->currRowPtr[16]));
 	}
 	else if (colIndex == 6)
 	{
-		return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[24]));
+		return Text::StrDoubleW(buff, ReadLDouble(&this->currRowPtr[24]));
 	}
 	else if (colIndex == 7)
 	{
-		return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[32]));
+		return Text::StrDoubleW(buff, ReadLDouble(&this->currRowPtr[32]));
 	}
 	else if (colIndex == 8)
 	{
-		return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[40]));
+		return Text::StrDoubleW(buff, ReadLDouble(&this->currRowPtr[40]));
 	}
 	else if (this->rowSize >= 128)
 	{
 		if (colIndex == 9)
 		{
-			return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[64]));
+			return Text::StrDoubleW(buff, ReadLDouble(&this->currRowPtr[64]));
 		}
 		else if (colIndex == 10)
 		{
-			return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[72]));
+			return Text::StrDoubleW(buff, ReadLDouble(&this->currRowPtr[72]));
 		}
 		else if (colIndex == 11)
 		{
-			return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[80]));
+			return Text::StrDoubleW(buff, ReadLDouble(&this->currRowPtr[80]));
 		}
 	}
 	return nullptr;
@@ -338,7 +338,7 @@ UnsafeArrayOpt<UTF8Char> Math::TSPReader::GetStr(UIntOS colIndex, UnsafeArray<UT
 		return nullptr;
 	if (colIndex == 0)
 	{
-		return Text::StrInt32(buff, ReadInt32(&this->currRowPtr[56]));
+		return Text::StrInt32(buff, ReadLInt32(&this->currRowPtr[56]));
 	}
 	else if (colIndex == 1)
 	{
@@ -347,47 +347,47 @@ UnsafeArrayOpt<UTF8Char> Math::TSPReader::GetStr(UIntOS colIndex, UnsafeArray<UT
 	else if (colIndex == 2)
 	{
 		Data::DateTime dt;
-		dt.SetTicks(ReadInt64(&this->currRowPtr[48]));
+		dt.SetTicks(ReadLInt64(&this->currRowPtr[48]));
 		dt.ToLocalTime();
 		return dt.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
 	}
 	else if (colIndex == 3)
 	{
-		return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[0]));
+		return Text::StrDouble(buff, ReadLDouble(&this->currRowPtr[0]));
 	}
 	else if (colIndex == 4)
 	{
-		return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[8]));
+		return Text::StrDouble(buff, ReadLDouble(&this->currRowPtr[8]));
 	}
 	else if (colIndex == 5)
 	{
-		return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[16]));
+		return Text::StrDouble(buff, ReadLDouble(&this->currRowPtr[16]));
 	}
 	else if (colIndex == 6)
 	{
-		return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[24]));
+		return Text::StrDouble(buff, ReadLDouble(&this->currRowPtr[24]));
 	}
 	else if (colIndex == 7)
 	{
-		return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[32]));
+		return Text::StrDouble(buff, ReadLDouble(&this->currRowPtr[32]));
 	}
 	else if (colIndex == 8)
 	{
-		return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[40]));
+		return Text::StrDouble(buff, ReadLDouble(&this->currRowPtr[40]));
 	}
 	else if (this->rowSize >= 128)
 	{
 		if (colIndex == 9)
 		{
-			return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[64]));
+			return Text::StrDouble(buff, ReadLDouble(&this->currRowPtr[64]));
 		}
 		else if (colIndex == 10)
 		{
-			return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[72]));
+			return Text::StrDouble(buff, ReadLDouble(&this->currRowPtr[72]));
 		}
 		else if (colIndex == 11)
 		{
-			return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[80]));
+			return Text::StrDouble(buff, ReadLDouble(&this->currRowPtr[80]));
 		}
 	}
 	return nullptr;
@@ -399,7 +399,7 @@ Data::Timestamp Math::TSPReader::GetTimestamp(UIntOS colIndex)
 		return Data::Timestamp(nullptr);
 	if (colIndex == 2)
 	{
-		return Data::Timestamp(ReadInt64(&this->currRowPtr[48]), this->file->GetTzQhr());
+		return Data::Timestamp(ReadLInt64(&this->currRowPtr[48]), this->file->GetTzQhr());
 	}
 	return Data::Timestamp(nullptr);
 }
@@ -410,7 +410,7 @@ Double Math::TSPReader::GetDblOrNAN(UIntOS colIndex)
 		return NAN;
 	if (colIndex == 0)
 	{
-		return ReadInt32(&this->currRowPtr[56]);
+		return ReadLInt32(&this->currRowPtr[56]);
 	}
 	else if (colIndex == 1)
 	{
@@ -422,41 +422,41 @@ Double Math::TSPReader::GetDblOrNAN(UIntOS colIndex)
 	}
 	else if (colIndex == 3)
 	{
-		return ReadDouble(&this->currRowPtr[0]);
+		return ReadLDouble(&this->currRowPtr[0]);
 	}
 	else if (colIndex == 4)
 	{
-		return ReadDouble(&this->currRowPtr[8]);
+		return ReadLDouble(&this->currRowPtr[8]);
 	}
 	else if (colIndex == 5)
 	{
-		return ReadDouble(&this->currRowPtr[16]);
+		return ReadLDouble(&this->currRowPtr[16]);
 	}
 	else if (colIndex == 6)
 	{
-		return ReadDouble(&this->currRowPtr[24]);
+		return ReadLDouble(&this->currRowPtr[24]);
 	}
 	else if (colIndex == 7)
 	{
-		return ReadDouble(&this->currRowPtr[32]);
+		return ReadLDouble(&this->currRowPtr[32]);
 	}
 	else if (colIndex == 8)
 	{
-		return ReadDouble(&this->currRowPtr[40]);
+		return ReadLDouble(&this->currRowPtr[40]);
 	}
 	else if (this->rowSize >= 128)
 	{
 		if (colIndex == 9)
 		{
-			return ReadDouble(&this->currRowPtr[64]);
+			return ReadLDouble(&this->currRowPtr[64]);
 		}
 		else if (colIndex == 10)
 		{
-			return ReadDouble(&this->currRowPtr[72]);
+			return ReadLDouble(&this->currRowPtr[72]);
 		}
 		else if (colIndex == 11)
 		{
-			return ReadDouble(&this->currRowPtr[80]);
+			return ReadLDouble(&this->currRowPtr[80]);
 		}
 	}
 	return NAN;
@@ -485,7 +485,7 @@ Optional<Math::Geometry::Vector2D> Math::TSPReader::GetVector(UIntOS colIndex)
 	if (colIndex != 1)
 		return nullptr;
 	NN<Math::Geometry::PointZ> pt;
-	NEW_CLASSNN(pt, Math::Geometry::PointZ(4326, ReadDouble(&this->currRowPtr[0]), ReadDouble(&this->currRowPtr[8]), ReadDouble(&this->currRowPtr[16])));
+	NEW_CLASSNN(pt, Math::Geometry::PointZ(4326, ReadLDouble(&this->currRowPtr[0]), ReadLDouble(&this->currRowPtr[8]), ReadLDouble(&this->currRowPtr[16])));
 	return pt;
 }
 
@@ -713,7 +713,7 @@ Double Math::TSPHReader::GetDblOrNAN(UIntOS colIndex)
 	}
 	else
 	{
-		return ReadDouble(&this->file->GetHdrPtr()[colIndex * 8]);;
+		return ReadLDouble(&this->file->GetHdrPtr()[colIndex * 8]);;
 	}
 }
 

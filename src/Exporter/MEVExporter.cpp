@@ -93,8 +93,8 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	buff[7] = 0x81;
 
 	*(Int32*)&buff[8] = 44;//Init size
-	WriteUInt32(&buff[12], env->GetBGColor());
-	WriteUInt32(&buff[16], (UInt32)env->GetNString());
+	WriteLUInt32(&buff[12], env->GetBGColor());
+	WriteLUInt32(&buff[16], (UInt32)env->GetNString());
 	*(Int32*)&buff[20] = 0;
 	*(UInt32*)&buff[24] = AddString(strArr, fileName.v, fileName.leng, 20);
 	*(Int32*)&buff[28] = (Int32)dirArr.GetCount();
@@ -130,7 +130,7 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		k = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 
 		*(Int32*)&buff[0] = 0;
-		WriteUInt32(&buff[4], AddString(strArr, &sbuff[k + 1], imgInfo.fileName->leng - k - 1, stmPos));
+		WriteLUInt32(&buff[4], AddString(strArr, &sbuff[k + 1], imgInfo.fileName->leng - k - 1, stmPos));
 		sbuff[k] = 0;
 		*(Int32*)&buff[8] = (Int32)dirArr.SortedIndexOfPtr(sbuff, k);
 		*(Int32*)&buff[12] = (Int32)imgInfo.index;
@@ -161,19 +161,19 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		*(Int32*)&buff[0] = 0;
 		if (optsptr.SetTo(sptr))
 		{
-			WriteUInt32(&buff[4], AddString(strArr, sbuff, (UIntOS)(sptr - sbuff), stmPos));
+			WriteLUInt32(&buff[4], AddString(strArr, sbuff, (UIntOS)(sptr - sbuff), stmPos));
 		}
 		else
 		{
 			*(Int32*)&buff[4] = 0;
 		}
 		*(Int32*)&buff[8] = 0;
-		WriteUInt32(&buff[12], AddString(strArr, fontName.Ptr(), stmPos + 8));
+		WriteLUInt32(&buff[12], AddString(strArr, fontName.Ptr(), stmPos + 8));
 		*(Int32*)&buff[16] = Double2Int32(fontSize / 0.75);
 		*(Int32*)&buff[20] = bold?1:0;
-		WriteUInt32(&buff[24], fontColor);
-		WriteUInt32(&buff[28], (UInt32)buffSize);
-		WriteUInt32(&buff[32], buffColor);
+		WriteLUInt32(&buff[24], fontColor);
+		WriteLUInt32(&buff[28], (UInt32)buffSize);
+		WriteLUInt32(&buff[32], buffColor);
 
 		stm->Write(Data::ByteArrayR(buff, 36));
 		stmPos += 36;
@@ -210,9 +210,9 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			UnsafeArray<UInt8> nnpattern;
 
 			env->GetLineStyleLayer(i, k, color, thick, pattern, npattern);
-			WriteUInt32(&buff[0], color);
+			WriteLUInt32(&buff[0], color);
 			*(Int32*)&buff[4] = Double2Int32(thick);
-			WriteUInt32(&buff[8], (UInt32)npattern);
+			WriteLUInt32(&buff[8], (UInt32)npattern);
 
 			stm->Write(Data::ByteArrayR(buff, 12));
 			stmPos += 12;
@@ -382,7 +382,7 @@ void Exporter::MEVExporter::WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::M
 				env->GetLayerProp(setting, group, i);
 				ltype = layer->GetLayerType();
 				*(UInt32*)&buff[16] = layer->GetCodePage();
-				WriteUInt32(&buff[24], (UInt32)setting.labelCol);
+				WriteLUInt32(&buff[24], (UInt32)setting.labelCol);
 				*(Int32*)&buff[28] = setting.flags;
 				*(Int32*)&buff[32] = Double2Int32(setting.minScale);
 				*(Int32*)&buff[36] = Double2Int32(setting.maxScale);

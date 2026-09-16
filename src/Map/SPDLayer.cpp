@@ -206,7 +206,7 @@ UIntOS Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Op
 					strTmp[buff[12] >> 1] = 0;
 					outArr->Add(*(Int32*)buff);
 					tmpArr->Add(strTmp);
-					cis->SeekFromCurrent(ReadInt32(&buff[4]) - 13 - buff[12]);
+					cis->SeekFromCurrent(ReadLInt32(&buff[4]) - 13 - buff[12]);
 					textSize = Text::StrUTF16_UTF8Cnt(strTmp) - 1;
 					if (textSize > this->maxTextSize)
 						maxTextSize = textSize;
@@ -335,7 +335,7 @@ UIntOS Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optio
 						strTmp[buff[12] >> 1] = 0;
 						outArr->Add(*(Int32*)buff);
 						tmpArr->Add(strTmp);
-						cis->SeekFromCurrent(ReadInt32(&buff[4]) - 13 - buff[12]);
+						cis->SeekFromCurrent(ReadLInt32(&buff[4]) - 13 - buff[12]);
 						textSize = Text::StrUTF16_UTF8Cnt(strTmp);
 						if (textSize > this->maxTextSize)
 						{

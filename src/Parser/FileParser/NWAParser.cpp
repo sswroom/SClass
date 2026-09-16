@@ -48,16 +48,16 @@ Optional<IO::ParsedObject> Parser::FileParser::NWAParser::ParseFileHdr(NN<IO::St
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".NWA")))
 		return nullptr;
 	afmt.formatId = 1;
-	afmt.nChannels = ReadUInt16(&hdr[0]);
-	afmt.bitpersample = ReadUInt16(&hdr[2]);
-	afmt.frequency = ReadUInt32(&hdr[4]);
-	compLevel = ReadInt32(&hdr[8]);
-	nBlocks = ReadUInt32(&hdr[16]);
-	dataSize = ReadUInt32(&hdr[20]);
-	compDataSize = ReadUInt32(&hdr[24]);
-	sampleCount = ReadUInt32(&hdr[28]);
-	blockSize = ReadUInt32(&hdr[32]);
-	restSize = ReadUInt32(&hdr[36]);
+	afmt.nChannels = ReadLUInt16(&hdr[0]);
+	afmt.bitpersample = ReadLUInt16(&hdr[2]);
+	afmt.frequency = ReadLUInt32(&hdr[4]);
+	compLevel = ReadLInt32(&hdr[8]);
+	nBlocks = ReadLUInt32(&hdr[16]);
+	dataSize = ReadLUInt32(&hdr[20]);
+	compDataSize = ReadLUInt32(&hdr[24]);
+	sampleCount = ReadLUInt32(&hdr[28]);
+	blockSize = ReadLUInt32(&hdr[32]);
+	restSize = ReadLUInt32(&hdr[36]);
 	if (compLevel == -1)
 	{
 		blockSize = 65536;

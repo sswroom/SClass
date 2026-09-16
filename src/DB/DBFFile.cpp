@@ -25,10 +25,10 @@ DB::DBFFile::DBFFile(NN<IO::StreamData> stmData, UInt32 codePage) : DB::ReadingD
 
 	this->colCnt = 0;
 	this->stmData->GetRealData(0, 32, BYTEARR(buff));
-	refPos = ReadUInt16(&buff[8]);
-	rowSize = ReadUInt32(&buff[10]);
-	colCnt = (UIntOS)(ReadUInt16(&buff[8]) >> 5) - 1;
-	rowCnt = ReadUInt32(&buff[4]);
+	refPos = ReadLUInt16(&buff[8]);
+	rowSize = ReadLUInt32(&buff[10]);
+	colCnt = (UIntOS)(ReadLUInt16(&buff[8]) >> 5) - 1;
+	rowCnt = ReadLUInt32(&buff[4]);
 	this->cols = MemAllocArr(DBFCol, colCnt);
 	this->tzQhr = 0;
 	

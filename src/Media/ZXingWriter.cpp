@@ -26,8 +26,8 @@ Optional<Media::StaticImage> Media::ZXingWriter::GenQRCode(Text::CStringNN conte
 	NEW_CLASSNN(simg, Media::StaticImage(outputSize, 0, 1, Media::PixelFormat::PF_PAL_W1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 	if (simg->pal.SetTo(pal))
 	{
-		WriteUInt32(&pal[0], 0xFF000000);
-		WriteUInt32(&pal[4], 0xFFFFFFFF);
+		WriteLUInt32(&pal[0], 0xFF000000);
+		WriteLUInt32(&pal[4], 0xFFFFFFFF);
 	}
 	UnsafeArray<UInt8> imgPtr = simg->data;
 	UInt8 b;

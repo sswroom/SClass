@@ -52,10 +52,10 @@ Optional<IO::ParsedObject> Parser::FileParser::PAC2Parser::ParseFileHdr(NN<IO::S
 	{
 		return nullptr;
 	}
-	if (ReadUInt32(&hdr[0]) != 0xad82cf82)
+	if (ReadLUInt32(&hdr[0]) != 0xad82cf82)
 		return nullptr;
-	recCnt = ReadUInt32(&hdr[4]);
-	dataOfst = ReadUInt32(&hdr[8]);
+	recCnt = ReadLUInt32(&hdr[4]);
+	dataOfst = ReadLUInt32(&hdr[8]);
 	if (recCnt == 0)
 	{
 		return nullptr;
@@ -80,9 +80,9 @@ Optional<IO::ParsedObject> Parser::FileParser::PAC2Parser::ParseFileHdr(NN<IO::S
 	nextOfst = 0;
 	while (i < recCnt)
 	{
-		fileOfst = ReadUInt32(&recBuff[j + 256]);
-		fileSize = ReadUInt32(&recBuff[j + 260]);
-		fnameSize = ReadUInt32(&recBuff[j + 264]);
+		fileOfst = ReadLUInt32(&recBuff[j + 256]);
+		fileSize = ReadLUInt32(&recBuff[j + 260]);
+		fnameSize = ReadLUInt32(&recBuff[j + 264]);
 		if (fileOfst != nextOfst)
 		{
 			pf.Delete();

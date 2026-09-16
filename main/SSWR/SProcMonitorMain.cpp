@@ -43,10 +43,10 @@ private:
 			buff[1] = 'm';
 			buff[2] = 'P';
 			buff[3] = 'M';
-			WriteInt64(&buff[4], currTime.ToUnixTimestamp());
-			WriteUInt32(&buff[12], currTime.inst.nanosec);
+			WriteLInt64(&buff[4], currTime.ToUnixTimestamp());
+			WriteLUInt32(&buff[12], currTime.inst.nanosec);
 			buff[16] = type;
-			WriteUInt32(&buff[17], (UInt32)prog->procId);
+			WriteLUInt32(&buff[17], (UInt32)prog->procId);
 			sptr = prog->progName->ConcatTo(&buff[21]);
 			crc.Clear();
 			crc.Calc(host.v, 7);

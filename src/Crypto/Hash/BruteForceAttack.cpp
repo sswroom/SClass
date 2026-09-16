@@ -87,7 +87,7 @@ UIntOS Crypto::Hash::BruteForceAttack::GetNextKey(UnsafeArray<UInt8> keyBuff, Un
 		i = 0;
 		while (i < len)
 		{
-			WriteInt32(&keyBuff[i * 2], this->keyBuff[i]);
+			WriteLInt32(&keyBuff[i * 2], this->keyBuff[i]);
 			i++;
 		}
 		ret = len * 4;
@@ -96,7 +96,7 @@ UIntOS Crypto::Hash::BruteForceAttack::GetNextKey(UnsafeArray<UInt8> keyBuff, Un
 		i = 0;
 		while (i < len)
 		{
-			WriteInt16(&keyBuff[i * 2], this->keyBuff[i]);
+			WriteLInt16(&keyBuff[i * 2], this->keyBuff[i]);
 			i++;
 		}
 		ret = len * 2;

@@ -252,7 +252,7 @@ Bool IO::MODBUSController::ReadRegisterII32(UInt8 devAddr, UInt32 regAddr, OutPa
 	Bool succ = this->ReadRegister(devAddr, regAddr, resBuff, 4);
 	if (succ)
 	{
-		outVal.Set(ReadInt32(resBuff));
+		outVal.Set(ReadLInt32(resBuff));
 	}
 	return succ;
 }
@@ -285,7 +285,7 @@ Bool IO::MODBUSController::ReadRegisterIU16(UInt8 devAddr, UInt32 regAddr, OutPa
 	Bool succ = this->ReadRegister(devAddr, regAddr, resBuff, 2);
 	if (succ)
 	{
-		outVal.Set(ReadUInt16(resBuff));
+		outVal.Set(ReadLUInt16(resBuff));
 	}
 	return succ;
 }

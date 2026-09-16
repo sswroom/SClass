@@ -44,7 +44,7 @@ extern "C" UInt16 CRC16R_Calc(const UInt8 *buff, UIntOS buffSize, UInt16 *tab, U
 {
 	while (buffSize >= 16)
 	{
-		UInt16 currVal1 = ReadUInt16(buff) ^ currVal;
+		UInt16 currVal1 = ReadLUInt16(buff) ^ currVal;
 		currVal  = tab[0    + buff[15]];
 		currVal ^= tab[256  + buff[14]];
 		currVal ^= tab[512  + buff[13]];
@@ -66,7 +66,7 @@ extern "C" UInt16 CRC16R_Calc(const UInt8 *buff, UIntOS buffSize, UInt16 *tab, U
 	}
 	while (buffSize >= 2)
 	{
-		currVal ^= ReadUInt16(buff);
+		currVal ^= ReadLUInt16(buff);
 		buff += 2;
 		currVal = (UInt16)tab[256 + (currVal & 0xff)] ^ tab[0 + (currVal >> 8)];
 		buffSize -= 2;

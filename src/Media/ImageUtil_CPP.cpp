@@ -589,20 +589,20 @@ extern "C" void ImageUtil_DrawRectNA32(UInt8 *pixelPtr, IntOS w, IntOS h, IntOS 
 	cnt = w;
 	while (cnt-- > 0)
 	{
-		WriteUInt32(pixelPtr, col);
+		WriteLUInt32(pixelPtr, col);
 		pixelPtr += 4;
 	}
 	pixelPtr += bpl2;
 	while (h-- > 0)
 	{
-		WriteUInt32(pixelPtr, col);
-		WriteUInt32(&pixelPtr[w * 4 - 4], col);
+		WriteLUInt32(pixelPtr, col);
+		WriteLUInt32(&pixelPtr[w * 4 - 4], col);
 		pixelPtr += bpl;
 	}
 	cnt = w;
 	while (cnt-- > 0)
 	{
-		WriteUInt32(pixelPtr, col);
+		WriteLUInt32(pixelPtr, col);
 		pixelPtr += 4;
 	}
 	pixelPtr += bpl2;
@@ -996,7 +996,7 @@ extern "C" void ImageUtil_ConvB5G5R5_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPt
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadUInt16(srcPtr);
+			v = ReadLUInt16(srcPtr);
 			cv = v & 0x1f;
 			destPtr[0] = (UInt8)((cv << 3) | (cv >> 2));
 			cv = (v >> 5) & 0x1f;
@@ -1024,7 +1024,7 @@ extern "C" void ImageUtil_ConvB5G6R5_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPt
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadUInt16(srcPtr);
+			v = ReadLUInt16(srcPtr);
 			cv = v & 0x1f;
 			destPtr[0] = (UInt8)((cv << 3) | (cv >> 2));
 			cv = (v >> 5) & 0x3f;
@@ -1275,7 +1275,7 @@ extern "C" void ImageUtil_ConvA2B10G10R10_B8G8R8A8(const UInt8 *srcPtr, UInt8 *d
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadUInt32(srcPtr);
+			v = ReadLUInt32(srcPtr);
 			r = v & 0x3ff;
 			g = (v >> 10) & 0x3ff;
 			b = (v >> 20) & 0x3ff;
@@ -1305,7 +1305,7 @@ extern "C" void ImageUtil_ConvFB32G32R32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadFloat(&srcPtr[0]) * 255;
+			v = ReadLFloat(&srcPtr[0]) * 255;
 			if (v > 255)
 			{
 				destPtr[0] = 255;
@@ -1318,7 +1318,7 @@ extern "C" void ImageUtil_ConvFB32G32R32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 
 			{
 				destPtr[0] = (UInt8)Double2Int32(v);
 			}
-			v = ReadFloat(&srcPtr[4]) * 255;
+			v = ReadLFloat(&srcPtr[4]) * 255;
 			if (v > 255)
 			{
 				destPtr[1] = 255;
@@ -1331,7 +1331,7 @@ extern "C" void ImageUtil_ConvFB32G32R32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 
 			{
 				destPtr[1] = (UInt8)Double2Int32(v);
 			}
-			v = ReadFloat(&srcPtr[8]) * 255;
+			v = ReadLFloat(&srcPtr[8]) * 255;
 			if (v > 255)
 			{
 				destPtr[2] = 255;
@@ -1344,7 +1344,7 @@ extern "C" void ImageUtil_ConvFB32G32R32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 
 			{
 				destPtr[2] = (UInt8)Double2Int32(v);
 			}
-			v = ReadFloat(&srcPtr[12]) * 65535;
+			v = ReadLFloat(&srcPtr[12]) * 65535;
 			if (v > 255)
 			{
 				destPtr[3] = 255;
@@ -1376,7 +1376,7 @@ extern "C" void ImageUtil_ConvFR32G32B32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadFloat(&srcPtr[8]) * 255;
+			v = ReadLFloat(&srcPtr[8]) * 255;
 			if (v > 255)
 			{
 				destPtr[0] = 255;
@@ -1389,7 +1389,7 @@ extern "C" void ImageUtil_ConvFR32G32B32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 
 			{
 				destPtr[0] = (UInt8)Double2Int32(v);
 			}
-			v = ReadFloat(&srcPtr[4]) * 255;
+			v = ReadLFloat(&srcPtr[4]) * 255;
 			if (v > 255)
 			{
 				destPtr[1] = 255;
@@ -1402,7 +1402,7 @@ extern "C" void ImageUtil_ConvFR32G32B32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 
 			{
 				destPtr[1] = (UInt8)Double2Int32(v);
 			}
-			v = ReadFloat(&srcPtr[0]) * 255;
+			v = ReadLFloat(&srcPtr[0]) * 255;
 			if (v > 255)
 			{
 				destPtr[2] = 255;
@@ -1415,7 +1415,7 @@ extern "C" void ImageUtil_ConvFR32G32B32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 
 			{
 				destPtr[2] = (UInt8)Double2Int32(v);
 			}
-			v = ReadFloat(&srcPtr[12]) * 65535;
+			v = ReadLFloat(&srcPtr[12]) * 65535;
 			if (v > 255)
 			{
 				destPtr[3] = 255;
@@ -1447,7 +1447,7 @@ extern "C" void ImageUtil_ConvFB32G32R32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *de
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadFloat(&srcPtr[0]) * 255;
+			v = ReadLFloat(&srcPtr[0]) * 255;
 			if (v > 255)
 			{
 				destPtr[0] = 255;
@@ -1460,7 +1460,7 @@ extern "C" void ImageUtil_ConvFB32G32R32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *de
 			{
 				destPtr[0] = (UInt8)Double2Int32(v);
 			}
-			v = ReadFloat(&srcPtr[4]) * 255;
+			v = ReadLFloat(&srcPtr[4]) * 255;
 			if (v > 255)
 			{
 				destPtr[1] = 255;
@@ -1473,7 +1473,7 @@ extern "C" void ImageUtil_ConvFB32G32R32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *de
 			{
 				destPtr[1] = (UInt8)Double2Int32(v);
 			}
-			v = ReadFloat(&srcPtr[8]) * 255;
+			v = ReadLFloat(&srcPtr[8]) * 255;
 			if (v > 255)
 			{
 				destPtr[2] = 255;
@@ -1506,7 +1506,7 @@ extern "C" void ImageUtil_ConvFR32G32B32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *de
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadFloat(&srcPtr[8]) * 255;
+			v = ReadLFloat(&srcPtr[8]) * 255;
 			if (v > 255)
 			{
 				destPtr[0] = 255;
@@ -1519,7 +1519,7 @@ extern "C" void ImageUtil_ConvFR32G32B32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *de
 			{
 				destPtr[0] = (UInt8)Double2Int32(v);
 			}
-			v = ReadFloat(&srcPtr[4]) * 255;
+			v = ReadLFloat(&srcPtr[4]) * 255;
 			if (v > 255)
 			{
 				destPtr[1] = 255;
@@ -1532,7 +1532,7 @@ extern "C" void ImageUtil_ConvFR32G32B32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *de
 			{
 				destPtr[1] = (UInt8)Double2Int32(v);
 			}
-			v = ReadFloat(&srcPtr[0]) * 255;
+			v = ReadLFloat(&srcPtr[0]) * 255;
 			if (v > 255)
 			{
 				destPtr[2] = 255;
@@ -1565,7 +1565,7 @@ extern "C" void ImageUtil_ConvFW32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destP
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadFloat(&srcPtr[0]) * 255;
+			v = ReadLFloat(&srcPtr[0]) * 255;
 			if (v > 255)
 			{
 				destPtr[0] = 255;
@@ -1584,7 +1584,7 @@ extern "C" void ImageUtil_ConvFW32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destP
 				destPtr[1] = (UInt8)Double2Int32(v);
 				destPtr[2] = (UInt8)Double2Int32(v);
 			}
-			v = ReadFloat(&srcPtr[4]) * 65535;
+			v = ReadLFloat(&srcPtr[4]) * 65535;
 			if (v > 255)
 			{
 				destPtr[3] = 255;
@@ -1616,7 +1616,7 @@ extern "C" void ImageUtil_ConvFW32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr,
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadFloat(&srcPtr[0]) * 255;
+			v = ReadLFloat(&srcPtr[0]) * 255;
 			if (v > 255)
 			{
 				destPtr[0] = 255;
@@ -2382,7 +2382,7 @@ extern "C" void ImageUtil_ConvB5G5R5_B16G16R16A16(const UInt8 *srcPtr, UInt8 *de
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadUInt16(srcPtr);
+			v = ReadLUInt16(srcPtr);
 			cv = v & 0x1f;
 			destPtr[0] = (UInt8)((cv << 6) | (cv << 1) | (cv >> 4));
 			destPtr[1] = (UInt8)((cv << 3) | (cv >> 2));
@@ -2414,7 +2414,7 @@ extern "C" void ImageUtil_ConvB5G6R5_B16G16R16A16(const UInt8 *srcPtr, UInt8 *de
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadUInt16(srcPtr);
+			v = ReadLUInt16(srcPtr);
 			cv = v & 0x1f;
 			destPtr[0] = (UInt8)((cv << 6) | (cv << 1) | (cv >> 4));
 			destPtr[1] = (UInt8)((cv << 3) | (cv >> 2));
@@ -2631,7 +2631,7 @@ extern "C" void ImageUtil_ConvA2B10G10R10_B16G16R16A16(const UInt8 *srcPtr, UInt
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadUInt32(srcPtr);
+			v = ReadLUInt32(srcPtr);
 			r = v & 0x3ff;
 			g = (v >> 10) & 0x3ff;
 			b = (v >> 20) & 0x3ff;
@@ -2642,10 +2642,10 @@ extern "C" void ImageUtil_ConvA2B10G10R10_B16G16R16A16(const UInt8 *srcPtr, UInt
 			a = (UInt16)((a << 2) | a);
 			a = (UInt16)((a << 4) | a);
 			a = (UInt16)((a << 8) | a);
-			WriteInt16(&destPtr[0], b);
-			WriteInt16(&destPtr[2], g);
-			WriteInt16(&destPtr[4], r);
-			WriteInt16(&destPtr[6], a);
+			WriteLInt16(&destPtr[0], b);
+			WriteLInt16(&destPtr[2], g);
+			WriteLInt16(&destPtr[4], r);
+			WriteLInt16(&destPtr[6], a);
 			srcPtr += 4;
 			destPtr += 8;
 		}
@@ -2665,57 +2665,57 @@ extern "C" void ImageUtil_ConvFB32G32R32A32_B16G16R16A16(const UInt8 *srcPtr, UI
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadFloat(&srcPtr[0]) * 65535;
+			v = ReadLFloat(&srcPtr[0]) * 65535;
 			if (v > 65535)
 			{
-				WriteInt16(&destPtr[0], 65535);
+				WriteLInt16(&destPtr[0], 65535);
 			}
 			else if (v < 0)
 			{
-				WriteInt16(&destPtr[0], 0);
+				WriteLInt16(&destPtr[0], 0);
 			}
 			else
 			{
-				WriteInt16(&destPtr[0], Double2Int32(v));
+				WriteLInt16(&destPtr[0], Double2Int32(v));
 			}
-			v = ReadFloat(&srcPtr[4]) * 65535;
+			v = ReadLFloat(&srcPtr[4]) * 65535;
 			if (v > 65535)
 			{
-				WriteInt16(&destPtr[2], 65535);
+				WriteLInt16(&destPtr[2], 65535);
 			}
 			else if (v < 0)
 			{
-				WriteInt16(&destPtr[2], 0);
+				WriteLInt16(&destPtr[2], 0);
 			}
 			else
 			{
-				WriteInt16(&destPtr[2], Double2Int32(v));
+				WriteLInt16(&destPtr[2], Double2Int32(v));
 			}
-			v = ReadFloat(&srcPtr[8]) * 65535;
+			v = ReadLFloat(&srcPtr[8]) * 65535;
 			if (v > 65535)
 			{
-				WriteInt16(&destPtr[4], 65535);
+				WriteLInt16(&destPtr[4], 65535);
 			}
 			else if (v < 0)
 			{
-				WriteInt16(&destPtr[4], 0);
+				WriteLInt16(&destPtr[4], 0);
 			}
 			else
 			{
-				WriteInt16(&destPtr[4], Double2Int32(v));
+				WriteLInt16(&destPtr[4], Double2Int32(v));
 			}
-			v = ReadFloat(&srcPtr[12]) * 65535;
+			v = ReadLFloat(&srcPtr[12]) * 65535;
 			if (v > 65535)
 			{
-				WriteInt16(&destPtr[6], 65535);
+				WriteLInt16(&destPtr[6], 65535);
 			}
 			else if (v < 0)
 			{
-				WriteInt16(&destPtr[6], 0);
+				WriteLInt16(&destPtr[6], 0);
 			}
 			else
 			{
-				WriteInt16(&destPtr[6], Double2Int32(v));
+				WriteLInt16(&destPtr[6], Double2Int32(v));
 			}
 			srcPtr += 16;
 			destPtr += 8;
@@ -2736,57 +2736,57 @@ extern "C" void ImageUtil_ConvFR32G32B32A32_B16G16R16A16(const UInt8 *srcPtr, UI
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadFloat(&srcPtr[8]) * 65535;
+			v = ReadLFloat(&srcPtr[8]) * 65535;
 			if (v > 65535)
 			{
-				WriteInt16(&destPtr[0], 65535);
+				WriteLInt16(&destPtr[0], 65535);
 			}
 			else if (v < 0)
 			{
-				WriteInt16(&destPtr[0], 0);
+				WriteLInt16(&destPtr[0], 0);
 			}
 			else
 			{
-				WriteInt16(&destPtr[0], Double2Int32(v));
+				WriteLInt16(&destPtr[0], Double2Int32(v));
 			}
-			v = ReadFloat(&srcPtr[4]) * 65535;
+			v = ReadLFloat(&srcPtr[4]) * 65535;
 			if (v > 65535)
 			{
-				WriteInt16(&destPtr[2], 65535);
+				WriteLInt16(&destPtr[2], 65535);
 			}
 			else if (v < 0)
 			{
-				WriteInt16(&destPtr[2], 0);
+				WriteLInt16(&destPtr[2], 0);
 			}
 			else
 			{
-				WriteInt16(&destPtr[2], Double2Int32(v));
+				WriteLInt16(&destPtr[2], Double2Int32(v));
 			}
-			v = ReadFloat(&srcPtr[0]) * 65535;
+			v = ReadLFloat(&srcPtr[0]) * 65535;
 			if (v > 65535)
 			{
-				WriteInt16(&destPtr[4], 65535);
+				WriteLInt16(&destPtr[4], 65535);
 			}
 			else if (v < 0)
 			{
-				WriteInt16(&destPtr[4], 0);
+				WriteLInt16(&destPtr[4], 0);
 			}
 			else
 			{
-				WriteInt16(&destPtr[4], Double2Int32(v));
+				WriteLInt16(&destPtr[4], Double2Int32(v));
 			}
-			v = ReadFloat(&srcPtr[12]) * 65535;
+			v = ReadLFloat(&srcPtr[12]) * 65535;
 			if (v > 65535)
 			{
-				WriteInt16(&destPtr[6], 65535);
+				WriteLInt16(&destPtr[6], 65535);
 			}
 			else if (v < 0)
 			{
-				WriteInt16(&destPtr[6], 0);
+				WriteLInt16(&destPtr[6], 0);
 			}
 			else
 			{
-				WriteInt16(&destPtr[6], Double2Int32(v));
+				WriteLInt16(&destPtr[6], Double2Int32(v));
 			}
 			srcPtr += 16;
 			destPtr += 8;
@@ -2807,46 +2807,46 @@ extern "C" void ImageUtil_ConvFB32G32R32_B16G16R16A16(const UInt8 *srcPtr, UInt8
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadFloat(&srcPtr[0]) * 65535;
+			v = ReadLFloat(&srcPtr[0]) * 65535;
 			if (v > 65535)
 			{
-				WriteInt16(&destPtr[0], 65535);
+				WriteLInt16(&destPtr[0], 65535);
 			}
 			else if (v < 0)
 			{
-				WriteInt16(&destPtr[0], 0);
+				WriteLInt16(&destPtr[0], 0);
 			}
 			else
 			{
-				WriteInt16(&destPtr[0], Double2Int32(v));
+				WriteLInt16(&destPtr[0], Double2Int32(v));
 			}
-			v = ReadFloat(&srcPtr[4]) * 65535;
+			v = ReadLFloat(&srcPtr[4]) * 65535;
 			if (v > 65535)
 			{
-				WriteInt16(&destPtr[2], 65535);
+				WriteLInt16(&destPtr[2], 65535);
 			}
 			else if (v < 0)
 			{
-				WriteInt16(&destPtr[2], 0);
+				WriteLInt16(&destPtr[2], 0);
 			}
 			else
 			{
-				WriteInt16(&destPtr[2], Double2Int32(v));
+				WriteLInt16(&destPtr[2], Double2Int32(v));
 			}
-			v = ReadFloat(&srcPtr[8]) * 65535;
+			v = ReadLFloat(&srcPtr[8]) * 65535;
 			if (v > 65535)
 			{
-				WriteInt16(&destPtr[4], 65535);
+				WriteLInt16(&destPtr[4], 65535);
 			}
 			else if (v < 0)
 			{
-				WriteInt16(&destPtr[4], 0);
+				WriteLInt16(&destPtr[4], 0);
 			}
 			else
 			{
-				WriteInt16(&destPtr[4], Double2Int32(v));
+				WriteLInt16(&destPtr[4], Double2Int32(v));
 			}
-			WriteInt16(&destPtr[6], 65535);
+			WriteLInt16(&destPtr[6], 65535);
 			srcPtr += 12;
 			destPtr += 8;
 		}
@@ -2866,46 +2866,46 @@ extern "C" void ImageUtil_ConvFR32G32B32_B16G16R16A16(const UInt8 *srcPtr, UInt8
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadFloat(&srcPtr[8]) * 65535;
+			v = ReadLFloat(&srcPtr[8]) * 65535;
 			if (v > 65535)
 			{
-				WriteInt16(&destPtr[0], 65535);
+				WriteLInt16(&destPtr[0], 65535);
 			}
 			else if (v < 0)
 			{
-				WriteInt16(&destPtr[0], 0);
+				WriteLInt16(&destPtr[0], 0);
 			}
 			else
 			{
-				WriteInt16(&destPtr[0], Double2Int32(v));
+				WriteLInt16(&destPtr[0], Double2Int32(v));
 			}
-			v = ReadFloat(&srcPtr[4]) * 65535;
+			v = ReadLFloat(&srcPtr[4]) * 65535;
 			if (v > 65535)
 			{
-				WriteInt16(&destPtr[2], 65535);
+				WriteLInt16(&destPtr[2], 65535);
 			}
 			else if (v < 0)
 			{
-				WriteInt16(&destPtr[2], 0);
+				WriteLInt16(&destPtr[2], 0);
 			}
 			else
 			{
-				WriteInt16(&destPtr[2], Double2Int32(v));
+				WriteLInt16(&destPtr[2], Double2Int32(v));
 			}
-			v = ReadFloat(&srcPtr[0]) * 65535;
+			v = ReadLFloat(&srcPtr[0]) * 65535;
 			if (v > 65535)
 			{
-				WriteInt16(&destPtr[4], 65535);
+				WriteLInt16(&destPtr[4], 65535);
 			}
 			else if (v < 0)
 			{
-				WriteInt16(&destPtr[4], 0);
+				WriteLInt16(&destPtr[4], 0);
 			}
 			else
 			{
-				WriteInt16(&destPtr[4], Double2Int32(v));
+				WriteLInt16(&destPtr[4], Double2Int32(v));
 			}
-			WriteInt16(&destPtr[6], 65535);
+			WriteLInt16(&destPtr[6], 65535);
 			srcPtr += 12;
 			destPtr += 8;
 		}
@@ -2925,37 +2925,37 @@ extern "C" void ImageUtil_ConvFW32A32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *d
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadFloat(&srcPtr[0]) * 65535;
+			v = ReadLFloat(&srcPtr[0]) * 65535;
 			if (v > 65535)
 			{
-				WriteInt16(&destPtr[0], 65535);
-				WriteInt16(&destPtr[2], 65535);
-				WriteInt16(&destPtr[4], 65535);
+				WriteLInt16(&destPtr[0], 65535);
+				WriteLInt16(&destPtr[2], 65535);
+				WriteLInt16(&destPtr[4], 65535);
 			}
 			else if (v < 0)
 			{
-				WriteInt16(&destPtr[0], 0);
-				WriteInt16(&destPtr[2], 0);
-				WriteInt16(&destPtr[4], 0);
+				WriteLInt16(&destPtr[0], 0);
+				WriteLInt16(&destPtr[2], 0);
+				WriteLInt16(&destPtr[4], 0);
 			}
 			else
 			{
-				WriteInt16(&destPtr[0], Double2Int32(v));
-				WriteInt16(&destPtr[2], Double2Int32(v));
-				WriteInt16(&destPtr[4], Double2Int32(v));
+				WriteLInt16(&destPtr[0], Double2Int32(v));
+				WriteLInt16(&destPtr[2], Double2Int32(v));
+				WriteLInt16(&destPtr[4], Double2Int32(v));
 			}
-			v = ReadFloat(&srcPtr[4]) * 65535;
+			v = ReadLFloat(&srcPtr[4]) * 65535;
 			if (v > 65535)
 			{
-				WriteInt16(&destPtr[6], 65535);
+				WriteLInt16(&destPtr[6], 65535);
 			}
 			else if (v < 0)
 			{
-				WriteInt16(&destPtr[6], 0);
+				WriteLInt16(&destPtr[6], 0);
 			}
 			else
 			{
-				WriteInt16(&destPtr[6], Double2Int32(v));
+				WriteLInt16(&destPtr[6], Double2Int32(v));
 			}
 			srcPtr += 8;
 			destPtr += 8;
@@ -2976,26 +2976,26 @@ extern "C" void ImageUtil_ConvFW32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *dest
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadFloat(&srcPtr[0]) * 65535;
+			v = ReadLFloat(&srcPtr[0]) * 65535;
 			if (v > 65535)
 			{
-				WriteInt16(&destPtr[0], 65535);
-				WriteInt16(&destPtr[2], 65535);
-				WriteInt16(&destPtr[4], 65535);
+				WriteLInt16(&destPtr[0], 65535);
+				WriteLInt16(&destPtr[2], 65535);
+				WriteLInt16(&destPtr[4], 65535);
 			}
 			else if (v < 0)
 			{
-				WriteInt16(&destPtr[0], 0);
-				WriteInt16(&destPtr[2], 0);
-				WriteInt16(&destPtr[4], 0);
+				WriteLInt16(&destPtr[0], 0);
+				WriteLInt16(&destPtr[2], 0);
+				WriteLInt16(&destPtr[4], 0);
 			}
 			else
 			{
-				WriteInt16(&destPtr[0], Double2Int32(v));
-				WriteInt16(&destPtr[2], Double2Int32(v));
-				WriteInt16(&destPtr[4], Double2Int32(v));
+				WriteLInt16(&destPtr[0], Double2Int32(v));
+				WriteLInt16(&destPtr[2], Double2Int32(v));
+				WriteLInt16(&destPtr[4], Double2Int32(v));
 			}
-			WriteInt16(&destPtr[6], 65535);
+			WriteLInt16(&destPtr[6], 65535);
 			srcPtr += 4;
 			destPtr += 8;
 		}
@@ -3087,11 +3087,11 @@ extern "C" void ImageUtil_ConvW16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destP
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadUInt16(&srcPtr[0]);
-			WriteInt16(&destPtr[0], v);
-			WriteInt16(&destPtr[2], v);
-			WriteInt16(&destPtr[4], v);
-			WriteInt16(&destPtr[6], 0xffff);
+			v = ReadLUInt16(&srcPtr[0]);
+			WriteLInt16(&destPtr[0], v);
+			WriteLInt16(&destPtr[2], v);
+			WriteLInt16(&destPtr[4], v);
+			WriteLInt16(&destPtr[6], 0xffff);
 			srcPtr += 2;
 			destPtr += 8;
 		}
@@ -3111,12 +3111,12 @@ extern "C" void ImageUtil_ConvW16A16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *de
 		i = w;
 		while (i-- > 0)
 		{
-			v = ReadUInt16(&srcPtr[0]);
-			WriteInt16(&destPtr[0], v);
-			WriteInt16(&destPtr[2], v);
-			WriteInt16(&destPtr[4], v);
-			v = ReadUInt16(&srcPtr[2]);
-			WriteInt16(&destPtr[6], v);
+			v = ReadLUInt16(&srcPtr[0]);
+			WriteLInt16(&destPtr[0], v);
+			WriteLInt16(&destPtr[2], v);
+			WriteLInt16(&destPtr[4], v);
+			v = ReadLUInt16(&srcPtr[2]);
+			WriteLInt16(&destPtr[6], v);
 			srcPtr += 4;
 			destPtr += 8;
 		}
@@ -3137,11 +3137,11 @@ extern "C" void ImageUtil_ConvW8A8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *dest
 		while (i-- > 0)
 		{
 			v = (UInt16)((((UInt16)srcPtr[0]) << 8) | srcPtr[0]);
-			WriteInt16(&destPtr[0], v);
-			WriteInt16(&destPtr[2], v);
-			WriteInt16(&destPtr[4], v);
+			WriteLInt16(&destPtr[0], v);
+			WriteLInt16(&destPtr[2], v);
+			WriteLInt16(&destPtr[4], v);
 			v = (UInt16)((((UInt16)srcPtr[1]) << 8) | srcPtr[1]);
-			WriteInt16(&destPtr[6], v);
+			WriteLInt16(&destPtr[6], v);
 			srcPtr += 2;
 			destPtr += 8;
 		}
@@ -3488,7 +3488,7 @@ extern "C" void ImageUtil_CopyShiftW(const UInt8 *srcPtr, UInt8 *destPtr, IntOS 
 	byteSize = byteSize >> 1;
 	while (byteSize-- > 0)
 	{
-		WriteInt16(destPtr, ReadUInt16(srcPtr) << shiftCnt);
+		WriteLInt16(destPtr, ReadLUInt16(srcPtr) << shiftCnt);
 		destPtr += 2;
 		srcPtr += 2;
 	}
@@ -3498,8 +3498,8 @@ extern "C" void ImageUtil_UVInterleaveShiftW(UInt8 *destPtr, const UInt8 *uptr, 
 {
 	while (pixelCnt-- > 0)
 	{
-		WriteInt16(&destPtr[0], ReadUInt16(uptr) << shiftCnt);
-		WriteInt16(&destPtr[2], ReadUInt16(vptr) << shiftCnt);
+		WriteLInt16(&destPtr[0], ReadLUInt16(uptr) << shiftCnt);
+		WriteLInt16(&destPtr[2], ReadLUInt16(vptr) << shiftCnt);
 		destPtr += 4;
 		uptr += 2;
 		vptr += 2;
@@ -3510,10 +3510,10 @@ extern "C" void ImageUtil_YUV_Y416ShiftW(UInt8 *destPtr, const UInt8 *yptr, cons
 {
 	while (pixelCnt-- > 0)
 	{
-		WriteInt16(&destPtr[0], ReadUInt16(uptr) << shiftCnt);
-		WriteInt16(&destPtr[2], ReadUInt16(yptr) << shiftCnt);
-		WriteInt16(&destPtr[4], ReadUInt16(vptr) << shiftCnt);
-		WriteInt16(&destPtr[6], 0xffff);
+		WriteLInt16(&destPtr[0], ReadLUInt16(uptr) << shiftCnt);
+		WriteLInt16(&destPtr[2], ReadLUInt16(yptr) << shiftCnt);
+		WriteLInt16(&destPtr[4], ReadLUInt16(vptr) << shiftCnt);
+		WriteLInt16(&destPtr[6], 0xffff);
 		destPtr += 8;
 		yptr += 2;
 		uptr += 2;

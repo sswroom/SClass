@@ -197,11 +197,11 @@ template <class T> void DB::DBDataFile<T>::AddRecord(NN<T> obj)
 		switch (colTypes[k])
 		{
 		case Data::VariItem::ItemType::F32:
-			WriteFloat(&recordBuff[m], item.GetItemValue().f32);
+			WriteLFloat(&recordBuff[m], item.GetItemValue().f32);
 			m += 4;
 			break;
 		case Data::VariItem::ItemType::F64:
-			WriteDouble(&recordBuff[m], item.GetItemValue().f64);
+			WriteLDouble(&recordBuff[m], item.GetItemValue().f64);
 			m += 8;
 			break;
 		case Data::VariItem::ItemType::I8:
@@ -213,28 +213,28 @@ template <class T> void DB::DBDataFile<T>::AddRecord(NN<T> obj)
 			m += 1;
 			break;
 		case Data::VariItem::ItemType::I16:
-			WriteInt16(&recordBuff[m], item.GetItemValue().i16);
+			WriteLInt16(&recordBuff[m], item.GetItemValue().i16);
 			m += 2;
 			break;
 		case Data::VariItem::ItemType::U16:
-			WriteUInt16(&recordBuff[m], item.GetItemValue().u16);
+			WriteLUInt16(&recordBuff[m], item.GetItemValue().u16);
 			m += 2;
 			break;
 		case Data::VariItem::ItemType::NI32:
 		case Data::VariItem::ItemType::I32:
-			WriteInt32(&recordBuff[m], item.GetItemValue().i32);
+			WriteLInt32(&recordBuff[m], item.GetItemValue().i32);
 			m += 4;
 			break;
 		case Data::VariItem::ItemType::U32:
-			WriteUInt32(&recordBuff[m], item.GetItemValue().u32);
+			WriteLUInt32(&recordBuff[m], item.GetItemValue().u32);
 			m += 4;
 			break;
 		case Data::VariItem::ItemType::I64:
-			WriteInt64(&recordBuff[m], item.GetItemValue().i64);
+			WriteLInt64(&recordBuff[m], item.GetItemValue().i64);
 			m += 8;
 			break;
 		case Data::VariItem::ItemType::U64:
-			WriteUInt64(&recordBuff[m], item.GetItemValue().u64);
+			WriteLUInt64(&recordBuff[m], item.GetItemValue().u64);
 			m += 8;
 			break;
 		case Data::VariItem::ItemType::BOOL:
@@ -272,24 +272,24 @@ template <class T> void DB::DBDataFile<T>::AddRecord(NN<T> obj)
 		case Data::VariItem::ItemType::Timestamp:
 			if (item.GetItemType() == Data::VariItem::ItemType::Null)
 			{
-				WriteInt64(&recordBuff[m], -1);
+				WriteLInt64(&recordBuff[m], -1);
 				m += 8;
 			}
 			else
 			{
-				WriteInt64(&recordBuff[m], item.GetItemValue().ts.ToTicks());
+				WriteLInt64(&recordBuff[m], item.GetItemValue().ts.ToTicks());
 				m += 8;
 			}
 			break;
 		case Data::VariItem::ItemType::Date:
 			if (item.GetItemType() == Data::VariItem::ItemType::Null)
 			{
-				WriteInt64(&recordBuff[m], -1);
+				WriteLInt64(&recordBuff[m], -1);
 				m += 8;
 			}
 			else
 			{
-				WriteInt64(&recordBuff[m], item.GetItemValue().date.ToTicks());
+				WriteLInt64(&recordBuff[m], item.GetItemValue().date.ToTicks());
 				m += 8;
 			}
 			break;
@@ -313,8 +313,8 @@ template <class T> void DB::DBDataFile<T>::AddRecord(NN<T> obj)
 		case Data::VariItem::ItemType::UUID:
 			if (item.GetItemType() == Data::VariItem::ItemType::Null)
 			{
-				WriteInt64(&recordBuff[m], -1);
-				WriteInt64(&recordBuff[m + 8], -1);
+				WriteLInt64(&recordBuff[m], -1);
+				WriteLInt64(&recordBuff[m + 8], -1);
 				m += 16;
 			}
 			else
@@ -465,12 +465,12 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, NN
 						switch (colTypes[k])
 						{
 						case Data::VariItem::ItemType::F32:
-							item.SetF32(ReadFloat(&buff[m2]));
+							item.SetF32(ReadLFloat(&buff[m2]));
 							cls->SetField(obj, k, item);
 							m2 += 4;
 							break;
 						case Data::VariItem::ItemType::F64:
-							item.SetF64(ReadDouble(&buff[m2]));
+							item.SetF64(ReadLDouble(&buff[m2]));
 							cls->SetField(obj, k, item);
 							m2 += 8;
 							break;
@@ -485,37 +485,37 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, NN
 							m2 += 1;
 							break;
 						case Data::VariItem::ItemType::I16:
-							item.SetI16(ReadInt16(&buff[m2]));
+							item.SetI16(ReadLInt16(&buff[m2]));
 							cls->SetField(obj, k, item);
 							m2 += 2;
 							break;
 						case Data::VariItem::ItemType::U16:
-							item.SetU16(ReadUInt16(&buff[m2]));
+							item.SetU16(ReadLUInt16(&buff[m2]));
 							cls->SetField(obj, k, item);
 							m2 += 2;
 							break;
 						case Data::VariItem::ItemType::I32:
-							item.SetI32(ReadInt32(&buff[m2]));
+							item.SetI32(ReadLInt32(&buff[m2]));
 							cls->SetField(obj, k, item);
 							m2 += 4;
 							break;
 						case Data::VariItem::ItemType::U32:
-							item.SetU32(ReadUInt32(&buff[m2]));
+							item.SetU32(ReadLUInt32(&buff[m2]));
 							cls->SetField(obj, k, item);
 							m2 += 4;
 							break;
 						case Data::VariItem::ItemType::NI32:
-							item.SetI32(ReadInt32(&buff[m2]));
+							item.SetI32(ReadLInt32(&buff[m2]));
 							cls->SetField(obj, k, item);
 							m2 += 4;
 							break;
 						case Data::VariItem::ItemType::I64:
-							item.SetI64(ReadInt64(&buff[m2]));
+							item.SetI64(ReadLInt64(&buff[m2]));
 							cls->SetField(obj, k, item);
 							m2 += 8;
 							break;
 						case Data::VariItem::ItemType::U64:
-							item.SetU64(ReadUInt64(&buff[m2]));
+							item.SetU64(ReadLUInt64(&buff[m2]));
 							cls->SetField(obj, k, item);
 							m2 += 8;
 							break;
@@ -542,7 +542,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, NN
 							break;
 						case Data::VariItem::ItemType::Timestamp:
 							{
-								Int64 ticks = ReadInt64(&buff[m2]);
+								Int64 ticks = ReadLInt64(&buff[m2]);
 								if (ticks == -1)
 								{
 								}
@@ -556,7 +556,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, NN
 							break;
 						case Data::VariItem::ItemType::Date:
 							{
-								Int64 ticks = ReadInt64(&buff[m2]);
+								Int64 ticks = ReadLInt64(&buff[m2]);
 								if (ticks == -1)
 								{
 								}

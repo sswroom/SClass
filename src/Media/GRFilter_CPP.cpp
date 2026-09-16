@@ -303,37 +303,37 @@ extern "C" void GRFilter_ProcessLayer64H(UInt8 *srcPtr, UInt8 *destPtr, IntOS wi
 		i = loopX;
 		while (i-- > 0)
 		{
-			v = ReadUInt16(&destPtr[0]) + ((((Int32)ReadUInt16(&srcPtr[0]) - (Int32)ReadUInt16(&srcPtr[-8])) * level) >> 16);
+			v = ReadLUInt16(&destPtr[0]) + ((((Int32)ReadLUInt16(&srcPtr[0]) - (Int32)ReadLUInt16(&srcPtr[-8])) * level) >> 16);
 			if (v < 0)
-				WriteInt16(&destPtr[0], 0);
+				WriteLInt16(&destPtr[0], 0);
 			else if (v > 65535)
-				WriteInt16(&destPtr[0], 65535);
+				WriteLInt16(&destPtr[0], 65535);
 			else
-				WriteInt16(&destPtr[0], v);
+				WriteLInt16(&destPtr[0], v);
 
-			v = ReadUInt16(&destPtr[2]) + ((((Int32)ReadUInt16(&srcPtr[2]) - (Int32)ReadUInt16(&srcPtr[-6])) * level) >> 16);
+			v = ReadLUInt16(&destPtr[2]) + ((((Int32)ReadLUInt16(&srcPtr[2]) - (Int32)ReadLUInt16(&srcPtr[-6])) * level) >> 16);
 			if (v < 0)
-				WriteInt16(&destPtr[2], 0);
+				WriteLInt16(&destPtr[2], 0);
 			else if (v > 65535)
-				WriteInt16(&destPtr[2], 65535);
+				WriteLInt16(&destPtr[2], 65535);
 			else
-				WriteInt16(&destPtr[2], v);
+				WriteLInt16(&destPtr[2], v);
 
-			v = ReadUInt16(&destPtr[4]) + ((((Int32)ReadUInt16(&srcPtr[4]) - (Int32)ReadUInt16(&srcPtr[-4])) * level) >> 16);
+			v = ReadLUInt16(&destPtr[4]) + ((((Int32)ReadLUInt16(&srcPtr[4]) - (Int32)ReadLUInt16(&srcPtr[-4])) * level) >> 16);
 			if (v < 0)
-				WriteInt16(&destPtr[4], 0);
+				WriteLInt16(&destPtr[4], 0);
 			else if (v > 65535)
-				WriteInt16(&destPtr[4], 65535);
+				WriteLInt16(&destPtr[4], 65535);
 			else
-				WriteInt16(&destPtr[4], v);
+				WriteLInt16(&destPtr[4], v);
 
-			v = ReadUInt16(&destPtr[6]) + ((((Int32)ReadUInt16(&srcPtr[6]) - (Int32)ReadUInt16(&srcPtr[-2])) * level) >> 16);
+			v = ReadLUInt16(&destPtr[6]) + ((((Int32)ReadLUInt16(&srcPtr[6]) - (Int32)ReadLUInt16(&srcPtr[-2])) * level) >> 16);
 			if (v < 0)
-				WriteInt16(&destPtr[6], 0);
+				WriteLInt16(&destPtr[6], 0);
 			else if (v > 65535)
-				WriteInt16(&destPtr[6], 65535);
+				WriteLInt16(&destPtr[6], 65535);
 			else
-				WriteInt16(&destPtr[6], v);
+				WriteLInt16(&destPtr[6], v);
 			srcPtr += 8;
 			destPtr += 8;
 		}
@@ -386,37 +386,37 @@ extern "C" void GRFilter_ProcessLayer64V(UInt8 *srcPtr, UInt8 *destPtr, IntOS wi
 		i = loopX;
 		while (i-- > 0)
 		{
-			v = ReadUInt16(&destPtr[0]) + ((((Int32)ReadUInt16(&srcPtr[0]) - (Int32)ReadUInt16(&srcPtr[-sbpl+0])) * level) >> 16);
+			v = ReadLUInt16(&destPtr[0]) + ((((Int32)ReadLUInt16(&srcPtr[0]) - (Int32)ReadLUInt16(&srcPtr[-sbpl+0])) * level) >> 16);
 			if (v < 0)
-				WriteInt16(&destPtr[0], 0);
+				WriteLInt16(&destPtr[0], 0);
 			else if (v > 65535)
-				WriteInt16(&destPtr[0], 65535);
+				WriteLInt16(&destPtr[0], 65535);
 			else
-				WriteInt16(&destPtr[0], v);
+				WriteLInt16(&destPtr[0], v);
 
-			v = ReadUInt16(&destPtr[2]) + ((((Int32)ReadUInt16(&srcPtr[2]) - (Int32)ReadUInt16(&srcPtr[-sbpl+2])) * level) >> 16);
+			v = ReadLUInt16(&destPtr[2]) + ((((Int32)ReadLUInt16(&srcPtr[2]) - (Int32)ReadLUInt16(&srcPtr[-sbpl+2])) * level) >> 16);
 			if (v < 0)
-				WriteInt16(&destPtr[2], 0);
+				WriteLInt16(&destPtr[2], 0);
 			else if (v > 65535)
-				WriteInt16(&destPtr[2], 65535);
+				WriteLInt16(&destPtr[2], 65535);
 			else
-				WriteInt16(&destPtr[2], v);
+				WriteLInt16(&destPtr[2], v);
 
-			v = ReadUInt16(&destPtr[4]) + ((((Int32)ReadUInt16(&srcPtr[4]) - (Int32)ReadUInt16(&srcPtr[-sbpl+4])) * level) >> 16);
+			v = ReadLUInt16(&destPtr[4]) + ((((Int32)ReadLUInt16(&srcPtr[4]) - (Int32)ReadLUInt16(&srcPtr[-sbpl+4])) * level) >> 16);
 			if (v < 0)
-				WriteInt16(&destPtr[4], 0);
+				WriteLInt16(&destPtr[4], 0);
 			else if (v > 65535)
-				WriteInt16(&destPtr[4], 65535);
+				WriteLInt16(&destPtr[4], 65535);
 			else
-				WriteInt16(&destPtr[4], v);
+				WriteLInt16(&destPtr[4], v);
 
-			v = ReadUInt16(&destPtr[6]) + ((((Int32)ReadUInt16(&srcPtr[6]) - (Int32)ReadUInt16(&srcPtr[-sbpl+6])) * level) >> 16);
+			v = ReadLUInt16(&destPtr[6]) + ((((Int32)ReadLUInt16(&srcPtr[6]) - (Int32)ReadLUInt16(&srcPtr[-sbpl+6])) * level) >> 16);
 			if (v < 0)
-				WriteInt16(&destPtr[6], 0);
+				WriteLInt16(&destPtr[6], 0);
 			else if (v > 65535)
-				WriteInt16(&destPtr[6], 65535);
+				WriteLInt16(&destPtr[6], 65535);
 			else
-				WriteInt16(&destPtr[6], v);
+				WriteLInt16(&destPtr[6], v);
 
 			srcPtr += 8;
 			destPtr += 8;
@@ -470,37 +470,37 @@ extern "C" void GRFilter_ProcessLayer64HV(UInt8 *srcPtr, UInt8 *destPtr, IntOS w
 		i = loopX;
 		while (i-- > 0)
 		{
-			v = ReadUInt16(&destPtr[0]) + ((((Int32)ReadUInt16(&srcPtr[0]) + (Int32)ReadUInt16(&srcPtr[0]) - (Int32)ReadUInt16(&srcPtr[-sbpl+0]) - (Int32)ReadUInt16(&srcPtr[-0])) * level) >> 16);
+			v = ReadLUInt16(&destPtr[0]) + ((((Int32)ReadLUInt16(&srcPtr[0]) + (Int32)ReadLUInt16(&srcPtr[0]) - (Int32)ReadLUInt16(&srcPtr[-sbpl+0]) - (Int32)ReadLUInt16(&srcPtr[-0])) * level) >> 16);
 			if (v < 0)
-				WriteInt16(&destPtr[0], 0);
+				WriteLInt16(&destPtr[0], 0);
 			else if (v > 65535)
-				WriteInt16(&destPtr[0], 65535);
+				WriteLInt16(&destPtr[0], 65535);
 			else
-				WriteInt16(&destPtr[0], v);
+				WriteLInt16(&destPtr[0], v);
 
-			v = ReadUInt16(&destPtr[2]) + ((((Int32)ReadUInt16(&srcPtr[2]) + (Int32)ReadUInt16(&srcPtr[2]) - (Int32)ReadUInt16(&srcPtr[-sbpl+2]) - (Int32)ReadUInt16(&srcPtr[-2])) * level) >> 16);
+			v = ReadLUInt16(&destPtr[2]) + ((((Int32)ReadLUInt16(&srcPtr[2]) + (Int32)ReadLUInt16(&srcPtr[2]) - (Int32)ReadLUInt16(&srcPtr[-sbpl+2]) - (Int32)ReadLUInt16(&srcPtr[-2])) * level) >> 16);
 			if (v < 0)
-				WriteInt16(&destPtr[2], 0);
+				WriteLInt16(&destPtr[2], 0);
 			else if (v > 65535)
-				WriteInt16(&destPtr[2], 65535);
+				WriteLInt16(&destPtr[2], 65535);
 			else
-				WriteInt16(&destPtr[2], v);
+				WriteLInt16(&destPtr[2], v);
 
-			v = ReadUInt16(&destPtr[4]) + ((((Int32)ReadUInt16(&srcPtr[4]) + (Int32)ReadUInt16(&srcPtr[4]) - (Int32)ReadUInt16(&srcPtr[-sbpl+4]) - (Int32)ReadUInt16(&srcPtr[-4])) * level) >> 16);
+			v = ReadLUInt16(&destPtr[4]) + ((((Int32)ReadLUInt16(&srcPtr[4]) + (Int32)ReadLUInt16(&srcPtr[4]) - (Int32)ReadLUInt16(&srcPtr[-sbpl+4]) - (Int32)ReadLUInt16(&srcPtr[-4])) * level) >> 16);
 			if (v < 0)
-				WriteInt16(&destPtr[4], 0);
+				WriteLInt16(&destPtr[4], 0);
 			else if (v > 65535)
-				WriteInt16(&destPtr[4], 65535);
+				WriteLInt16(&destPtr[4], 65535);
 			else
-				WriteInt16(&destPtr[4], v);
+				WriteLInt16(&destPtr[4], v);
 
-			v = ReadUInt16(&destPtr[6]) + ((((Int32)ReadUInt16(&srcPtr[6]) + (Int32)ReadUInt16(&srcPtr[6]) - (Int32)ReadUInt16(&srcPtr[-sbpl+6]) - (Int32)ReadUInt16(&srcPtr[-6])) * level) >> 16);
+			v = ReadLUInt16(&destPtr[6]) + ((((Int32)ReadLUInt16(&srcPtr[6]) + (Int32)ReadLUInt16(&srcPtr[6]) - (Int32)ReadLUInt16(&srcPtr[-sbpl+6]) - (Int32)ReadLUInt16(&srcPtr[-6])) * level) >> 16);
 			if (v < 0)
-				WriteInt16(&destPtr[6], 0);
+				WriteLInt16(&destPtr[6], 0);
 			else if (v > 65535)
-				WriteInt16(&destPtr[6], 65535);
+				WriteLInt16(&destPtr[6], 65535);
 			else
-				WriteInt16(&destPtr[6], v);
+				WriteLInt16(&destPtr[6], v);
 
 			srcPtr += 8;
 			destPtr += 8;

@@ -289,7 +289,7 @@ void Data::Compress::Deflater::FindMatch(NN<DeflateCompressor> d, UInt32 lookahe
 	UInt32 dist, pos = lookahead_pos & DEFLATER_LZ_DICT_SIZE_MASK, match_len = *pMatch_len, probe_pos = pos, next_probe_pos, probe_len;
 	UInt32 num_probes_left = d->m_max_probes[match_len >= 32];
 	const UInt16 *s = (const UInt16 *)(d->m_dict + pos), *p, *q;
-	UInt16 c01 = ReadUInt16(&d->m_dict[pos + match_len - 1]), s01 = ReadUInt16((UInt8*)s);
+	UInt16 c01 = ReadLUInt16(&d->m_dict[pos + match_len - 1]), s01 = ReadLUInt16((UInt8*)s);
 	DEFLATER_ASSERT(max_match_len <= DEFLATER_MAX_MATCH_LEN);
 	if (max_match_len <= match_len)
 		return;
@@ -304,7 +304,7 @@ void Data::Compress::Deflater::FindMatch(NN<DeflateCompressor> d, UInt32 lookahe
 	if ((!next_probe_pos) || ((dist = (UInt16)(lookahead_pos - next_probe_pos)) > max_dist)) \
 		return;                                                                                 \
 	probe_pos = next_probe_pos & DEFLATER_LZ_DICT_SIZE_MASK;                                       \
-	if (ReadUInt16(&d->m_dict[probe_pos + match_len - 1]) == c01)                \
+	if (ReadLUInt16(&d->m_dict[probe_pos + match_len - 1]) == c01)                \
 		break;
 			DEFLATER_PROBE;
 			DEFLATER_PROBE;
@@ -313,14 +313,14 @@ void Data::Compress::Deflater::FindMatch(NN<DeflateCompressor> d, UInt32 lookahe
 		if (!dist)
 			break;
 		q = (const UInt16 *)(d->m_dict + probe_pos);
-		if (ReadUInt16((const UInt8*)q) != s01)
+		if (ReadLUInt16((const UInt8*)q) != s01)
 			continue;
 		p = s;
 		probe_len = 32;
 		do
 		{
-		} while ((ReadUInt16((const UInt8*)++p) == ReadUInt16((const UInt8*)++q)) && (ReadUInt16((const UInt8*)++p) == ReadUInt16((const UInt8*)++q)) &&
-					(ReadUInt16((const UInt8*)++p) == ReadUInt16((const UInt8*)++q)) && (ReadUInt16((const UInt8*)++p) == ReadUInt16((const UInt8*)++q)) && (--probe_len > 0));
+		} while ((ReadLUInt16((const UInt8*)++p) == ReadLUInt16((const UInt8*)++q)) && (ReadLUInt16((const UInt8*)++p) == ReadLUInt16((const UInt8*)++q)) &&
+					(ReadLUInt16((const UInt8*)++p) == ReadLUInt16((const UInt8*)++q)) && (ReadLUInt16((const UInt8*)++p) == ReadLUInt16((const UInt8*)++q)) && (--probe_len > 0));
 		if (!probe_len)
 		{
 			*pMatch_dist = dist;
@@ -332,7 +332,7 @@ void Data::Compress::Deflater::FindMatch(NN<DeflateCompressor> d, UInt32 lookahe
 			*pMatch_dist = dist;
 			if ((*pMatch_len = match_len = Math_Min(max_match_len, probe_len)) == max_match_len)
 				break;
-			c01 = ReadUInt16(&d->m_dict[pos + match_len - 1]);
+			c01 = ReadLUInt16(&d->m_dict[pos + match_len - 1]);
 		}
 	}
 }

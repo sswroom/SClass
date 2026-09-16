@@ -22,7 +22,7 @@ void Media::ImageUtil::ColorReplaceAlpha32(UnsafeArray<UInt8> pixelPtr, UIntOS w
 		b = pixelPtr[0];
 		if (b)
 		{
-			WriteUInt32(&pixelPtr[0], col);
+			WriteLUInt32(&pixelPtr[0], col);
 			pixelPtr[3] = lut[b];
 		}
 		pixelPtr += 4;
@@ -51,7 +51,7 @@ void Media::ImageUtil::DrawHLineNA32(UnsafeArray<UInt8> pixelPtr, UIntOS w, UInt
 	pixelPtr = pixelPtr + (UIntOS)y * bpl + (UIntOS)x1 * 4;
 	while (cnt-- > 0)
 	{
-		WriteUInt32(&pixelPtr[0], col);
+		WriteLUInt32(&pixelPtr[0], col);
 		pixelPtr += 4;
 	}
 }
@@ -78,7 +78,7 @@ void Media::ImageUtil::DrawVLineNA32(UnsafeArray<UInt8> pixelPtr, UIntOS w, UInt
 	pixelPtr = pixelPtr + (UIntOS)y1 * bpl + (UIntOS)x * 4;
 	while (cnt-- > 0)
 	{
-		WriteUInt32(&pixelPtr[0], col);
+		WriteLUInt32(&pixelPtr[0], col);
 		pixelPtr += bpl;
 	}
 }

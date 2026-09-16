@@ -45,9 +45,9 @@ Optional<IO::ParsedObject> Parser::FileParser::BurikoPackFileParser::ParseFileHd
 	UTF8Char fileName[256];
 	UnsafeArray<UTF8Char> sptr;
 
-	if (ReadInt32(&hdr[0]) != 0x6b636150 || ReadInt32(&hdr[4]) != 0x656c6946 || ReadInt32(&hdr[8]) != 0x20202020)
+	if (ReadLInt32(&hdr[0]) != 0x6b636150 || ReadLInt32(&hdr[4]) != 0x656c6946 || ReadLInt32(&hdr[8]) != 0x20202020)
 		return nullptr;
-	recCnt = ReadUInt32(&hdr[12]);
+	recCnt = ReadLUInt32(&hdr[12]);
 	if (recCnt == 0 || recCnt * 32 + 16 > fd->GetDataSize())
 		return nullptr;
 	dataOfst = recCnt * 32 + 16;
@@ -66,8 +66,8 @@ Optional<IO::ParsedObject> Parser::FileParser::BurikoPackFileParser::ParseFileHd
 	nextOfst = 0;
 	while (i < recCnt)
 	{
-		fileOfst = ReadUInt32(&recBuff[j + 16]);
-		fileSize = ReadUInt32(&recBuff[j + 20]);
+		fileOfst = ReadLUInt32(&recBuff[j + 16]);
+		fileSize = ReadLUInt32(&recBuff[j + 20]);
 		if (fileOfst != nextOfst)
 		{
 			pf.Delete();

@@ -302,7 +302,7 @@ Double Media::ImageList::GetThermoValue(Double x, Double y) const
 	Double v;
 	if (this->thermoBPP == 16)
 	{
-		v = ReadInt16(&thermoPtr[(yOfst * (IntOS)this->thermoSize.x + xOfst) << 1]);
+		v = ReadLInt16(&thermoPtr[(yOfst * (IntOS)this->thermoSize.x + xOfst) << 1]);
 	}
 	else if (this->thermoBPP == 8)
 	{
@@ -310,7 +310,7 @@ Double Media::ImageList::GetThermoValue(Double x, Double y) const
 	}
 	else if (this->thermoBPP == 32)
 	{
-		v = ReadInt32(&thermoPtr[(yOfst * (IntOS)this->thermoSize.x + xOfst) << 2]);
+		v = ReadLInt32(&thermoPtr[(yOfst * (IntOS)this->thermoSize.x + xOfst) << 2]);
 	}
 	else
 	{

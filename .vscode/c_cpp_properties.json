@@ -9,6 +9,8 @@
                 "${workspaceFolder}/ThirdParty/KSSample",
                 "${workspaceFolder}/ThirdParty/adl",
                 "${workspaceFolder}/ThirdParty/webdriverxx/include",
+                "${workspaceFolder}/ThirdParty/mlpack/src",
+                "${workspaceFolder}/ThirdParty/ensmallen/include",
                 "/usr/include/**",
                 "/usr/include/python3.14",
                 "/usr/include/gtk-3.0",

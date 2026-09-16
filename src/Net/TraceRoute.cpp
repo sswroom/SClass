@@ -69,7 +69,7 @@ void Net::TraceRoute::ICMPChecksum(UInt8 *buff, UIntOS buffSize)
     UInt32 sum = 0xffff;
     while (buffSize > 1)
 	{
-        sum += ReadUInt16(buff);
+        sum += ReadLUInt16(buff);
         buff += 2;
         buffSize -= 2;
     }
@@ -80,7 +80,7 @@ void Net::TraceRoute::ICMPChecksum(UInt8 *buff, UIntOS buffSize)
     sum = (sum & 0xffff) + (sum >> 16);
     sum = (sum & 0xffff) + (sum >> 16);
 
-	WriteInt16(&oriBuff[2], ~sum);
+	WriteLInt16(&oriBuff[2], ~sum);
 }
 
 

@@ -346,8 +346,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 						}
 					}
 
-					WriteInt16(&id[6], Double2Int32(bss->GetFreq() / 1000000.0));
-					if (!me->bssMap.Get(ReadUInt64(id)).SetTo(bsss))
+					WriteLInt16(&id[6], Double2Int32(bss->GetFreq() / 1000000.0));
+					if (!me->bssMap.Get(ReadLUInt64(id)).SetTo(bsss))
 					{
 						bssListUpd = true;
 						bsss = MemAllocNN(BSSStatus);
@@ -356,7 +356,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 						bsss->freq = bss->GetFreq();
 						MemCopyNO(bsss->mac, &id[0], 6);
 						bsss->ssid = ssid->Clone();
-						me->bssMap.Put(ReadUInt64(id), bsss);
+						me->bssMap.Put(ReadLUInt64(id), bsss);
 					}
 
 					i++;

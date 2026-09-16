@@ -122,7 +122,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 		{
 			sb->AppendC(UTF8STRC("FH Parameter Set:"));
 			sb->AppendC(UTF8STRC("\r\n\tDwell Time = "));
-			sb->AppendU16(ReadUInt16(&ieBuff[2]));
+			sb->AppendU16(ReadLUInt16(&ieBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n\tHop Set = "));
 			sb->AppendU16(ieBuff[4]);
 			sb->AppendC(UTF8STRC("\r\n\tHop Pattern = "));
@@ -180,7 +180,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 		{
 			sb->AppendC(UTF8STRC("IBSS Parameter Set:"));
 			sb->AppendC(UTF8STRC("\r\n\tATIM window = "));
-			sb->AppendU16(ReadUInt16(&ieBuff[2]));
+			sb->AppendU16(ReadLUInt16(&ieBuff[2]));
 		}
 		else
 		{
@@ -229,11 +229,11 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 		{
 			sb->AppendC(UTF8STRC("BSS Load:"));
 			sb->AppendC(UTF8STRC("\r\n\tStation Count = "));
-			sb->AppendU16(ReadUInt16(&ieBuff[2]));
+			sb->AppendU16(ReadLUInt16(&ieBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n\tChannel Utilization = "));
 			Text::SBAppendF64(sb, ieBuff[4] / 2.55);
 			sb->AppendC(UTF8STRC("%\r\n\tAvailable Admission Capacity = "));
-			sb->AppendU16(ReadUInt16(&ieBuff[5]));
+			sb->AppendU16(ReadLUInt16(&ieBuff[5]));
 		}
 		else
 		{
@@ -330,7 +330,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 			UInt16 v16;
 			sb->AppendC(UTF8STRC("HT Capabilities:"));
 			sb->AppendC(UTF8STRC("\r\n\tHT Capabilities Info = 0x"));
-			sb->AppendHex16(v16 = ReadUInt16(&ieBuff[2]));
+			sb->AppendHex16(v16 = ReadLUInt16(&ieBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n\t\tLdpc = "));
 			sb->AppendU16((v16 >> 0) & 1);
 			sb->AppendC(UTF8STRC("\r\n\t\tSupported Channel Width = "));
@@ -366,13 +366,13 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 			sb->AppendC(UTF8STRC("\r\n\t\tMin Mpdu Start Space = "));
 			sb->AppendU16((ieBuff[4] >> 2) & 0x1b);
 			sb->AppendC(UTF8STRC("\r\n\tSupported Mcs Set 1 = "));
-			sb->AppendI64(ReadInt64(&ieBuff[5]));
+			sb->AppendI64(ReadLInt64(&ieBuff[5]));
 			sb->AppendC(UTF8STRC("\r\n\tSupported Mcs Set 2 = "));
-			sb->AppendI64(ReadInt64(&ieBuff[13]));
+			sb->AppendI64(ReadLInt64(&ieBuff[13]));
 			sb->AppendC(UTF8STRC("\r\n\tExtended HT Capabilities = "));
-			sb->AppendI16(ReadInt16(&ieBuff[21]));
+			sb->AppendI16(ReadLInt16(&ieBuff[21]));
 			sb->AppendC(UTF8STRC("\r\n\tTx Bf Capabilities = "));
-			sb->AppendI32(ReadInt32(&ieBuff[23]));
+			sb->AppendI32(ReadLInt32(&ieBuff[23]));
 			sb->AppendC(UTF8STRC("\r\n\tAntenna Selection Capabilities = "));
 			sb->AppendU16(ieBuff[27]);
 		}
@@ -405,7 +405,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 		{
 			sb->AppendC(UTF8STRC("Robust Security Network:"));
 			sb->AppendC(UTF8STRC("\r\n\tVersion = "));
-			sb->AppendU16(ReadUInt16(&ieBuff[2]));
+			sb->AppendU16(ReadLUInt16(&ieBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n\tGroup cipher suite OUI = "));
 			sb->AppendHexBuff(&ieBuff[4], 3, '-', Text::LineBreakType::None);
 			sb->AppendC(UTF8STRC(" ("));
@@ -438,7 +438,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 					break;
 				}
 			}
-			UInt32 cnt = ReadUInt16(&ieBuff[8]);
+			UInt32 cnt = ReadLUInt16(&ieBuff[8]);
 			sb->AppendC(UTF8STRC("\r\n\tPairwise Cipher Suites Count = "));
 			sb->AppendU32(cnt);
 			UInt32 j;
@@ -483,7 +483,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 			}
 			if (i <= size - 4)
 			{
-				cnt = ReadUInt16(&ieBuff[i + 2]);
+				cnt = ReadLUInt16(&ieBuff[i + 2]);
 				sb->AppendC(UTF8STRC("\r\n\tAuthentication Suites Count = "));
 				sb->AppendU32(cnt);
 				i = i + 2;
@@ -517,7 +517,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 			if (i <= size - 2)
 			{
 				sb->AppendC(UTF8STRC("\r\n\tRSN Capabilties = 0x"));
-				sb->AppendHex16(ReadUInt16(&ieBuff[i + 2]));
+				sb->AppendHex16(ReadLUInt16(&ieBuff[i + 2]));
 				i += 2;
 			}
 			if (i < size)
@@ -610,7 +610,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 			sb->AppendC(UTF8STRC("\r\n\t\tRifs Mode = "));
 			sb->AppendU16((ieBuff[3] >> 3) & 1);
 			sb->AppendC(UTF8STRC("\r\n\tInformation Subset 2 = 0x"));
-			sb->AppendHex16(v16 = ReadUInt16(&ieBuff[4]));
+			sb->AppendHex16(v16 = ReadLUInt16(&ieBuff[4]));
 			sb->AppendC(UTF8STRC("\r\n\t\tHT Protection = "));
 			sb->AppendU16(v16 & 3);
 			sb->AppendC(UTF8STRC("\r\n\t\tNon Gf Ht Stas Present = "));
@@ -618,7 +618,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 			sb->AppendC(UTF8STRC("\r\n\t\tObss Non Ht Stas Present = "));
 			sb->AppendU16((v16 >> 4) & 1);
 			sb->AppendC(UTF8STRC("\r\n\tInformation Subset 3 = 0x"));
-			sb->AppendHex16(v16 = ReadUInt16(&ieBuff[6]));
+			sb->AppendHex16(v16 = ReadLUInt16(&ieBuff[6]));
 			sb->AppendC(UTF8STRC("\r\n\t\tDual Beacon = "));
 			sb->AppendU16((v16 >> 6) & 1);
 			sb->AppendC(UTF8STRC("\r\n\t\tDual Cts Protection = "));
@@ -632,9 +632,9 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 			sb->AppendC(UTF8STRC("\r\n\t\tPCO Phase = "));
 			sb->AppendU16((v16 >> 11) & 1);
 			sb->AppendC(UTF8STRC("\r\n\tBasic Mcs Set 1 = 0x"));
-			sb->AppendHex64(ReadUInt64(&ieBuff[8]));
+			sb->AppendHex64(ReadLUInt64(&ieBuff[8]));
 			sb->AppendC(UTF8STRC("\r\n\tBasic Mcs Set 2 = 0x"));
-			sb->AppendHex64(ReadUInt64(&ieBuff[16]));
+			sb->AppendHex64(ReadLUInt64(&ieBuff[16]));
 		}
 		else
 		{
@@ -647,7 +647,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 		{
 			sb->AppendC(UTF8STRC("Mobility Domain:"));
 			sb->AppendC(UTF8STRC("\r\n\tMobility Domain Identifier = 0x"));
-			sb->AppendHex16(ReadUInt16(&ieBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&ieBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n\tFT Capability and Policy = 0x"));
 			sb->AppendHex8(ieBuff[4]);
 			sb->AppendC(UTF8STRC("\r\n\t\tFast BSS Transition over DS = "));
@@ -666,19 +666,19 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 		{
 			sb->AppendC(UTF8STRC("Overlapping BSS Scan Parameters:"));
 			sb->AppendC(UTF8STRC("\r\n\tPassive dwell = "));
-			sb->AppendU16(ReadUInt16(&ieBuff[2]));
+			sb->AppendU16(ReadLUInt16(&ieBuff[2]));
 			sb->AppendC(UTF8STRC("TUs\r\n\tActive dwell = "));
-			sb->AppendU16(ReadUInt16(&ieBuff[4]));
+			sb->AppendU16(ReadLUInt16(&ieBuff[4]));
 			sb->AppendC(UTF8STRC("TUs\r\n\tChannel width trigger scan interval = "));
-			sb->AppendU16(ReadUInt16(&ieBuff[6]));
+			sb->AppendU16(ReadLUInt16(&ieBuff[6]));
 			sb->AppendC(UTF8STRC("s\r\n\tScan passive total per channel = "));
-			sb->AppendU16(ReadUInt16(&ieBuff[8]));
+			sb->AppendU16(ReadLUInt16(&ieBuff[8]));
 			sb->AppendC(UTF8STRC("TUs\r\n\tScan active total per channel = "));
-			sb->AppendU16(ReadUInt16(&ieBuff[10]));
+			sb->AppendU16(ReadLUInt16(&ieBuff[10]));
 			sb->AppendC(UTF8STRC("TUs\r\n\tBSS width channel transition delay factor = "));
-			sb->AppendU16(ReadUInt16(&ieBuff[12]));
+			sb->AppendU16(ReadLUInt16(&ieBuff[12]));
 			sb->AppendC(UTF8STRC("\r\n\tOBSS Scan Activity Threshold = "));
-			Text::SBAppendF64(sb, ReadUInt16(&ieBuff[14]) * 0.01);
+			Text::SBAppendF64(sb, ReadLUInt16(&ieBuff[14]) * 0.01);
 			sb->AppendC(UTF8STRC("%"));
 		}
 		else
@@ -819,7 +819,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 			UInt32 v32;
 			sb->AppendC(UTF8STRC("VHT Capabilities:"));
 			sb->AppendC(UTF8STRC("\r\n\tVHT Capabilities Info = 0x"));
-			sb->AppendHex32(v32 = ReadUInt32(&ieBuff[2]));
+			sb->AppendHex32(v32 = ReadLUInt32(&ieBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n\t\tMax Mpdu Length = "));
 			sb->AppendU16((v32 >> 0) & 3);
 			sb->AppendC(UTF8STRC("\r\n\t\tSupported Channel Width Set = "));
@@ -859,7 +859,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 			sb->AppendC(UTF8STRC("\r\n\t\tTx Antenna Pattern Consistency = "));
 			sb->AppendU16((v32 >> 29) & 1);
 			sb->AppendC(UTF8STRC("\r\n\tSupported Mcs And Nss Set = 0x"));
-			sb->AppendHex64(ReadUInt64(&ieBuff[6]));
+			sb->AppendHex64(ReadLUInt64(&ieBuff[6]));
 		}
 		else
 		{
@@ -879,7 +879,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 			sb->AppendC(UTF8STRC("\r\n\tChannel Center Frequency Segment 1 = "));
 			sb->AppendU16(ieBuff[4]);
 			sb->AppendC(UTF8STRC("\r\n\tBasic Vht Mcs And Nss Set = "));
-			sb->AppendU16(ReadUInt16(&ieBuff[5]));
+			sb->AppendU16(ReadLUInt16(&ieBuff[5]));
 		}
 		else
 		{
@@ -976,7 +976,7 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 					sb->AppendC(UTF8STRC("\r\n\tECW Max = "));
 					sb->AppendU16((ieBuff[i + 3] >> 4) & 15);
 					sb->AppendC(UTF8STRC("\r\n\tTXOP Limit = "));
-					sb->AppendU16(ReadUInt16(&ieBuff[i + 4]));
+					sb->AppendU16(ReadLUInt16(&ieBuff[i + 4]));
 					i += 4;
 				}
 			}

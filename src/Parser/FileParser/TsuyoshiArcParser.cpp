@@ -52,7 +52,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TsuyoshiArcParser::ParseFileHdr(N
 	{
 		return nullptr;
 	}
-	recCnt = ReadUInt32(&hdr[0]);
+	recCnt = ReadLUInt32(&hdr[0]);
 	if (recCnt == 0 || recCnt >= 65536)
 		return nullptr;
 	if (fd->GetDataSize() <= recCnt * 272)

@@ -10,11 +10,11 @@ namespace Parser
 		class ELFParser : public IO::FileParser
 		{
 		private:
-			static Int64 __stdcall TReadInt64(UnsafeArray<const UInt8> pVal);
+			static Int64 __stdcall TReadLInt64(UnsafeArray<const UInt8> pVal);
 			static Int64 __stdcall TReadMInt64(UnsafeArray<const UInt8> pVal);
-			static Int32 __stdcall TReadInt32(UnsafeArray<const UInt8> pVal);
+			static Int32 __stdcall TReadLInt32(UnsafeArray<const UInt8> pVal);
 			static Int32 __stdcall TReadMInt32(UnsafeArray<const UInt8> pVal);
-			static Int16 __stdcall TReadInt16(UnsafeArray<const UInt8> pVal);
+			static Int16 __stdcall TReadLInt16(UnsafeArray<const UInt8> pVal);
 			static Int16 __stdcall TReadMInt16(UnsafeArray<const UInt8> pVal);
 
 			typedef Int64 (CALLBACKFUNC RInt64Func)(UnsafeArray<const UInt8> pVal);

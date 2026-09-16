@@ -13,7 +13,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 {
 	if (buffSize < 4)
 		return nullptr;
-	Int32 shpType = ReadInt32(&buff[0]);
+	Int32 shpType = ReadLInt32(&buff[0]);
 	switch (shpType)
 	{
 	case 0: //Null
@@ -22,7 +22,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 		if (buffSize >= 20)
 		{
 			NN<Math::Geometry::Point> pt;
-			NEW_CLASSNN(pt, Math::Geometry::Point(srid, ReadDouble(&buff[4]), ReadDouble(&buff[12])));
+			NEW_CLASSNN(pt, Math::Geometry::Point(srid, ReadLDouble(&buff[4]), ReadLDouble(&buff[12])));
 			return pt;
 		}
 		return nullptr;
@@ -33,13 +33,13 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			UInt32 nPoint;
 			NN<Math::Geometry::Polyline> pl;
 			/*
-			xMin = ReadDouble(&buff[4]);
-			yMin = ReadDouble(&buff[12]);
-			xMax = ReadDouble(&buff[20]);
-			yMax = ReadDouble(&buff[28]);
+			xMin = ReadLDouble(&buff[4]);
+			yMin = ReadLDouble(&buff[12]);
+			xMax = ReadLDouble(&buff[20]);
+			yMax = ReadLDouble(&buff[28]);
 			*/
-			nPtOfst = ReadUInt32(&buff[36]);
-			nPoint = ReadUInt32(&buff[40]);
+			nPtOfst = ReadLUInt32(&buff[36]);
+			nPoint = ReadLUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
 				UIntOS i;
@@ -54,7 +54,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				i = 0;
 				while (i < nPtOfst)
 				{
-					ptOfsts[i] = ReadUInt32(&buff[0]);
+					ptOfsts[i] = ReadLUInt32(&buff[0]);
 					buff += 4;
 					i++;
 				}
@@ -74,8 +74,8 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 					j = 0;
 					while (j < k)
 					{
-						points[j].x = ReadDouble(&buff[0]);
-						points[j].y = ReadDouble(&buff[8]);
+						points[j].x = ReadLDouble(&buff[0]);
+						points[j].y = ReadLDouble(&buff[8]);
 						buff += 16;
 						j++;
 					}
@@ -95,13 +95,13 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			NN<Math::Geometry::Polygon> pg;
 			NN<Math::Geometry::LinearRing> lr;
 			/*
-			xMin = ReadDouble(&buff[4]);
-			yMin = ReadDouble(&buff[12]);
-			xMax = ReadDouble(&buff[20]);
-			yMax = ReadDouble(&buff[28]);
+			xMin = ReadLDouble(&buff[4]);
+			yMin = ReadLDouble(&buff[12]);
+			xMax = ReadLDouble(&buff[20]);
+			yMax = ReadLDouble(&buff[28]);
 			*/
-			nPtOfst = ReadUInt32(&buff[36]);
-			nPoint = ReadUInt32(&buff[40]);
+			nPtOfst = ReadLUInt32(&buff[36]);
+			nPoint = ReadLUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
 				UIntOS tmpV;
@@ -120,13 +120,13 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 					if (i >= nPtOfst)
 						k = nPoint;
 					else
-						k = ReadUInt32(&ptOfsts[i * 4]);
+						k = ReadLUInt32(&ptOfsts[i * 4]);
 					NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (k - j), false, false));
 					points = lr->GetPointList(tmpV);
 					while (tmpV-- > 0)
 					{
-						points[0].x = ReadDouble(&buff[0]);
-						points[0].y = ReadDouble(&buff[8]);
+						points[0].x = ReadLDouble(&buff[0]);
+						points[0].y = ReadLDouble(&buff[8]);
 						points++;
 						buff += 16;
 					}
@@ -141,15 +141,15 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 		if (false)
 		{
 			/*
-			xMin = ReadDouble(&buff[4]);
-			yMin = ReadDouble(&buff[12]);
-			xMax = ReadDouble(&buff[20]);
-			yMax = ReadDouble(&buff[28]);
-			numPoints = ReadInt32(&buff[36]);
+			xMin = ReadLDouble(&buff[4]);
+			yMin = ReadLDouble(&buff[12]);
+			xMax = ReadLDouble(&buff[20]);
+			yMax = ReadLDouble(&buff[28]);
+			numPoints = ReadLInt32(&buff[36]);
 			if (buffSize >= 40 + numPoints * 16)
 			{
-				ptX = ReadDouble(&buff[40]);
-				ptY = ReadDouble(&buff[48]);
+				ptX = ReadLDouble(&buff[40]);
+				ptY = ReadLDouble(&buff[48]);
 			}
 			*/
 		}
@@ -158,7 +158,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 		if (buffSize >= 28)
 		{
 			NN<Math::Geometry::PointZ> pt;
-			NEW_CLASSNN(pt, Math::Geometry::PointZ(srid, ReadDouble(&buff[4]), ReadDouble(&buff[12]), ReadDouble(&buff[20])));
+			NEW_CLASSNN(pt, Math::Geometry::PointZ(srid, ReadLDouble(&buff[4]), ReadLDouble(&buff[12]), ReadLDouble(&buff[20])));
 			return pt;
 		}
 		return nullptr;
@@ -169,13 +169,13 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			UInt32 nPoint;
 			NN<Math::Geometry::Polyline> pl;
 			/*
-			xMin = ReadDouble(&buff[4]);
-			yMin = ReadDouble(&buff[12]);
-			xMax = ReadDouble(&buff[20]);
-			yMax = ReadDouble(&buff[28]);
+			xMin = ReadLDouble(&buff[4]);
+			yMin = ReadLDouble(&buff[12]);
+			xMax = ReadLDouble(&buff[20]);
+			yMax = ReadLDouble(&buff[28]);
 			*/
-			nPtOfst = ReadUInt32(&buff[36]);
-			nPoint = ReadUInt32(&buff[40]);
+			nPtOfst = ReadLUInt32(&buff[36]);
+			nPoint = ReadLUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 24)
 			{
 				UIntOS i;
@@ -191,7 +191,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				i = 0;
 				while (i < nPtOfst)
 				{
-					ptOfsts[i] = ReadUInt32(&buff[0]);
+					ptOfsts[i] = ReadLUInt32(&buff[0]);
 					buff += 4;
 					i++;
 				}
@@ -211,8 +211,8 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 					j = 0;
 					while (j < k)
 					{
-						points[j].x = ReadDouble(&buff[0]);
-						points[j].y = ReadDouble(&buff[8]);
+						points[j].x = ReadLDouble(&buff[0]);
+						points[j].y = ReadLDouble(&buff[8]);
 						buff += 16;
 						j++;
 					}
@@ -227,7 +227,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 						j = 0;
 						while (j < k)
 						{
-							alts[j] = ReadDouble(&buff[0]);
+							alts[j] = ReadLDouble(&buff[0]);
 							buff += 8;
 							j++;
 						}
@@ -243,7 +243,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 		if (buffSize >= 36)
 		{
 			NN<Math::Geometry::PointZM> pt;
-			NEW_CLASSNN(pt, Math::Geometry::PointZM(srid, ReadDouble(&buff[4]), ReadDouble(&buff[12]), ReadDouble(&buff[20]), ReadDouble(&buff[28])));
+			NEW_CLASSNN(pt, Math::Geometry::PointZM(srid, ReadLDouble(&buff[4]), ReadLDouble(&buff[12]), ReadLDouble(&buff[20]), ReadLDouble(&buff[28])));
 			return pt;
 		}
 		return nullptr;
@@ -254,13 +254,13 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			UInt32 nPoint;
 			NN<Math::Geometry::Polyline> pl;
 			/*
-			xMin = ReadDouble(&buff[4]);
-			yMin = ReadDouble(&buff[12]);
-			xMax = ReadDouble(&buff[20]);
-			yMax = ReadDouble(&buff[28]);
+			xMin = ReadLDouble(&buff[4]);
+			yMin = ReadLDouble(&buff[12]);
+			xMax = ReadLDouble(&buff[20]);
+			yMax = ReadLDouble(&buff[28]);
 			*/
-			nPtOfst = ReadUInt32(&buff[36]);
-			nPoint = ReadUInt32(&buff[40]);
+			nPtOfst = ReadLUInt32(&buff[36]);
+			nPoint = ReadLUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 32)
 			{
 				UIntOS i;
@@ -276,7 +276,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				i = 0;
 				while (i < nPtOfst)
 				{
-					ptOfsts[i] = ReadUInt32(&buff[0]);
+					ptOfsts[i] = ReadLUInt32(&buff[0]);
 					buff += 4;
 					i++;
 				}
@@ -296,8 +296,8 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 					j = 0;
 					while (j < k)
 					{
-						points[j].x = ReadDouble(&buff[0]);
-						points[j].y = ReadDouble(&buff[8]);
+						points[j].x = ReadLDouble(&buff[0]);
+						points[j].y = ReadLDouble(&buff[8]);
 						buff += 16;
 						j++;
 					}
@@ -312,7 +312,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 						j = 0;
 						while (j < k)
 						{
-							dArr[j] = ReadDouble(&buff[0]);
+							dArr[j] = ReadLDouble(&buff[0]);
 							buff += 8;
 							j++;
 						}
@@ -327,7 +327,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 						j = 0;
 						while (j < k)
 						{
-							dArr[j] = ReadDouble(&buff[0]);
+							dArr[j] = ReadLDouble(&buff[0]);
 							buff += 8;
 							j++;
 						}
@@ -346,13 +346,13 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			UInt32 nPoint;
 			NN<Math::Geometry::Polygon> pg;
 			/*
-			xMin = ReadDouble(&buff[4]);
-			yMin = ReadDouble(&buff[12]);
-			xMax = ReadDouble(&buff[20]);
-			yMax = ReadDouble(&buff[28]);
+			xMin = ReadLDouble(&buff[4]);
+			yMin = ReadLDouble(&buff[12]);
+			xMax = ReadLDouble(&buff[20]);
+			yMax = ReadLDouble(&buff[28]);
 			*/
-			nPtOfst = ReadUInt32(&buff[36]);
-			nPoint = ReadUInt32(&buff[40]);
+			nPtOfst = ReadLUInt32(&buff[36]);
+			nPoint = ReadLUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
 				UIntOS i;
@@ -365,29 +365,29 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				i = 0;
 				while (i < nPtOfst)
 				{
-					ptOfsts[i] = ReadUInt32(&buff[0]);
+					ptOfsts[i] = ReadLUInt32(&buff[0]);
 					buff += 4;
 					i++;
 				}
 				i = 0;
 				while (i < nPoint)
 				{
-					points[i].x = ReadDouble(&buff[0]);
-					points[i].y = ReadDouble(&buff[8]);
+					points[i].x = ReadLDouble(&buff[0]);
+					points[i].y = ReadLDouble(&buff[8]);
 					buff += 16;
 					i++;
 				}
 				i = 0;
 				while (i < nPoint)
 				{
-					zArr[i] = ReadDouble(&buff[0]);
+					zArr[i] = ReadLDouble(&buff[0]);
 					buff += 8;
 					i++;
 				}
 				i = 0;
 				while (i < nPoint)
 				{
-					mArr[i] = ReadDouble(&buff[0]);
+					mArr[i] = ReadLDouble(&buff[0]);
 					buff += 8;
 					i++;
 				}
@@ -409,13 +409,13 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			UInt32 nPoint;
 			NN<Math::Geometry::Polygon> pg;
 			/*
-			xMin = ReadDouble(&buff[4]);
-			yMin = ReadDouble(&buff[12]);
-			xMax = ReadDouble(&buff[20]);
-			yMax = ReadDouble(&buff[28]);
+			xMin = ReadLDouble(&buff[4]);
+			yMin = ReadLDouble(&buff[12]);
+			xMax = ReadLDouble(&buff[20]);
+			yMax = ReadLDouble(&buff[28]);
 			*/
-			nPtOfst = ReadUInt32(&buff[36]);
-			nPoint = ReadUInt32(&buff[40]);
+			nPtOfst = ReadLUInt32(&buff[36]);
+			nPoint = ReadLUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
 				UIntOS i;
@@ -427,22 +427,22 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				i = 0;
 				while (i < nPtOfst)
 				{
-					ptOfsts[i] = ReadUInt32(&buff[0]);
+					ptOfsts[i] = ReadLUInt32(&buff[0]);
 					buff += 4;
 					i++;
 				}
 				i = 0;
 				while (i < nPoint)
 				{
-					points[i].x = ReadDouble(&buff[0]);
-					points[i].y = ReadDouble(&buff[8]);
+					points[i].x = ReadLDouble(&buff[0]);
+					points[i].y = ReadLDouble(&buff[8]);
 					buff += 16;
 					i++;
 				}
 				i = 0;
 				while (i < nPoint)
 				{
-					zArr[i] = ReadDouble(&buff[0]);
+					zArr[i] = ReadLDouble(&buff[0]);
 					buff += 8;
 					i++;
 				}
@@ -460,8 +460,8 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 		if (buffSize >= 28)
 		{
 			NN<Math::Geometry::PointM> pt;
-			NEW_CLASSNN(pt, Math::Geometry::PointM(srid, ReadDouble(&buff[4]), ReadDouble(&buff[12]), ReadDouble(&buff[20])));
-			// measure = ReadDouble(&buff[20]);
+			NEW_CLASSNN(pt, Math::Geometry::PointM(srid, ReadLDouble(&buff[4]), ReadLDouble(&buff[12]), ReadLDouble(&buff[20])));
+			// measure = ReadLDouble(&buff[20]);
 			return pt;
 		}
 		return nullptr;
@@ -472,13 +472,13 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			UInt32 nPoint;
 			NN<Math::Geometry::Polyline> pl;
 			/*
-			xMin = ReadDouble(&buff[4]);
-			yMin = ReadDouble(&buff[12]);
-			xMax = ReadDouble(&buff[20]);
-			yMax = ReadDouble(&buff[28]);
+			xMin = ReadLDouble(&buff[4]);
+			yMin = ReadLDouble(&buff[12]);
+			xMax = ReadLDouble(&buff[20]);
+			yMax = ReadLDouble(&buff[28]);
 			*/
-			nPtOfst = ReadUInt32(&buff[36]);
-			nPoint = ReadUInt32(&buff[40]);
+			nPtOfst = ReadLUInt32(&buff[36]);
+			nPoint = ReadLUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
 				UIntOS i;
@@ -494,7 +494,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				i = 0;
 				while (i < nPtOfst)
 				{
-					ptOfsts[i] = ReadUInt32(&buff[0]);
+					ptOfsts[i] = ReadLUInt32(&buff[0]);
 					buff += 4;
 					i++;
 				}
@@ -514,8 +514,8 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 					j = 0;
 					while (j < k)
 					{
-						points[j].x = ReadDouble(&buff[0]);
-						points[j].y = ReadDouble(&buff[8]);
+						points[j].x = ReadLDouble(&buff[0]);
+						points[j].y = ReadLDouble(&buff[8]);
 						buff += 16;
 						j++;
 					}
@@ -530,7 +530,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 						j = 0;
 						while (j < k)
 						{
-							mArr[j] = ReadDouble(&buff[0]);
+							mArr[j] = ReadLDouble(&buff[0]);
 							buff += 8;
 							j++;
 						}
@@ -549,13 +549,13 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			UInt32 nPoint;
 			NN<Math::Geometry::Polygon> pg;
 			/*
-			xMin = ReadDouble(&buff[4]);
-			yMin = ReadDouble(&buff[12]);
-			xMax = ReadDouble(&buff[20]);
-			yMax = ReadDouble(&buff[28]);
+			xMin = ReadLDouble(&buff[4]);
+			yMin = ReadLDouble(&buff[12]);
+			xMax = ReadLDouble(&buff[20]);
+			yMax = ReadLDouble(&buff[28]);
 			*/
-			nPtOfst = ReadUInt32(&buff[36]);
-			nPoint = ReadUInt32(&buff[40]);
+			nPtOfst = ReadLUInt32(&buff[36]);
+			nPoint = ReadLUInt32(&buff[40]);
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
 				UIntOS i;
@@ -567,22 +567,22 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				i = 0;
 				while (i < nPtOfst)
 				{
-					ptOfsts[i] = ReadUInt32(&buff[0]);
+					ptOfsts[i] = ReadLUInt32(&buff[0]);
 					buff += 4;
 					i++;
 				}
 				i = 0;
 				while (i < nPoint)
 				{
-					points[i].x = ReadDouble(&buff[0]);
-					points[i].y = ReadDouble(&buff[8]);
+					points[i].x = ReadLDouble(&buff[0]);
+					points[i].y = ReadLDouble(&buff[8]);
 					buff += 16;
 					i++;
 				}
 				i = 0;
 				while (i < nPoint)
 				{
-					mArr[i] = ReadDouble(&buff[0]);
+					mArr[i] = ReadLDouble(&buff[0]);
 					buff += 8;
 					i++;
 				}

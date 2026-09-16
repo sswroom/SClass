@@ -43,20 +43,20 @@ IO::ParserType Parser::FileParser::CFBParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UInt8 buff[4096];
-	if (ReadUInt32(&hdr[0]) != 0xe011cfd0 || ReadUInt32(&hdr[4]) != 0xe11ab1a1)
+	if (ReadLUInt32(&hdr[0]) != 0xe011cfd0 || ReadLUInt32(&hdr[4]) != 0xe11ab1a1)
 	{
 		return nullptr;
 	}
 	UIntOS i;
 	UIntOS j;
-	UIntOS sectorSize = ((UIntOS)1 << (ReadUInt16(&hdr[30])));
-	UIntOS miniStmSectSize = ((UIntOS)1 << (ReadUInt16(&hdr[32])));
-//	UInt16 majorVer = ReadUInt16(&hdr[26]);
-//	Int32 dirCnt = ReadInt32(&hdr[40]);
-	UInt32 fatCnt = ReadUInt32(&hdr[44]);
-	UInt32 dirSect = ReadUInt32(&hdr[48]);
-	UInt32 miniFatSect = ReadUInt32(&hdr[60]);
-	UInt32 miniFatCnt = ReadUInt32(&hdr[64]);
+	UIntOS sectorSize = ((UIntOS)1 << (ReadLUInt16(&hdr[30])));
+	UIntOS miniStmSectSize = ((UIntOS)1 << (ReadLUInt16(&hdr[32])));
+//	UInt16 majorVer = ReadLUInt16(&hdr[26]);
+//	Int32 dirCnt = ReadLInt32(&hdr[40]);
+	UInt32 fatCnt = ReadLUInt32(&hdr[44]);
+	UInt32 dirSect = ReadLUInt32(&hdr[48]);
+	UInt32 miniFatSect = ReadLUInt32(&hdr[60]);
+	UInt32 miniFatCnt = ReadLUInt32(&hdr[64]);
 	UInt32 sectorNum;
 	if (fatCnt <= 0)
 		return nullptr;
@@ -76,7 +76,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 		j = 109;
 	while (i < j)
 	{
-		sectorNum = ReadUInt32(&hdr[76 + i * 4]);
+		sectorNum = ReadLUInt32(&hdr[76 + i * 4]);
 		if (sectorNum != 0xffffffff)
 		{
 			fd->GetRealData(sectorSize * (sectorNum + 1), sectorSize, fat.SubArray(fatSize));
@@ -120,16 +120,16 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 		i = 0;
 		while (i < sectorSize)
 		{
-			if (ReadInt32(&buff[i]) == 0)
+			if (ReadLInt32(&buff[i]) == 0)
 				break;
 
 			createTS = rootCreateTS;
 			modifyTS = rootModifyTS;
-			if (ReadInt32(&buff[i + 100]) != 0 || ReadInt32(&buff[i + 104]) != 0)
+			if (ReadLInt32(&buff[i + 100]) != 0 || ReadLInt32(&buff[i + 104]) != 0)
 			{
 				createTS = Data::Timestamp::FromFILETIME(&buff[i + 100], 0);
 			}
-			if (ReadInt32(&buff[i + 108]) != 0 || ReadInt32(&buff[i + 112]) != 0)
+			if (ReadLInt32(&buff[i + 108]) != 0 || ReadLInt32(&buff[i + 112]) != 0)
 			{
 				modifyTS = Data::Timestamp::FromFILETIME(&buff[i + 108], 0);
 			}
@@ -138,8 +138,8 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 			{
 				rootCreateTS = createTS;
 				rootModifyTS = modifyTS;
-				currSect = ReadUInt32(&buff[i + 116]);
-				sizeLeft = ReadUInt64(&buff[i + 120]);
+				currSect = ReadLUInt32(&buff[i + 116]);
+				sizeLeft = ReadLUInt64(&buff[i + 120]);
 				while (sizeLeft > 0)
 				{
 					if ((UInt32)currSect == 0xfffffffd)
@@ -155,13 +155,13 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 						miniStmFd.Append(512 + sectorSize * currSect, (UInt32)sectorSize);
 						sizeLeft -= sectorSize;
 					}
-					currSect = ReadUInt32(&fat[currSect * 4]);
+					currSect = ReadLUInt32(&fat[currSect * 4]);
 				}
 			}
 			else
 			{
 				sb.ClearStr();
-				if (ReadUInt16(&buff[i]) < 32)
+				if (ReadLUInt16(&buff[i]) < 32)
 				{
 					sb.AppendUTF16((const UTF16Char *)&buff[i + 2]);
 				}
@@ -174,8 +174,8 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 					OPTSTR_DEL(workbookName);
 					workbookName = Text::String::New(sb.ToCString());
 				}
-				currSect = ReadUInt32(&buff[i + 116]);
-				sizeLeft = ReadUInt64(&buff[i + 120]);
+				currSect = ReadLUInt32(&buff[i + 116]);
+				sizeLeft = ReadLUInt64(&buff[i + 120]);
 				if (sizeLeft >= 4096)
 				{
 					IO::StmData::BlockStreamData itemFd(fd);
@@ -200,7 +200,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 							itemFd.Append(512 + sectorSize * currSect, (UInt32)sectorSize);
 							sizeLeft -= sectorSize;
 						}
-						currSect = ReadUInt32(&fat[currSect * 4]);
+						currSect = ReadLUInt32(&fat[currSect * 4]);
 					}
 					pkg->AddData(itemFd, 0, itemFd.GetDataSize(), IO::PackFileItem::HeaderType::No, sb.ToCString(), modifyTS, modifyTS, createTS, 0);
 				}
@@ -228,7 +228,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 							itemFd.Append(miniStmSectSize * currSect, (UInt32)miniStmSectSize);
 							sizeLeft -= miniStmSectSize;
 						}
-						currSect = ReadUInt32(&miniFat[currSect * 4]);
+						currSect = ReadLUInt32(&miniFat[currSect * 4]);
 					}
 					pkg->AddData(itemFd, 0, itemFd.GetDataSize(), IO::PackFileItem::HeaderType::No, sb.ToCString(), modifyTS, modifyTS, createTS, 0);
 				}
@@ -239,7 +239,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 		{
 			break;
 		}
-		dirSect = ReadUInt32(&fat[dirSect * 4]);
+		dirSect = ReadLUInt32(&fat[dirSect * 4]);
 		if (dirSect == 0xfffffffe)
 		{
 			break;
@@ -375,7 +375,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 		if (readSize <= 0)
 			break;
 
-		if (!bofFound && ReadUInt16(&readBuff[0]) != 0x809)
+		if (!bofFound && ReadLUInt16(&readBuff[0]) != 0x809)
 			break;
 		readBuffSize += readSize;
 		currOfst += readSize;
@@ -385,8 +385,8 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 			if (i + 4 > readBuffSize)
 				break;
 			
-			recNo = ReadUInt16(&readBuff[i]);
-			recLeng = ReadUInt16(&readBuff[i + 2]);
+			recNo = ReadLUInt16(&readBuff[i]);
+			recLeng = ReadLUInt16(&readBuff[i + 2]);
 			if (i + 4 + recLeng > readBuffSize)
 				break;
 			switch (recNo)
@@ -412,11 +412,11 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 			case 0x31: //Undefined: Font Style
 				{
 					font = nnfont = MemAllocNN(Parser::FileParser::CFBParser::FontInfo);
-					nnfont->height = ReadInt16(&readBuff[i + 4]);
-					nnfont->grbit = ReadInt16(&readBuff[i + 6]);
-					nnfont->icv = ReadInt16(&readBuff[i + 8]);
-					nnfont->bls = ReadInt16(&readBuff[i + 10]);
-					nnfont->sss = ReadInt16(&readBuff[i + 12]);
+					nnfont->height = ReadLInt16(&readBuff[i + 4]);
+					nnfont->grbit = ReadLInt16(&readBuff[i + 6]);
+					nnfont->icv = ReadLInt16(&readBuff[i + 8]);
+					nnfont->bls = ReadLInt16(&readBuff[i + 10]);
+					nnfont->sss = ReadLInt16(&readBuff[i + 12]);
 					nnfont->uls = readBuff[i + 14];
 					nnfont->bFamily = readBuff[i + 15];
 					nnfont->bCharSet = readBuff[i + 16];
@@ -443,11 +443,11 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 				}
 				break;
 			case 0x3d: //WINDOW1
-				wb->SetWindowTopX(ReadInt16(&readBuff[i + 4]));
-				wb->SetWindowTopY(ReadInt16(&readBuff[i + 6]));
-				wb->SetWindowWidth(ReadInt16(&readBuff[i + 8]));
-				wb->SetWindowHeight(ReadInt16(&readBuff[i + 10]));
-				wb->SetActiveSheet(ReadUInt16(&readBuff[i + 14]));
+				wb->SetWindowTopX(ReadLInt16(&readBuff[i + 4]));
+				wb->SetWindowTopY(ReadLInt16(&readBuff[i + 6]));
+				wb->SetWindowWidth(ReadLInt16(&readBuff[i + 8]));
+				wb->SetWindowHeight(ReadLInt16(&readBuff[i + 10]));
+				wb->SetActiveSheet(ReadLUInt16(&readBuff[i + 14]));
 				break;
 			case 0x40: //BACKUP
 				break;
@@ -473,7 +473,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 					}
 					NN<WorksheetStatus> wsStatus = MemAllocNN(WorksheetStatus);
 					wsStatus->ws = wb->AddWorksheet(sb.ToCString());
-					wsStatus->ofst = ofstRef + ReadUInt32(&readBuff[i + 4]);
+					wsStatus->ofst = ofstRef + ReadLUInt32(&readBuff[i + 4]);
 					status.wsList.Add(wsStatus);
 				}
 				break;
@@ -483,7 +483,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 				break;
 			case 0x92: //PALETTE
 				{
-					UIntOS j = ReadUInt16(&readBuff[i + 4]);
+					UIntOS j = ReadLUInt16(&readBuff[i + 4]);
 					UIntOS k;
 					k = 0;
 					while (k < j)
@@ -505,7 +505,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 			case 0xe0: //XF
 				{
 					style = wb->NewCellStyle();
-					UIntOS j = ReadUInt16(&readBuff[i + 4]);
+					UIntOS j = ReadLUInt16(&readBuff[i + 4]);
 					if (j)
 					{
 						font = status.fontList.GetItem(j);
@@ -515,7 +515,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 							style->SetFont(wbfont);
 						}
 					}
-					j = ReadUInt16(&readBuff[i + 6]);
+					j = ReadLUInt16(&readBuff[i + 6]);
 					if (j)
 					{
 						style->SetDataFormat(status.formatMap.Get((Int32)j));
@@ -529,16 +529,16 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 					borderTop.borderType = Text::SpreadSheet::BorderType::None;
 					borderRight.borderType = Text::SpreadSheet::BorderType::None;
 					borderBottom.borderType = Text::SpreadSheet::BorderType::None;
-					Int32 tmpV = ReadInt16(&readBuff[i + 14]);
+					Int32 tmpV = ReadLInt16(&readBuff[i + 14]);
 					if (tmpV != 0)
 					{
-						tmpV = ReadInt16(&readBuff[i + 14]);
+						tmpV = ReadLInt16(&readBuff[i + 14]);
 					}
 					borderLeft.borderType = (Text::SpreadSheet::BorderType)(tmpV & 0xf);
 					borderRight.borderType = (Text::SpreadSheet::BorderType)((tmpV & 0xf0) >> 4);
 					borderTop.borderType = (Text::SpreadSheet::BorderType)((tmpV & 0xf00) >> 8);
 					borderBottom.borderType = (Text::SpreadSheet::BorderType)((tmpV & 0xf000) >> 12);
-					tmpV = ReadInt16(&readBuff[i + 16]);
+					tmpV = ReadLInt16(&readBuff[i + 16]);
 					icv = (tmpV & 0x7f);
 					if (icv >= 64)
 					{
@@ -557,7 +557,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 					{
 						borderRight.borderColor = status.palette[icv - 8];
 					}
-					tmpV = ReadInt16(&readBuff[i + 18]);
+					tmpV = ReadLInt16(&readBuff[i + 18]);
 					icv = (tmpV & 0x7f);
 					if (icv >= 64)
 					{
@@ -593,7 +593,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 						style->SetBorderBottom(borderBottom);
 					}
 
-					icv = (ReadInt16(&readBuff[i + 22]) & 0x7f);
+					icv = (ReadLInt16(&readBuff[i + 22]) & 0x7f);
 					if (icv >= 64)
 					{
 					}
@@ -601,7 +601,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 					{
 						style->SetFillColor(status.palette[icv - 8], (Text::SpreadSheet::CellStyle::FillPattern)(readBuff[i + 21] >> 2));
 					}
-					j = ReadUInt16(&readBuff[i + 10]);
+					j = ReadLUInt16(&readBuff[i + 10]);
 					switch (j & 7)
 					{
 					case 0:
@@ -657,14 +657,14 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 				{
 					UIntOS j = i + 12;
 					UIntOS k;
-					UInt32 nStr = ReadUInt32(&readBuff[i + 8]);
+					UInt32 nStr = ReadLUInt32(&readBuff[i + 8]);
 					while (nStr-- > 0)
 					{
 						if (j >= i + 4 + recLeng)
 						{
 							i += (UIntOS)(4 + recLeng);
-							recNo = ReadUInt16(&readBuff[i]);
-							recLeng = ReadUInt16(&readBuff[i + 2]);
+							recNo = ReadLUInt16(&readBuff[i]);
+							recLeng = ReadLUInt16(&readBuff[i + 2]);
 							if (i + 4 + recLeng > readBuffSize)
 							{
 								if (i >= readBuffSize)
@@ -692,14 +692,14 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 						k = ReadUString(&readBuff[j], sb);
 						if (j + k > i + 4 + recLeng)
 						{
-							UInt32 charCnt = ReadUInt16(&readBuff[j]);
+							UInt32 charCnt = ReadLUInt16(&readBuff[j]);
 							sb.ClearStr();
 							k = ReadUStringPartial(&readBuff[j + 2], i + 4 + recLeng - j - 2, charCnt, sb);
 							while (true)
 							{
 								i += (UIntOS)(4 + recLeng);
-								recNo = ReadUInt16(&readBuff[i]);
-								recLeng = ReadUInt16(&readBuff[i + 2]);
+								recNo = ReadLUInt16(&readBuff[i]);
+								recLeng = ReadLUInt16(&readBuff[i + 2]);
 								if (i + 4 + recLeng > readBuffSize)
 								{
 									readBuff.CopyInner(0, i, readBuffSize - i);
@@ -759,7 +759,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 				break;
 			case 0x41e: //FORMAT
 				{
-					UInt16 ifmt = ReadUInt16(&readBuff[i + 4]);
+					UInt16 ifmt = ReadLUInt16(&readBuff[i + 4]);
 					sb.ClearStr();
 					ReadUString(&readBuff[i + 6], sb);
 					if (status.formatMap.Put(ifmt, Text::String::New(sb.ToCString())).SetTo(fmt))
@@ -777,8 +777,8 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 				break;
 			case 0x87d: //XFEXT
 				{
-					UInt16 ixfe = ReadUInt16(&readBuff[i + 18]);
-					Int16 cexts = ReadInt16(&readBuff[i + 22]);
+					UInt16 ixfe = ReadLUInt16(&readBuff[i + 18]);
+					Int16 cexts = ReadLInt16(&readBuff[i + 22]);
 					UInt32 j;
 					NN<Text::SpreadSheet::CellStyle> style;
 					if (wb->GetStyle(ixfe).SetTo(style))
@@ -786,7 +786,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 						j = 24;
 						while (cexts-- > 0 && j < recLeng)
 						{
-							switch (ReadInt16(&readBuff[i + j]))
+							switch (ReadLInt16(&readBuff[i + j]))
 							{
 							case 0: //xfextRGBForeColor
 								break;
@@ -810,10 +810,10 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 								break;
 							case 13: //xfextTextColor
 								{
-/*									Int16 xclrType = ReadInt16(&readBuff[i + j + 4]);
+/*									Int16 xclrType = ReadLInt16(&readBuff[i + j + 4]);
 									if (xclrType == 1)
 									{
-										Int16 icv = ReadInt32(&readBuff[i + j + 8]);
+										Int16 icv = ReadLInt32(&readBuff[i + j + 8]);
 										if (icv >= 64)
 										{
 										}
@@ -824,7 +824,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 									}
 									else if (xclrType == 2)
 									{
-										style->SetFontColor(ReadInt32(&readBuff[i + j + 8]));
+										style->SetFontColor(ReadLInt32(&readBuff[i + j + 8]));
 									}
 									else if (xclrType == 3)
 									{
@@ -836,7 +836,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 							case 15: //xfextIndent
 								break;
 							}
-							j += ReadUInt16(&readBuff[i + j + 2]);
+							j += ReadLUInt16(&readBuff[i + j + 2]);
 						}
 					}
 				}
@@ -944,10 +944,10 @@ Bool Parser::FileParser::CFBParser::ParseWorksheet(NN<IO::StreamData> fd, UInt64
 			if (i + 4 > readBuffSize)
 				break;
 			
-			if (!bofFound && ReadUInt16(&readBuff[0]) != 0x809)
+			if (!bofFound && ReadLUInt16(&readBuff[0]) != 0x809)
 				break;
-			recNo = ReadUInt16(&readBuff[i]);
-			recLeng = ReadUInt16(&readBuff[i + 2]);
+			recNo = ReadLUInt16(&readBuff[i]);
+			recLeng = ReadLUInt16(&readBuff[i + 2]);
 			if (i + 4 + recLeng > readBuffSize)
 				break;
 			switch (recNo)
@@ -984,16 +984,16 @@ Bool Parser::FileParser::CFBParser::ParseWorksheet(NN<IO::StreamData> fd, UInt64
 			case 0x1d: //SELECTION
 				break;
 			case 0x26: //LEFTMARGIN
-				ws->SetMarginLeft(ReadDouble(&readBuff[i + 4]));
+				ws->SetMarginLeft(ReadLDouble(&readBuff[i + 4]));
 				break;
 			case 0x27: //RIGHTMARGIN
-				ws->SetMarginRight(ReadDouble(&readBuff[i + 4]));
+				ws->SetMarginRight(ReadLDouble(&readBuff[i + 4]));
 				break;
 			case 0x28: //TOPMARGIN
-				ws->SetMarginTop(ReadDouble(&readBuff[i + 4]));
+				ws->SetMarginTop(ReadLDouble(&readBuff[i + 4]));
 				break;
 			case 0x29: //BOTTOMMARGIN
-				ws->SetMarginBottom(ReadDouble(&readBuff[i + 4]));
+				ws->SetMarginBottom(ReadLDouble(&readBuff[i + 4]));
 				break;
 			case 0x2a: //PRINTHEADERS
 				break;
@@ -1017,9 +1017,9 @@ Bool Parser::FileParser::CFBParser::ParseWorksheet(NN<IO::StreamData> fd, UInt64
 				break;
 			case 0x7d: //COLINFO
 				{
-					UInt16 colStart = ReadUInt16(&readBuff[i + 4]);
-					UInt16 colEnd = ReadUInt16(&readBuff[i + 6]);
-					Double w = ReadUInt16(&readBuff[i + 8]) / 256.0 * 5.25 + 0.05;
+					UInt16 colStart = ReadLUInt16(&readBuff[i + 4]);
+					UInt16 colEnd = ReadLUInt16(&readBuff[i + 6]);
+					Double w = ReadLUInt16(&readBuff[i + 8]) / 256.0 * 5.25 + 0.05;
 					while (colStart <= colEnd)
 					{
 						ws->SetColWidth(colStart, w, Math::Unit::Distance::DU_POINT);
@@ -1040,19 +1040,19 @@ Bool Parser::FileParser::CFBParser::ParseWorksheet(NN<IO::StreamData> fd, UInt64
 			case 0x9d: //AUTOFILTERINFO
 				break;
 			case 0xa1: //SETUP
-				ws->SetMarginHeader(ReadDouble(&readBuff[i + 20]));
-				ws->SetMarginFooter(ReadDouble(&readBuff[i + 28]));
+				ws->SetMarginHeader(ReadLDouble(&readBuff[i + 20]));
+				ws->SetMarginFooter(ReadLDouble(&readBuff[i + 28]));
 				break;
 			case 0xbd: //MULRK
 				{
-					UInt16 row = ReadUInt16(&readBuff[i + 4]);
-					UInt16 colStart = ReadUInt16(&readBuff[i + 6]);
-					UInt16 colEnd = ReadUInt16(&readBuff[i + recLeng + 2]);
+					UInt16 row = ReadLUInt16(&readBuff[i + 4]);
+					UInt16 colStart = ReadLUInt16(&readBuff[i + 6]);
+					UInt16 colEnd = ReadLUInt16(&readBuff[i + recLeng + 2]);
 					UIntOS currI = i + 8;
 					while (colStart <= colEnd)
 					{
-						ws->SetCellDouble(row, colStart, ParseRKNumber(ReadInt32(&readBuff[currI + 2])));
-						ws->SetCellStyle(row, colStart, wb->GetStyle(ReadUInt16(&readBuff[currI])));
+						ws->SetCellDouble(row, colStart, ParseRKNumber(ReadLInt32(&readBuff[currI + 2])));
+						ws->SetCellStyle(row, colStart, wb->GetStyle(ReadLUInt16(&readBuff[currI])));
 
 						currI += 6;
 						colStart++;
@@ -1061,13 +1061,13 @@ Bool Parser::FileParser::CFBParser::ParseWorksheet(NN<IO::StreamData> fd, UInt64
 				break;
 			case 0xbe: //MULBLANK
 				{
-					UInt16 row = ReadUInt16(&readBuff[i + 4]);
-					UInt16 colStart = ReadUInt16(&readBuff[i + 6]);
-					UInt16 colEnd = ReadUInt16(&readBuff[i + recLeng + 2]);
+					UInt16 row = ReadLUInt16(&readBuff[i + 4]);
+					UInt16 colStart = ReadLUInt16(&readBuff[i + 6]);
+					UInt16 colEnd = ReadLUInt16(&readBuff[i + recLeng + 2]);
 					UIntOS currI = i + 8;
 					while (colStart <= colEnd)
 					{
-						ws->SetCellStyle(row, colStart, wb->GetStyle(ReadUInt16(&readBuff[currI])));
+						ws->SetCellStyle(row, colStart, wb->GetStyle(ReadLUInt16(&readBuff[currI])));
 
 						currI += 2;
 						colStart++;
@@ -1080,12 +1080,12 @@ Bool Parser::FileParser::CFBParser::ParseWorksheet(NN<IO::StreamData> fd, UInt64
 				break;
 			case 0xe5: //MERGECELLS
 				{
-					UInt16 cnt = (UInt16)(ReadUInt16(&readBuff[i + 4]));
+					UInt16 cnt = (UInt16)(ReadLUInt16(&readBuff[i + 4]));
 					UInt16 v = 0;
 					UIntOS vofst = i + 6;
 					while (v < cnt)
 					{
-						ws->MergeCells(ReadUInt16(&readBuff[vofst]), ReadUInt16(&readBuff[vofst + 4]), (UInt32)ReadUInt16(&readBuff[vofst + 2]) - ReadUInt16(&readBuff[vofst]) + 1, (UInt32)ReadUInt16(&readBuff[vofst + 6]) - ReadUInt16(&readBuff[vofst + 4]) + 1);
+						ws->MergeCells(ReadLUInt16(&readBuff[vofst]), ReadLUInt16(&readBuff[vofst + 4]), (UInt32)ReadLUInt16(&readBuff[vofst + 2]) - ReadLUInt16(&readBuff[vofst]) + 1, (UInt32)ReadLUInt16(&readBuff[vofst + 6]) - ReadLUInt16(&readBuff[vofst + 4]) + 1);
 						vofst += 8;
 						v++;
 					}
@@ -1098,8 +1098,8 @@ Bool Parser::FileParser::CFBParser::ParseWorksheet(NN<IO::StreamData> fd, UInt64
 			case 0xef: ///////////////////////////////////
 				break;
 			case 0xfd: //LABELSST
-				ws->SetCellString(ReadUInt16(&readBuff[i + 4]), ReadUInt16(&readBuff[i + 6]), Text::String::OrEmpty(status->sst.GetItem(ReadUInt32(&readBuff[i + 10]))));
-				ws->SetCellStyle(ReadUInt16(&readBuff[i + 4]), ReadUInt16(&readBuff[i + 6]), wb->GetStyle(ReadUInt16(&readBuff[i + 8])));
+				ws->SetCellString(ReadLUInt16(&readBuff[i + 4]), ReadLUInt16(&readBuff[i + 6]), Text::String::OrEmpty(status->sst.GetItem(ReadLUInt32(&readBuff[i + 10]))));
+				ws->SetCellStyle(ReadLUInt16(&readBuff[i + 4]), ReadLUInt16(&readBuff[i + 6]), wb->GetStyle(ReadLUInt16(&readBuff[i + 8])));
 				break;
 			case 0x1b6: //TXO
 				break;
@@ -1108,29 +1108,29 @@ Bool Parser::FileParser::CFBParser::ParseWorksheet(NN<IO::StreamData> fd, UInt64
 			case 0x200: //DIMENSIONS
 				break;
 			case 0x201: //BLANK
-				ws->SetCellStyle(ReadUInt16(&readBuff[i + 4]), ReadUInt16(&readBuff[i + 6]), wb->GetStyle(ReadUInt16(&readBuff[i + 8])));
+				ws->SetCellStyle(ReadLUInt16(&readBuff[i + 4]), ReadLUInt16(&readBuff[i + 6]), wb->GetStyle(ReadLUInt16(&readBuff[i + 8])));
 				break;
 			case 0x203: //NUMBER
-				ws->SetCellDouble(ReadUInt16(&readBuff[i + 4]), ReadUInt16(&readBuff[i + 6]), ReadDouble(&readBuff[i + 10]));
-				ws->SetCellStyle(ReadUInt16(&readBuff[i + 4]), ReadUInt16(&readBuff[i + 6]), wb->GetStyle(ReadUInt16(&readBuff[i + 8])));
+				ws->SetCellDouble(ReadLUInt16(&readBuff[i + 4]), ReadLUInt16(&readBuff[i + 6]), ReadLDouble(&readBuff[i + 10]));
+				ws->SetCellStyle(ReadLUInt16(&readBuff[i + 4]), ReadLUInt16(&readBuff[i + 6]), wb->GetStyle(ReadLUInt16(&readBuff[i + 8])));
 				break;
 			case 0x207: //STRING
 
 				break;
 			case 0x208: //ROW
-				ws->SetRowHeight(ReadUInt16(&readBuff[i + 4]), ReadInt16(&readBuff[i + 10]) * 0.05);
+				ws->SetRowHeight(ReadLUInt16(&readBuff[i + 4]), ReadLInt16(&readBuff[i + 10]) * 0.05);
 				break;
 			case 0x20b: //INDEX
 				break;
 			case 0x225: //DEFAULTROWHEIGHT
 				break;
 			case 0x23e: //WINDOW2
-				ws->SetOptions(ReadUInt16(&readBuff[i + 4]));
-				ws->SetZoom(ReadUInt16(&readBuff[i + 16]));
+				ws->SetOptions(ReadLUInt16(&readBuff[i + 4]));
+				ws->SetZoom(ReadLUInt16(&readBuff[i + 16]));
 				break;
 			case 0x27e: // RK? ////////////////////////////
-				ws->SetCellDouble(ReadUInt16(&readBuff[i + 4]), ReadUInt16(&readBuff[i + 6]), ParseRKNumber(ReadInt32(&readBuff[i + 10])));
-				ws->SetCellStyle(ReadUInt16(&readBuff[i + 4]), ReadUInt16(&readBuff[i + 6]), wb->GetStyle(ReadUInt16(&readBuff[i + 8])));
+				ws->SetCellDouble(ReadLUInt16(&readBuff[i + 4]), ReadLUInt16(&readBuff[i + 6]), ParseRKNumber(ReadLInt32(&readBuff[i + 10])));
+				ws->SetCellStyle(ReadLUInt16(&readBuff[i + 4]), ReadLUInt16(&readBuff[i + 6]), wb->GetStyle(ReadLUInt16(&readBuff[i + 8])));
 				break;
 			case 0x4bc: //SHRFMLA?
 				break;
@@ -1161,7 +1161,7 @@ Bool Parser::FileParser::CFBParser::ParseWorksheet(NN<IO::StreamData> fd, UInt64
 UIntOS Parser::FileParser::CFBParser::ReadUString(UInt8 *buff, NN<Text::StringBuilderUTF8> sb)
 {
 	UIntOS currOfst = 0;
-	UIntOS charCnt = ReadUInt16(&buff[0]);
+	UIntOS charCnt = ReadLUInt16(&buff[0]);
 	UInt8 flags = buff[2];
 	UIntOS fmtCnt;
 	UIntOS cchExtRst;
@@ -1182,7 +1182,7 @@ UIntOS Parser::FileParser::CFBParser::ReadUString(UInt8 *buff, NN<Text::StringBu
 	}
 	else if ((flags & 12) == 4)
 	{
-		cchExtRst = ReadUInt32(&buff[3]);
+		cchExtRst = ReadLUInt32(&buff[3]);
 		if (flags & 1)
 		{
 			NN<Text::String> s = Text::String::NewW((UTF16Char*)&buff[7], charCnt);
@@ -1200,7 +1200,7 @@ UIntOS Parser::FileParser::CFBParser::ReadUString(UInt8 *buff, NN<Text::StringBu
 	else if ((flags & 12) == 8)
 	{
 		///////////////////////////////////////
-		fmtCnt = ReadUInt16(&buff[3]);
+		fmtCnt = ReadLUInt16(&buff[3]);
 		if (flags & 1)
 		{
 			NN<Text::String> s = Text::String::NewW((UTF16Char*)&buff[5], charCnt);
@@ -1218,8 +1218,8 @@ UIntOS Parser::FileParser::CFBParser::ReadUString(UInt8 *buff, NN<Text::StringBu
 	else if ((flags & 12) == 12)
 	{
 		///////////////////////////////////////
-		fmtCnt = ReadUInt16(&buff[3]);
-		cchExtRst = ReadUInt32(&buff[5]);
+		fmtCnt = ReadLUInt16(&buff[3]);
+		cchExtRst = ReadLUInt32(&buff[5]);
 		if (flags & 1)
 		{
 			NN<Text::String> s = Text::String::NewW((UTF16Char*)&buff[9], charCnt);
@@ -1266,7 +1266,7 @@ UIntOS Parser::FileParser::CFBParser::ReadUStringPartial(UInt8 *buff, UIntOS buf
 	}
 	else if ((flags & 12) == 4)
 	{
-		cchExtRst = ReadUInt32(&buff[1]);
+		cchExtRst = ReadLUInt32(&buff[1]);
 		if (flags & 1)
 		{
 			if (thisCnt * 2 + 1 + cchExtRst > buffSize)
@@ -1288,7 +1288,7 @@ UIntOS Parser::FileParser::CFBParser::ReadUStringPartial(UInt8 *buff, UIntOS buf
 	else if ((flags & 12) == 8)
 	{
 		///////////////////////////////////////
-		fmtCnt = ReadUInt16(&buff[1]);
+		fmtCnt = ReadLUInt16(&buff[1]);
 		if (flags & 1)
 		{
 			if (thisCnt * 2 + 3 + (fmtCnt << 2) > buffSize)
@@ -1310,8 +1310,8 @@ UIntOS Parser::FileParser::CFBParser::ReadUStringPartial(UInt8 *buff, UIntOS buf
 	else if ((flags & 12) == 12)
 	{
 		///////////////////////////////////////
-		fmtCnt = ReadUInt16(&buff[1]);
-		cchExtRst = ReadUInt32(&buff[3]);
+		fmtCnt = ReadLUInt16(&buff[1]);
+		cchExtRst = ReadLUInt32(&buff[3]);
 		if (flags & 1)
 		{
 			if (thisCnt * 2 + 7 + (fmtCnt << 2) + cchExtRst > buffSize)
@@ -1359,7 +1359,7 @@ UIntOS Parser::FileParser::CFBParser::ReadUStringB(UInt8 *buff, NN<Text::StringB
 	}
 	else if ((flags & 12) == 4)
 	{
-		cchExtRst = ReadUInt32(&buff[2]);
+		cchExtRst = ReadLUInt32(&buff[2]);
 		if (flags & 1)
 		{
 			NN<Text::String> s = Text::String::NewW((UTF16Char*)&buff[6], charCnt);
@@ -1377,7 +1377,7 @@ UIntOS Parser::FileParser::CFBParser::ReadUStringB(UInt8 *buff, NN<Text::StringB
 	else if ((flags & 12) == 8)
 	{
 		///////////////////////////////////////
-		fmtCnt = ReadUInt16(&buff[2]);
+		fmtCnt = ReadLUInt16(&buff[2]);
 		if (flags & 1)
 		{
 			NN<Text::String> s = Text::String::NewW((UTF16Char*)&buff[4], charCnt);
@@ -1395,8 +1395,8 @@ UIntOS Parser::FileParser::CFBParser::ReadUStringB(UInt8 *buff, NN<Text::StringB
 	else if ((flags & 12) == 12)
 	{
 		///////////////////////////////////////
-		fmtCnt = ReadUInt16(&buff[2]);
-		cchExtRst = ReadUInt32(&buff[4]);
+		fmtCnt = ReadLUInt16(&buff[2]);
+		cchExtRst = ReadLUInt32(&buff[4]);
 		if (flags & 1)
 		{
 			NN<Text::String> s = Text::String::NewW((UTF16Char*)&buff[8], charCnt);
@@ -1420,15 +1420,15 @@ Double Parser::FileParser::CFBParser::ParseRKNumber(Int32 rkValue)
 	UInt8 buff[8];
 	if ((rkValue & 3) == 0)
 	{
-		WriteInt32(&buff[4], rkValue & ~3);
-		WriteInt32(buff, 0);
-		return ReadDouble(buff);
+		WriteLInt32(&buff[4], rkValue & ~3);
+		WriteLInt32(buff, 0);
+		return ReadLDouble(buff);
 	}
 	else if ((rkValue & 3) == 1)
 	{
-		WriteInt32(&buff[4], rkValue & ~3);
-		WriteInt32(buff, 0);
-		return ReadDouble(buff) * 0.01;
+		WriteLInt32(&buff[4], rkValue & ~3);
+		WriteLInt32(buff, 0);
+		return ReadLDouble(buff) * 0.01;
 	}
 	else if ((rkValue & 3) == 2)
 	{

@@ -180,7 +180,7 @@ namespace Data
 
 		static TimeInstant FromFILETIME(void *fileTime)
 		{
-			Int64 t = ReadInt64((const UInt8*)fileTime) - 116444736000000000LL;
+			Int64 t = ReadLInt64((const UInt8*)fileTime) - 116444736000000000LL;
 			Int32 ns = (Int32)(t % 10000000);
 			if (ns < 0)
 			{

@@ -50,7 +50,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PACParser::ParseFileHdr(NN<IO::St
 	}
 	if (*(Int32*)&hdr[0] != *(Int32*)"PAC ")
 		return nullptr;
-	recCnt = ReadUInt32(&hdr[8]);
+	recCnt = ReadLUInt32(&hdr[8]);
 	if (recCnt == 0)
 	{
 		return nullptr;
@@ -73,8 +73,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PACParser::ParseFileHdr(NN<IO::St
 	nextOfst = recCnt * 40 + 2048 + 4;
 	while (i < recCnt)
 	{
-		fileSize = ReadUInt32(&recBuff[j + 32]);
-		fileOfst = ReadUInt32(&recBuff[j + 36]);
+		fileSize = ReadLUInt32(&recBuff[j + 32]);
+		fileOfst = ReadLUInt32(&recBuff[j + 36]);
 		if (fileOfst != nextOfst)
 		{
 			pf.Delete();

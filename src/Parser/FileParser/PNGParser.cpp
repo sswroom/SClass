@@ -1959,8 +1959,8 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				NEW_CLASSNN(simg, Media::StaticImage(info));
 				if (simg->pal.SetTo(spal))
 				{
-					WriteUInt32(&spal[0], 0xff000000);
-					WriteUInt32(&spal[4], 0xffffffff);
+					WriteLUInt32(&spal[0], 0xff000000);
+					WriteLUInt32(&spal[4], 0xffffffff);
 				}
 
 				byteCnt = info->byteSize;
@@ -1982,10 +1982,10 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				NEW_CLASSNN(simg, Media::StaticImage(info));
 				if (simg->pal.SetTo(spal))
 				{
-					WriteUInt32(&spal[0], 0xff000000);
-					WriteUInt32(&spal[4], 0xff555555);
-					WriteUInt32(&spal[8], 0xffaaaaaa);
-					WriteUInt32(&spal[12], 0xffffffff);
+					WriteLUInt32(&spal[0], 0xff000000);
+					WriteLUInt32(&spal[4], 0xff555555);
+					WriteLUInt32(&spal[8], 0xffaaaaaa);
+					WriteLUInt32(&spal[12], 0xffffffff);
 				}
 
 				byteCnt = info->byteSize;
@@ -2007,22 +2007,22 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				NEW_CLASSNN(simg, Media::StaticImage(info));
 				if (simg->pal.SetTo(spal))
 				{
-					WriteUInt32(&spal[0], 0xff000000);
-					WriteUInt32(&spal[4], 0xff111111);
-					WriteUInt32(&spal[8], 0xff222222);
-					WriteUInt32(&spal[12], 0xff333333);
-					WriteUInt32(&spal[16], 0xff444444);
-					WriteUInt32(&spal[20], 0xff555555);
-					WriteUInt32(&spal[24], 0xff666666);
-					WriteUInt32(&spal[28], 0xff777777);
-					WriteUInt32(&spal[32], 0xff888888);
-					WriteUInt32(&spal[36], 0xff999999);
-					WriteUInt32(&spal[40], 0xffaaaaaa);
-					WriteUInt32(&spal[44], 0xffbbbbbb);
-					WriteUInt32(&spal[48], 0xffcccccc);
-					WriteUInt32(&spal[52], 0xffdddddd);
-					WriteUInt32(&spal[56], 0xffeeeeee);
-					WriteUInt32(&spal[60], 0xffffffff);
+					WriteLUInt32(&spal[0], 0xff000000);
+					WriteLUInt32(&spal[4], 0xff111111);
+					WriteLUInt32(&spal[8], 0xff222222);
+					WriteLUInt32(&spal[12], 0xff333333);
+					WriteLUInt32(&spal[16], 0xff444444);
+					WriteLUInt32(&spal[20], 0xff555555);
+					WriteLUInt32(&spal[24], 0xff666666);
+					WriteLUInt32(&spal[28], 0xff777777);
+					WriteLUInt32(&spal[32], 0xff888888);
+					WriteLUInt32(&spal[36], 0xff999999);
+					WriteLUInt32(&spal[40], 0xffaaaaaa);
+					WriteLUInt32(&spal[44], 0xffbbbbbb);
+					WriteLUInt32(&spal[48], 0xffcccccc);
+					WriteLUInt32(&spal[52], 0xffdddddd);
+					WriteLUInt32(&spal[56], 0xffeeeeee);
+					WriteLUInt32(&spal[60], 0xffffffff);
 				}
 
 				byteCnt = info->byteSize;
@@ -2054,7 +2054,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				pxId = 0;
 				while (pxId < 256)
 				{
-					WriteUInt32(&spal[pxId << 2], (0xff000000 | (pxId << 16) | (pxId << 8) | pxId));
+					WriteLUInt32(&spal[pxId << 2], (0xff000000 | (pxId << 16) | (pxId << 8) | pxId));
 					pxId++;
 				}
 			}

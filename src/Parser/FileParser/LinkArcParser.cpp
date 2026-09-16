@@ -50,7 +50,7 @@ Optional<IO::ParsedObject> Parser::FileParser::LinkArcParser::ParseFileHdr(NN<IO
 	{
 		return nullptr;
 	}
-	if (ReadInt32(&hdr[0]) != 0x4b4e494c || ReadInt16(&hdr[4]) != 0x36)
+	if (ReadLInt32(&hdr[0]) != 0x4b4e494c || ReadLInt16(&hdr[4]) != 0x36)
 		return nullptr;
 	nameSize = hdr[7];
 	if (nameSize > fd->GetShortName().leng - 4)
@@ -64,8 +64,8 @@ Optional<IO::ParsedObject> Parser::FileParser::LinkArcParser::ParseFileHdr(NN<IO
 	while (currOfst < fileSize)
 	{
 		fd->GetRealData(currOfst, 256, BYTEARR(recBuff));
-		recSize = ReadUInt32(&recBuff[0]);
-		fnameSize = ReadUInt16(&recBuff[13]);
+		recSize = ReadLUInt32(&recBuff[0]);
+		fnameSize = ReadLUInt16(&recBuff[13]);
 		if (recSize == 0 && currOfst == fileSize - 4)
 			break;
 		if (recSize <= 16 || recSize + currOfst > fileSize)
@@ -78,7 +78,7 @@ Optional<IO::ParsedObject> Parser::FileParser::LinkArcParser::ParseFileHdr(NN<IO
 			pf.Delete();
 			return nullptr;
 		}
-		dt.SetValue(ReadUInt16(&recBuff[6]), recBuff[8], recBuff[9], recBuff[10], recBuff[11], recBuff[12], 0, 36);
+		dt.SetValue(ReadLUInt16(&recBuff[6]), recBuff[8], recBuff[9], recBuff[10], recBuff[11], recBuff[12], 0, 36);
 		Text::StrUTF16_UTF8C(fileName, (const UTF16Char*)&recBuff[15], (UIntOS)fnameSize >> 1);
 		fileName[fnameSize >> 1] = 0;
 		pf->AddData(fd, currOfst + 15 + fnameSize, recSize - fnameSize - 15, IO::PackFileItem::HeaderType::No, {fileName, (UIntOS)fnameSize >> 1}, Data::Timestamp(dt.ToInstant(), 0), nullptr, nullptr, 0);

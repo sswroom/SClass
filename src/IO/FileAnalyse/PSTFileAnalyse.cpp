@@ -27,7 +27,7 @@ void __stdcall IO::FileAnalyse::PSTFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	{
 		return;
 	}
-	UInt16 wVer = ReadUInt16(&buff[10]);
+	UInt16 wVer = ReadLUInt16(&buff[10]);
 	me->unicode = wVer >= 23;
 	if (me->unicode)
 	{
@@ -59,7 +59,7 @@ void __stdcall IO::FileAnalyse::PSTFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		item = MemAllocNN(IO::FileAnalyse::PSTFileAnalyse::PackItem);
 		item->ofst = ofst + 4;
 		item->size = lastSize + 12;
-		item->packType = (PackType)ReadInt32(&buff[8]);
+		item->packType = (PackType)ReadLInt32(&buff[8]);
 		me->items.Add(item);
 		ofst += lastSize + 12;
 	}*/
@@ -157,88 +157,88 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PSTFileAnalyse::GetFrame
 		Data::ByteBuffer packData(item->size);
 		fd->GetRealData(item->ofst, item->size, packData);
 		frame->AddStrC(0, 4, CSTR("dwMagic"), &packData[0]);
-		frame->AddHex32(4, CSTR("dwCRCPartial"), ReadUInt32(&packData[4]));
-		frame->AddHex16(8, CSTR("wMagicClient"), ReadUInt16(&packData[8]));
-		frame->AddUInt(10, 2, CSTR("wVer"), ReadUInt16(&packData[10]));
-		frame->AddUInt(12, 2, CSTR("wVerClient"), ReadUInt16(&packData[12]));
+		frame->AddHex32(4, CSTR("dwCRCPartial"), ReadLUInt32(&packData[4]));
+		frame->AddHex16(8, CSTR("wMagicClient"), ReadLUInt16(&packData[8]));
+		frame->AddUInt(10, 2, CSTR("wVer"), ReadLUInt16(&packData[10]));
+		frame->AddUInt(12, 2, CSTR("wVerClient"), ReadLUInt16(&packData[12]));
 		frame->AddUInt(14, 1, CSTR("bPlatformCreate"), packData[14]);
 		frame->AddUInt(15, 1, CSTR("bPlatformAccess"), packData[15]);
-		frame->AddUInt(16, 4, CSTR("dwReserved1"), ReadUInt32(&packData[16]));
-		frame->AddUInt(20, 4, CSTR("dwReserved2"), ReadUInt32(&packData[20]));
+		frame->AddUInt(16, 4, CSTR("dwReserved1"), ReadLUInt32(&packData[16]));
+		frame->AddUInt(20, 4, CSTR("dwReserved2"), ReadLUInt32(&packData[20]));
 		if (this->unicode)
 		{
-			frame->AddHex64(24, CSTR("bidUnused"), ReadUInt64(&packData[24]));
-			frame->AddHex64(32, CSTR("bidNextP"), ReadUInt64(&packData[32]));
-			frame->AddHex32(40, CSTR("dwUnique"), ReadUInt32(&packData[40]));
+			frame->AddHex64(24, CSTR("bidUnused"), ReadLUInt64(&packData[24]));
+			frame->AddHex64(32, CSTR("bidNextP"), ReadLUInt64(&packData[32]));
+			frame->AddHex32(40, CSTR("dwUnique"), ReadLUInt32(&packData[40]));
 			i = 0;
 			j = 32;
 			while (i < j)
 			{
 				sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("rgnid[")), i), UTF8STRC("]"));
-				v32 = ReadUInt32(&packData[44 + i * 4]);
+				v32 = ReadLUInt32(&packData[44 + i * 4]);
 				frame->AddHex32Name(44 + i * 4, CSTRP(sbuff, sptr), v32, NIDTypeGetName(v32));
 				i++;
 			}
-			frame->AddUInt64(172, CSTR("qwUnused"), ReadUInt64(&packData[172]));
-			frame->AddUInt(180, 4, CSTR("ROOT.dwReserved"), ReadUInt32(&packData[180]));
-			frame->AddUInt64(184, CSTR("ROOT.ibFileEof"), ReadUInt64(&packData[184]));
-			frame->AddUInt64(192, CSTR("ROOT.ibAMapLast"), ReadUInt64(&packData[192]));
-			frame->AddUInt64(200, CSTR("ROOT.cbAMapFree"), ReadUInt64(&packData[200]));
-			frame->AddUInt64(208, CSTR("ROOT.cbPMapFree"), ReadUInt64(&packData[208]));
-			frame->AddUInt64(216, CSTR("ROOT.BREFNBT.bid"), ReadUInt64(&packData[216]));
-			frame->AddUInt64(224, CSTR("ROOT.BREFNBT.ib"), ReadUInt64(&packData[224]));
-			frame->AddUInt64(232, CSTR("ROOT.BREFBBT.bid"), ReadUInt64(&packData[232]));
-			frame->AddUInt64(240, CSTR("ROOT.BREFBBT.ib"), ReadUInt64(&packData[240]));
+			frame->AddUInt64(172, CSTR("qwUnused"), ReadLUInt64(&packData[172]));
+			frame->AddUInt(180, 4, CSTR("ROOT.dwReserved"), ReadLUInt32(&packData[180]));
+			frame->AddUInt64(184, CSTR("ROOT.ibFileEof"), ReadLUInt64(&packData[184]));
+			frame->AddUInt64(192, CSTR("ROOT.ibAMapLast"), ReadLUInt64(&packData[192]));
+			frame->AddUInt64(200, CSTR("ROOT.cbAMapFree"), ReadLUInt64(&packData[200]));
+			frame->AddUInt64(208, CSTR("ROOT.cbPMapFree"), ReadLUInt64(&packData[208]));
+			frame->AddUInt64(216, CSTR("ROOT.BREFNBT.bid"), ReadLUInt64(&packData[216]));
+			frame->AddUInt64(224, CSTR("ROOT.BREFNBT.ib"), ReadLUInt64(&packData[224]));
+			frame->AddUInt64(232, CSTR("ROOT.BREFBBT.bid"), ReadLUInt64(&packData[232]));
+			frame->AddUInt64(240, CSTR("ROOT.BREFBBT.ib"), ReadLUInt64(&packData[240]));
 			frame->AddUInt(248, 1, CSTR("ROOT.fAMapValid"), packData[248]);
 			frame->AddUInt(249, 1, CSTR("ROOT.bReserved"), packData[249]);
-			frame->AddUInt(250, 2, CSTR("ROOT.wReserved"), ReadUInt16(&packData[250]));
-			frame->AddUInt(252, 4, CSTR("dwAlign"), ReadUInt32(&packData[252]));
+			frame->AddUInt(250, 2, CSTR("ROOT.wReserved"), ReadLUInt16(&packData[250]));
+			frame->AddUInt(252, 4, CSTR("dwAlign"), ReadLUInt32(&packData[252]));
 			frame->AddHexBuff(256, CSTR("rgbFM"), packData.SubArray(256, 128), true);
 			frame->AddHexBuff(384, CSTR("rgbFP"), packData.SubArray(384, 128), true);
 			frame->AddHex8(512, CSTR("bSentinel"), packData[512]);
 			frame->AddHex8(513, CSTR("bCryptMethod"), packData[513]);
-			frame->AddHex16(514, CSTR("rgbReserved"), ReadUInt16(&packData[514]));
-			frame->AddHex64(516, CSTR("bidNextB"), ReadUInt64(&packData[516]));
-			frame->AddHex32(524, CSTR("dwCRCFull"), ReadUInt32(&packData[524]));
-			frame->AddUInt(528, 3, CSTR("rgbReserved2"), ReadUInt24(&packData[528]));
+			frame->AddHex16(514, CSTR("rgbReserved"), ReadLUInt16(&packData[514]));
+			frame->AddHex64(516, CSTR("bidNextB"), ReadLUInt64(&packData[516]));
+			frame->AddHex32(524, CSTR("dwCRCFull"), ReadLUInt32(&packData[524]));
+			frame->AddUInt(528, 3, CSTR("rgbReserved2"), ReadLUInt24(&packData[528]));
 			frame->AddUInt(531, 1, CSTR("bReserved"), packData[531]);
 			frame->AddHexBuff(532, CSTR("rgbReserved3"), packData.SubArray(532, 32), true);
 		}
 		else
 		{
-			frame->AddHex32(24, CSTR("bidNextB"), ReadUInt32(&packData[24]));
-			frame->AddHex32(28, CSTR("bidNextP"), ReadUInt32(&packData[28]));
-			frame->AddHex32(32, CSTR("dwUnique"), ReadUInt32(&packData[32]));
+			frame->AddHex32(24, CSTR("bidNextB"), ReadLUInt32(&packData[24]));
+			frame->AddHex32(28, CSTR("bidNextP"), ReadLUInt32(&packData[28]));
+			frame->AddHex32(32, CSTR("dwUnique"), ReadLUInt32(&packData[32]));
 			i = 0;
 			j = 32;
 			while (i < j)
 			{
 				sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("rgnid[")), i), UTF8STRC("]"));
-				v32 = ReadUInt32(&packData[36 + i * 4]);
+				v32 = ReadLUInt32(&packData[36 + i * 4]);
 				frame->AddHex32Name(36 + i * 4, CSTRP(sbuff, sptr), v32, NIDTypeGetName(v32));
 				i++;
 			}
-			frame->AddUInt(164, 4, CSTR("ROOT.dwReserved"), ReadUInt32(&packData[164]));
-			frame->AddUInt(168, 4, CSTR("ROOT.ibFileEof"), ReadUInt32(&packData[168]));
-			frame->AddUInt(172, 4, CSTR("ROOT.ibAMapLast"), ReadUInt32(&packData[172]));
-			frame->AddUInt(176, 4, CSTR("ROOT.cbAMapFree"), ReadUInt32(&packData[176]));
-			frame->AddUInt(180, 4, CSTR("ROOT.cbPMapFree"), ReadUInt32(&packData[180]));
-			frame->AddUInt(184, 4, CSTR("ROOT.BREFNBT.bid"), ReadUInt32(&packData[184]));
-			frame->AddUInt(188, 4, CSTR("ROOT.BREFNBT.ib"), ReadUInt32(&packData[188]));
-			frame->AddUInt(192, 4, CSTR("ROOT.BREFBBT.bid"), ReadUInt32(&packData[192]));
-			frame->AddUInt(196, 4, CSTR("ROOT.BREFBBT.ib"), ReadUInt32(&packData[196]));
+			frame->AddUInt(164, 4, CSTR("ROOT.dwReserved"), ReadLUInt32(&packData[164]));
+			frame->AddUInt(168, 4, CSTR("ROOT.ibFileEof"), ReadLUInt32(&packData[168]));
+			frame->AddUInt(172, 4, CSTR("ROOT.ibAMapLast"), ReadLUInt32(&packData[172]));
+			frame->AddUInt(176, 4, CSTR("ROOT.cbAMapFree"), ReadLUInt32(&packData[176]));
+			frame->AddUInt(180, 4, CSTR("ROOT.cbPMapFree"), ReadLUInt32(&packData[180]));
+			frame->AddUInt(184, 4, CSTR("ROOT.BREFNBT.bid"), ReadLUInt32(&packData[184]));
+			frame->AddUInt(188, 4, CSTR("ROOT.BREFNBT.ib"), ReadLUInt32(&packData[188]));
+			frame->AddUInt(192, 4, CSTR("ROOT.BREFBBT.bid"), ReadLUInt32(&packData[192]));
+			frame->AddUInt(196, 4, CSTR("ROOT.BREFBBT.ib"), ReadLUInt32(&packData[196]));
 			frame->AddUInt(200, 1, CSTR("ROOT.fAMapValid"), packData[200]);
 			frame->AddUInt(201, 1, CSTR("ROOT.bReserved"), packData[201]);
-			frame->AddUInt(202, 2, CSTR("ROOT.wReserved"), ReadUInt16(&packData[202]));
-			frame->AddUInt(204, 4, CSTR("dwAlign"), ReadUInt32(&packData[204]));
+			frame->AddUInt(202, 2, CSTR("ROOT.wReserved"), ReadLUInt16(&packData[202]));
+			frame->AddUInt(204, 4, CSTR("dwAlign"), ReadLUInt32(&packData[204]));
 			frame->AddHexBuff(208, CSTR("rgbFM"), packData.SubArray(208, 128), true);
 			frame->AddHexBuff(336, CSTR("rgbFP"), packData.SubArray(336, 128), true);
 			frame->AddHex8(464, CSTR("bSentinel"), packData[464]);
 			frame->AddHex8(465, CSTR("bCryptMethod"), packData[465]);
-			frame->AddHex16(466, CSTR("rgbReserved"), ReadUInt16(&packData[466]));
-			frame->AddHex64(468, CSTR("ullReserved"), ReadUInt64(&packData[468]));
-			frame->AddHex32(476, CSTR("dwReserved"), ReadUInt32(&packData[476]));
-			frame->AddUInt(480, 3, CSTR("rgbReserved2"), ReadUInt24(&packData[480]));
+			frame->AddHex16(466, CSTR("rgbReserved"), ReadLUInt16(&packData[466]));
+			frame->AddHex64(468, CSTR("ullReserved"), ReadLUInt64(&packData[468]));
+			frame->AddHex32(476, CSTR("dwReserved"), ReadLUInt32(&packData[476]));
+			frame->AddUInt(480, 3, CSTR("rgbReserved2"), ReadLUInt24(&packData[480]));
 			frame->AddUInt(483, 1, CSTR("bReserved"), packData[483]);
 			frame->AddHexBuff(484, CSTR("rgbReserved3"), packData.SubArray(484, 32), true);
 		}

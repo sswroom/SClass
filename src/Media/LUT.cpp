@@ -152,7 +152,7 @@ void Media::LUT::GetValueUInt8(UInt32 *inputVals, UInt8 *outVals) const
 		i = 0;
 		while (i < this->outputCh)
 		{
-			v = ReadFloat(&this->luTable[ofst + i * 4]) * 255;
+			v = ReadLFloat(&this->luTable[ofst + i * 4]) * 255;
 			if (v > 255)
 			{
 				outVals[i] = 255;
@@ -201,7 +201,7 @@ void Media::LUT::GetValueUInt16(UInt32 *inputVals, UInt16 *outVals) const
 		i = 0;
 		while (i < this->outputCh)
 		{
-			outVals[i] = ReadUInt16(&this->luTable[ofst + i * 2]);
+			outVals[i] = ReadLUInt16(&this->luTable[ofst + i * 2]);
 			i++;
 		}
 	}
@@ -212,7 +212,7 @@ void Media::LUT::GetValueUInt16(UInt32 *inputVals, UInt16 *outVals) const
 		i = 0;
 		while (i < this->outputCh)
 		{
-			v = ReadFloat(&this->luTable[ofst + i * 4]) * 65535.0;
+			v = ReadLFloat(&this->luTable[ofst + i * 4]) * 65535.0;
 			if (v > 65535)
 			{
 				outVals[i] = 65535;
@@ -261,7 +261,7 @@ void Media::LUT::GetValueSingle(UInt32 *inputVals, Single *outVals) const
 		i = 0;
 		while (i < this->outputCh)
 		{
-			UInt16 v = ReadUInt16(&this->luTable[ofst + i * 2]);
+			UInt16 v = ReadLUInt16(&this->luTable[ofst + i * 2]);
 			outVals[i] = (Single)(v / 65535.0);
 			i++;
 		}
@@ -272,7 +272,7 @@ void Media::LUT::GetValueSingle(UInt32 *inputVals, Single *outVals) const
 		i = 0;
 		while (i < this->outputCh)
 		{
-			outVals[i] = ReadFloat(&this->luTable[ofst + i * 4]);
+			outVals[i] = ReadLFloat(&this->luTable[ofst + i * 4]);
 			i++;
 		}
 	}

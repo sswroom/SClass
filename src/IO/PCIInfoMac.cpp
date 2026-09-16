@@ -94,8 +94,8 @@ UIntOS PCIInfo_AppendDevices(NN<Data::ArrayListNN<IO::PCIInfo>> pciList, const C
 				CFTypeRef deviceId = prop.Get(CFSTR("device-id"));
 				if (vendorId && deviceId)
 				{
-					clsData.vendorId = ReadUInt16(Data::MacData((CFDataRef)vendorId).Ptr());
-					clsData.productId = ReadUInt16(Data::MacData((CFDataRef)deviceId).Ptr());
+					clsData.vendorId = ReadLUInt16(Data::MacData((CFDataRef)vendorId).Ptr());
+					clsData.productId = ReadLUInt16(Data::MacData((CFDataRef)deviceId).Ptr());
 					NEW_CLASSNN(pci, IO::PCIInfo(clsData));
 					pciList->Add(pci);
 					ret++;

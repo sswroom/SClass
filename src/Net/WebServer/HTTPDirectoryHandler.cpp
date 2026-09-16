@@ -315,8 +315,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebSe
 					dataSize -= readSize;
 				}
 			}
-			WriteUInt32(&compBuff[0], ReadMUInt32(pitem->compInfo->checkBytes));
-			WriteUInt32(&compBuff[4], (UInt32)pitem->compInfo->decSize);
+			WriteLUInt32(&compBuff[0], ReadMUInt32(pitem->compInfo->checkBytes));
+			WriteLUInt32(&compBuff[4], (UInt32)pitem->compInfo->decSize);
 			resp->Write(Data::ByteArrayR(compBuff, 8));
 
 			return true;

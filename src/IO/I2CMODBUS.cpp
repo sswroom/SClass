@@ -30,7 +30,7 @@ Bool IO::I2CMODBUS::ReadBuff(UInt8 regAddr, UInt8 len, UnsafeArray<UInt8> data)
 		printf("ReadBuff: Read Error\r\n");
 		return false;
 	}
-	UInt16 dataCRC = ReadUInt16(&buff[2 + len]);
+	UInt16 dataCRC = ReadLUInt16(&buff[2 + len]);
 	if (dataCRC == 0)
 	{
 		MemCopyNO(&data[0], &buff[2], len);
@@ -63,7 +63,7 @@ Bool IO::I2CMODBUS::WriteBuff(UInt8 regAddr, UInt8 len, UnsafeArray<const UInt8>
 	this->crc.Clear();
 	this->crc.Calc(buff, (UIntOS)len + 3);
 	this->crc.GetValue(crcVal);
-	WriteInt16(&buff[len + 3], ~ReadMUInt16(crcVal));
+	WriteLInt16(&buff[len + 3], ~ReadMUInt16(crcVal));
 	if (this->channel->I2CWrite(buff, (UIntOS)len + 5) != (UIntOS)(len + 5))
 	{
 		printf("WriteBuff: Write Error\r\n");
@@ -80,7 +80,7 @@ Bool IO::I2CMODBUS::WriteBuff(UInt8 regAddr, UInt8 len, UnsafeArray<const UInt8>
 		printf("WriteBuff: Reply Error\r\n");
 		return false;
 	}
-	UInt16 dataCRC = ReadUInt16(&buff[3]);
+	UInt16 dataCRC = ReadLUInt16(&buff[3]);
 	this->crc.Clear();
 	this->crc.Calc(buff, 3);
 	this->crc.GetValue(crcVal);

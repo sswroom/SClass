@@ -262,7 +262,7 @@ Bool IO::EXEFile::GetFileTime(Text::CStringNN fileName, NN<Data::DateTime> fileT
 	{
 		return false;
 	}
-	UInt32 ofst = ReadUInt32(&buff[60]);
+	UInt32 ofst = ReadLUInt32(&buff[60]);
 	if ((ofst & 7) != 0 || ofst < 64)
 	{
 		return false;
@@ -276,7 +276,7 @@ Bool IO::EXEFile::GetFileTime(Text::CStringNN fileName, NN<Data::DateTime> fileT
 	{
 		return false;
 	}
-	fileTimeOut->SetUnixTimestamp(ReadUInt32(&buff[8]));
+	fileTimeOut->SetUnixTimestamp(ReadLUInt32(&buff[8]));
 	return true;
 }
 
@@ -296,7 +296,7 @@ Data::Timestamp IO::EXEFile::GetFileTime(Text::CStringNN fileName)
 	{
 		return nullptr;
 	}
-	UInt32 ofst = ReadUInt32(&buff[60]);
+	UInt32 ofst = ReadLUInt32(&buff[60]);
 	if ((ofst & 7) != 0 || ofst < 64)
 	{
 		return nullptr;
@@ -310,7 +310,7 @@ Data::Timestamp IO::EXEFile::GetFileTime(Text::CStringNN fileName)
 	{
 		return nullptr;
 	}
-	return Data::Timestamp(Data::TimeInstant(ReadUInt32(&buff[8]), 0), Data::DateTimeUtil::GetLocalTzQhr());
+	return Data::Timestamp(Data::TimeInstant(ReadLUInt32(&buff[8]), 0), Data::DateTimeUtil::GetLocalTzQhr());
 }
 
 Text::CStringNN IO::EXEFile::GetResourceTypeName(ResourceType rt)
@@ -375,9 +375,9 @@ void IO::EXEFile::GetResourceDesc(NN<const ResourceInfo> res, NN<Text::StringBui
 	}
 	else if (res->rt == RT_VERSIONINFO)
 	{
-		if (res->dataSize >= 92 && ReadUInt16(&res->data[2]) == 52 && Text::StrEqualsCh((Char*)&res->data[4], "VS_VERSION_INFO") && Text::StrEqualsCh((Char*)&res->data[76], "StringFileInfo"))
+		if (res->dataSize >= 92 && ReadLUInt16(&res->data[2]) == 52 && Text::StrEqualsCh((Char*)&res->data[4], "VS_VERSION_INFO") && Text::StrEqualsCh((Char*)&res->data[76], "StringFileInfo"))
 		{
-			UInt32 verSize = ReadUInt16(&res->data[0]);
+			UInt32 verSize = ReadLUInt16(&res->data[0]);
 			UInt32 v;
 			UInt32 v2;
 			if (verSize <= res->dataSize)
@@ -385,37 +385,37 @@ void IO::EXEFile::GetResourceDesc(NN<const ResourceInfo> res, NN<Text::StringBui
 				sb->AppendC(UTF8STRC("Length = "));
 				sb->AppendU32(verSize);
 				sb->AppendC(UTF8STRC("\r\nValue Length = "));
-				sb->AppendU16(ReadUInt16(&res->data[2]));
+				sb->AppendU16(ReadLUInt16(&res->data[2]));
 				sb->AppendC(UTF8STRC("\r\nKey = "));
 				sb->AppendSlow((UTF8Char*)&res->data[4]);
 				sb->AppendC(UTF8STRC("\r\nSignature = 0x"));
-				sb->AppendHex32(ReadUInt32(&res->data[20]));
+				sb->AppendHex32(ReadLUInt32(&res->data[20]));
 				sb->AppendC(UTF8STRC("\r\nStruct Version = "));
-				sb->AppendU16(ReadUInt16(&res->data[26]));
+				sb->AppendU16(ReadLUInt16(&res->data[26]));
 				sb->AppendC(UTF8STRC("."));
-				sb->AppendU16(ReadUInt16(&res->data[24]));
+				sb->AppendU16(ReadLUInt16(&res->data[24]));
 				sb->AppendC(UTF8STRC("\r\nFile Version = "));
-				sb->AppendU16(ReadUInt16(&res->data[30]));
+				sb->AppendU16(ReadLUInt16(&res->data[30]));
 				sb->AppendC(UTF8STRC("."));
-				sb->AppendU16(ReadUInt16(&res->data[28]));
+				sb->AppendU16(ReadLUInt16(&res->data[28]));
 				sb->AppendC(UTF8STRC("."));
-				sb->AppendU16(ReadUInt16(&res->data[34]));
+				sb->AppendU16(ReadLUInt16(&res->data[34]));
 				sb->AppendC(UTF8STRC("."));
-				sb->AppendU16(ReadUInt16(&res->data[32]));
+				sb->AppendU16(ReadLUInt16(&res->data[32]));
 				sb->AppendC(UTF8STRC("\r\nProduct Version = "));
-				sb->AppendU16(ReadUInt16(&res->data[38]));
+				sb->AppendU16(ReadLUInt16(&res->data[38]));
 				sb->AppendC(UTF8STRC("."));
-				sb->AppendU16(ReadUInt16(&res->data[36]));
+				sb->AppendU16(ReadLUInt16(&res->data[36]));
 				sb->AppendC(UTF8STRC("."));
-				sb->AppendU16(ReadUInt16(&res->data[42]));
+				sb->AppendU16(ReadLUInt16(&res->data[42]));
 				sb->AppendC(UTF8STRC("."));
-				sb->AppendU16(ReadUInt16(&res->data[40]));
+				sb->AppendU16(ReadLUInt16(&res->data[40]));
 				sb->AppendC(UTF8STRC("\r\nFile Flags Mask = 0x"));
-				sb->AppendHex32(ReadUInt32(&res->data[44]));
+				sb->AppendHex32(ReadLUInt32(&res->data[44]));
 				sb->AppendC(UTF8STRC("\r\nFile Flags = 0x"));
-				sb->AppendHex32(ReadUInt32(&res->data[48]));
+				sb->AppendHex32(ReadLUInt32(&res->data[48]));
 				sb->AppendC(UTF8STRC("\r\nFile OS = 0x"));
-				sb->AppendHex32(v = ReadUInt32(&res->data[52]));
+				sb->AppendHex32(v = ReadLUInt32(&res->data[52]));
 				switch (v)
 				{
 				case 0x00010001:
@@ -459,7 +459,7 @@ void IO::EXEFile::GetResourceDesc(NN<const ResourceInfo> res, NN<Text::StringBui
 					break;
 				}
 				sb->AppendC(UTF8STRC("\r\nFile Type = 0x"));
-				sb->AppendHex32(v = ReadUInt32(&res->data[56]));
+				sb->AppendHex32(v = ReadLUInt32(&res->data[56]));
 				switch (v)
 				{
 				case 0x00000001:
@@ -482,7 +482,7 @@ void IO::EXEFile::GetResourceDesc(NN<const ResourceInfo> res, NN<Text::StringBui
 					break;
 				}
 				sb->AppendC(UTF8STRC("\r\nFile Sub-Type = 0x"));
-				sb->AppendHex32(v2 = ReadUInt32(&res->data[60]));
+				sb->AppendHex32(v2 = ReadLUInt32(&res->data[60]));
 				if (v == 0x00000003) //VFT_DRV
 				{
 					switch (v2)
@@ -538,20 +538,20 @@ void IO::EXEFile::GetResourceDesc(NN<const ResourceInfo> res, NN<Text::StringBui
 					}
 				}
 				sb->AppendC(UTF8STRC("\r\nFile Date = 0x"));
-				sb->AppendHex32(ReadUInt32(&res->data[64]));
-				sb->AppendHex32(ReadUInt32(&res->data[68]));
+				sb->AppendHex32(ReadLUInt32(&res->data[64]));
+				sb->AppendHex32(ReadLUInt32(&res->data[68]));
 				sb->AppendC(UTF8STRC("\r\nString File Length = "));
-				sb->AppendU16(ReadUInt16(&res->data[72]));
+				sb->AppendU16(ReadLUInt16(&res->data[72]));
 				sb->AppendC(UTF8STRC("\r\nString File Value Length = "));
-				sb->AppendU16(ReadUInt16(&res->data[74]));
+				sb->AppendU16(ReadLUInt16(&res->data[74]));
 				sb->AppendC(UTF8STRC("\r\nString File Key = "));
 				sb->AppendSlow((UTF8Char*)&res->data[76]);
-				UIntOS strLen = ReadUInt16(&res->data[92]);
+				UIntOS strLen = ReadLUInt16(&res->data[92]);
 				UIntOS i;
 				sb->AppendC(UTF8STRC("\r\nString Table Length = "));
 				sb->AppendUIntOS(strLen);
 				sb->AppendC(UTF8STRC("\r\nString Table Value Length = "));
-				sb->AppendU16(ReadUInt16(&res->data[94]));
+				sb->AppendU16(ReadLUInt16(&res->data[94]));
 				sb->AppendC(UTF8STRC("\r\nString Table Key = "));
 				sb->AppendSlow((UTF8Char*)&res->data[96]);
 				v = (UInt32)Text::StrHex2Int32C(&res->data[96]);
@@ -577,8 +577,8 @@ void IO::EXEFile::GetResourceDesc(NN<const ResourceInfo> res, NN<Text::StringBui
 				strLen -= 16;
 				while (strLen >= 4)
 				{
-					v = ReadUInt16(&res->data[i]);
-					v2 = ReadUInt16(&res->data[i + 2]);
+					v = ReadLUInt16(&res->data[i]);
+					v2 = ReadLUInt16(&res->data[i + 2]);
 					if (strLen < v || v <= 4)
 						break;
 					sb->AppendC(UTF8STRC("\r\n"));

@@ -20,12 +20,12 @@
 
 Double Math::WKBReader::NDRReadDouble(const UInt8 *buff)
 {
-	return ReadDouble(buff);
+	return ReadLDouble(buff);
 }
 
 UInt32 Math::WKBReader::NDRReadUInt32(const UInt8 *buff)
 {
-	return ReadUInt32(buff);
+	return ReadLUInt32(buff);
 }
 
 Double Math::WKBReader::XDRReadDouble(const UInt8 *buff)

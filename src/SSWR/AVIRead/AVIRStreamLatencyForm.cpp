@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnTimerTick(AnyType userObj
 			me->lastSentTime = currTime;
 			buff[0] = 's';
 			buff[1] = 'l';
-			WriteInt64(&buff[2], currTime);
+			WriteLInt64(&buff[2], currTime);
 			buff[10] = buff[0] ^ buff[1] ^ buff[2] ^ buff[3] ^ buff[4] ^ buff[5] ^ buff[6] ^ buff[7] ^ buff[8] ^ buff[9];
 			stm->Write(Data::ByteArrayR(buff, 11));
 			me->sentCnt++;
@@ -125,11 +125,11 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::RecvThread(AnyType userOb
 						{
 							dt.SetCurrTimeUTC();
 							Int64 currTime = dt.ToTicks();
-							diff = (Double)(currTime - ReadInt64(&buff[recvSize + 2]));
+							diff = (Double)(currTime - ReadLInt64(&buff[recvSize + 2]));
 							me->rlcLatency->AddSample(&diff);
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Received packet: diff = "));
-							sb.AppendI64(currTime - ReadInt64(&buff[recvSize + 2]));
+							sb.AppendI64(currTime - ReadLInt64(&buff[recvSize + 2]));
 							me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 							me->recvCnt++;
 							recvSize += 10;

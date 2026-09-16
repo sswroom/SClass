@@ -107,7 +107,7 @@ IO::FileAnalyse::QTFileAnalyse::QTFileAnalyse(NN<IO::StreamData> fd) : thread(Pa
 	this->pauseParsing = false;
 	this->maxLev = 0;
 	fd->GetRealData(0, 8, BYTEARR(buff));
-	if (ReadInt32(&buff[4]) != *(Int32*)"ftyp" && ReadInt32(&buff[4]) != *(Int32*)"moov")
+	if (ReadLInt32(&buff[4]) != *(Int32*)"ftyp" && ReadLInt32(&buff[4]) != *(Int32*)"moov")
 	{
 		return;
 	}

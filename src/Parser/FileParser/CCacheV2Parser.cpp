@@ -36,13 +36,13 @@ Optional<IO::ParsedObject> Parser::FileParser::CCacheV2Parser::ParseFileHdr(NN<I
 	{
 		return nullptr;
 	}
-	if (ReadUInt32(&hdr[0]) != 3)
+	if (ReadLUInt32(&hdr[0]) != 3)
 		return nullptr;
-	if (ReadUInt64(&hdr[24]) != fd->GetDataSize())
+	if (ReadLUInt64(&hdr[24]) != fd->GetDataSize())
 	{
 		return nullptr;
 	}
-	if (ReadUInt32(&hdr[40]) != 0x20014)
+	if (ReadLUInt32(&hdr[40]) != 0x20014)
 	{
 		return nullptr;
 	}
@@ -94,13 +94,13 @@ Bool Parser::FileParser::CCacheV2Parser::AppendFile(Text::CStringNN filePath, NN
 
 Bool Parser::FileParser::CCacheV2Parser::ParseAppend(NN<IO::StreamData> fd, Data::ByteArrayR hdr, NN<IO::VirtualPackageFile> pkgFile, UIntOS rOfst, UIntOS cOfst)
 {
-	if (ReadUInt32(&hdr[0]) != 3)
+	if (ReadLUInt32(&hdr[0]) != 3)
 		return false;
-	if (ReadUInt64(&hdr[24]) != fd->GetDataSize())
+	if (ReadLUInt64(&hdr[24]) != fd->GetDataSize())
 	{
 		return false;
 	}
-	if (ReadUInt32(&hdr[40]) != 0x20014)
+	if (ReadLUInt32(&hdr[40]) != 0x20014)
 	{
 		return false;
 	}
@@ -123,7 +123,7 @@ Bool Parser::FileParser::CCacheV2Parser::ParseAppend(NN<IO::StreamData> fd, Data
 		j = 0;
 		while (j < 128)
 		{
-			idx = ReadUInt64(&index[i * 1024 + j * 8]);
+			idx = ReadLUInt64(&index[i * 1024 + j * 8]);
 			tileOfst = idx % 0x10000000000LL;
 			tileSize = (UIntOS)(idx / 0x10000000000LL);
 			if (tileSize != 0)

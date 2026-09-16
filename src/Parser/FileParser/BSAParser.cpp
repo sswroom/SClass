@@ -52,11 +52,11 @@ Optional<IO::ParsedObject> Parser::FileParser::BSAParser::ParseFileHdr(NN<IO::St
 	{
 		return nullptr;
 	}
-	if (ReadInt32(&hdr[0]) != 0x72415342 || ReadInt32(&hdr[4]) != 0x63)
+	if (ReadLInt32(&hdr[0]) != 0x72415342 || ReadLInt32(&hdr[4]) != 0x63)
 		return nullptr;
-//	ver = ReadUInt16(&hdr[8]);
-	recCnt = ReadUInt16(&hdr[10]);
-	recOfst = ReadUInt32(&hdr[12]);
+//	ver = ReadLUInt16(&hdr[8]);
+	recCnt = ReadLUInt16(&hdr[10]);
+	recOfst = ReadLUInt32(&hdr[12]);
 
 	if (recOfst >= fd->GetDataSize() - recCnt * 12)
 		return nullptr;
@@ -76,14 +76,14 @@ Optional<IO::ParsedObject> Parser::FileParser::BSAParser::ParseFileHdr(NN<IO::St
 	i = 0;
 	while (i < recCnt)
 	{
-		fileOfst = ReadUInt32(&recBuff[j + 4]);
-		fileSize = ReadUInt32(&recBuff[j + 8]);
+		fileOfst = ReadLUInt32(&recBuff[j + 4]);
+		fileSize = ReadLUInt32(&recBuff[j + 8]);
 		if (fileSize == 0 && fileOfst == 0)
 		{
 		}
 		else
 		{
-			UInt8 *buff = &recBuff[recCnt * 12 + ReadUInt32(&recBuff[j])];
+			UInt8 *buff = &recBuff[recCnt * 12 + ReadLUInt32(&recBuff[j])];
 			sptr = enc.UTF8FromBytes(fileName, buff, Text::StrCharCnt(buff), 0);
 			pf->AddData(fd, fileOfst, fileSize, IO::PackFileItem::HeaderType::No, CSTRP(fileName, sptr), nullptr, nullptr, nullptr, 0);
 		}

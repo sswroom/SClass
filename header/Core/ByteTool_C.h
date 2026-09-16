@@ -21,54 +21,54 @@
 #define WriteNFloat(uint8Ptr, val) *(Single*)(uint8Ptr) = (val)
 #define WriteNDouble(uint8Ptr, val) *(Double*)(uint8Ptr) = (val)
 
-#define ReadInt64(uint8Ptr) (*(Int64*)(uint8Ptr))
-#define ReadUInt64(uint8Ptr) (*(UInt64*)(uint8Ptr))
+#define ReadLInt64(uint8Ptr) (*(Int64*)(uint8Ptr))
+#define ReadLUInt64(uint8Ptr) (*(UInt64*)(uint8Ptr))
 #define ReadMInt64(uint8Ptr) (BSWAP64(*(Int64*)(uint8Ptr)))
 #define ReadMUInt64(uint8Ptr) (BSWAPU64(*(UInt64*)(uint8Ptr)))
-#define WriteInt64(uint8Ptr, val) *(Int64*)(uint8Ptr) = (val)
-#define WriteUInt64(uint8Ptr, val) *(UInt64*)(uint8Ptr) = (val)
+#define WriteLInt64(uint8Ptr, val) *(Int64*)(uint8Ptr) = (val)
+#define WriteLUInt64(uint8Ptr, val) *(UInt64*)(uint8Ptr) = (val)
 #define WriteMInt64(uint8Ptr, val) *(Int64*)(uint8Ptr) = BSWAP64(val)
 #define WriteMUInt64(uint8Ptr, val) WriteMInt64(uint8Ptr, (Int64)(val))
 
-#define ReadInt32(uint8Ptr) (*(Int32*)(uint8Ptr))
-#define ReadUInt32(uint8Ptr) (*(UInt32*)(uint8Ptr))
-#define ReadMInt32(uint8Ptr) (BSWAP32(ReadInt32(uint8Ptr)))
-#define ReadMUInt32(uint8Ptr) ((UInt32)BSWAP32(ReadInt32(uint8Ptr)))
-#define WriteInt32(uint8Ptr, val) *(Int32*)(uint8Ptr) = (val)
-#define WriteUInt32(uint8Ptr, val) *(UInt32*)(uint8Ptr) = (val)
+#define ReadLInt32(uint8Ptr) (*(Int32*)(uint8Ptr))
+#define ReadLUInt32(uint8Ptr) (*(UInt32*)(uint8Ptr))
+#define ReadMInt32(uint8Ptr) (BSWAP32(ReadLInt32(uint8Ptr)))
+#define ReadMUInt32(uint8Ptr) ((UInt32)BSWAP32(ReadLInt32(uint8Ptr)))
+#define WriteLInt32(uint8Ptr, val) *(Int32*)(uint8Ptr) = (val)
+#define WriteLUInt32(uint8Ptr, val) *(UInt32*)(uint8Ptr) = (val)
 #define WriteMInt32(uint8Ptr, val) *(Int32*)(uint8Ptr) = BSWAP32(val)
 
-#define ReadInt16(uint8Ptr) (*(Int16*)(uint8Ptr))
-#define ReadUInt16(uint8Ptr) (*(UInt16*)(uint8Ptr))
+#define ReadLInt16(uint8Ptr) (*(Int16*)(uint8Ptr))
+#define ReadLUInt16(uint8Ptr) (*(UInt16*)(uint8Ptr))
 #define ReadMInt16(uint8Ptr) (Int16)(((uint8Ptr)[0] << 8) | (uint8Ptr)[1])
 #define ReadMUInt16(uint8Ptr) (UInt16)(((uint8Ptr)[0] << 8) | (uint8Ptr)[1])
-#define WriteInt16(uint8Ptr, val) *(Int16*)(uint8Ptr) = (Int16)((val) & 0xffff)
-#define WriteUInt16(uint8Ptr, val) *(UInt16*)(uint8Ptr) = (UInt16)((val) & 0xffff)
+#define WriteLInt16(uint8Ptr, val) *(Int16*)(uint8Ptr) = (Int16)((val) & 0xffff)
+#define WriteLUInt16(uint8Ptr, val) *(UInt16*)(uint8Ptr) = (UInt16)((val) & 0xffff)
 #define WriteMInt16(uint8Ptr, val) {(uint8Ptr)[0] = (UInt8)(((val) >> 8) & 0xff); (uint8Ptr)[1] = (UInt8)((val) & 0xff);}
 #define WriteMUInt16(uint8Ptr, val) {(uint8Ptr)[0] = (UInt8)(((val) >> 8) & 0xff); (uint8Ptr)[1] = (UInt8)((val) & 0xff);}
 
-#define ReadDouble(uint8Ptr) (*(Double*)(uint8Ptr))
+#define ReadLDouble(uint8Ptr) (*(Double*)(uint8Ptr))
 FORCEINLINE Double ReadMDouble(UnsafeArray<const UInt8> dptr)
 {
 	UInt8 tmpBuff[8];
-	WriteInt32(&tmpBuff[4], ReadMInt32(&dptr[0]));
-	WriteInt32(&tmpBuff[0], ReadMInt32(&dptr[4]));
+	WriteLInt32(&tmpBuff[4], ReadMInt32(&dptr[0]));
+	WriteLInt32(&tmpBuff[0], ReadMInt32(&dptr[4]));
 	return *(Double*)tmpBuff;
 }
-#define WriteDouble(uint8Ptr, val) *(Double*)(uint8Ptr) = (val)
+#define WriteLDouble(uint8Ptr, val) *(Double*)(uint8Ptr) = (val)
 
-#define ReadFloat(uint8Ptr) (*(Single*)(uint8Ptr))
+#define ReadLFloat(uint8Ptr) (*(Single*)(uint8Ptr))
 FORCEINLINE Single ReadMFloat(UnsafeArray<const UInt8> dptr)
 {
 	UInt8 tmpBuff[4];
-	WriteInt32(&tmpBuff[0], ReadMInt32(&dptr[0]));
+	WriteLInt32(&tmpBuff[0], ReadMInt32(&dptr[0]));
 	return *(Single*)tmpBuff;
 }
-#define WriteFloat(uint8Ptr, val) *(Single*)(uint8Ptr) = (val)
+#define WriteLFloat(uint8Ptr, val) *(Single*)(uint8Ptr) = (val)
 FORCEINLINE void WriteMFloat(UnsafeArray<UInt8> uint8Ptr, Single val)
 {
 	UInt8 tmpBuff[4];
-	WriteFloat(tmpBuff, val);
+	WriteLFloat(tmpBuff, val);
 	uint8Ptr[0] = tmpBuff[3];
 	uint8Ptr[1] = tmpBuff[2];
 	uint8Ptr[2] = tmpBuff[1];
@@ -199,7 +199,7 @@ FORCEINLINE void WriteNUInt64(UnsafeArray<UInt8> dptr, UInt64 val)
 }
 
 #if IS_BYTEORDER_LE != 0
-FORCEINLINE Int64 ReadInt64(UnsafeArray<const UInt8> dptr)
+FORCEINLINE Int64 ReadLInt64(UnsafeArray<const UInt8> dptr)
 {
 	UInt8 tmpBuff[8];
 	tmpBuff[0] = dptr[0];
@@ -212,7 +212,7 @@ FORCEINLINE Int64 ReadInt64(UnsafeArray<const UInt8> dptr)
 	tmpBuff[7] = dptr[7];
 	return *(Int64*)tmpBuff;
 }
-#define ReadUInt64(uint8Ptr) (UInt64)ReadInt64(uint8Ptr)
+#define ReadLUInt64(uint8Ptr) (UInt64)ReadLInt64(uint8Ptr)
 
 FORCEINLINE Int64 ReadMInt64(UnsafeArray<const UInt8> dptr)
 {
@@ -229,7 +229,7 @@ FORCEINLINE Int64 ReadMInt64(UnsafeArray<const UInt8> dptr)
 }
 #define ReadMUInt64(uint8Ptr) (UInt64)ReadMInt64(uint8Ptr)
 
-FORCEINLINE void WriteInt64(UnsafeArray<UInt8> dptr, Int64 val)
+FORCEINLINE void WriteLInt64(UnsafeArray<UInt8> dptr, Int64 val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[0];
@@ -242,7 +242,7 @@ FORCEINLINE void WriteInt64(UnsafeArray<UInt8> dptr, Int64 val)
 	dptr[7] = vPtr[7];
 }
 
-FORCEINLINE void WriteUInt64(UnsafeArray<UInt8> dptr, UInt64 val)
+FORCEINLINE void WriteLUInt64(UnsafeArray<UInt8> dptr, UInt64 val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[0];
@@ -281,7 +281,7 @@ FORCEINLINE void WriteMUInt64(UnsafeArray<UInt8> dptr, UInt64 val)
 	dptr[7] = vPtr[0];
 }
 
-FORCEINLINE Int32 ReadInt32(UnsafeArray<const UInt8> dptr)
+FORCEINLINE Int32 ReadLInt32(UnsafeArray<const UInt8> dptr)
 {
 	UInt8 tmpBuff[4];
 	tmpBuff[0] = dptr[0];
@@ -291,7 +291,7 @@ FORCEINLINE Int32 ReadInt32(UnsafeArray<const UInt8> dptr)
 	return *(Int32*)tmpBuff;
 }
 
-FORCEINLINE UInt32 ReadUInt32(UnsafeArray<const UInt8> dptr)
+FORCEINLINE UInt32 ReadLUInt32(UnsafeArray<const UInt8> dptr)
 {
 	UInt8 tmpBuff[4];
 	tmpBuff[0] = dptr[0];
@@ -321,7 +321,7 @@ FORCEINLINE UInt32 ReadMUInt32(UnsafeArray<const UInt8> dptr)
 	return *(UInt32*)tmpBuff;
 }
 
-FORCEINLINE void WriteInt32(UnsafeArray<UInt8> dptr, Int32 val)
+FORCEINLINE void WriteLInt32(UnsafeArray<UInt8> dptr, Int32 val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[0];
@@ -330,7 +330,7 @@ FORCEINLINE void WriteInt32(UnsafeArray<UInt8> dptr, Int32 val)
 	dptr[3] = vPtr[3];
 }
 
-FORCEINLINE void WriteUInt32(UnsafeArray<UInt8> dptr, UInt32 val)
+FORCEINLINE void WriteLUInt32(UnsafeArray<UInt8> dptr, UInt32 val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[0];
@@ -348,7 +348,7 @@ FORCEINLINE void WriteMInt32(UnsafeArray<UInt8> dptr, Int32 val)
 	dptr[3] = vPtr[0];
 }
 
-FORCEINLINE Int16 ReadInt16(UnsafeArray<const UInt8> dptr)
+FORCEINLINE Int16 ReadLInt16(UnsafeArray<const UInt8> dptr)
 {
 	UInt8 tmpBuff[2];
 	tmpBuff[0] = dptr[0];
@@ -356,7 +356,7 @@ FORCEINLINE Int16 ReadInt16(UnsafeArray<const UInt8> dptr)
 	return *(Int16*)tmpBuff;
 }
 
-FORCEINLINE UInt16 ReadUInt16(UnsafeArray<const UInt8> dptr)
+FORCEINLINE UInt16 ReadLUInt16(UnsafeArray<const UInt8> dptr)
 {
 	UInt8 tmpBuff[2];
 	tmpBuff[0] = dptr[0];
@@ -380,14 +380,14 @@ FORCEINLINE UInt16 ReadMUInt16(UnsafeArray<const UInt8> dptr)
 	return *(UInt16*)tmpBuff;
 }
 
-FORCEINLINE void WriteInt16(UnsafeArray<UInt8> dptr, Int16 val)
+FORCEINLINE void WriteLInt16(UnsafeArray<UInt8> dptr, Int16 val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[0];
 	dptr[1] = vPtr[1];
 }
 
-FORCEINLINE void WriteUInt16(UnsafeArray<UInt8> dptr, UInt16 val)
+FORCEINLINE void WriteLUInt16(UnsafeArray<UInt8> dptr, UInt16 val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[0];
@@ -408,7 +408,7 @@ FORCEINLINE void WriteMUInt16(UnsafeArray<UInt8> dptr, UInt16 val)
 	dptr[1] = vPtr[0];
 }
 
-FORCEINLINE Double ReadDouble(UnsafeArray<const UInt8> dptr)
+FORCEINLINE Double ReadLDouble(UnsafeArray<const UInt8> dptr)
 {
 	UInt8 tmpBuff[8];
 	tmpBuff[0] = dptr[0];
@@ -436,7 +436,7 @@ FORCEINLINE Double ReadMDouble(UnsafeArray<const UInt8> dptr)
 	return *(Double*)tmpBuff;
 }
 
-FORCEINLINE void WriteDouble(UnsafeArray<UInt8> dptr, Double val)
+FORCEINLINE void WriteLDouble(UnsafeArray<UInt8> dptr, Double val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[0];
@@ -462,7 +462,7 @@ FORCEINLINE void WriteMDouble(UnsafeArray<UInt8> dptr, Double val)
 	dptr[7] = vPtr[0];
 }
 
-FORCEINLINE Single ReadFloat(UnsafeArray<const UInt8> dptr)
+FORCEINLINE Single ReadLFloat(UnsafeArray<const UInt8> dptr)
 {
 	UInt8 tmpBuff[4];
 	tmpBuff[0] = dptr[0];
@@ -482,7 +482,7 @@ FORCEINLINE Single ReadMFloat(UnsafeArray<const UInt8> dptr)
 	return *(Single*)tmpBuff;
 }
 
-FORCEINLINE void WriteFloat(UnsafeArray<UInt8> dptr, Single val)
+FORCEINLINE void WriteLFloat(UnsafeArray<UInt8> dptr, Single val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[0];
@@ -500,13 +500,13 @@ FORCEINLINE void WriteMFloat(UnsafeArray<UInt8> uint8Ptr, Single val)
 	uint8Ptr[3] = vPtr[0];
 }
 
-#define ReadNFloat(uint8Ptr) ReadFloat(uint8Ptr)
-#define ReadNDouble(uint8Ptr) ReadDouble(uint8Ptr)
-#define WriteNFloat(uint8Ptr, val) WriteFloat(uint8Ptr, val)
-#define WriteNDouble(uint8Ptr, val) WriteDouble(uint8Ptr, val)
+#define ReadNFloat(uint8Ptr) ReadLFloat(uint8Ptr)
+#define ReadNDouble(uint8Ptr) ReadLDouble(uint8Ptr)
+#define WriteNFloat(uint8Ptr, val) WriteLFloat(uint8Ptr, val)
+#define WriteNDouble(uint8Ptr, val) WriteLDouble(uint8Ptr, val)
 
 #else
-FORCEINLINE Int64 ReadInt64(UnsafeArray<const UInt8> dptr)
+FORCEINLINE Int64 ReadLInt64(UnsafeArray<const UInt8> dptr)
 {
 	UInt8 tmpBuff[8];
 	tmpBuff[0] = dptr[7];
@@ -519,7 +519,7 @@ FORCEINLINE Int64 ReadInt64(UnsafeArray<const UInt8> dptr)
 	tmpBuff[7] = dptr[0];
 	return *(Int64*)tmpBuff;
 }
-#define ReadUInt64(uint8Ptr) (UInt64)ReadInt64(uint8Ptr)
+#define ReadLUInt64(uint8Ptr) (UInt64)ReadLInt64(uint8Ptr)
 
 FORCEINLINE Int64 ReadMInt64(UnsafeArray<const UInt8> dptr)
 {
@@ -536,7 +536,7 @@ FORCEINLINE Int64 ReadMInt64(UnsafeArray<const UInt8> dptr)
 }
 #define ReadMUInt64(uint8Ptr) (UInt64)ReadMInt64(uint8Ptr)
 
-FORCEINLINE void WriteInt64(UnsafeArray<UInt8> dptr, Int64 val)
+FORCEINLINE void WriteLInt64(UnsafeArray<UInt8> dptr, Int64 val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[7];
@@ -549,7 +549,7 @@ FORCEINLINE void WriteInt64(UnsafeArray<UInt8> dptr, Int64 val)
 	dptr[7] = vPtr[0];
 }
 
-FORCEINLINE void WriteUInt64(UnsafeArray<UInt8> dptr, UInt64 val)
+FORCEINLINE void WriteLUInt64(UnsafeArray<UInt8> dptr, UInt64 val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[7];
@@ -588,7 +588,7 @@ FORCEINLINE void WriteMUInt64(UnsafeArray<UInt8> dptr, UInt64 val)
 	dptr[7] = vPtr[7];
 }
 
-FORCEINLINE Int32 ReadInt32(UnsafeArray<const UInt8> dptr)
+FORCEINLINE Int32 ReadLInt32(UnsafeArray<const UInt8> dptr)
 {
 	UInt8 tmpBuff[4];
 	tmpBuff[0] = dptr[3];
@@ -598,7 +598,7 @@ FORCEINLINE Int32 ReadInt32(UnsafeArray<const UInt8> dptr)
 	return *(Int32*)tmpBuff;
 }
 
-FORCEINLINE UInt32 ReadUInt32(UnsafeArray<const UInt8> dptr)
+FORCEINLINE UInt32 ReadLUInt32(UnsafeArray<const UInt8> dptr)
 {
 	UInt8 tmpBuff[4];
 	tmpBuff[0] = dptr[3];
@@ -628,7 +628,7 @@ FORCEINLINE UInt32 ReadMUInt32(UnsafeArray<const UInt8> dptr)
 	return *(UInt32*)tmpBuff;
 }
 
-FORCEINLINE void WriteInt32(UnsafeArray<UInt8> dptr, Int32 val)
+FORCEINLINE void WriteLInt32(UnsafeArray<UInt8> dptr, Int32 val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[3];
@@ -637,7 +637,7 @@ FORCEINLINE void WriteInt32(UnsafeArray<UInt8> dptr, Int32 val)
 	dptr[3] = vPtr[0];
 }
 
-FORCEINLINE void WriteUInt32(UnsafeArray<UInt8> dptr, UInt32 val)
+FORCEINLINE void WriteLUInt32(UnsafeArray<UInt8> dptr, UInt32 val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[3];
@@ -655,7 +655,7 @@ FORCEINLINE void WriteMInt32(UnsafeArray<UInt8> dptr, Int32 val)
 	dptr[3] = vPtr[3];
 }
 
-FORCEINLINE Int16 ReadInt16(UnsafeArray<const UInt8> dptr)
+FORCEINLINE Int16 ReadLInt16(UnsafeArray<const UInt8> dptr)
 {
 	UInt8 tmpBuff[2];
 	tmpBuff[0] = dptr[1];
@@ -663,7 +663,7 @@ FORCEINLINE Int16 ReadInt16(UnsafeArray<const UInt8> dptr)
 	return *(Int16*)tmpBuff;
 }
 
-FORCEINLINE UInt16 ReadUInt16(UnsafeArray<const UInt8> dptr)
+FORCEINLINE UInt16 ReadLUInt16(UnsafeArray<const UInt8> dptr)
 {
 	UInt8 tmpBuff[2];
 	tmpBuff[0] = dptr[1];
@@ -687,14 +687,14 @@ FORCEINLINE UInt16 ReadMUInt16(UnsafeArray<const UInt8> dptr)
 	return *(UInt16*)tmpBuff;
 }
 
-FORCEINLINE void WriteInt16(UnsafeArray<UInt8> dptr, Int16 val)
+FORCEINLINE void WriteLInt16(UnsafeArray<UInt8> dptr, Int16 val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[1];
 	dptr[1] = vPtr[0];
 }
 
-FORCEINLINE void WriteUInt16(UnsafeArray<UInt8> dptr, UInt16 val)
+FORCEINLINE void WriteLUInt16(UnsafeArray<UInt8> dptr, UInt16 val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[1];
@@ -715,7 +715,7 @@ FORCEINLINE void WriteMUInt16(UnsafeArray<UInt8> dptr, UInt16 val)
 	dptr[1] = vPtr[1];
 }
 
-FORCEINLINE Double ReadDouble(UnsafeArray<const UInt8> dptr)
+FORCEINLINE Double ReadLDouble(UnsafeArray<const UInt8> dptr)
 {
 	UInt8 tmpBuff[8];
 	tmpBuff[0] = dptr[7];
@@ -743,7 +743,7 @@ FORCEINLINE Double ReadMDouble(UnsafeArray<const UInt8> dptr)
 	return *(Double*)tmpBuff;
 }
 
-FORCEINLINE void WriteDouble(UnsafeArray<UInt8> dptr, Double val)
+FORCEINLINE void WriteLDouble(UnsafeArray<UInt8> dptr, Double val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[7];
@@ -769,7 +769,7 @@ FORCEINLINE void WriteMDouble(UnsafeArray<UInt8> dptr, Double val)
 	dptr[7] = vPtr[7];
 }
 
-FORCEINLINE Single ReadFloat(UnsafeArray<const UInt8> dptr)
+FORCEINLINE Single ReadLFloat(UnsafeArray<const UInt8> dptr)
 {
 	UInt8 tmpBuff[4];
 	tmpBuff[0] = dptr[3];
@@ -789,7 +789,7 @@ FORCEINLINE Single ReadMFloat(UnsafeArray<const UInt8> dptr)
 	return *(Single*)tmpBuff;
 }
 
-FORCEINLINE void WriteFloat(UnsafeArray<UInt8> dptr, Single val)
+FORCEINLINE void WriteLFloat(UnsafeArray<UInt8> dptr, Single val)
 {
 	UInt8 *vPtr = (UInt8*)&val;
 	dptr[0] = vPtr[3];
@@ -813,13 +813,13 @@ FORCEINLINE void WriteMFloat(UnsafeArray<UInt8> dptr, Single val)
 #define WriteNDouble(uint8Ptr, val) WriteMDouble(uint8Ptr, val)
 #endif
 #endif
-#define ReadUInt24(uint8Ptr) (UInt32)((ReadUInt16(uint8Ptr + 1) << 8) | (uint8Ptr)[0])
-#define ReadInt24(uint8Ptr) ((ReadInt16(uint8Ptr + 1) << 8) | (uint8Ptr)[0])
+#define ReadLUInt24(uint8Ptr) (UInt32)((ReadLUInt16(uint8Ptr + 1) << 8) | (uint8Ptr)[0])
+#define ReadLInt24(uint8Ptr) ((ReadLInt16(uint8Ptr + 1) << 8) | (uint8Ptr)[0])
 #define ReadMInt24(uint8Ptr) ((ReadMInt16(uint8Ptr) << 8) | (uint8Ptr)[2])
 #define ReadMUInt24(uint8Ptr) ((UInt32)((uint8Ptr)[0] << 16) | ReadMUInt16(uint8Ptr + 1))
-#define ReadNUInt24(uint8Ptr) ReadUInt24(uint8Ptr)
-#define ReadNInt24(uint8Ptr) ReadInt24(uint8Ptr)
-#define WriteInt24(uint8Ptr, val) {(uint8Ptr)[0] = (UInt8)((val) & 0xff); (uint8Ptr)[1] = (UInt8)(((val) >> 8) & 0xff); (uint8Ptr)[2] = (UInt8)(((val) >> 16) & 0xff);}
+#define ReadNUInt24(uint8Ptr) ReadLUInt24(uint8Ptr)
+#define ReadNInt24(uint8Ptr) ReadLInt24(uint8Ptr)
+#define WriteLInt24(uint8Ptr, val) {(uint8Ptr)[0] = (UInt8)((val) & 0xff); (uint8Ptr)[1] = (UInt8)(((val) >> 8) & 0xff); (uint8Ptr)[2] = (UInt8)(((val) >> 16) & 0xff);}
 #define WriteMInt24(uint8Ptr, val) {(uint8Ptr)[0] = (UInt8)(((val) >> 16) & 0xff); (uint8Ptr)[1] = (UInt8)(((val) >> 8) & 0xff); (uint8Ptr)[2] = (UInt8)((val) & 0xff);}
 
 FORCEINLINE UInt8 ByteTool_GetBCD8(UInt8 bcd)
@@ -939,13 +939,13 @@ FORCEINLINE Double UInt16_Float16(UInt16 val)
 	buff[5] = (UInt8)((val << 2) & 0xff);
 	buff[6] = (UInt8)(((val >> 6) & 0xf) | ((e << 4) & 0xf0));
 	buff[7] = (UInt8)(((val >> 8) & 0x80) | (e >> 4));
-	return ReadDouble(buff);
+	return ReadLDouble(buff);
 }
 
-#define ReadFloat16(dptr) UInt16_Float16(ReadUInt16(dptr))
+#define ReadLFloat16(dptr) UInt16_Float16(ReadLUInt16(dptr))
 #define ReadMFloat16(dptr) UInt16_Float16(ReadMUInt16(dptr))
 #define ReadNFloat16(dptr) UInt16_Float16(ReadNUInt16(dptr))
-#define ReadSingle(dptr) ReadFloat(dptr)
+#define ReadLSingle(dptr) ReadLFloat(dptr)
 #define ReadMSingle(dptr) ReadMFloat(dptr)
 #define ReadNSingle(dptr) ReadNFloat(dptr)
 

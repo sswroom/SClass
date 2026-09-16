@@ -40,7 +40,7 @@ IO::UDPFileLog::UDPFileLog(NN<IO::StreamData> fd) : IO::UDPLog(fd->GetFullName()
 		{
 			if (buff[i] == 0xaa && buff[i + 1] == 0xbb)
 			{
-				packetSize = ReadUInt16(&buff[i + 2]);
+				packetSize = ReadLUInt16(&buff[i + 2]);
 				if (packetSize + 8 + i > buffSize)
 					break;
 				

@@ -96,19 +96,19 @@ Bool IO::Device::DS18B20::ReadTemp(OutParam<Double> temp)
 	}
 	if ((buff[4] & 0x60) == 0)
 	{
-		temp.Set(ReadInt16(buff) / 2.0);
+		temp.Set(ReadLInt16(buff) / 2.0);
 	}
 	else if ((buff[4] & 0x60) == 0x20) 
 	{
-		temp.Set(ReadInt16(buff) / 4.0);
+		temp.Set(ReadLInt16(buff) / 4.0);
 	}
 	else if ((buff[4] & 0x60) == 0x40) 
 	{
-		temp.Set(ReadInt16(buff) / 8.0);
+		temp.Set(ReadLInt16(buff) / 8.0);
 	}
 	else if ((buff[4] & 0x60) == 0x60) 
 	{
-		temp.Set(ReadInt16(buff) / 16.0);
+		temp.Set(ReadLInt16(buff) / 16.0);
 	}
 	return true;
 }

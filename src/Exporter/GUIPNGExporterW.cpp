@@ -131,20 +131,20 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 					break;
 				}
 				chunkSize = ReadMUInt32(&pngBuff[i]);
-				chunkType = ReadInt32(&pngBuff[i + 4]);
-				if (chunkType == ReadInt32("sRGB"))
+				chunkType = ReadLInt32(&pngBuff[i + 4]);
+				if (chunkType == ReadLInt32("sRGB"))
 				{
 					i += chunkSize + 12;
 				}
-				else if (chunkType == ReadInt32("gAMA"))
+				else if (chunkType == ReadLInt32("gAMA"))
 				{
 					i += chunkSize + 12;
 				}
-				else if (chunkType == ReadInt32("IDAT"))
+				else if (chunkType == ReadLInt32("IDAT"))
 				{
 					UInt32 iccSize = ReadMUInt32(&iccBuff[0]);
 					UnsafeArray<UInt8> chunkBuff = MemAllocArr(UInt8, iccSize + 32);
-					WriteInt32(&chunkBuff[4], ReadInt32("iCCP"));
+					WriteLInt32(&chunkBuff[4], ReadLInt32("iCCP"));
 					Text::StrConcatC((UTF8Char*)&chunkBuff[8], UTF8STRC("Photoshop ICC profile"));
 					chunkBuff[30] = 0;
 					UIntOS compSize = Data::Compress::Inflate::Compress(iccBuff, iccSize, &chunkBuff[31], true, Data::Compress::Deflater::CompLevel::BestCompression);

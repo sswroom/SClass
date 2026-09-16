@@ -58,7 +58,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PFS2Parser::ParseFileHdr(NN<IO::S
 	{
 		return nullptr;
 	}
-	hdrSize = ReadUInt32(&hdr[3]);
+	hdrSize = ReadLUInt32(&hdr[3]);
 	if (hdrSize > fd->GetDataSize() - 7)
 		return nullptr;
 	Data::ByteBuffer records(hdrSize - 8);
@@ -68,16 +68,16 @@ Optional<IO::ParsedObject> Parser::FileParser::PFS2Parser::ParseFileHdr(NN<IO::S
 	i = 0;
 	while (i < hdrSize - 8)
 	{
-		UInt32 fileNameSize = ReadUInt32(&records[i]);
-		UInt32 fileOfst = ReadUInt32(&records[i + fileNameSize + 16]);
-		UInt32 fileSize = ReadUInt32(&records[i + fileNameSize + 20]);
+		UInt32 fileNameSize = ReadLUInt32(&records[i]);
+		UInt32 fileOfst = ReadLUInt32(&records[i + fileNameSize + 16]);
+		UInt32 fileSize = ReadLUInt32(&records[i + fileNameSize + 20]);
 		sptr = enc.UTF8FromBytes(sbuff, &records[i + 4], fileNameSize, 0);
 		pf->AddData(fd, fileOfst, fileSize, IO::PackFileItem::HeaderType::No, CSTRP(sbuff, sptr), nullptr, nullptr, nullptr, 0);
 		fileCnt++;
 		i += fileNameSize + 24;
 	}
 
-	if (fileCnt != ReadInt32(&hdr[11]))
+	if (fileCnt != ReadLInt32(&hdr[11]))
 	{
 		pf.Delete();
 		return nullptr;

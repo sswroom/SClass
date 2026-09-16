@@ -221,7 +221,7 @@ Bool Net::OSSocketFactory::SocketBind(NN<Socket> socket, Optional<const Net::Soc
 	if (!addr.SetTo(nnaddr) || nnaddr->addrType == Net::AddrType::IPv6)
 	{
 		UInt8 addrBuff[28];
-		WriteInt16(&addrBuff[0], AF_INET6);
+		WriteLInt16(&addrBuff[0], AF_INET6);
 		WriteMInt16(&addrBuff[2], port); //sin6_port
 		WriteMInt32(&addrBuff[4], 0); //sin6_flowinfo
 		if (addr.SetTo(nnaddr))

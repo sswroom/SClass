@@ -52,10 +52,10 @@ Optional<IO::ParsedObject> Parser::FileParser::AOSParser::ParseFileHdr(NN<IO::St
 	{
 		return nullptr;
 	}
-	if (ReadInt32(&hdr[0]) != 0)
+	if (ReadLInt32(&hdr[0]) != 0)
 		return nullptr;
-	dataOfst = ReadUInt32(&hdr[4]);
-	recSize = ReadUInt32(&hdr[8]);
+	dataOfst = ReadLUInt32(&hdr[4]);
+	recSize = ReadLUInt32(&hdr[8]);
 	if (recSize % 40 != 0 || dataOfst > fd->GetDataSize())
 		return nullptr;
 	if (dataOfst - recSize != 273)
@@ -88,8 +88,8 @@ Optional<IO::ParsedObject> Parser::FileParser::AOSParser::ParseFileHdr(NN<IO::St
 	nextOfst = 0;
 	while (i < recCnt)
 	{
-		fileOfst = ReadUInt32(&recBuff[j + 32]);
-		fileSize = ReadUInt32(&recBuff[j + 36]);
+		fileOfst = ReadLUInt32(&recBuff[j + 32]);
+		fileSize = ReadLUInt32(&recBuff[j + 36]);
 		if (fileOfst != nextOfst)
 		{
 			pf.Delete();

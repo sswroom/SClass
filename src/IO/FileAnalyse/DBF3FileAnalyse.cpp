@@ -13,9 +13,9 @@ void __stdcall IO::FileAnalyse::DBF3FileAnalyse::ParseThread(NN<Sync::Thread> th
 	{
 		UInt8 buff[256];
 		fd->GetRealData(0, 32, BYTEARR(buff));
-		UInt32 nRec = ReadUInt32(&buff[4]);
-		UInt32 startOfst = ReadUInt16(&buff[8]);
-		UInt32 recLen = ReadUInt16(&buff[10]);
+		UInt32 nRec = ReadLUInt32(&buff[4]);
+		UInt32 startOfst = ReadLUInt16(&buff[8]);
+		UInt32 recLen = ReadLUInt16(&buff[10]);
 		NN<DBFCol> col;
 		NN<IO::FileAnalyse::DBF3FileAnalyse::PackInfo> pack;
 		pack = MemAllocNN(IO::FileAnalyse::DBF3FileAnalyse::PackInfo);
@@ -93,9 +93,9 @@ IO::FileAnalyse::DBF3FileAnalyse::DBF3FileAnalyse(NN<IO::StreamData> fd) : threa
 	{
 		return;
 	}
-	UInt32 nRec = ReadUInt32(&buff[4]);
-	UInt32 startOfst = ReadUInt16(&buff[8]);
-	UInt32 recLen = ReadUInt16(&buff[10]);
+	UInt32 nRec = ReadLUInt32(&buff[4]);
+	UInt32 startOfst = ReadLUInt16(&buff[8]);
+	UInt32 recLen = ReadLUInt16(&buff[10]);
 	if (fd->GetDataSize() != nRec * recLen + startOfst + 1)
 	{
 		return;
@@ -185,9 +185,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DBF3FileAnalyse::GetFram
 		frame->AddHex8(0, CSTR("DBF File Type"), packBuff[0]);
 		sb.AppendU32(1900 + packBuff[1])->AppendUTF8Char('-')->AppendU16(packBuff[2])->AppendUTF8Char('-')->AppendU16(packBuff[3]);
 		frame->AddField(1, 3, CSTR("Last update"), sb.ToCString());
-		frame->AddUInt(4, 4, CSTR("Number of records in file"), ReadUInt32(&packBuff[4]));
-		frame->AddUInt(8, 2, CSTR("Position of first data record"), ReadUInt16(&packBuff[8]));
-		frame->AddUInt(10, 2, CSTR("Length of one data record, including delete flag"), ReadUInt16(&packBuff[10]));
+		frame->AddUInt(4, 4, CSTR("Number of records in file"), ReadLUInt32(&packBuff[4]));
+		frame->AddUInt(8, 2, CSTR("Position of first data record"), ReadLUInt16(&packBuff[8]));
+		frame->AddUInt(10, 2, CSTR("Length of one data record, including delete flag"), ReadLUInt16(&packBuff[10]));
 		frame->AddHexBuff(12, CSTR("Reserved"), packBuff.SubArray(12, 16), false);
 		frame->AddHex8(28, CSTR("Table flags"), packBuff[28]);
 		frame->AddBit(28, CSTR("file has a structural .cdx"), packBuff[28], 0);
@@ -202,15 +202,15 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DBF3FileAnalyse::GetFram
 		fd->GetRealData(pack->fileOfst, (UIntOS)pack->packSize, packBuff);
 		frame->AddStrS(0, 11, CSTR("Field name"), &packBuff[0]);
 		frame->AddStrC(11, 1, CSTR("Field type"), &packBuff[11]);
-		frame->AddUInt(12, 4, CSTR("Displacement of field in record"), ReadUInt32(&packBuff[12]));
+		frame->AddUInt(12, 4, CSTR("Displacement of field in record"), ReadLUInt32(&packBuff[12]));
 		frame->AddUInt(16, 1, CSTR("Length of field (in bytes)"), packBuff[16]);
-		frame->AddUInt(17, 1, CSTR("Number of decimal places"), ReadUInt16(&packBuff[8]));
+		frame->AddUInt(17, 1, CSTR("Number of decimal places"), ReadLUInt16(&packBuff[8]));
 		frame->AddHex8(18, CSTR("Field flags"), packBuff[18]);
 		frame->AddBit(18, CSTR("System Column (not visible to user)"), packBuff[18], 0);
 		frame->AddBit(18, CSTR("Column can store null values"), packBuff[18], 1);
 		frame->AddBit(18, CSTR("Binary column (for CHAR and MEMO only) "), packBuff[18], 2);
 		frame->AddBit(18, CSTR("Column is autoincrementing"), packBuff[18], 3);
-		frame->AddUInt(19, 4, CSTR("Value of autoincrement Next value"), ReadUInt32(&packBuff[19]));
+		frame->AddUInt(19, 4, CSTR("Value of autoincrement Next value"), ReadLUInt32(&packBuff[19]));
 		frame->AddUInt(23, 1, CSTR("Value of autoincrement Step value"), packBuff[23]);
 		frame->AddHexBuff(24, CSTR("Reserved"), packBuff.SubArray(24, 8), false);
 	}

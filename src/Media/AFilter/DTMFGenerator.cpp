@@ -51,12 +51,12 @@ UIntOS Media::AFilter::DTMFGenerator::ReadBlock(Data::ByteArray blk)
 			j = this->format.nChannels;
 			while (j-- > 0)
 			{
-				ivCh = iv + ReadInt16(&blk[i]);
+				ivCh = iv + ReadLInt16(&blk[i]);
 				if (ivCh > 32767)
 					ivCh = 32767;
 				if (ivCh < -32768)
 					ivCh = -32768;
-				WriteInt16(&blk[i], ivCh);
+				WriteLInt16(&blk[i], ivCh);
 				i += 2;
 			}
 		}
@@ -181,12 +181,12 @@ UIntOS Media::AFilter::DTMFGenerator::ReadBlock(Data::ByteArray blk)
 						j = this->format.nChannels;
 						while (j-- > 0)
 						{
-							ivCh = iv + ReadInt16(&blk[i]);
+							ivCh = iv + ReadLInt16(&blk[i]);
 							if (ivCh > 32767)
 								ivCh = 32767;
 							if (ivCh < -32768)
 								ivCh = -32768;
-							WriteInt16(&blk[i], ivCh);
+							WriteLInt16(&blk[i], ivCh);
 							i += 2;
 						}
 					}

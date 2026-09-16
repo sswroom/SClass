@@ -487,7 +487,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 			case Media::PF_LE_R5G5B5:
 			{
 				sb.AppendC(UTF8STRC(", R"));
-				UInt16 p = ReadUInt16(pixel);
+				UInt16 p = ReadLUInt16(pixel);
 				sb.AppendU32((p >> 10) & 0x1f);
 				sb.AppendC(UTF8STRC("G"));
 				sb.AppendU32((p >> 5) & 0x1f);
@@ -501,7 +501,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 			case Media::PF_LE_R5G6B5:
 			{
 				sb.AppendC(UTF8STRC(", R"));
-				UInt16 p = ReadUInt16(pixel);
+				UInt16 p = ReadLUInt16(pixel);
 				sb.AppendU32((p >> 11) & 0x1f);
 				sb.AppendC(UTF8STRC("G"));
 				sb.AppendU32((p >> 5) & 0x3f);
@@ -563,55 +563,55 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 				break;
 			case Media::PF_LE_B16G16R16:
 				sb.AppendC(UTF8STRC(", R"));
-				sb.AppendU32(ReadUInt16(&pixel[4]));
+				sb.AppendU32(ReadLUInt16(&pixel[4]));
 				sb.AppendC(UTF8STRC("G"));
-				sb.AppendU32(ReadUInt16(&pixel[2]));
+				sb.AppendU32(ReadLUInt16(&pixel[2]));
 				sb.AppendC(UTF8STRC("B"));
-				sb.AppendU32(ReadUInt16(&pixel[0]));
-				dR = ReadUInt16(&pixel[4]) / 65535.0;
-				dG = ReadUInt16(&pixel[2]) / 65535.0;
-				dB = ReadUInt16(&pixel[0]) / 65535.0;
+				sb.AppendU32(ReadLUInt16(&pixel[0]));
+				dR = ReadLUInt16(&pixel[4]) / 65535.0;
+				dG = ReadLUInt16(&pixel[2]) / 65535.0;
+				dB = ReadLUInt16(&pixel[0]) / 65535.0;
 				break;
 			case Media::PF_LE_B16G16R16A16:
 				sb.AppendC(UTF8STRC(", A"));
-				sb.AppendU32(ReadUInt16(&pixel[6]));
+				sb.AppendU32(ReadLUInt16(&pixel[6]));
 				sb.AppendC(UTF8STRC("R"));
-				sb.AppendU32(ReadUInt16(&pixel[4]));
+				sb.AppendU32(ReadLUInt16(&pixel[4]));
 				sb.AppendC(UTF8STRC("G"));
-				sb.AppendU32(ReadUInt16(&pixel[2]));
+				sb.AppendU32(ReadLUInt16(&pixel[2]));
 				sb.AppendC(UTF8STRC("B"));
-				sb.AppendU32(ReadUInt16(&pixel[0]));
-				dR = ReadUInt16(&pixel[4]) / 65535.0;
-				dG = ReadUInt16(&pixel[2]) / 65535.0;
-				dB = ReadUInt16(&pixel[0]) / 65535.0;
+				sb.AppendU32(ReadLUInt16(&pixel[0]));
+				dR = ReadLUInt16(&pixel[4]) / 65535.0;
+				dG = ReadLUInt16(&pixel[2]) / 65535.0;
+				dB = ReadLUInt16(&pixel[0]) / 65535.0;
 				break;
 			case Media::PF_LE_R16G16B16:
 				sb.AppendC(UTF8STRC(", R"));
-				sb.AppendU32(ReadUInt16(&pixel[0]));
+				sb.AppendU32(ReadLUInt16(&pixel[0]));
 				sb.AppendC(UTF8STRC("G"));
-				sb.AppendU32(ReadUInt16(&pixel[2]));
+				sb.AppendU32(ReadLUInt16(&pixel[2]));
 				sb.AppendC(UTF8STRC("B"));
-				sb.AppendU32(ReadUInt16(&pixel[4]));
-				dR = ReadUInt16(&pixel[0]) / 65535.0;
-				dG = ReadUInt16(&pixel[2]) / 65535.0;
-				dB = ReadUInt16(&pixel[4]) / 65535.0;
+				sb.AppendU32(ReadLUInt16(&pixel[4]));
+				dR = ReadLUInt16(&pixel[0]) / 65535.0;
+				dG = ReadLUInt16(&pixel[2]) / 65535.0;
+				dB = ReadLUInt16(&pixel[4]) / 65535.0;
 				break;
 			case Media::PF_LE_R16G16B16A16:
 				sb.AppendC(UTF8STRC(", A"));
-				sb.AppendU32(ReadUInt16(&pixel[6]));
+				sb.AppendU32(ReadLUInt16(&pixel[6]));
 				sb.AppendC(UTF8STRC("R"));
-				sb.AppendU32(ReadUInt16(&pixel[0]));
+				sb.AppendU32(ReadLUInt16(&pixel[0]));
 				sb.AppendC(UTF8STRC("G"));
-				sb.AppendU32(ReadUInt16(&pixel[2]));
+				sb.AppendU32(ReadLUInt16(&pixel[2]));
 				sb.AppendC(UTF8STRC("B"));
-				sb.AppendU32(ReadUInt16(&pixel[4]));
-				dR = ReadUInt16(&pixel[0]) / 65535.0;
-				dG = ReadUInt16(&pixel[2]) / 65535.0;
-				dB = ReadUInt16(&pixel[4]) / 65535.0;
+				sb.AppendU32(ReadLUInt16(&pixel[4]));
+				dR = ReadLUInt16(&pixel[0]) / 65535.0;
+				dG = ReadLUInt16(&pixel[2]) / 65535.0;
+				dB = ReadLUInt16(&pixel[4]) / 65535.0;
 				break;
 			case Media::PF_LE_A2B10G10R10:
 			{
-				UInt32 p = ReadUInt32(&pixel[0]);
+				UInt32 p = ReadLUInt32(&pixel[0]);
 				sb.AppendC(UTF8STRC(", A"));
 				sb.AppendU32((p >> 30) & 3);
 				sb.AppendC(UTF8STRC("R"));
@@ -634,81 +634,81 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType 
 				break;
 			case Media::PF_LE_W16:
 				sb.AppendC(UTF8STRC(", W"));
-				sb.AppendU32(ReadUInt16(&pixel[0]));
-				dR = ReadUInt16(&pixel[0]) / 65535.0;
+				sb.AppendU32(ReadLUInt16(&pixel[0]));
+				dR = ReadLUInt16(&pixel[0]) / 65535.0;
 				dG = dR;
 				dB = dR;
 				break;
 			case Media::PF_LE_W16A16:
 				sb.AppendC(UTF8STRC(", A"));
-				sb.AppendU32(ReadUInt16(&pixel[2]));
+				sb.AppendU32(ReadLUInt16(&pixel[2]));
 				sb.AppendC(UTF8STRC(", W"));
-				sb.AppendU32(ReadUInt16(&pixel[0]));
-				dR = ReadUInt16(&pixel[0]) / 65535.0;
+				sb.AppendU32(ReadLUInt16(&pixel[0]));
+				dR = ReadLUInt16(&pixel[0]) / 65535.0;
 				dG = dR;
 				dB = dR;
 				break;
 			case Media::PF_LE_FB32G32R32A32:
 				sb.AppendC(UTF8STRC(", A"));
-				Text::SBAppendF32(sb, ReadFloat(&pixel[12]));
+				Text::SBAppendF32(sb, ReadLFloat(&pixel[12]));
 				sb.AppendC(UTF8STRC(" R"));
-				Text::SBAppendF32(sb, ReadFloat(&pixel[8]));
+				Text::SBAppendF32(sb, ReadLFloat(&pixel[8]));
 				sb.AppendC(UTF8STRC(" G"));
-				Text::SBAppendF32(sb, ReadFloat(&pixel[4]));
+				Text::SBAppendF32(sb, ReadLFloat(&pixel[4]));
 				sb.AppendC(UTF8STRC(" B"));
-				Text::SBAppendF32(sb, ReadFloat(&pixel[0]));
-				dR = ReadFloat(&pixel[8]);
-				dG = ReadFloat(&pixel[4]);
-				dB = ReadFloat(&pixel[0]);
+				Text::SBAppendF32(sb, ReadLFloat(&pixel[0]));
+				dR = ReadLFloat(&pixel[8]);
+				dG = ReadLFloat(&pixel[4]);
+				dB = ReadLFloat(&pixel[0]);
 				break;
 			case Media::PF_LE_FB32G32R32:
 				sb.AppendC(UTF8STRC(", R"));
-				Text::SBAppendF32(sb, ReadFloat(&pixel[8]));
+				Text::SBAppendF32(sb, ReadLFloat(&pixel[8]));
 				sb.AppendC(UTF8STRC(" G"));
-				Text::SBAppendF32(sb, ReadFloat(&pixel[4]));
+				Text::SBAppendF32(sb, ReadLFloat(&pixel[4]));
 				sb.AppendC(UTF8STRC(" B"));
-				Text::SBAppendF32(sb, ReadFloat(&pixel[0]));
-				dR = ReadFloat(&pixel[8]);
-				dG = ReadFloat(&pixel[4]);
-				dB = ReadFloat(&pixel[0]);
+				Text::SBAppendF32(sb, ReadLFloat(&pixel[0]));
+				dR = ReadLFloat(&pixel[8]);
+				dG = ReadLFloat(&pixel[4]);
+				dB = ReadLFloat(&pixel[0]);
 				break;
 			case Media::PF_LE_FR32G32B32A32:
 				sb.AppendC(UTF8STRC(", A"));
-				Text::SBAppendF32(sb, ReadFloat(&pixel[12]));
+				Text::SBAppendF32(sb, ReadLFloat(&pixel[12]));
 				sb.AppendC(UTF8STRC(" R"));
-				Text::SBAppendF32(sb, ReadFloat(&pixel[0]));
+				Text::SBAppendF32(sb, ReadLFloat(&pixel[0]));
 				sb.AppendC(UTF8STRC(" G"));
-				Text::SBAppendF32(sb, ReadFloat(&pixel[4]));
+				Text::SBAppendF32(sb, ReadLFloat(&pixel[4]));
 				sb.AppendC(UTF8STRC(" B"));
-				Text::SBAppendF32(sb, ReadFloat(&pixel[8]));
-				dR = ReadFloat(&pixel[0]);
-				dG = ReadFloat(&pixel[4]);
-				dB = ReadFloat(&pixel[8]);
+				Text::SBAppendF32(sb, ReadLFloat(&pixel[8]));
+				dR = ReadLFloat(&pixel[0]);
+				dG = ReadLFloat(&pixel[4]);
+				dB = ReadLFloat(&pixel[8]);
 				break;
 			case Media::PF_LE_FR32G32B32:
 				sb.AppendC(UTF8STRC(", R"));
-				Text::SBAppendF32(sb, ReadFloat(&pixel[0]));
+				Text::SBAppendF32(sb, ReadLFloat(&pixel[0]));
 				sb.AppendC(UTF8STRC(" G"));
-				Text::SBAppendF32(sb, ReadFloat(&pixel[4]));
+				Text::SBAppendF32(sb, ReadLFloat(&pixel[4]));
 				sb.AppendC(UTF8STRC(" B"));
-				Text::SBAppendF32(sb, ReadFloat(&pixel[8]));
-				dR = ReadFloat(&pixel[0]);
-				dG = ReadFloat(&pixel[4]);
-				dB = ReadFloat(&pixel[8]);
+				Text::SBAppendF32(sb, ReadLFloat(&pixel[8]));
+				dR = ReadLFloat(&pixel[0]);
+				dG = ReadLFloat(&pixel[4]);
+				dB = ReadLFloat(&pixel[8]);
 				break;
 			case Media::PF_LE_FW32A32:
 				sb.AppendC(UTF8STRC(", A"));
-				Text::SBAppendF32(sb, ReadFloat(&pixel[4]));
+				Text::SBAppendF32(sb, ReadLFloat(&pixel[4]));
 				sb.AppendC(UTF8STRC(" W"));
-				Text::SBAppendF32(sb, ReadFloat(&pixel[0]));
-				dR = ReadFloat(&pixel[0]);
+				Text::SBAppendF32(sb, ReadLFloat(&pixel[0]));
+				dR = ReadLFloat(&pixel[0]);
 				dG = dR;
 				dB = dR;
 				break;
 			case Media::PF_LE_FW32:
 				sb.AppendC(UTF8STRC(", W"));
-				Text::SBAppendF32(sb, ReadFloat(&pixel[0]));
-				dR = ReadFloat(&pixel[0]);
+				Text::SBAppendF32(sb, ReadLFloat(&pixel[0]));
+				dR = ReadLFloat(&pixel[0]);
 				dG = dR;
 				dB = dR;
 				break;

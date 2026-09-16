@@ -40,16 +40,16 @@ Optional<IO::ParsedObject> Parser::FileParser::SM2MPXParser::ParseFileHdr(NN<IO:
 	UTF8Char name[13];
 	UnsafeArray<UTF8Char> sptr;
 
-	if (ReadUInt32(&hdr[0]) != 0x4D324D53 || ReadUInt32(&hdr[4]) != 0x30315850)
+	if (ReadLUInt32(&hdr[0]) != 0x4D324D53 || ReadLUInt32(&hdr[4]) != 0x30315850)
 	{
 		return nullptr;
 	}
 
-	UInt32 cnt = ReadUInt32(&hdr[8]);
-	UInt32 endOfst = ReadUInt32(&hdr[12]);
+	UInt32 cnt = ReadLUInt32(&hdr[8]);
+	UInt32 endOfst = ReadLUInt32(&hdr[12]);
 	UInt32 hdrOfst = 32;
 	UInt32 lastOfst;
-	if (cnt * 20 != endOfst - 32 || ReadUInt32(&hdr[28]) != 32)
+	if (cnt * 20 != endOfst - 32 || ReadLUInt32(&hdr[28]) != 32)
 	{
 		return nullptr;
 	}
@@ -63,8 +63,8 @@ Optional<IO::ParsedObject> Parser::FileParser::SM2MPXParser::ParseFileHdr(NN<IO:
 	while (hdrOfst < endOfst)
 	{
 		fd->GetRealData(hdrOfst, 20, BYTEARR(rec));
-		thisOfst = ReadUInt32(&rec[12]);
-		thisSize = ReadUInt32(&rec[16]);
+		thisOfst = ReadLUInt32(&rec[12]);
+		thisSize = ReadLUInt32(&rec[16]);
 		if (thisOfst < lastOfst)
 		{
 			pf.Delete();

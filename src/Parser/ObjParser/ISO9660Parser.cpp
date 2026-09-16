@@ -177,7 +177,7 @@ NN<IO::PackageFile> Parser::ObjParser::ISO9660Parser::ParseVol(NN<IO::SectorData
 	}
 
 	sptr = sectorData->GetSourceName(sbuff);
-	ParseDir(pkgFile, sectorData, ReadUInt32(&sector[158]), ReadUInt32(&sector[166]), sbuff, sptr, codePage);
+	ParseDir(pkgFile, sectorData, ReadLUInt32(&sector[158]), ReadLUInt32(&sector[166]), sbuff, sptr, codePage);
 	return pkgFile;
 }
 
@@ -225,8 +225,8 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(NN<IO::VirtualPackageFile> pkgFi
 			fileRecSize = recBuff[0];
 			if (fileRecSize < 34)
 				break;
-			sectorNum = ReadUInt32(&recBuff[2]);
-			fileSize = ReadUInt32(&recBuff[10]);
+			sectorNum = ReadLUInt32(&recBuff[2]);
+			fileSize = ReadLUInt32(&recBuff[10]);
 			dt.SetValue((UInt16)(1900 + recBuff[18]), recBuff[19], recBuff[20], recBuff[21], recBuff[22], recBuff[23], 0, (Int8)recBuff[24]);
 			if (recBuff[25] & 2)
 			{

@@ -362,7 +362,7 @@ void IO::BTScanLog::ParseAdvisement(NN<ScanRecord3> rec, UnsafeArray<const UInt8
 			j = 2;
 			while (j < optLen)
 			{
-				uuid = ReadUInt16(&buff[i + j]);
+				uuid = ReadLUInt16(&buff[i + j]);
 				if (uuid == 0xFEAA)
 				{
 					rec->advType = ADVT_EDDYSTONE;
@@ -372,7 +372,7 @@ void IO::BTScanLog::ParseAdvisement(NN<ScanRecord3> rec, UnsafeArray<const UInt8
 		}
 		else if (buff[i + 1] == 0xFF)
 		{
-			rec->company = ReadUInt16(&buff[i + 2]);
+			rec->company = ReadLUInt16(&buff[i + 2]);
 			if (rec->company == 0x4C)
 			{
 				switch (buff[i + 4])

@@ -111,9 +111,9 @@ UIntOS Net::LoRaGWUtil::GenUpPayload(UnsafeArray<UInt8> buff, Bool needConfirm, 
 	UInt8 ablock[16];
 	UInt8 sblock[16];
 	// FHDR
-	WriteUInt32(&buff[1], devAddr);
+	WriteLUInt32(&buff[1], devAddr);
 	buff[5] = 0x80; //FCtrl = ADR
-	WriteUInt16(&buff[6], (UInt16)fCnt);
+	WriteLUInt16(&buff[6], (UInt16)fCnt);
 	buff[8] = fPort;
 	index = 9;
 	if (payloadLen > 0)
@@ -125,8 +125,8 @@ UIntOS Net::LoRaGWUtil::GenUpPayload(UnsafeArray<UInt8> buff, Bool needConfirm, 
 		ablock[3] = 0;
 		ablock[4] = 0;
 		ablock[5] = 0; //dir
-		WriteUInt32(&ablock[6], devAddr);
-		WriteUInt32(&ablock[10], fCnt);
+		WriteLUInt32(&ablock[6], devAddr);
+		WriteLUInt32(&ablock[10], fCnt);
 		ablock[14] = 0;
 		ablock[15] = 0;
 		while (payloadLen > 0)
@@ -169,8 +169,8 @@ void Net::LoRaGWUtil::CalcMIC(UnsafeArray<UInt8> micBuff, UInt32 devAddr, UInt32
 	ablock[3] = 0;
 	ablock[4] = 0;
 	ablock[5] = downLink ? 1 : 0;
-	WriteUInt32(&ablock[6], devAddr);
-	WriteUInt32(&ablock[10], fCnt);
+	WriteLUInt32(&ablock[6], devAddr);
+	WriteLUInt32(&ablock[10], fCnt);
 	ablock[14] = 0;
 	ablock[15] = (UInt8)msgLen;
 	UInt8 cmac[16];

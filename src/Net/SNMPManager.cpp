@@ -930,18 +930,18 @@ void Net::SNMPManager::Agent2Record(NN<const AgentInfo> agent, NN<SSWR::SMonitor
 	while (i < j)
 	{
 		reading = agent->readingList.GetItemNoCheck(i);
-		WriteInt16(&rec->readings[i].status[0], reading->index);
-		WriteInt16(&rec->readings[i].status[2], SSWR::SMonitor::SAnalogSensor::ST_SNMP);
+		WriteLInt16(&rec->readings[i].status[0], reading->index);
+		WriteLInt16(&rec->readings[i].status[2], SSWR::SMonitor::SAnalogSensor::ST_SNMP);
 		currId = readingIdMap.Get((UInt32)reading->index);
-		WriteInt16(&rec->readings[i].status[4], currId);
+		WriteLInt16(&rec->readings[i].status[4], currId);
 		readingIdMap.Put((UInt32)reading->index, currId + 1);
 		if (reading->valValid)
 		{
-			WriteInt16(&rec->readings[i].status[6], reading->readingType);
+			WriteLInt16(&rec->readings[i].status[6], reading->readingType);
 		}
 		else
 		{
-			WriteInt16(&rec->readings[i].status[6], 0);
+			WriteLInt16(&rec->readings[i].status[6], 0);
 		}
 		rec->readings[i].reading = reading->currVal;
 		i++;

@@ -42,7 +42,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CDXAParser::ParseFileHdr(NN<IO::S
 		return nullptr;
 	if (ReadNInt32(&hdr[8]) != *(Int32*)"CDXA")
 		return nullptr;
-	fileSize = ReadUInt32(&hdr[4]) + 8;
+	fileSize = ReadLUInt32(&hdr[4]) + 8;
 
 	UInt8 riffBuff[12];
 	Optional<IO::CDXAData> cdData = nullptr;
@@ -61,7 +61,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CDXAParser::ParseFileHdr(NN<IO::S
 		}
 		else if (ReadNInt32(&riffBuff[0]) == *(Int32*)"data")
 		{
-			UInt32 leng = ReadUInt32(&riffBuff[4]);
+			UInt32 leng = ReadLUInt32(&riffBuff[4]);
 			if ((leng % 2352) == 0)
 			{
 				NEW_CLASSOPT(cdData, IO::CDXAData(fd, currPos + 8, leng));
@@ -76,7 +76,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CDXAParser::ParseFileHdr(NN<IO::S
 			return nullptr;
 		}
 
-		currPos += ReadUInt32(&riffBuff[4]) + 8;
+		currPos += ReadLUInt32(&riffBuff[4]) + 8;
 	}
 	if (fmt)
 		MemFree(fmt);

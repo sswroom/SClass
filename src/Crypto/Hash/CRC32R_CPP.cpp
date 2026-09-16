@@ -74,20 +74,20 @@ extern "C" UInt32 CRC32R_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 *tab, U
 	{
 		while (buffSize >= 64)
 		{
-			currVal = __crc32cd(currVal, ReadUInt64(&buff[0]));
-			currVal = __crc32cd(currVal, ReadUInt64(&buff[8]));
-			currVal = __crc32cd(currVal, ReadUInt64(&buff[16]));
-			currVal = __crc32cd(currVal, ReadUInt64(&buff[24]));
-			currVal = __crc32cd(currVal, ReadUInt64(&buff[32]));
-			currVal = __crc32cd(currVal, ReadUInt64(&buff[40]));
-			currVal = __crc32cd(currVal, ReadUInt64(&buff[48]));
-			currVal = __crc32cd(currVal, ReadUInt64(&buff[56]));
+			currVal = __crc32cd(currVal, ReadLUInt64(&buff[0]));
+			currVal = __crc32cd(currVal, ReadLUInt64(&buff[8]));
+			currVal = __crc32cd(currVal, ReadLUInt64(&buff[16]));
+			currVal = __crc32cd(currVal, ReadLUInt64(&buff[24]));
+			currVal = __crc32cd(currVal, ReadLUInt64(&buff[32]));
+			currVal = __crc32cd(currVal, ReadLUInt64(&buff[40]));
+			currVal = __crc32cd(currVal, ReadLUInt64(&buff[48]));
+			currVal = __crc32cd(currVal, ReadLUInt64(&buff[56]));
 			buff += 64;
 			buffSize -= 64;
 		}
 		while (buffSize >= 8)
 		{
-			currVal = __crc32cd(currVal, ReadUInt64(&buff[0]));
+			currVal = __crc32cd(currVal, ReadLUInt64(&buff[0]));
 			buff += 8;
 			buffSize -= 8;
 		}
@@ -103,20 +103,20 @@ extern "C" UInt32 CRC32R_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 *tab, U
 	{
 		while (buffSize >= 64)
 		{
-			currVal = __crc32d(currVal, ReadUInt64(&buff[0]));
-			currVal = __crc32d(currVal, ReadUInt64(&buff[8]));
-			currVal = __crc32d(currVal, ReadUInt64(&buff[16]));
-			currVal = __crc32d(currVal, ReadUInt64(&buff[24]));
-			currVal = __crc32d(currVal, ReadUInt64(&buff[32]));
-			currVal = __crc32d(currVal, ReadUInt64(&buff[40]));
-			currVal = __crc32d(currVal, ReadUInt64(&buff[48]));
-			currVal = __crc32d(currVal, ReadUInt64(&buff[56]));
+			currVal = __crc32d(currVal, ReadLUInt64(&buff[0]));
+			currVal = __crc32d(currVal, ReadLUInt64(&buff[8]));
+			currVal = __crc32d(currVal, ReadLUInt64(&buff[16]));
+			currVal = __crc32d(currVal, ReadLUInt64(&buff[24]));
+			currVal = __crc32d(currVal, ReadLUInt64(&buff[32]));
+			currVal = __crc32d(currVal, ReadLUInt64(&buff[40]));
+			currVal = __crc32d(currVal, ReadLUInt64(&buff[48]));
+			currVal = __crc32d(currVal, ReadLUInt64(&buff[56]));
 			buff += 64;
 			buffSize -= 64;
 		}
 		while (buffSize >= 8)
 		{
-			currVal = __crc32d(currVal, ReadUInt64(&buff[0]));
+			currVal = __crc32d(currVal, ReadLUInt64(&buff[0]));
 			buff += 8;
 			buffSize -= 8;
 		}
@@ -132,10 +132,10 @@ extern "C" UInt32 CRC32R_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 *tab, U
 	{
 		while (buffSize >= 16)
 		{
-			UInt32 currVal1 = ReadUInt32(buff) ^ currVal;
-			UInt32 currVal2 = ReadUInt32(buff + 4);
-			UInt32 currVal3 = ReadUInt32(buff + 8);
-			UInt32 currVal4 = ReadUInt32(buff + 12);
+			UInt32 currVal1 = ReadLUInt32(buff) ^ currVal;
+			UInt32 currVal2 = ReadLUInt32(buff + 4);
+			UInt32 currVal3 = ReadLUInt32(buff + 8);
+			UInt32 currVal4 = ReadLUInt32(buff + 12);
 			buff += 16;
 			currVal  = tab[0    +  (currVal4 >> 24)];
 			currVal ^= tab[256  + ((currVal4 >> 16) & 0xff)];
@@ -157,7 +157,7 @@ extern "C" UInt32 CRC32R_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 *tab, U
 		}
 		while (buffSize >= 4)
 		{
-			currVal ^= ReadUInt32(buff);
+			currVal ^= ReadLUInt32(buff);
 			buff += 4;
 			currVal = tab[768 + (currVal & 0xff)] ^ tab[512 + ((currVal >> 8) & 0xff)] ^  tab[256 + ((currVal >> 16) & 0xff)] ^ tab[0 + (currVal >> 24)];
 			buffSize -= 4;
@@ -181,20 +181,20 @@ extern "C" UInt32 CRC32R_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 *tab, U
 		UInt64 v = currVal;
 		while (buffSize >= 64)
 		{
-			v = _mm_crc32_u64(v, ReadUInt64(&buff[0]));
-			v = _mm_crc32_u64(v, ReadUInt64(&buff[8]));
-			v = _mm_crc32_u64(v, ReadUInt64(&buff[16]));
-			v = _mm_crc32_u64(v, ReadUInt64(&buff[24]));
-			v = _mm_crc32_u64(v, ReadUInt64(&buff[32]));
-			v = _mm_crc32_u64(v, ReadUInt64(&buff[40]));
-			v = _mm_crc32_u64(v, ReadUInt64(&buff[48]));
-			v = _mm_crc32_u64(v, ReadUInt64(&buff[56]));
+			v = _mm_crc32_u64(v, ReadLUInt64(&buff[0]));
+			v = _mm_crc32_u64(v, ReadLUInt64(&buff[8]));
+			v = _mm_crc32_u64(v, ReadLUInt64(&buff[16]));
+			v = _mm_crc32_u64(v, ReadLUInt64(&buff[24]));
+			v = _mm_crc32_u64(v, ReadLUInt64(&buff[32]));
+			v = _mm_crc32_u64(v, ReadLUInt64(&buff[40]));
+			v = _mm_crc32_u64(v, ReadLUInt64(&buff[48]));
+			v = _mm_crc32_u64(v, ReadLUInt64(&buff[56]));
 			buff += 64;
 			buffSize -= 64;
 		}
 		while (buffSize >= 8)
 		{
-			v = _mm_crc32_u64(v, ReadUInt64(&buff[0]));
+			v = _mm_crc32_u64(v, ReadLUInt64(&buff[0]));
 			buff += 8;
 			buffSize -= 8;
 		}
@@ -211,10 +211,10 @@ extern "C" UInt32 CRC32R_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 *tab, U
 	{
 		while (buffSize >= 16)
 		{
-			UInt32 currVal1 = ReadUInt32(buff) ^ currVal;
-			UInt32 currVal2 = ReadUInt32(buff + 4);
-			UInt32 currVal3 = ReadUInt32(buff + 8);
-			UInt32 currVal4 = ReadUInt32(buff + 12);
+			UInt32 currVal1 = ReadLUInt32(buff) ^ currVal;
+			UInt32 currVal2 = ReadLUInt32(buff + 4);
+			UInt32 currVal3 = ReadLUInt32(buff + 8);
+			UInt32 currVal4 = ReadLUInt32(buff + 12);
 			buff += 16;
 			currVal  = tab[0    +  (currVal4 >> 24)];
 			currVal ^= tab[256  + ((currVal4 >> 16) & 0xff)];
@@ -236,7 +236,7 @@ extern "C" UInt32 CRC32R_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 *tab, U
 		}
 		while (buffSize >= 4)
 		{
-			currVal ^= ReadUInt32(buff);
+			currVal ^= ReadLUInt32(buff);
 			buff += 4;
 			currVal = tab[768 + (currVal & 0xff)] ^ tab[512 + ((currVal >> 8) & 0xff)] ^  tab[256 + ((currVal >> 16) & 0xff)] ^ tab[0 + (currVal >> 24)];
 			buffSize -= 4;
@@ -254,10 +254,10 @@ extern "C" UInt32 CRC32R_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 *tab, U
 {
 	while (buffSize >= 16)
 	{
-		UInt32 currVal1 = ReadUInt32(buff) ^ currVal;
-		UInt32 currVal2 = ReadUInt32(buff + 4);
-		UInt32 currVal3 = ReadUInt32(buff + 8);
-		UInt32 currVal4 = ReadUInt32(buff + 12);
+		UInt32 currVal1 = ReadLUInt32(buff) ^ currVal;
+		UInt32 currVal2 = ReadLUInt32(buff + 4);
+		UInt32 currVal3 = ReadLUInt32(buff + 8);
+		UInt32 currVal4 = ReadLUInt32(buff + 12);
 		buff += 16;
 		currVal  = tab[0    +  (currVal4 >> 24)];
 		currVal ^= tab[256  + ((currVal4 >> 16) & 0xff)];
@@ -279,7 +279,7 @@ extern "C" UInt32 CRC32R_Calc(const UInt8 *buff, UIntOS buffSize, UInt32 *tab, U
 	}
 	while (buffSize >= 4)
 	{
-		currVal ^= ReadUInt32(buff);
+		currVal ^= ReadLUInt32(buff);
 		buff += 4;
 		currVal = tab[768 + (currVal & 0xff)] ^ tab[512 + ((currVal >> 8) & 0xff)] ^  tab[256 + ((currVal >> 16) & 0xff)] ^ tab[0 + (currVal >> 24)];
 		buffSize -= 4;

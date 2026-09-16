@@ -68,7 +68,7 @@ Optional<IO::ParsedObject> Parser::FileParser::RAR5Parser::ParseFileHdr(NN<IO::S
 	UInt64 dataSize;
 	UInt32 headerType;
 
-	if (ReadInt32(&hdr[0]) != 0x21726152 || ReadInt32(&hdr[4]) != 0x0001071A)
+	if (ReadLInt32(&hdr[0]) != 0x21726152 || ReadLInt32(&hdr[4]) != 0x0001071A)
 	{
 		return nullptr;
 	}
@@ -123,12 +123,12 @@ Optional<IO::ParsedObject> Parser::FileParser::RAR5Parser::ParseFileHdr(NN<IO::S
 			dt.SetTicks(0);
 			if (headerFlags & 2)
 			{
-				dt.SetUnixTimestamp(ReadUInt32(buffPtr));
+				dt.SetUnixTimestamp(ReadLUInt32(buffPtr));
 				buffPtr += 4;
 			}
 			if (headerFlags & 4)
 			{
-				dataCRC = ReadUInt32(buffPtr);
+				dataCRC = ReadLUInt32(buffPtr);
 				buffPtr += 4;
 			}
 			buffPtr = ReadVInt(buffPtr, &compInfo);
@@ -162,7 +162,7 @@ Optional<IO::ParsedObject> Parser::FileParser::RAR5Parser::ParseFileHdr(NN<IO::S
 						{
 							if (headerFlags & 1)
 							{
-								dt.SetUnixTimestamp(ReadUInt32(buffPtr));
+								dt.SetUnixTimestamp(ReadLUInt32(buffPtr));
 								buffPtr += 4;
 							}
 							else

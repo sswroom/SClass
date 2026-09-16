@@ -70,15 +70,15 @@ void __stdcall IO::FileAnalyse::ETLFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		if (fd->GetRealData(ofst, 32, BYTEARR(header)) != 32)
 			break;
 
-		blockSize = ReadUInt32(&header[0]);
+		blockSize = ReadLUInt32(&header[0]);
 		
 		if (blockSize < 32 || ofst + blockSize > dataSize)
 			break;
 
-		UInt16 recordId = ReadUInt16(&header[4]);
+		UInt16 recordId = ReadLUInt16(&header[4]);
 		UInt16 level = header[8];
-		UInt32 processorId = ReadUInt32(&header[12]);
-		UInt64 timestamp = ReadUInt64(&header[16]);
+		UInt32 processorId = ReadLUInt32(&header[12]);
+		UInt64 timestamp = ReadLUInt64(&header[16]);
 
 		NN<IO::FileAnalyse::ETLFileAnalyse::RecordInfo> record = MemAllocNN(IO::FileAnalyse::ETLFileAnalyse::RecordInfo);
 		record->ofst = ofst;
@@ -103,7 +103,7 @@ IO::FileAnalyse::ETLFileAnalyse::ETLFileAnalyse(NN<IO::StreamData> fd) : packetB
 		return;
 	}
 
-	UInt32 signature = ReadUInt32(buff);
+	UInt32 signature = ReadLUInt32(buff);
 	
 	if (signature == ETL_FILE_SIGNATURE)
 	{
@@ -239,12 +239,12 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ETLFileAnalyse::GetFrame
 	
 	fd->GetRealData(record->ofst, record->blockSize, buffer);
 
-	frame->AddUInt(0, 4, CSTR("BlockSize"), ReadUInt32(&buffer[0]));
-	frame->AddUInt(4, 2, CSTR("RecordID"), ReadUInt16(&buffer[4]));
+	frame->AddUInt(0, 4, CSTR("BlockSize"), ReadLUInt32(&buffer[0]));
+	frame->AddUInt(4, 2, CSTR("RecordID"), ReadLUInt16(&buffer[4]));
 	frame->AddUInt(8, 1, CSTR("Level"), buffer[8]);
-	frame->AddUInt(12, 4, CSTR("ProcessorID"), ReadUInt32(&buffer[12]));
+	frame->AddUInt(12, 4, CSTR("ProcessorID"), ReadLUInt32(&buffer[12]));
 	sptr = Data::Timestamp::FromSYSTEMTIME(&buffer[16], Data::DateTimeUtil::GetLocalTzQhr()).ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-	frame->AddUInt64Name(16, 8, CSTR("Timestamp"), ReadUInt64(&buffer[16]), CSTRP(sbuff, sptr));
+	frame->AddUInt64Name(16, 8, CSTR("Timestamp"), ReadLUInt64(&buffer[16]), CSTRP(sbuff, sptr));
 
 	return frame;
 }

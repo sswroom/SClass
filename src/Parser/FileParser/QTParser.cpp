@@ -948,7 +948,7 @@ Optional<Media::MediaSource> Parser::FileParser::QTParser::ParseStblAtom(NN<IO::
 						break;
 					}
 
-					//WriteInt16(afmt.extra, 0x4015);
+					//WriteLInt16(afmt.extra, 0x4015);
 				}
 				else if (*(Int32*)&buff[12] == *(Int32*)"ac-3")
 				{
@@ -1010,7 +1010,7 @@ Optional<Media::MediaSource> Parser::FileParser::QTParser::ParseStblAtom(NN<IO::
 									afmt.formatId = 0x1610;
 									//afmt.frequency *= 2;
 								}
-	//							WriteInt16(afmt.extra, ReadMInt16(&buff[bofst + 19]));
+	//							WriteLInt16(afmt.extra, ReadMInt16(&buff[bofst + 19]));
 							}
 						}
 						else if (*(Int32*)&buff[bofst + 4] == *(Int32*)"wave")

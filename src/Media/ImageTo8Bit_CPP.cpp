@@ -5,8 +5,8 @@ extern "C" UIntOS ImageTo8Bit_CalDiff(Int32 col1, Int32 col2)
 {
 	UInt8 c1[4];
 	UInt8 c2[4];
-	WriteInt32(c1, col1);
-	WriteInt32(c2, col2);
+	WriteLInt32(c1, col1);
+	WriteLInt32(c2, col2);
 	Int32 v1 = c1[0] - (Int32)c2[0];
 	UIntOS sum = 0;
 	if (v1 < 0)

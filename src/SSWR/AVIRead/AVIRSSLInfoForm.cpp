@@ -105,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 		packetBuff[39] = 0; //0 Data
 		packetBuff[40] = 0; //1 Data
 		Text::StrConcatC(&packetBuff[41], UTF8STRC("MSSQLServer")); //2 Data 
-		WriteUInt32(&packetBuff[53], Sync::ThreadUtil::GetThreadId());
+		WriteLUInt32(&packetBuff[53], Sync::ThreadUtil::GetThreadId());
 		packetBuff[57] = 0;
 		me->sockf->SetRecvTimeout(nns, 5000);
 		if ((retSize = me->sockf->SendData(nns, packetBuff, 58, nullptr)) != 58)

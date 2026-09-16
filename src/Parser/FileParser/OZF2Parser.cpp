@@ -62,32 +62,32 @@ Optional<IO::ParsedObject> Parser::FileParser::OZF2Parser::ParseFileHdr(NN<IO::S
 	{
 		return nullptr;
 	}
-	if (ReadInt16(&hdr[0]) != 0x7778)
+	if (ReadLInt16(&hdr[0]) != 0x7778)
 	{
 		return nullptr;
 	}
-	if (ReadInt16(&hdr[6]) != 64)
+	if (ReadLInt16(&hdr[6]) != 64)
 	{
 		return nullptr;
 	}
-	if (ReadInt16(&hdr[8]) != 1)
+	if (ReadLInt16(&hdr[8]) != 1)
 	{
 		return nullptr;
 	}
-	if (ReadInt32(&hdr[14]) != 40)
+	if (ReadLInt32(&hdr[14]) != 40)
 	{
 		return nullptr;
 	}
-	imgWidth = ReadUInt32(&hdr[18]);
-	imgHeight = ReadUInt32(&hdr[22]);
-	scaleCnt = ReadUInt16(&hdr[58]);
+	imgWidth = ReadLUInt32(&hdr[18]);
+	imgHeight = ReadLUInt32(&hdr[22]);
+	scaleCnt = ReadLUInt16(&hdr[58]);
 	fd->GetRealData(fileSize - 4, 4, BYTEARR(tmpBuff));
-	scaleCnt = (UInt32)((fileSize - 4 - ReadUInt32(tmpBuff)) >> 2);
+	scaleCnt = (UInt32)((fileSize - 4 - ReadLUInt32(tmpBuff)) >> 2);
 
 	Data::ByteBuffer imgBuff(4096);
 	Data::ByteBuffer srcBuff(8192);
 	Data::ByteBuffer scaleTable((scaleCnt + 1) * 4);
-	fd->GetRealData(ReadUInt32(tmpBuff), scaleCnt * 4, scaleTable);
+	fd->GetRealData(ReadLUInt32(tmpBuff), scaleCnt * 4, scaleTable);
 	NEW_CLASSNN(imgList, Media::ImageList(fd->GetFullFileName()));
 	i = 0;
 	while (i < scaleCnt)
@@ -99,11 +99,11 @@ Optional<IO::ParsedObject> Parser::FileParser::OZF2Parser::ParseFileHdr(NN<IO::S
 		UIntOS xCnt;
 		UIntOS yCnt;
 		UIntOS decSize;
-		fd->GetRealData(ReadUInt32(&scaleTable[i * 4]), 1036, BYTEARR(tmpBuff));
-		thisImgWidth = ReadUInt32(&tmpBuff[0]);
-		thisImgHeight = ReadUInt32(&tmpBuff[4]);
-		xCnt = ReadUInt16(&tmpBuff[8]);
-		yCnt = ReadUInt16(&tmpBuff[10]);
+		fd->GetRealData(ReadLUInt32(&scaleTable[i * 4]), 1036, BYTEARR(tmpBuff));
+		thisImgWidth = ReadLUInt32(&tmpBuff[0]);
+		thisImgHeight = ReadLUInt32(&tmpBuff[4]);
+		xCnt = ReadLUInt16(&tmpBuff[8]);
+		yCnt = ReadLUInt16(&tmpBuff[10]);
 		if (thisImgWidth == imgWidth && thisImgHeight == imgHeight)
 		{
 			NEW_CLASSNN(outImg, Media::StaticImage(Math::Size2D<UIntOS>(thisImgWidth, thisImgHeight), 0, 8, Media::PF_PAL_8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
@@ -114,7 +114,7 @@ Optional<IO::ParsedObject> Parser::FileParser::OZF2Parser::ParseFileHdr(NN<IO::S
 			}
 
 			Data::ByteBuffer ptrBuff(4 * (xCnt * yCnt + 1));
-			fd->GetRealData(ReadUInt32(&scaleTable[i * 4]) + 1036, 4 * (xCnt * yCnt + 1), ptrBuff);
+			fd->GetRealData(ReadLUInt32(&scaleTable[i * 4]) + 1036, 4 * (xCnt * yCnt + 1), ptrBuff);
 			j = 0;
 			currY = 0;
 			while (currY < yCnt)
@@ -122,8 +122,8 @@ Optional<IO::ParsedObject> Parser::FileParser::OZF2Parser::ParseFileHdr(NN<IO::S
 				currX = 0;
 				while (currX < xCnt)
 				{
-					thisOfst = ReadUInt32(&ptrBuff[j * 4]);
-					nextOfst = ReadUInt32(&ptrBuff[(j + 1) * 4]);
+					thisOfst = ReadLUInt32(&ptrBuff[j * 4]);
+					nextOfst = ReadLUInt32(&ptrBuff[(j + 1) * 4]);
 					if ((nextOfst - thisOfst) <= 8192)
 					{
 						fd->GetRealData(thisOfst, nextOfst - thisOfst, srcBuff);

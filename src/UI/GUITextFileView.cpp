@@ -95,7 +95,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(AnyType userObj)
 					lineCurr = 0;
 					while (lineCurr < me->readBuffSize)
 					{
-						c = ReadUInt16(&me->readBuff[lineCurr]);
+						c = ReadLUInt16(&me->readBuff[lineCurr]);
 						if (lastC == 0xd)
 						{
 							if (c == 0xa)

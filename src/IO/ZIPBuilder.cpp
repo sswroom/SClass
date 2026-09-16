@@ -37,50 +37,50 @@ IO::ZIPBuilder::~ZIPBuilder()
 		file = this->files.GetItemNoCheck(i);
 		minVer = 20;
 		dt.SetValue(file->fileModTime.inst, file->fileModTime.tzQhr);
-		WriteUInt32(&hdrBuff[0], 0x02014b50);
+		WriteLUInt32(&hdrBuff[0], 0x02014b50);
 		hdrBuff[4] = ZIPVER;
 		hdrBuff[5] = (UInt8)this->osType;
 		hdrBuff[7] = (UInt8)this->osType;
-		WriteUInt16(&hdrBuff[8], 0); //General purpose flag
-		WriteUInt16(&hdrBuff[10], file->compMeth);
-		WriteUInt16(&hdrBuff[12], dt.ToMSDOSTime());
-		WriteUInt16(&hdrBuff[14], dt.ToMSDOSDate());
-		WriteUInt32(&hdrBuff[16], file->crcVal);
-		WriteUInt32(&hdrBuff[20], (UInt32)file->compSize);
-		WriteUInt32(&hdrBuff[24], (UInt32)file->uncompSize);
-		WriteUInt16(&hdrBuff[28], file->fileName->leng);
-		WriteUInt16(&hdrBuff[30], 0); //extra field length
-		WriteUInt16(&hdrBuff[32], 0); //File comment length
-		WriteUInt16(&hdrBuff[34], 0); //Disk number where file starts
-		WriteUInt16(&hdrBuff[36], 0); //Internal file attributes
-		WriteUInt32(&hdrBuff[38], file->fileAttr); //External file attributes
-		WriteUInt32(&hdrBuff[42], (UInt32)file->fileOfst);
+		WriteLUInt16(&hdrBuff[8], 0); //General purpose flag
+		WriteLUInt16(&hdrBuff[10], file->compMeth);
+		WriteLUInt16(&hdrBuff[12], dt.ToMSDOSTime());
+		WriteLUInt16(&hdrBuff[14], dt.ToMSDOSDate());
+		WriteLUInt32(&hdrBuff[16], file->crcVal);
+		WriteLUInt32(&hdrBuff[20], (UInt32)file->compSize);
+		WriteLUInt32(&hdrBuff[24], (UInt32)file->uncompSize);
+		WriteLUInt16(&hdrBuff[28], file->fileName->leng);
+		WriteLUInt16(&hdrBuff[30], 0); //extra field length
+		WriteLUInt16(&hdrBuff[32], 0); //File comment length
+		WriteLUInt16(&hdrBuff[34], 0); //Disk number where file starts
+		WriteLUInt16(&hdrBuff[36], 0); //Internal file attributes
+		WriteLUInt32(&hdrBuff[38], file->fileAttr); //External file attributes
+		WriteLUInt32(&hdrBuff[42], (UInt32)file->fileOfst);
 		MemCopyNO(&hdrBuff[46], file->fileName->v.Ptr(), file->fileName->leng);
 		hdrLen = 46 + file->fileName->leng;
 		#if _OSINT_SIZE > 32
 		if (file->compSize >= 0xFFFFFFFFLL || file->fileOfst >= 0xFFFFFFFFLL || file->uncompSize >= 0xFFFFFFFFLL)
 		{
 			UIntOS len = 0;
-			WriteUInt16(&hdrBuff[hdrLen], 1);
+			WriteLUInt16(&hdrBuff[hdrLen], 1);
 			if (file->uncompSize >= 0xFFFFFFFFLL)
 			{
-				WriteUInt64(&hdrBuff[hdrLen + 4 + len], file->uncompSize);
-				WriteUInt32(&hdrBuff[24], 0xffffffff);
+				WriteLUInt64(&hdrBuff[hdrLen + 4 + len], file->uncompSize);
+				WriteLUInt32(&hdrBuff[24], 0xffffffff);
 				len += 8;
 			}
 			if (file->compSize >= 0xFFFFFFFFLL)
 			{
-				WriteUInt64(&hdrBuff[hdrLen + 4 + len], file->compSize);
-				WriteUInt32(&hdrBuff[20], 0xffffffff);
+				WriteLUInt64(&hdrBuff[hdrLen + 4 + len], file->compSize);
+				WriteLUInt32(&hdrBuff[20], 0xffffffff);
 				len += 8;
 			}
 			if (file->fileOfst >= 0xFFFFFFFFLL)
 			{
-				WriteUInt64(&hdrBuff[hdrLen + 4 + len], file->fileOfst);
-				WriteUInt32(&hdrBuff[42], 0xffffffff);
+				WriteLUInt64(&hdrBuff[hdrLen + 4 + len], file->fileOfst);
+				WriteLUInt32(&hdrBuff[42], 0xffffffff);
 				len += 8;
 			}
-			WriteUInt16(&hdrBuff[hdrLen + 2], len);
+			WriteLUInt16(&hdrBuff[hdrLen + 2], len);
 			hdrLen += 4 + len;
 		}
 		#endif
@@ -88,17 +88,17 @@ IO::ZIPBuilder::~ZIPBuilder()
 		{
 			if (minVer < 45)
 				minVer = 45;
-			WriteUInt16(&hdrBuff[hdrLen], 10);
-			WriteUInt16(&hdrBuff[hdrLen + 2], 32);
-			WriteUInt32(&hdrBuff[hdrLen + 4], 0);
-			WriteUInt16(&hdrBuff[hdrLen + 8], 1);
-			WriteUInt16(&hdrBuff[hdrLen + 10], 24);
+			WriteLUInt16(&hdrBuff[hdrLen], 10);
+			WriteLUInt16(&hdrBuff[hdrLen + 2], 32);
+			WriteLUInt32(&hdrBuff[hdrLen + 4], 0);
+			WriteLUInt16(&hdrBuff[hdrLen + 8], 1);
+			WriteLUInt16(&hdrBuff[hdrLen + 10], 24);
 			file->fileModTime.ToFILETIME(&hdrBuff[hdrLen + 12]);
 			file->fileAccessTime.ToFILETIME(&hdrBuff[hdrLen + 20]);
 			file->fileCreateTime.ToFILETIME(&hdrBuff[hdrLen + 28]);
 			hdrLen += 36;
 		}
-		WriteUInt16(&hdrBuff[30], hdrLen - 46 - file->fileName->leng);
+		WriteLUInt16(&hdrBuff[30], hdrLen - 46 - file->fileName->leng);
 		hdrBuff[6] = minVer;
 
 		this->stm.WriteCont(hdrBuff, hdrLen);
@@ -111,52 +111,52 @@ IO::ZIPBuilder::~ZIPBuilder()
 	if (this->currOfst >= 0xffffffff || j >= 0xffff)
 	{
 		UInt64 cdOfst = this->stm.GetPosition();
-		WriteUInt32(&hdrBuff[0], 0x06064b50); //Record Type (Zip64 End of central directory record)
-		WriteUInt64(&hdrBuff[4], 44); //Size of zip64 end of central directory record
-		WriteUInt16(&hdrBuff[12], ZIPVER); //Version made by
-		WriteUInt16(&hdrBuff[14], 45); //Version needed to extract
-		WriteUInt32(&hdrBuff[16], 0); //Number of this disk
-		WriteUInt32(&hdrBuff[20], 0); //Number of the disk with the start of the central directory
-		WriteUInt64(&hdrBuff[24], j); //Total number of entries in the central directory on this disk
-		WriteUInt64(&hdrBuff[32], j); //Total number of entries in the central directory
-		WriteUInt64(&hdrBuff[40], cdLen); //Size of central directory
-		WriteUInt64(&hdrBuff[48], this->currOfst); //Offset of start of central directory with respect to the starting disk number
+		WriteLUInt32(&hdrBuff[0], 0x06064b50); //Record Type (Zip64 End of central directory record)
+		WriteLUInt64(&hdrBuff[4], 44); //Size of zip64 end of central directory record
+		WriteLUInt16(&hdrBuff[12], ZIPVER); //Version made by
+		WriteLUInt16(&hdrBuff[14], 45); //Version needed to extract
+		WriteLUInt32(&hdrBuff[16], 0); //Number of this disk
+		WriteLUInt32(&hdrBuff[20], 0); //Number of the disk with the start of the central directory
+		WriteLUInt64(&hdrBuff[24], j); //Total number of entries in the central directory on this disk
+		WriteLUInt64(&hdrBuff[32], j); //Total number of entries in the central directory
+		WriteLUInt64(&hdrBuff[40], cdLen); //Size of central directory
+		WriteLUInt64(&hdrBuff[48], this->currOfst); //Offset of start of central directory with respect to the starting disk number
 		this->stm.WriteCont(hdrBuff, 56);
 
-		WriteUInt32(&hdrBuff[0], 0x07064b50); //Record Type (Zip64 end of central directory locator)
-		WriteUInt32(&hdrBuff[4], 0); //Number of the disk with the start of the zip64 end of central directory
-		WriteUInt64(&hdrBuff[8], cdOfst); //Relative offset of the zip64 end of central directory record
-		WriteUInt32(&hdrBuff[16], 1); //Total number of disks
+		WriteLUInt32(&hdrBuff[0], 0x07064b50); //Record Type (Zip64 end of central directory locator)
+		WriteLUInt32(&hdrBuff[4], 0); //Number of the disk with the start of the zip64 end of central directory
+		WriteLUInt64(&hdrBuff[8], cdOfst); //Relative offset of the zip64 end of central directory record
+		WriteLUInt32(&hdrBuff[16], 1); //Total number of disks
 		this->stm.WriteCont(hdrBuff, 20);
 
-		WriteUInt32(&hdrBuff[0], 0x06054b50); //Record Type (End of central directory record)
-		WriteUInt16(&hdrBuff[4], 0); //Number of this disk
-		WriteUInt16(&hdrBuff[6], 0); //Disk where central directory starts
+		WriteLUInt32(&hdrBuff[0], 0x06054b50); //Record Type (End of central directory record)
+		WriteLUInt16(&hdrBuff[4], 0); //Number of this disk
+		WriteLUInt16(&hdrBuff[6], 0); //Disk where central directory starts
 		if (j >= 0xffff)
 		{
-			WriteUInt16(&hdrBuff[8], 0xffff); //Number of central directory of this disk
-			WriteUInt16(&hdrBuff[10], 0xffff); //Total number of central directory records
+			WriteLUInt16(&hdrBuff[8], 0xffff); //Number of central directory of this disk
+			WriteLUInt16(&hdrBuff[10], 0xffff); //Total number of central directory records
 		}
 		else
 		{
-			WriteUInt16(&hdrBuff[8], j); //Number of central directory of this disk
-			WriteUInt16(&hdrBuff[10], j); //Total number of central directory records
+			WriteLUInt16(&hdrBuff[8], j); //Number of central directory of this disk
+			WriteLUInt16(&hdrBuff[10], j); //Total number of central directory records
 		}
-		WriteUInt32(&hdrBuff[12], (UInt32)cdLen); //Size of central directory
-		WriteUInt32(&hdrBuff[16], 0xffffffff); //Offset of start of central directory
-		WriteUInt16(&hdrBuff[20], 0); //Comment Length
+		WriteLUInt32(&hdrBuff[12], (UInt32)cdLen); //Size of central directory
+		WriteLUInt32(&hdrBuff[16], 0xffffffff); //Offset of start of central directory
+		WriteLUInt16(&hdrBuff[20], 0); //Comment Length
 		this->stm.WriteCont(hdrBuff, 22);
 	}
 	else
 	{
-		WriteUInt32(&hdrBuff[0], 0x06054b50); //Record Type (End of central directory record)
-		WriteUInt16(&hdrBuff[4], 0); //Number of this disk
-		WriteUInt16(&hdrBuff[6], 0); //Disk where central directory starts
-		WriteUInt16(&hdrBuff[8], j); //Number of central directory of this disk
-		WriteUInt16(&hdrBuff[10], j); //Total number of central directory records
-		WriteUInt32(&hdrBuff[12], (UInt32)cdLen); //Size of central directory
-		WriteUInt32(&hdrBuff[16], (UInt32)this->currOfst); //Offset of start of central directory
-		WriteUInt16(&hdrBuff[20], 0); //Comment Length
+		WriteLUInt32(&hdrBuff[0], 0x06054b50); //Record Type (End of central directory record)
+		WriteLUInt16(&hdrBuff[4], 0); //Number of this disk
+		WriteLUInt16(&hdrBuff[6], 0); //Disk where central directory starts
+		WriteLUInt16(&hdrBuff[8], j); //Number of central directory of this disk
+		WriteLUInt16(&hdrBuff[10], j); //Total number of central directory records
+		WriteLUInt32(&hdrBuff[12], (UInt32)cdLen); //Size of central directory
+		WriteLUInt32(&hdrBuff[16], (UInt32)this->currOfst); //Offset of start of central directory
+		WriteLUInt16(&hdrBuff[20], 0); //Comment Length
 		this->stm.WriteCont(hdrBuff, 22);
 	}
 }
@@ -182,45 +182,45 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> 
 	}
 	UInt32 crcVal = this->crc.CalcDirect(fileContent.Ptr(), fileSize);
 	Data::DateTime dt(lastModTime.inst, lastModTime.tzQhr);
-	WriteUInt32(&hdrBuff[0], 0x04034b50);
+	WriteLUInt32(&hdrBuff[0], 0x04034b50);
 	hdrBuff[4] = 20; //Verison (2.0)
 	hdrBuff[5] = (UInt8)this->osType;
-	WriteUInt16(&hdrBuff[6], 0);
-	WriteUInt16(&hdrBuff[8], 0x8);
-	WriteUInt16(&hdrBuff[10], dt.ToMSDOSTime());
-	WriteUInt16(&hdrBuff[12], dt.ToMSDOSDate());
-	WriteUInt32(&hdrBuff[14], crcVal);
-	WriteUInt32(&hdrBuff[18], (UInt32)compSize);
-	WriteUInt32(&hdrBuff[22], (UInt32)fileSize);
-	WriteUInt16(&hdrBuff[26], (UInt32)fileName.leng);
-	WriteUInt16(&hdrBuff[28], 0);
+	WriteLUInt16(&hdrBuff[6], 0);
+	WriteLUInt16(&hdrBuff[8], 0x8);
+	WriteLUInt16(&hdrBuff[10], dt.ToMSDOSTime());
+	WriteLUInt16(&hdrBuff[12], dt.ToMSDOSDate());
+	WriteLUInt32(&hdrBuff[14], crcVal);
+	WriteLUInt32(&hdrBuff[18], (UInt32)compSize);
+	WriteLUInt32(&hdrBuff[22], (UInt32)fileSize);
+	WriteLUInt16(&hdrBuff[26], (UInt32)fileName.leng);
+	WriteLUInt16(&hdrBuff[28], 0);
 	MemCopyNO(&hdrBuff[30], fileName.v.Ptr(), fileName.leng);
 	hdrLen = 30 + fileName.leng;
 	if (compSize >= 0xFFFFFFFFLL || fileSize >= 0xFFFFFFFFLL)
 	{
 		UIntOS len = 4;
-		WriteUInt16(&hdrBuff[hdrLen], 1);
+		WriteLUInt16(&hdrBuff[hdrLen], 1);
 		if (fileSize >= 0xffffffffLL)
 		{
-			WriteUInt64(&hdrBuff[hdrLen + len], fileSize);
-			WriteUInt32(&hdrBuff[22], 0xffffffff);
+			WriteLUInt64(&hdrBuff[hdrLen + len], fileSize);
+			WriteLUInt32(&hdrBuff[22], 0xffffffff);
 			len += 8;
 		}
 		if (compSize >= 0xffffffffLL)
 		{
 			if (compSize >= fileSize)
 			{
-				WriteUInt64(&hdrBuff[hdrLen + len], fileSize);
+				WriteLUInt64(&hdrBuff[hdrLen + len], fileSize);
 			}
 			else
 			{
-				WriteUInt64(&hdrBuff[hdrLen + len], compSize);
+				WriteLUInt64(&hdrBuff[hdrLen + len], compSize);
 			}
-			WriteUInt32(&hdrBuff[18], 0xffffffff);
+			WriteLUInt32(&hdrBuff[18], 0xffffffff);
 			len += 8;
 		}
-		WriteUInt16(&hdrBuff[28], len);
-		WriteUInt16(&hdrBuff[hdrLen + 2], len - 4);
+		WriteLUInt16(&hdrBuff[28], len);
+		WriteLUInt16(&hdrBuff[hdrLen + 2], len - 4);
 		hdrLen += len;
 	}
 
@@ -260,8 +260,8 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> 
 	if (compSize >= fileSize)
 	{
 		UIntOS writeSize;
-		WriteInt16(&hdrBuff[8], 0x0);
-		WriteInt32(&hdrBuff[18], (Int32)fileSize);
+		WriteLInt16(&hdrBuff[8], 0x0);
+		WriteLInt32(&hdrBuff[18], (Int32)fileSize);
 		file->compMeth = 0;
 		file->compSize = fileSize;
 		writeSize = this->stm.WriteCont(hdrBuff, hdrLen);
@@ -336,45 +336,45 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, NN<IO::SeekableStream> st
 		}
 	}
 	Data::DateTime dt(lastModTime.inst, lastModTime.tzQhr);
-	WriteUInt32(&hdrBuff[0], 0x04034b50);
+	WriteLUInt32(&hdrBuff[0], 0x04034b50);
 	hdrBuff[4] = 20; //Verison (2.0)
 	hdrBuff[5] = (UInt8)this->osType;
-	WriteUInt16(&hdrBuff[6], 0);
-	WriteUInt16(&hdrBuff[8], 0x8);
-	WriteUInt16(&hdrBuff[10], dt.ToMSDOSTime());
-	WriteUInt16(&hdrBuff[12], dt.ToMSDOSDate());
-	WriteUInt32(&hdrBuff[14], crcVal);
-	WriteUInt32(&hdrBuff[18], (UInt32)compSize);
-	WriteUInt32(&hdrBuff[22], (UInt32)fileSize);
-	WriteUInt16(&hdrBuff[26], (UInt32)fileName.leng);
-	WriteUInt16(&hdrBuff[28], 0);
+	WriteLUInt16(&hdrBuff[6], 0);
+	WriteLUInt16(&hdrBuff[8], 0x8);
+	WriteLUInt16(&hdrBuff[10], dt.ToMSDOSTime());
+	WriteLUInt16(&hdrBuff[12], dt.ToMSDOSDate());
+	WriteLUInt32(&hdrBuff[14], crcVal);
+	WriteLUInt32(&hdrBuff[18], (UInt32)compSize);
+	WriteLUInt32(&hdrBuff[22], (UInt32)fileSize);
+	WriteLUInt16(&hdrBuff[26], (UInt32)fileName.leng);
+	WriteLUInt16(&hdrBuff[28], 0);
 	MemCopyNO(&hdrBuff[30], fileName.v.Ptr(), fileName.leng);
 	hdrLen = 30 + fileName.leng;
 	if (compSize >= 0xFFFFFFFFLL || fileSize >= 0xFFFFFFFFLL)
 	{
 		UIntOS len = 4;
-		WriteUInt16(&hdrBuff[hdrLen], 1);
+		WriteLUInt16(&hdrBuff[hdrLen], 1);
 		if (fileSize >= 0xffffffffLL)
 		{
-			WriteUInt64(&hdrBuff[hdrLen + len], fileSize);
-			WriteUInt32(&hdrBuff[22], 0xffffffff);
+			WriteLUInt64(&hdrBuff[hdrLen + len], fileSize);
+			WriteLUInt32(&hdrBuff[22], 0xffffffff);
 			len += 8;
 		}
 		if (compSize >= 0xffffffffLL)
 		{
 			if (compSize >= fileSize)
 			{
-				WriteUInt64(&hdrBuff[hdrLen + len], fileSize);
+				WriteLUInt64(&hdrBuff[hdrLen + len], fileSize);
 			}
 			else
 			{
-				WriteUInt64(&hdrBuff[hdrLen + len], compSize);
+				WriteLUInt64(&hdrBuff[hdrLen + len], compSize);
 			}
-			WriteUInt32(&hdrBuff[18], 0xffffffff);
+			WriteLUInt32(&hdrBuff[18], 0xffffffff);
 			len += 8;
 		}
-		WriteUInt16(&hdrBuff[28], len);
-		WriteUInt16(&hdrBuff[hdrLen + 2], len - 4);
+		WriteLUInt16(&hdrBuff[28], len);
+		WriteLUInt16(&hdrBuff[hdrLen + 2], len - 4);
 		hdrLen += len;
 	}
 
@@ -414,8 +414,8 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, NN<IO::SeekableStream> st
 	if (compSize >= fileSize)
 	{
 		UInt64 writeSize;
-		WriteInt16(&hdrBuff[8], 0x0);
-		WriteInt32(&hdrBuff[18], (Int32)fileSize);
+		WriteLInt16(&hdrBuff[8], 0x0);
+		WriteLInt32(&hdrBuff[18], (Int32)fileSize);
 		file->compMeth = 0;
 		file->compSize = fileSize;
 		writeSize = this->stm.WriteCont(hdrBuff, hdrLen);
@@ -454,18 +454,18 @@ Bool IO::ZIPBuilder::AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime
 	UInt8 hdrBuff[512];
 	UIntOS hdrLen;
 	Data::DateTime dt(lastModTime.inst, lastModTime.tzQhr);
-	WriteUInt32(&hdrBuff[0], 0x04034b50);
+	WriteLUInt32(&hdrBuff[0], 0x04034b50);
 	hdrBuff[4] = 45;
 	hdrBuff[5] = (UInt8)this->osType;
-	WriteUInt16(&hdrBuff[6], 0);
-	WriteUInt16(&hdrBuff[8], 0);
-	WriteUInt16(&hdrBuff[10], dt.ToMSDOSTime());
-	WriteUInt16(&hdrBuff[12], dt.ToMSDOSDate());
-	WriteUInt32(&hdrBuff[14], 0);
-	WriteUInt32(&hdrBuff[18], 0);
-	WriteUInt32(&hdrBuff[22], 0);
-	WriteUInt16(&hdrBuff[26], (Int32)dirName.leng);
-	WriteUInt16(&hdrBuff[28], 0);
+	WriteLUInt16(&hdrBuff[6], 0);
+	WriteLUInt16(&hdrBuff[8], 0);
+	WriteLUInt16(&hdrBuff[10], dt.ToMSDOSTime());
+	WriteLUInt16(&hdrBuff[12], dt.ToMSDOSDate());
+	WriteLUInt32(&hdrBuff[14], 0);
+	WriteLUInt32(&hdrBuff[18], 0);
+	WriteLUInt32(&hdrBuff[22], 0);
+	WriteLUInt16(&hdrBuff[26], (Int32)dirName.leng);
+	WriteLUInt16(&hdrBuff[28], 0);
 	MemCopyNO(&hdrBuff[30], dirName.v.Ptr(), dirName.leng);
 	hdrLen = 30 + dirName.leng;
 
@@ -518,38 +518,38 @@ Bool IO::ZIPBuilder::AddDeflate(Text::CStringNN fileName, Data::ByteArrayR buff,
 	UInt8 hdrBuff[512];
 	UIntOS hdrLen;
 	Data::DateTime dt(lastModTime.inst, lastModTime.tzQhr);
-	WriteUInt32(&hdrBuff[0], 0x04034b50);
+	WriteLUInt32(&hdrBuff[0], 0x04034b50);
 	hdrBuff[4] = 20; //Verison (2.0)
 	hdrBuff[5] = (UInt8)this->osType;
-	WriteUInt16(&hdrBuff[6], 0);
-	WriteUInt16(&hdrBuff[8], 0x8);
-	WriteUInt16(&hdrBuff[10], dt.ToMSDOSTime());
-	WriteUInt16(&hdrBuff[12], dt.ToMSDOSDate());
-	WriteUInt32(&hdrBuff[14], crcVal);
-	WriteUInt32(&hdrBuff[18], (UInt32)buff.GetSize());
-	WriteUInt32(&hdrBuff[22], (UInt32)decSize);
-	WriteUInt16(&hdrBuff[26], (UInt32)fileName.leng);
-	WriteUInt16(&hdrBuff[28], 0);
+	WriteLUInt16(&hdrBuff[6], 0);
+	WriteLUInt16(&hdrBuff[8], 0x8);
+	WriteLUInt16(&hdrBuff[10], dt.ToMSDOSTime());
+	WriteLUInt16(&hdrBuff[12], dt.ToMSDOSDate());
+	WriteLUInt32(&hdrBuff[14], crcVal);
+	WriteLUInt32(&hdrBuff[18], (UInt32)buff.GetSize());
+	WriteLUInt32(&hdrBuff[22], (UInt32)decSize);
+	WriteLUInt16(&hdrBuff[26], (UInt32)fileName.leng);
+	WriteLUInt16(&hdrBuff[28], 0);
 	MemCopyNO(&hdrBuff[30], fileName.v.Ptr(), fileName.leng);
 	hdrLen = 30 + fileName.leng;
 	if (buff.GetSize() >= 0xFFFFFFFFLL || decSize >= 0xFFFFFFFFLL)
 	{
 		UIntOS len = 4;
-		WriteUInt16(&hdrBuff[hdrLen], 1);
+		WriteLUInt16(&hdrBuff[hdrLen], 1);
 		if (decSize >= 0xffffffffLL)
 		{
-			WriteUInt64(&hdrBuff[hdrLen + len], decSize);
-			WriteUInt32(&hdrBuff[22], 0xffffffff);
+			WriteLUInt64(&hdrBuff[hdrLen + len], decSize);
+			WriteLUInt32(&hdrBuff[22], 0xffffffff);
 			len += 8;
 		}
 		if (buff.GetSize() >= 0xffffffff)
 		{
-			WriteUInt64(&hdrBuff[hdrLen + len], buff.GetSize());
-			WriteUInt32(&hdrBuff[18], 0xffffffff);
+			WriteLUInt64(&hdrBuff[hdrLen + len], buff.GetSize());
+			WriteLUInt32(&hdrBuff[18], 0xffffffff);
 			len += 8;
 		}
-		WriteUInt16(&hdrBuff[28], len);
-		WriteUInt16(&hdrBuff[hdrLen + 2], len - 4);
+		WriteLUInt16(&hdrBuff[28], len);
+		WriteLUInt16(&hdrBuff[hdrLen + 2], len - 4);
 		hdrLen += len;
 	}
 

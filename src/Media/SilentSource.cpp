@@ -128,7 +128,7 @@ UIntOS Media::SilentSource::ReadBlock(Data::ByteArray blk)
 	{
 		while (i < readSize)
 		{
-			WriteInt16(&blk[i], 0);
+			WriteLInt16(&blk[i], 0);
 			i += 2;
 		}
 	}
@@ -146,7 +146,7 @@ UIntOS Media::SilentSource::ReadBlock(Data::ByteArray blk)
 	{
 		while (i < readSize)
 		{
-			WriteInt32(&blk[i], 0);
+			WriteLInt32(&blk[i], 0);
 			i += 4;
 		}
 	}

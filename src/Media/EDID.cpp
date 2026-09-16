@@ -16,8 +16,8 @@ Bool Media::EDID::Parse(UnsafeArray<const UInt8> edidBuff, NN<Media::EDID::EDIDI
 	info->vendorName[1] = (UTF8Char)(0x40 + ((edidBuff[9] >> 5) | ((edidBuff[8] << 3) & 0x1f)));
 	info->vendorName[2] = (UTF8Char)(0x40 + (edidBuff[9] & 0x1f));
 	info->vendorName[3] = 0;
-	info->productCode = ReadUInt16(&edidBuff[0xa]);
-	info->sn = ReadUInt32(&edidBuff[0x0c]);
+	info->productCode = ReadLUInt16(&edidBuff[0xa]);
+	info->sn = ReadLUInt32(&edidBuff[0x0c]);
 	info->weekOfManu = edidBuff[0x10];
 	info->yearOfManu = edidBuff[0x11] + 1990;
 	info->edidVer = edidBuff[0x12];

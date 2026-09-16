@@ -55,7 +55,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AFSParser::ParseFileHdr(NN<IO::St
 	sbuff[7] = '0';
 	sbuff[8] = 0;
 
-	fileCnt = ReadUInt32(&hdr[4]);
+	fileCnt = ReadLUInt32(&hdr[4]);
 	Data::ByteBuffer buff2(fileCnt << 3);
 	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	fd->GetRealData(8, fileCnt << 3, buff2);
@@ -68,8 +68,8 @@ Optional<IO::ParsedObject> Parser::FileParser::AFSParser::ParseFileHdr(NN<IO::St
 			*namePtr = '0';
 		}
 
-		ofst = ReadUInt32(&buff2[i << 3]);
-		leng = ReadUInt32(&buff2[(i << 3) + 4]);
+		ofst = ReadLUInt32(&buff2[i << 3]);
+		leng = ReadLUInt32(&buff2[(i << 3) + 4]);
 		if (ofst == 0 || leng == 0)
 		{
 			pf.Delete();

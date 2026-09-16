@@ -64,7 +64,7 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::RIFFFileAnalyse(fd));
 	}
-	else if (buffSize >= 8 && (ReadInt32(&buff[4]) == *(Int32*)"ftyp" || ReadInt32(&buff[4]) == *(Int32*)"moov"))
+	else if (buffSize >= 8 && (ReadLInt32(&buff[4]) == *(Int32*)"ftyp" || ReadLInt32(&buff[4]) == *(Int32*)"moov"))
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::QTFileAnalyse(fd));
 	}
@@ -92,7 +92,7 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::PNGFileAnalyse(fd));
 	}
-	else if (ReadUInt32(buff) == 0xa1b2c3d4 || ReadMUInt32(buff) == 0xa1b2c3d4)
+	else if (ReadLUInt32(buff) == 0xa1b2c3d4 || ReadMUInt32(buff) == 0xa1b2c3d4)
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::PCapFileAnalyse(fd));
 	}
@@ -104,7 +104,7 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::EXEFileAnalyse(fd));
 	}
-	else if (ReadInt32(&buff[0]) == 0x21726152 && ReadInt32(&buff[4]) == 0x0001071A)
+	else if (ReadLInt32(&buff[0]) == 0x21726152 && ReadLInt32(&buff[4]) == 0x0001071A)
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::RAR5FileAnalyse(fd));
 	}
@@ -116,15 +116,15 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::SPKFileAnalyse(fd));
 	}
-	else if (ReadUInt32(buff) == 3 && ReadUInt64(&buff[24]) == fd->GetDataSize() && ReadUInt32(&buff[40]) != 0x20014)
+	else if (ReadLUInt32(buff) == 3 && ReadLUInt64(&buff[24]) == fd->GetDataSize() && ReadLUInt32(&buff[40]) != 0x20014)
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::FGDBFileAnalyse(fd));
 	}
-	else if (ReadUInt32(buff) == 3 && ReadUInt64(&buff[24]) == fd->GetDataSize() && ReadUInt32(&buff[40]) == 0x20014)
+	else if (ReadLUInt32(buff) == 3 && ReadLUInt64(&buff[24]) == fd->GetDataSize() && ReadLUInt32(&buff[40]) == 0x20014)
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::CCacheV2FileAnalyse(fd));
 	}
-	else if (ReadUInt32(buff) == 0x100 && (Text::StrStartsWithC(&buff[4], 252, UTF8STRC("Standard Jet DB")) || Text::StrStartsWithC(&buff[4], 252, UTF8STRC("Standard ACE DB"))))
+	else if (ReadLUInt32(buff) == 0x100 && (Text::StrStartsWithC(&buff[4], 252, UTF8STRC("Standard Jet DB")) || Text::StrStartsWithC(&buff[4], 252, UTF8STRC("Standard ACE DB"))))
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::MDBFileAnalyse(fd));
 	}
@@ -140,11 +140,11 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::JMVL01FileAnalyse(fd));
 	}
-	else if (buffSize >= 100 && ReadMInt32(buff) == 9994 && ReadInt32(&buff[28]) == 1000 && (ReadMUInt32(&buff[24]) << 1) == fd->GetDataSize())
+	else if (buffSize >= 100 && ReadMInt32(buff) == 9994 && ReadLInt32(&buff[28]) == 1000 && (ReadMUInt32(&buff[24]) << 1) == fd->GetDataSize())
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::SHPFileAnalyse(fd));
 	}
-	else if (buffSize >= 76 && ReadUInt32(&buff[0]) == 0x4C && ReadUInt32(&buff[4]) == 0x00021401 && ReadUInt32(&buff[8]) == 0 && ReadUInt32(&buff[12]) == 0xC0 && ReadUInt32(&buff[16]) == 0x46000000)
+	else if (buffSize >= 76 && ReadLUInt32(&buff[0]) == 0x4C && ReadLUInt32(&buff[4]) == 0x00021401 && ReadLUInt32(&buff[8]) == 0 && ReadLUInt32(&buff[12]) == 0xC0 && ReadLUInt32(&buff[16]) == 0x46000000)
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::LNKFileAnalyse(fd));
 	}
@@ -152,7 +152,7 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::ZIPFileAnalyse(fd));
 	}
-	else if (buffSize >= 0x440 && ReadUInt32(buff) == 0x400 && ReadUInt32(&buff[0x400]) < buffSize && ReadUInt16(&buff[0x404]) > 0)
+	else if (buffSize >= 0x440 && ReadLUInt32(buff) == 0x400 && ReadLUInt32(&buff[0x400]) < buffSize && ReadLUInt16(&buff[0x404]) > 0)
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::ETLFileAnalyse(fd));
 	}
@@ -160,7 +160,7 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::EDIDFileAnalyse(fd));
 	}
-	else if (buffSize >= 128 && buff[0] == 'I' && buff[1] == 'I' && (ReadUInt16(&buff[2]) == 42 || ReadUInt16(&buff[2]) == 43))
+	else if (buffSize >= 128 && buff[0] == 'I' && buff[1] == 'I' && (ReadLUInt16(&buff[2]) == 42 || ReadLUInt16(&buff[2]) == 43))
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::TIFFFileAnalyse(fd));
 	}
@@ -192,7 +192,7 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::MapsforgeFileAnalyse(fd));
 	}
-	else if (fileName->EndsWith(UTF8STRC(".dbf")) && buffSize >= 32 && buff[0] == 3 && (ReadUInt32(&buff[4]) * ReadUInt16(&buff[10]) + ReadUInt16(&buff[8]) + 1) == fd->GetDataSize())
+	else if (fileName->EndsWith(UTF8STRC(".dbf")) && buffSize >= 32 && buff[0] == 3 && (ReadLUInt32(&buff[4]) * ReadLUInt16(&buff[10]) + ReadLUInt16(&buff[8]) + 1) == fd->GetDataSize())
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::DBF3FileAnalyse(fd));
 	}

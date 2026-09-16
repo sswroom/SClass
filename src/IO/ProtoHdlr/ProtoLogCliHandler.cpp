@@ -32,7 +32,7 @@ UIntOS IO::ProtoHdlr::ProtoLogCliHandler::ParseProtocol(NN<IO::Stream> stm, AnyT
 		found = false;
 		if (*(Int16*)&myBuff[0] == *(Int16*)"lC")
 		{
-			UInt32 packetSize = ReadUInt16(&myBuff[2]);
+			UInt32 packetSize = ReadLUInt16(&myBuff[2]);
 			if (packetSize <= 4096)
 			{
 				if (packetSize > myBuff.GetSize())
@@ -43,9 +43,9 @@ UIntOS IO::ProtoHdlr::ProtoLogCliHandler::ParseProtocol(NN<IO::Stream> stm, AnyT
 				this->crc.Calc(myBuff.Arr().Ptr(), packetSize - 2);
 				this->crc.GetValue(crcVal);
 				mutUsage.EndUse();
-				if (ReadMUInt16(&crcVal[2]) == ReadUInt16(&myBuff[packetSize - 2]))
+				if (ReadMUInt16(&crcVal[2]) == ReadLUInt16(&myBuff[packetSize - 2]))
 				{
-					this->listener->DataParsed(stm, stmObj, ReadUInt16(&myBuff[4]), 0, &myBuff[6], packetSize - 8);
+					this->listener->DataParsed(stm, stmObj, ReadLUInt16(&myBuff[4]), 0, &myBuff[6], packetSize - 8);
 
 					found = true;
 					myBuff += packetSize;
@@ -64,8 +64,8 @@ UIntOS IO::ProtoHdlr::ProtoLogCliHandler::ParseProtocol(NN<IO::Stream> stm, AnyT
 UIntOS IO::ProtoHdlr::ProtoLogCliHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize, AnyType stmData)
 {
 	*(Int16*)&buff[0] = *(Int16*)"lC";
-	WriteInt16(&buff[2], (Int16)cmdSize + 8);
-	WriteInt16(&buff[4], cmdType);
+	WriteLInt16(&buff[2], (Int16)cmdSize + 8);
+	WriteLInt16(&buff[4], cmdType);
 	if (cmdSize > 0)
 	{
 		MemCopyNO(&buff[6], cmd.Ptr(), cmdSize);
@@ -76,6 +76,6 @@ UIntOS IO::ProtoHdlr::ProtoLogCliHandler::BuildPacket(UnsafeArray<UInt8> buff, I
 	this->crc.Calc(buff, cmdSize + 6);
 	this->crc.GetValue(crcVal);
 	mutUsage.EndUse();
-	WriteInt16(&buff[cmdSize + 6], ReadMInt32(crcVal));
+	WriteLInt16(&buff[cmdSize + 6], ReadMInt32(crcVal));
 	return cmdSize + 8;
 }

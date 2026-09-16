@@ -1178,7 +1178,7 @@ UInt16 Manage::Process::ReadMemUInt16(UInt64 addr)
 	if (ReadProcessMemory(this->handle, (void*)addr, buff, 2, &size))
 	{
 		if (size == 2)
-			return ReadUInt16(&buff[0]);
+			return ReadLUInt16(&buff[0]);
 	}
 	return 0;
 }
@@ -1190,7 +1190,7 @@ UInt32 Manage::Process::ReadMemUInt32(UInt64 addr)
 	if (ReadProcessMemory(this->handle, (void*)addr, buff, 4, &size))
 	{
 		if (size == 4)
-			return ReadUInt32(&buff[0]);
+			return ReadLUInt32(&buff[0]);
 	}
 	return 0;
 }
@@ -1202,7 +1202,7 @@ UInt64 Manage::Process::ReadMemUInt64(UInt64 addr)
 	if (ReadProcessMemory(this->handle, (void*)addr, buff, 8, &size))
 	{
 		if (size == 8)
-			return ReadUInt64(&buff[0]);
+			return ReadLUInt64(&buff[0]);
 	}
 	return 0;
 }

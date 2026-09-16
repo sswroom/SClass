@@ -279,7 +279,7 @@ IO::BTController::BTController(void *internalData, void *hand)
 		}
 		if (hci_read_class_of_dev(info->dd, cls, 1000) >= 0)
 		{
-			this->devClass = ReadUInt24(cls);
+			this->devClass = ReadLUInt24(cls);
 		}
 	}
 	else

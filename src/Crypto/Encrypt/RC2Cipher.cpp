@@ -83,7 +83,7 @@ Bool Crypto::Encrypt::RC2Cipher::SetKey(UnsafeArray<const UInt8> key, UIntOS key
 	i = 0;
 	while (i < 64)
 	{
-		this->xkeys[i] = ReadUInt16(&tmp[2 * i]);
+		this->xkeys[i] = ReadLUInt16(&tmp[2 * i]);
 		i++;
 	}
 	return true;
@@ -98,10 +98,10 @@ UIntOS Crypto::Encrypt::RC2Cipher::EncryptBlock(UnsafeArray<const UInt8> inBlock
 	UInt16 x10;
 	IntOS i;
 
-    x10 = ReadUInt16(&inBlock[0]);
-    x32 = ReadUInt16(&inBlock[2]);
-    x54 = ReadUInt16(&inBlock[4]);
-    x76 = ReadUInt16(&inBlock[6]);
+    x10 = ReadLUInt16(&inBlock[0]);
+    x32 = ReadLUInt16(&inBlock[2]);
+    x54 = ReadLUInt16(&inBlock[4]);
+    x76 = ReadLUInt16(&inBlock[6]);
 
 	i = 0;
 	while (i < 16)
@@ -128,10 +128,10 @@ UIntOS Crypto::Encrypt::RC2Cipher::EncryptBlock(UnsafeArray<const UInt8> inBlock
 		i++;
     }
 
-	WriteUInt16(&outBlock[0], x10);
-	WriteUInt16(&outBlock[2], x32);
-	WriteUInt16(&outBlock[4], x54);
-	WriteUInt16(&outBlock[6], x76);
+	WriteLUInt16(&outBlock[0], x10);
+	WriteLUInt16(&outBlock[2], x32);
+	WriteLUInt16(&outBlock[4], x54);
+	WriteLUInt16(&outBlock[6], x76);
 
     return 8;
 }
@@ -145,10 +145,10 @@ UIntOS Crypto::Encrypt::RC2Cipher::DecryptBlock(UnsafeArray<const UInt8> inBlock
     const UInt16 *xkey = this->xkeys;
     IntOS i;
 
-    x10 = ReadUInt16(&inBlock[0]);
-    x32 = ReadUInt16(&inBlock[2]);
-    x54 = ReadUInt16(&inBlock[4]);
-    x76 = ReadUInt16(&inBlock[6]);
+    x10 = ReadLUInt16(&inBlock[0]);
+    x32 = ReadLUInt16(&inBlock[2]);
+    x54 = ReadLUInt16(&inBlock[4]);
+    x76 = ReadLUInt16(&inBlock[6]);
 
 	i = 15;
 	while (i >= 0)
@@ -174,10 +174,10 @@ UIntOS Crypto::Encrypt::RC2Cipher::DecryptBlock(UnsafeArray<const UInt8> inBlock
 
 		i--;
 	}
-	WriteUInt16(&outBlock[0], x10);
-	WriteUInt16(&outBlock[2], x32);
-	WriteUInt16(&outBlock[4], x54);
-	WriteUInt16(&outBlock[6], x76);
+	WriteLUInt16(&outBlock[0], x10);
+	WriteLUInt16(&outBlock[2], x32);
+	WriteLUInt16(&outBlock[4], x54);
+	WriteLUInt16(&outBlock[6], x76);
 
     return 8;
 }

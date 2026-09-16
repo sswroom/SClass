@@ -88,7 +88,7 @@ IO::FileAnalyse::SHPFileAnalyse::SHPFileAnalyse(NN<IO::StreamData> fd) : thread(
 	this->fd = nullptr;
 	this->pauseParsing = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
-	if (ReadMInt32(buff) != 9994 || ReadInt32(&buff[28]) != 1000 || (ReadMUInt32(&buff[24]) << 1) != fd->GetDataSize())
+	if (ReadMInt32(buff) != 9994 || ReadLInt32(&buff[28]) != 1000 || (ReadMUInt32(&buff[24]) << 1) != fd->GetDataSize())
 	{
 		return;
 	}
@@ -178,16 +178,16 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SHPFileAnalyse::GetFrame
 		frame->AddUInt(16, 4, CSTR("Unused"), ReadMUInt32(&tagData[16]));
 		frame->AddUInt(20, 4, CSTR("Unused"), ReadMUInt32(&tagData[20]));
 		frame->AddUInt(24, 4, CSTR("File Length"), ReadMUInt32(&tagData[24]));
-		frame->AddUInt(28, 4, CSTR("Version"), ReadUInt32(&tagData[28]));
-		frame->AddUIntName(32, 4, CSTR("Shape Type"), ReadUInt32(&tagData[32]), ShapeTypeGetName(ReadUInt32(&tagData[32])));
-		frame->AddFloat(36, 8, CSTR("Xmin"), ReadDouble(&tagData[36]));
-		frame->AddFloat(44, 8, CSTR("Ymin"), ReadDouble(&tagData[44]));
-		frame->AddFloat(52, 8, CSTR("Xmax"), ReadDouble(&tagData[52]));
-		frame->AddFloat(60, 8, CSTR("Ymax"), ReadDouble(&tagData[60]));
-		frame->AddFloat(68, 8, CSTR("Zmin"), ReadDouble(&tagData[68]));
-		frame->AddFloat(76, 8, CSTR("Zmax"), ReadDouble(&tagData[76]));
-		frame->AddFloat(84, 8, CSTR("Mmin"), ReadDouble(&tagData[84]));
-		frame->AddFloat(92, 8, CSTR("Mmax"), ReadDouble(&tagData[92]));
+		frame->AddUInt(28, 4, CSTR("Version"), ReadLUInt32(&tagData[28]));
+		frame->AddUIntName(32, 4, CSTR("Shape Type"), ReadLUInt32(&tagData[32]), ShapeTypeGetName(ReadLUInt32(&tagData[32])));
+		frame->AddFloat(36, 8, CSTR("Xmin"), ReadLDouble(&tagData[36]));
+		frame->AddFloat(44, 8, CSTR("Ymin"), ReadLDouble(&tagData[44]));
+		frame->AddFloat(52, 8, CSTR("Xmax"), ReadLDouble(&tagData[52]));
+		frame->AddFloat(60, 8, CSTR("Ymax"), ReadLDouble(&tagData[60]));
+		frame->AddFloat(68, 8, CSTR("Zmin"), ReadLDouble(&tagData[68]));
+		frame->AddFloat(76, 8, CSTR("Zmax"), ReadLDouble(&tagData[76]));
+		frame->AddFloat(84, 8, CSTR("Mmin"), ReadLDouble(&tagData[84]));
+		frame->AddFloat(92, 8, CSTR("Mmax"), ReadLDouble(&tagData[92]));
 	}
 	else
 	{
@@ -197,7 +197,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SHPFileAnalyse::GetFrame
 		UIntOS j;
 		frame->AddUInt(0, 4, CSTR("Record Number"), ReadMUInt32(&tagData[0]));
 		frame->AddUInt(4, 4, CSTR("Content Length (WORD)"), ReadMUInt32(&tagData[4]));
-		UInt32 shapeType = ReadUInt32(&tagData[8]);
+		UInt32 shapeType = ReadLUInt32(&tagData[8]);
 		frame->AddUIntName(8, 4, CSTR("Shape Type"), shapeType, ShapeTypeGetName(shapeType));
 		switch (shapeType)
 		{
@@ -205,63 +205,63 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SHPFileAnalyse::GetFrame
 			break;
 		case 3:
 		case 5:
-			frame->AddFloat(12, 8, CSTR("Xmin"), ReadDouble(&tagData[12]));
-			frame->AddFloat(20, 8, CSTR("Ymin"), ReadDouble(&tagData[20]));
-			frame->AddFloat(28, 8, CSTR("Xmax"), ReadDouble(&tagData[28]));
-			frame->AddFloat(36, 8, CSTR("Ymax"), ReadDouble(&tagData[36]));
-			numParts = ReadUInt32(&tagData[44]);
-			numPoints = ReadUInt32(&tagData[48]);
+			frame->AddFloat(12, 8, CSTR("Xmin"), ReadLDouble(&tagData[12]));
+			frame->AddFloat(20, 8, CSTR("Ymin"), ReadLDouble(&tagData[20]));
+			frame->AddFloat(28, 8, CSTR("Xmax"), ReadLDouble(&tagData[28]));
+			frame->AddFloat(36, 8, CSTR("Ymax"), ReadLDouble(&tagData[36]));
+			numParts = ReadLUInt32(&tagData[44]);
+			numPoints = ReadLUInt32(&tagData[48]);
 			frame->AddUInt(44, 4, CSTR("NumParts"), numParts);
 			frame->AddUInt(48, 4, CSTR("NumPoints"), numPoints);
 			i = 52;
 			j = 0;
 			while (j < numParts)
 			{
-				frame->AddUInt(i, 4, CSTR("Part/PtIndex"), ReadUInt32(&tagData[i]));
+				frame->AddUInt(i, 4, CSTR("Part/PtIndex"), ReadLUInt32(&tagData[i]));
 				i += 4;
 				j++;
 			}
 			j = 0;
 			while (j < numPoints)
 			{
-				frame->AddFloat(i, 8, CSTR("Point.x"), ReadDouble(&tagData[i]));
-				frame->AddFloat(i + 8, 8, CSTR("Point.y"), ReadDouble(&tagData[i + 8]));
+				frame->AddFloat(i, 8, CSTR("Point.x"), ReadLDouble(&tagData[i]));
+				frame->AddFloat(i + 8, 8, CSTR("Point.y"), ReadLDouble(&tagData[i + 8]));
 				i += 16;
 				j++;
 			}
 			break;
 		case 13:
-			frame->AddFloat(12, 8, CSTR("Xmin"), ReadDouble(&tagData[12]));
-			frame->AddFloat(20, 8, CSTR("Ymin"), ReadDouble(&tagData[20]));
-			frame->AddFloat(28, 8, CSTR("Xmax"), ReadDouble(&tagData[28]));
-			frame->AddFloat(36, 8, CSTR("Ymax"), ReadDouble(&tagData[36]));
-			numParts = ReadUInt32(&tagData[44]);
-			numPoints = ReadUInt32(&tagData[48]);
+			frame->AddFloat(12, 8, CSTR("Xmin"), ReadLDouble(&tagData[12]));
+			frame->AddFloat(20, 8, CSTR("Ymin"), ReadLDouble(&tagData[20]));
+			frame->AddFloat(28, 8, CSTR("Xmax"), ReadLDouble(&tagData[28]));
+			frame->AddFloat(36, 8, CSTR("Ymax"), ReadLDouble(&tagData[36]));
+			numParts = ReadLUInt32(&tagData[44]);
+			numPoints = ReadLUInt32(&tagData[48]);
 			frame->AddUInt(44, 4, CSTR("NumParts"), numParts);
 			frame->AddUInt(48, 4, CSTR("NumPoints"), numPoints);
 			i = 52;
 			j = 0;
 			while (j < numParts)
 			{
-				frame->AddUInt(i, 4, CSTR("Part/PtIndex"), ReadUInt32(&tagData[i]));
+				frame->AddUInt(i, 4, CSTR("Part/PtIndex"), ReadLUInt32(&tagData[i]));
 				i += 4;
 				j++;
 			}
 			j = 0;
 			while (j < numPoints)
 			{
-				frame->AddFloat(i, 8, CSTR("Point.x"), ReadDouble(&tagData[i]));
-				frame->AddFloat(i + 8, 8, CSTR("Point.y"), ReadDouble(&tagData[i + 8]));
+				frame->AddFloat(i, 8, CSTR("Point.x"), ReadLDouble(&tagData[i]));
+				frame->AddFloat(i + 8, 8, CSTR("Point.y"), ReadLDouble(&tagData[i + 8]));
 				i += 16;
 				j++;
 			}
-			frame->AddFloat(i, 8, CSTR("Zmin"), ReadDouble(&tagData[i]));
-			frame->AddFloat(i + 8, 8, CSTR("Zmax"), ReadDouble(&tagData[i + 8]));
+			frame->AddFloat(i, 8, CSTR("Zmin"), ReadLDouble(&tagData[i]));
+			frame->AddFloat(i + 8, 8, CSTR("Zmax"), ReadLDouble(&tagData[i + 8]));
 			i = pack->packSize - 8 * numPoints;
 			j = 0;
 			while (j < numPoints)
 			{
-				frame->AddFloat(i, 8, CSTR("Point.z"), ReadDouble(&tagData[i]));
+				frame->AddFloat(i, 8, CSTR("Point.z"), ReadLDouble(&tagData[i]));
 				i += 8;
 				j++;
 			}

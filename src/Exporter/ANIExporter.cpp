@@ -156,16 +156,16 @@ IntOS Exporter::ANIExporter::BuildBuff(UnsafeArray<UInt8> buff, NN<Media::ImageL
 	IntOS retSize = 6;
 	i = 0;
 	j = imgList->GetCount();
-	WriteInt16(&buff[0], 0);
+	WriteLInt16(&buff[0], 0);
 	if (hasHotSpot)
 	{
-		WriteInt16(&buff[2], 2);
+		WriteLInt16(&buff[2], 2);
 	}
 	else
 	{
-		WriteInt16(&buff[2], 1);
+		WriteLInt16(&buff[2], 1);
 	}
-	WriteInt16(&buff[4], j);
+	WriteLInt16(&buff[4], j);
 	indexPtr = buff;
 	imgPtr = indexPtr + j * 16;
 	retSize += j * 16;
@@ -205,20 +205,20 @@ IntOS Exporter::ANIExporter::BuildBuff(UnsafeArray<UInt8> buff, NN<Media::ImageL
 		{
 			if (img->HasHotSpot())
 			{
-				WriteInt16(&indexPtr[4], img->GetHotSpotX());
-				WriteInt16(&indexPtr[6], img->GetHotSpotY());
+				WriteLInt16(&indexPtr[4], img->GetHotSpotX());
+				WriteLInt16(&indexPtr[6], img->GetHotSpotY());
 			}
 			else
 			{
-				WriteInt16(&indexPtr[4], img->info.dispSize.x >> 1);
-				WriteInt16(&indexPtr[6], img->info.dispSize.y >> 1);
+				WriteLInt16(&indexPtr[4], img->info.dispSize.x >> 1);
+				WriteLInt16(&indexPtr[6], img->info.dispSize.y >> 1);
 			}
 		}
 		else
 		{
-			WriteInt16(&indexPtr[4], 0);
+			WriteLInt16(&indexPtr[4], 0);
 		}
-		WriteInt32(&indexPtr[12], (Int32)retSize);
+		WriteLInt32(&indexPtr[12], (Int32)retSize);
 
 		if (img->info.pf == Media::PF_B8G8R8A8)
 		{
@@ -227,21 +227,21 @@ IntOS Exporter::ANIExporter::BuildBuff(UnsafeArray<UInt8> buff, NN<Media::ImageL
 			indexPtr[2] = 0;
 			if (!hasHotSpot)
 			{
-				WriteInt16(&indexPtr[6], 32);
+				WriteLInt16(&indexPtr[6], 32);
 			}
-			WriteInt32(&indexPtr[8], (Int32)(40 + imgSize * img->info.dispSize.y));
+			WriteLInt32(&indexPtr[8], (Int32)(40 + imgSize * img->info.dispSize.y));
 
-			WriteInt32(&imgPtr[0], 40);
-			WriteInt32(&imgPtr[4], (Int32)img->info.dispSize.x);
-			WriteInt32(&imgPtr[8], (Int32)img->info.dispSize.y * 2);
-			WriteInt16(&imgPtr[12], 1);
-			WriteInt16(&imgPtr[14], 32);
-			WriteInt32(&imgPtr[16], 0); //compression
-			WriteInt32(&imgPtr[20], (Int32)(imgSize * img->info.dispSize.y));
-			WriteInt32(&imgPtr[24], 0);
-			WriteInt32(&imgPtr[28], 0);
-			WriteInt32(&imgPtr[32], 0);
-			WriteInt32(&imgPtr[36], 0);
+			WriteLInt32(&imgPtr[0], 40);
+			WriteLInt32(&imgPtr[4], (Int32)img->info.dispSize.x);
+			WriteLInt32(&imgPtr[8], (Int32)img->info.dispSize.y * 2);
+			WriteLInt16(&imgPtr[12], 1);
+			WriteLInt16(&imgPtr[14], 32);
+			WriteLInt32(&imgPtr[16], 0); //compression
+			WriteLInt32(&imgPtr[20], (Int32)(imgSize * img->info.dispSize.y));
+			WriteLInt32(&imgPtr[24], 0);
+			WriteLInt32(&imgPtr[28], 0);
+			WriteLInt32(&imgPtr[32], 0);
+			WriteLInt32(&imgPtr[36], 0);
 			imgPtr += 40;
 			retSize += 40;
 
@@ -275,21 +275,21 @@ IntOS Exporter::ANIExporter::BuildBuff(UnsafeArray<UInt8> buff, NN<Media::ImageL
 			indexPtr[2] = 0;
 			if (!hasHotSpot)
 			{
-				WriteInt16(&indexPtr[6], 24);
+				WriteLInt16(&indexPtr[6], 24);
 			}
-			WriteInt32(&indexPtr[8], (Int32)(40 + (imgSize + maskSize) * img->info.dispSize.y));
+			WriteLInt32(&indexPtr[8], (Int32)(40 + (imgSize + maskSize) * img->info.dispSize.y));
 
-			WriteInt32(&imgPtr[0], 40);
-			WriteInt32(&imgPtr[4], (Int32)img->info.dispSize.x);
-			WriteInt32(&imgPtr[8], (Int32)img->info.dispSize.y * 2);
-			WriteInt16(&imgPtr[12], 1);
-			WriteInt16(&imgPtr[14], 24);
-			WriteInt32(&imgPtr[16], 0); //compression
-			WriteInt32(&imgPtr[20], (Int32)(imgSize * img->info.dispSize.y));
-			WriteInt32(&imgPtr[24], 0);
-			WriteInt32(&imgPtr[28], 0);
-			WriteInt32(&imgPtr[32], 0);
-			WriteInt32(&imgPtr[36], 0);
+			WriteLInt32(&imgPtr[0], 40);
+			WriteLInt32(&imgPtr[4], (Int32)img->info.dispSize.x);
+			WriteLInt32(&imgPtr[8], (Int32)img->info.dispSize.y * 2);
+			WriteLInt16(&imgPtr[12], 1);
+			WriteLInt16(&imgPtr[14], 24);
+			WriteLInt32(&imgPtr[16], 0); //compression
+			WriteLInt32(&imgPtr[20], (Int32)(imgSize * img->info.dispSize.y));
+			WriteLInt32(&imgPtr[24], 0);
+			WriteLInt32(&imgPtr[28], 0);
+			WriteLInt32(&imgPtr[32], 0);
+			WriteLInt32(&imgPtr[36], 0);
 			imgPtr += 40;
 			retSize += 40;
 
@@ -403,21 +403,21 @@ IntOS Exporter::ANIExporter::BuildBuff(UnsafeArray<UInt8> buff, NN<Media::ImageL
 			indexPtr[2] = 2;
 			if (!hasHotSpot)
 			{
-				WriteInt16(&indexPtr[6], 1);
+				WriteLInt16(&indexPtr[6], 1);
 			}
-			WriteInt32(&indexPtr[8], (Int32)(40 + 8 + (imgSize + maskSize) * img->info.dispSize.y));
+			WriteLInt32(&indexPtr[8], (Int32)(40 + 8 + (imgSize + maskSize) * img->info.dispSize.y));
 
-			WriteInt32(&imgPtr[0], 40);
-			WriteInt32(&imgPtr[4], (Int32)img->info.dispSize.x);
-			WriteInt32(&imgPtr[8], (Int32)img->info.dispSize.y * 2);
-			WriteInt16(&imgPtr[12], 1);
-			WriteInt16(&imgPtr[14], 1);
-			WriteInt32(&imgPtr[16], 0); //compression
-			WriteInt32(&imgPtr[20], (Int32)(imgSize * img->info.dispSize.y));
-			WriteInt32(&imgPtr[24], 0);
-			WriteInt32(&imgPtr[28], 0);
-			WriteInt32(&imgPtr[32], 0);
-			WriteInt32(&imgPtr[36], 0);
+			WriteLInt32(&imgPtr[0], 40);
+			WriteLInt32(&imgPtr[4], (Int32)img->info.dispSize.x);
+			WriteLInt32(&imgPtr[8], (Int32)img->info.dispSize.y * 2);
+			WriteLInt16(&imgPtr[12], 1);
+			WriteLInt16(&imgPtr[14], 1);
+			WriteLInt32(&imgPtr[16], 0); //compression
+			WriteLInt32(&imgPtr[20], (Int32)(imgSize * img->info.dispSize.y));
+			WriteLInt32(&imgPtr[24], 0);
+			WriteLInt32(&imgPtr[28], 0);
+			WriteLInt32(&imgPtr[32], 0);
+			WriteLInt32(&imgPtr[36], 0);
 			imgPtr += 40;
 			retSize += 40;
 
@@ -478,21 +478,21 @@ IntOS Exporter::ANIExporter::BuildBuff(UnsafeArray<UInt8> buff, NN<Media::ImageL
 			indexPtr[2] = 16;
 			if (!hasHotSpot)
 			{
-				WriteInt16(&indexPtr[6], 4);
+				WriteLInt16(&indexPtr[6], 4);
 			}
-			WriteInt32(&indexPtr[8], (Int32)(40 + (imgSize + maskSize) * img->info.dispSize.y));
+			WriteLInt32(&indexPtr[8], (Int32)(40 + (imgSize + maskSize) * img->info.dispSize.y));
 
-			WriteInt32(&imgPtr[0], 40);
-			WriteInt32(&imgPtr[4], (Int32)img->info.dispSize.x);
-			WriteInt32(&imgPtr[8], (Int32)img->info.dispSize.y * 2);
-			WriteInt16(&imgPtr[12], 1);
-			WriteInt16(&imgPtr[14], 4);
-			WriteInt32(&imgPtr[16], 0); //compression
-			WriteInt32(&imgPtr[20], (Int32)(imgSize * img->info.dispSize.y));
-			WriteInt32(&imgPtr[24], 0);
-			WriteInt32(&imgPtr[28], 0);
-			WriteInt32(&imgPtr[32], 0);
-			WriteInt32(&imgPtr[36], 0);
+			WriteLInt32(&imgPtr[0], 40);
+			WriteLInt32(&imgPtr[4], (Int32)img->info.dispSize.x);
+			WriteLInt32(&imgPtr[8], (Int32)img->info.dispSize.y * 2);
+			WriteLInt16(&imgPtr[12], 1);
+			WriteLInt16(&imgPtr[14], 4);
+			WriteLInt32(&imgPtr[16], 0); //compression
+			WriteLInt32(&imgPtr[20], (Int32)(imgSize * img->info.dispSize.y));
+			WriteLInt32(&imgPtr[24], 0);
+			WriteLInt32(&imgPtr[28], 0);
+			WriteLInt32(&imgPtr[32], 0);
+			WriteLInt32(&imgPtr[36], 0);
 			imgPtr += 40;
 			retSize += 40;
 
@@ -553,21 +553,21 @@ IntOS Exporter::ANIExporter::BuildBuff(UnsafeArray<UInt8> buff, NN<Media::ImageL
 			indexPtr[2] = 0;
 			if (!hasHotSpot)
 			{
-				WriteInt16(&indexPtr[6], 8);
+				WriteLInt16(&indexPtr[6], 8);
 			}
-			WriteInt32(&indexPtr[8], (Int32)(40 + (imgSize + maskSize) * img->info.dispSize.y));
+			WriteLInt32(&indexPtr[8], (Int32)(40 + (imgSize + maskSize) * img->info.dispSize.y));
 
-			WriteInt32(&imgPtr[0], 40);
-			WriteInt32(&imgPtr[4], (Int32)img->info.dispSize.x);
-			WriteInt32(&imgPtr[8], (Int32)img->info.dispSize.y * 2);
-			WriteInt16(&imgPtr[12], 1);
-			WriteInt16(&imgPtr[14], 8);
-			WriteInt32(&imgPtr[16], 0); //compression
-			WriteInt32(&imgPtr[20], (Int32)(imgSize * img->info.dispSize.y));
-			WriteInt32(&imgPtr[24], 0);
-			WriteInt32(&imgPtr[28], 0);
-			WriteInt32(&imgPtr[32], 0);
-			WriteInt32(&imgPtr[36], 0);
+			WriteLInt32(&imgPtr[0], 40);
+			WriteLInt32(&imgPtr[4], (Int32)img->info.dispSize.x);
+			WriteLInt32(&imgPtr[8], (Int32)img->info.dispSize.y * 2);
+			WriteLInt16(&imgPtr[12], 1);
+			WriteLInt16(&imgPtr[14], 8);
+			WriteLInt32(&imgPtr[16], 0); //compression
+			WriteLInt32(&imgPtr[20], (Int32)(imgSize * img->info.dispSize.y));
+			WriteLInt32(&imgPtr[24], 0);
+			WriteLInt32(&imgPtr[28], 0);
+			WriteLInt32(&imgPtr[32], 0);
+			WriteLInt32(&imgPtr[36], 0);
 			imgPtr += 40;
 			retSize += 40;
 

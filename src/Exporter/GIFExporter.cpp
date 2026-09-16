@@ -123,8 +123,8 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		buff[3] = '8';
 		buff[4] = '9';
 		buff[5] = 'a';
-		WriteInt16(&buff[6], (Int16)img->info.dispSize.x);
-		WriteInt16(&buff[8], (Int16)img->info.dispSize.y);
+		WriteLInt16(&buff[6], (Int16)img->info.dispSize.x);
+		WriteLInt16(&buff[8], (Int16)img->info.dispSize.y);
 		buff[10] = 0xf7;
 		buff[11] = 0;
 		buff[12] = (UInt8)(Double2Int32(img->info.CalcPAR() * 64.0) - 15);
@@ -151,17 +151,17 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			buff[1] = 0xf9;
 			buff[2] = 4;
 			buff[3] = 1;
-			WriteInt16(&buff[4], 0);
+			WriteLInt16(&buff[4], 0);
 			buff[6] = (UInt8)transparentIndex;
 			buff[7] = 0;
 			stm->Write(Data::ByteArrayR(buff, 8));
 		}
 
 		buff[0] = 0x2c;
-		WriteInt16(&buff[1], 0);
-		WriteInt16(&buff[3], 0);
-		WriteInt16(&buff[5], (Int16)img->info.dispSize.x);
-		WriteInt16(&buff[7], (Int16)img->info.dispSize.y);
+		WriteLInt16(&buff[1], 0);
+		WriteLInt16(&buff[3], 0);
+		WriteLInt16(&buff[5], (Int16)img->info.dispSize.x);
+		WriteLInt16(&buff[7], (Int16)img->info.dispSize.y);
 		buff[9] = 0;
 		buff[10] = 8;
 		stm->Write(Data::ByteArrayR(buff, 11));

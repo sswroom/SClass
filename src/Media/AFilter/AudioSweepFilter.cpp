@@ -74,12 +74,12 @@ UIntOS Media::AFilter::AudioSweepFilter::ReadBlock(Data::ByteArray blk)
 			k = this->format.nChannels;
 			while (k-- > 0)
 			{
-				ivCh = iv + ReadInt16(&blk[i]);
+				ivCh = iv + ReadLInt16(&blk[i]);
 				if (ivCh > 32767)
 					ivCh = 32767;
 				if (ivCh < -32768)
 					ivCh = -32768;
-				WriteInt16(&blk[i], (Int16)ivCh);
+				WriteLInt16(&blk[i], (Int16)ivCh);
 				i += 2;
 			}
 			pos++;

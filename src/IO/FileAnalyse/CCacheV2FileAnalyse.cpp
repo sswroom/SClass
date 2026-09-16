@@ -49,7 +49,7 @@ void __stdcall IO::FileAnalyse::CCacheV2FileAnalyse::ParseThread(NN<Sync::Thread
 			while (j < 128)
 			{
 				ofst = i * 1024 + j * 8;
-				idx = ReadUInt64(&index[ofst]);
+				idx = ReadLUInt64(&index[ofst]);
 				tileOfst = idx % 0x10000000000LL;
 				tileSize = (UIntOS)(idx / 0x10000000000LL);
 				if (tileSize != 0)
@@ -75,15 +75,15 @@ IO::FileAnalyse::CCacheV2FileAnalyse::CCacheV2FileAnalyse(NN<IO::StreamData> fd)
 	this->fd = nullptr;
 	this->pauseParsing = false;
 	fd->GetRealData(0, 64, BYTEARR(buff));
-	if (ReadUInt64(&buff[24]) != fd->GetDataSize())
+	if (ReadLUInt64(&buff[24]) != fd->GetDataSize())
 	{
 		return;
 	}
-	if (ReadUInt32(&buff[40]) != 0x20014)
+	if (ReadLUInt32(&buff[40]) != 0x20014)
 	{
 		return;
 	}
-	this->maxRowSize = ReadUInt32(&buff[4]);
+	this->maxRowSize = ReadLUInt32(&buff[4]);
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 	this->thread.Start();
 }
@@ -164,22 +164,22 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::CCacheV2FileAnalyse::Get
 	fd->GetRealData(tag->ofst, tag->size, tagData);
 	if (tag->tagType == TagType::Header)
 	{
-		frame->AddUInt(0, 4, CSTR("Version"), ReadUInt32(&tagData[0]));
-		frame->AddUInt(4, 4, CSTR("Record Count"), ReadUInt32(&tagData[4]));
-		frame->AddUInt(8, 4, CSTR("Maximum Tile Size"), ReadUInt32(&tagData[8]));
-		frame->AddUInt(12, 4, CSTR("Offset Byte Count"), ReadUInt32(&tagData[12]));
-		frame->AddUInt64(16, CSTR("Slack Space"), ReadUInt64(&tagData[16]));
-		frame->AddUInt64(24, CSTR("File Size"), ReadUInt64(&tagData[24]));
-		frame->AddUInt64(32, CSTR("User Header Offset"), ReadUInt64(&tagData[32]));
+		frame->AddUInt(0, 4, CSTR("Version"), ReadLUInt32(&tagData[0]));
+		frame->AddUInt(4, 4, CSTR("Record Count"), ReadLUInt32(&tagData[4]));
+		frame->AddUInt(8, 4, CSTR("Maximum Tile Size"), ReadLUInt32(&tagData[8]));
+		frame->AddUInt(12, 4, CSTR("Offset Byte Count"), ReadLUInt32(&tagData[12]));
+		frame->AddUInt64(16, CSTR("Slack Space"), ReadLUInt64(&tagData[16]));
+		frame->AddUInt64(24, CSTR("File Size"), ReadLUInt64(&tagData[24]));
+		frame->AddUInt64(32, CSTR("User Header Offset"), ReadLUInt64(&tagData[32]));
 	}
 	else if (tag->tagType == TagType::UserHeader)
 	{
-		frame->AddUInt(0, 4, CSTR("User Header Size"), ReadUInt32(&tagData[0]));
-		frame->AddUInt(4, 4, CSTR("Legacy1"), ReadUInt32(&tagData[4]));
-		frame->AddUInt(8, 4, CSTR("Legacy2"), ReadUInt32(&tagData[8]));
-		frame->AddUInt(12, 4, CSTR("Legacy3"), ReadUInt32(&tagData[12]));
-		frame->AddUInt(16, 4, CSTR("Legacy4"), ReadUInt32(&tagData[16]));
-		frame->AddUInt(20, 4, CSTR("Index Size"), ReadUInt32(&tagData[20]));
+		frame->AddUInt(0, 4, CSTR("User Header Size"), ReadLUInt32(&tagData[0]));
+		frame->AddUInt(4, 4, CSTR("Legacy1"), ReadLUInt32(&tagData[4]));
+		frame->AddUInt(8, 4, CSTR("Legacy2"), ReadLUInt32(&tagData[8]));
+		frame->AddUInt(12, 4, CSTR("Legacy3"), ReadLUInt32(&tagData[12]));
+		frame->AddUInt(16, 4, CSTR("Legacy4"), ReadLUInt32(&tagData[16]));
+		frame->AddUInt(20, 4, CSTR("Index Size"), ReadLUInt32(&tagData[20]));
 		UInt64 idx;
 		UIntOS ofst;
 		Text::StringBuilderUTF8 sb;
@@ -191,7 +191,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::CCacheV2FileAnalyse::Get
 			while (j < 128)
 			{
 				ofst = 24 + i * 1024 + j * 8;
-				idx = ReadUInt64(&tagData[ofst]);
+				idx = ReadLUInt64(&tagData[ofst]);
 				sb.ClearStr();
 				sb.AppendUTF8Char('R');
 				sb.AppendUIntOS(i);
@@ -209,7 +209,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::CCacheV2FileAnalyse::Get
 	}
 	else if (tag->tagType == TagType::Tile)
 	{
-		frame->AddUInt(0, 4, CSTR("Tile Size"), ReadUInt32(&tagData[0]));
+		frame->AddUInt(0, 4, CSTR("Tile Size"), ReadLUInt32(&tagData[0]));
 	}
 	return frame;
 }

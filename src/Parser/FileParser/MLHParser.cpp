@@ -55,10 +55,10 @@ Optional<IO::ParsedObject> Parser::FileParser::MLHParser::ParseFileHdr(NN<IO::St
 	if (!Text::StrEquals(&hdr[0], U8STR("MLH ENCODE 1.04  (C) MAEHASHI")))
 		return nullptr;
 
-//	fileSize = ReadUInt32(&hdr[32]);
-	fileCnt = ReadUInt32(&hdr[36]);
-	fileOfst = ReadUInt32(&hdr[40]);
-//	isUncompress = ReadUInt32(&hdr[44]);
+//	fileSize = ReadLUInt32(&hdr[32]);
+	fileCnt = ReadLUInt32(&hdr[36]);
+	fileOfst = ReadLUInt32(&hdr[40]);
+//	isUncompress = ReadLUInt32(&hdr[44]);
 
 	Text::Encoding enc(932);
 	NN<IO::VirtualPackageFile> pf;

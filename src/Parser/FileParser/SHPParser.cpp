@@ -46,7 +46,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SHPParser::ParseFileHdr(NN<IO::St
 	NN<Math::ArcGISPRJParser> prjParser;
 	if (!fd->IsFullFile() || !this->prjParser.SetTo(prjParser))
 		return nullptr;
-	if (ReadMInt32(&hdr[0]) != 9994 || ReadInt32(&hdr[28]) != 1000 || (ReadMUInt32(&hdr[24]) << 1) != fd->GetDataSize())
+	if (ReadMInt32(&hdr[0]) != 9994 || ReadLInt32(&hdr[28]) != 1000 || (ReadMUInt32(&hdr[24]) << 1) != fd->GetDataSize())
 	{
 		return nullptr;
 	}

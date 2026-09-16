@@ -1279,7 +1279,7 @@ void UtilUI::ColorDialog::UpdateColor()
 	else
 		c[2] = (UInt8)(rV & 255);
 	c[3] = 255;
-	this->pbColor->SetBGColor(ReadUInt32(c));
+	this->pbColor->SetBGColor(ReadLUInt32(c));
 	this->pbColor->Redraw();
 
 	this->autoTextUpdate = true;

@@ -73,10 +73,10 @@ Optional<Media::AudioBlockSource> Media::BlockParser::MP3BlockParser::ParseStrea
 	format.align = 1152; //nBlockAlign
 	format.other = 0;
 	format.intType = Media::AudioFormat::IT_NORMAL;
-	WriteUInt16(&format.extra[0], 1);
-	WriteUInt32(&format.extra[2], 2);
-	WriteUInt32(&format.extra[6], 66236);
-	WriteUInt16(&format.extra[10], 0);
+	WriteLUInt16(&format.extra[0], 1);
+	WriteLUInt32(&format.extra[2], 2);
+	WriteLUInt32(&format.extra[6], 66236);
+	WriteLUInt16(&format.extra[10], 0);
 	UInt32 blkCnt = 0;
 
 	NEW_CLASSNN(audio, Media::AudioBlockSource(stmData, format, stmData->GetFullName(), 1152));

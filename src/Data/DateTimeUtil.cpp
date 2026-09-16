@@ -2086,7 +2086,7 @@ Int64 Data::DateTimeUtil::GetCurrTimeSecHighP(OutParam<UInt32> nanosec)
 
 Int64 Data::DateTimeUtil::FILETIME2Secs(const void *fileTime, OutParam<UInt32> nanosec)
 {
-	Int64 t = ReadInt64((const UInt8*)fileTime) - 116444736000000000LL;
+	Int64 t = ReadLInt64((const UInt8*)fileTime) - 116444736000000000LL;
 	if (t < 0)
 	{
 		nanosec.Set((UInt32)(t % 10000000 + 10000000) * 100);
@@ -2102,7 +2102,7 @@ Int64 Data::DateTimeUtil::FILETIME2Secs(const void *fileTime, OutParam<UInt32> n
 void Data::DateTimeUtil::Secs2FILETIME(Int64 secs, UInt32 nanosec, void* fileTime)
 {
 	secs = secs * 10000000 + (Int64)(nanosec / 100);
-	WriteInt64((UInt8*)fileTime, secs + 116444736000000000LL);
+	WriteLInt64((UInt8*)fileTime, secs + 116444736000000000LL);
 }
 
 Int64 Data::DateTimeUtil::SYSTEMTIME2Ticks(const void *sysTime)

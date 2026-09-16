@@ -54,7 +54,7 @@ UIntOS Media::AFilter::FileMixFilter::ReadBlock(Data::ByteArray blk)
 					l = this->format.nChannels;
 					while (l-- > 0)
 					{
-						v = ReadInt16(&blk[j]) + (Int32)ReadInt16(&fileBuff[i]);
+						v = ReadLInt16(&blk[j]) + (Int32)ReadLInt16(&fileBuff[i]);
 						if (v > 32767)
 						{
 							v = 32767;
@@ -63,7 +63,7 @@ UIntOS Media::AFilter::FileMixFilter::ReadBlock(Data::ByteArray blk)
 						{
 							v = -32768;
 						}
-						WriteInt16(&blk[j], v);
+						WriteLInt16(&blk[j], v);
 						j += 2;
 					}
 					i += 2;
@@ -89,7 +89,7 @@ UIntOS Media::AFilter::FileMixFilter::ReadBlock(Data::ByteArray blk)
 				k = readCnt * this->format.nChannels;
 				while (k-- > 0)
 				{
-					v = ReadInt16(&blk[j]) + (Int32)ReadInt16(&fileBuff[i]);
+					v = ReadLInt16(&blk[j]) + (Int32)ReadLInt16(&fileBuff[i]);
 					if (v > 32767)
 					{
 						v = 32767;
@@ -98,7 +98,7 @@ UIntOS Media::AFilter::FileMixFilter::ReadBlock(Data::ByteArray blk)
 					{
 						v = -32768;
 					}
-					WriteInt16(&blk[j], v);
+					WriteLInt16(&blk[j], v);
 					j += 2;
 					i += 2;
 				}

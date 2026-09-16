@@ -86,7 +86,7 @@ Media::DDCReader::DDCReader(Optional<MonitorHandle> hMon)
 										}
 										if (Text::StrEquals(nameEnt, L"EDID"))
 										{
-											if (ReadUInt16(&edidData[10]) == monPID &&
+											if (ReadLUInt16(&edidData[10]) == monPID &&
 												(monVID[0] == 0x40 + ((edidData[8] >> 2) & 0x1f)) &&
 												(monVID[1] == 0x40 + ((edidData[9] >> 5) | ((edidData[8] << 3) & 0x1f))) &&
 												(monVID[2] == 0x40 + (edidData[9] & 0x1f)))
@@ -198,7 +198,7 @@ Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
 										}
 										if (Text::StrEquals(nameEnt, L"EDID"))
 										{
-											if (ReadUInt16(&edidData[10]) == monPID &&
+											if (ReadLUInt16(&edidData[10]) == monPID &&
 												(monVID[0] == 0x40 + ((edidData[8] >> 2) & 0x1f)) &&
 												(monVID[1] == 0x40 + ((edidData[9] >> 5) | ((edidData[8] << 3) & 0x1f))) &&
 												(monVID[2] == 0x40 + (edidData[9] & 0x1f)))
@@ -330,7 +330,7 @@ UIntOS Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> reade
 									}
 									if (Text::StrEquals(nameEnt, L"EDID"))
 									{
-										if (ReadUInt16(&edidData[10]) == monPID &&
+										if (ReadLUInt16(&edidData[10]) == monPID &&
 											(monVID[0] == 0x40 + ((edidData[8] >> 2) & 0x1f)) &&
 											(monVID[1] == 0x40 + ((edidData[9] >> 5) | ((edidData[8] << 3) & 0x1f))) &&
 											(monVID[2] == 0x40 + (edidData[9] & 0x1f)))

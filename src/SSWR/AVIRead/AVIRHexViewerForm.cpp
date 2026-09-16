@@ -69,9 +69,9 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(AnyType userObj, UI
 		}
 		else
 		{
-			sptr = Text::StrInt16(sbuff, ReadInt16(buff));
+			sptr = Text::StrInt16(sbuff, ReadLInt16(buff));
 			me->txtInt16->SetText(CSTRP(sbuff, sptr));
-			sptr = Text::StrUInt16(sbuff, ReadUInt16(buff));
+			sptr = Text::StrUInt16(sbuff, ReadLUInt16(buff));
 			me->txtUInt16->SetText(CSTRP(sbuff, sptr));
 		}
 	}
@@ -93,11 +93,11 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(AnyType userObj, UI
 		}
 		else
 		{
-			sptr = Text::StrInt32(sbuff, ReadInt32(buff));
+			sptr = Text::StrInt32(sbuff, ReadLInt32(buff));
 			me->txtInt32->SetText(CSTRP(sbuff, sptr));
-			sptr = Text::StrUInt32(sbuff, ReadUInt32(buff));
+			sptr = Text::StrUInt32(sbuff, ReadLUInt32(buff));
 			me->txtUInt32->SetText(CSTRP(sbuff, sptr));
-			sptr = Text::StrDouble(sbuff, ReadFloat(buff));
+			sptr = Text::StrDouble(sbuff, ReadLFloat(buff));
 			me->txtFloat32->SetText(CSTRP(sbuff, sptr));
 		}
 	}
@@ -120,11 +120,11 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(AnyType userObj, UI
 		}
 		else
 		{
-			sptr = Text::StrInt64(sbuff, ReadInt64(buff));
+			sptr = Text::StrInt64(sbuff, ReadLInt64(buff));
 			me->txtInt64->SetText(CSTRP(sbuff, sptr));
-			sptr = Text::StrUInt64(sbuff, ReadUInt64(buff));
+			sptr = Text::StrUInt64(sbuff, ReadLUInt64(buff));
 			me->txtUInt64->SetText(CSTRP(sbuff, sptr));
-			sptr = Text::StrDouble(sbuff, ReadDouble(buff));
+			sptr = Text::StrDouble(sbuff, ReadLDouble(buff));
 			me->txtFloat64->SetText(CSTRP(sbuff, sptr));
 		}
 	}
@@ -155,7 +155,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(AnyType userObj, UI
 	maxTime = maxTime.AddYear(10);
 	if (readSize >= 8)
 	{
-		Int64 val = bigEndian ? ReadMInt64(buff) : ReadInt64(buff);
+		Int64 val = bigEndian ? ReadMInt64(buff) : ReadLInt64(buff);
 		if (!timeFound)
 		{
 			ts = Data::Timestamp::FromEpochMS(val, Data::DateTimeUtil::GetLocalTzQhr());
@@ -225,7 +225,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(AnyType userObj, UI
 	}
 	if (!timeFound && readSize >= 4)
 	{
-		UInt32 val = bigEndian ? ReadMUInt32(buff) : ReadUInt32(buff);
+		UInt32 val = bigEndian ? ReadMUInt32(buff) : ReadLUInt32(buff);
 		ts = Data::Timestamp::FromEpochSec(val, Data::DateTimeUtil::GetLocalTzQhr());
 		if (ts >= minTime && ts <= maxTime)
 		{

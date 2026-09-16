@@ -167,14 +167,14 @@ void Map::ReverseGeocoderClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, 
 
 	if (cmdType == 0)
 	{
-		lat = ReadInt32(&cmd[0]) / 200000.0;
-		lon = ReadInt32(&cmd[4]) / 200000.0;
-		lcid = ReadUInt32(&cmd[8]);
+		lat = ReadLInt32(&cmd[0]) / 200000.0;
+		lon = ReadLInt32(&cmd[4]) / 200000.0;
+		lcid = ReadLUInt32(&cmd[8]);
 		sbuff[0] = 0;
 		sptr = me->revGeo->SearchName(sbuff, sizeof(sbuff), Math::Coord2DDbl(lon, lat), lcid).Or(sbuff);
-		WriteInt32(&buff[0], Double2Int32(lat * 200000.0));
-		WriteInt32(&buff[4], Double2Int32(lon * 200000.0));
-		WriteUInt32(&buff[8], lcid);
+		WriteLInt32(&buff[0], Double2Int32(lat * 200000.0));
+		WriteLInt32(&buff[4], Double2Int32(lon * 200000.0));
+		WriteLUInt32(&buff[8], lcid);
 		strSize = (UIntOS)(sptr - sbuff);
 		if (strSize >= 128)
 		{
@@ -193,9 +193,9 @@ void Map::ReverseGeocoderClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, 
 	}
 	else if (cmdType == 2)
 	{
-		lat = ReadInt32(&cmd[0]) / 200000.0;
-		lon = ReadInt32(&cmd[4]) / 200000.0;
-		lcid = ReadUInt32(&cmd[8]);
+		lat = ReadLInt32(&cmd[0]) / 200000.0;
+		lon = ReadLInt32(&cmd[4]) / 200000.0;
+		lcid = ReadLUInt32(&cmd[8]);
 		sbuff[0] = 0;
 		sptr = me->revGeo->CacheName(sbuff, sizeof(sbuff), Math::Coord2DDbl(lon, lat), lcid).Or(sbuff);
 		strSize = (UIntOS)(sptr - sbuff);

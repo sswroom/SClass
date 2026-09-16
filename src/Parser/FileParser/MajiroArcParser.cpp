@@ -60,9 +60,9 @@ Optional<IO::ParsedObject> Parser::FileParser::MajiroArcParser::ParseFileHdr(NN<
 	{
 		return nullptr;
 	}
-	UInt32 fileCnt = ReadUInt32(&hdr[16]);
-	UInt32 fileNameOfst = ReadUInt32(&hdr[20]);
-	UInt32 fileNameEndOfst = ReadUInt32(&hdr[24]);
+	UInt32 fileCnt = ReadLUInt32(&hdr[16]);
+	UInt32 fileNameOfst = ReadLUInt32(&hdr[20]);
+	UInt32 fileNameEndOfst = ReadLUInt32(&hdr[24]);
 	Data::ByteBuffer fileNameBuff(fileNameEndOfst - fileNameOfst);
 	fd->GetRealData(fileNameOfst, fileNameEndOfst - fileNameOfst, fileNameBuff);
 	Data::ByteBuffer recBuff(fileCnt * 16);
@@ -79,7 +79,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MajiroArcParser::ParseFileHdr(NN<
 		fileNamePtr2 = fileNamePtr;
 		while (*fileNamePtr2++);
 		sptr = enc.UTF8FromBytes(sbuff, fileNamePtr.Arr(), (UIntOS)(fileNamePtr2 - fileNamePtr - 1), 0);
-		pf->AddData(fd, ReadUInt32(&recBuff[i * 16 + 8]), ReadUInt32(&recBuff[i * 16 + 12]), IO::PackFileItem::HeaderType::No, CSTRP(sbuff, sptr), nullptr, nullptr, nullptr, 0);
+		pf->AddData(fd, ReadLUInt32(&recBuff[i * 16 + 8]), ReadLUInt32(&recBuff[i * 16 + 12]), IO::PackFileItem::HeaderType::No, CSTRP(sbuff, sptr), nullptr, nullptr, nullptr, 0);
 
 		fileNamePtr = fileNamePtr2;
 		i++;

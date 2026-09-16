@@ -91,7 +91,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 	UInt64 currOfst;
 	UInt64 fileSize = fd->GetDataSize();
 
-	if (ReadInt32(&hdr[0]) != 0x04034b50)
+	if (ReadLInt32(&hdr[0]) != 0x04034b50)
 	{
 		return nullptr;
 	}
@@ -112,20 +112,20 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 		recType = ReadMUInt32(recHdr);
 		if (recType == 0x504B0506)
 		{
-			UInt32 sizeOfDir = ReadUInt32(&recHdr[12]);
-			UInt32 ofstOfDir = ReadUInt32(&recHdr[16]);
+			UInt32 sizeOfDir = ReadLUInt32(&recHdr[12]);
+			UInt32 ofstOfDir = ReadLUInt32(&recHdr[16]);
 			if (sizeOfDir == 0xffffffff || ofstOfDir == 0xffffffff)
 			{
 				fd->GetRealData(fileSize - 42, 20, BYTEARR(z64eocdl));
 
 				if (ReadMUInt32(z64eocdl) == 0x504B0607)
 				{
-					UInt64 z64eocdOfst = ReadUInt64(&z64eocdl[8]);
+					UInt64 z64eocdOfst = ReadLUInt64(&z64eocdl[8]);
 					fd->GetRealData(z64eocdOfst, 56, BYTEARR(z64eocd));
 					if (ReadMUInt32(z64eocd) == 0x504B0606)
 					{
-						UInt64 cdSize = ReadUInt64(&z64eocd[40]);
-						UInt64 cdOfst = ReadUInt64(&z64eocd[48]);
+						UInt64 cdSize = ReadLUInt64(&z64eocd[40]);
+						UInt64 cdOfst = ReadLUInt64(&z64eocd[48]);
 						if (cdSize <= 1048576)
 						{
 							Data::ByteBuffer cdBuff((UIntOS)cdSize);
@@ -196,9 +196,9 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 
 		printf("ZIPParser: Scan file\r\n");
 		fd->GetRealData(fileSize - 22, 22, BYTEARR(buff));
-		if (ReadInt32(buff) == 0x06054b50)
+		if (ReadLInt32(buff) == 0x06054b50)
 		{
-			currOfst = ReadUInt32(&buff[16]);
+			currOfst = ReadLUInt32(&buff[16]);
 			if (currOfst > 0 && currOfst < fileSize - 6)
 			{
 				while (true)
@@ -208,20 +208,20 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 						break;
 					}
 					fd->GetRealData(currOfst, 512, BYTEARR(buff));
-					if (ReadInt32(buff) == 0x08074b50)
+					if (ReadLInt32(buff) == 0x08074b50)
 					{
 						currOfst += 16;
 					}
-					else if (ReadInt32(buff) == 0x02014b50)
+					else if (ReadLInt32(buff) == 0x02014b50)
 					{
-						UInt16 flags = ReadUInt16(&buff[8]);
+						UInt16 flags = ReadLUInt16(&buff[8]);
 						zipInfo = MemAlloc(ZIPInfoEntry, 1);
-						zipInfo->crc = ReadInt32(&buff[16]);
-						zipInfo->compSize = ReadUInt32(&buff[20]);
-						zipInfo->decSize = ReadUInt32(&buff[24]);
-						zipInfo->fnameSize = ReadUInt16(&buff[28]);
-						zipInfo->extraSize = ReadUInt16(&buff[30]);
-						zipInfo->commentSize = ReadUInt16(&buff[32]);
+						zipInfo->crc = ReadLInt32(&buff[16]);
+						zipInfo->compSize = ReadLUInt32(&buff[20]);
+						zipInfo->decSize = ReadLUInt32(&buff[24]);
+						zipInfo->fnameSize = ReadLUInt16(&buff[28]);
+						zipInfo->extraSize = ReadLUInt16(&buff[30]);
+						zipInfo->commentSize = ReadLUInt16(&buff[32]);
 						if (flags & 0x800)
 						{
 							sptr = Text::StrConcatC(sbuff, &buff[46], zipInfo->fnameSize);
@@ -237,7 +237,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 						}
 						currOfst += 46 + zipInfo->fnameSize + zipInfo->extraSize + zipInfo->commentSize;
 					}
-					else if (ReadInt32(buff) == 0x06054b50)
+					else if (ReadLInt32(buff) == 0x06054b50)
 					{
 						break;
 					}
@@ -258,15 +258,15 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 				return nullptr;
 			}
 			fd->GetRealData(currOfst, 512, BYTEARR(buff));
-			if (ReadInt32(buff) == 0x04034b50)
+			if (ReadLInt32(buff) == 0x04034b50)
 			{
-				UInt32 fnameSize = ReadUInt16(&buff[26]);
-				UInt32 extraSize = ReadUInt16(&buff[28]);
-				UInt32 compMeth = ReadUInt16(&buff[8]);
-				UInt64 dataSize = ReadUInt32(&buff[18]);
-	//			UInt64 decompSize = ReadUInt32(&buff[22]);
-				UInt16 modTime = ReadUInt16(&buff[10]);
-				UInt16 modDate = ReadUInt16(&buff[12]);
+				UInt32 fnameSize = ReadLUInt16(&buff[26]);
+				UInt32 extraSize = ReadLUInt16(&buff[28]);
+				UInt32 compMeth = ReadLUInt16(&buff[8]);
+				UInt64 dataSize = ReadLUInt32(&buff[18]);
+	//			UInt64 decompSize = ReadLUInt32(&buff[22]);
+				UInt16 modTime = ReadLUInt16(&buff[10]);
+				UInt16 modDate = ReadLUInt16(&buff[12]);
 				Data::Timestamp accTime = nullptr;
 				Data::Timestamp createTime = nullptr;
 				dt.ToLocalTime();
@@ -278,23 +278,23 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 				UInt32 unixAttr = 0;
 				while (extraStart < extraEnd)
 				{
-					extraHdr = ReadUInt16(&buff[extraStart]);
-					extraData = ReadUInt16(&buff[extraStart + 2]);
+					extraHdr = ReadLUInt16(&buff[extraStart]);
+					extraData = ReadLUInt16(&buff[extraStart + 2]);
 					if (extraHdr == 0x5455)
 					{
-						dt.SetUnixTimestamp(ReadUInt32(&buff[extraStart + 5]));
-						if (extraData >= 13) accTime = Data::Timestamp::FromEpochSec(ReadUInt32(&buff[extraStart + 9]), Data::DateTimeUtil::GetLocalTzQhr());
-						if (extraData >= 17) accTime = Data::Timestamp::FromEpochSec(ReadUInt32(&buff[extraStart + 13]), Data::DateTimeUtil::GetLocalTzQhr());
+						dt.SetUnixTimestamp(ReadLUInt32(&buff[extraStart + 5]));
+						if (extraData >= 13) accTime = Data::Timestamp::FromEpochSec(ReadLUInt32(&buff[extraStart + 9]), Data::DateTimeUtil::GetLocalTzQhr());
+						if (extraData >= 17) accTime = Data::Timestamp::FromEpochSec(ReadLUInt32(&buff[extraStart + 13]), Data::DateTimeUtil::GetLocalTzQhr());
 					}
 					else if (extraHdr == 1)
 					{
 						if (extraData >= 16)
 						{
-							dataSize = ReadUInt64(&buff[extraStart + 4]);
-	//						decompSize = ReadUInt64(&buff[extraStart + 12]);
+							dataSize = ReadLUInt64(&buff[extraStart + 4]);
+	//						decompSize = ReadLUInt64(&buff[extraStart + 12]);
 						}
 					}
-					else if (extraHdr == 10 && extraData >= 32 && ReadUInt16(&buff[extraStart + 8]) == 1)
+					else if (extraHdr == 10 && extraData >= 32 && ReadLUInt16(&buff[extraStart + 8]) == 1)
 					{
 						dt.SetValueFILETIME(&buff[extraStart + 12]);
 						accTime = Data::Timestamp::FromFILETIME(&buff[extraStart + 20], Data::DateTimeUtil::GetLocalTzQhr());
@@ -409,7 +409,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 						}
 						else
 						{
-							WriteMInt32(compInfo.checkBytes, ReadInt32(&buff[14]));
+							WriteMInt32(compInfo.checkBytes, ReadLInt32(&buff[14]));
 							compInfo.compExtras = 0;
 							compInfo.compExtraSize = 0;
 							compInfo.compFlags = 0;
@@ -421,26 +421,26 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 							{
 								compInfo.compMethod = Data::Compress::Decompressor::CM_UNKNOWN;
 							}
-							compInfo.decSize = ReadUInt32(&buff[22]);
+							compInfo.decSize = ReadLUInt32(&buff[22]);
 						}
 						pf2->AddCompData(fd, currOfst, dataSize, IO::PackFileItem::HeaderType::Zip, &compInfo, CSTRP(sptr, sptrEnd), Data::Timestamp(dt.ToInstant(), dt.GetTimeZoneQHR()), accTime, createTime, unixAttr);
 					}
 					currOfst += 30 + fnameSize + extraSize + dataSize;
 				}
 			}
-			else if (ReadInt32(buff) == 0x02014b50)
+			else if (ReadLInt32(buff) == 0x02014b50)
 			{
-				UInt32 fnameSize = ReadUInt16(&buff[28]);
-				UInt32 extraSize = ReadUInt16(&buff[30]);
-				UInt32 commentSize = ReadUInt16(&buff[32]);
-	//			UInt32 dataSize = ReadUInt32(&buff[20]);
+				UInt32 fnameSize = ReadLUInt16(&buff[28]);
+				UInt32 extraSize = ReadLUInt16(&buff[30]);
+				UInt32 commentSize = ReadLUInt16(&buff[32]);
+	//			UInt32 dataSize = ReadLUInt32(&buff[20]);
 				currOfst += 46 + fnameSize + extraSize + commentSize;
 			}
-			else if (ReadInt32(buff) == 0x06054b50)
+			else if (ReadLInt32(buff) == 0x06054b50)
 			{
 				break;
 			}
-			else if (ReadInt32(buff) == 0x08074b50)
+			else if (ReadLInt32(buff) == 0x08074b50)
 			{
 				currOfst += 16;
 			}
@@ -506,14 +506,14 @@ UIntOS Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf
 		{
 			break;
 		}
-		flags = ReadUInt16(&buff[i + 8]);
-		compMeth = ReadUInt16(&buff[i + 10]);
-		compSize = ReadUInt32(&buff[i + 20]);
-		uncompSize = ReadUInt32(&buff[i + 24]);
-		fnameLen = ReadUInt16(&buff[i + 28]);
-		extraLen = ReadUInt16(&buff[i + 30]);
-		commentLen = ReadUInt16(&buff[i + 32]);
-		extAttr = ReadUInt32(&buff[i + 38]);
+		flags = ReadLUInt16(&buff[i + 8]);
+		compMeth = ReadLUInt16(&buff[i + 10]);
+		compSize = ReadLUInt32(&buff[i + 20]);
+		uncompSize = ReadLUInt32(&buff[i + 24]);
+		fnameLen = ReadLUInt16(&buff[i + 28]);
+		extraLen = ReadLUInt16(&buff[i + 30]);
+		commentLen = ReadLUInt16(&buff[i + 32]);
+		extAttr = ReadLUInt32(&buff[i + 38]);
 		if (buff[i + 7] == 3)
 		{
 			unixAttr = extAttr >> 16;
@@ -526,8 +526,8 @@ UIntOS Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf
 			if (extAttr & 16)
 				unixAttr |= 0x4000 | 0x49;
 		}
-		ofst = ReadUInt32(&buff[i + 42]);
-		modTime = Data::Timestamp::FromMSDOSTime(ReadUInt16(&buff[i + 14]), ReadUInt16(&buff[i + 12]), Data::DateTimeUtil::GetLocalTzQhr());
+		ofst = ReadLUInt32(&buff[i + 42]);
+		modTime = Data::Timestamp::FromMSDOSTime(ReadLUInt16(&buff[i + 14]), ReadLUInt16(&buff[i + 12]), Data::DateTimeUtil::GetLocalTzQhr());
 		accTime = nullptr;
 		createTime = nullptr;
 
@@ -543,34 +543,34 @@ UIntOS Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf
 			UInt16 extraSize;
 			while (j + 4 <= extraLen)
 			{
-				extraTag = ReadUInt16(&extraBuff[j]);
-				extraSize = ReadUInt16(&extraBuff[j + 2]);
+				extraTag = ReadLUInt16(&extraBuff[j]);
+				extraSize = ReadLUInt16(&extraBuff[j + 2]);
 				if (extraTag == 1)
 				{
 					const UInt8 *zip64Info = &extraBuff[j + 4];
 					if (uncompSize == 0xffffffff)
 					{
-						uncompSize = ReadUInt64(zip64Info);
+						uncompSize = ReadLUInt64(zip64Info);
 						zip64Info += 8;
 					}
 					if (compSize == 0xffffffff)
 					{
-						compSize = ReadUInt64(zip64Info);
+						compSize = ReadLUInt64(zip64Info);
 						zip64Info += 8;
 					}
 					if (ofst == 0xffffffff)
 					{
-						ofst = ReadUInt64(zip64Info);
+						ofst = ReadLUInt64(zip64Info);
 						zip64Info += 8;
 					}
 				}
 				else if (extraTag == 0x5455)
 				{
-					modTime = Data::Timestamp::FromEpochSec(ReadUInt32(&extraBuff[j + 5]), Data::DateTimeUtil::GetLocalTzQhr());
-					if (extraSize >= 13) accTime = Data::Timestamp::FromEpochSec(ReadUInt32(&extraBuff[j + 9]), Data::DateTimeUtil::GetLocalTzQhr());
-					if (extraSize >= 17) createTime = Data::Timestamp::FromEpochSec(ReadUInt32(&extraBuff[j + 13]), Data::DateTimeUtil::GetLocalTzQhr());
+					modTime = Data::Timestamp::FromEpochSec(ReadLUInt32(&extraBuff[j + 5]), Data::DateTimeUtil::GetLocalTzQhr());
+					if (extraSize >= 13) accTime = Data::Timestamp::FromEpochSec(ReadLUInt32(&extraBuff[j + 9]), Data::DateTimeUtil::GetLocalTzQhr());
+					if (extraSize >= 17) createTime = Data::Timestamp::FromEpochSec(ReadLUInt32(&extraBuff[j + 13]), Data::DateTimeUtil::GetLocalTzQhr());
 				}
-				else if (extraTag == 10 && extraSize >= 32 && ReadUInt16(&extraBuff[j + 8]) == 1)
+				else if (extraTag == 10 && extraSize >= 32 && ReadLUInt16(&extraBuff[j + 8]) == 1)
 				{
 					modTime = Data::Timestamp::FromFILETIME(&extraBuff[j + 12], Data::DateTimeUtil::GetLocalTzQhr());
 					accTime = Data::Timestamp::FromFILETIME(&extraBuff[j + 20], Data::DateTimeUtil::GetLocalTzQhr());
@@ -660,7 +660,7 @@ UIntOS Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf
 			else
 			{
 				compInfo.checkMethod = Crypto::Hash::HashType::CRC32R_IEEE;
-				WriteMInt32(compInfo.checkBytes, ReadInt32(&buff[i + 16]));
+				WriteMInt32(compInfo.checkBytes, ReadLInt32(&buff[i + 16]));
 				compInfo.compExtras = 0;
 				compInfo.compExtraSize = 0;
 				compInfo.compFlags = 0;

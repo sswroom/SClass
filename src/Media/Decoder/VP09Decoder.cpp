@@ -21,8 +21,8 @@ void Media::Decoder::VP09Decoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	{
 		if (imgData[0][dataSize - 8] == 0xd1 && imgData[0][dataSize - 1] == 0xd1)
 		{
-			fr1 = ReadUInt24(&imgData[0][dataSize - 7]);
-			fr2 = ReadUInt24(&imgData[0][dataSize - 4]);
+			fr1 = ReadLUInt24(&imgData[0][dataSize - 7]);
+			fr2 = ReadLUInt24(&imgData[0][dataSize - 4]);
 			if (fr1 + fr2 == dataSize - 8)
 			{
 				dblFrame = true;
@@ -34,8 +34,8 @@ void Media::Decoder::VP09Decoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 		}
 		else if (imgData[0][dataSize - 6] == 0xc9 && imgData[0][dataSize - 1] == 0xc9)
 		{
-			fr1 = ReadUInt16(&imgData[0][dataSize - 5]);
-			fr2 = ReadUInt16(&imgData[0][dataSize - 3]);
+			fr1 = ReadLUInt16(&imgData[0][dataSize - 5]);
+			fr2 = ReadLUInt16(&imgData[0][dataSize - 3]);
 			if (fr1 + fr2 == dataSize - 6)
 			{
 				dblFrame = true;
@@ -183,8 +183,8 @@ UIntOS Media::Decoder::VP09Decoder::GetFrameSize(UIntOS frameIndex)
 		Bool dblFrame = false;
 		if (frameSize > 8 && frameBuff[frameSize - 8] == 0xd1 && frameBuff[frameSize - 1] == 0xd1)
 		{
-			fr1 = ReadUInt24(&frameBuff[frameSize - 7]);
-			fr2 = ReadUInt24(&frameBuff[frameSize - 4]);
+			fr1 = ReadLUInt24(&frameBuff[frameSize - 7]);
+			fr2 = ReadLUInt24(&frameBuff[frameSize - 4]);
 			if (fr1 + fr2 == frameSize - 8)
 			{
 				dblFrame = true;
@@ -192,8 +192,8 @@ UIntOS Media::Decoder::VP09Decoder::GetFrameSize(UIntOS frameIndex)
 		}
 		else if (frameSize > 6 && frameBuff[frameSize - 6] == 0xc9 && frameBuff[frameSize - 1] == 0xc9)
 		{
-			fr1 = ReadUInt16(&frameBuff[frameSize - 5]);
-			fr2 = ReadUInt16(&frameBuff[frameSize - 3]);
+			fr1 = ReadLUInt16(&frameBuff[frameSize - 5]);
+			fr2 = ReadLUInt16(&frameBuff[frameSize - 3]);
 			if (fr1 + fr2 == frameSize - 6)
 			{
 				dblFrame = true;
@@ -275,8 +275,8 @@ UIntOS Media::Decoder::VP09Decoder::ReadFrame(UIntOS frameIndex, UnsafeArray<UIn
 		Bool dblFrame = false;
 		if (frameSize > 8 && frameBuff[frameSize - 8] == 0xd1 && frameBuff[frameSize - 1] == 0xd1)
 		{
-			fr1 = ReadUInt24(&frameBuff[frameSize - 7]);
-			fr2 = ReadUInt24(&frameBuff[frameSize - 4]);
+			fr1 = ReadLUInt24(&frameBuff[frameSize - 7]);
+			fr2 = ReadLUInt24(&frameBuff[frameSize - 4]);
 			if (fr1 + fr2 == frameSize - 8)
 			{
 				dblFrame = true;
@@ -284,8 +284,8 @@ UIntOS Media::Decoder::VP09Decoder::ReadFrame(UIntOS frameIndex, UnsafeArray<UIn
 		}
 		else if (frameSize > 6 && frameBuff[frameSize - 6] == 0xc9 && frameBuff[frameSize - 1] == 0xc9)
 		{
-			fr1 = ReadUInt16(&frameBuff[frameSize - 5]);
-			fr2 = ReadUInt16(&frameBuff[frameSize - 3]);
+			fr1 = ReadLUInt16(&frameBuff[frameSize - 5]);
+			fr2 = ReadLUInt16(&frameBuff[frameSize - 3]);
 			if (fr1 + fr2 == frameSize - 6)
 			{
 				dblFrame = true;

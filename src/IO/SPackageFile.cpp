@@ -57,8 +57,8 @@ void IO::SPackageFile::ReadV2DirEnt(UInt64 ofst, UInt64 size)
 	Data::ByteBuffer dirBuff((UIntOS)size);
 	this->stm->SeekFromBeginning(ofst);
 	this->stm->Read(dirBuff);
-	nextOfst = ReadUInt64(&dirBuff[0]);
-	nextSize = ReadUInt64(&dirBuff[8]);
+	nextOfst = ReadLUInt64(&dirBuff[0]);
+	nextSize = ReadLUInt64(&dirBuff[8]);
 	this->ReadV2DirEnt(nextOfst, nextSize);
 
 	UnsafeArray<UTF8Char> sbuff;
@@ -69,15 +69,15 @@ void IO::SPackageFile::ReadV2DirEnt(UInt64 ofst, UInt64 size)
 	i = 16;
 	while (i < size)
 	{
-		nameSize = ReadUInt16(&dirBuff[i + 24]);
+		nameSize = ReadLUInt16(&dirBuff[i + 24]);
 		MemCopyNO(sbuff.Ptr(), &dirBuff[i + 26], nameSize);
 		sbuff[nameSize] = 0;
 		
 		if (!this->fileMap.Get({sbuff, nameSize}).SetTo(file))
 		{
 			file = MemAllocNN(FileInfo);
-			file->ofst = ReadUInt64(&dirBuff[i]);
-			file->size = ReadUInt64(&dirBuff[i + 8]);
+			file->ofst = ReadLUInt64(&dirBuff[i]);
+			file->size = ReadLUInt64(&dirBuff[i + 8]);
 			this->fileMap.Put({sbuff, nameSize}, file);
 		}
 		i += 26 + nameSize;
@@ -137,8 +137,8 @@ Bool IO::SPackageFile::OptimizeFileInner(NN<IO::SPackageFile> newFile, UInt64 di
 	this->stm->SeekFromBeginning(dirOfst);
 	if (this->stm->Read(dirBuff) == dirSize)
 	{
-		lastOfst = ReadUInt64(&dirBuff[0]);
-		lastSize = ReadUInt64(&dirBuff[8]);
+		lastOfst = ReadLUInt64(&dirBuff[0]);
+		lastSize = ReadLUInt64(&dirBuff[8]);
 		if (lastOfst != 0 && lastSize != 0)
 		{
 			if (!OptimizeFileInner(newFile, lastOfst, lastSize))
@@ -155,9 +155,9 @@ Bool IO::SPackageFile::OptimizeFileInner(NN<IO::SPackageFile> newFile, UInt64 di
 		i = 16;
 		while (succ && i < dirSize)
 		{
-			thisOfst = ReadUInt64(&dirBuff[i]);
-			thisSize = ReadUInt64(&dirBuff[i + 8]);
-			j = ReadUInt16(&dirBuff[i + 24]);
+			thisOfst = ReadLUInt64(&dirBuff[i]);
+			thisSize = ReadLUInt64(&dirBuff[i + 8]);
+			j = ReadLUInt16(&dirBuff[i + 24]);
 			MemCopyNO(sbuff.Ptr(), &dirBuff[i + 26], j);
 			sbuff[j] = 0;
 			Data::ByteBuffer fileBuff((UIntOS)thisSize);
@@ -167,7 +167,7 @@ Bool IO::SPackageFile::OptimizeFileInner(NN<IO::SPackageFile> newFile, UInt64 di
 			}
 			if (this->stm->Read(fileBuff) == thisSize)
 			{
-				newFile->AddFile(fileBuff.Arr(), (UIntOS)thisSize, {sbuff, j}, Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0));
+				newFile->AddFile(fileBuff.Arr(), (UIntOS)thisSize, {sbuff, j}, Data::Timestamp(ReadLInt64(&dirBuff[i + 16]), 0));
 				lastOfst = thisOfst;
 				lastSize = thisSize;
 			}
@@ -196,17 +196,17 @@ IO::SPackageFile::SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease)
 	hdr[1] = 'm';
 	hdr[2] = 'p';
 	hdr[3] = 'f';
-	WriteInt32(&hdr[4], 2);
-	WriteInt64(&hdr[8], 24);
-	WriteInt64(&hdr[16], 0);
+	WriteLInt32(&hdr[4], 2);
+	WriteLInt64(&hdr[8], 24);
+	WriteLInt64(&hdr[16], 0);
 	this->stm->Write(Data::ByteArrayR(hdr, 24));
 	this->customType = 0;
 	this->customSize = 0;
 	this->writeMode = true;
 	this->flags = 2;
 	this->pauseCommit = false;
-	WriteInt64(&hdr[0], 0);
-	WriteInt64(&hdr[8], 0);
+	WriteLInt64(&hdr[0], 0);
+	WriteLInt64(&hdr[8], 0);
 	this->mstm.Write(Data::ByteArrayR(hdr, 16));
 }
 
@@ -220,11 +220,11 @@ IO::SPackageFile::SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease, Int32
 	hdr[1] = 'm';
 	hdr[2] = 'p';
 	hdr[3] = 'f';
-	WriteInt32(&hdr[4], 3);
-	WriteUInt64(&hdr[8], 32 + customSize);
-	WriteInt64(&hdr[16], 0);
-	WriteInt32(&hdr[24], customType);
-	WriteUInt32(&hdr[28], (UInt32)customSize);
+	WriteLInt32(&hdr[4], 3);
+	WriteLUInt64(&hdr[8], 32 + customSize);
+	WriteLInt64(&hdr[16], 0);
+	WriteLInt32(&hdr[24], customType);
+	WriteLUInt32(&hdr[28], (UInt32)customSize);
 	this->stm->Write(Data::ByteArrayR(hdr, 32));
 	if (customSize > 0)
 	{
@@ -240,8 +240,8 @@ IO::SPackageFile::SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease, Int32
 	}
 	this->writeMode = true;
 	this->pauseCommit = false;
-	WriteInt64(&hdr[0], 0);
-	WriteInt64(&hdr[8], 0);
+	WriteLInt64(&hdr[0], 0);
+	WriteLInt64(&hdr[8], 0);
 	this->mstm.Write(Data::ByteArrayR(hdr, 16));
 }
 
@@ -262,11 +262,11 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 		this->stm->Read(BYTEARR(hdr));
 		if (hdr[0] == 'S' && hdr[1] == 'm' && hdr[2] == 'p' && hdr[3] == 'f')
 		{
-			this->flags = ReadInt32(&hdr[4]);
+			this->flags = ReadLInt32(&hdr[4]);
 			if (this->flags & 2)
 			{
-				UInt64 lastOfst = ReadUInt64(&hdr[8]);
-				UInt64 lastSize = ReadUInt64(&hdr[16]);
+				UInt64 lastOfst = ReadLUInt64(&hdr[8]);
+				UInt64 lastSize = ReadLUInt64(&hdr[16]);
 				this->currOfst = lastOfst + lastSize;
 				if (this->currOfst > flength || lastOfst < 0 || lastSize < 0)
 				{
@@ -275,14 +275,14 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 					hdr[1] = 'm';
 					hdr[2] = 'p';
 					hdr[3] = 'f';
-					WriteInt32(&hdr[4], 2);
-					WriteInt64(&hdr[8], 24);
-					WriteInt64(&hdr[16], 0);
+					WriteLInt32(&hdr[4], 2);
+					WriteLInt64(&hdr[8], 24);
+					WriteLInt64(&hdr[16], 0);
 					this->stm->Write(Data::ByteArrayR(hdr, 24));
 					this->flags = 2;
 					this->currOfst = 24;
-					WriteInt64(&hdr[0], 0);
-					WriteInt64(&hdr[8], 0);
+					WriteLInt64(&hdr[0], 0);
+					WriteLInt64(&hdr[8], 0);
 					this->mstm.Write(Data::ByteArrayR(hdr, 16));
 				}
 				else
@@ -291,8 +291,8 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 					{
 						UInt8 customBuff[8];
 						this->stm->Read(BYTEARR(customBuff));
-						this->customType = ReadInt32(&customBuff[0]);
-						this->customSize = ReadUInt32(&customBuff[4]);
+						this->customType = ReadLInt32(&customBuff[0]);
+						this->customSize = ReadLUInt32(&customBuff[4]);
 						if (this->customSize > 0)
 						{
 							this->customBuff.ChangeSizeAndClear(this->customSize);
@@ -306,7 +306,7 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 			}
 			else
 			{
-				this->currOfst = ReadUInt64(&hdr[8]);
+				this->currOfst = ReadLUInt64(&hdr[8]);
 				dirSize = flength - this->currOfst;
 				if (dirSize > 0)
 				{
@@ -322,15 +322,15 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 					i = 0;
 					while (i < dirSize)
 					{
-						nameSize = ReadUInt16(&dirBuff[i + 24]);
+						nameSize = ReadLUInt16(&dirBuff[i + 24]);
 						MemCopyNO(sbuff, &dirBuff[i + 26], nameSize);
 						sbuff[nameSize] = 0;
 						
 						if (!this->fileMap.Get({sbuff, nameSize}).SetTo(file))
 						{
 							file = MemAllocNN(FileInfo);
-							file->ofst = ReadUInt64(&dirBuff[i]);
-							file->size = ReadUInt64(&dirBuff[i + 8]);
+							file->ofst = ReadLUInt64(&dirBuff[i]);
+							file->size = ReadLUInt64(&dirBuff[i + 8]);
 							this->fileMap.Put({sbuff, nameSize}, file);
 						}
 						i += 26 + nameSize;
@@ -349,14 +349,14 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 			hdr[1] = 'm';
 			hdr[2] = 'p';
 			hdr[3] = 'f';
-			WriteInt32(&hdr[4], 2);
-			WriteInt64(&hdr[8], 24);
-			WriteInt64(&hdr[16], 0);
+			WriteLInt32(&hdr[4], 2);
+			WriteLInt64(&hdr[8], 24);
+			WriteLInt64(&hdr[16], 0);
 			this->stm->Write(Data::ByteArrayR(hdr, 24));
 			this->flags = 2;
 			this->currOfst = 24;
-			WriteInt64(&hdr[0], 0);
-			WriteInt64(&hdr[8], 0);
+			WriteLInt64(&hdr[0], 0);
+			WriteLInt64(&hdr[8], 0);
 			this->mstm.Write(Data::ByteArrayR(hdr, 16));
 		}
 	}
@@ -366,14 +366,14 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 		hdr[1] = 'm';
 		hdr[2] = 'p';
 		hdr[3] = 'f';
-		WriteInt32(&hdr[4], 2);
-		WriteInt64(&hdr[8], 24);
-		WriteInt64(&hdr[16], 0);
+		WriteLInt32(&hdr[4], 2);
+		WriteLInt64(&hdr[8], 24);
+		WriteLInt64(&hdr[16], 0);
 		this->stm->Write(Data::ByteArrayR(hdr, 24));
 		this->flags = 2;
 		this->currOfst = 24;
-		WriteInt64(&hdr[0], 0);
-		WriteInt64(&hdr[8], 0);
+		WriteLInt64(&hdr[0], 0);
+		WriteLInt64(&hdr[8], 0);
 		this->mstm.Write(Data::ByteArrayR(hdr, 16));
 	}
 	this->writeMode = true;
@@ -397,8 +397,8 @@ IO::SPackageFile::~SPackageFile()
 		{
 			this->stm->Write(Data::ByteArrayR(buff, buffSize));
 			this->stm->SeekFromBeginning(8);
-			WriteUInt64(&hdr[0], this->currOfst);
-			WriteUInt64(&hdr[8], buffSize);
+			WriteLUInt64(&hdr[0], this->currOfst);
+			WriteLUInt64(&hdr[8], buffSize);
 			this->stm->Write(Data::ByteArrayR(hdr, 16));
 		}
 	}
@@ -409,7 +409,7 @@ IO::SPackageFile::~SPackageFile()
 			this->stm->Write(Data::ByteArrayR(buff, buffSize));
 		}
 		this->stm->SeekFromBeginning(8);
-		WriteUInt64(hdr, this->currOfst);
+		WriteLUInt64(hdr, this->currOfst);
 		this->stm->Write(Data::ByteArrayR(hdr, 8));
 	}
 
@@ -447,11 +447,11 @@ Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CStringNN fileName, 
 		mutUsage.EndUse();
 		return false;
 	}
-	WriteUInt64(&dataBuff[0], this->currOfst);
-	WriteUInt64(&dataBuff[8], dataSize);
-	WriteInt64(&dataBuff[16], modTime.ToTicks());
+	WriteLUInt64(&dataBuff[0], this->currOfst);
+	WriteLUInt64(&dataBuff[8], dataSize);
+	WriteLInt64(&dataBuff[16], modTime.ToTicks());
 	MemCopyNO(&dataBuff[26], fileName.v.Ptr(), fileName.leng);
-	WriteUInt16(&dataBuff[24], (UInt16)fileName.leng);
+	WriteLUInt16(&dataBuff[24], (UInt16)fileName.leng);
 
 	if (!this->writeMode)
 	{
@@ -529,12 +529,12 @@ Bool IO::SPackageFile::AddFile(UnsafeArray<const UInt8> fileBuff, UIntOS fileSiz
 		mutUsage.EndUse();
 		return false;
 	}
-	WriteUInt64(&dataBuff[0], this->currOfst);
-	WriteUInt64(&dataBuff[8], fileSize);
-	WriteInt64(&dataBuff[16], modTime.ToTicks());
+	WriteLUInt64(&dataBuff[0], this->currOfst);
+	WriteLUInt64(&dataBuff[8], fileSize);
+	WriteLInt64(&dataBuff[16], modTime.ToTicks());
 	
 	MemCopyNO(&dataBuff[26], fileName.v.Ptr(), fileName.leng);
-	WriteInt16(&dataBuff[24], (UInt16)fileName.leng);
+	WriteLInt16(&dataBuff[24], (UInt16)fileName.leng);
 
 	if (!this->writeMode)
 	{
@@ -600,8 +600,8 @@ Bool IO::SPackageFile::Commit()
 			if (writeSize == buffSize)
 			{
 				this->stm->SeekFromBeginning(8);
-				WriteUInt64(&hdr[0], this->currOfst);
-				WriteUInt64(&hdr[8], buffSize);
+				WriteLUInt64(&hdr[0], this->currOfst);
+				WriteLUInt64(&hdr[8], buffSize);
 				this->stm->Write(Data::ByteArrayR(hdr, 16));
 				this->writeMode = false;
 				this->mstm.Clear();
@@ -652,8 +652,8 @@ Bool IO::SPackageFile::OptimizeFile(Text::CStringNN newFile)
 	this->writeMode = false;
 	this->stm->SeekFromBeginning(0);
 	this->stm->Read(BYTEARR(hdr));
-	UInt64 lastOfst = ReadUInt64(&hdr[8]);
-	UInt64 lastSize = ReadUInt64(&hdr[16]);
+	UInt64 lastOfst = ReadLUInt64(&hdr[8]);
+	UInt64 lastSize = ReadLUInt64(&hdr[16]);
 	if (lastSize > 0)
 	{
 		this->OptimizeFileInner(spkg, lastOfst, lastSize);

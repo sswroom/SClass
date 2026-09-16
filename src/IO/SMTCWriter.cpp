@@ -20,9 +20,9 @@ void IO::SMTCWriter::TCPConnect(NN<Net::TCPClient> cli)
 {
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	UInt8 buff[21];
-	WriteInt64(&buff[0], ts.inst.sec);
-	WriteUInt32(&buff[8], ts.inst.nanosec);
-	WriteUInt64(&buff[12], cli->GetCliId());
+	WriteLInt64(&buff[0], ts.inst.sec);
+	WriteLUInt32(&buff[8], ts.inst.nanosec);
+	WriteLUInt64(&buff[12], cli->GetCliId());
 	buff[20] = 0;
 	Sync::MutexUsage mutUsage(this->mut);
 	this->fs.Write(Data::ByteArrayR(buff, 21));
@@ -32,9 +32,9 @@ void IO::SMTCWriter::TCPDisconnect(NN<Net::TCPClient> cli)
 {
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	UInt8 buff[21];
-	WriteInt64(&buff[0], ts.inst.sec);
-	WriteUInt32(&buff[8], ts.inst.nanosec);
-	WriteUInt64(&buff[12], cli->GetCliId());
+	WriteLInt64(&buff[0], ts.inst.sec);
+	WriteLUInt32(&buff[8], ts.inst.nanosec);
+	WriteLUInt64(&buff[12], cli->GetCliId());
 	buff[20] = 1;
 	Sync::MutexUsage mutUsage(this->mut);
 	this->fs.Write(Data::ByteArrayR(buff, 21));
@@ -44,11 +44,11 @@ void IO::SMTCWriter::TCPSend(NN<Net::TCPClient> cli, UnsafeArray<const UInt8> da
 {
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	UInt8 buff[23];
-	WriteInt64(&buff[0], ts.inst.sec);
-	WriteUInt32(&buff[8], ts.inst.nanosec);
-	WriteUInt64(&buff[12], cli->GetCliId());
+	WriteLInt64(&buff[0], ts.inst.sec);
+	WriteLUInt32(&buff[8], ts.inst.nanosec);
+	WriteLUInt64(&buff[12], cli->GetCliId());
 	buff[20] = 3;
-	WriteUInt16(&buff[21], (UInt16)size);
+	WriteLUInt16(&buff[21], (UInt16)size);
 	Sync::MutexUsage mutUsage(this->mut);
 	this->fs.Write(Data::ByteArrayR(buff, 23));
 	this->fs.Write(Data::ByteArrayR(data, size));
@@ -58,11 +58,11 @@ void IO::SMTCWriter::TCPRecv(NN<Net::TCPClient> cli, UnsafeArray<const UInt8> da
 {
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	UInt8 buff[23];
-	WriteInt64(&buff[0], ts.inst.sec);
-	WriteUInt32(&buff[8], ts.inst.nanosec);
-	WriteUInt64(&buff[12], cli->GetCliId());
+	WriteLInt64(&buff[0], ts.inst.sec);
+	WriteLUInt32(&buff[8], ts.inst.nanosec);
+	WriteLUInt64(&buff[12], cli->GetCliId());
 	buff[20] = 2;
-	WriteUInt16(&buff[21], (UInt16)size);
+	WriteLUInt16(&buff[21], (UInt16)size);
 	Sync::MutexUsage mutUsage(this->mut);
 	this->fs.Write(Data::ByteArrayR(buff, 23));
 	this->fs.Write(Data::ByteArrayR(data, size));

@@ -596,9 +596,9 @@ extern "C" void LanczosResizerFunc_HorizontalFilterR16G16B16(UInt8 *inPt, UInt8 
 			if (i & 1)
 			{
 				cvals = PInt16x4Clear();
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[0]) * 8 + 0]));
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[2]) * 8 + 524288]));
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[4]) * 8 + 1048576]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 0]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 524288]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[4]) * 8 + 1048576]));
 				PStoreInt16x4(tmpPtr, cvals);
 				currIn += 6;
 				tmpPtr += 8;
@@ -609,9 +609,9 @@ extern "C" void LanczosResizerFunc_HorizontalFilterR16G16B16(UInt8 *inPt, UInt8 
 				while (i-- != 0)
 				{
 					cvals2 = PInt16x8Clear();
-					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[6]) * 8 + 0], &rgba16Table[ReadUInt16(&currIn[0]) * 8 + 0]));
-					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[8]) * 8 + 524288], &rgba16Table[ReadUInt16(&currIn[2]) * 8 + 524288]));
-					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[10]) * 8 + 1048576], &rgba16Table[ReadUInt16(&currIn[4]) * 8 + 1048576]));
+					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[6]) * 8 + 0], &rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 0]));
+					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[8]) * 8 + 524288], &rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 524288]));
+					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[10]) * 8 + 1048576], &rgba16Table[ReadLUInt16(&currIn[4]) * 8 + 1048576]));
 					PStoreInt16x8(tmpPtr, cvals2);
 					currIn += 12;
 					tmpPtr += 16;
@@ -654,9 +654,9 @@ extern "C" void LanczosResizerFunc_HorizontalFilterR16G16B16(UInt8 *inPt, UInt8 
 			if (i & 1)
 			{
 				cvals = PInt16x4Clear();
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[0]) * 8 + 0]));
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[2]) * 8 + 524288]));
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[4]) * 8 + 1048576]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 0]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 524288]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[4]) * 8 + 1048576]));
 				PStoreInt16x4(tmpPtr, cvals);
 				currIn += 6;
 				tmpPtr += 8;
@@ -667,9 +667,9 @@ extern "C" void LanczosResizerFunc_HorizontalFilterR16G16B16(UInt8 *inPt, UInt8 
 				while (i-- != 0)
 				{
 					cvals2 = PInt16x8Clear();
-					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[6]) * 8 + 0], &rgba16Table[ReadUInt16(&currIn[0]) * 8 + 0]));
-					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[8]) * 8 + 524288], &rgba16Table[ReadUInt16(&currIn[2]) * 8 + 524288]));
-					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[10]) * 8 + 1048576], &rgba16Table[ReadUInt16(&currIn[4]) * 8 + 1048576]));
+					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[6]) * 8 + 0], &rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 0]));
+					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[8]) * 8 + 524288], &rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 524288]));
+					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[10]) * 8 + 1048576], &rgba16Table[ReadLUInt16(&currIn[4]) * 8 + 1048576]));
 					PStoreInt16x8(tmpPtr, cvals2);
 					currIn += 12;
 					tmpPtr += 16;
@@ -711,9 +711,9 @@ extern "C" void LanczosResizerFunc_HorizontalFilterR16G16B16(UInt8 *inPt, UInt8 
 			while (i-- != 0)
 			{
 				cvals = PInt16x4Clear();
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[0]) * 8 + 0]));
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[2]) * 8 + 524288]));
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[4]) * 8 + 1048576]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 0]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 524288]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[4]) * 8 + 1048576]));
 				PStoreInt16x4(tmpPtr, cvals);
 				currIn += 6;
 				tmpPtr += 8;
@@ -758,9 +758,9 @@ extern "C" void LanczosResizerFunc_HorizontalFilterR16G16B16(UInt8 *inPt, UInt8 
 			while (i-- != 0)
 			{
 				cvals = PInt16x8Clear();
-				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[6]) * 8 + 0], &rgba16Table[ReadUInt16(&currIn[0]) * 8 + 0]));
-				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[8]) * 8 + 524288], &rgba16Table[ReadUInt16(&currIn[2]) * 8 + 524288]));
-				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[10]) * 8 + 1048576], &rgba16Table[ReadUInt16(&currIn[4]) * 8 + 1048576]));
+				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[6]) * 8 + 0], &rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 0]));
+				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[8]) * 8 + 524288], &rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 524288]));
+				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[10]) * 8 + 1048576], &rgba16Table[ReadLUInt16(&currIn[4]) * 8 + 1048576]));
 				PStoreInt16x8A(tmpPtr, cvals);
 				currIn += 12;
 				tmpPtr += 16;
@@ -825,9 +825,9 @@ extern "C" void LanczosResizerFunc_HorizontalFilterB16G16R16(UInt8 *inPt, UInt8 
 			if (i & 1)
 			{
 				cvals = PInt16x4Clear();
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[4]) * 8 + 0]));
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[2]) * 8 + 524288]));
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[0]) * 8 + 1048576]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[4]) * 8 + 0]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 524288]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 1048576]));
 				PStoreInt16x4(tmpPtr, cvals);
 				currIn += 6;
 				tmpPtr += 8;
@@ -838,9 +838,9 @@ extern "C" void LanczosResizerFunc_HorizontalFilterB16G16R16(UInt8 *inPt, UInt8 
 				while (i-- != 0)
 				{
 					cvals2 = PInt16x8Clear();
-					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[10]) * 8 + 0], &rgba16Table[ReadUInt16(&currIn[4]) * 8 + 0]));
-					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[8]) * 8 + 524288], &rgba16Table[ReadUInt16(&currIn[2]) * 8 + 524288]));
-					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[6]) * 8 + 1048576], &rgba16Table[ReadUInt16(&currIn[0]) * 8 + 1048576]));
+					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[10]) * 8 + 0], &rgba16Table[ReadLUInt16(&currIn[4]) * 8 + 0]));
+					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[8]) * 8 + 524288], &rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 524288]));
+					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[6]) * 8 + 1048576], &rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 1048576]));
 					PStoreInt16x8(tmpPtr, cvals2);
 					currIn += 12;
 					tmpPtr += 16;
@@ -883,9 +883,9 @@ extern "C" void LanczosResizerFunc_HorizontalFilterB16G16R16(UInt8 *inPt, UInt8 
 			if (i & 1)
 			{
 				cvals = PInt16x4Clear();
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[4]) * 8 + 0]));
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[2]) * 8 + 524288]));
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[0]) * 8 + 1048576]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[4]) * 8 + 0]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 524288]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 1048576]));
 				PStoreInt16x4(tmpPtr, cvals);
 				currIn += 6;
 				tmpPtr += 8;
@@ -896,9 +896,9 @@ extern "C" void LanczosResizerFunc_HorizontalFilterB16G16R16(UInt8 *inPt, UInt8 
 				while (i-- != 0)
 				{
 					cvals2 = PInt16x8Clear();
-					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[10]) * 8 + 0], &rgba16Table[ReadUInt16(&currIn[4]) * 8 + 0]));
-					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[8]) * 8 + 524288], &rgba16Table[ReadUInt16(&currIn[2]) * 8 + 524288]));
-					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[6]) * 8 + 1048576], &rgba16Table[ReadUInt16(&currIn[0]) * 8 + 1048576]));
+					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[10]) * 8 + 0], &rgba16Table[ReadLUInt16(&currIn[4]) * 8 + 0]));
+					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[8]) * 8 + 524288], &rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 524288]));
+					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[6]) * 8 + 1048576], &rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 1048576]));
 					PStoreInt16x8(tmpPtr, cvals2);
 					currIn += 12;
 					tmpPtr += 16;
@@ -940,9 +940,9 @@ extern "C" void LanczosResizerFunc_HorizontalFilterB16G16R16(UInt8 *inPt, UInt8 
 			while (i-- != 0)
 			{
 				cvals = PInt16x4Clear();
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[4]) * 8 + 0]));
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[2]) * 8 + 524288]));
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[0]) * 8 + 1048576]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[4]) * 8 + 0]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 524288]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 1048576]));
 				PStoreInt16x4(tmpPtr, cvals);
 				currIn += 6;
 				tmpPtr += 8;
@@ -987,9 +987,9 @@ extern "C" void LanczosResizerFunc_HorizontalFilterB16G16R16(UInt8 *inPt, UInt8 
 			while (i-- != 0)
 			{
 				cvals = PInt16x8Clear();
-				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[10]) * 8 + 0], &rgba16Table[ReadUInt16(&currIn[4]) * 8 + 0]));
-				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[8]) * 8 + 524288], &rgba16Table[ReadUInt16(&currIn[2]) * 8 + 524288]));
-				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[6]) * 8 + 1048576], &rgba16Table[ReadUInt16(&currIn[0]) * 8 + 1048576]));
+				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[10]) * 8 + 0], &rgba16Table[ReadLUInt16(&currIn[4]) * 8 + 0]));
+				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[8]) * 8 + 524288], &rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 524288]));
+				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[6]) * 8 + 1048576], &rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 1048576]));
 				PStoreInt16x8A(tmpPtr, cvals);
 				currIn += 12;
 				tmpPtr += 16;
@@ -1054,9 +1054,9 @@ extern "C" void LanczosResizerFunc_HorizontalFilterW16(UInt8 *inPt, UInt8 *outPt
 			if (i & 1)
 			{
 				cvals = PInt16x4Clear();
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[0]) * 8 + 0]));
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[0]) * 8 + 524288]));
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[0]) * 8 + 1048576]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 0]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 524288]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 1048576]));
 				PStoreInt16x4(tmpPtr, cvals);
 				currIn += 2;
 				tmpPtr += 8;
@@ -1067,9 +1067,9 @@ extern "C" void LanczosResizerFunc_HorizontalFilterW16(UInt8 *inPt, UInt8 *outPt
 				while (i-- != 0)
 				{
 					cvals2 = PInt16x8Clear();
-					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[2]) * 8 + 0], &rgba16Table[ReadUInt16(&currIn[0]) * 8 + 0]));
-					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[2]) * 8 + 524288], &rgba16Table[ReadUInt16(&currIn[0]) * 8 + 524288]));
-					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[2]) * 8 + 1048576], &rgba16Table[ReadUInt16(&currIn[0]) * 8 + 1048576]));
+					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 0], &rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 0]));
+					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 524288], &rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 524288]));
+					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 1048576], &rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 1048576]));
 					PStoreInt16x8(tmpPtr, cvals2);
 					currIn += 4;
 					tmpPtr += 16;
@@ -1112,9 +1112,9 @@ extern "C" void LanczosResizerFunc_HorizontalFilterW16(UInt8 *inPt, UInt8 *outPt
 			if (i & 1)
 			{
 				cvals = PInt16x4Clear();
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[0]) * 8 + 0]));
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[0]) * 8 + 524288]));
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[0]) * 8 + 1048576]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 0]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 524288]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 1048576]));
 				PStoreInt16x4(tmpPtr, cvals);
 				currIn += 2;
 				tmpPtr += 8;
@@ -1125,9 +1125,9 @@ extern "C" void LanczosResizerFunc_HorizontalFilterW16(UInt8 *inPt, UInt8 *outPt
 				while (i-- != 0)
 				{
 					cvals2 = PInt16x8Clear();
-					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[2]) * 8 + 0], &rgba16Table[ReadUInt16(&currIn[0]) * 8 + 0]));
-					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[2]) * 8 + 524288], &rgba16Table[ReadUInt16(&currIn[0]) * 8 + 524288]));
-					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[2]) * 8 + 1048576], &rgba16Table[ReadUInt16(&currIn[0]) * 8 + 1048576]));
+					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 0], &rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 0]));
+					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 524288], &rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 524288]));
+					cvals2 = PSADDW8(cvals2, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 1048576], &rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 1048576]));
 					PStoreInt16x8(tmpPtr, cvals2);
 					currIn += 4;
 					tmpPtr += 16;
@@ -1169,9 +1169,9 @@ extern "C" void LanczosResizerFunc_HorizontalFilterW16(UInt8 *inPt, UInt8 *outPt
 			while (i-- != 0)
 			{
 				cvals = PInt16x4Clear();
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[0]) * 8 + 0]));
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[0]) * 8 + 524288]));
-				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[0]) * 8 + 1048576]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 0]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 524288]));
+				cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 1048576]));
 				PStoreInt16x4(tmpPtr, cvals);
 				currIn += 2;
 				tmpPtr += 8;
@@ -1216,9 +1216,9 @@ extern "C" void LanczosResizerFunc_HorizontalFilterW16(UInt8 *inPt, UInt8 *outPt
 			while (i-- != 0)
 			{
 				cvals = PInt16x8Clear();
-				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[2]) * 8 + 0], &rgba16Table[ReadUInt16(&currIn[0]) * 8 + 0]));
-				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[2]) * 8 + 524288], &rgba16Table[ReadUInt16(&currIn[0]) * 8 + 524288]));
-				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgba16Table[ReadUInt16(&currIn[2]) * 8 + 1048576], &rgba16Table[ReadUInt16(&currIn[0]) * 8 + 1048576]));
+				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 0], &rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 0]));
+				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 524288], &rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 524288]));
+				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgba16Table[ReadLUInt16(&currIn[2]) * 8 + 1048576], &rgba16Table[ReadLUInt16(&currIn[0]) * 8 + 1048576]));
 				PStoreInt16x8A(tmpPtr, cvals);
 				currIn += 4;
 				tmpPtr += 16;
@@ -1892,9 +1892,9 @@ extern "C" void LanczosResizerFunc_ExpandR16G16B16(UInt8 *inPt, UInt8 *outPt, In
 		i = width;
 		while (i-- > 0)
 		{
-			cvals = PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[0]) * 8]);
-			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[2]) * 8 + 524288]));
-			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[4]) * 8 + 1048576]));
+			cvals = PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[0]) * 8]);
+			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[2]) * 8 + 524288]));
+			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[4]) * 8 + 1048576]));
 			PStoreInt16x4(outPt, cvals);
 			inPt += 6;
 			outPt += 8;
@@ -1916,9 +1916,9 @@ extern "C" void LanczosResizerFunc_ExpandB16G16R16(UInt8 *inPt, UInt8 *outPt, In
 		i = width;
 		while (i-- > 0)
 		{
-			cvals = PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[4]) * 8]);
-			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[2]) * 8 + 524288]));
-			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[0]) * 8 + 1048576]));
+			cvals = PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[4]) * 8]);
+			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[2]) * 8 + 524288]));
+			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[0]) * 8 + 1048576]));
 			PStoreInt16x4(outPt, cvals);
 			inPt += 6;
 			outPt += 8;
@@ -1940,9 +1940,9 @@ extern "C" void LanczosResizerFunc_ExpandW16(UInt8 *inPt, UInt8 *outPt, IntOS wi
 		i = width;
 		while (i-- > 0)
 		{
-			cvals = PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[0]) * 8]);
-			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[0]) * 8 + 524288]));
-			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[0]) * 8 + 1048576]));
+			cvals = PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[0]) * 8]);
+			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[0]) * 8 + 524288]));
+			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[0]) * 8 + 1048576]));
 			PStoreInt16x4(outPt, cvals);
 			inPt += 2;
 			outPt += 8;
@@ -1963,10 +1963,10 @@ extern "C" void LanczosResizerFunc_CollapseB8G8R8A8(UInt8 *inPt, UInt8 *outPt, I
 		i = width;
 		while (i-- > 0)
 		{
-			outPt[0] = lrbgraTable[0 + ReadUInt16(&inPt[0])];
-			outPt[1] = lrbgraTable[65536 + ReadUInt16(&inPt[2])];
-			outPt[2] = lrbgraTable[131072 + ReadUInt16(&inPt[4])];
-			outPt[3] = lrbgraTable[196608 + ReadUInt16(&inPt[6])];
+			outPt[0] = lrbgraTable[0 + ReadLUInt16(&inPt[0])];
+			outPt[1] = lrbgraTable[65536 + ReadLUInt16(&inPt[2])];
+			outPt[2] = lrbgraTable[131072 + ReadLUInt16(&inPt[4])];
+			outPt[3] = lrbgraTable[196608 + ReadLUInt16(&inPt[6])];
 			inPt += 8;
 			outPt += 4;
 		}
@@ -1986,9 +1986,9 @@ extern "C" void LanczosResizerFunc_CollapseB8G8R8(UInt8 *inPt, UInt8 *outPt, Int
 		i = width;
 		while (i-- > 0)
 		{
-			outPt[0] = lrbgraTable[0 + ReadUInt16(&inPt[0])];
-			outPt[1] = lrbgraTable[65536 + ReadUInt16(&inPt[2])];
-			outPt[2] = lrbgraTable[131072 + ReadUInt16(&inPt[4])];
+			outPt[0] = lrbgraTable[0 + ReadLUInt16(&inPt[0])];
+			outPt[1] = lrbgraTable[65536 + ReadLUInt16(&inPt[2])];
+			outPt[2] = lrbgraTable[131072 + ReadLUInt16(&inPt[4])];
 			inPt += 8;
 			outPt += 3;
 		}
@@ -2125,9 +2125,9 @@ extern "C" void LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8A8(UInt8 *inPt, UInt8 
 		i = width;
 		while (i-- > 0)
 		{
-			cvals = PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[0]) * 8]);
-			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[2]) * 8 + 524288]));
-			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[4]) * 8 + 1048576]));
+			cvals = PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[0]) * 8]);
+			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[2]) * 8 + 524288]));
+			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[4]) * 8 + 1048576]));
 			cvals2 = PCONVI16x4_U(cvals);
 			outPt[0] = lrbgraTable[PEXTUW4(cvals2, 0) + 0];
 			outPt[1] = lrbgraTable[PEXTUW4(cvals2, 1) + 65536];
@@ -2154,9 +2154,9 @@ extern "C" void LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8A8(UInt8 *inPt, UInt8 
 		i = width;
 		while (i-- > 0)
 		{
-			cvals = PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[4]) * 8]);
-			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[2]) * 8 + 524288]));
-			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[0]) * 8 + 1048576]));
+			cvals = PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[4]) * 8]);
+			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[2]) * 8 + 524288]));
+			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[0]) * 8 + 1048576]));
 			cvals2 = PCONVI16x4_U(cvals);
 			outPt[0] = lrbgraTable[PEXTUW4(cvals2, 0) + 0];
 			outPt[1] = lrbgraTable[PEXTUW4(cvals2, 1) + 65536];
@@ -2183,9 +2183,9 @@ extern "C" void LanczosResizerFunc_ImgCopyW16_B8G8R8A8(UInt8 *inPt, UInt8 *outPt
 		i = width;
 		while (i-- > 0)
 		{
-			cvals = PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[0]) * 8]);
-			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[0]) * 8 + 524288]));
-			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[0]) * 8 + 1048576]));
+			cvals = PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[0]) * 8]);
+			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[0]) * 8 + 524288]));
+			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[0]) * 8 + 1048576]));
 			cvals2 = PCONVI16x4_U(cvals);
 			outPt[0] = lrbgraTable[PEXTUW4(cvals2, 0) + 0];
 			outPt[1] = lrbgraTable[PEXTUW4(cvals2, 1) + 65536];
@@ -2323,9 +2323,9 @@ extern "C" void LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8(UInt8 *inPt, UInt8 *o
 		i = width;
 		while (i-- > 0)
 		{
-			cvals = PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[0]) * 8]);
-			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[2]) * 8 + 524288]));
-			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[4]) * 8 + 1048576]));
+			cvals = PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[0]) * 8]);
+			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[2]) * 8 + 524288]));
+			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[4]) * 8 + 1048576]));
 			cvals2 = PCONVI16x4_U(cvals);
 			outPt[0] = lrbgraTable[PEXTUW4(cvals2, 0) + 0];
 			outPt[1] = lrbgraTable[PEXTUW4(cvals2, 1) + 65536];
@@ -2351,9 +2351,9 @@ extern "C" void LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8(UInt8 *inPt, UInt8 *o
 		i = width;
 		while (i-- > 0)
 		{
-			cvals = PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[4]) * 8]);
-			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[2]) * 8 + 524288]));
-			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[0]) * 8 + 1048576]));
+			cvals = PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[4]) * 8]);
+			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[2]) * 8 + 524288]));
+			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[0]) * 8 + 1048576]));
 			cvals2 = PCONVI16x4_U(cvals);
 			outPt[0] = lrbgraTable[PEXTUW4(cvals2, 0) + 0];
 			outPt[1] = lrbgraTable[PEXTUW4(cvals2, 1) + 65536];
@@ -2379,9 +2379,9 @@ extern "C" void LanczosResizerFunc_ImgCopyW16_B8G8R8(UInt8 *inPt, UInt8 *outPt, 
 		i = width;
 		while (i-- > 0)
 		{
-			cvals = PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[0]) * 8]);
-			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[0]) * 8 + 524288]));
-			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadUInt16(&inPt[0]) * 8 + 1048576]));
+			cvals = PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[0]) * 8]);
+			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[0]) * 8 + 524288]));
+			cvals = PSADDW4(cvals, PLoadInt16x4(&rgba16Table[ReadLUInt16(&inPt[0]) * 8 + 1048576]));
 			cvals2 = PCONVI16x4_U(cvals);
 			outPt[0] = lrbgraTable[PEXTUW4(cvals2, 0) + 0];
 			outPt[1] = lrbgraTable[PEXTUW4(cvals2, 1) + 65536];

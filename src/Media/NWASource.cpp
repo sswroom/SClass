@@ -103,10 +103,10 @@ UIntOS Media::NWASource::ReadBlock(Data::ByteArray buff)
 		}
 		else
 		{
-			d[0] = ReadInt16(&this->blockBuff[0]);
+			d[0] = ReadLInt16(&this->blockBuff[0]);
 			if (this->format.nChannels == 2)
 			{
-				d[1] = ReadInt16(&this->blockBuff[2]);
+				d[1] = ReadLInt16(&this->blockBuff[2]);
 				currOfst = 4;
 			}
 			else
@@ -206,7 +206,7 @@ UIntOS Media::NWASource::ReadBlock(Data::ByteArray buff)
 						}
 						else
 						{
-							WriteInt16(&buff[0], d[flipFlag]);
+							WriteLInt16(&buff[0], d[flipFlag]);
 							buff += 2;
 						}
 						if (this->format.nChannels == 2)
@@ -223,7 +223,7 @@ UIntOS Media::NWASource::ReadBlock(Data::ByteArray buff)
 			}
 			else
 			{
-				WriteInt16(&buff[0], d[flipFlag]);
+				WriteLInt16(&buff[0], d[flipFlag]);
 				buff += 2;
 			}
 			if (this->format.nChannels == 2)

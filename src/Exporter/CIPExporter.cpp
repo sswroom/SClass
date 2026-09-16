@@ -121,8 +121,8 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	layer->GetAllObjectIds(objIds, nameArr);
 	sess = layer->BeginGetObject();
 
-	WriteUInt32(&buff[0], (UInt32)objIds.GetCount());
-	WriteInt32(&buff[4], iLayerType);
+	WriteLUInt32(&buff[0], (UInt32)objIds.GetCount());
+	WriteLInt32(&buff[4], iLayerType);
 	stm->Write(Data::ByteArrayR(buff, 8));
 	cix.Write(Data::ByteArrayR(buff, 4));
 
@@ -133,27 +133,27 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		NN<Math::Geometry::Vector2D> vec;
 		if (layer->GetNewVectorById(sess, objIds.GetItem(i)).SetTo(vec))
 		{
-			WriteUInt32(&buff[0], (UInt32)i);
-			WriteUInt32(&buff[4], (UInt32)stmPos);
+			WriteLUInt32(&buff[0], (UInt32)i);
+			WriteLUInt32(&buff[4], (UInt32)stmPos);
 			cix.Write(Data::ByteArrayR(buff, 8));
 
 			if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
 			{
-				WriteUInt32(&buff[4], 1);
-				WriteUInt32(&buff[8], 0);
+				WriteLUInt32(&buff[4], 1);
+				WriteLUInt32(&buff[8], 0);
 				stm->Write(Data::ByteArrayR(buff, 12));
 				stmPos += 12;
 
 				Math::Coord2DDbl center = vec->GetCenter();
-				WriteUInt32(&buff[0], 1);
-				WriteInt32(&buff[4], Double2Int32(center.x * 200000.0));
-				WriteInt32(&buff[8], Double2Int32(center.y * 200000.0));
+				WriteLUInt32(&buff[0], 1);
+				WriteLInt32(&buff[4], Double2Int32(center.x * 200000.0));
+				WriteLInt32(&buff[8], Double2Int32(center.y * 200000.0));
 				stm->Write(Data::ByteArrayR(buff, 4));
 				stm->Write(Data::ByteArrayR(&buff[4], 8));
 				stmPos += 8 + 4;
 
-				maxX = minX = ReadInt32(&buff[4]);
-				maxY = minY = ReadInt32(&buff[8]);
+				maxX = minX = ReadLInt32(&buff[4]);
+				maxY = minY = ReadLInt32(&buff[8]);
 
 				left = minX / p->scale;
 				right = maxX / p->scale;
@@ -165,7 +165,7 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				NN<Math::Geometry::Polyline> pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
 				UIntOS nPtOfst = pl->GetCount();
 				UnsafeArray<UInt32> ptOfstArr = MemAllocArr(UInt32, nPtOfst + 1);
-				WriteUInt32(&buff[4], (UInt32)nPtOfst);
+				WriteLUInt32(&buff[4], (UInt32)nPtOfst);
 				ptOfstArr[0] = 0;
 				UIntOS i = 0;
 				NN<Math::Geometry::LineString> ls;
@@ -245,7 +245,7 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 						lr->GetCoordinates(pointArr);
 					j++;
 				}
-				WriteUInt32(&buff[4], (UInt32)nPtOfst);
+				WriteLUInt32(&buff[4], (UInt32)nPtOfst);
 				stm->Write(Data::ByteArrayR(buff, 8));
 				stm->Write(Data::ByteArrayR(UnsafeArray<UInt8>::ConvertFrom(ptOfstArr), nPtOfst * 4));
 				stmPos += 8 + nPtOfst * 4;

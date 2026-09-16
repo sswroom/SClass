@@ -241,14 +241,14 @@ UIntOS Map::CIPLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Op
 			while (i-- > 0)
 			{
 				cis->Read(Data::ByteArray(buff, 5));
-				if (tmpArr->Get(ReadInt32(buff)).IsNull())
+				if (tmpArr->Get(ReadLInt32(buff)).IsNull())
 				{
 					if (buff[4])
 					{
 						strTmp = MemAllocArr(UTF16Char, (buff[4] >> 1) + 1);
 						cis->Read(Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(strTmp), buff[4]));
 						strTmp[buff[4] >> 1] = 0;
-						tmpArr->Put(ReadInt32(buff), strTmp);
+						tmpArr->Put(ReadLInt32(buff), strTmp);
 						textSize = Text::StrUTF16_UTF8Cnt(strTmp);
 						if (textSize > this->maxTextSize)
 							maxTextSize = (Int32)textSize;
@@ -257,7 +257,7 @@ UIntOS Map::CIPLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Op
 					{
 						strTmp = MemAllocArr(UTF16Char, 1);
 						strTmp[0] = 0;
-						tmpArr->Put(ReadInt32(buff), strTmp);
+						tmpArr->Put(ReadLInt32(buff), strTmp);
 					}
 				}
 				else

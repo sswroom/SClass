@@ -41,9 +41,9 @@ UIntOS IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, AnyType
 				hdlr(userObj, fileOfst + j, i - j, CSTR("Unknown Protocol"));
 			}
 			j = i;
-			cmdSize = ReadUInt16(&buff[i + 2]);
-			cmdType = ReadUInt16(&buff[i + 4]);
-			seqId = ReadUInt16(&buff[i + 6]);
+			cmdSize = ReadLUInt16(&buff[i + 2]);
+			cmdType = ReadLUInt16(&buff[i + 4]);
+			seqId = ReadLUInt16(&buff[i + 6]);
 			if (i + cmdSize > buffSize)
 				return j;
 			sb.ClearStr();
@@ -182,9 +182,9 @@ UIntOS IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, AnyType
 			}
 			j = i;
 			b64.Decrypt(&buff[i + 2], 8, this->protoBuff);
-			cmdSize = ReadUInt16(&this->protoBuff[0]);
-			cmdType = ReadUInt16(&this->protoBuff[2]);
-			seqId = ReadUInt16(&this->protoBuff[4]);
+			cmdSize = ReadLUInt16(&this->protoBuff[0]);
+			cmdType = ReadLUInt16(&this->protoBuff[2]);
+			seqId = ReadLUInt16(&this->protoBuff[4]);
 
 			tmpVal1 = cmdSize / 3;
 			if (tmpVal1 * 3 < cmdSize)
@@ -333,14 +333,14 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 {
 	if (buffSize < 10)
 		return false;
-	UInt32 cmdSize = ReadUInt16(&buff[2]);
-	UInt32 cmdType = ReadUInt16(&buff[4]);
-	UInt32 seqId = ReadUInt16(&buff[6]);
+	UInt32 cmdSize = ReadLUInt16(&buff[2]);
+	UInt32 cmdType = ReadLUInt16(&buff[4]);
+	UInt32 seqId = ReadLUInt16(&buff[6]);
 	if (buff[0] == 'T' && buff[1] == 's')
 	{
-		cmdSize = ReadUInt16(&buff[2]);
-		cmdType = ReadUInt16(&buff[4]);
-		seqId = ReadUInt16(&buff[6]);
+		cmdSize = ReadLUInt16(&buff[2]);
+		cmdType = ReadLUInt16(&buff[4]);
+		seqId = ReadLUInt16(&buff[6]);
 	}
 	else if (buff[0] == 'T' && buff[1] == 'S')
 	{
@@ -348,9 +348,9 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 		UIntOS tmpVal2;
 		Crypto::Encrypt::Base64 b64;
 		b64.Decrypt(&buff[2], 8, this->protoBuff);
-		cmdSize = ReadUInt16(&this->protoBuff[0]);
-		cmdType = ReadUInt16(&this->protoBuff[2]);
-		seqId = ReadUInt16(&this->protoBuff[4]);
+		cmdSize = ReadLUInt16(&this->protoBuff[0]);
+		cmdType = ReadLUInt16(&this->protoBuff[2]);
+		seqId = ReadLUInt16(&this->protoBuff[4]);
 
 		tmpVal1 = cmdSize / 3;
 		if (tmpVal1 * 3 < cmdSize)
@@ -384,7 +384,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("KA (Svr->Cli)"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Server Time="));
-			sb->AppendTSNoZone(Data::Timestamp(ReadInt64(&buff[8]), 0));
+			sb->AppendTSNoZone(Data::Timestamp(ReadLInt64(&buff[8]), 0));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -394,12 +394,12 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("KA Reply"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("DevStatus=0x"));
-			sb->AppendHex32(ReadUInt32(&buff[8]));
+			sb->AppendHex32(ReadLUInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (buff[13] & 1)
 			{
 				sb->AppendC(UTF8STRC("Server Time="));
-				sb->AppendTSNoZone(Data::Timestamp(ReadInt64(&buff[ofst]), 0));
+				sb->AppendTSNoZone(Data::Timestamp(ReadLInt64(&buff[ofst]), 0));
 				sb->AppendC(UTF8STRC("\r\n"));
 				ofst += 8;
 			}
@@ -425,7 +425,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Measure Circle"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Count="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -446,28 +446,28 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Send Station Setup"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("InstX="));
-			Text::SBAppendF64(sb, ReadDouble(&buff[8]));
+			Text::SBAppendF64(sb, ReadLDouble(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("InstY="));
-			Text::SBAppendF64(sb, ReadDouble(&buff[16]));
+			Text::SBAppendF64(sb, ReadLDouble(&buff[16]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("InstZ="));
-			Text::SBAppendF64(sb, ReadDouble(&buff[24]));
+			Text::SBAppendF64(sb, ReadLDouble(&buff[24]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("From Angle="));
-			Text::SBAppendF64(sb, ReadDouble(&buff[32]));
+			Text::SBAppendF64(sb, ReadLDouble(&buff[32]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("To Angle="));
-			Text::SBAppendF64(sb, ReadDouble(&buff[40]));
+			Text::SBAppendF64(sb, ReadLDouble(&buff[40]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Radius="));
-			Text::SBAppendF64(sb, ReadDouble(&buff[48]));
+			Text::SBAppendF64(sb, ReadLDouble(&buff[48]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("HAngle="));
-			Text::SBAppendF64(sb, ReadDouble(&buff[56]));
+			Text::SBAppendF64(sb, ReadLDouble(&buff[56]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Azimuth="));
-			Text::SBAppendF64(sb, ReadDouble(&buff[64]));
+			Text::SBAppendF64(sb, ReadLDouble(&buff[64]));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -496,7 +496,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Send Task List"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Task Cnt="));
-			sb->AppendI32((Int32)(j = ReadInt32(&buff[8])));
+			sb->AppendI32((Int32)(j = ReadLInt32(&buff[8])));
 			sb->AppendC(UTF8STRC("\r\n"));
 			i = 0;
 			while (i < j)
@@ -504,7 +504,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 				sb->AppendC(UTF8STRC("Task "));
 				sb->AppendI32((Int32)i);
 				sb->AppendC(UTF8STRC("="));
-				sb->AppendI32(ReadInt32(&buff[12 + i * 4]));
+				sb->AppendI32(ReadLInt32(&buff[12 + i * 4]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				i++;
 			}
@@ -521,7 +521,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Check Task Status"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("TaskId="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -530,7 +530,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Task Sync Completed"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("TaskId="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -539,7 +539,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Request Task Detail"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("TaskId="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -548,23 +548,23 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Request Task Detail Reply"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("TaskId="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (cmdSize >= 42)
 			{
 				IntOS i;
 				IntOS j;
 				sb->AppendC(UTF8STRC("Start Time="));
-				sb->AppendTSNoZone(Data::Timestamp(ReadInt64(&buff[12]), 0));
+				sb->AppendTSNoZone(Data::Timestamp(ReadLInt64(&buff[12]), 0));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("End Time="));
-				sb->AppendTSNoZone(Data::Timestamp(ReadInt64(&buff[20]), 0));
+				sb->AppendTSNoZone(Data::Timestamp(ReadLInt64(&buff[20]), 0));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Grid Size="));
-				sb->AppendTSNoZone(Data::Timestamp(ReadInt64(&buff[28]), 0));
+				sb->AppendTSNoZone(Data::Timestamp(ReadLInt64(&buff[28]), 0));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Area Cnt="));
-				sb->AppendI32((Int32)(j = ReadInt32(&buff[36])));
+				sb->AppendI32((Int32)(j = ReadLInt32(&buff[36])));
 				sb->AppendC(UTF8STRC("\r\n"));
 				i = 0;
 				while (i < j)
@@ -572,7 +572,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 					sb->AppendC(UTF8STRC("Area "));
 					sb->AppendI32((Int32)i);
 					sb->AppendC(UTF8STRC("="));
-					sb->AppendI32(ReadInt32(&buff[40 + i * 4]));
+					sb->AppendI32(ReadLInt32(&buff[40 + i * 4]));
 					sb->AppendC(UTF8STRC("\r\n"));
 					i++;
 				}
@@ -584,7 +584,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Request Area Detail"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("AreaId="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -595,13 +595,13 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Request Area Detail Reply"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("AreaId="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Area Height="));
-			Text::SBAppendF64(sb, ReadDouble(&buff[12]));
+			Text::SBAppendF64(sb, ReadLDouble(&buff[12]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Point Cnt="));
-			sb->AppendI32((Int32)(j = ReadInt32(&buff[20])));
+			sb->AppendI32((Int32)(j = ReadLInt32(&buff[20])));
 			sb->AppendC(UTF8STRC("\r\n"));
 			i = 0;
 			while (i < j)
@@ -609,9 +609,9 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 				sb->AppendC(UTF8STRC("Point "));
 				sb->AppendI32((Int32)i);
 				sb->AppendC(UTF8STRC(": "));
-				Text::SBAppendF64(sb, ReadDouble(&buff[24 + i * 16]));
+				Text::SBAppendF64(sb, ReadLDouble(&buff[24 + i * 16]));
 				sb->AppendC(UTF8STRC(", "));
-				Text::SBAppendF64(sb, ReadDouble(&buff[32 + i * 16]));
+				Text::SBAppendF64(sb, ReadLDouble(&buff[32 + i * 16]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				i++;
 			}
@@ -622,7 +622,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Cancel Task"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Task Id="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -631,18 +631,18 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Task Status Update"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Task Id="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Task Status="));
-			sb->AppendI32(ReadInt32(&buff[12]));
+			sb->AppendI32(ReadLInt32(&buff[12]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("End Status="));
-			sb->AppendI32(ReadInt32(&buff[16]));
+			sb->AppendI32(ReadLInt32(&buff[16]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (cmdSize >= 30)
 			{
 				sb->AppendC(UTF8STRC("Complete Time="));
-				sb->AppendTSNoZone(Data::Timestamp(ReadInt64(&buff[20]), 0));
+				sb->AppendTSNoZone(Data::Timestamp(ReadLInt64(&buff[20]), 0));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 		}
@@ -652,13 +652,13 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Task Status Update Reply"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Task Id="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Task Status="));
-			sb->AppendI32(ReadInt32(&buff[12]));
+			sb->AppendI32(ReadLInt32(&buff[12]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("End Status="));
-			sb->AppendI32(ReadInt32(&buff[16]));
+			sb->AppendI32(ReadLInt32(&buff[16]));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -667,7 +667,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Remove Task"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Task Id="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -676,7 +676,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Remove Task Reply"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Task Id="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -685,7 +685,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Request Task File"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Task Id="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -694,13 +694,13 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Task File Detail"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Task Id="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("File Size="));
-			sb->AppendI32(ReadInt32(&buff[12]));
+			sb->AppendI32(ReadLInt32(&buff[12]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("File CRC="));
-			sb->AppendHex32(ReadUInt32(&buff[16]));
+			sb->AppendHex32(ReadLUInt32(&buff[16]));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -709,10 +709,10 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Transfer File"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Task Id="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Block Id="));
-			sb->AppendI32(ReadInt32(&buff[12]));
+			sb->AppendI32(ReadLInt32(&buff[12]));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -721,7 +721,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("End Transfer File"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Task Id="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -738,20 +738,20 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Dev Task List Resp"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Cmd Id="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Task Cnt="));
-			sb->AppendI32((Int32)(j = ReadInt32(&buff[12])));
+			sb->AppendI32((Int32)(j = ReadLInt32(&buff[12])));
 			sb->AppendC(UTF8STRC("\r\n"));
 			i = 0;
 			while (i < j)
 			{
 				sb->AppendC(UTF8STRC("Task Id="));
-				sb->AppendI32(ReadInt32(&buff[16 + i * 12]));
+				sb->AppendI32(ReadLInt32(&buff[16 + i * 12]));
 				sb->AppendC(UTF8STRC(", Task Status="));
-				sb->AppendI32(ReadInt32(&buff[20 + i * 12]));
+				sb->AppendI32(ReadLInt32(&buff[20 + i * 12]));
 				sb->AppendC(UTF8STRC(", Task Status="));
-				sb->AppendI32(ReadInt32(&buff[24 + i * 12]));
+				sb->AppendI32(ReadLInt32(&buff[24 + i * 12]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				
 				i++;
@@ -769,10 +769,10 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Move To Angle"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("H="));
-			Text::SBAppendF64(sb, ReadDouble(&buff[8]));
+			Text::SBAppendF64(sb, ReadLDouble(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("V="));
-			Text::SBAppendF64(sb, ReadDouble(&buff[16]));
+			Text::SBAppendF64(sb, ReadLDouble(&buff[16]));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -781,7 +781,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Request To Send Dummy Data"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Size="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -802,10 +802,10 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Get Current Angle Reply"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("H="));
-			Text::SBAppendF64(sb, ReadDouble(&buff[8]));
+			Text::SBAppendF64(sb, ReadLDouble(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("V="));
-			Text::SBAppendF64(sb, ReadDouble(&buff[16]));
+			Text::SBAppendF64(sb, ReadLDouble(&buff[16]));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;
@@ -814,7 +814,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff,
 			sb->AppendC(UTF8STRC("Turn Laser"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Value="));
-			sb->AppendI32(ReadInt32(&buff[8]));
+			sb->AppendI32(ReadLInt32(&buff[8]));
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		break;

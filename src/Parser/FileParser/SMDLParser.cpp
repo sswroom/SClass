@@ -21,7 +21,7 @@ public:
 
 	virtual UIntOS GetExtraCount(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 	{
-		UIntOS analogCnt = ReadUInt32(&buff[24]);
+		UIntOS analogCnt = ReadLUInt32(&buff[24]);
 		return 18 + 2 * analogCnt;
 	}
 
@@ -114,59 +114,59 @@ public:
 			switch (extIndex)
 			{
 			case 0:
-				sb->AppendTSNoZone(Data::Timestamp(ReadInt64(&buff[0]), Data::DateTimeUtil::GetLocalTzQhr()));
+				sb->AppendTSNoZone(Data::Timestamp(ReadLInt64(&buff[0]), Data::DateTimeUtil::GetLocalTzQhr()));
 				return true;
 			case 1:
 				sb->AppendC(UTF8STRC("0x"));
-				sb->AppendHex32(ReadUInt32(&buff[8]));
+				sb->AppendHex32(ReadLUInt32(&buff[8]));
 				return true;
 			case 2:
 				sb->AppendC(UTF8STRC("0x"));
-				sb->AppendHex32(ReadUInt32(&buff[12]));
+				sb->AppendHex32(ReadLUInt32(&buff[12]));
 				return true;
 			case 3:
 				sb->AppendC(UTF8STRC("0x"));
-				sb->AppendHex32(ReadUInt32(&buff[16]));
+				sb->AppendHex32(ReadLUInt32(&buff[16]));
 				return true;
 			case 4:
-				sb->AppendI32(ReadInt32(&buff[20]));
+				sb->AppendI32(ReadLInt32(&buff[20]));
 				return true;
 			case 5:
-				sb->AppendI32(ReadInt32(&buff[24]));
+				sb->AppendI32(ReadLInt32(&buff[24]));
 				return true;
 			case 6:
-				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadUInt32(&buff[28]), ReadUInt16(&buff[32]));
+				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadLUInt32(&buff[28]), ReadLUInt16(&buff[32]));
 				sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
 				return true;
 			case 7:
-				sb->AppendI32(ReadInt32(&buff[34]));
+				sb->AppendI32(ReadLInt32(&buff[34]));
 				return true;
 			case 8:
-				sb->AppendI32(ReadInt32(&buff[38]));
+				sb->AppendI32(ReadLInt32(&buff[38]));
 				return true;
 			case 9:
-				sb->AppendU16(ReadUInt16(&buff[42]));
+				sb->AppendU16(ReadLUInt16(&buff[42]));
 				return true;
 			case 10:
-				sb->AppendU16(ReadUInt16(&buff[44]));
+				sb->AppendU16(ReadLUInt16(&buff[44]));
 				return true;
 			case 11:
-				sb->AppendU16(ReadUInt16(&buff[46]));
+				sb->AppendU16(ReadLUInt16(&buff[46]));
 				return true;
 			case 12:
-				sb->AppendU16(ReadUInt16(&buff[48]));
+				sb->AppendU16(ReadLUInt16(&buff[48]));
 				return true;
 			case 13:
-				sb->AppendI32(ReadInt32(&buff[50]));
+				sb->AppendI32(ReadLInt32(&buff[50]));
 				return true;
 			case 14:
-				sb->AppendI32(ReadInt32(&buff[54]));
+				sb->AppendI32(ReadLInt32(&buff[54]));
 				return true;
 			case 15:
-				Text::SBAppendF64(sb, ReadDouble(&buff[58]));
+				Text::SBAppendF64(sb, ReadLDouble(&buff[58]));
 				return true;
 			case 16:
-				sb->AppendI32(ReadInt32(&buff[66]));
+				sb->AppendI32(ReadLInt32(&buff[66]));
 				return true;
 			case 17:
 				sb->AppendSlow(&buff[70]);
@@ -177,13 +177,13 @@ public:
 		{
 			if (extIndex & 1)
 			{
-				Text::SBAppendF64(sb, ReadDouble(&buff[94 + (16 * ((extIndex - 18) >> 1))]));
+				Text::SBAppendF64(sb, ReadLDouble(&buff[94 + (16 * ((extIndex - 18) >> 1))]));
 				return true;
 			}
 			else
 			{
 				sb->AppendC(UTF8STRC("0x"));
-				sb->AppendHex64(ReadUInt64(&buff[94 + (16 * ((extIndex - 18) >> 1)) + 8]));
+				sb->AppendHex64(ReadLUInt64(&buff[94 + (16 * ((extIndex - 18) >> 1)) + 8]));
 				return true;
 			}
 		}
@@ -245,7 +245,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SMDLParser::ParseFileHdr(NN<IO::S
 	if (fd->GetRealData(0, 252, BYTEARR(buff)) != 252)
 		return nullptr;
 	Data::DateTime dt;
-	dt.SetTicks(ReadInt64(&buff[0]));
+	dt.SetTicks(ReadLInt64(&buff[0]));
 	fileT = dt.GetYear() * 10000 + dt.GetMonth() * 100 + dt.GetDay();
 	if (fileT != t)
 	{
@@ -274,13 +274,13 @@ Optional<IO::ParsedObject> Parser::FileParser::SMDLParser::ParseFileHdr(NN<IO::S
 		Int32 procTime;
 		UInt32 extraSize;
 		fd->GetRealData(currPos, 96, BYTEARR(buff));
-		rec.recTime = Data::TimeInstant::FromTicks(ReadInt64(&buff[0]));
-		recvTimeTick = ReadInt64(&buff[8]);
-		rec.pos = Math::Coord2DDbl(ReadDouble(&buff[24]), ReadDouble(&buff[16]));
-		rec.altitude = ReadDouble(&buff[32]);
-		rec.speed = ReadDouble(&buff[40]);
-		rec.heading = ReadDouble(&buff[48]);
-		rec.nSateUsedGPS = (UInt8)ReadInt32(&buff[56]);
+		rec.recTime = Data::TimeInstant::FromTicks(ReadLInt64(&buff[0]));
+		recvTimeTick = ReadLInt64(&buff[8]);
+		rec.pos = Math::Coord2DDbl(ReadLDouble(&buff[24]), ReadLDouble(&buff[16]));
+		rec.altitude = ReadLDouble(&buff[32]);
+		rec.speed = ReadLDouble(&buff[40]);
+		rec.heading = ReadLDouble(&buff[48]);
+		rec.nSateUsedGPS = (UInt8)ReadLInt32(&buff[56]);
 		rec.nSateUsed = rec.nSateUsedGPS;
 		rec.nSateUsedGLO = 0;
 		rec.nSateUsedSBAS = 0;
@@ -289,28 +289,28 @@ Optional<IO::ParsedObject> Parser::FileParser::SMDLParser::ParseFileHdr(NN<IO::S
 		rec.nSateViewGA = 0;
 		rec.nSateViewQZSS = 0;
 		rec.nSateViewBD = 0;
-		status1 = ReadInt32(&buff[60]);
-		status2 = ReadInt32(&buff[64]);
-		status3 = ReadInt32(&buff[68]);
-		reportingCode = ReadInt32(&buff[72]);
-		analogCnt = ReadUInt32(&buff[76]);
-		remoteIP = ReadUInt32(&buff[80]);
-		remotePort = ReadUInt16(&buff[84]);
-		procTime = ReadInt32(&buff[88]);
-		extraSize = ReadUInt32(&buff[92]);
+		status1 = ReadLInt32(&buff[60]);
+		status2 = ReadLInt32(&buff[64]);
+		status3 = ReadLInt32(&buff[68]);
+		reportingCode = ReadLInt32(&buff[72]);
+		analogCnt = ReadLUInt32(&buff[76]);
+		remoteIP = ReadLUInt32(&buff[80]);
+		remotePort = ReadLUInt16(&buff[84]);
+		procTime = ReadLInt32(&buff[88]);
+		extraSize = ReadLUInt32(&buff[92]);
 		rec.valid = (status1 & 2) != 0;
 		ui = track->AddRecord(rec);
 		currPos += 96;
-		WriteInt64(&buff[0], recvTimeTick);
-		WriteInt32(&buff[8], status1);
-		WriteInt32(&buff[12], status2);
-		WriteInt32(&buff[16], status3);
-		WriteInt32(&buff[20], reportingCode);
-		WriteUInt32(&buff[24], analogCnt);
-		WriteUInt32(&buff[28], remoteIP);
-		WriteInt16(&buff[32], remotePort);
-		WriteInt32(&buff[34], procTime);
-		WriteUInt32(&buff[38], extraSize);
+		WriteLInt64(&buff[0], recvTimeTick);
+		WriteLInt32(&buff[8], status1);
+		WriteLInt32(&buff[12], status2);
+		WriteLInt32(&buff[16], status3);
+		WriteLInt32(&buff[20], reportingCode);
+		WriteLUInt32(&buff[24], analogCnt);
+		WriteLUInt32(&buff[28], remoteIP);
+		WriteLInt16(&buff[32], remotePort);
+		WriteLInt32(&buff[34], procTime);
+		WriteLUInt32(&buff[38], extraSize);
 		if (analogCnt > 0 && analogCnt <= 32)
 		{
 			fd->GetRealData(currPos, 16 * analogCnt, BYTEARR(buff) + 94);

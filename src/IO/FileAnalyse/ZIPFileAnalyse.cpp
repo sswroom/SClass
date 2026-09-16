@@ -118,12 +118,12 @@ UIntOS IO::FileAnalyse::ZIPFileAnalyse::ParseCentDir(NN<IO::StreamData> fd, Unsa
 		{
 			break;
 		}
-		compSize = ReadUInt32(&buff[i + 20]);
-		uncompSize = ReadUInt32(&buff[i + 24]);
-		fnameLen = ReadUInt16(&buff[i + 28]);
-		extraLen = ReadUInt16(&buff[i + 30]);
-		commentLen = ReadUInt16(&buff[i + 32]);
-		ofst = ReadUInt32(&buff[i + 42]);
+		compSize = ReadLUInt32(&buff[i + 20]);
+		uncompSize = ReadLUInt32(&buff[i + 24]);
+		fnameLen = ReadLUInt16(&buff[i + 28]);
+		extraLen = ReadLUInt16(&buff[i + 30]);
+		commentLen = ReadLUInt16(&buff[i + 32]);
+		ofst = ReadLUInt32(&buff[i + 42]);
 
 		if (i + 46 + (UIntOS)fnameLen + extraLen + commentLen > buffSize)
 		{
@@ -137,24 +137,24 @@ UIntOS IO::FileAnalyse::ZIPFileAnalyse::ParseCentDir(NN<IO::StreamData> fd, Unsa
 			UInt16 extraSize;
 			while (j + 4 <= extraLen)
 			{
-				extraTag = ReadUInt16(&extraBuff[j]);
-				extraSize = ReadUInt16(&extraBuff[j + 2]);
+				extraTag = ReadLUInt16(&extraBuff[j]);
+				extraSize = ReadLUInt16(&extraBuff[j + 2]);
 				if (extraTag == 1)
 				{
 					const UInt8 *zip64Info = &extraBuff[j + 4];
 					if (uncompSize == 0xffffffff)
 					{
-						uncompSize = ReadUInt64(zip64Info);
+						uncompSize = ReadLUInt64(zip64Info);
 						zip64Info += 8;
 					}
 					if (compSize == 0xffffffff)
 					{
-						compSize = ReadUInt64(zip64Info);
+						compSize = ReadLUInt64(zip64Info);
 						zip64Info += 8;
 					}
 					if (ofst == 0xffffffff)
 					{
-						ofst = ReadUInt64(zip64Info);
+						ofst = ReadLUInt64(zip64Info);
 						zip64Info += 8;
 					}
 				}
@@ -162,7 +162,7 @@ UIntOS IO::FileAnalyse::ZIPFileAnalyse::ParseCentDir(NN<IO::StreamData> fd, Unsa
 			}
 		}
 		fd->GetRealData(ofst, 30, BYTEARR(headerBuff));
-		UIntOS extraSize = ReadUInt16(&headerBuff[28]);
+		UIntOS extraSize = ReadLUInt16(&headerBuff[28]);
 		rec = MemAllocNN(ZIPRecord);
 		rec->tagType = 0x504B0304;
 		rec->ofst = ofst;
@@ -205,9 +205,9 @@ UIntOS IO::FileAnalyse::ZIPFileAnalyse::AddCentDir(UnsafeArray<const UInt8> buff
 		{
 			break;
 		}
-		fnameLen = ReadUInt16(&buff[i + 28]);
-		extraLen = ReadUInt16(&buff[i + 30]);
-		commentLen = ReadUInt16(&buff[i + 32]);
+		fnameLen = ReadLUInt16(&buff[i + 28]);
+		extraLen = ReadLUInt16(&buff[i + 30]);
+		commentLen = ReadLUInt16(&buff[i + 32]);
 
 		if (i + 46 + (UIntOS)fnameLen + extraLen + commentLen > buffSize)
 		{
@@ -255,20 +255,20 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		recType = ReadMUInt32(recHdr);
 		if (recType == 0x504B0506)
 		{
-			UInt32 sizeOfDir = ReadUInt32(&recHdr[12]);
-			UInt32 ofstOfDir = ReadUInt32(&recHdr[16]);
+			UInt32 sizeOfDir = ReadLUInt32(&recHdr[12]);
+			UInt32 ofstOfDir = ReadLUInt32(&recHdr[16]);
 			if (sizeOfDir == 0xffffffff || ofstOfDir == 0xffffffff)
 			{
 				fd->GetRealData(dataSize - 42, 20, BYTEARR(z64eocdl));
 
 				if (ReadMUInt32(z64eocdl) == 0x504B0607)
 				{
-					UInt64 z64eocdOfst = ReadUInt64(&z64eocdl[8]);
+					UInt64 z64eocdOfst = ReadLUInt64(&z64eocdl[8]);
 					fd->GetRealData(z64eocdOfst, 56, BYTEARR(z64eocd));
 					if (ReadMUInt32(z64eocd) == 0x504B0606)
 					{
-						UInt64 cdSize = ReadUInt64(&z64eocd[40]);
-						UInt64 cdOfst = ReadUInt64(&z64eocd[48]);
+						UInt64 cdSize = ReadLUInt64(&z64eocd[40]);
+						UInt64 cdOfst = ReadLUInt64(&z64eocd[48]);
 						if (cdSize <= 1048576)
 						{
 							Data::ByteBuffer cdBuff((UIntOS)cdSize);
@@ -366,7 +366,7 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 						rec->fileName = nullptr;
 						me->tags.Add(rec);
 
-						commentLen = ReadUInt16(&recHdr[20]);
+						commentLen = ReadLUInt16(&recHdr[20]);
 						rec = MemAllocNN(ZIPRecord);
 						rec->tagType = 0x504B0506;
 						rec->ofst = dataSize - 22;
@@ -385,7 +385,7 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 					me->ParseCentDir(fd, centDir.Arr(), sizeOfDir, 0);
 					me->AddCentDir(centDir.Arr(), sizeOfDir, ofstOfDir);
 
-					commentLen = ReadUInt16(&recHdr[20]);
+					commentLen = ReadLUInt16(&recHdr[20]);
 					rec = MemAllocNN(ZIPRecord);
 					rec->tagType = 0x504B0506;
 					rec->ofst = dataSize - 22;
@@ -408,10 +408,10 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		recType = ReadMUInt32(recHdr);
 		if (recType == 0x504B0304)
 		{
-			compSize = ReadUInt32(&recHdr[18]);
-			uncompSize = ReadUInt32(&recHdr[22]);
-			fnameLen = ReadUInt16(&recHdr[26]);
-			extraLen = ReadUInt16(&recHdr[28]);
+			compSize = ReadLUInt32(&recHdr[18]);
+			uncompSize = ReadLUInt32(&recHdr[22]);
+			fnameLen = ReadLUInt16(&recHdr[26]);
+			extraLen = ReadLUInt16(&recHdr[28]);
 			if (compSize == 0xFFFFFFFF || uncompSize == 0xFFFFFFFF)
 			{
 				break;
@@ -436,11 +436,11 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		}
 		else if (recType == 0x504B0102)
 		{
-			compSize = ReadUInt32(&recHdr[20]);
-			uncompSize = ReadUInt32(&recHdr[24]);
-			fnameLen = ReadUInt16(&recHdr[28]);
-			extraLen = ReadUInt16(&recHdr[30]);
-			commentLen = ReadUInt16(&recHdr[32]);
+			compSize = ReadLUInt32(&recHdr[20]);
+			uncompSize = ReadLUInt32(&recHdr[24]);
+			fnameLen = ReadLUInt16(&recHdr[28]);
+			extraLen = ReadLUInt16(&recHdr[30]);
+			commentLen = ReadLUInt16(&recHdr[32]);
 			if (compSize == 0xFFFFFFFF || uncompSize == 0xFFFFFFFF)
 			{
 				break;
@@ -458,7 +458,7 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		}
 		else if (recType == 0x504B0506)
 		{
-			UInt16 commentLen = ReadUInt16(&recHdr[20]);
+			UInt16 commentLen = ReadLUInt16(&recHdr[20]);
 			rec = MemAllocNN(ZIPRecord);
 			rec->tagType = recType;
 			rec->ofst = ofst;
@@ -490,8 +490,8 @@ void IO::FileAnalyse::ZIPFileAnalyse::ParseExtraTag(NN<IO::FileAnalyse::FrameDet
 	UIntOS l;
 	while (j + 4 <= extraLen)
 	{
-		extraTag = ReadUInt16(&tagData[extraStart + j]);
-		extraSize = ReadUInt16(&tagData[extraStart + j + 2]);
+		extraTag = ReadLUInt16(&tagData[extraStart + j]);
+		extraSize = ReadLUInt16(&tagData[extraStart + j + 2]);
 		frame->AddUInt(extraStart + j, 2, CSTR("Extra Tag"), extraTag);
 		frame->AddUInt(extraStart + j + 2, 2, CSTR("Extra Size"), extraSize);
 		if (extraTag == 1)
@@ -499,17 +499,17 @@ void IO::FileAnalyse::ZIPFileAnalyse::ParseExtraTag(NN<IO::FileAnalyse::FrameDet
 			k = extraStart + j + 4;
 			if (uncompSize == 0xffffffff)
 			{
-				frame->AddUInt64(k, CSTR("Original Size"), ReadUInt64(&tagData[k]));
+				frame->AddUInt64(k, CSTR("Original Size"), ReadLUInt64(&tagData[k]));
 				k += 8;
 			}
 			if (compSize == 0xffffffff)
 			{
-				frame->AddUInt64(k, CSTR("Compressed Size"), ReadUInt64(&tagData[k]));
+				frame->AddUInt64(k, CSTR("Compressed Size"), ReadLUInt64(&tagData[k]));
 				k += 8;
 			}
 			if (ofst == 0xffffffff)
 			{
-				frame->AddUInt64(k, CSTR("Relative Header Offset"), ReadUInt64(&tagData[k]));
+				frame->AddUInt64(k, CSTR("Relative Header Offset"), ReadLUInt64(&tagData[k]));
 				k += 8;
 			}
 		}
@@ -519,24 +519,24 @@ void IO::FileAnalyse::ZIPFileAnalyse::ParseExtraTag(NN<IO::FileAnalyse::FrameDet
 			UInt16 ntfsSize;
 			k = extraStart + j + 4;
 			l = k + extraSize;
-			frame->AddUInt(k, 4, CSTR("Reserved"), ReadUInt32(&tagData[k]));
+			frame->AddUInt(k, 4, CSTR("Reserved"), ReadLUInt32(&tagData[k]));
 			k += 4;
 			while (k + 4 <= l)
 			{
-				ntfsTag = ReadUInt16(&tagData[k]);
-				ntfsSize = ReadUInt16(&tagData[k + 2]);
+				ntfsTag = ReadLUInt16(&tagData[k]);
+				ntfsSize = ReadLUInt16(&tagData[k + 2]);
 				frame->AddUInt(k, 2, CSTR("NTFS attribute tag"), ntfsTag);
 				frame->AddUInt(k + 2, 2, CSTR("Size of attribute"), ntfsSize);
 				k += 4;
 				if (ntfsTag == 1 && ntfsSize == 24)
 				{
-					t = ReadUInt64(&tagData[k]);
+					t = ReadLUInt64(&tagData[k]);
 					sptr = Data::Timestamp::FromFILETIME(&t, Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
 					frame->AddUInt64Name(k, 8, CSTR("File last modification time"), t, CSTRP(sbuff, sptr));
-					t = ReadUInt64(&tagData[k + 8]);
+					t = ReadLUInt64(&tagData[k + 8]);
 					sptr = Data::Timestamp::FromFILETIME(&t, Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
 					frame->AddUInt64Name(k + 8, 8, CSTR("File last access time"), t, CSTRP(sbuff, sptr));
-					t = ReadUInt64(&tagData[k + 16]);
+					t = ReadLUInt64(&tagData[k + 16]);
 					sptr = Data::Timestamp::FromFILETIME(&t, Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
 					frame->AddUInt64Name(k + 16, 8, CSTR("File creation time"), t, CSTRP(sbuff, sptr));
 				}
@@ -550,21 +550,21 @@ void IO::FileAnalyse::ZIPFileAnalyse::ParseExtraTag(NN<IO::FileAnalyse::FrameDet
 			frame->AddUInt(k, 1, CSTR("Flags"), tagData[k]);
 			if (k + 5 <= l)
 			{
-				t = ReadUInt64(&tagData[k + 1]);
-				sptr = Data::Timestamp::FromEpochSec(ReadUInt32(&tagData[k + 1]), Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
-				frame->AddUIntName(k + 1, 4, CSTR("File last modification time"), ReadUInt32(&tagData[k + 1]), CSTRP(sbuff, sptr));
+				t = ReadLUInt64(&tagData[k + 1]);
+				sptr = Data::Timestamp::FromEpochSec(ReadLUInt32(&tagData[k + 1]), Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
+				frame->AddUIntName(k + 1, 4, CSTR("File last modification time"), ReadLUInt32(&tagData[k + 1]), CSTRP(sbuff, sptr));
 			}
 			if (k + 9 <= l)
 			{
-				t = ReadUInt64(&tagData[k + 5]);
-				sptr = Data::Timestamp::FromEpochSec(ReadUInt32(&tagData[k + 5]), Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
-				frame->AddUIntName(k + 5, 4, CSTR("File last access time"), ReadUInt32(&tagData[k + 5]), CSTRP(sbuff, sptr));
+				t = ReadLUInt64(&tagData[k + 5]);
+				sptr = Data::Timestamp::FromEpochSec(ReadLUInt32(&tagData[k + 5]), Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
+				frame->AddUIntName(k + 5, 4, CSTR("File last access time"), ReadLUInt32(&tagData[k + 5]), CSTRP(sbuff, sptr));
 			}
 			if (k + 13 <= l)
 			{
-				t = ReadUInt64(&tagData[k + 9]);
-				sptr = Data::Timestamp::FromEpochSec(ReadUInt32(&tagData[k + 9]), Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
-				frame->AddUIntName(k + 9, 4, CSTR("File creation time"), ReadUInt32(&tagData[k + 9]), CSTRP(sbuff, sptr));
+				t = ReadLUInt64(&tagData[k + 9]);
+				sptr = Data::Timestamp::FromEpochSec(ReadLUInt32(&tagData[k + 9]), Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
+				frame->AddUIntName(k + 9, 4, CSTR("File creation time"), ReadLUInt32(&tagData[k + 9]), CSTRP(sbuff, sptr));
 			}
 		}
 		else if (extraTag == 0x7875)
@@ -708,19 +708,19 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ZIPFileAnalyse::GetFrame
 	switch (tag->tagType)
 	{
 	case 0x504B0304:
-		frame->AddUInt(4, 2, CSTR("Version needed to extract"), ReadUInt16(&tagData[4]));
-		frame->AddHex16(6, CSTR("General purpose bit flag"), ReadUInt16(&tagData[6]));
-		frame->AddUIntName(8, 2, CSTR("Compression method"), ReadUInt16(&tagData[8]), GetCompName(ReadUInt16(&tagData[8])));
-		ts = Data::Timestamp::FromMSDOSTime(ReadUInt16(&tagData[12]), ReadUInt16(&tagData[10]), Data::DateTimeUtil::GetLocalTzQhr());
+		frame->AddUInt(4, 2, CSTR("Version needed to extract"), ReadLUInt16(&tagData[4]));
+		frame->AddHex16(6, CSTR("General purpose bit flag"), ReadLUInt16(&tagData[6]));
+		frame->AddUIntName(8, 2, CSTR("Compression method"), ReadLUInt16(&tagData[8]), GetCompName(ReadLUInt16(&tagData[8])));
+		ts = Data::Timestamp::FromMSDOSTime(ReadLUInt16(&tagData[12]), ReadLUInt16(&tagData[10]), Data::DateTimeUtil::GetLocalTzQhr());
 		sptr = ts.ToString(sbuff, "HH:mm:ss");
-		frame->AddUIntName(10, 2, CSTR("File last modification time"), ReadUInt16(&tagData[10]), CSTRP(sbuff, sptr));
+		frame->AddUIntName(10, 2, CSTR("File last modification time"), ReadLUInt16(&tagData[10]), CSTRP(sbuff, sptr));
 		sptr = ts.ToString(sbuff, "yyyy-MM-dd");
-		frame->AddUIntName(12, 2, CSTR("File last modification date"), ReadUInt16(&tagData[12]), CSTRP(sbuff, sptr));
-		frame->AddHex32(14, CSTR("CRC-32 of uncompressed data"), ReadUInt32(&tagData[14]));
-		frame->AddUInt(18, 4, CSTR("Compressed size"), compSize = ReadUInt32(&tagData[18]));
-		frame->AddUInt(22, 4, CSTR("Uncompressed size"), uncompSize = ReadUInt32(&tagData[22]));
-		frame->AddUInt(26, 2, CSTR("File name length"), fnameLen = ReadUInt16(&tagData[26]));
-		frame->AddUInt(28, 2, CSTR("Extra field length"), extraLen = ReadUInt16(&tagData[28]));
+		frame->AddUIntName(12, 2, CSTR("File last modification date"), ReadLUInt16(&tagData[12]), CSTRP(sbuff, sptr));
+		frame->AddHex32(14, CSTR("CRC-32 of uncompressed data"), ReadLUInt32(&tagData[14]));
+		frame->AddUInt(18, 4, CSTR("Compressed size"), compSize = ReadLUInt32(&tagData[18]));
+		frame->AddUInt(22, 4, CSTR("Uncompressed size"), uncompSize = ReadLUInt32(&tagData[22]));
+		frame->AddUInt(26, 2, CSTR("File name length"), fnameLen = ReadLUInt16(&tagData[26]));
+		frame->AddUInt(28, 2, CSTR("Extra field length"), extraLen = ReadLUInt16(&tagData[28]));
 		frame->AddStrC(30, fnameLen, CSTR("File name"), &tagData[30]);
 		if (extraLen)
 		{
@@ -729,17 +729,17 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ZIPFileAnalyse::GetFrame
 		}
 		break;
 	case 0x504B0102:
-		frame->AddUInt(4, 2, CSTR("Version made by"), ReadUInt16(&tagData[4]));
-		frame->AddUInt(6, 2, CSTR("Version needed to extract"), ReadUInt16(&tagData[6]));
-		frame->AddHex16(8, CSTR("General purpose bit flag"), ReadUInt16(&tagData[8]));
-		frame->AddUIntName(10, 2, CSTR("Compression method"), ReadUInt16(&tagData[10]), GetCompName(ReadUInt16(&tagData[10])));
-		ts = Data::Timestamp::FromMSDOSTime(ReadUInt16(&tagData[14]), ReadUInt16(&tagData[12]), Data::DateTimeUtil::GetLocalTzQhr());
+		frame->AddUInt(4, 2, CSTR("Version made by"), ReadLUInt16(&tagData[4]));
+		frame->AddUInt(6, 2, CSTR("Version needed to extract"), ReadLUInt16(&tagData[6]));
+		frame->AddHex16(8, CSTR("General purpose bit flag"), ReadLUInt16(&tagData[8]));
+		frame->AddUIntName(10, 2, CSTR("Compression method"), ReadLUInt16(&tagData[10]), GetCompName(ReadLUInt16(&tagData[10])));
+		ts = Data::Timestamp::FromMSDOSTime(ReadLUInt16(&tagData[14]), ReadLUInt16(&tagData[12]), Data::DateTimeUtil::GetLocalTzQhr());
 		sptr = ts.ToString(sbuff, "HH:mm:ss");
-		frame->AddUIntName(12, 2, CSTR("File last modification time"), ReadUInt16(&tagData[12]), CSTRP(sbuff, sptr));
+		frame->AddUIntName(12, 2, CSTR("File last modification time"), ReadLUInt16(&tagData[12]), CSTRP(sbuff, sptr));
 		sptr = ts.ToString(sbuff, "yyyy-MM-dd");
-		frame->AddUIntName(14, 2, CSTR("File last modification date"), ReadUInt16(&tagData[14]), CSTRP(sbuff, sptr));
-		frame->AddHex32(16, CSTR("CRC-32 of uncompressed data"), ReadUInt32(&tagData[16]));
-		compSize = ReadUInt32(&tagData[20]);
+		frame->AddUIntName(14, 2, CSTR("File last modification date"), ReadLUInt16(&tagData[14]), CSTRP(sbuff, sptr));
+		frame->AddHex32(16, CSTR("CRC-32 of uncompressed data"), ReadLUInt32(&tagData[16]));
+		compSize = ReadLUInt32(&tagData[20]);
 		if (compSize == 0xffffffff)
 		{
 			frame->AddField(20, 4, CSTR("Compressed size"), CSTR("Use Zip64 value"));
@@ -748,7 +748,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ZIPFileAnalyse::GetFrame
 		{
 			frame->AddUInt(20, 4, CSTR("Compressed size"), compSize);
 		}
-		uncompSize = ReadUInt32(&tagData[24]);
+		uncompSize = ReadLUInt32(&tagData[24]);
 		if (uncompSize == 0xffffffff)
 		{
 			frame->AddField(24, 4, CSTR("Uncompressed size"), CSTR("Use Zip64 value"));
@@ -757,13 +757,13 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ZIPFileAnalyse::GetFrame
 		{
 			frame->AddUInt(24, 4, CSTR("Uncompressed size"), uncompSize);
 		}
-		frame->AddUInt(28, 2, CSTR("File name length"), fnameLen = ReadUInt16(&tagData[28]));
-		frame->AddUInt(30, 2, CSTR("Extra field length"), extraLen = ReadUInt16(&tagData[30]));
-		frame->AddUInt(32, 2, CSTR("File comment length"), commentLen = ReadUInt16(&tagData[32]));
-		frame->AddUInt(34, 2, CSTR("Disk number where file starts"), ReadUInt16(&tagData[34]));
-		frame->AddHex16(36, CSTR("Internal file attributes"), ReadUInt16(&tagData[36]));
-		frame->AddHex32(38, CSTR("External file attributes"), ReadUInt32(&tagData[38]));
-		ofst = ReadUInt32(&tagData[42]);
+		frame->AddUInt(28, 2, CSTR("File name length"), fnameLen = ReadLUInt16(&tagData[28]));
+		frame->AddUInt(30, 2, CSTR("Extra field length"), extraLen = ReadLUInt16(&tagData[30]));
+		frame->AddUInt(32, 2, CSTR("File comment length"), commentLen = ReadLUInt16(&tagData[32]));
+		frame->AddUInt(34, 2, CSTR("Disk number where file starts"), ReadLUInt16(&tagData[34]));
+		frame->AddHex16(36, CSTR("Internal file attributes"), ReadLUInt16(&tagData[36]));
+		frame->AddHex32(38, CSTR("External file attributes"), ReadLUInt32(&tagData[38]));
+		ofst = ReadLUInt32(&tagData[42]);
 		if (ofst == 0xffffffff)
 		{
 			frame->AddField(42, 4, CSTR("Relative offset of local file header"), CSTR("Use Zip64 value"));
@@ -785,33 +785,33 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ZIPFileAnalyse::GetFrame
 		}
 		break;
 	case 0x504B0506:
-		frame->AddUInt(4, 2, CSTR("Number of this disk"), ReadUInt16(&tagData[4]));
-		frame->AddUInt(6, 2, CSTR("Disk where central directory starts"), ReadUInt16(&tagData[6]));
-		frame->AddUInt(8, 2, CSTR("Number of central directory records on this disk"), ReadUInt16(&tagData[8]));
-		frame->AddUInt(10, 2, CSTR("Total number of central directory records"), ReadUInt16(&tagData[10]));
-		frame->AddUInt(12, 4, CSTR("Size of central directory"), ReadUInt32(&tagData[12]));
-		frame->AddUInt(16, 4, CSTR("Offset of start of central directory"), ReadUInt32(&tagData[16]));
-		frame->AddUInt(20, 2, CSTR("Comment length"), commentLen = ReadUInt16(&tagData[20]));
+		frame->AddUInt(4, 2, CSTR("Number of this disk"), ReadLUInt16(&tagData[4]));
+		frame->AddUInt(6, 2, CSTR("Disk where central directory starts"), ReadLUInt16(&tagData[6]));
+		frame->AddUInt(8, 2, CSTR("Number of central directory records on this disk"), ReadLUInt16(&tagData[8]));
+		frame->AddUInt(10, 2, CSTR("Total number of central directory records"), ReadLUInt16(&tagData[10]));
+		frame->AddUInt(12, 4, CSTR("Size of central directory"), ReadLUInt32(&tagData[12]));
+		frame->AddUInt(16, 4, CSTR("Offset of start of central directory"), ReadLUInt32(&tagData[16]));
+		frame->AddUInt(20, 2, CSTR("Comment length"), commentLen = ReadLUInt16(&tagData[20]));
 		if (commentLen)
 		{
 			frame->AddStrC(22, commentLen, CSTR("Comment"), &tagData[22]);
 		}
 		break;
 	case 0x504B0606:
-		frame->AddUInt64(4, CSTR("Size of zip64 end of central directory record"), ReadUInt64(&tagData[4]));
-		frame->AddUInt(12, 2, CSTR("Version made by"), ReadUInt16(&tagData[12]));
-		frame->AddUInt(14, 2, CSTR("Version needed to extract"), ReadUInt16(&tagData[14]));
-		frame->AddUInt(16, 4, CSTR("Number of this disk"), ReadUInt32(&tagData[16]));
-		frame->AddUInt(20, 4, CSTR("Number of the disk with the start of the central directory"), ReadUInt32(&tagData[20]));
-		frame->AddUInt64(24, CSTR("Total number of entries in the central directory on this disk"), ReadUInt64(&tagData[24]));
-		frame->AddUInt64(32, CSTR("Total number of entries in the central directory"), ReadUInt64(&tagData[32]));
-		frame->AddUInt64(40, CSTR("Size of the central directory"), ReadUInt64(&tagData[40]));
-		frame->AddUInt64(48, CSTR("Offset of start of central directory with respect to the starting disk number"), ReadUInt64(&tagData[48]));
+		frame->AddUInt64(4, CSTR("Size of zip64 end of central directory record"), ReadLUInt64(&tagData[4]));
+		frame->AddUInt(12, 2, CSTR("Version made by"), ReadLUInt16(&tagData[12]));
+		frame->AddUInt(14, 2, CSTR("Version needed to extract"), ReadLUInt16(&tagData[14]));
+		frame->AddUInt(16, 4, CSTR("Number of this disk"), ReadLUInt32(&tagData[16]));
+		frame->AddUInt(20, 4, CSTR("Number of the disk with the start of the central directory"), ReadLUInt32(&tagData[20]));
+		frame->AddUInt64(24, CSTR("Total number of entries in the central directory on this disk"), ReadLUInt64(&tagData[24]));
+		frame->AddUInt64(32, CSTR("Total number of entries in the central directory"), ReadLUInt64(&tagData[32]));
+		frame->AddUInt64(40, CSTR("Size of the central directory"), ReadLUInt64(&tagData[40]));
+		frame->AddUInt64(48, CSTR("Offset of start of central directory with respect to the starting disk number"), ReadLUInt64(&tagData[48]));
 		break;
 	case 0x504B0607:
-		frame->AddUInt(4, 4, CSTR("Number of the disk with the start of the zip64 end of central directory"), ReadUInt32(&tagData[4]));
-		frame->AddUInt64(8, CSTR("Relative offset of the zip64 end of central directory record"), ReadUInt64(&tagData[8]));
-		frame->AddUInt(16, 4, CSTR("Total number of disks"), ReadUInt32(&tagData[16]));
+		frame->AddUInt(4, 4, CSTR("Number of the disk with the start of the zip64 end of central directory"), ReadLUInt32(&tagData[4]));
+		frame->AddUInt64(8, CSTR("Relative offset of the zip64 end of central directory record"), ReadLUInt64(&tagData[8]));
+		frame->AddUInt(16, 4, CSTR("Total number of disks"), ReadLUInt32(&tagData[16]));
 		break;
 	}
 	return frame;

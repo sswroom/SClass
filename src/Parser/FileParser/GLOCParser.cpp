@@ -292,7 +292,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GLOCParser::ParseFileHdr(NN<IO::S
 		return nullptr;
 	idevId = (UInt32)(devId & 0xffffffffLL);
 
-	if (ReadUInt32(&hdr[0]) != idevId || (fileSize > 128 && ReadUInt32(&hdr[128]) != idevId) || (fileSize > 256 && ReadUInt32(&hdr[256]) != idevId))
+	if (ReadLUInt32(&hdr[0]) != idevId || (fileSize > 128 && ReadLUInt32(&hdr[128]) != idevId) || (fileSize > 256 && ReadLUInt32(&hdr[256]) != idevId))
 		return nullptr;
 
 	NN<Map::GPSTrack> track;
@@ -307,16 +307,16 @@ Optional<IO::ParsedObject> Parser::FileParser::GLOCParser::ParseFileHdr(NN<IO::S
 	{
 		ExtraInfo extInfo;
 		fd->GetRealData(currPos, 128, BYTEARR(buff));
-		extInfo.termId = ReadUInt32(&buff[0]);
-		extInfo.devType = ReadInt32(&buff[4]);
-		rec.recTime = Data::TimeInstant(ReadUInt32(&buff[8]), 0);
-		extInfo.recvTimeTS = ReadUInt32(&buff[12]);
-		rec.pos = Math::Coord2DDbl(ReadInt32(&buff[20]) / 10000000.0,  ReadInt32(&buff[16]) / 10000000.0);
-		rec.speed = ReadUInt16(&buff[24]) * 0.1;
-		rec.heading = ReadUInt16(&buff[26]) * 0.01;
-		extInfo.status = ReadUInt32(&buff[28]);
-		extInfo.status2 = ReadUInt32(&buff[32]);
-		extInfo.period = ReadInt32(&buff[36]);
+		extInfo.termId = ReadLUInt32(&buff[0]);
+		extInfo.devType = ReadLInt32(&buff[4]);
+		rec.recTime = Data::TimeInstant(ReadLUInt32(&buff[8]), 0);
+		extInfo.recvTimeTS = ReadLUInt32(&buff[12]);
+		rec.pos = Math::Coord2DDbl(ReadLInt32(&buff[20]) / 10000000.0,  ReadLInt32(&buff[16]) / 10000000.0);
+		rec.speed = ReadLUInt16(&buff[24]) * 0.1;
+		rec.heading = ReadLUInt16(&buff[26]) * 0.01;
+		extInfo.status = ReadLUInt32(&buff[28]);
+		extInfo.status2 = ReadLUInt32(&buff[32]);
+		extInfo.period = ReadLInt32(&buff[36]);
 		rec.valid = (buff[32] & 1) == 0;
 		rec.nSateUsed = buff[40];
 		rec.nSateUsedGPS = rec.nSateUsed;
@@ -327,24 +327,24 @@ Optional<IO::ParsedObject> Parser::FileParser::GLOCParser::ParseFileHdr(NN<IO::S
 		rec.nSateViewGA = 0;
 		rec.nSateViewQZSS = 0;
 		rec.nSateViewBD = 0;
-		extInfo.mileageTZ = ReadUInt16(&buff[42]);
-		extInfo.temperature1 = ReadInt32(&buff[44]) * 0.01;
-		extInfo.temperature2 = ReadInt32(&buff[48]) * 0.01;
-		extInfo.temperature3 = ReadInt32(&buff[52]) * 0.01;
-		extInfo.rhLine = ReadInt32(&buff[56]) * 0.0001;
-		extInfo.rhRef = ReadInt32(&buff[60]) * 0.0001;
-		extInfo.mileageDiff = ReadInt32(&buff[64]);
-		extInfo.mileageDaily = ReadInt32(&buff[68]);
-		extInfo.fuelLev = ReadInt32(&buff[72]) * 0.0001;
+		extInfo.mileageTZ = ReadLUInt16(&buff[42]);
+		extInfo.temperature1 = ReadLInt32(&buff[44]) * 0.01;
+		extInfo.temperature2 = ReadLInt32(&buff[48]) * 0.01;
+		extInfo.temperature3 = ReadLInt32(&buff[52]) * 0.01;
+		extInfo.rhLine = ReadLInt32(&buff[56]) * 0.0001;
+		extInfo.rhRef = ReadLInt32(&buff[60]) * 0.0001;
+		extInfo.mileageDiff = ReadLInt32(&buff[64]);
+		extInfo.mileageDaily = ReadLInt32(&buff[68]);
+		extInfo.fuelLev = ReadLInt32(&buff[72]) * 0.0001;
 		extInfo.devIP = ReadNUInt32(&buff[76]);
-		extInfo.devPort = ReadUInt16(&buff[80]);
-		extInfo.recType = ReadUInt16(&buff[82]);
-		rec.altitude = ReadInt32(&buff[84]) / 1000.0;
-		extInfo.status4 = ReadUInt32(&buff[88]);
-		extInfo.adc5 = ReadInt32(&buff[92]);
-		extInfo.adc6 = ReadInt32(&buff[96]) * 0.001;
-		extInfo.adc7 = ReadInt32(&buff[100]) * 0.001;
-		extInfo.adc8 = ReadInt32(&buff[104]) * 0.001;
+		extInfo.devPort = ReadLUInt16(&buff[80]);
+		extInfo.recType = ReadLUInt16(&buff[82]);
+		rec.altitude = ReadLInt32(&buff[84]) / 1000.0;
+		extInfo.status4 = ReadLUInt32(&buff[88]);
+		extInfo.adc5 = ReadLInt32(&buff[92]);
+		extInfo.adc6 = ReadLInt32(&buff[96]) * 0.001;
+		extInfo.adc7 = ReadLInt32(&buff[100]) * 0.001;
+		extInfo.adc8 = ReadLInt32(&buff[104]) * 0.001;
 		extInfo.fileOfst = currPos;
 		i = track->AddRecord(rec);
 		track->SetExtraDataIndex(i, (UInt8*)&extInfo, sizeof(extInfo));

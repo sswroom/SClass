@@ -45,13 +45,13 @@ namespace Data
 		Int16 ReadI16(UIntOS index) const
 		{
 			this->CheckError(index + 2);
-			return ReadInt16(&this->buff[index]);
+			return ReadLInt16(&this->buff[index]);
 		}
 
 		UInt16 ReadU16(UIntOS index) const
 		{
 			this->CheckError(index + 2);
-			return ReadUInt16(&this->buff[index]);
+			return ReadLUInt16(&this->buff[index]);
 		}
 
 		Int16 ReadMI16(UIntOS index) const
@@ -81,13 +81,13 @@ namespace Data
 		Int32 ReadI24(UIntOS index) const
 		{
 			this->CheckError(index + 3);
-			return ReadInt24(&this->buff[index]);
+			return ReadLInt24(&this->buff[index]);
 		}
 
 		UInt32 ReadU24(UIntOS index) const
 		{
 			this->CheckError(index + 3);
-			return ReadUInt24(&this->buff[index]);
+			return ReadLUInt24(&this->buff[index]);
 		}
 
 		Int32 ReadMI24(UIntOS index) const
@@ -117,13 +117,13 @@ namespace Data
 		Int32 ReadI32(UIntOS index) const
 		{
 			this->CheckError(index + 4);
-			return ReadInt32(&this->buff[index]);
+			return ReadLInt32(&this->buff[index]);
 		}
 
 		UInt32 ReadU32(UIntOS index) const
 		{
 			this->CheckError(index + 4);
-			return ReadUInt32(&this->buff[index]);
+			return ReadLUInt32(&this->buff[index]);
 		}
 
 		Int32 ReadMI32(UIntOS index) const
@@ -154,13 +154,13 @@ namespace Data
 		Int64 ReadI64(UIntOS index) const
 		{
 			this->CheckError(index + 8);
-			return ReadInt64(&this->buff[index]);
+			return ReadLInt64(&this->buff[index]);
 		}
 
 		UInt64 ReadU64(UIntOS index) const
 		{
 			this->CheckError(index + 8);
-			return ReadUInt64(&this->buff[index]);
+			return ReadLUInt64(&this->buff[index]);
 		}
 
 		Int64 ReadMI64(UIntOS index) const

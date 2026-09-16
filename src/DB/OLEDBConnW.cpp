@@ -933,25 +933,25 @@ Int32 DB::OLEDBReader::GetInt32(UIntOS colIndex)
 	case DBTYPE_I2:
 		if (*valLen == 2)
 		{
-			return ReadInt16(val);
+			return ReadLInt16(val);
 		}
 		return 0;
 	case DBTYPE_I4:
 		if (*valLen == 4)
 		{
-			return ReadInt32(val);
+			return ReadLInt32(val);
 		}
 		return 0;
 	case DBTYPE_R4:
 		if (*valLen == 4)
 		{
-			return Double2Int32(ReadFloat(val));
+			return Double2Int32(ReadLFloat(val));
 		}
 		return 0;
 	case DBTYPE_R8:
 		if (*valLen == 8)
 		{
-			return Double2Int32(ReadDouble(val));
+			return Double2Int32(ReadLDouble(val));
 		}
 		return 0;
 	case DBTYPE_UI1:
@@ -969,25 +969,25 @@ Int32 DB::OLEDBReader::GetInt32(UIntOS colIndex)
 	case DBTYPE_UI2:
 		if (*valLen == 2)
 		{
-			return ReadUInt16(val);
+			return ReadLUInt16(val);
 		}
 		return 0;
 	case DBTYPE_UI4:
 		if (*valLen == 4)
 		{
-			return ReadInt32(val);
+			return ReadLInt32(val);
 		}
 		return 0;
 	case DBTYPE_I8:
 		if (*valLen == 8)
 		{
-			return ReadInt32(val);
+			return ReadLInt32(val);
 		}
 		return 0;
 	case DBTYPE_UI8:
 		if (*valLen == 8)
 		{
-			return ReadInt32(val);
+			return ReadLInt32(val);
 		}
 		return 0;
 	default:
@@ -1013,25 +1013,25 @@ Int64 DB::OLEDBReader::GetInt64(UIntOS colIndex)
 	case DBTYPE_I2:
 		if (*valLen == 2)
 		{
-			return ReadInt16(val);
+			return ReadLInt16(val);
 		}
 		return 0;
 	case DBTYPE_I4:
 		if (*valLen == 4)
 		{
-			return ReadInt32(val);
+			return ReadLInt32(val);
 		}
 		return 0;
 	case DBTYPE_R4:
 		if (*valLen == 4)
 		{
-			return Double2Int64(ReadFloat(val));
+			return Double2Int64(ReadLFloat(val));
 		}
 		return 0;
 	case DBTYPE_R8:
 		if (*valLen == 8)
 		{
-			return Double2Int64(ReadDouble(val));
+			return Double2Int64(ReadLDouble(val));
 		}
 		return 0;
 	case DBTYPE_UI1:
@@ -1049,25 +1049,25 @@ Int64 DB::OLEDBReader::GetInt64(UIntOS colIndex)
 	case DBTYPE_UI2:
 		if (*valLen == 2)
 		{
-			return ReadUInt16(val);
+			return ReadLUInt16(val);
 		}
 		return 0;
 	case DBTYPE_UI4:
 		if (*valLen == 4)
 		{
-			return ReadUInt32(val);
+			return ReadLUInt32(val);
 		}
 		return 0;
 	case DBTYPE_I8:
 		if (*valLen == 8)
 		{
-			return ReadInt64(val);
+			return ReadLInt64(val);
 		}
 		return 0;
 	case DBTYPE_UI8:
 		if (*valLen == 8)
 		{
-			return ReadInt64(val);
+			return ReadLInt64(val);
 		}
 		return 0;
 	default:
@@ -1093,25 +1093,25 @@ UnsafeArrayOpt<WChar> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<WChar
 	case DBTYPE_I2:
 		if (*valLen == 2)
 		{
-			return Text::StrInt16(buff, ReadInt16(val));
+			return Text::StrInt16(buff, ReadLInt16(val));
 		}
 		return nullptr;
 	case DBTYPE_I4:
 		if (*valLen == 4)
 		{
-			return Text::StrInt32(buff, ReadInt32(val));
+			return Text::StrInt32(buff, ReadLInt32(val));
 		}
 		return nullptr;
 	case DBTYPE_R4:
 		if (*valLen == 4)
 		{
-			return Text::StrDoubleW(buff, ReadFloat(val));
+			return Text::StrDoubleW(buff, ReadLFloat(val));
 		}
 		return nullptr;
 	case DBTYPE_R8:
 		if (*valLen == 8)
 		{
-			return Text::StrDoubleW(buff, ReadDouble(val));
+			return Text::StrDoubleW(buff, ReadLDouble(val));
 		}
 		return nullptr;
 	case DBTYPE_UI1:
@@ -1129,25 +1129,25 @@ UnsafeArrayOpt<WChar> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<WChar
 	case DBTYPE_UI2:
 		if (*valLen == 2)
 		{
-			return Text::StrUInt16(buff, ReadUInt16(val));
+			return Text::StrUInt16(buff, ReadLUInt16(val));
 		}
 		return nullptr;
 	case DBTYPE_UI4:
 		if (*valLen == 4)
 		{
-			return Text::StrUInt32(buff, ReadUInt32(val));
+			return Text::StrUInt32(buff, ReadLUInt32(val));
 		}
 		return nullptr;
 	case DBTYPE_I8:
 		if (*valLen == 8)
 		{
-			return Text::StrInt64(buff, ReadInt64(val));
+			return Text::StrInt64(buff, ReadLInt64(val));
 		}
 		return nullptr;
 	case DBTYPE_UI8:
 		if (*valLen == 8)
 		{
-			return Text::StrUInt64(buff, ReadUInt64(val));
+			return Text::StrUInt64(buff, ReadLUInt64(val));
 		}
 		return nullptr;
 	case DBTYPE_WSTR:
@@ -1156,7 +1156,7 @@ UnsafeArrayOpt<WChar> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<WChar
 		if (*valLen == 6)
 		{
 			Data::DateTime dt;
-			dt.SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0, 0, 0, 0);
+			dt.SetValue(ReadLUInt16(val), ReadLUInt16(&val[2]), ReadLUInt16(&val[4]), 0, 0, 0, 0, 0);
 			UTF8Char sbuff[32];
 			dt.ToString(sbuff);
 			return Text::StrUTF8_WChar(buff, sbuff, 0);
@@ -1166,7 +1166,7 @@ UnsafeArrayOpt<WChar> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<WChar
 		if (*valLen == 6)
 		{
 			Data::DateTime dt;
-			dt.SetValue(1970, 1, 1, ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0);
+			dt.SetValue(1970, 1, 1, ReadLUInt16(val), ReadLUInt16(&val[2]), ReadLUInt16(&val[4]), 0, 0);
 			UTF8Char sbuff[32];
 			dt.ToString(sbuff);
 			return Text::StrUTF8_WChar(buff, sbuff, 0);
@@ -1176,7 +1176,7 @@ UnsafeArrayOpt<WChar> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<WChar
 		if (*valLen == 16)
 		{
 			Data::DateTime dt;
-			dt.SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), ReadInt16(&val[6]), ReadInt16(&val[8]), ReadInt16(&val[10]), ReadInt32(&val[12]), 0);
+			dt.SetValue(ReadLUInt16(val), ReadLUInt16(&val[2]), ReadLUInt16(&val[4]), ReadLInt16(&val[6]), ReadLInt16(&val[8]), ReadLInt16(&val[10]), ReadLInt32(&val[12]), 0);
 			UTF8Char sbuff[32];
 			dt.ToString(sbuff);
 			return Text::StrUTF8_WChar(buff, sbuff, 0);
@@ -1205,28 +1205,28 @@ Bool DB::OLEDBReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 	case DBTYPE_I2:
 		if (*valLen == 2)
 		{
-			sb->AppendI16(ReadInt16(val));
+			sb->AppendI16(ReadLInt16(val));
 			return true;
 		}
 		return false;
 	case DBTYPE_I4:
 		if (*valLen == 4)
 		{
-			sb->AppendI32(ReadInt32(val));
+			sb->AppendI32(ReadLInt32(val));
 			return true;
 		}
 		return false;
 	case DBTYPE_R4:
 		if (*valLen == 4)
 		{
-			Text::SBAppendF32(sb, ReadFloat(val));
+			Text::SBAppendF32(sb, ReadLFloat(val));
 			return true;
 		}
 		return false;
 	case DBTYPE_R8:
 		if (*valLen == 8)
 		{
-			Text::SBAppendF64(sb, ReadDouble(val));
+			Text::SBAppendF64(sb, ReadLDouble(val));
 			return true;
 		}
 		return false;
@@ -1247,28 +1247,28 @@ Bool DB::OLEDBReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 	case DBTYPE_UI2:
 		if (*valLen == 2)
 		{
-			sb->AppendU16(ReadUInt16(val));
+			sb->AppendU16(ReadLUInt16(val));
 			return true;
 		}
 		return false;
 	case DBTYPE_UI4:
 		if (*valLen == 4)
 		{
-			sb->AppendU32(ReadUInt32(val));
+			sb->AppendU32(ReadLUInt32(val));
 			return true;
 		}
 		return false;
 	case DBTYPE_I8:
 		if (*valLen == 8)
 		{
-			sb->AppendI64(ReadInt64(val));
+			sb->AppendI64(ReadLInt64(val));
 			return true;
 		}
 		return false;
 	case DBTYPE_UI8:
 		if (*valLen == 8)
 		{
-			sb->AppendU64(ReadUInt64(val));
+			sb->AppendU64(ReadLUInt64(val));
 			return true;
 		}
 		return false;
@@ -1280,7 +1280,7 @@ Bool DB::OLEDBReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 	case DBTYPE_DBDATE:
 		if (*valLen == 6)
 		{
-			sb->AppendDate(Data::Date(ReadUInt16(val), (UInt8)ReadUInt16(&val[2]), (UInt8)ReadUInt16(&val[4])));
+			sb->AppendDate(Data::Date(ReadLUInt16(val), (UInt8)ReadLUInt16(&val[2]), (UInt8)ReadLUInt16(&val[4])));
 			return true;
 		}
 		return 0;
@@ -1288,7 +1288,7 @@ Bool DB::OLEDBReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 		if (*valLen == 6)
 		{
 			Data::DateTime dt;
-			dt.SetValue(1970, 1, 1, ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0);
+			dt.SetValue(1970, 1, 1, ReadLUInt16(val), ReadLUInt16(&val[2]), ReadLUInt16(&val[4]), 0, 0);
 			sb->AppendDateTime(dt);
 			return true;
 		}
@@ -1297,7 +1297,7 @@ Bool DB::OLEDBReader::GetStr(UIntOS colIndex, NN<Text::StringBuilderUTF8> sb)
 		if (*valLen == 16)
 		{
 			Data::DateTime dt;
-			dt.SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), ReadInt16(&val[6]), ReadInt16(&val[8]), ReadInt16(&val[10]), ReadInt32(&val[12]), 0);
+			dt.SetValue(ReadLUInt16(val), ReadLUInt16(&val[2]), ReadLUInt16(&val[4]), ReadLInt16(&val[6]), ReadLInt16(&val[8]), ReadLInt16(&val[10]), ReadLInt32(&val[12]), 0);
 			sb->AppendDateTime(dt);
 			return true;
 		}
@@ -1359,25 +1359,25 @@ UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<UT
 	case DBTYPE_I2:
 		if (*valLen == 2)
 		{
-			return Text::StrInt16(buff, ReadInt16(val));
+			return Text::StrInt16(buff, ReadLInt16(val));
 		}
 		return nullptr;
 	case DBTYPE_I4:
 		if (*valLen == 4)
 		{
-			return Text::StrInt32(buff, ReadInt32(val));
+			return Text::StrInt32(buff, ReadLInt32(val));
 		}
 		return nullptr;
 	case DBTYPE_R4:
 		if (*valLen == 4)
 		{
-			return Text::StrDouble(buff, ReadFloat(val));
+			return Text::StrDouble(buff, ReadLFloat(val));
 		}
 		return nullptr;
 	case DBTYPE_R8:
 		if (*valLen == 8)
 		{
-			return Text::StrDouble(buff, ReadDouble(val));
+			return Text::StrDouble(buff, ReadLDouble(val));
 		}
 		return nullptr;
 	case DBTYPE_UI1:
@@ -1395,25 +1395,25 @@ UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<UT
 	case DBTYPE_UI2:
 		if (*valLen == 2)
 		{
-			return Text::StrUInt16(buff, ReadUInt16(val));
+			return Text::StrUInt16(buff, ReadLUInt16(val));
 		}
 		return nullptr;
 	case DBTYPE_UI4:
 		if (*valLen == 4)
 		{
-			return Text::StrUInt32(buff, ReadUInt32(val));
+			return Text::StrUInt32(buff, ReadLUInt32(val));
 		}
 		return nullptr;
 	case DBTYPE_I8:
 		if (*valLen == 8)
 		{
-			return Text::StrInt64(buff, ReadInt64(val));
+			return Text::StrInt64(buff, ReadLInt64(val));
 		}
 		return nullptr;
 	case DBTYPE_UI8:
 		if (*valLen == 8)
 		{
-			return Text::StrUInt64(buff, ReadUInt64(val));
+			return Text::StrUInt64(buff, ReadLUInt64(val));
 		}
 		return nullptr;
 	case DBTYPE_WSTR:
@@ -1421,14 +1421,14 @@ UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<UT
 	case DBTYPE_DBDATE:
 		if (*valLen == 6)
 		{
-			return Data::Date(ReadUInt16(val), (UInt8)ReadUInt16(&val[2]), (UInt8)ReadUInt16(&val[4])).ToString(buff);
+			return Data::Date(ReadLUInt16(val), (UInt8)ReadLUInt16(&val[2]), (UInt8)ReadLUInt16(&val[4])).ToString(buff);
 		}
 		return nullptr;
 	case DBTYPE_DBTIME:
 		if (*valLen == 6)
 		{
 			Data::DateTime dt;
-			dt.SetValue(1970, 1, 1, ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0);
+			dt.SetValue(1970, 1, 1, ReadLUInt16(val), ReadLUInt16(&val[2]), ReadLUInt16(&val[4]), 0, 0);
 			return dt.ToString(buff);
 		}
 		return nullptr;
@@ -1436,7 +1436,7 @@ UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<UT
 		if (*valLen == 16)
 		{
 			Data::DateTime dt;
-			dt.SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadInt16(&val[4]), ReadInt16(&val[6]), ReadInt16(&val[8]), ReadInt16(&val[10]), ReadInt32(&val[12]), 0);
+			dt.SetValue(ReadLUInt16(val), ReadLUInt16(&val[2]), ReadLInt16(&val[4]), ReadLInt16(&val[6]), ReadLInt16(&val[8]), ReadLInt16(&val[10]), ReadLInt32(&val[12]), 0);
 			return dt.ToString(buff);
 		}
 		return nullptr;
@@ -1464,9 +1464,9 @@ Data::Timestamp DB::OLEDBReader::GetTimestamp(UIntOS colIndex)
 	case DBTYPE_DBDATE:
 		if (*valLen == 6)
 		{
-			tval.year = ReadUInt16(val);
-			tval.month = (UInt8)ReadUInt16(&val[2]);
-			tval.day = (UInt8)ReadUInt16(&val[4]);
+			tval.year = ReadLUInt16(val);
+			tval.month = (UInt8)ReadLUInt16(&val[2]);
+			tval.day = (UInt8)ReadLUInt16(&val[4]);
 			tval.hour = 0;
 			tval.minute = 0;
 			tval.second = 0;
@@ -1479,22 +1479,22 @@ Data::Timestamp DB::OLEDBReader::GetTimestamp(UIntOS colIndex)
 			tval.year = 1970;
 			tval.month = 1;
 			tval.day = 1;
-			tval.hour = (UInt8)ReadUInt16(val);
-			tval.minute = (UInt8)ReadUInt16(&val[2]);
-			tval.second = (UInt8)ReadUInt16(&val[4]);
+			tval.hour = (UInt8)ReadLUInt16(val);
+			tval.minute = (UInt8)ReadLUInt16(&val[2]);
+			tval.second = (UInt8)ReadLUInt16(&val[4]);
 			return Data::Timestamp::FromTimeValue(tval, 0, 0);
 		}
 		return Data::Timestamp(0);
 	case DBTYPE_DBTIMESTAMP:
 		if (*valLen == 16)
 		{
-			tval.year = ReadUInt16(val);
-			tval.month = (UInt8)ReadUInt16(&val[2]);
-			tval.day = (UInt8)ReadUInt16(&val[4]);
-			tval.hour = (UInt8)ReadUInt16(&val[6]);
-			tval.minute = (UInt8)ReadUInt16(&val[8]);
-			tval.second = (UInt8)ReadUInt16(&val[10]);
-			return Data::Timestamp::FromTimeValue(tval, (UInt32)ReadUInt16(&val[12]) * 1000000, 0).ConvertTimeZoneQHR(this->clsData->tzQhr);
+			tval.year = ReadLUInt16(val);
+			tval.month = (UInt8)ReadLUInt16(&val[2]);
+			tval.day = (UInt8)ReadLUInt16(&val[4]);
+			tval.hour = (UInt8)ReadLUInt16(&val[6]);
+			tval.minute = (UInt8)ReadLUInt16(&val[8]);
+			tval.second = (UInt8)ReadLUInt16(&val[10]);
+			return Data::Timestamp::FromTimeValue(tval, (UInt32)ReadLUInt16(&val[12]) * 1000000, 0).ConvertTimeZoneQHR(this->clsData->tzQhr);
 		}
 		return Data::Timestamp(0);
 	case DBTYPE_NULL:
@@ -1520,25 +1520,25 @@ Double DB::OLEDBReader::GetDblOrNAN(UIntOS colIndex)
 	case DBTYPE_I2:
 		if (*valLen == 2)
 		{
-			return ReadInt16(val);
+			return ReadLInt16(val);
 		}
 		return NAN;
 	case DBTYPE_I4:
 		if (*valLen == 4)
 		{
-			return ReadInt32(val);
+			return ReadLInt32(val);
 		}
 		return NAN;
 	case DBTYPE_R4:
 		if (*valLen == 4)
 		{
-			return ReadFloat(val);
+			return ReadLFloat(val);
 		}
 		return NAN;
 	case DBTYPE_R8:
 		if (*valLen == 8)
 		{
-			return ReadDouble(val);
+			return ReadLDouble(val);
 		}
 		return NAN;
 	case DBTYPE_UI1:
@@ -1556,25 +1556,25 @@ Double DB::OLEDBReader::GetDblOrNAN(UIntOS colIndex)
 	case DBTYPE_UI2:
 		if (*valLen == 2)
 		{
-			return ReadUInt16(val);
+			return ReadLUInt16(val);
 		}
 		return NAN;
 	case DBTYPE_UI4:
 		if (*valLen == 4)
 		{
-			return ReadUInt32(val);
+			return ReadLUInt32(val);
 		}
 		return NAN;
 	case DBTYPE_I8:
 		if (*valLen == 8)
 		{
-			return (Double)ReadInt64(val);
+			return (Double)ReadLInt64(val);
 		}
 		return NAN;
 	case DBTYPE_UI8:
 		if (*valLen == 8)
 		{
-			return (Double)ReadUInt64(val);
+			return (Double)ReadLUInt64(val);
 		}
 		return NAN;
 	default:

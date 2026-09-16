@@ -445,7 +445,7 @@ Bool __stdcall DasmARM64_13(NN<Manage::DasmARM64::Session> sess)
 Bool __stdcall DasmARM64_14(NN<Manage::DasmARM64::Session> sess)
 {
 	NN<Manage::AddressResolver> addrResol;
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	Int32 imm26 = DasmARM64_ExtractSigned(code, 0, 26);
 	UInt64 addr = (UInt64)((Int64)sess->regs.PC + (imm26 * 4));
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("b "));
@@ -565,7 +565,7 @@ Bool __stdcall DasmARM64_29(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_2A(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	if ((code & 0xFFE0FFE0) == 0x2A0003E0)
 	{
 		UInt32 rm = (code >> 16) & 0x1F;
@@ -631,7 +631,7 @@ Bool __stdcall DasmARM64_33(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_34(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	UInt32 rt = code & 0x1F;
 	Int32 imm19 = (Int32)((code >> 5) & 0x7FFFF);
 	UInt32* wt;
@@ -646,7 +646,7 @@ Bool __stdcall DasmARM64_34(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_35(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	UInt32 rt = code & 0x1F;
 	Int32 imm19 = (Int32)((code >> 5) & 0x7FFFF);
 	UInt32* wt;
@@ -666,7 +666,7 @@ Bool __stdcall DasmARM64_36(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_37(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	UInt32 rt = code & 0x1F;
 	UInt32 imm14 = (code >> 5) & 0x3FFF;
 	UInt32 b40 = (code >> 19) & 0x1F;
@@ -814,7 +814,7 @@ Bool __stdcall DasmARM64_51(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_52(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	if ((code & 0xFF800000) == 0x52800000)
 	{
 		UInt32 rd = code & 0x1F;
@@ -839,7 +839,7 @@ Bool __stdcall DasmARM64_52(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_53(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	if ((code & 0xFFC00000) == 0x53000000)
 	{
 		UInt32 rd = code & 0x1F;
@@ -905,7 +905,7 @@ Bool __stdcall DasmARM64_53(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_54(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	if ((code & 0x10) == 0)
 	{
 		UInt32 cond = code & 0xF;
@@ -1019,7 +1019,7 @@ Bool __stdcall DasmARM64_59(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_5A(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	if ((code & 0xFFFFFC00) == 0x5AC02000)
 	{
 		UInt32 rd = code & 0x1F;
@@ -1157,7 +1157,7 @@ Bool __stdcall DasmARM64_70(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_71(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	if ((code & 0x800000) == 0)
 	{
 		UInt32 rd = code & 0x1F;
@@ -1348,7 +1348,7 @@ Bool __stdcall DasmARM64_8F(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_90(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	UInt32 rd = code & 0x1F;
 	Int32 imm = (DasmARM64_ExtractSigned(code, 5, 19) << 2) | (Int32)((code >> 29) & 3);
 	UInt64 addr = (UInt64)(((Int64)sess->regs.PC & ~0xfffLL) + imm);
@@ -1371,7 +1371,7 @@ Bool __stdcall DasmARM64_90(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_91(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	if ((code & 0xFF800000) == 0x91000000)
 	{
 		UInt32 rd = code & 0x1F;
@@ -1421,7 +1421,7 @@ Bool __stdcall DasmARM64_93(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_94(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	Int32 imm26 = (Int32)code & 0x3FFFFFF;
 	NN<Manage::AddressResolver> addrResol;
 	if (imm26 & 0x2000000)
@@ -1531,7 +1531,7 @@ Bool __stdcall DasmARM64_A7(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_A8(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	if ((code & 0xFFC00000) == 0xA8C00000)
 	{
 		UInt32 rt = code & 0x1F;
@@ -1572,7 +1572,7 @@ Bool __stdcall DasmARM64_A8(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_A9(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	if ((code & 0xFF400000) == 0xA9400000)
 	{
 		Bool wback = (code & 0x800000) != 0;
@@ -1630,7 +1630,7 @@ Bool __stdcall DasmARM64_A9(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_AA(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	if ((code & 0xFFE0FFE0) == 0xAA0003E0)
 	{
 		UInt32 rd = code & 0x1F;
@@ -1691,7 +1691,7 @@ Bool __stdcall DasmARM64_B3(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_B4(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	UInt32 rt = code & 0x1F;
 	Int32 imm19 = (Int32)((code >> 5) & 0x7FFFF);
 	UInt64* xt;
@@ -1706,7 +1706,7 @@ Bool __stdcall DasmARM64_B4(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_B5(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	UInt32 rt = code & 0x1F;
 	Int32 imm19 = (Int32)((code >> 5) & 0x7FFFF);
 	UInt64* xt;
@@ -1743,7 +1743,7 @@ Bool __stdcall DasmARM64_B8(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_B9(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	if ((code & 0xFFC00000) == 0xB9000000)
 	{
 		UInt32 rt = code & 0x1F;
@@ -1901,7 +1901,7 @@ Bool __stdcall DasmARM64_D1(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_D2(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	if ((code & 0xFF800000) == 0xD2800000)
 	{
 		UInt32 rd = code & 0x1F;
@@ -1936,7 +1936,7 @@ Bool __stdcall DasmARM64_D4(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_D5(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	if (code == 0xD50323FF)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("autibsp\r\n"));
@@ -1948,7 +1948,7 @@ Bool __stdcall DasmARM64_D5(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_D6(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	if ((code & 0xFFFFFC1F) == 0xD65F0000)
 	{
 		UInt32 reg = (code >> 5) & 0x1F;
@@ -1987,7 +1987,7 @@ Bool __stdcall DasmARM64_D9(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_DA(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	if ((code & 0xFFFFFC00) == 0xDAC02000)
 	{
 		UInt32 rd = code & 0x1F;
@@ -2120,7 +2120,7 @@ Bool __stdcall DasmARM64_EF(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_F1(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	if ((code & 0x800000) == 0)
 	{
 		UInt32 rd = code & 0x1F;
@@ -2196,7 +2196,7 @@ Bool __stdcall DasmARM64_F8(NN<Manage::DasmARM64::Session> sess)
 
 Bool __stdcall DasmARM64_F9(NN<Manage::DasmARM64::Session> sess)
 {
-	UInt32 code = ReadUInt32(&sess->codeBuff[0]);
+	UInt32 code = ReadLUInt32(&sess->codeBuff[0]);
 	if ((code & 0xFFC00000) == 0xF9000000)
 	{
 		UInt32 rt = code & 0x1F;

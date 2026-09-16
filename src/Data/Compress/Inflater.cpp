@@ -459,14 +459,14 @@ Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDec
 #if _OSINT_SIZE == 64
 						if (num_bits < 30)
 						{
-							bit_buf |= (((UIntOS)ReadUInt32(&pIn_buf_cur[0])) << num_bits);
+							bit_buf |= (((UIntOS)ReadLUInt32(&pIn_buf_cur[0])) << num_bits);
 							pIn_buf_cur += 4;
 							num_bits += 32;
 						}
 #else
 					if (num_bits < 15)
 					{
-						bit_buf |= (((UIntOS)ReadUInt16(&pIn_buf_cur[0])) << num_bits);
+						bit_buf |= (((UIntOS)ReadLUInt16(&pIn_buf_cur[0])) << num_bits);
 						pIn_buf_cur += 2;
 						num_bits += 16;
 					}
@@ -490,7 +490,7 @@ Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDec
 #if _OSINT_SIZE != 64
 						if (num_bits < 15)
 						{
-							bit_buf |= (((UIntOS)ReadUInt16(&pIn_buf_cur[0])) << num_bits);
+							bit_buf |= (((UIntOS)ReadLUInt16(&pIn_buf_cur[0])) << num_bits);
 							pIn_buf_cur += 2;
 							num_bits += 16;
 						}

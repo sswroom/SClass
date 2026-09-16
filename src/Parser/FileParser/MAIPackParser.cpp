@@ -44,12 +44,12 @@ Optional<IO::ParsedObject> Parser::FileParser::MAIPackParser::ParseFileHdr(NN<IO
 	UTF8Char name[17];
 	UnsafeArray<UTF8Char> sptr;
 
-	if (ReadUInt32(&hdr[0]) != 0x0A49414D || ReadUInt32(&hdr[4]) != fd->GetDataSize() || ReadUInt32(&hdr[12]) != 0x100)
+	if (ReadLUInt32(&hdr[0]) != 0x0A49414D || ReadLUInt32(&hdr[4]) != fd->GetDataSize() || ReadLUInt32(&hdr[12]) != 0x100)
 	{
 		return nullptr;
 	}
 
-	hdrEnd = ReadUInt32(&hdr[8]) * 24 + 16;
+	hdrEnd = ReadLUInt32(&hdr[8]) * 24 + 16;
 	fileOfst = hdrEnd;
 	hdrOfst = 16;
 	NN<IO::VirtualPackageFile> pf;
@@ -59,8 +59,8 @@ Optional<IO::ParsedObject> Parser::FileParser::MAIPackParser::ParseFileHdr(NN<IO
 	while (hdrOfst < hdrEnd)
 	{
 		fd->GetRealData(hdrOfst, 24, BYTEARR(recbuff));
-		thisOfst = ReadUInt32(&recbuff[16]);
-		thisSize = ReadUInt32(&recbuff[20]);
+		thisOfst = ReadLUInt32(&recbuff[16]);
+		thisSize = ReadLUInt32(&recbuff[20]);
 		if (thisOfst != fileOfst)
 		{
 			pf.Delete();

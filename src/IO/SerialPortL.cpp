@@ -291,7 +291,7 @@ UnsafeArrayOpt<UTF8Char> IO::SerialPort::GetPortName(UnsafeArray<UTF8Char> buff,
 	}
 }
 
-Bool SerialPort_WriteInt32(Text::CStringNN path, Int32 num)
+Bool SerialPort_WriteLInt32(Text::CStringNN path, Int32 num)
 {
 	UTF8Char sbuff[32];
 	Bool ret = false;
@@ -337,7 +337,7 @@ Bool IO::SerialPort::ResetPort(UIntOS portNum)
 			return false;
 		sptr = &sbuff[i + 1];
 		sptr = Text::StrConcatC(sptr, UTF8STRC("authorized"));
-		if (SerialPort_WriteInt32(CSTRP(sbuff, sptr), 0) && SerialPort_WriteInt32(CSTRP(sbuff, sptr), 1))
+		if (SerialPort_WriteLInt32(CSTRP(sbuff, sptr), 0) && SerialPort_WriteLInt32(CSTRP(sbuff, sptr), 1))
 		{
 			return true;
 		}

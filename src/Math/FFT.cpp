@@ -308,7 +308,7 @@ Bool Math::FFT::ForwardBits(UnsafeArray<UInt8> samples, UnsafeArray<Double> freq
 			j = 0;
 			while (j < sampleCount)
 			{
-				temp[j * 2] = ReadInt24(&currSamples[0]) * magnify;
+				temp[j * 2] = ReadLInt24(&currSamples[0]) * magnify;
 				temp[j * 2 + 1] = 0;
 				currSamples += sampleAdd;
 
@@ -321,7 +321,7 @@ Bool Math::FFT::ForwardBits(UnsafeArray<UInt8> samples, UnsafeArray<Double> freq
 			j = 0;
 			while (j < sampleCount)
 			{
-				temp[j * 2] = ReadInt16(&currSamples[0]) * magnify;
+				temp[j * 2] = ReadLInt16(&currSamples[0]) * magnify;
 				temp[j * 2 + 1] = 0;
 				currSamples += sampleAdd;
 

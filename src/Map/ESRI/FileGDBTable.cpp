@@ -20,10 +20,10 @@ Map::ESRI::FileGDBTable::FileGDBTable(Text::CStringNN tableName, NN<IO::StreamDa
 	UInt8 hdrBuff[44];
 	if (gdbtablxFD.SetTo(nngdbtablxFD) && nngdbtablxFD->GetRealData(0, 16, BYTEARR(hdrBuff)) == 16)
 	{
-		if (ReadUInt32(&hdrBuff[0]) == 3 && ReadUInt32(&hdrBuff[12]) == 5 && (ReadUInt32(&hdrBuff[4]) >= 1))
+		if (ReadLUInt32(&hdrBuff[0]) == 3 && ReadLUInt32(&hdrBuff[12]) == 5 && (ReadLUInt32(&hdrBuff[4]) >= 1))
 		{
-			UInt32 n1024Blocks = ReadUInt32(&hdrBuff[4]);
-			this->indexCnt = ReadUInt32(&hdrBuff[8]);
+			UInt32 n1024Blocks = ReadLUInt32(&hdrBuff[4]);
+			this->indexCnt = ReadLUInt32(&hdrBuff[8]);
 			if (nngdbtablxFD->GetDataSize() >= 16 + n1024Blocks * 1024 && nngdbtablxFD->GetDataSize() >= this->indexCnt * 5)
 			{
 				this->gdbtablxFD = nngdbtablxFD->GetPartialData(0, nngdbtablxFD->GetDataSize());
@@ -34,16 +34,16 @@ Map::ESRI::FileGDBTable::FileGDBTable(Text::CStringNN tableName, NN<IO::StreamDa
 	{
 		return;
 	}
-	if (ReadUInt32(&hdrBuff[0]) != 3 || ReadUInt32(&hdrBuff[12]) != 5 || ReadUInt32(&hdrBuff[20]) != 0 || ReadUInt64(&hdrBuff[24]) != this->gdbtableFD->GetDataSize())
+	if (ReadLUInt32(&hdrBuff[0]) != 3 || ReadLUInt32(&hdrBuff[12]) != 5 || ReadLUInt32(&hdrBuff[20]) != 0 || ReadLUInt64(&hdrBuff[24]) != this->gdbtableFD->GetDataSize())
 	{
 		return;
 	}
-	this->maxRowSize = ReadUInt32(&hdrBuff[8]);
-	UInt64 fieldDescOfst = ReadUInt64(&hdrBuff[32]);
+	this->maxRowSize = ReadLUInt32(&hdrBuff[8]);
+	UInt64 fieldDescOfst = ReadLUInt64(&hdrBuff[32]);
 	UInt64 fileLength = this->gdbtableFD->GetDataSize();
 	if (fieldDescOfst == 40)
 	{
-		UInt32 fieldSize = ReadUInt32(&hdrBuff[40]);
+		UInt32 fieldSize = ReadLUInt32(&hdrBuff[40]);
 		Data::ByteBuffer fieldDesc(fieldSize + 4);
 		this->gdbtableFD->GetRealData(40, fieldSize + 4, fieldDesc);
 		this->tableInfo = Map::ESRI::FileGDBUtil::ParseFieldDesc(fieldDesc, this->prjParser);
@@ -52,7 +52,7 @@ Map::ESRI::FileGDBTable::FileGDBTable(Text::CStringNN tableName, NN<IO::StreamDa
 	else if (fieldDescOfst >= 40 && fieldDescOfst + 4 <= fileLength)
 	{
 		this->gdbtableFD->GetRealData(fieldDescOfst, 4, BYTEARR(hdrBuff).SubArray(40));
-		UInt32 fieldSize = ReadUInt32(&hdrBuff[40]);
+		UInt32 fieldSize = ReadLUInt32(&hdrBuff[40]);
 		if (fieldDescOfst + 4 + fieldSize <= fileLength)
 		{
 			Data::ByteBuffer fieldDesc(fieldSize + 4);

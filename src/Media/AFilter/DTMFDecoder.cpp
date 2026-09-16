@@ -92,7 +92,7 @@ void __stdcall Media::AFilter::DTMFDecoder::CalcThread(NN<Sync::Thread> thread)
 					j = me->sampleBuffSize - volSamples;
 					while (i < j)
 					{
-						thisVol = ReadInt16(&tmpBuff[i]);
+						thisVol = ReadLInt16(&tmpBuff[i]);
 						if (thisVol < 0)
 							thisAbsVol = -thisVol;
 						else
@@ -101,7 +101,7 @@ void __stdcall Media::AFilter::DTMFDecoder::CalcThread(NN<Sync::Thread> thread)
 						k = 2;
 						while (k < volSamples)
 						{
-							thisVol = ReadInt16(&tmpBuff[i + k]);
+							thisVol = ReadLInt16(&tmpBuff[i + k]);
 							if (thisVol < 0)
 								thisAbsVol = -thisVol;
 							else
@@ -243,7 +243,7 @@ void __stdcall Media::AFilter::DTMFDecoder::CalcThread(NN<Sync::Thread> thread)
 						j = me->sampleBuffSize - volSamples;
 						while (i < j)
 						{
-							thisVol = ReadInt16(&tmpBuff[i]);
+							thisVol = ReadLInt16(&tmpBuff[i]);
 							if (thisVol < 0)
 								thisAbsVol = -thisVol;
 							else
@@ -252,7 +252,7 @@ void __stdcall Media::AFilter::DTMFDecoder::CalcThread(NN<Sync::Thread> thread)
 							k = 2;
 							while (k < volSamples)
 							{
-								thisVol = ReadInt16(&tmpBuff[i + k]);
+								thisVol = ReadLInt16(&tmpBuff[i + k]);
 								if (thisVol < 0)
 									thisAbsVol = -thisVol;
 								else

@@ -45,8 +45,8 @@ Optional<IO::ParsedObject> Parser::FileParser::FNTParser::ParseFile(NN<IO::Strea
 	{
 		return nullptr;
 	}
-	ver = ReadUInt16(&hdr[0]);
-	fsize = ReadUInt32(&hdr[2]);
+	ver = ReadLUInt16(&hdr[0]);
+	fsize = ReadLUInt32(&hdr[2]);
 	if (ver == 0x200)
 	{
 		hdrSize = 118;
@@ -77,8 +77,8 @@ Optional<Media::FontRenderer> Parser::FileParser::FNTParser::ParseFontBuff(NN<Te
 	if (buffSize < 118)
 		return nullptr;
 
-	ver = ReadUInt16(&fontBuff[0]);
-//	fsize = ReadUInt32(&fontBuff[2]);
+	ver = ReadLUInt16(&fontBuff[0]);
+//	fsize = ReadLUInt32(&fontBuff[2]);
 	if (ver == 0x200)
 	{
 //		hdrSize = 118;
@@ -106,8 +106,8 @@ UIntOS Parser::FileParser::FNTParser::GetFileDesc(UnsafeArray<const UInt8> fileB
 {
 	if (fileSize < 100)
 		return 0;
-	UInt16 ver = ReadUInt16(&fileBuff[0]);
-	UInt32 fsize = ReadUInt32(&fileBuff[2]);
+	UInt16 ver = ReadLUInt16(&fileBuff[0]);
+	UInt32 fsize = ReadLUInt32(&fileBuff[2]);
 	UIntOS hdrSize;
 	if (ver == 0x200)
 	{
@@ -132,19 +132,19 @@ UIntOS Parser::FileParser::FNTParser::GetFileDesc(UnsafeArray<const UInt8> fileB
 	sb->AppendC(UTF8STRC("\r\nCopyright = "));
 	sb->AppendSlow((UTF8Char*)&fileBuff[6]);
 	sb->AppendC(UTF8STRC("\r\nType = "));
-	sb->AppendU16(ReadUInt16(&fileBuff[66]));
+	sb->AppendU16(ReadLUInt16(&fileBuff[66]));
 	sb->AppendC(UTF8STRC("\r\nPoint Size = "));
-	sb->AppendU16(ReadUInt16(&fileBuff[68]));
+	sb->AppendU16(ReadLUInt16(&fileBuff[68]));
 	sb->AppendC(UTF8STRC("\r\nVertical Resolution = "));
-	sb->AppendU16(ReadUInt16(&fileBuff[70]));
+	sb->AppendU16(ReadLUInt16(&fileBuff[70]));
 	sb->AppendC(UTF8STRC("\r\nHorizontal Resolution = "));
-	sb->AppendU16(ReadUInt16(&fileBuff[72]));
+	sb->AppendU16(ReadLUInt16(&fileBuff[72]));
 	sb->AppendC(UTF8STRC("\r\nAscent = "));
-	sb->AppendU16(ReadUInt16(&fileBuff[74]));
+	sb->AppendU16(ReadLUInt16(&fileBuff[74]));
 	sb->AppendC(UTF8STRC("\r\nInternal Leading = "));
-	sb->AppendU16(ReadUInt16(&fileBuff[76]));
+	sb->AppendU16(ReadLUInt16(&fileBuff[76]));
 	sb->AppendC(UTF8STRC("\r\nExternal Leading = "));
-	sb->AppendU16(ReadUInt16(&fileBuff[78]));
+	sb->AppendU16(ReadLUInt16(&fileBuff[78]));
 	sb->AppendC(UTF8STRC("\r\nItalic = "));
 	sb->AppendU16(fileBuff[80]);
 	sb->AppendC(UTF8STRC("\r\nUnderline = "));
@@ -152,19 +152,19 @@ UIntOS Parser::FileParser::FNTParser::GetFileDesc(UnsafeArray<const UInt8> fileB
 	sb->AppendC(UTF8STRC("\r\nStrikeOut = "));
 	sb->AppendU16(fileBuff[82]);
 	sb->AppendC(UTF8STRC("\r\nWeight = "));
-	sb->AppendU16(ReadUInt16(&fileBuff[83]));
+	sb->AppendU16(ReadLUInt16(&fileBuff[83]));
 	sb->AppendC(UTF8STRC("\r\nCharset = "));
 	sb->AppendU16(fileBuff[85]);
 	sb->AppendC(UTF8STRC("\r\nPixel Width = "));
-	sb->AppendU16(ReadUInt16(&fileBuff[86]));
+	sb->AppendU16(ReadLUInt16(&fileBuff[86]));
 	sb->AppendC(UTF8STRC("\r\nPixel Height = "));
-	sb->AppendU16(ReadUInt16(&fileBuff[88]));
+	sb->AppendU16(ReadLUInt16(&fileBuff[88]));
 	sb->AppendC(UTF8STRC("\r\nPitch And Family = "));
 	sb->AppendU16(fileBuff[90]);
 	sb->AppendC(UTF8STRC("\r\nAverage Width = "));
-	sb->AppendU16(ReadUInt16(&fileBuff[91]));
+	sb->AppendU16(ReadLUInt16(&fileBuff[91]));
 	sb->AppendC(UTF8STRC("\r\nMax Width = "));
-	sb->AppendU16(ReadUInt16(&fileBuff[93]));
+	sb->AppendU16(ReadLUInt16(&fileBuff[93]));
 	sb->AppendC(UTF8STRC("\r\nFirst Char = 0x"));
 	sb->AppendHex8(fileBuff[95]);
 	sb->AppendC(UTF8STRC("\r\nLast Char = 0x"));
@@ -174,23 +174,23 @@ UIntOS Parser::FileParser::FNTParser::GetFileDesc(UnsafeArray<const UInt8> fileB
 	sb->AppendC(UTF8STRC("\r\nBreak Char = 0x"));
 	sb->AppendHex8(fileBuff[98]);
 	sb->AppendC(UTF8STRC("\r\nWidth Bytes = "));
-	sb->AppendU16(ReadUInt16(&fileBuff[99]));
+	sb->AppendU16(ReadLUInt16(&fileBuff[99]));
 	sb->AppendC(UTF8STRC("\r\nDevice = 0x"));
-	sb->AppendHex32(ReadUInt32(&fileBuff[101]));
+	sb->AppendHex32(ReadLUInt32(&fileBuff[101]));
 	sb->AppendC(UTF8STRC("\r\nFace Offset = 0x"));
-	sb->AppendHex32(ReadUInt32(&fileBuff[105]));
-	UInt32 ofst = ReadUInt32(&fileBuff[105]);
+	sb->AppendHex32(ReadLUInt32(&fileBuff[105]));
+	UInt32 ofst = ReadLUInt32(&fileBuff[105]);
 	if (ofst != 0 && ofst < (UIntOS)fileSize)
 	{
 		sb->AppendC(UTF8STRC("\r\nFace Name = "));
 		sb->AppendSlow((UTF8Char*)&fileBuff[ofst]);
 	}
 	sb->AppendC(UTF8STRC("\r\nBits Pointer = 0x"));
-	sb->AppendHex32(ReadUInt32(&fileBuff[109]));
+	sb->AppendHex32(ReadLUInt32(&fileBuff[109]));
 	if (fileSize >= 117)
 	{
 		sb->AppendC(UTF8STRC("\r\nBits Offset = 0x"));
-		sb->AppendHex32(ReadUInt32(&fileBuff[113]));
+		sb->AppendHex32(ReadLUInt32(&fileBuff[113]));
 	}
 	UIntOS i;
 	UInt32 c;
@@ -203,11 +203,11 @@ UIntOS Parser::FileParser::FNTParser::GetFileDesc(UnsafeArray<const UInt8> fileB
 			sb->AppendC(UTF8STRC("\r\nChar[0x"));
 			sb->AppendHex8((UInt8)c);
 			sb->AppendC(UTF8STRC("] : Size = ("));
-			sb->AppendU16(ReadUInt16(&fileBuff[i]));
+			sb->AppendU16(ReadLUInt16(&fileBuff[i]));
 			sb->AppendC(UTF8STRC(", "));
-			sb->AppendU16(ReadUInt16(&fileBuff[88]));
+			sb->AppendU16(ReadLUInt16(&fileBuff[88]));
 			sb->AppendC(UTF8STRC("), Offset = 0x"));
-			sb->AppendHex16(ReadUInt16(&fileBuff[i + 2]));
+			sb->AppendHex16(ReadLUInt16(&fileBuff[i + 2]));
 			i += 4;
 			c++;
 		}
@@ -215,15 +215,15 @@ UIntOS Parser::FileParser::FNTParser::GetFileDesc(UnsafeArray<const UInt8> fileB
 	else if (ver == 0x300)
 	{
 		sb->AppendC(UTF8STRC("\r\nFlags = 0x"));
-		sb->AppendHex32(ReadUInt32(&fileBuff[118]));
+		sb->AppendHex32(ReadLUInt32(&fileBuff[118]));
 		sb->AppendC(UTF8STRC("\r\nA Space = "));
-		sb->AppendU16(ReadUInt16(&fileBuff[122]));
+		sb->AppendU16(ReadLUInt16(&fileBuff[122]));
 		sb->AppendC(UTF8STRC("\r\nB Space = "));
-		sb->AppendU16(ReadUInt16(&fileBuff[124]));
+		sb->AppendU16(ReadLUInt16(&fileBuff[124]));
 		sb->AppendC(UTF8STRC("\r\nC Space = "));
-		sb->AppendU16(ReadUInt16(&fileBuff[126]));
+		sb->AppendU16(ReadLUInt16(&fileBuff[126]));
 		sb->AppendC(UTF8STRC("\r\nColor Pointer = 0x"));
-		sb->AppendHex32V(ReadUInt32(&fileBuff[128]));
+		sb->AppendHex32V(ReadLUInt32(&fileBuff[128]));
 		i = 148;
 		c = fileBuff[95];
 		while (c <= fileBuff[96] && i < fileSize)
@@ -231,11 +231,11 @@ UIntOS Parser::FileParser::FNTParser::GetFileDesc(UnsafeArray<const UInt8> fileB
 			sb->AppendC(UTF8STRC("\r\nChar[0x"));
 			sb->AppendHex8((UInt8)c);
 			sb->AppendC(UTF8STRC("] : Size = ("));
-			sb->AppendU16(ReadUInt16(&fileBuff[i]));
+			sb->AppendU16(ReadLUInt16(&fileBuff[i]));
 			sb->AppendC(UTF8STRC(", "));
-			sb->AppendU16(ReadUInt16(&fileBuff[88]));
+			sb->AppendU16(ReadLUInt16(&fileBuff[88]));
 			sb->AppendC(UTF8STRC("), Offset = 0x"));
-			sb->AppendHex32(ReadUInt32(&fileBuff[i + 2]));
+			sb->AppendHex32(ReadLUInt32(&fileBuff[i + 2]));
 			i += 6;
 			c++;
 		}
@@ -245,14 +245,14 @@ UIntOS Parser::FileParser::FNTParser::GetFileDesc(UnsafeArray<const UInt8> fileB
 
 void Parser::FileParser::FNTParser::GetFileDirDesc(UnsafeArray<const UInt8> fileBuff, UIntOS fileSize, NN<Text::StringBuilderUTF8> sb)
 {
-	UIntOS nFonts = ReadUInt16(&fileBuff[0]);
+	UIntOS nFonts = ReadLUInt16(&fileBuff[0]);
 	UIntOS i = 2;
 	sb->AppendC(UTF8STRC("Number of Fonts = "));
 	sb->AppendUIntOS(nFonts);
 	while (i < fileSize && nFonts-- > 0)
 	{
 		sb->AppendC(UTF8STRC("\r\nUnique Ordinal Identifier = "));
-		sb->AppendU16(ReadUInt16(&fileBuff[i]));
+		sb->AppendU16(ReadLUInt16(&fileBuff[i]));
 		i += 2;
 		if (i + 114 > fileSize)
 		{

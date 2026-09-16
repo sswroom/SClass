@@ -59,7 +59,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 {
 	if (!fd->IsFullFile())
 		return nullptr;
-	if (ReadInt32(&hdr[0]) != 0x100)
+	if (ReadLInt32(&hdr[0]) != 0x100)
 	{
 		return nullptr;
 	}

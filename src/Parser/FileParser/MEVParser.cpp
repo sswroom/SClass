@@ -83,27 +83,27 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 	if (!this->mapMgr.SetTo(mapMgr))
 		return nullptr;
 	currPos = 12;
-	if (*(Int32*)&hdr[0] != *(Int32*)"SMEv" || ReadUInt32(&hdr[4]) != 0x81c0fe1a)
+	if (*(Int32*)&hdr[0] != *(Int32*)"SMEv" || ReadLUInt32(&hdr[4]) != 0x81c0fe1a)
 	{
 		return nullptr;
 	}
 
-	UInt32 initSize = ReadUInt32(&hdr[8]);
+	UInt32 initSize = ReadLUInt32(&hdr[8]);
 	fd->GetRealData(currPos, initSize, BYTEARR(buff));
 	currPos += initSize;
 	NN<Map::MapEnv> env;
-	NEW_CLASSNN(env, Map::MapEnv(fd->GetFullName()->ToCString(), ReadUInt32(&buff[0]), Math::CoordinateSystemManager::CreateWGS84Csys()));
-	env->SetNString(ReadUInt32(&buff[4]));
-	dirCnt = ReadUInt32(&buff[16]);
-	imgFileCnt = ReadUInt32(&buff[20]);
-	fontStyleCnt = ReadUInt32(&buff[24]);
-	lineStyleCnt = ReadUInt32(&buff[28]);
-	itemCnt = ReadUInt32(&buff[32]);
-	defLineStyle = ReadUInt32(&buff[36]);
-	defFontStyle = ReadUInt32(&buff[40]);
+	NEW_CLASSNN(env, Map::MapEnv(fd->GetFullName()->ToCString(), ReadLUInt32(&buff[0]), Math::CoordinateSystemManager::CreateWGS84Csys()));
+	env->SetNString(ReadLUInt32(&buff[4]));
+	dirCnt = ReadLUInt32(&buff[16]);
+	imgFileCnt = ReadLUInt32(&buff[20]);
+	fontStyleCnt = ReadLUInt32(&buff[24]);
+	lineStyleCnt = ReadLUInt32(&buff[28]);
+	itemCnt = ReadLUInt32(&buff[32]);
+	defLineStyle = ReadLUInt32(&buff[36]);
+	defFontStyle = ReadLUInt32(&buff[40]);
 
-	fd->GetRealData(ReadUInt32(&buff[8]), ReadUInt32(&buff[12]), BYTEARR(buff).SubArray(16));
-	wptr = Text::StrUTF8_WCharC(wbuff, &buff[16], ReadUInt32(&buff[12]), 0);
+	fd->GetRealData(ReadLUInt32(&buff[8]), ReadLUInt32(&buff[12]), BYTEARR(buff).SubArray(16));
+	wptr = Text::StrUTF8_WCharC(wbuff, &buff[16], ReadLUInt32(&buff[12]), 0);
 	wptr2 = Text::StrUTF8_WChar(wbuff2, fd->GetFullName()->v, 0);
 	while (wptr > wbuff && wptr2 > wbuff2)
 	{
@@ -130,10 +130,10 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 	while (i < dirCnt)
 	{
 		fd->GetRealData(currPos, 8, BYTEARR(buff));
-		if (ReadUInt32(&buff[4]) > 0)
+		if (ReadLUInt32(&buff[4]) > 0)
 		{
-			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), BYTEARR(buff).SubArray(8));
-			Text::StrUTF8_WCharC(wbuff, &buff[8], ReadUInt32(&buff[4]), 0);
+			fd->GetRealData(ReadLUInt32(&buff[0]), ReadLUInt32(&buff[4]), BYTEARR(buff).SubArray(8));
+			Text::StrUTF8_WCharC(wbuff, &buff[8], ReadLUInt32(&buff[4]), 0);
 			if (optwptr2.SetTo(wptr2))
 			{
 				Text::StrReplaceW(wbuff, wptr2 + 1, wbuff2);
@@ -152,14 +152,14 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 	while (i < imgFileCnt)
 	{
 		fd->GetRealData(currPos, 16, BYTEARR(buff));
-		imgFileArr[i].fileIndex = ReadInt32(&buff[12]);
-		fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), BYTEARR(buff).SubArray(16));
-		if (dirArr[ReadInt32(&buff[8])].SetTo(cwptr))
+		imgFileArr[i].fileIndex = ReadLInt32(&buff[12]);
+		fd->GetRealData(ReadLUInt32(&buff[0]), ReadLUInt32(&buff[4]), BYTEARR(buff).SubArray(16));
+		if (dirArr[ReadLInt32(&buff[8])].SetTo(cwptr))
 			wptr = Text::StrConcat(wbuff, cwptr);
 		else
 			wptr = wbuff;
 		*wptr++ = IO::Path::PATH_SEPERATOR;
-		Text::StrUTF8_WCharC(wptr, &buff[16], ReadUInt32(&buff[4]), 0);
+		Text::StrUTF8_WCharC(wptr, &buff[16], ReadLUInt32(&buff[4]), 0);
 
 		NN<Text::String> s = Text::String::NewNotNull(wbuff);
 		imgFileArr[i].envIndex = env->AddImage(s->ToCString(), parsers);
@@ -174,12 +174,12 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 		Double fontSize;
 		fd->GetRealData(currPos, 36, BYTEARR(buff));
 
-		fd->GetRealData(ReadUInt32(&buff[8]), ReadUInt32(&buff[12]), BYTEARR(buff).SubArray(36));
-		u8ptr = Text::StrConcatC(sbuff, &buff[36], ReadUInt32(&buff[12]));
-		if (ReadUInt32(&buff[4]) > 0)
+		fd->GetRealData(ReadLUInt32(&buff[8]), ReadLUInt32(&buff[12]), BYTEARR(buff).SubArray(36));
+		u8ptr = Text::StrConcatC(sbuff, &buff[36], ReadLUInt32(&buff[12]));
+		if (ReadLUInt32(&buff[4]) > 0)
 		{
-			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), BYTEARR(buff).SubArray(36));
-			u8ptr2 = Text::StrConcatC(sbuff2, &buff[36], ReadUInt32(&buff[4]));
+			fd->GetRealData(ReadLUInt32(&buff[0]), ReadLUInt32(&buff[4]), BYTEARR(buff).SubArray(36));
+			u8ptr2 = Text::StrConcatC(sbuff2, &buff[36], ReadLUInt32(&buff[4]));
 		}
 		else
 		{
@@ -187,7 +187,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 			*u8ptr2 = 0;
 		}
 		fontSize = *(Int32*)&buff[16] * 0.75;
-		env->AddFontStyle(CSTRP(sbuff2, u8ptr2), CSTRP(sbuff, u8ptr), fontSize, ReadUInt32(&buff[20]) != 0, ReadUInt32(&buff[24]), ReadUInt32(&buff[28]), ReadUInt32(&buff[32]));
+		env->AddFontStyle(CSTRP(sbuff2, u8ptr2), CSTRP(sbuff, u8ptr), fontSize, ReadLUInt32(&buff[20]) != 0, ReadLUInt32(&buff[24]), ReadLUInt32(&buff[28]), ReadLUInt32(&buff[32]));
 		
 		i++;
 		currPos += 36;
@@ -199,24 +199,24 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 		fd->GetRealData(currPos, 12, BYTEARR(buff));
 		currPos += 12;
 		env->AddLineStyle();
-		if (ReadUInt32(&buff[4]) > 0)
+		if (ReadLUInt32(&buff[4]) > 0)
 		{
-			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), BYTEARR(buff).SubArray(12));
-			u8ptr2 = Text::StrConcatC(sbuff2, &buff[12], ReadUInt32(&buff[4]));
+			fd->GetRealData(ReadLUInt32(&buff[0]), ReadLUInt32(&buff[4]), BYTEARR(buff).SubArray(12));
+			u8ptr2 = Text::StrConcatC(sbuff2, &buff[12], ReadLUInt32(&buff[4]));
 			env->SetLineStyleName(i, CSTRP(sbuff2, u8ptr2));
 		}
 
-		j = ReadUInt32(&buff[8]);
+		j = ReadLUInt32(&buff[8]);
 		while (j-- > 0)
 		{
 			fd->GetRealData(currPos, 12, BYTEARR(buff));
 			currPos += 12;
-			if (ReadUInt32(&buff[8]) > 0)
+			if (ReadLUInt32(&buff[8]) > 0)
 			{
-				fd->GetRealData(currPos, ReadUInt32(&buff[8]), BYTEARR(buff).SubArray(12));
-				currPos += ReadUInt32(&buff[8]);
+				fd->GetRealData(currPos, ReadLUInt32(&buff[8]), BYTEARR(buff).SubArray(12));
+				currPos += ReadLUInt32(&buff[8]);
 			}
-			env->AddLineStyleLayer(i, ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), &buff[12], ReadUInt32(&buff[8]));
+			env->AddLineStyleLayer(i, ReadLUInt32(&buff[0]), ReadLUInt32(&buff[4]), &buff[12], ReadLUInt32(&buff[8]));
 		}
 
 		i++;
@@ -254,30 +254,30 @@ void Parser::FileParser::MEVParser::ReadItems(NN<IO::StreamData> fd, NN<Map::Map
 		if (*(Int32*)&buff[0] == Map::MapEnv::IT_GROUP)
 		{
 			fd->GetRealData(pos, 12, BYTEARR(buff));
-			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), BYTEARR(buff).SubArray(12));
-			Text::StrUTF8_WCharC(wbuff, &buff[12], ReadUInt32(&buff[4]), 0);
+			fd->GetRealData(ReadLUInt32(&buff[0]), ReadLUInt32(&buff[4]), BYTEARR(buff).SubArray(12));
+			Text::StrUTF8_WCharC(wbuff, &buff[12], ReadLUInt32(&buff[4]), 0);
 			pos = 12 + pos;
 			
 			NN<Text::String> s = Text::String::NewNotNull(wbuff);
 			NN<Map::MapEnv::GroupItem> item = env->AddGroup(group, s->ToCString());
 			s->Release();
-			ReadItems(fd, env, ReadUInt32(&buff[8]), currPos, item, dirArr, imgInfos, parsers, mapMgr);
+			ReadItems(fd, env, ReadLUInt32(&buff[8]), currPos, item, dirArr, imgInfos, parsers, mapMgr);
 		}
 		else if (*(Int32*)&buff[0] == Map::MapEnv::IT_LAYER)
 		{
 			fd->GetRealData(pos, 20, BYTEARR(buff));
 			pos = 20 + pos;
 
-			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), BYTEARR(buff).SubArray(20));
-			if (dirArr[ReadUInt32(&buff[8])].SetTo(cwptr))
+			fd->GetRealData(ReadLUInt32(&buff[0]), ReadLUInt32(&buff[4]), BYTEARR(buff).SubArray(20));
+			if (dirArr[ReadLUInt32(&buff[8])].SetTo(cwptr))
 				wptr = Text::StrConcat(wbuff, cwptr);
 			else
 				wptr = wbuff;
 			wptr = Text::StrConcat(wptr, L"\\");
-			Text::StrUTF8_WCharC(wptr, &buff[20], ReadUInt32(&buff[4]), 0);
-			if (ReadUInt32(&buff[12]))
+			Text::StrUTF8_WCharC(wptr, &buff[20], ReadLUInt32(&buff[4]), 0);
+			if (ReadLUInt32(&buff[12]))
 			{
-				parsers->SetCodePage(ReadUInt32(&buff[12]));
+				parsers->SetCodePage(ReadLUInt32(&buff[12]));
 			}
 			NN<Text::String> s = Text::String::NewNotNull(wbuff);
 			NN<Map::MapDrawLayer> layer;
@@ -288,49 +288,49 @@ void Parser::FileParser::MEVParser::ReadItems(NN<IO::StreamData> fd, NN<Map::Map
 				UIntOS layerId = env->AddLayer(group, layer, false);
 				env->GetLayerProp(setting, group, layerId);
 
-				if (ReadUInt32(&buff[16]) == 1)
+				if (ReadLUInt32(&buff[16]) == 1)
 				{
 					fd->GetRealData(pos, 32, BYTEARR(buff));
 					pos = 32 + pos;
 
-					setting.labelCol = ReadUInt32(&buff[0]);
-					setting.flags = ReadInt32(&buff[4]);
-					setting.minScale = ReadInt32(&buff[8]);
-					setting.maxScale = ReadInt32(&buff[12]);
-					setting.priority = ReadInt32(&buff[16]);
-					setting.fontStyle = ReadUInt32(&buff[20]);
-					setting.imgIndex = (UInt32)(ReadInt32(&buff[28]) - imgInfos[ReadInt32(&buff[24])].fileIndex + imgInfos[ReadInt32(&buff[24])].envIndex);
+					setting.labelCol = ReadLUInt32(&buff[0]);
+					setting.flags = ReadLInt32(&buff[4]);
+					setting.minScale = ReadLInt32(&buff[8]);
+					setting.maxScale = ReadLInt32(&buff[12]);
+					setting.priority = ReadLInt32(&buff[16]);
+					setting.fontStyle = ReadLUInt32(&buff[20]);
+					setting.imgIndex = (UInt32)(ReadLInt32(&buff[28]) - imgInfos[ReadLInt32(&buff[24])].fileIndex + imgInfos[ReadLInt32(&buff[24])].envIndex);
 
 					env->SetLayerProp(setting, group, layerId);
 				}
-				else if (ReadUInt32(&buff[16]) == 3)
+				else if (ReadLUInt32(&buff[16]) == 3)
 				{
 					fd->GetRealData(pos, 28, BYTEARR(buff));
 					pos = 28 + pos;
 
-					setting.labelCol = ReadUInt32(&buff[0]);
-					setting.flags = ReadInt32(&buff[4]);
-					setting.minScale = ReadInt32(&buff[8]);
-					setting.maxScale = ReadInt32(&buff[12]);
-					setting.priority = ReadInt32(&buff[16]);
-					setting.fontStyle = ReadUInt32(&buff[20]);
-					setting.lineStyle = ReadUInt32(&buff[24]);
+					setting.labelCol = ReadLUInt32(&buff[0]);
+					setting.flags = ReadLInt32(&buff[4]);
+					setting.minScale = ReadLInt32(&buff[8]);
+					setting.maxScale = ReadLInt32(&buff[12]);
+					setting.priority = ReadLInt32(&buff[16]);
+					setting.fontStyle = ReadLUInt32(&buff[20]);
+					setting.lineStyle = ReadLUInt32(&buff[24]);
 
 					env->SetLayerProp(setting, group, layerId);
 				}
-				else if (ReadUInt32(&buff[16]) == 5)
+				else if (ReadLUInt32(&buff[16]) == 5)
 				{
 					fd->GetRealData(pos, 32, BYTEARR(buff));
 					pos = 32 + pos;
 
-					setting.labelCol = ReadUInt32(&buff[0]);
-					setting.flags = ReadInt32(&buff[4]);
-					setting.minScale = ReadInt32(&buff[8]);
-					setting.maxScale = ReadInt32(&buff[12]);
-					setting.priority = ReadInt32(&buff[16]);
-					setting.fontStyle = ReadUInt32(&buff[20]);
-					setting.lineStyle = ReadUInt32(&buff[24]);
-					setting.fillStyle = ReadUInt32(&buff[28]);
+					setting.labelCol = ReadLUInt32(&buff[0]);
+					setting.flags = ReadLInt32(&buff[4]);
+					setting.minScale = ReadLInt32(&buff[8]);
+					setting.maxScale = ReadLInt32(&buff[12]);
+					setting.priority = ReadLInt32(&buff[16]);
+					setting.fontStyle = ReadLUInt32(&buff[20]);
+					setting.lineStyle = ReadLUInt32(&buff[24]);
+					setting.fillStyle = ReadLUInt32(&buff[28]);
 
 					env->SetLayerProp(setting, group, layerId);
 				}
@@ -338,12 +338,12 @@ void Parser::FileParser::MEVParser::ReadItems(NN<IO::StreamData> fd, NN<Map::Map
 				{
 					fd->GetRealData(pos, 24, BYTEARR(buff));
 					pos = 24 + pos;
-					setting.labelCol = ReadUInt32(&buff[0]);
-					setting.flags = ReadInt32(&buff[4]);
-					setting.minScale = ReadInt32(&buff[8]);
-					setting.maxScale = ReadInt32(&buff[12]);
-					setting.priority = ReadInt32(&buff[16]);
-					setting.fontStyle = ReadUInt32(&buff[20]);
+					setting.labelCol = ReadLUInt32(&buff[0]);
+					setting.flags = ReadLInt32(&buff[4]);
+					setting.minScale = ReadLInt32(&buff[8]);
+					setting.maxScale = ReadLInt32(&buff[12]);
+					setting.priority = ReadLInt32(&buff[16]);
+					setting.fontStyle = ReadLUInt32(&buff[20]);
 
 					env->SetLayerProp(setting, group, layerId);
 				}
@@ -351,15 +351,15 @@ void Parser::FileParser::MEVParser::ReadItems(NN<IO::StreamData> fd, NN<Map::Map
 			else
 			{
 				s->Release();
-				if (ReadUInt32(&buff[16]) == 1)
+				if (ReadLUInt32(&buff[16]) == 1)
 				{
 					pos = 32 + pos;
 				}
-				else if (ReadUInt32(&buff[16]) == 3)
+				else if (ReadLUInt32(&buff[16]) == 3)
 				{
 					pos = 28 + pos;
 				}
-				else if (ReadUInt32(&buff[16]) == 5)
+				else if (ReadLUInt32(&buff[16]) == 5)
 				{
 					pos = 32 + pos;
 				}

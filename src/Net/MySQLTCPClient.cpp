@@ -408,11 +408,11 @@ namespace Net
 				return;
 			}
 			colDef += 1;
-			col->charSet = ReadUInt16(&colDef[0]);
-			col->colLen = ReadUInt32(&colDef[2]);
+			col->charSet = ReadLUInt16(&colDef[0]);
+			col->colLen = ReadLUInt32(&colDef[2]);
 			col->colType = (Net::MySQLUtil::MySQLType)colDef[6];
 			col->dbColType = Net::MySQLUtil::MySQLType2ColType(col->colType);
-			col->flags = ReadUInt16(&colDef[7]);
+			col->flags = ReadLUInt16(&colDef[7]);
 			col->decimals = colDef[9];
 			colDef += 12;
 			col->defValues = nullptr;
@@ -768,7 +768,7 @@ namespace Net
 				case 0:
 					return Data::Timestamp(nullptr);
 				case 4:
-					tval.year = ReadUInt16(&row->rowBuff[col->ofst]);
+					tval.year = ReadLUInt16(&row->rowBuff[col->ofst]);
 					tval.month = row->rowBuff[col->ofst + 2];
 					tval.day = row->rowBuff[col->ofst + 3];
 					tval.hour = 0;
@@ -776,7 +776,7 @@ namespace Net
 					tval.second = 0;
 					return Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, 0), 0), this->tzQhr);
 				case 7:
-					tval.year = ReadUInt16(&row->rowBuff[col->ofst]);
+					tval.year = ReadLUInt16(&row->rowBuff[col->ofst]);
 					tval.month = row->rowBuff[col->ofst + 2];
 					tval.day = row->rowBuff[col->ofst + 3];
 					tval.hour = row->rowBuff[col->ofst + 4];
@@ -784,13 +784,13 @@ namespace Net
 					tval.second = row->rowBuff[col->ofst + 6];
 					return Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, 0), 0), this->tzQhr);
 				case 11:
-					tval.year = ReadUInt16(&row->rowBuff[col->ofst]);
+					tval.year = ReadLUInt16(&row->rowBuff[col->ofst]);
 					tval.month = row->rowBuff[col->ofst + 2];
 					tval.day = row->rowBuff[col->ofst + 3];
 					tval.hour = row->rowBuff[col->ofst + 4];
 					tval.minute = row->rowBuff[col->ofst + 5];
 					tval.second = row->rowBuff[col->ofst + 6];
-					microsec = ReadUInt32(&row->rowBuff[col->ofst + 7]);
+					microsec = ReadLUInt32(&row->rowBuff[col->ofst + 7]);
 					return Data::Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, 0), microsec * 1000), this->tzQhr);
 				default:
 					//////////////////////////////////////
@@ -908,17 +908,17 @@ namespace Net
 				return true;
 
 			case Net::MySQLUtil::MYSQL_TYPE_LONGLONG:
-				item->SetI64(ReadInt64(&row->rowBuff[col->ofst]));
+				item->SetI64(ReadLInt64(&row->rowBuff[col->ofst]));
 				return true;
 
 			case Net::MySQLUtil::MYSQL_TYPE_LONG:
 			case Net::MySQLUtil::MYSQL_TYPE_INT24:
-				item->SetI32(ReadInt32(&row->rowBuff[col->ofst]));
+				item->SetI32(ReadLInt32(&row->rowBuff[col->ofst]));
 				return true;
 
 			case Net::MySQLUtil::MYSQL_TYPE_SHORT:
 			case Net::MySQLUtil::MYSQL_TYPE_YEAR:
-				item->SetI16(ReadInt16(&row->rowBuff[col->ofst]));
+				item->SetI16(ReadLInt16(&row->rowBuff[col->ofst]));
 				return true;
 
 			case Net::MySQLUtil::MYSQL_TYPE_TINY:
@@ -926,11 +926,11 @@ namespace Net
 				return true;
 
 			case Net::MySQLUtil::MYSQL_TYPE_DOUBLE:
-				item->SetF64(ReadDouble(&row->rowBuff[col->ofst]));
+				item->SetF64(ReadLDouble(&row->rowBuff[col->ofst]));
 				return true;
 
 			case Net::MySQLUtil::MYSQL_TYPE_FLOAT:
-				item->SetF32(ReadFloat(&row->rowBuff[col->ofst]));
+				item->SetF32(ReadLFloat(&row->rowBuff[col->ofst]));
 				return true;
 
 			case Net::MySQLUtil::MYSQL_TYPE_DATE:
@@ -946,7 +946,7 @@ namespace Net
 				case 4:
 					{
 						Data::DateTimeUtil::TimeValue tval;
-						tval.year = ReadUInt16(&row->rowBuff[col->ofst]);
+						tval.year = ReadLUInt16(&row->rowBuff[col->ofst]);
 						tval.month = row->rowBuff[col->ofst + 2];
 						tval.day = row->rowBuff[col->ofst + 3];
 						tval.hour = 0;
@@ -958,7 +958,7 @@ namespace Net
 				case 7:
 					{
 						Data::DateTimeUtil::TimeValue tval;
-						tval.year = ReadUInt16(&row->rowBuff[col->ofst]);
+						tval.year = ReadLUInt16(&row->rowBuff[col->ofst]);
 						tval.month = row->rowBuff[col->ofst + 2];
 						tval.day = row->rowBuff[col->ofst + 3];
 						tval.hour = row->rowBuff[col->ofst + 4];
@@ -971,13 +971,13 @@ namespace Net
 					{
 						UInt32 us;
 						Data::DateTimeUtil::TimeValue tval;
-						tval.year = ReadUInt16(&row->rowBuff[col->ofst]);
+						tval.year = ReadLUInt16(&row->rowBuff[col->ofst]);
 						tval.month = row->rowBuff[col->ofst + 2];
 						tval.day = row->rowBuff[col->ofst + 3];
 						tval.hour = row->rowBuff[col->ofst + 4];
 						tval.minute = row->rowBuff[col->ofst + 5];
 						tval.second = row->rowBuff[col->ofst + 6];
-						us = ReadUInt32(&row->rowBuff[col->ofst + 7]);
+						us = ReadLUInt32(&row->rowBuff[col->ofst + 7]);
 						item->SetDate(Data::Timestamp::FromTimeValue(tval, us * 1000, 0));
 					}
 					return true;
@@ -997,7 +997,7 @@ namespace Net
 					item->SetF64(0);
 					return true;
 				case 8:
-					v = ReadUInt32(&row->rowBuff[col->ofst + 1]) * 86400 + (UInt32)row->rowBuff[col->ofst + 5] * 3600 + (UInt32)row->rowBuff[col->ofst + 6] * 60 + row->rowBuff[col->ofst + 7];
+					v = ReadLUInt32(&row->rowBuff[col->ofst + 1]) * 86400 + (UInt32)row->rowBuff[col->ofst + 5] * 3600 + (UInt32)row->rowBuff[col->ofst + 6] * 60 + row->rowBuff[col->ofst + 7];
 					if (row->rowBuff[col->ofst])
 					{
 						item->SetF64(-v);
@@ -1008,7 +1008,7 @@ namespace Net
 					}
 					return true;
 				case 12:
-					v = ReadUInt32(&row->rowBuff[col->ofst + 1]) * 86400 + (UInt32)row->rowBuff[col->ofst + 5] * 3600 + (UInt32)row->rowBuff[col->ofst + 6] * 60 + row->rowBuff[col->ofst + 7] + (ReadUInt32(&row->rowBuff[col->ofst + 1]) / 1000000);
+					v = ReadLUInt32(&row->rowBuff[col->ofst + 1]) * 86400 + (UInt32)row->rowBuff[col->ofst + 5] * 3600 + (UInt32)row->rowBuff[col->ofst + 6] * 60 + row->rowBuff[col->ofst + 7] + (ReadLUInt32(&row->rowBuff[col->ofst + 1]) / 1000000);
 					if (row->rowBuff[col->ofst])
 					{
 						item->SetF64(-v);
@@ -1042,7 +1042,7 @@ namespace Net
 			case Net::MySQLUtil::MYSQL_TYPE_GEOMETRY:
 				if (col->len > 4)
 				{
-					Math::WKBReader wkb(ReadUInt32(&row->rowBuff[col->ofst]));
+					Math::WKBReader wkb(ReadLUInt32(&row->rowBuff[col->ofst]));
 					NN<Math::Geometry::Vector2D> vec;
 					if (wkb.ParseWKB(&row->rowBuff[col->ofst + 4], col->len - 4, 0).SetTo(vec))
 					{
@@ -1166,11 +1166,11 @@ namespace Net
 				return;
 			}
 			colDef += 1;
-			col->charSet = ReadUInt16(&colDef[0]);
-			col->colLen = ReadUInt32(&colDef[2]);
+			col->charSet = ReadLUInt16(&colDef[0]);
+			col->colLen = ReadLUInt32(&colDef[2]);
 			col->colType = (Net::MySQLUtil::MySQLType)colDef[6];
 			col->dbColType = Net::MySQLUtil::MySQLType2ColType(col->colType);
-			col->flags = ReadUInt16(&colDef[7]);
+			col->flags = ReadLUInt16(&colDef[7]);
 			col->decimals = colDef[9];
 			colDef += 12;
 			col->defValues = nullptr;
@@ -1475,7 +1475,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 					}
 					else
 					{
-						UIntOS packetSize = ReadUInt32(&buff[0]);
+						UIntOS packetSize = ReadLUInt32(&buff[0]);
 						if (packetSize < 10 || packetSize > 1024)
 						{
 	#if defined(VERBOSE)
@@ -1499,7 +1499,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 								else
 								{
 									me->svrVer = svrVer = Text::String::NewNotNullSlow(&buff[5]);
-									me->connId = ReadUInt32(&buff[packetSize - 9]);
+									me->connId = ReadLUInt32(&buff[packetSize - 9]);
 									MemCopyNO(me->authPluginData, &buff[packetSize - 5], 8);
 									me->authPluginDataSize = 8;
 									me->mode = ClientMode::Authen;
@@ -1530,16 +1530,16 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 	#endif
 								if (ptrEnd - ptrCurr >= 15)
 								{
-									me->connId = ReadUInt32(&ptrCurr[0]);
+									me->connId = ReadLUInt32(&ptrCurr[0]);
 									MemCopyNO(me->authPluginData, &ptrCurr[4], 8);
 									me->authPluginDataSize = 8;
-									me->svrCap = ReadUInt16(&ptrCurr[13]);
+									me->svrCap = ReadLUInt16(&ptrCurr[13]);
 									ptrCurr += 15;
 									if (ptrEnd - ptrCurr >= 16)
 									{
 										me->svrCS = ptrCurr[0];
-										me->connStatus = ReadUInt16(&ptrCurr[1]);
-										me->svrCap |= ((UInt32)ReadUInt16(&ptrCurr[3])) << 16;
+										me->connStatus = ReadLUInt16(&ptrCurr[1]);
+										me->svrCap |= ((UInt32)ReadLUInt16(&ptrCurr[3])) << 16;
 										UInt8 len = ptrCurr[5];
 										ptrCurr += 16;
 										if (me->svrCap & Net::MySQLUtil::CLIENT_SECURE_CONNECTION)
@@ -1607,8 +1607,8 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 										{
 											cliCap |= Net::MySQLUtil::CLIENT_CONNECT_WITH_DB;
 										}
-										WriteUInt32(&buff[4], cliCap);
-										WriteInt32(&buff[8], 16777215);
+										WriteLUInt32(&buff[4], cliCap);
+										WriteLInt32(&buff[8], 16777215);
 										buff[12] = 45;
 										MemClear(&buff[13], 23);
 										ptrCurr = me->userName->ConcatTo(&buff[36]) + 1;
@@ -1645,7 +1645,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 											MemCopyNO(ptrCurr.Ptr(), sbuff, (UIntOS)(sptr - sbuff));
 											ptrCurr += sptr - sbuff;
 										}
-										WriteInt24(buff, (ptrCurr - buff - 4));
+										WriteLInt24(buff, (ptrCurr - buff - 4));
 										buff[3] = 1;
 										me->cmdSeqNum = 1;
 										cli->Write(Data::ByteArrayR(buff, (UIntOS)(ptrCurr - buff)));
@@ -1687,7 +1687,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 				}
 				else
 				{
-					readSize = ReadUInt24(&buff[0]);
+					readSize = ReadLUInt24(&buff[0]);
 					if (readSize + 4 > buffSize)
 					{
 						readSize = 0;
@@ -1703,7 +1703,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 							sb.AppendUTF8Char(']');
 							sb.AppendUTF8Char(' ');
 							sb.AppendC(&buff[13], readSize - 17);
-							printf("MySQLTCP %d Auth Error, code = %d, %s\r\n", cli->GetLocalPort(), ReadUInt16(&buff[5]), sb.v.Ptr());
+							printf("MySQLTCP %d Auth Error, code = %d, %s\r\n", cli->GetLocalPort(), ReadLUInt16(&buff[5]), sb.v.Ptr());
 	#endif
 
 							me->SetLastError({&buff[7], readSize - 3});
@@ -1727,7 +1727,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 	#if defined(VERBOSE)
 							printf("MySQLTCP %d login success\r\n", cli->GetLocalPort());
 	#endif
-							readSize += 4 + ReadUInt24(&buff[0]);
+							readSize += 4 + ReadLUInt24(&buff[0]);
 							break;
 						}
 						else if (buff[4] == 1)
@@ -1754,7 +1754,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 									printf("MySQLTCP %d perform_full_authentication\r\n", cli->GetLocalPort());
 	#endif
 									me->cmdSeqNum++;
-									WriteUInt32(&buff[0], 1);
+									WriteLUInt32(&buff[0], 1);
 									buff[3] = (UInt8)me->cmdSeqNum;
 									buff[4] = 2;
 									cli->Write(Data::ByteArrayR(buff, 5));
@@ -1794,7 +1794,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 									if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Key)
 									{
 										encPwdSize = ssl->Encrypt(NN<Crypto::Cert::X509Key>::ConvertFrom(x509), &encPwd[4], Data::ByteArrayR(&encPwd[1024], j), Crypto::Encrypt::RSACipher::Padding::PKCS1_OAEP);
-										WriteUInt32(&encPwd[0], (UInt32)encPwdSize);
+										WriteLUInt32(&encPwd[0], (UInt32)encPwdSize);
 										me->cmdSeqNum++;
 										encPwd[3] = (UInt8)me->cmdSeqNum;
 										cli->Write(Data::ByteArrayR(encPwd, encPwdSize + 4));
@@ -1809,7 +1809,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 										if (NN<Crypto::Cert::X509PubKey>::ConvertFrom(x509)->CreateKey().SetTo(key))
 										{
 											encPwdSize = ssl->Encrypt(key, &encPwd[4], Data::ByteArrayR(&encPwd[1024], j), Crypto::Encrypt::RSACipher::Padding::PKCS1_OAEP);
-											WriteUInt32(&encPwd[0], (UInt32)encPwdSize);
+											WriteLUInt32(&encPwd[0], (UInt32)encPwdSize);
 											me->cmdSeqNum++;
 											encPwd[3] = (UInt8)me->cmdSeqNum;
 											cli->Write(Data::ByteArrayR(encPwd, encPwdSize + 4));
@@ -1865,7 +1865,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 							me->authenType = Net::MySQLUtil::AuthenTypeParse(Text::CStringNN(&buff[5], nameLen));
 							UInt8 packetBuff[64];
 							UIntOS authSize = Net::MySQLUtil::BuildAuthen(&packetBuff[4], me->authenType, &buff[6 + nameLen], readSize - 3 - nameLen, me->password->ToCString());
-							WriteUInt32(packetBuff, (UInt32)authSize);
+							WriteLUInt32(packetBuff, (UInt32)authSize);
 							packetBuff[3] = (UInt8)me->cmdSeqNum;
 							cli->Write(Data::ByteArrayR(packetBuff, authSize + 4));
 							readSize += 4;
@@ -1879,7 +1879,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 							sb.AppendUTF8Char(']');
 							sb.AppendUTF8Char(' ');
 							sb.AppendC(&buff[13], readSize - 17);
-							printf("MySQLTCP %d Auth Error, code = %d, %s\r\n", cli->GetLocalPort(), ReadUInt16(&buff[5]), sb.v.Ptr());
+							printf("MySQLTCP %d Auth Error, code = %d, %s\r\n", cli->GetLocalPort(), ReadLUInt16(&buff[5]), sb.v.Ptr());
 	#endif
 							cli->Close();
 							readSize += 4;
@@ -1908,7 +1908,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 				readSize = 0;
 				while (readSize + 4 <= buffSize)
 				{
-					packetSize = ReadUInt24(&buff[readSize]);
+					packetSize = ReadLUInt24(&buff[readSize]);
 					if (4 + packetSize > buffCapacity)
 					{
 						while (4 + packetSize > buffCapacity)
@@ -1933,14 +1933,14 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 							{
 								if (buff[readSize + 4] == 0) //OK
 								{
-									UInt32 stmtId = ReadUInt32(&buff[readSize + 5]);
+									UInt32 stmtId = ReadLUInt32(&buff[readSize + 5]);
 									{
 										Sync::MutexUsage readerMutUsage(me->readerMut);
 										if (me->cmdBinReader.SetTo(cmdBinReader)) cmdBinReader->SetStmtId(stmtId);
 									}
-									UInt16 numColumns = ReadUInt16(&buff[readSize + 9]);
+									UInt16 numColumns = ReadLUInt16(&buff[readSize + 9]);
 #if defined(VERBOSE)
-									UInt16 numParams = ReadUInt16(&buff[readSize + 11]);
+									UInt16 numParams = ReadLUInt16(&buff[readSize + 11]);
 									printf("MySQLTCP %d COM_STMT_PREPARE OK, stmt id = %d, num_columns = %d, num_params = %d\r\n", cli->GetLocalPort(), stmtId, numColumns, numParams);
 #endif
 									if (numColumns == 0)
@@ -2293,12 +2293,12 @@ void Net::MySQLTCPClient::SendExecuteStmt(UInt32 stmtId)
 	{
 		UInt8 sbuff[14];
 		this->cmdSeqNum = 1;
-		WriteUInt32(&sbuff[0], 10);
+		WriteLUInt32(&sbuff[0], 10);
 		sbuff[3] = 0;
 		sbuff[4] = 0x17;
-		WriteUInt32(&sbuff[5], stmtId);
+		WriteLUInt32(&sbuff[5], stmtId);
 		sbuff[9] = 0;
-		WriteUInt32(&sbuff[10], 1);
+		WriteLUInt32(&sbuff[10], 1);
 		cli->Write(Data::ByteArrayR(sbuff, 14));
 	}
 }
@@ -2309,10 +2309,10 @@ void Net::MySQLTCPClient::SendStmtClose(UInt32 stmtId)
 	if (this->cli.SetTo(cli))
 	{
 		UInt8 sbuff[9];
-		WriteUInt32(&sbuff[0], 5);
+		WriteLUInt32(&sbuff[0], 5);
 		sbuff[3] = 0;
 		sbuff[4] = 0x19; //COM_STMT_CLOSE
-		WriteUInt32(&sbuff[5], stmtId);
+		WriteLUInt32(&sbuff[5], stmtId);
 		cli->Write(Data::ByteArrayR(sbuff, 9));
 	}
 }
@@ -2509,7 +2509,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sq
 	this->cmdSeqNum = 1;
 	this->cmdTCPReader = reader;
 	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, sql.leng + 5);
-	WriteInt32(&buff[0], (Int32)(sql.leng + 1));
+	WriteLInt32(&buff[0], (Int32)(sql.leng + 1));
 	buff[4] = 3;
 	MemCopyNO(&buff[5], sql.v.Ptr(), sql.leng);
 	if (!this->cli.SetTo(cli) || cli->Write(Data::ByteArrayR(buff, 5 + sql.leng)) != 5 + sql.leng)
@@ -2580,7 +2580,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN 
 	this->cmdSeqNum = 1;
 	this->cmdBinReader = reader;
 	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, sql.leng + 5);
-	WriteInt32(&buff[0], (Int32)(sql.leng + 1));
+	WriteLInt32(&buff[0], (Int32)(sql.leng + 1));
 	buff[4] = 22;
 	MemCopyNO(&buff[5], sql.v.Ptr(), sql.leng);
 	if (!this->cli.SetTo(cli) || cli->Write(Data::ByteArrayR(buff, 5 + sql.leng)) != 5 + sql.leng)

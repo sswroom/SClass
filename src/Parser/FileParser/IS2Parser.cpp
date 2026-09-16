@@ -41,7 +41,7 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 	if (hdr[0] != 1 || hdr[1] != 2 || hdr[2] != 2 || hdr[3] != 0)
 		return nullptr;
 
-	if (ReadInt32(&hdr[4]) != 4 || ReadInt32(&hdr[8]) != 20)
+	if (ReadLInt32(&hdr[4]) != 4 || ReadLInt32(&hdr[8]) != 20)
 		return nullptr;
 
 	UInt32 totalSize = 204;
@@ -50,7 +50,7 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 	UIntOS j;
 	while (i < 204)
 	{
-		currSize = ReadUInt32(&hdr[i + 4]);
+		currSize = ReadLUInt32(&hdr[i + 4]);
 		if (currSize == 0)
 			break;
 		totalSize += currSize;
@@ -66,8 +66,8 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 	i = 44;
 	while (i < 204 && valid)
 	{
-		currType = ReadInt32(&hdr[i]);
-		currSize = ReadUInt32(&hdr[i + 4]);
+		currType = ReadLInt32(&hdr[i]);
+		currSize = ReadLUInt32(&hdr[i + 4]);
 		if (currSize == 0)
 			break;
 		Data::ByteBuffer currBuff(currSize);
@@ -77,7 +77,7 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 		}
 		else
 		{
-			if (ReadUInt32(&currBuff[4]) != currSize)
+			if (ReadLUInt32(&currBuff[4]) != currSize)
 			{
 				valid = false;
 			}
@@ -88,16 +88,16 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 				case 0x3: //Camera Info
 					{
 						Data::DateTime dt;
-						Int32 irWidth = ReadInt32(&currBuff[20]);
-						Int32 irHeight = ReadInt32(&currBuff[24]);
-						Int32 visibleWidth = ReadInt32(&currBuff[28]);
-						Int32 visibleHeight = ReadInt32(&currBuff[32]);
-						UInt16 firmwareYear = ReadUInt16(&currBuff[50]);
+						Int32 irWidth = ReadLInt32(&currBuff[20]);
+						Int32 irHeight = ReadLInt32(&currBuff[24]);
+						Int32 visibleWidth = ReadLInt32(&currBuff[28]);
+						Int32 visibleHeight = ReadLInt32(&currBuff[32]);
+						UInt16 firmwareYear = ReadLUInt16(&currBuff[50]);
 						Int32 firmwareMonth = currBuff[49];
 						Int32 firmwareDay = currBuff[48];
 //						Int32 firmwareMajor = currBuff[71];
 //						Int32 firmwareMinor = currBuff[70];
-//						Int32 firmwareBuild = ReadInt16(&currBuff[68]);
+//						Int32 firmwareBuild = ReadLInt16(&currBuff[68]);
 						const UTF16Char *cameraBrand = (const UTF16Char *)&currBuff[72];
 						const UTF16Char *cameraModel = (const UTF16Char *)&currBuff[136];
 						const UTF16Char *cameraSN = (const UTF16Char *)&currBuff[200];
@@ -116,7 +116,7 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 						imgList->SetValueInt32(Media::ImageList::ValueType::VisibleHeight, visibleHeight);
 						dt.SetValue(firmwareYear, firmwareMonth, firmwareDay, 0, 0, 0, 0, 0);
 						imgList->SetValueInt64(Media::ImageList::ValueType::FirmwareDate, dt.ToTicks());
-						imgList->SetValueInt32(Media::ImageList::ValueType::FirmwareVersion, ReadInt32(&currBuff[68]));
+						imgList->SetValueInt32(Media::ImageList::ValueType::FirmwareVersion, ReadLInt32(&currBuff[68]));
 					}
 					break;
 				case 0x42: //Capture Info
@@ -124,11 +124,11 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 						Int32 captureWidth;
 						Int32 captureHeight;
 						Data::DateTime captureTime;
-						captureWidth = ReadInt32(&currBuff[8]);
-						captureHeight = ReadInt32(&currBuff[12]);
+						captureWidth = ReadLInt32(&currBuff[8]);
+						captureHeight = ReadLInt32(&currBuff[12]);
 						captureTime.ToLocalTime();
-						captureTime.SetValue(ReadUInt16(&currBuff[22]), currBuff[21], currBuff[20], 0, 0, 0, 0);
-						captureTime.AddMS(ReadInt32(&currBuff[16]));
+						captureTime.SetValue(ReadLUInt16(&currBuff[22]), currBuff[21], currBuff[20], 0, 0, 0, 0);
+						captureTime.AddMS(ReadLInt32(&currBuff[16]));
 						imgList->SetValueInt32(Media::ImageList::ValueType::CaptureWidth, captureWidth);
 						imgList->SetValueInt32(Media::ImageList::ValueType::CaptureHeight, captureHeight);
 						imgList->SetValueInt64(Media::ImageList::ValueType::CaptureDate, captureTime.ToTicks());
@@ -136,8 +136,8 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 					break;
 				case 0x18: //Visible Image
 					{
-						UInt32 imageWidth = ReadUInt32(&currBuff[12]);
-						UInt32 imageHeight = ReadUInt32(&currBuff[16]);
+						UInt32 imageWidth = ReadLUInt32(&currBuff[12]);
+						UInt32 imageHeight = ReadLUInt32(&currBuff[16]);
 						NN<Media::StaticImage> img;
 						NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UIntOS>(imageWidth, imageHeight), 0, 32, Media::PF_B8G8R8A8, imageWidth * imageHeight * 4, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_TOP_CENTER));
 						UnsafeArray<UInt8> dataPtr = img->data;
@@ -165,10 +165,10 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 					break;
 				case 0x19: //IR Info
 					{
-//						Double v1 = ReadFloat(&currBuff[12]);
-//						Double v2 = ReadFloat(&currBuff[16]);
-//						Double v3 = ReadFloat(&currBuff[36]);
-//						Int32 unk = ReadInt32(&currBuff[44]);
+//						Double v1 = ReadLFloat(&currBuff[12]);
+//						Double v2 = ReadLFloat(&currBuff[16]);
+//						Double v3 = ReadLFloat(&currBuff[36]);
+//						Int32 unk = ReadLInt32(&currBuff[44]);
 
 					}
 					break;
@@ -177,21 +177,21 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 						// [0] = 4
 						// [4] = size
 						// [8] = 0
-						UInt32 imageWidth = ReadUInt32(&currBuff[12]);
-						UInt32 imageHeight = ReadUInt32(&currBuff[16]);
+						UInt32 imageWidth = ReadLUInt32(&currBuff[12]);
+						UInt32 imageHeight = ReadLUInt32(&currBuff[16]);
 						// [20] = 1
 						// [24] = 0
 						// [28] = 32
 						// [32] = 0
-						Double emissivity = ReadFloat(&currBuff[36]); //emissivity 
-						Double transmission = ReadFloat(&currBuff[40]); //transmission
-						Double bkgTemp = ReadFloat(&currBuff[44]);
+						Double emissivity = ReadLFloat(&currBuff[36]); //emissivity 
+						Double transmission = ReadLFloat(&currBuff[40]); //transmission
+						Double bkgTemp = ReadLFloat(&currBuff[44]);
 						// [48] = 0
 						// [52] = 0
 						// [56] = 0
 						// t = tb / (emissivity * transmission) - (2 - emissivity - transmission) * backgroundtemp;
-						Int32 minVal = ReadInt16(&currBuff[60]); //?
-						Int32 maxVal = ReadInt16(&currBuff[62]); //?
+						Int32 minVal = ReadLInt16(&currBuff[60]); //?
+						Int32 maxVal = ReadLInt16(&currBuff[62]); //?
 						Int32 valDiff = maxVal - minVal;
 						NN<Media::StaticImage> img;
 						NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UIntOS>(imageWidth, imageHeight), 0, 16, Media::PF_LE_W16, imageWidth * imageHeight * 2, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_TOP_CENTER));
@@ -206,7 +206,7 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 								v = 0;
 							else if (v > 65535)
 								v = 65535;
-							WriteInt16(&dataPtr[0], v);
+							WriteLInt16(&dataPtr[0], v);
 							currBuffPtr += 2;
 							dataPtr += 2;
 						}
@@ -217,8 +217,8 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 					break;
 				case 0x22: //Output Image
 					{
-						UInt32 imageWidth = ReadUInt32(&currBuff[20]);
-						UInt32 imageHeight = ReadUInt32(&currBuff[24]);
+						UInt32 imageWidth = ReadLUInt32(&currBuff[20]);
+						UInt32 imageHeight = ReadLUInt32(&currBuff[24]);
 						NN<Media::StaticImage> img;
 						NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UIntOS>(imageWidth, imageHeight), 0, 32, Media::PF_B8G8R8A8, imageWidth * imageHeight * 4, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_TOP_CENTER));
 						UnsafeArray<UInt8> dataPtr = img->data;

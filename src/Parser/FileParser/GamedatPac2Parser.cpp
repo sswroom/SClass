@@ -49,9 +49,9 @@ Optional<IO::ParsedObject> Parser::FileParser::GamedatPac2Parser::ParseFileHdr(N
 	{
 		return nullptr;
 	}
-	if (ReadInt32(&hdr[0]) != 0x454d4147 || ReadInt32(&hdr[4]) != 0x20544144 || ReadInt32(&hdr[8]) != 0x32434150)
+	if (ReadLInt32(&hdr[0]) != 0x454d4147 || ReadLInt32(&hdr[4]) != 0x20544144 || ReadLInt32(&hdr[8]) != 0x32434150)
 		return nullptr;
-	recCnt = ReadUInt32(&hdr[12]);
+	recCnt = ReadLUInt32(&hdr[12]);
 	if (recCnt == 0 || recCnt >= 65536)
 		return nullptr;
 
@@ -71,8 +71,8 @@ Optional<IO::ParsedObject> Parser::FileParser::GamedatPac2Parser::ParseFileHdr(N
 	nextOfst = 0;
 	while (i < recCnt)
 	{
-		fileOfst = ReadUInt32(&recBuff[j + 0]);
-		fileSize = ReadUInt32(&recBuff[j + 4]);
+		fileOfst = ReadLUInt32(&recBuff[j + 0]);
+		fileSize = ReadLUInt32(&recBuff[j + 4]);
 		if (fileOfst != nextOfst)
 		{
 			pf.Delete();

@@ -43,7 +43,7 @@ void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	if (me->fileVer == 12 || me->fileVer == 14 || me->fileVer == 15)
 	{
 		fd->GetRealData(0, 256, BYTEARR(buff));
-		UIntOS sectionCnt = ReadUInt32(&buff[21]);
+		UIntOS sectionCnt = ReadLUInt32(&buff[21]);
 		UIntOS i;
 		UIntOS ofst;
 		pack = MemAllocNN(IO::FileAnalyse::DWGFileAnalyse::PackInfo);
@@ -59,8 +59,8 @@ void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NN<Sync::Thread> thr
 			i = 0;
 			while (i < sectionCnt)
 			{
-				secOfst = ReadUInt32(&buff[ofst + 1]);
-				secSize = ReadUInt32(&buff[ofst + 5]);
+				secOfst = ReadLUInt32(&buff[ofst + 1]);
+				secSize = ReadLUInt32(&buff[ofst + 5]);
 				if (secOfst != 0 && secSize != 0)
 				{
 					pack = MemAllocNN(IO::FileAnalyse::DWGFileAnalyse::PackInfo);
@@ -94,9 +94,9 @@ void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NN<Sync::Thread> thr
 			}
 		}
 
-		UInt32 imgAddr = ReadUInt32(&buff[13]);
+		UInt32 imgAddr = ReadLUInt32(&buff[13]);
 		fd->GetRealData(imgAddr, 256, BYTEARR(buff));
-		UInt32 imgSize = ReadUInt32(&buff[16]);
+		UInt32 imgSize = ReadLUInt32(&buff[16]);
 		pack = MemAllocNN(IO::FileAnalyse::DWGFileAnalyse::PackInfo);
 		pack->fileOfst = imgAddr;
 		pack->packSize = imgSize + 20 + 16;
@@ -243,11 +243,11 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 		frame->AddHexBuff(6, 5, CSTR("All Zero"), &packBuff[6], false);
 		frame->AddUInt(11, 1, CSTR("Maintenance release version"), packBuff[11]);
 		frame->AddUInt(12, 1, CSTR("Unknown"), packBuff[12]);
-		frame->AddHex32(13, CSTR("Preview Image Address"), ReadUInt32(&packBuff[13]));
+		frame->AddHex32(13, CSTR("Preview Image Address"), ReadLUInt32(&packBuff[13]));
 		frame->AddUInt(0x11, 1, CSTR("Application version"), packBuff[17]);
 		frame->AddUInt(0x12, 1, CSTR("Application maintenance release version"), packBuff[18]);
-		frame->AddUInt(0x13, 2, CSTR("Codepage"), ReadUInt16(&packBuff[19]));
-		frame->AddUInt(0x15, 4, CSTR("Section Count"), nSection = ReadUInt32(&packBuff[21]));
+		frame->AddUInt(0x13, 2, CSTR("Codepage"), ReadLUInt16(&packBuff[19]));
+		frame->AddUInt(0x15, 4, CSTR("Section Count"), nSection = ReadLUInt32(&packBuff[21]));
 		ofst = 0x19;
 		i = 0;
 		while (i < nSection)
@@ -255,13 +255,13 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 			sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Section ")), i), UTF8STRC(" type"));
 			frame->AddUInt(ofst, 1, CSTRP(sbuff, sptr), packBuff[ofst]);
 			sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Section ")), i), UTF8STRC(" offset"));
-			frame->AddUInt(ofst + 1, 4, CSTRP(sbuff, sptr), ReadUInt32(&packBuff[ofst + 1]));
+			frame->AddUInt(ofst + 1, 4, CSTRP(sbuff, sptr), ReadLUInt32(&packBuff[ofst + 1]));
 			sptr = Text::StrConcatC(Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("Section ")), i), UTF8STRC(" size"));
-			frame->AddUInt(ofst + 5, 4, CSTRP(sbuff, sptr), ReadUInt32(&packBuff[ofst + 5]));
+			frame->AddUInt(ofst + 5, 4, CSTRP(sbuff, sptr), ReadLUInt32(&packBuff[ofst + 5]));
 			i++;
 			ofst += 9;
 		}
-		frame->AddHex16(ofst, CSTR("CRC"), ReadUInt16(&packBuff[ofst]));
+		frame->AddHex16(ofst, CSTR("CRC"), ReadLUInt16(&packBuff[ofst]));
 		uuid.SetValue(&packBuff[ofst + 2]);
 		sptr = uuid.ToString(sbuff);
 		frame->AddField(ofst + 2, 16, CSTR("Section Type"), CSTRP(sbuff, sptr));
@@ -276,20 +276,20 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 		frame->AddHexBuff(6, 5, CSTR("All Zero"), &packBuff[6], false);
 		frame->AddUInt(11, 1, CSTR("Maintenance release version"), packBuff[11]);
 		frame->AddUInt(12, 1, CSTR("Unknown"), packBuff[12]);
-		frame->AddHex32(13, CSTR("Preview Image Address"), ReadUInt32(&packBuff[13]));
+		frame->AddHex32(13, CSTR("Preview Image Address"), ReadLUInt32(&packBuff[13]));
 		frame->AddUInt(0x11, 1, CSTR("Application version"), packBuff[17]);
 		frame->AddUInt(0x12, 1, CSTR("Application maintenance release version"), packBuff[18]);
-		frame->AddUInt(0x13, 2, CSTR("Codepage"), ReadUInt16(&packBuff[19]));
+		frame->AddUInt(0x13, 2, CSTR("Codepage"), ReadLUInt16(&packBuff[19]));
 		frame->AddHexBuff(0x15, 3, CSTR("All Zero"), &packBuff[21], false);
-		frame->AddHex32(0x18, CSTR("Security flags"), ReadUInt32(&packBuff[0x18]));
+		frame->AddHex32(0x18, CSTR("Security flags"), ReadLUInt32(&packBuff[0x18]));
 		frame->AddBit(0x18, CSTR("Encrypt data"), packBuff[0x18] & 1, 0);
 		frame->AddBit(0x18, CSTR("Encrypt properties"), packBuff[0x18] & 2, 1);
 		frame->AddBit(0x18, CSTR("Sign data"), packBuff[0x18] & 16, 4);
 		frame->AddBit(0x18, CSTR("Add timestamp"), packBuff[0x18] & 32, 5);
-		frame->AddUInt(0x1C, 4, CSTR("Unknown long"), ReadUInt32(&packBuff[0x1C]));
-		frame->AddHex32(0x20, CSTR("Summary info Address"), ReadUInt32(&packBuff[0x20]));
-		frame->AddHex32(0x24, CSTR("VBA Project Address"), ReadUInt32(&packBuff[0x24]));
-		frame->AddHex32(0x28, CSTR("Unknown"), ReadUInt32(&packBuff[0x28]));
+		frame->AddUInt(0x1C, 4, CSTR("Unknown long"), ReadLUInt32(&packBuff[0x1C]));
+		frame->AddHex32(0x20, CSTR("Summary info Address"), ReadLUInt32(&packBuff[0x20]));
+		frame->AddHex32(0x24, CSTR("VBA Project Address"), ReadLUInt32(&packBuff[0x24]));
+		frame->AddHex32(0x28, CSTR("Unknown"), ReadLUInt32(&packBuff[0x28]));
 		frame->AddHexBuff(0x2C, 0x54, CSTR("All Zero"), &packBuff[0x2C], true);
 		Data::DWGUtil::HeaderDecrypt(&packBuff[0x80], buff, 0x6c);
 		frame->AddHexBuff(0x80, CSTR("Decrypted block"), Data::ByteArrayR(buff, 0x6c), true);
@@ -303,24 +303,24 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 		uuid.SetValue(packBuff.Arr());
 		sptr = uuid.ToString(sbuff);
 		frame->AddField(0, 16, CSTR("Image Type"), CSTRP(sbuff, sptr));
-		frame->AddUInt(16, 4, CSTR("Overall Size"), ReadUInt32(&packBuff[16]));
+		frame->AddUInt(16, 4, CSTR("Overall Size"), ReadLUInt32(&packBuff[16]));
 		frame->AddUInt(20, 1, CSTR("Image Present"), packBuff[20]);
 		frame->AddUInt(21, 1, CSTR("Code"), packBuff[21]);
 		switch (packBuff[21])
 		{
 		case 1:
-			frame->AddUInt(22, 4, CSTR("Header data start"), ReadUInt32(&packBuff[22]));
-			frame->AddUInt(26, 4, CSTR("Header data size"), ReadUInt32(&packBuff[26]));
+			frame->AddUInt(22, 4, CSTR("Header data start"), ReadLUInt32(&packBuff[22]));
+			frame->AddUInt(26, 4, CSTR("Header data size"), ReadLUInt32(&packBuff[26]));
 			frame->AddHexBuff(30, (UIntOS)pack->packSize - 46, CSTR("Header Data"), &packBuff[30], true);
 			break;
 		case 2:
-			frame->AddUInt(22, 4, CSTR("Bmp start"), ReadUInt32(&packBuff[22]));
-			frame->AddUInt(26, 4, CSTR("Bmp size"), ReadUInt32(&packBuff[26]));
+			frame->AddUInt(22, 4, CSTR("Bmp start"), ReadLUInt32(&packBuff[22]));
+			frame->AddUInt(26, 4, CSTR("Bmp size"), ReadLUInt32(&packBuff[26]));
 			frame->AddHexBuff(30, (UIntOS)pack->packSize - 46, CSTR("Bmp Data"), &packBuff[30], true);
 			break;
 		case 3:
-			frame->AddUInt(22, 4, CSTR("Wmf start"), ReadUInt32(&packBuff[22]));
-			frame->AddUInt(26, 4, CSTR("Wmf size"), ReadUInt32(&packBuff[26]));
+			frame->AddUInt(22, 4, CSTR("Wmf start"), ReadLUInt32(&packBuff[22]));
+			frame->AddUInt(26, 4, CSTR("Wmf size"), ReadLUInt32(&packBuff[26]));
 			frame->AddHexBuff(30, (UIntOS)pack->packSize - 46, CSTR("Wmf Data"), &packBuff[30], true);
 			break;
 		}

@@ -676,7 +676,7 @@ UInt16 ICMPChecksum(UInt8 *buff, IntOS buffSize)
     UInt32 sum = 0xffff;
     while (buffSize > 1)
 	{
-        sum += ReadUInt16(buff);
+        sum += ReadLUInt16(buff);
         buff += 2;
         buffSize -= 2;
     }
@@ -737,10 +737,10 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> 
 		MemClear(hdr, sizeof(hdr));
 		hdr[0] = ICMP_ECHO; //type
 		hdr[1] = 0; //code
-		WriteInt16(&hdr[2], 0); //checksum
-		WriteInt16(&hdr[4], 0); //id
-		WriteInt16(&hdr[6], 0); //seq;
-		WriteInt16(&hdr[2], ICMPChecksum(hdr, sizeof(hdr)));
+		WriteLInt16(&hdr[2], 0); //checksum
+		WriteLInt16(&hdr[4], 0); //id
+		WriteLInt16(&hdr[6], 0); //seq;
+		WriteLInt16(&hdr[2], ICMPChecksum(hdr, sizeof(hdr)));
 		IntOS retSize = sendto(rs, (const char*)hdr, sizeof(hdr), 0, addrBuff, addrSize);
 		Int64 timeStart = Manage::HiResClock::GetRelTime_us();
 		if (retSize < 1)
@@ -1461,10 +1461,10 @@ UIntOS OSSocketFactory_LoadPortInfov6(NN<Data::ArrayListNN<Net::SocketFactory::P
 					if (Text::StrSplit(sarr2, 3, sarr[1], ':') == 2)
 					{
 						Text::StrHex2Bytes(sarr2[0], addr);
-						WriteUInt32(&addr[0], ReadMUInt32(&addr[0]));
-						WriteUInt32(&addr[4], ReadMUInt32(&addr[4]));
-						WriteUInt32(&addr[8], ReadMUInt32(&addr[8]));
-						WriteUInt32(&addr[12], ReadMUInt32(&addr[12]));
+						WriteLUInt32(&addr[0], ReadMUInt32(&addr[0]));
+						WriteLUInt32(&addr[4], ReadMUInt32(&addr[4]));
+						WriteLUInt32(&addr[8], ReadMUInt32(&addr[8]));
+						WriteLUInt32(&addr[12], ReadMUInt32(&addr[12]));
 						Net::SocketUtil::SetAddrInfoV6(port->localAddr, addr, 0);
 						port->localPort = (UInt16)Text::StrHex2Int16C(sarr2[1]);	
 					}
@@ -1477,10 +1477,10 @@ UIntOS OSSocketFactory_LoadPortInfov6(NN<Data::ArrayListNN<Net::SocketFactory::P
 					if (Text::StrSplit(sarr2, 3, sarr[2], ':') == 2)
 					{
 						Text::StrHex2Bytes(sarr2[0], addr);
-						WriteUInt32(&addr[0], ReadMUInt32(&addr[0]));
-						WriteUInt32(&addr[4], ReadMUInt32(&addr[4]));
-						WriteUInt32(&addr[8], ReadMUInt32(&addr[8]));
-						WriteUInt32(&addr[12], ReadMUInt32(&addr[12]));
+						WriteLUInt32(&addr[0], ReadMUInt32(&addr[0]));
+						WriteLUInt32(&addr[4], ReadMUInt32(&addr[4]));
+						WriteLUInt32(&addr[8], ReadMUInt32(&addr[8]));
+						WriteLUInt32(&addr[12], ReadMUInt32(&addr[12]));
 						Net::SocketUtil::SetAddrInfoV6(port->foreignAddr, addr, 0);
 						port->foreignPort = (UInt16)Text::StrHex2Int16C(sarr2[1]);	
 					}

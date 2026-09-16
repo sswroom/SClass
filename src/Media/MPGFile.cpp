@@ -444,7 +444,7 @@ Media::MPGFile::MPGFile(NN<IO::StreamData> stmData) : Media::MediaFile(stmData->
 
 	if (stmData->GetRealData(0, 128, this->readBuff) != 128)
 		return;
-	if (ReadInt32(&this->readBuff[0]) != (Int32)0xba010000)
+	if (ReadLInt32(&this->readBuff[0]) != (Int32)0xba010000)
 		return;
 	if ((this->readBuff[4] & 0xc0) == 0x40)
 	{
@@ -471,7 +471,7 @@ Media::MPGFile::MPGFile(NN<IO::StreamData> stmData) : Media::MediaFile(stmData->
 		i = (this->readBuff[13] & 7);
 		currOfst = 14 + i;
 	}
-	if (ReadInt32(&this->readBuff[(UIntOS)currOfst]) != (Int32)0xbb010000)
+	if (ReadLInt32(&this->readBuff[(UIntOS)currOfst]) != (Int32)0xbb010000)
 		return;
 
 	i = ReadMUInt16(&this->readBuff[(UIntOS)currOfst + 4]);
@@ -549,19 +549,19 @@ Media::MPGFile::MPGFile(NN<IO::StreamData> stmData) : Media::MediaFile(stmData->
 				if (stmType == 0xff)
 				{
 /*					stmId = buff[0x16];
-					if (ReadInt32(&buff[0x17]) == 0x64685353)
+					if (ReadLInt32(&buff[0x17]) == 0x64685353)
 					{
 						if (formats[stmId]->formatId == 0)
 						{
 							if (buff[0x14] == 0xa0)
 							{
 								formats[stmId]->formatId = 1;
-								formats[stmId]->frequency = ReadInt32(&buff[0x23]);
-								formats[stmId]->nChannels = ReadInt32(&buff[0x27]);
+								formats[stmId]->frequency = ReadLInt32(&buff[0x23]);
+								formats[stmId]->nChannels = ReadLInt32(&buff[0x27]);
 								formats[stmId]->bitpersample = 16;
 								formats[stmId]->bitRate = formats[stmId]->frequency * formats[stmId]->nChannels << 4;
 								formats[stmId]->align = formats[stmId]->nChannels << 1;
-								formats[stmId]->other = ReadInt32(&buff[0x2b]) >> 1;
+								formats[stmId]->other = ReadLInt32(&buff[0x2b]) >> 1;
 								formats[stmId]->intType = Media::AudioFormat::IT_NORMAL;
 								formats[stmId]->extraSize = 0;
 								formats[stmId]->extra = 0;

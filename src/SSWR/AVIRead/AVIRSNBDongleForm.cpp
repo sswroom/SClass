@@ -429,7 +429,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::LoadFile()
 			i = 0;
 			while (i < flen)
 			{
-				this->devHandlerMap.Put(ReadUInt64(&dataBuff[i]), ReadInt32(&dataBuff[i + 8]));
+				this->devHandlerMap.Put(ReadLUInt64(&dataBuff[i]), ReadLInt32(&dataBuff[i + 8]));
 				i += 12;
 			}
 			this->devMut.UnlockWrite();
@@ -451,8 +451,8 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 	dataBuff = MemAllocArr(UInt8, j * 12);
 	while (i < j)
 	{
-		WriteUInt64(&dataBuff[k], this->devHandlerMap.GetKey(i));
-		WriteInt32(&dataBuff[k + 8], this->devHandlerMap.GetItem(i));
+		WriteLUInt64(&dataBuff[k], this->devHandlerMap.GetKey(i));
+		WriteLInt32(&dataBuff[k + 8], this->devHandlerMap.GetItem(i));
 		i++;
 		k += 12;
 	}

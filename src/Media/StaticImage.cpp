@@ -813,7 +813,7 @@ Bool Media::StaticImage::ToW8()
 			while (i < j)
 			{
 				c = (UInt32)(i | (i << 8) | (i << 16) | 0xff000000);
-				WriteUInt32(&pal[i * 4], c);
+				WriteLUInt32(&pal[i * 4], c);
 				i++;
 			}
 			Media::ColorProfile::GetYUVConstants(this->info.yuvType, kr, kb);
@@ -851,7 +851,7 @@ Bool Media::StaticImage::ToW8()
 			while (i < j)
 			{
 				c = (UInt32)(i | (i << 8) | (i << 16) | 0xff000000);
-				WriteUInt32(&pal[i * 4], c);
+				WriteLUInt32(&pal[i * 4], c);
 				i++;
 			}
 			Media::ColorProfile::GetYUVConstants(this->info.yuvType, kr, kb);
@@ -889,7 +889,7 @@ Bool Media::StaticImage::ToW8()
 			while (i < j)
 			{
 				c = (UInt32)(i | (i << 8) | (i << 16) | 0xff000000);
-				WriteUInt32(&pal[i * 4], c);
+				WriteLUInt32(&pal[i * 4], c);
 				i++;
 			}
 			Media::ColorProfile::GetYUVConstants(this->info.yuvType, kr, kb);
@@ -1726,11 +1726,11 @@ Double Media::StaticImage::CalcPSNR(NN<Media::StaticImage> simg) const
 			j = this->info.dispSize.x;
 			while (j-- > 0)
 			{
-				v = (Int32)ReadUInt16(&sptr[0]) - (Int32)ReadUInt16(&dptr[0]);
+				v = (Int32)ReadLUInt16(&sptr[0]) - (Int32)ReadLUInt16(&dptr[0]);
 				sum += v * v;
-				v = (Int32)ReadUInt16(&sptr[2]) - (Int32)ReadUInt16(&dptr[2]);
+				v = (Int32)ReadLUInt16(&sptr[2]) - (Int32)ReadLUInt16(&dptr[2]);
 				sum += v * v;
-				v = (Int32)ReadUInt16(&sptr[4]) - (Int32)ReadUInt16(&dptr[4]);
+				v = (Int32)ReadLUInt16(&sptr[4]) - (Int32)ReadLUInt16(&dptr[4]);
 				sum += v * v;
 				sptr += 8;
 				dptr += 8;

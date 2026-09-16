@@ -86,24 +86,24 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 					break;
 				}
 				chunkSize = ReadMUInt32(&pngBuff[i]);
-				chunkType = ReadInt32(&pngBuff[i + 4]);
-				if (chunkType == ReadInt32("sRGB"))
+				chunkType = ReadLInt32(&pngBuff[i + 4]);
+				if (chunkType == ReadLInt32("sRGB"))
 				{
 					i += chunkSize + 12;
 				}
-				else if (chunkType == ReadInt32("gAMA"))
+				else if (chunkType == ReadLInt32("gAMA"))
 				{
 					i += chunkSize + 12;
 				}
-				else if (chunkType == ReadInt32("cHRM"))
+				else if (chunkType == ReadLInt32("cHRM"))
 				{
 					i += chunkSize + 12;
 				}
-				else if (chunkType == ReadInt32("pHYs"))
+				else if (chunkType == ReadLInt32("pHYs"))
 				{
 					i += chunkSize + 12;
 				}
-				else if (chunkType == ReadInt32("IDAT"))
+				else if (chunkType == ReadLInt32("IDAT"))
 				{
 					Crypto::Hash::CRC32R crc;
 					UnsafeArray<const UInt8> iccBuff;
@@ -111,7 +111,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 					{
 						UInt32 iccSize = ReadMUInt32(&iccBuff[0]);
 						UnsafeArray<UInt8> chunkBuff = MemAllocArr(UInt8, iccSize + 32);
-						WriteInt32(&chunkBuff[4], ReadInt32("iCCP"));
+						WriteLInt32(&chunkBuff[4], ReadLInt32("iCCP"));
 						Text::StrConcatC((UTF8Char*)&chunkBuff[8], UTF8STRC("Photoshop ICC profile"));
 						chunkBuff[30] = 0;
 
@@ -129,7 +129,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 						if (nnimg->info.color.GetRTranParamRead()->GetTranType() == Media::CS::TRANT_sRGB)
 						{
 							WriteMUInt32(&tmpBuff[0], 1);
-							WriteInt32(&tmpBuff[4], ReadInt32("sRGB"));
+							WriteLInt32(&tmpBuff[4], ReadLInt32("sRGB"));
 							tmpBuff[8] = 0;
 							WriteMUInt32(&tmpBuff[9], crc.CalcDirect(&tmpBuff[4], 5));
 							stm->Write(Data::ByteArrayR(tmpBuff, 13));
@@ -137,7 +137,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 
 						NN<const Media::ColorProfile::ColorPrimaries> prim = nnimg->info.color.GetPrimariesRead();
 						WriteMUInt32(&tmpBuff[0], 32);
-						WriteInt32(&tmpBuff[4], ReadInt32("cHRM"));
+						WriteLInt32(&tmpBuff[4], ReadLInt32("cHRM"));
 						WriteMInt32(&tmpBuff[8], Double2Int32(prim->w.x * 100000));
 						WriteMInt32(&tmpBuff[12], Double2Int32(prim->w.y * 100000));
 						WriteMInt32(&tmpBuff[16], Double2Int32(prim->r.x * 100000));

@@ -59,7 +59,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 	{
 		return nullptr;
 	}
-	if (ReadInt32(&hdr[8]) == 0x1a2b3c4d)
+	if (ReadLInt32(&hdr[8]) == 0x1a2b3c4d)
 	{
 		Data::ArrayListNative<Int8> resolList;
 		Data::ArrayListNative<UInt16> linkTypeList;
@@ -75,7 +75,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 			{
 				break;
 			}
-			packetSize = ReadUInt32(&packetBuff[4]);
+			packetSize = ReadLUInt32(&packetBuff[4]);
 			if (packetSize < 12 || packetSize + currOfst > fileSize)
 			{
 				break;
@@ -84,7 +84,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 			{
 				fd->GetRealData(currOfst + 12, packetSize - 12, packetBuff.SubArray(12));
 			}
-			packetType = ReadUInt32(&packetBuff[0]);
+			packetType = ReadLUInt32(&packetBuff[0]);
 			if (packetType == 0x0a0d0d0a)
 			{
 				resolList.Clear();
@@ -96,15 +96,15 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 				UInt16 optLeng;
 				UIntOS i = 16;
 				timeResol = 0;
-				if (ReadUInt16(&packetBuff[8]) == 201)
+				if (ReadLUInt16(&packetBuff[8]) == 201)
 				{
 					isBTLink = true;
 				}
-				linkTypeList.Add(ReadUInt16(&packetBuff[8]));
+				linkTypeList.Add(ReadLUInt16(&packetBuff[8]));
 				while (i < packetSize - 4)
 				{
-					optCode = ReadUInt16(&packetBuff[i]);
-					optLeng = ReadUInt16(&packetBuff[i + 2]);
+					optCode = ReadLUInt16(&packetBuff[i]);
+					optLeng = ReadLUInt16(&packetBuff[i + 2]);
 					if (i + 4 + optLeng > packetSize)
 					{
 						break;
@@ -128,10 +128,10 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 			}
 			else if (packetType == 6)
 			{
-				ifId = ReadUInt32(&packetBuff[8]);
+				ifId = ReadLUInt32(&packetBuff[8]);
 				linkType = linkTypeList.GetItem(ifId);
-				inclLen = ReadUInt32(&packetBuff[20]);
-				Int64 ts = (((Int64)ReadInt32(&packetBuff[12])) << 32) | ReadUInt32(&packetBuff[16]);
+				inclLen = ReadLUInt32(&packetBuff[20]);
+				Int64 ts = (((Int64)ReadLInt32(&packetBuff[12])) << 32) | ReadLUInt32(&packetBuff[16]);
 				if (linkType == 201)
 				{
 					if (inclLen > packetSize - 32)

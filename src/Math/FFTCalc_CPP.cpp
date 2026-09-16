@@ -9,7 +9,7 @@ extern "C" void FFTCalc_ApplyWindowI16(Double *complexOut, UInt8 *sampleIn, Doub
 	j = 0;
 	while (j < sampleCnt)
 	{
-		complexOut[j * 2] = ReadInt16(sampleIn) * sampleMul * sampleWindow[j];
+		complexOut[j * 2] = ReadLInt16(sampleIn) * sampleMul * sampleWindow[j];
 		complexOut[j * 2 + 1] = 0;
 		sampleIn += sampleAdd;
 
@@ -23,7 +23,7 @@ extern "C" void FFTCalc_ApplyWindowI24(Double *complexOut, UInt8 *sampleIn, Doub
 	j = 0;
 	while (j < sampleCnt)
 	{
-		complexOut[j * 2] = ReadInt24(sampleIn) * sampleMul * sampleWindow[j];
+		complexOut[j * 2] = ReadLInt24(sampleIn) * sampleMul * sampleWindow[j];
 		complexOut[j * 2 + 1] = 0;
 		sampleIn += sampleAdd;
 

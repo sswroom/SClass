@@ -253,12 +253,12 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 							if (buff[0x14] == 0xa0)
 							{
 								formats[stmId]->formatId = 1;
-								formats[stmId]->frequency = ReadUInt32(&buff[0x23]);
-								formats[stmId]->nChannels = (UInt16)ReadUInt32(&buff[0x27]);
+								formats[stmId]->frequency = ReadLUInt32(&buff[0x23]);
+								formats[stmId]->nChannels = (UInt16)ReadLUInt32(&buff[0x27]);
 								formats[stmId]->bitpersample = 16;
 								formats[stmId]->bitRate = formats[stmId]->frequency * formats[stmId]->nChannels << 4;
 								formats[stmId]->align = (UInt32)(formats[stmId]->nChannels << 1);
-								formats[stmId]->other = ReadUInt32(&buff[0x2b]) >> 1;
+								formats[stmId]->other = ReadLUInt32(&buff[0x2b]) >> 1;
 								formats[stmId]->intType = Media::AudioFormat::IT_NORMAL;
 								formats[stmId]->extraSize = 0;
 								formats[stmId]->extra = 0;
@@ -270,11 +270,11 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 							else if (buff[0x14] == 0xa1)
 							{
 								formats[stmId]->formatId = 0x2081;
-								formats[stmId]->frequency = ReadUInt32(&buff[0x23]);
-								formats[stmId]->nChannels = (UInt16)ReadUInt32(&buff[0x27]);
+								formats[stmId]->frequency = ReadLUInt32(&buff[0x23]);
+								formats[stmId]->nChannels = (UInt16)ReadLUInt32(&buff[0x27]);
 								formats[stmId]->bitpersample = 0;
 								formats[stmId]->bitRate = (formats[stmId]->frequency * formats[stmId]->nChannels * 8 / 14) << 3;
-								formats[stmId]->align = formats[stmId]->nChannels * ReadUInt32(&buff[0x2b]);
+								formats[stmId]->align = formats[stmId]->nChannels * ReadLUInt32(&buff[0x2b]);
 								formats[stmId]->other = 0;
 								formats[stmId]->intType = Media::AudioFormat::IT_NORMAL;
 								formats[stmId]->extraSize = 0;

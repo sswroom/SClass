@@ -44,7 +44,7 @@ void __stdcall IO::FileAnalyse::PNGFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		nntag = MemAllocNN(IO::FileAnalyse::PNGFileAnalyse::PNGTag);
 		nntag->ofst = ofst + 4;
 		nntag->size = lastSize + 12;
-		nntag->tagType = ReadInt32(&tagHdr[8]);
+		nntag->tagType = ReadLInt32(&tagHdr[8]);
 		nntag->crc = 0;
 		me->tags.Add(nntag);
 		tag = nntag;

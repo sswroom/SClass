@@ -85,19 +85,19 @@ UIntOS IO::SMBIOS::GetMemoryInfo(NN<Data::ArrayListNN<MemoryDeviceInfo>> memList
 		mem = MemAllocNN(MemoryDeviceInfo);
 		mem.ZeroContent();
 		if (dataBuff[1] >= 6)
-			mem->memArrayHandle = ReadUInt16(&dataBuff[4]);
+			mem->memArrayHandle = ReadLUInt16(&dataBuff[4]);
 		if (dataBuff[1] >= 8)
-			mem->memErrHandle = ReadUInt16(&dataBuff[6]);
+			mem->memErrHandle = ReadLUInt16(&dataBuff[6]);
 		if (dataBuff[1] >= 10)
-			mem->totalWidthBits = ReadUInt16(&dataBuff[8]);
+			mem->totalWidthBits = ReadLUInt16(&dataBuff[8]);
 		if (dataBuff[1] >= 12)
-			mem->dataWidthBits = ReadUInt16(&dataBuff[10]);
+			mem->dataWidthBits = ReadLUInt16(&dataBuff[10]);
 		if (dataBuff[1] >= 14)
 		{
-			UInt16 sizeVal = ReadUInt16(&dataBuff[12]);
+			UInt16 sizeVal = ReadLUInt16(&dataBuff[12]);
 			if (sizeVal == 0x7fff)
 			{
-				mem->memorySize = (ReadUInt32(&dataBuff[28]) & 0x7fffffff) * 1048576ULL;
+				mem->memorySize = (ReadLUInt32(&dataBuff[28]) & 0x7fffffff) * 1048576ULL;
 			}
 			else if (sizeVal & 0x8000)
 			{
@@ -119,7 +119,7 @@ UIntOS IO::SMBIOS::GetMemoryInfo(NN<Data::ArrayListNN<MemoryDeviceInfo>> memList
 		if (dataBuff[1] >= 19)
 			mem->memType = (MemoryType)dataBuff[18];
 		if (dataBuff[1] >= 23)
-			mem->maxSpeedMTs = ReadUInt16(&dataBuff[21]);
+			mem->maxSpeedMTs = ReadLUInt16(&dataBuff[21]);
 		if (dataBuff[1] >= 24)
 			mem->manufacturer = carr[dataBuff[23]];
 		if (dataBuff[1] >= 25)
@@ -131,13 +131,13 @@ UIntOS IO::SMBIOS::GetMemoryInfo(NN<Data::ArrayListNN<MemoryDeviceInfo>> memList
 		if (dataBuff[1] >= 28)
 			mem->attributes = dataBuff[27];
 		if (dataBuff[1] >= 34)
-			mem->confSpeedMTs = ReadUInt16(&dataBuff[32]);
+			mem->confSpeedMTs = ReadLUInt16(&dataBuff[32]);
 		if (dataBuff[1] >= 36)
-			mem->minVolt = ReadUInt16(&dataBuff[34]) * 0.001;
+			mem->minVolt = ReadLUInt16(&dataBuff[34]) * 0.001;
 		if (dataBuff[1] >= 38)
-			mem->maxVolt = ReadUInt16(&dataBuff[36]) * 0.001;
+			mem->maxVolt = ReadLUInt16(&dataBuff[36]) * 0.001;
 		if (dataBuff[1] >= 40)
-			mem->confVolt = ReadUInt16(&dataBuff[38]) * 0.001;
+			mem->confVolt = ReadLUInt16(&dataBuff[38]) * 0.001;
 		memList->Add(mem);
 		ret++;
 		i++;
@@ -385,7 +385,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Vendor: "));
 			sb->AppendOpt(carr[dataBuff[4]]);
@@ -394,7 +394,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendOpt(carr[dataBuff[5]]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("BIOS Starting Address Segment: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[6]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[6]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("BIOS Release Date: "));
 			sb->AppendOpt(carr[dataBuff[8]]);
@@ -410,7 +410,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("BIOS Characteristics: 0x"));
-			sb->AppendHex64(ReadUInt64(&dataBuff[10]));
+			sb->AppendHex64(ReadLUInt64(&dataBuff[10]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 19)
 			{
@@ -443,7 +443,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			if (dataBuff[1] >= 26)
 			{
 				sb->AppendC(UTF8STRC("Extended BIOS ROM Size: "));
-				sb->AppendI16(ReadInt16(&dataBuff[24]) & 0x3fff);
+				sb->AppendI16(ReadLInt16(&dataBuff[24]) & 0x3fff);
 				if ((dataBuff[25] & 0xc0) == 0)
 				{
 					sb->AppendC(UTF8STRC("MB"));
@@ -462,7 +462,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Manufacturer: "));
 			sb->AppendOpt(carr[dataBuff[4]]);
@@ -479,11 +479,11 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			if (dataBuff[1] >= 25)
 			{
 				sb->AppendC(UTF8STRC("UUID: {"));
-				sb->AppendHex32LC(ReadUInt32(&dataBuff[8]));
+				sb->AppendHex32LC(ReadLUInt32(&dataBuff[8]));
 				sb->AppendC(UTF8STRC("-"));
-				sb->AppendHex16LC(ReadUInt16(&dataBuff[12]));
+				sb->AppendHex16LC(ReadLUInt16(&dataBuff[12]));
 				sb->AppendC(UTF8STRC("-"));
-				sb->AppendHex16LC(ReadUInt16(&dataBuff[14]));
+				sb->AppendHex16LC(ReadLUInt16(&dataBuff[14]));
 				sb->AppendC(UTF8STRC("-"));
 				sb->AppendHex16LC(ReadMUInt16(&dataBuff[16]));
 				sb->AppendC(UTF8STRC("-"));
@@ -545,7 +545,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 8)
 			{
@@ -583,7 +583,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			if (dataBuff[1] >= 13)
 			{
 				sb->AppendC(UTF8STRC("Chassis Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[11]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[11]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 14)
@@ -645,7 +645,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 9)
 			{
@@ -900,7 +900,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			if (dataBuff[1] >= 17)
 			{
 				sb->AppendC(UTF8STRC("OEM-defined: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[13]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[13]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 18)
@@ -940,7 +940,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 26)
 			{
@@ -981,7 +981,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendOpt(carr[dataBuff[7]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Processor ID: 0x"));
-				sb->AppendHex64(ReadUInt64(&dataBuff[8]));
+				sb->AppendHex64(ReadLUInt64(&dataBuff[8]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Processor Version: "));
 				sb->AppendOpt(carr[dataBuff[16]]);
@@ -1009,13 +1009,13 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("External Clock: "));
-				sb->AppendI16(ReadInt16(&dataBuff[18]));
+				sb->AppendI16(ReadLInt16(&dataBuff[18]));
 				sb->AppendC(UTF8STRC("MHz\r\n"));
 				sb->AppendC(UTF8STRC("Max Speed: "));
-				sb->AppendI16(ReadInt16(&dataBuff[20]));
+				sb->AppendI16(ReadLInt16(&dataBuff[20]));
 				sb->AppendC(UTF8STRC("MHz\r\n"));
 				sb->AppendC(UTF8STRC("Current Speed: "));
-				sb->AppendI16(ReadInt16(&dataBuff[22]));
+				sb->AppendI16(ReadLInt16(&dataBuff[22]));
 				sb->AppendC(UTF8STRC("MHz\r\n"));
 				sb->AppendC(UTF8STRC("Status: 0x"));
 				sb->AppendHex8(dataBuff[24]);
@@ -1201,13 +1201,13 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			if (dataBuff[1] >= 32)
 			{
 				sb->AppendC(UTF8STRC("L1 Cache Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[26]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[26]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("L2 Cache Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[28]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[28]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("L3 Cache Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[30]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[30]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 35)
@@ -1234,22 +1234,22 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendU16(dataBuff[37]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Processor Characteristics: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[38]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[38]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 48)
 			{
 				sb->AppendC(UTF8STRC("Processor Family 2: "));
-				sb->Append(GetProcessorFamily(ReadUInt16(&dataBuff[40])));
+				sb->Append(GetProcessorFamily(ReadLUInt16(&dataBuff[40])));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Core Count 2: "));
-				sb->AppendI16(ReadInt16(&dataBuff[42]));
+				sb->AppendI16(ReadLInt16(&dataBuff[42]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Core Enabled 2: "));
-				sb->AppendI16(ReadInt16(&dataBuff[44]));
+				sb->AppendI16(ReadLInt16(&dataBuff[44]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Thread Count 2: "));
-				sb->AppendI16(ReadInt16(&dataBuff[46]));
+				sb->AppendI16(ReadLInt16(&dataBuff[46]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -1260,7 +1260,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 15)
 			{
@@ -1274,7 +1274,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 12)
 			{
@@ -1288,7 +1288,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendU16(dataBuff[6]);
 				sb->AppendC(UTF8STRC("ns\r\n"));
 				sb->AppendC(UTF8STRC("Current Memory Type: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[7]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[7]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Installed Size: "));
 				sb->AppendU16(dataBuff[9]);
@@ -1308,7 +1308,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 15)
 			{
@@ -1316,37 +1316,37 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendOpt(carr[dataBuff[4]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Cache Configuration: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[5]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[5]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Maximum Cache Size: "));
 				if (dataBuff[8] & 0x80)
 				{
-					sb->AppendI32((ReadInt16(&dataBuff[7]) & 0x7fff) * 64);
+					sb->AppendI32((ReadLInt16(&dataBuff[7]) & 0x7fff) * 64);
 					sb->AppendC(UTF8STRC("K"));
 				}
 				else
 				{
-					sb->AppendI32(ReadInt16(&dataBuff[7]) & 0x7fff);
+					sb->AppendI32(ReadLInt16(&dataBuff[7]) & 0x7fff);
 					sb->AppendC(UTF8STRC("K"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Installed Size: "));
 				if (dataBuff[10] & 0x80)
 				{
-					sb->AppendI32((ReadInt16(&dataBuff[9]) & 0x7fff) * 64);
+					sb->AppendI32((ReadLInt16(&dataBuff[9]) & 0x7fff) * 64);
 					sb->AppendC(UTF8STRC("K"));
 				}
 				else
 				{
-					sb->AppendI32(ReadInt16(&dataBuff[9]) & 0x7fff);
+					sb->AppendI32(ReadLInt16(&dataBuff[9]) & 0x7fff);
 					sb->AppendC(UTF8STRC("K"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Supported SRAM Type: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[11]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[11]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Current SRAM Type: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[13]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[13]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 19)
@@ -1465,24 +1465,24 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendC(UTF8STRC("Maximum Cache Size 2: "));
 				if (dataBuff[22] & 0x80)
 				{
-					sb->AppendI32((ReadInt32(&dataBuff[19]) & 0x7fffffff) * 64);
+					sb->AppendI32((ReadLInt32(&dataBuff[19]) & 0x7fffffff) * 64);
 					sb->AppendC(UTF8STRC("K"));
 				}
 				else
 				{
-					sb->AppendI32(ReadInt32(&dataBuff[19]) & 0x7fffffff);
+					sb->AppendI32(ReadLInt32(&dataBuff[19]) & 0x7fffffff);
 					sb->AppendC(UTF8STRC("K"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Installed Cache Size 2: "));
 				if (dataBuff[26] & 0x80)
 				{
-					sb->AppendI32((ReadInt32(&dataBuff[23]) & 0x7fffffff) * 64);
+					sb->AppendI32((ReadLInt32(&dataBuff[23]) & 0x7fffffff) * 64);
 					sb->AppendC(UTF8STRC("K"));
 				}
 				else
 				{
-					sb->AppendI32(ReadInt32(&dataBuff[23]) & 0x7fffffff);
+					sb->AppendI32(ReadLInt32(&dataBuff[23]) & 0x7fffffff);
 					sb->AppendC(UTF8STRC("K"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -1495,7 +1495,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 9)
 			{
@@ -1523,7 +1523,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 12)
 			{
@@ -1817,7 +1817,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Slot ID: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[9]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[9]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Slot Characteristics 1: 0x"));
 				sb->AppendHex8(dataBuff[11]);
@@ -1832,7 +1832,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			if (dataBuff[1] >= 17)
 			{
 				sb->AppendC(UTF8STRC("Segment Group Number: "));
-				sb->AppendI16(ReadInt16(&dataBuff[13]));
+				sb->AppendI16(ReadLInt16(&dataBuff[13]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Bus Number: "));
 				sb->AppendU16(dataBuff[15]);
@@ -1849,7 +1849,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			l = 4;
 			k = 1;
@@ -1925,7 +1925,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Number of strings: "));
 			sb->AppendU16(dataBuff[4]);
@@ -1951,7 +1951,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Number of strings: "));
 			sb->AppendU16(dataBuff[4]);
@@ -1977,7 +1977,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 5)
 			{
@@ -2018,7 +2018,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Group Name: "));
 			sb->AppendOpt(carr[dataBuff[4]]);
@@ -2030,7 +2030,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendU16(dataBuff[k]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Item Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[k + 1]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[k + 1]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				k += 3;
 			}
@@ -2042,18 +2042,18 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 20)
 			{
 				sb->AppendC(UTF8STRC("Log Area Length: "));
-				sb->AppendI16(ReadInt16(&dataBuff[4]));
+				sb->AppendI16(ReadLInt16(&dataBuff[4]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Log Header Start Offset: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[6]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[6]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Log Data Start Offset: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[8]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[8]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Access Method: "));
 				switch (dataBuff[10])
@@ -2084,10 +2084,10 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendHex8(dataBuff[11]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Log Change Token: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[12]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[12]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Access Method Address: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[16]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[16]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 23)
@@ -2123,7 +2123,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 15)
 			{
@@ -2242,13 +2242,13 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Maximum Capacity: "));
-				sb->AppendI32(ReadInt32(&dataBuff[7]));
+				sb->AppendI32(ReadLInt32(&dataBuff[7]));
 				sb->AppendC(UTF8STRC("KB\r\n"));
 				sb->AppendC(UTF8STRC("Memory Error Information Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[11]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[11]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Number of Memory Devices: "));
-				sb->AppendI16(ReadInt16(&dataBuff[13]));
+				sb->AppendI16(ReadLInt16(&dataBuff[13]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -2259,31 +2259,31 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 21)
 			{
 				sb->AppendC(UTF8STRC("Physical Memory Array Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[4]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[4]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Memory Error Information Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[6]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[6]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Total Width: "));
-				sb->AppendI16(ReadInt16(&dataBuff[8]));
+				sb->AppendI16(ReadLInt16(&dataBuff[8]));
 				sb->AppendC(UTF8STRC(" bits\r\n"));
 				sb->AppendC(UTF8STRC("Data Width: "));
-				sb->AppendI16(ReadInt16(&dataBuff[10]));
+				sb->AppendI16(ReadLInt16(&dataBuff[10]));
 				sb->AppendC(UTF8STRC(" bits\r\n"));
 				sb->AppendC(UTF8STRC("Size: "));
 				if (dataBuff[13] & 0x80)
 				{
-					sb->AppendI16(ReadInt16(&dataBuff[12]) & 0x7fff);
+					sb->AppendI16(ReadLInt16(&dataBuff[12]) & 0x7fff);
 					sb->AppendC(UTF8STRC("KB"));
 				}
 				else
 				{
-					sb->AppendI16(ReadInt16(&dataBuff[12]) & 0x7fff);
+					sb->AppendI16(ReadLInt16(&dataBuff[12]) & 0x7fff);
 					sb->AppendC(UTF8STRC("MB"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -2443,13 +2443,13 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Type Detail: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[19]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[19]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 27)
 			{
 				sb->AppendC(UTF8STRC("Speed: "));
-				sb->AppendI16(ReadInt16(&dataBuff[21]));
+				sb->AppendI16(ReadLInt16(&dataBuff[21]));
 				sb->AppendC(UTF8STRC("MT/s\r\n"));
 				sb->AppendC(UTF8STRC("Manufacturer: "));
 				sb->AppendOpt(carr[dataBuff[23]]);
@@ -2473,22 +2473,22 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			if (dataBuff[1] >= 34)
 			{
 				sb->AppendC(UTF8STRC("Extended Size: "));
-				sb->AppendI32(ReadInt32(&dataBuff[28]));
+				sb->AppendI32(ReadLInt32(&dataBuff[28]));
 				sb->AppendC(UTF8STRC("MB\r\n"));
 				sb->AppendC(UTF8STRC("Configured Memory Clock Speed: "));
-				sb->AppendI16(ReadInt16(&dataBuff[32]));
+				sb->AppendI16(ReadLInt16(&dataBuff[32]));
 				sb->AppendC(UTF8STRC("MT/s\r\n"));
 			}
 			if (dataBuff[1] >= 40)
 			{
 				sb->AppendC(UTF8STRC("Minimum voltage: "));
-				Text::SBAppendF64(sb, ReadInt16(&dataBuff[34]) * 0.001);
+				Text::SBAppendF64(sb, ReadLInt16(&dataBuff[34]) * 0.001);
 				sb->AppendC(UTF8STRC("V\r\n"));
 				sb->AppendC(UTF8STRC("Maximum voltage: "));
-				Text::SBAppendF64(sb, ReadInt16(&dataBuff[36]) * 0.001);
+				Text::SBAppendF64(sb, ReadLInt16(&dataBuff[36]) * 0.001);
 				sb->AppendC(UTF8STRC("V\r\n"));
 				sb->AppendC(UTF8STRC("Configured voltage: "));
-				Text::SBAppendF64(sb, ReadInt16(&dataBuff[38]) * 0.001);
+				Text::SBAppendF64(sb, ReadLInt16(&dataBuff[38]) * 0.001);
 				sb->AppendC(UTF8STRC("V\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -2499,7 +2499,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Error Type: "));
 			switch (dataBuff[4])
@@ -2603,25 +2603,25 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			if (dataBuff[1] >= 11)
 			{
 				sb->AppendC(UTF8STRC("Vendor Syndrome: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[7]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[7]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 15)
 			{
 				sb->AppendC(UTF8STRC("Memory Array Error Address: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[11]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[11]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 19)
 			{
 				sb->AppendC(UTF8STRC("Device Error Address: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[15]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[15]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 23)
 			{
 				sb->AppendC(UTF8STRC("Error Resolution: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[19]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[19]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -2632,18 +2632,18 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 15)
 			{
 				sb->AppendC(UTF8STRC("Starting Address: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[4]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[4]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Ending Address: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[8]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[8]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Memory Array Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[12]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[12]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Partition Width: "));
 				sb->AppendU16(dataBuff[14]);
@@ -2652,10 +2652,10 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			if (dataBuff[1] >= 31)
 			{
 				sb->AppendC(UTF8STRC("Extended Starting Address: 0x"));
-				sb->AppendHex64(ReadUInt64(&dataBuff[15]));
+				sb->AppendHex64(ReadLUInt64(&dataBuff[15]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Extended Ending Address: 0x"));
-				sb->AppendHex64(ReadUInt64(&dataBuff[23]));
+				sb->AppendHex64(ReadLUInt64(&dataBuff[23]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -2666,21 +2666,21 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 19)
 			{
 				sb->AppendC(UTF8STRC("Starting Address: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[4]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[4]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Ending Address: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[8]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[8]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Memory Device Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[12]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[12]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Memory Array Mapped Address Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[14]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[14]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Partition Row Position: "));
 				sb->AppendU16(dataBuff[16]);
@@ -2695,10 +2695,10 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			if (dataBuff[1] >= 35)
 			{
 				sb->AppendC(UTF8STRC("Extended Starting Address: 0x"));
-				sb->AppendHex64(ReadUInt64(&dataBuff[19]));
+				sb->AppendHex64(ReadLUInt64(&dataBuff[19]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Extended Ending Address: 0x"));
-				sb->AppendHex64(ReadUInt64(&dataBuff[27]));
+				sb->AppendHex64(ReadLUInt64(&dataBuff[27]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -2709,7 +2709,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 7)
 			{
@@ -2805,7 +2805,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Location: "));
 			sb->AppendOpt(carr[dataBuff[4]]);
@@ -2857,10 +2857,10 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Design Capacity: "));
-			sb->AppendU16(ReadUInt16(&dataBuff[10]));
+			sb->AppendU16(ReadLUInt16(&dataBuff[10]));
 			sb->AppendC(UTF8STRC("mWh\r\n"));
 			sb->AppendC(UTF8STRC("Design Voltage: "));
-			sb->AppendU16(ReadUInt16(&dataBuff[12]));
+			sb->AppendU16(ReadLUInt16(&dataBuff[12]));
 			sb->AppendC(UTF8STRC("mV\r\n"));
 			sb->AppendC(UTF8STRC("SBDS Version Number: "));
 			sb->AppendOpt(carr[dataBuff[14]]);
@@ -2871,7 +2871,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			if (dataBuff[1] >= 26)
 			{
 				sb->AppendC(UTF8STRC("SBDS Serial Number: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[16]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[16]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("SBDS Manufacture Date: "));
 				sb->AppendU16((UInt16)(1980 + (dataBuff[19] >> 1)));
@@ -2887,7 +2887,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendU16(dataBuff[21]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("OEM-specific: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[22]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[22]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -2898,7 +2898,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 13)
 			{
@@ -2906,16 +2906,16 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendHex8(dataBuff[4]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Reset Count: "));
-				sb->AppendI16(ReadInt16(&dataBuff[5]));
+				sb->AppendI16(ReadLInt16(&dataBuff[5]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Reset Limit: "));
-				sb->AppendI16(ReadInt16(&dataBuff[7]));
+				sb->AppendI16(ReadLInt16(&dataBuff[7]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Time Interval: "));
-				sb->AppendI16(ReadInt16(&dataBuff[9]));
+				sb->AppendI16(ReadLInt16(&dataBuff[9]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Timeout: "));
-				sb->AppendI16(ReadInt16(&dataBuff[11]));
+				sb->AppendI16(ReadLInt16(&dataBuff[11]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -2926,7 +2926,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 5)
 			{
@@ -2942,7 +2942,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 9)
 			{
@@ -2970,7 +2970,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 20)
 			{
@@ -3049,74 +3049,74 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Maximum Value: "));
-				if (ReadInt16(&dataBuff[6]) == -0x8000)
+				if (ReadLInt16(&dataBuff[6]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					Text::SBAppendF64(sb, ReadInt16(&dataBuff[6]) * 0.001);
+					Text::SBAppendF64(sb, ReadLInt16(&dataBuff[6]) * 0.001);
 					sb->AppendC(UTF8STRC("V"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Minimum Value: "));
-				if (ReadInt16(&dataBuff[8]) == -0x8000)
+				if (ReadLInt16(&dataBuff[8]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					Text::SBAppendF64(sb, ReadInt16(&dataBuff[8]) * 0.001);
+					Text::SBAppendF64(sb, ReadLInt16(&dataBuff[8]) * 0.001);
 					sb->AppendC(UTF8STRC("V"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Resolution: "));
-				if (ReadInt16(&dataBuff[10]) == -0x8000)
+				if (ReadLInt16(&dataBuff[10]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					Text::SBAppendF64(sb, ReadInt16(&dataBuff[10]) * 0.01);
+					Text::SBAppendF64(sb, ReadLInt16(&dataBuff[10]) * 0.01);
 					sb->AppendC(UTF8STRC("V"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Tolerance: "));
-				if (ReadInt16(&dataBuff[12]) == -0x8000)
+				if (ReadLInt16(&dataBuff[12]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					Text::SBAppendF64(sb, ReadInt16(&dataBuff[12]) * 0.001);
+					Text::SBAppendF64(sb, ReadLInt16(&dataBuff[12]) * 0.001);
 					sb->AppendC(UTF8STRC("V"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Accuracy: "));
-				if (ReadInt16(&dataBuff[14]) == -0x8000)
+				if (ReadLInt16(&dataBuff[14]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					Text::SBAppendF64(sb, ReadInt16(&dataBuff[14]) * 0.01);
+					Text::SBAppendF64(sb, ReadLInt16(&dataBuff[14]) * 0.01);
 					sb->AppendC(UTF8STRC("%"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("OEM-defined: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[16]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[16]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 22)
 			{
 				sb->AppendC(UTF8STRC("Nominal: "));
-				if (ReadInt16(&dataBuff[20]) == -0x8000)
+				if (ReadLInt16(&dataBuff[20]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					Text::SBAppendF64(sb, ReadInt16(&dataBuff[20]) * 0.001);
+					Text::SBAppendF64(sb, ReadLInt16(&dataBuff[20]) * 0.001);
 					sb->AppendC(UTF8STRC("V"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -3129,12 +3129,12 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 12)
 			{
 				sb->AppendC(UTF8STRC("Temperature Probe Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[4]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[4]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Device Type: "));
 				switch (dataBuff[6] & 0x1f)
@@ -3211,19 +3211,19 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendU16(dataBuff[7]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("OEM-defined: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[8]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[8]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 14)
 			{
 				sb->AppendC(UTF8STRC("Nominal Speed: "));
-				if (ReadInt16(&dataBuff[12]) == -0x8000)
+				if (ReadLInt16(&dataBuff[12]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					sb->AppendI16(ReadInt16(&dataBuff[12]));
+					sb->AppendI16(ReadLInt16(&dataBuff[12]));
 					sb->AppendC(UTF8STRC("rpm"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -3242,7 +3242,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 20)
 			{
@@ -3333,74 +3333,74 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Maximum Value: "));
-				if (ReadInt16(&dataBuff[6]) == -0x8000)
+				if (ReadLInt16(&dataBuff[6]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					Text::SBAppendF64(sb, ReadInt16(&dataBuff[6]) * 0.1);
+					Text::SBAppendF64(sb, ReadLInt16(&dataBuff[6]) * 0.1);
 					sb->AppendC(UTF8STRC("degree C"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Minimum Value: "));
-				if (ReadInt16(&dataBuff[8]) == -0x8000)
+				if (ReadLInt16(&dataBuff[8]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					Text::SBAppendF64(sb, ReadInt16(&dataBuff[8]) * 0.1);
+					Text::SBAppendF64(sb, ReadLInt16(&dataBuff[8]) * 0.1);
 					sb->AppendC(UTF8STRC("degree C"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Resolution: "));
-				if (ReadInt16(&dataBuff[10]) == -0x8000)
+				if (ReadLInt16(&dataBuff[10]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					Text::SBAppendF64(sb, ReadInt16(&dataBuff[10]) * 0.001);
+					Text::SBAppendF64(sb, ReadLInt16(&dataBuff[10]) * 0.001);
 					sb->AppendC(UTF8STRC("degree C"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Tolerance: "));
-				if (ReadInt16(&dataBuff[12]) == -0x8000)
+				if (ReadLInt16(&dataBuff[12]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					Text::SBAppendF64(sb, ReadInt16(&dataBuff[12]) * 0.1);
+					Text::SBAppendF64(sb, ReadLInt16(&dataBuff[12]) * 0.1);
 					sb->AppendC(UTF8STRC("degree C"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Accuracy: "));
-				if (ReadInt16(&dataBuff[14]) == -0x8000)
+				if (ReadLInt16(&dataBuff[14]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					Text::SBAppendF64(sb, ReadInt16(&dataBuff[14]) * 0.01);
+					Text::SBAppendF64(sb, ReadLInt16(&dataBuff[14]) * 0.01);
 					sb->AppendC(UTF8STRC("%"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("OEM-defined: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[16]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[16]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 22)
 			{
 				sb->AppendC(UTF8STRC("Nominal Value: "));
-				if (ReadInt16(&dataBuff[20]) == -0x8000)
+				if (ReadLInt16(&dataBuff[20]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					Text::SBAppendF64(sb, ReadInt16(&dataBuff[20]) * 0.1);
+					Text::SBAppendF64(sb, ReadLInt16(&dataBuff[20]) * 0.1);
 					sb->AppendC(UTF8STRC("degree C"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -3413,7 +3413,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 20)
 			{
@@ -3492,74 +3492,74 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Maximum Value: "));
-				if (ReadInt16(&dataBuff[6]) == -0x8000)
+				if (ReadLInt16(&dataBuff[6]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					Text::SBAppendF64(sb, ReadInt16(&dataBuff[6]) * 0.001);
+					Text::SBAppendF64(sb, ReadLInt16(&dataBuff[6]) * 0.001);
 					sb->AppendC(UTF8STRC("A"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Minimum Value: "));
-				if (ReadInt16(&dataBuff[8]) == -0x8000)
+				if (ReadLInt16(&dataBuff[8]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					Text::SBAppendF64(sb, ReadInt16(&dataBuff[8]) * 0.001);
+					Text::SBAppendF64(sb, ReadLInt16(&dataBuff[8]) * 0.001);
 					sb->AppendC(UTF8STRC("A"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Resolution: "));
-				if (ReadInt16(&dataBuff[10]) == -0x8000)
+				if (ReadLInt16(&dataBuff[10]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					Text::SBAppendF64(sb, ReadInt16(&dataBuff[10]) * 0.01);
+					Text::SBAppendF64(sb, ReadLInt16(&dataBuff[10]) * 0.01);
 					sb->AppendC(UTF8STRC("A"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Tolerance: "));
-				if (ReadInt16(&dataBuff[12]) == -0x8000)
+				if (ReadLInt16(&dataBuff[12]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					Text::SBAppendF64(sb, ReadInt16(&dataBuff[12]) * 0.001);
+					Text::SBAppendF64(sb, ReadLInt16(&dataBuff[12]) * 0.001);
 					sb->AppendC(UTF8STRC("A"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Accuracy: "));
-				if (ReadInt16(&dataBuff[14]) == -0x8000)
+				if (ReadLInt16(&dataBuff[14]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					Text::SBAppendF64(sb, ReadInt16(&dataBuff[14]) * 0.01);
+					Text::SBAppendF64(sb, ReadLInt16(&dataBuff[14]) * 0.01);
 					sb->AppendC(UTF8STRC("%"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("OEM-defined: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[16]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[16]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 22)
 			{
 				sb->AppendC(UTF8STRC("Nominal Value: "));
-				if (ReadInt16(&dataBuff[20]) == -0x8000)
+				if (ReadLInt16(&dataBuff[20]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					Text::SBAppendF64(sb, ReadInt16(&dataBuff[20]) * 0.001);
+					Text::SBAppendF64(sb, ReadLInt16(&dataBuff[20]) * 0.001);
 					sb->AppendC(UTF8STRC("A"));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -3572,7 +3572,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 6)
 			{
@@ -3591,7 +3591,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			break;*/
@@ -3601,7 +3601,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 11)
 			{
@@ -3617,7 +3617,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			break;*/
@@ -3627,7 +3627,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 11)
 			{
@@ -3684,7 +3684,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Address: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[6]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[6]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Address Type: "));
 				switch (dataBuff[10])
@@ -3720,7 +3720,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 11)
 			{
@@ -3728,13 +3728,13 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendOpt(carr[dataBuff[4]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Management Device Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[5]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[5]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Component Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[7]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[7]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Threshold Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[9]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[9]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -3745,68 +3745,68 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 16)
 			{
 				sb->AppendC(UTF8STRC("Lower Threshold - Non-critical: "));
-				if (ReadInt16(&dataBuff[4]) == -0x8000)
+				if (ReadLInt16(&dataBuff[4]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					sb->AppendI16(ReadInt16(&dataBuff[4]));
+					sb->AppendI16(ReadLInt16(&dataBuff[4]));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Upper Threshold - Non-critical: "));
-				if (ReadInt16(&dataBuff[6]) == -0x8000)
+				if (ReadLInt16(&dataBuff[6]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					sb->AppendI16(ReadInt16(&dataBuff[6]));
+					sb->AppendI16(ReadLInt16(&dataBuff[6]));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Lower Threshold - Critical: "));
-				if (ReadInt16(&dataBuff[8]) == -0x8000)
+				if (ReadLInt16(&dataBuff[8]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					sb->AppendI16(ReadInt16(&dataBuff[8]));
+					sb->AppendI16(ReadLInt16(&dataBuff[8]));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Upper Threshold - Critical: "));
-				if (ReadInt16(&dataBuff[10]) == -0x8000)
+				if (ReadLInt16(&dataBuff[10]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					sb->AppendI16(ReadInt16(&dataBuff[10]));
+					sb->AppendI16(ReadLInt16(&dataBuff[10]));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Lower Threshold - Non-recoverable: "));
-				if (ReadInt16(&dataBuff[12]) == -0x8000)
+				if (ReadLInt16(&dataBuff[12]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					sb->AppendI16(ReadInt16(&dataBuff[12]));
+					sb->AppendI16(ReadLInt16(&dataBuff[12]));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Upper Threshold - Non-recoverable: "));
-				if (ReadInt16(&dataBuff[14]) == -0x8000)
+				if (ReadLInt16(&dataBuff[14]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					sb->AppendI16(ReadInt16(&dataBuff[14]));
+					sb->AppendI16(ReadLInt16(&dataBuff[14]));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
@@ -3818,7 +3818,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			break;*/
@@ -3828,7 +3828,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			break;*/
@@ -3838,7 +3838,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 16)
 			{
@@ -3867,29 +3867,29 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendOpt(carr[dataBuff[11]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Max Power Capacity: "));
-				if (ReadInt16(&dataBuff[12]) == -0x8000)
+				if (ReadLInt16(&dataBuff[12]) == -0x8000)
 				{
 					sb->AppendC(UTF8STRC("unknown"));
 				}
 				else
 				{
-					sb->AppendI16(ReadInt16(&dataBuff[12]));
+					sb->AppendI16(ReadLInt16(&dataBuff[12]));
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Power Supply Characteristics: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[14]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[14]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 22)
 			{
 				sb->AppendC(UTF8STRC("Input Voltage Probe Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[16]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[16]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Cooling Device Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[18]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[18]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Input Current Probe Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[20]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[20]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -3900,7 +3900,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Number of Additional Information entries: "));
 			sb->AppendU16(dataBuff[4]);
@@ -3918,7 +3918,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendU16(dataBuff[k]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Referenced Handle: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[k + 1]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[k + 1]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Referenced Offset: "));
 				sb->AppendU16(dataBuff[k + 3]);
@@ -3936,7 +3936,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 11)
 			{
@@ -3997,7 +3997,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendU16(dataBuff[6]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Segment Group Number: "));
-				sb->AppendI16(ReadInt16(&dataBuff[7]));
+				sb->AppendI16(ReadLInt16(&dataBuff[7]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Bus Number: "));
 				sb->AppendU16(dataBuff[9]);
@@ -4017,7 +4017,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			break;*/
@@ -4027,7 +4027,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 0x1F)
 			{
@@ -4059,19 +4059,19 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendU16(dataBuff[9]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Firmware Version 1: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[10]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[10]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Firmware Version 2: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[14]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[14]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Description: "));
 				sb->AppendOpt(carr[dataBuff[18]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Characteristic: 0x"));
-				sb->AppendHex64(ReadUInt64(&dataBuff[19]));
+				sb->AppendHex64(ReadLUInt64(&dataBuff[19]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("OEM-defined: 0x"));
-				sb->AppendHex32(ReadUInt32(&dataBuff[27]));
+				sb->AppendHex32(ReadLUInt32(&dataBuff[27]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -4082,10 +4082,10 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Referenced Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[4]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[4]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Processor-specific Block Length: "));
 			sb->AppendU16(dataBuff[6]);
@@ -4147,7 +4147,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 24)
 			{
@@ -4214,13 +4214,13 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendOpt(carr[dataBuff[11]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Image Size: "));
-				if (ReadInt64(&dataBuff[12]) == -1)
+				if (ReadLInt64(&dataBuff[12]) == -1)
 					sb->AppendC(UTF8STRC("Unknown"));
 				else
-					sb->AppendU64(ReadUInt64(&dataBuff[12]));
+					sb->AppendU64(ReadLUInt64(&dataBuff[12]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Characteristics: 0x"));
-				sb->AppendHex16(ReadUInt16(&dataBuff[20]));
+				sb->AppendHex16(ReadLUInt16(&dataBuff[20]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("State: "));
 				switch (dataBuff[22])
@@ -4267,7 +4267,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 						sb->AppendC(UTF8STRC("Associated Component Handles["));
 						sb->AppendUIntOS(i);
 						sb->AppendC(UTF8STRC("]: 0x"));
-						sb->AppendHex16(ReadUInt16(&dataBuff[24 + i * 2]));
+						sb->AppendHex16(ReadLUInt16(&dataBuff[24 + i * 2]));
 						sb->AppendC(UTF8STRC("\r\n"));
 						i++;
 					}
@@ -4281,7 +4281,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			break;
@@ -4291,7 +4291,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			break;
@@ -4301,7 +4301,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 16)
 			{
@@ -4309,10 +4309,10 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendU16(dataBuff[4]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Firmware Feature: 0x"));
-				sb->AppendHex32(ReadUInt16(&dataBuff[8]));
+				sb->AppendHex32(ReadLUInt16(&dataBuff[8]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Firmware Feature Mask: 0x"));
-				sb->AppendHex32(ReadUInt16(&dataBuff[12]));
+				sb->AppendHex32(ReadLUInt16(&dataBuff[12]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				
 				if (dataBuff[1] >= 24 + dataBuff[4])
@@ -4353,12 +4353,12 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 						sb->AppendC(UTF8STRC("Region "));
 						sb->AppendUIntOS(k);
 						sb->AppendC(UTF8STRC(" Start Address: 0x"));
-						sb->AppendHex32(ReadUInt32(&dataBuff[24 + k * 8]));
+						sb->AppendHex32(ReadLUInt32(&dataBuff[24 + k * 8]));
 						sb->AppendC(UTF8STRC("\r\n"));
 						sb->AppendC(UTF8STRC("Region "));
 						sb->AppendUIntOS(k);
 						sb->AppendC(UTF8STRC(" End Address: 0x"));
-						sb->AppendHex32(ReadUInt32(&dataBuff[24 + k * 8 + 4]));
+						sb->AppendHex32(ReadLUInt32(&dataBuff[24 + k * 8 + 4]));
 						sb->AppendC(UTF8STRC("\r\n"));
 						
 						k++;
@@ -4370,7 +4370,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 /*		case 130:
 			sb->AppendC(UTF8STRC("SMBIOS Type 130 - Apple Memory SPD Data\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("\r\n"));
 			break;*/
@@ -4380,12 +4380,12 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 6)
 			{
 				sb->AppendC(UTF8STRC("Processor Type: "));
-				sb->AppendI16(ReadInt16(&dataBuff[4]));
+				sb->AppendI16(ReadLInt16(&dataBuff[4]));
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -4398,7 +4398,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendU16(dataBuff[1]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Handle: 0x"));
-			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
+			sb->AppendHex16(ReadLUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Data:\r\n"));
 			sb->AppendHexBuff(&dataBuff[4], (UIntOS)dataBuff[1] - 4, ' ', Text::LineBreakType::CRLF);

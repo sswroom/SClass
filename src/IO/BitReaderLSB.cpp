@@ -81,10 +81,10 @@ Bool IO::BitReaderLSB::ReadBits(OutParam<UInt32> code, UIntOS bitCount)
 		retCode = (UInt32)(buff[this->currBytePos] | (buff[this->currBytePos + 1] << 8) | (buff[this->currBytePos + 2] << 16)) >> this->currBitPos;
 		break;
 	case 4:
-		retCode = ((ReadUInt32(&buff[this->currBytePos])) >> this->currBitPos);
+		retCode = ((ReadLUInt32(&buff[this->currBytePos])) >> this->currBitPos);
 		break;
 	case 5:
-		retCode = ((ReadUInt32(&buff[this->currBytePos])) >> this->currBitPos) | (UInt32)(buff[this->currBytePos + 4] << (32 - this->currBitPos));
+		retCode = ((ReadLUInt32(&buff[this->currBytePos])) >> this->currBitPos) | (UInt32)(buff[this->currBytePos + 4] << (32 - this->currBitPos));
 		break;
 	}
 	code.Set(retCode & (UInt32)((1 << bitCount) - 1));

@@ -660,7 +660,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(AnyType user
 						while (j < FFTSAMPLE)
 						{
 							thisX = UIntOS2Double(j * sz.x) / (Double)(FFTSAMPLE - 1);
-							thisY = (ReadInt16(&sampleBuff[k]) + 32768.0) * UIntOS2Double(sz.y) / 65536.0;
+							thisY = (ReadLInt16(&sampleBuff[k]) + 32768.0) * UIntOS2Double(sz.y) / 65536.0;
 							if (lastX >= 0)
 							{
 								img->DrawLine(lastX, lastY, thisX, thisY, p);

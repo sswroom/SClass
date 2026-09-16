@@ -812,17 +812,17 @@ Bool WinSSLEngine_BCryptImportKey(NN<Crypto::Cert::X509Key> key, OutParam<BCRYPT
 	UInt8 buff[512];
 	if (name == Crypto::Cert::X509File::ECName::secp256r1)
 	{
-		WriteUInt32(&buff[0], BCRYPT_ECDSA_PRIVATE_P256_MAGIC);
+		WriteLUInt32(&buff[0], BCRYPT_ECDSA_PRIVATE_P256_MAGIC);
 	}
 	else if (name == Crypto::Cert::X509File::ECName::secp384r1)
 	{
-		WriteUInt32(&buff[0], BCRYPT_ECDSA_PRIVATE_P384_MAGIC);
+		WriteLUInt32(&buff[0], BCRYPT_ECDSA_PRIVATE_P384_MAGIC);
 	}
 	else
 	{
-		WriteUInt32(&buff[0], BCRYPT_ECDSA_PRIVATE_P521_MAGIC);
+		WriteLUInt32(&buff[0], BCRYPT_ECDSA_PRIVATE_P521_MAGIC);
 	}
-	WriteUInt32(&buff[4], (UInt32)privLen);
+	WriteLUInt32(&buff[4], (UInt32)privLen);
 	MemCopyNO(&buff[8], &pubBuff[1], pubLen - 1);
 	MemCopyNO(&buff[8 + pubLen - 1], privBuff.Ptr(), privLen);
 
@@ -1841,7 +1841,7 @@ Optional<Crypto::Cert::X509Key> Net::WinSSLEngine::GenerateECDSAKey(Crypto::Cert
 	Optional<Crypto::Cert::X509Key> key = nullptr;
 	if ((status = BCryptExportKey(hKey, 0, BCRYPT_ECCPRIVATE_BLOB, buff, sizeof(buff), &buffSize, 0)) == 0)
 	{
-		UInt32 pkLen = ReadUInt32(&buff[4]);
+		UInt32 pkLen = ReadLUInt32(&buff[4]);
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		printf("WinSSLEngine.GenerateECDSAKey: BCryptExportKey success\r\n");
 

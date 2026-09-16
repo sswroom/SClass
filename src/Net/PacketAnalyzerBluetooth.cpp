@@ -1349,7 +1349,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHan
 		}
 		else if (packet[i + 1] == 2 && len == 3)
 		{
-			u16 = ReadUInt16(&packet[i + 2]);
+			u16 = ReadLUInt16(&packet[i + 2]);
 			vName = nullptr;
 			switch (u16)
 			{
@@ -1364,7 +1364,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHan
 			j = 2;
 			while (j < len)
 			{
-				switch (ReadUInt16(&packet[i + j]))
+				switch (ReadLUInt16(&packet[i + j]))
 				{
 				case 0x0001:
 					frame->AddField(frameOfst + i + j, 2, CSTR("16-bit Service Class UUIDs"), CSTR("SDP"));
@@ -1393,7 +1393,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHan
 				default:
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Unknown(0x"));
-					sb.AppendHex16(ReadUInt16(&packet[i + j]));
+					sb.AppendHex16(ReadLUInt16(&packet[i + j]));
 					sb.AppendUTF8Char(')');
 					frame->AddField(frameOfst + i + j, 2, CSTR("16-bit Service Class UUIDs"), sb.ToCString());
 					break;
@@ -1404,16 +1404,16 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHan
 		else if (packet[i + 1] == 6 && len == 17)
 		{
 			sb.ClearStr();
-			sb.AppendHex32(ReadUInt32(&packet[i + 14]));
+			sb.AppendHex32(ReadLUInt32(&packet[i + 14]));
 			sb.AppendUTF8Char('-');
-			sb.AppendHex16(ReadUInt16(&packet[i + 12]));
+			sb.AppendHex16(ReadLUInt16(&packet[i + 12]));
 			sb.AppendUTF8Char('-');
-			sb.AppendHex16(ReadUInt16(&packet[i + 10]));
+			sb.AppendHex16(ReadLUInt16(&packet[i + 10]));
 			sb.AppendUTF8Char('-');
-			sb.AppendHex16(ReadUInt16(&packet[i + 8]));
+			sb.AppendHex16(ReadLUInt16(&packet[i + 8]));
 			sb.AppendUTF8Char('-');
-			sb.AppendHex32(ReadUInt32(&packet[i + 4]));
-			sb.AppendHex16(ReadUInt16(&packet[i + 2]));
+			sb.AppendHex32(ReadLUInt32(&packet[i + 4]));
+			sb.AppendHex16(ReadLUInt16(&packet[i + 2]));
 			frame->AddField(frameOfst + i + 2, 16, CSTR("128-bit Service Class UUIDs (incomplete)"), sb.ToCString());
 		}
 		else if (packet[i + 1] == 8)
@@ -1437,7 +1437,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHan
 		}
 		else if (packet[i + 1] == 0xff && len >= 3)
 		{
-			UInt16 compId = ReadUInt16(&packet[i + 2]);
+			UInt16 compId = ReadLUInt16(&packet[i + 2]);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("0x"));
 			sb.AppendHex16(compId);
@@ -1516,19 +1516,19 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHan
 						if (packet[i + j] == 2 && appLen == 21)
 						{
 							sb.ClearStr();
-							sb.AppendHex32(ReadUInt32(&packet[i + j + 14]));
+							sb.AppendHex32(ReadLUInt32(&packet[i + j + 14]));
 							sb.AppendUTF8Char('-');
-							sb.AppendHex16(ReadUInt16(&packet[i + j + 12]));
+							sb.AppendHex16(ReadLUInt16(&packet[i + j + 12]));
 							sb.AppendUTF8Char('-');
-							sb.AppendHex16(ReadUInt16(&packet[i + j + 10]));
+							sb.AppendHex16(ReadLUInt16(&packet[i + j + 10]));
 							sb.AppendUTF8Char('-');
-							sb.AppendHex16(ReadUInt16(&packet[i + j + 8]));
+							sb.AppendHex16(ReadLUInt16(&packet[i + j + 8]));
 							sb.AppendUTF8Char('-');
-							sb.AppendHex32(ReadUInt32(&packet[i + j + 4]));
-							sb.AppendHex16(ReadUInt16(&packet[i + j + 2]));
+							sb.AppendHex32(ReadLUInt32(&packet[i + j + 4]));
+							sb.AppendHex16(ReadLUInt16(&packet[i + j + 2]));
 							frame->AddField(frameOfst + i + j + 2, 16, CSTR("Proximity UUID"), sb.ToCString());
-							frame->AddHex16(frameOfst + i + j + 18, CSTR("Major"), ReadUInt16(&packet[i + j + 18]));
-							frame->AddHex16(frameOfst + i + j + 20, CSTR("Minor"), ReadUInt16(&packet[i + j + 20]));
+							frame->AddHex16(frameOfst + i + j + 18, CSTR("Major"), ReadLUInt16(&packet[i + j + 18]));
+							frame->AddHex16(frameOfst + i + j + 20, CSTR("Minor"), ReadLUInt16(&packet[i + j + 20]));
 							frame->AddInt(frameOfst + i + j + 22, 1, CSTR("Measured Power"), (Int8)packet[i + j + 22]);
 						}
 						else if (packet[i + j] == 5 && appLen == 18)
@@ -1545,17 +1545,17 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHan
 						{
 							frame->AddHex8(frameOfst + i + j + 2, CSTR("Status"), packet[i + j + 2]);
 							frame->AddMACAddr(frameOfst + i + j + 3, CSTR("Device ID"), &packet[i + j + 3], false);
-							frame->AddUInt(frameOfst + i + j + 9, 2, CSTR("Category"), ReadUInt16(&packet[i + j + 9]));
-							frame->AddUInt(frameOfst + i + j + 11, 2, CSTR("Global State Number"), ReadUInt16(&packet[i + j + 11]));
+							frame->AddUInt(frameOfst + i + j + 9, 2, CSTR("Category"), ReadLUInt16(&packet[i + j + 9]));
+							frame->AddUInt(frameOfst + i + j + 11, 2, CSTR("Global State Number"), ReadLUInt16(&packet[i + j + 11]));
 							frame->AddUInt(frameOfst + i + j + 13, 1, CSTR("Configuration Number"), packet[i + j + 13]);
 							frame->AddUInt(frameOfst + i + j + 14, 1, CSTR("Compatible Version"), packet[i + j + 14]);
 						}
 						else if (packet[i + j] == 7 && appLen >= 9)
 						{
 							frame->AddHex8(frameOfst + i + j + 2, CSTR("Unknown"), packet[i + j + 2]);
-							frame->AddHex16(frameOfst + i + j + 3, CSTR("Device Model"), ReadUInt16(&packet[i + j + 3]));
+							frame->AddHex16(frameOfst + i + j + 3, CSTR("Device Model"), ReadLUInt16(&packet[i + j + 3]));
 							frame->AddHex8(frameOfst + i + j + 5, CSTR("Status"), packet[i + j + 5]);
-							frame->AddHex16(frameOfst + i + j + 6, CSTR("Battery Levels"), ReadUInt16(&packet[i + j + 6]));
+							frame->AddHex16(frameOfst + i + j + 6, CSTR("Battery Levels"), ReadLUInt16(&packet[i + j + 6]));
 							sb.ClearStr();
 							sb.AppendU32((UInt32)(packet[i + j + 6] & 15) * 10);
 							frame->AddSubfield(frameOfst + i + j + 6, 2, CSTR("Left Battery Level"), sb.ToCString());
@@ -1595,7 +1595,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHan
 						else if (packet[i + j] == 12 && appLen== 14)
 						{
 							frame->AddBool(frameOfst + i + j + 2, CSTR("Copy/Cut Performed"), packet[i + j + 2]);
-							frame->AddUInt(frameOfst + i + j + 3, 2, CSTR("Sequence Number"), ReadUInt16(&packet[i + j + 3]));
+							frame->AddUInt(frameOfst + i + j + 3, 2, CSTR("Sequence Number"), ReadLUInt16(&packet[i + j + 3]));
 							frame->AddHex8(frameOfst + i + j + 5, CSTR("AES-GCM Auth Tag"), packet[i + j + 5]);
 							frame->AddHexBuff(frameOfst + i + j + 6, 10, CSTR("Encrypted Handoff Data"), &packet[i + j + 6], false);
 						}
@@ -1988,7 +1988,7 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(UnsafeArray<const UInt8> packet
 	switch (packet[4])
 	{
 	case 1:
-		if (CmdGetName(ReadUInt16(&packet[5])).SetTo(name))
+		if (CmdGetName(ReadLUInt16(&packet[5])).SetTo(name))
 		{
 			sb->Append(name);
 		}
@@ -2014,7 +2014,7 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(UnsafeArray<const UInt8> packet
 			}
 			return true;
 		case 0x0E:
-			if (CmdGetName(ReadUInt16(&packet[8])).SetTo(name))
+			if (CmdGetName(ReadLUInt16(&packet[8])).SetTo(name))
 			{
 				sb->Append(name);
 				sb->AppendC(UTF8STRC(" Accept"));
@@ -2025,7 +2025,7 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(UnsafeArray<const UInt8> packet
 			}
 			return true;
 		case 0x0F:
-			if (CmdGetName(ReadUInt16(&packet[9])).SetTo(name))
+			if (CmdGetName(ReadLUInt16(&packet[9])).SetTo(name))
 			{
 				if (packet[7] == 0)
 				{
@@ -2106,7 +2106,7 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> pack
 	{
 	case 1:
 		{
-			UInt16 cmd = ReadUInt16(&packet[5]);
+			UInt16 cmd = ReadLUInt16(&packet[5]);
 			UInt8 cmdLen = packet[7];
 			AddCmdOpcode(frame, frameOfst + 5, cmd);
 			AddParamLen(frame, frameOfst + 7, cmdLen);
@@ -2117,7 +2117,7 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> pack
 				case 0x0401:
 					if (cmdLen == 5)
 					{
-						AddLAP(frame, frameOfst + 8, ReadUInt24(&packet[8]));
+						AddLAP(frame, frameOfst + 8, ReadLUInt24(&packet[8]));
 						AddInquiryLen(frame, frameOfst + 11, packet[11]);
 						frame->AddUInt(frameOfst + 12, 1, CSTR("Num Response"), packet[12]);
 					}
@@ -2140,8 +2140,8 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> pack
 					if (cmdLen == 7)
 					{
 						AddScanType(frame, frameOfst + 8, packet[8]);
-						AddScanInterval(frame, frameOfst + 9, ReadUInt16(&packet[9]));
-						AddScanWindow(frame, frameOfst + 11, ReadUInt16(&packet[11]));
+						AddScanInterval(frame, frameOfst + 9, ReadLUInt16(&packet[9]));
+						AddScanWindow(frame, frameOfst + 11, ReadLUInt16(&packet[11]));
 						AddAddrType(frame, frameOfst + 13, CSTR("Own Address Type"), packet[13]);
 						AddScanFilterPolicy(frame, frameOfst + 14, packet[14]);
 					}
@@ -2168,8 +2168,8 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> pack
 						AddScanFilterPolicy(frame, frameOfst + 9, packet[9]);
 						AddPHYType(frame, frameOfst + 10, CSTR("Scanning PHYs"), packet[10]);
 						AddScanType(frame, frameOfst + 11, packet[11]);
-						AddScanInterval(frame, frameOfst + 12, ReadUInt16(&packet[12]));
-						AddScanWindow(frame, frameOfst + 14, ReadUInt16(&packet[14]));
+						AddScanInterval(frame, frameOfst + 12, ReadLUInt16(&packet[12]));
+						AddScanWindow(frame, frameOfst + 14, ReadLUInt16(&packet[14]));
 					}
 					else
 					{
@@ -2188,8 +2188,8 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> pack
 		}
 		break;
 	case 2:
-		frame->AddHex16(frameOfst + 5, CSTR("Connection Handle"), ReadUInt16(&packet[5]));
-		frame->AddUInt(frameOfst + 7, 2, CSTR("Data Total Length"), ReadUInt16(&packet[7]));
+		frame->AddHex16(frameOfst + 5, CSTR("Connection Handle"), ReadLUInt16(&packet[5]));
+		frame->AddUInt(frameOfst + 7, 2, CSTR("Data Total Length"), ReadLUInt16(&packet[7]));
 		AddUnknown(frame, frameOfst + 9, packet + 9, packetSize - 9);
 		break;
 	case 4:
@@ -2213,7 +2213,7 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> pack
 			break;
 		case 0x0E: //Command Complete
 			frame->AddUInt(frameOfst + 7, 1, CSTR("Number of Allowed Command Packets"), packet[7]);
-			AddCmdOpcode(frame, frameOfst + 8, ReadUInt16(&packet[8]));
+			AddCmdOpcode(frame, frameOfst + 8, ReadLUInt16(&packet[8]));
 			vName = nullptr;
 			switch (packet[10])
 			{
@@ -2237,15 +2237,15 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> pack
 			}
 			frame->AddHex8Name(frameOfst + 7, CSTR("Status"), packet[7], vName);
 			frame->AddUInt(frameOfst + 8, 1, CSTR("Number of Allowed Command Packets"), packet[8]);
-			AddCmdOpcode(frame, frameOfst + 9, ReadUInt16(&packet[9]));
+			AddCmdOpcode(frame, frameOfst + 9, ReadLUInt16(&packet[9]));
 			break;
 		case 0x2F: //Extended Inquery Result
 			frame->AddUInt(frameOfst + 7, 1, CSTR("Number of responses"), packet[7]);
 			AddBDAddr(frame, frameOfst + 8, CSTR("BD_ADDR"), &packet[8], false);
 			AddPageScanMode(frame, frameOfst + 14, packet[14]);
 			frame->AddHex8(frameOfst + 15, CSTR("Reserved"), packet[15]);
-			AddClassOfDevice(frame, frameOfst + 16, ReadUInt24(&packet[16]));
-			AddClockOffset(frame, frameOfst + 19, ReadUInt16(&packet[19]));
+			AddClassOfDevice(frame, frameOfst + 16, ReadLUInt24(&packet[16]));
+			AddClockOffset(frame, frameOfst + 19, ReadLUInt16(&packet[19]));
 			AddRSSI(frame, frameOfst + 21, (Int8)packet[21]);
 			AddAdvData(frame, frameOfst + 22, &packet[22], packetSize - 22);
 			break;
@@ -2290,7 +2290,7 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> pack
 					AddUnknown(frame, frameOfst + 9, packet + 9, packetSize + 9);
 					break;
 				}
-				AddExAdvEvtType(frame, frameOfst + 9, ReadUInt16(&packet[9]));
+				AddExAdvEvtType(frame, frameOfst + 9, ReadLUInt16(&packet[9]));
 				AddAddrType(frame, frameOfst + 11, CSTR("Peer Address Type"), packet[11]);
 				AddBDAddr(frame, frameOfst + 12, CSTR("BD_ADDR"), packet + 12, packet[11] == 1);
 				AddPHYType(frame, frameOfst + 18, CSTR("Primary PHY"), packet[18]);
@@ -2298,7 +2298,7 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> pack
 				AddAdvSID(frame, frameOfst + 20, packet[20]);
 				AddTxPower(frame, frameOfst + 21, (Int8)packet[21]);
 				AddRSSI(frame, frameOfst + 22, (Int8)packet[22]);
-				AddPeriodicAdv(frame, frameOfst + 23, ReadUInt16(&packet[23]));
+				AddPeriodicAdv(frame, frameOfst + 23, ReadLUInt16(&packet[23]));
 				AddAddrType(frame, frameOfst + 25, CSTR("Direct Address Type"), packet[25]);
 				AddBDAddr(frame, frameOfst + 26, CSTR("Direct BD_ADDR"), packet + 26, packet[25] == 1);
 				frame->AddUInt(frameOfst + 32, 1, CSTR("Adv Data Length"), packet[32]);

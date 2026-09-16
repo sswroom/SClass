@@ -215,8 +215,8 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				nPoint = pl->GetPointCount();
 				points = MemAllocAArr(Math::Coord2DDbl, nPoint);
 				pl->FillPointOfstList(points, ptOfsts, nullptr, nullptr);
-				WriteUInt32(&nvals[0], (UInt32)nPtOfst);
-				WriteUInt32(&nvals[4], (UInt32)nPoint);
+				WriteLUInt32(&nvals[0], (UInt32)nPtOfst);
+				WriteLUInt32(&nvals[4], (UInt32)nPoint);
 
 				if (i == 0)
 				{
@@ -234,7 +234,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				shx->Write(Data::ByteArrayR(buff, 8));
 
 				WriteMInt32(buff, (Int32)(i + 1));
-				WriteUInt32(&buff[8], 3);
+				WriteLUInt32(&buff[8], 3);
 				stm->Write(Data::ByteArrayR(buff, 12));
 				stm->Write(Data::ByteArrayR((UInt8*)&box, 32));
 				stm->Write(Data::ByteArrayR(nvals, 8));
@@ -281,8 +281,8 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				points = MemAllocAArr(Math::Coord2DDbl, nPoint);
 				alts = MemAllocArr(Double, nPoint);
 				pl->FillPointOfstList(points, ptOfsts, alts, nullptr);
-				WriteUInt32(&nvals[0], (UInt32)nPtOfst);
-				WriteUInt32(&nvals[4], (UInt32)nPoint);
+				WriteLUInt32(&nvals[0], (UInt32)nPtOfst);
+				WriteLUInt32(&nvals[4], (UInt32)nPoint);
 
 				ranges[1] = ranges[0] = alts[0];
 				j = nPoint;
@@ -320,7 +320,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				shx->Write(Data::ByteArrayR(buff, 8));
 
 				WriteMInt32(buff, (Int32)(i + 1));
-				WriteUInt32(&buff[8], 3);
+				WriteLUInt32(&buff[8], 3);
 				stm->Write(Data::ByteArrayR(buff, 12));
 				stm->Write(Data::ByteArrayR((UInt8*)&box, 32));
 				stm->Write(Data::ByteArrayR((UInt8*)nvals, 8));
@@ -363,8 +363,8 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				ptOfsts = MemAllocArr(UInt32, nPtOfst);
 				points = MemAllocAArr(Math::Coord2DDbl, nPoint);
 				pg->FillPointOfstList(points, ptOfsts, nullptr, nullptr);
-				WriteUInt32(&nvals[0], (UInt32)nPtOfst);
-				WriteUInt32(&nvals[4], (UInt32)nPoint);
+				WriteLUInt32(&nvals[0], (UInt32)nPtOfst);
+				WriteLUInt32(&nvals[4], (UInt32)nPoint);
 
 				if (i == 0)
 				{
@@ -382,7 +382,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				shx->Write(Data::ByteArrayR(buff, 8));
 
 				WriteMInt32(buff, (Int32)(i + 1));
-				WriteUInt32(&buff[8], 5);
+				WriteLUInt32(&buff[8], 5);
 				stm->Write(Data::ByteArrayR(buff, 12));
 				stm->Write(Data::ByteArrayR((UInt8*)&box, 32));
 				stm->Write(Data::ByteArrayR((UInt8*)nvals, 8));

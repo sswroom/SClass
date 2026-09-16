@@ -76,11 +76,11 @@ Bool Text::ChineseInfo::GetCharInfo(UInt32 charCode, NN<CharacterInfo> chInfo)
 		{
 			chInfo->cantonPronun[3] = 0;
 		}
-		chInfo->radical = ReadUInt32(&this->currCharBuff[8]);
+		chInfo->radical = ReadLUInt32(&this->currCharBuff[8]);
 		chInfo->strokeCount = this->currCharBuff[12];
 		chInfo->charType = (CharType)(this->currCharBuff[13] & 0xf);
 		chInfo->mainChar = ((this->currCharBuff[13] & 0x80) != 0);
-		if (chInfo->cantonPronun[0] != ReadUInt16(&this->currCharBuff[0]) || chInfo->cantonPronun[1] != ReadUInt16(&this->currCharBuff[2]) || chInfo->cantonPronun[2] != ReadUInt16(&this->currCharBuff[4]) || chInfo->cantonPronun[3] != ReadUInt16(&this->currCharBuff[6]))
+		if (chInfo->cantonPronun[0] != ReadLUInt16(&this->currCharBuff[0]) || chInfo->cantonPronun[1] != ReadLUInt16(&this->currCharBuff[2]) || chInfo->cantonPronun[2] != ReadLUInt16(&this->currCharBuff[4]) || chInfo->cantonPronun[3] != ReadLUInt16(&this->currCharBuff[6]))
 		{
 			SetCharInfo(charCode, chInfo);
 		}
@@ -143,18 +143,18 @@ Bool Text::ChineseInfo::SetCharInfo(UInt32 charCode, NN<CharacterInfo> chInfo)
 	}
 
 	MemClear(buff, 256);
-	WriteInt16(&buff[0], chInfo->cantonPronun[0]);
-	WriteInt16(&buff[2], chInfo->cantonPronun[1]);
-	WriteInt16(&buff[4], chInfo->cantonPronun[2]);
-	WriteInt16(&buff[6], chInfo->cantonPronun[3]);
-	WriteUInt32(&buff[8], chInfo->radical);
+	WriteLInt16(&buff[0], chInfo->cantonPronun[0]);
+	WriteLInt16(&buff[2], chInfo->cantonPronun[1]);
+	WriteLInt16(&buff[4], chInfo->cantonPronun[2]);
+	WriteLInt16(&buff[6], chInfo->cantonPronun[3]);
+	WriteLUInt32(&buff[8], chInfo->radical);
 	buff[12] = chInfo->strokeCount;
 	buff[13] = (UInt8)chInfo->charType;
 	if (chInfo->mainChar)
 	{
 		buff[13] |= 0x80;
 	}
-	WriteInt32(&buff[16], ReadInt32(&this->currCharBuff[16]));
+	WriteLInt32(&buff[16], ReadLInt32(&this->currCharBuff[16]));
 	if (chInfo->cantonPronun[0])
 	{
 		Int2Cantonese((UTF8Char*)&buff[224], chInfo->cantonPronun[0]);
@@ -213,7 +213,7 @@ Bool Text::ChineseInfo::GetRelatedChars(UInt32 charCode, NN<Data::ArrayListNativ
 	if (this->fs->Read(BYTEARR(buff)) != 256)
 		return false;
 
-	code = ReadUInt32(&buff[16]);
+	code = ReadLUInt32(&buff[16]);
 	if (code == 0)
 		return true;
 	while (true)
@@ -234,7 +234,7 @@ Bool Text::ChineseInfo::GetRelatedChars(UInt32 charCode, NN<Data::ArrayListNativ
 			return false;
 		if (this->fs->Read(BYTEARR(buff)) != 256)
 			return false;
-		code = ReadUInt32(&buff[16]);
+		code = ReadLUInt32(&buff[16]);
 	}
 
 	return true;
@@ -253,11 +253,11 @@ Bool Text::ChineseInfo::AddRelation(UInt32 charCode, UInt32 relatedCharCode)
 	if (this->fs->Read(BYTEARR(buff)) != 256)
 		return false;
 
-	if (ReadInt32(&buff[16]) != 0)
+	if (ReadLInt32(&buff[16]) != 0)
 	{
 		return false;
 	}
-	WriteUInt32(&buff[16], charCode);
+	WriteLUInt32(&buff[16], charCode);
 	if (this->fs->SeekFromBeginning(startOfst) != startOfst)
 		return false;
 
@@ -280,10 +280,10 @@ Bool Text::ChineseInfo::AddRelation(UInt32 charCode, UInt32 relatedCharCode)
 		if (this->fs->Read(BYTEARR(buff)) != 256)
 			return false;
 
-		nextCode = ReadUInt32(&buff[16]);
+		nextCode = ReadLUInt32(&buff[16]);
 		if (nextCode == 0 || nextCode == charCode)
 		{
-			WriteUInt32(&buff[16], relatedCharCode);
+			WriteLUInt32(&buff[16], relatedCharCode);
 			if (this->fs->SeekFromBeginning(startOfst) != startOfst)
 				return false;
 			if (this->fs->Write(Data::ByteArrayR(buff, 256)) != 256)

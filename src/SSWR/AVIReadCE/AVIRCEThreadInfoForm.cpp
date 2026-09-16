@@ -316,22 +316,22 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 				}
 				else if (bitCnt == 16)
 				{
-					sptr = Text::StrHexVal16(sbuff, ReadUInt16(buff));
+					sptr = Text::StrHexVal16(sbuff, ReadLUInt16(buff));
 					this->lvContext->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				}
 				else if (bitCnt == 32)
 				{
-					sptr = Text::StrHexVal32(sbuff, ReadInt32(buff));
+					sptr = Text::StrHexVal32(sbuff, ReadLInt32(buff));
 					this->lvContext->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				}
 				else if (bitCnt == 64)
 				{
-					sptr = Text::StrHexVal64(sbuff, ReadInt64(buff));
+					sptr = Text::StrHexVal64(sbuff, ReadLInt64(buff));
 					this->lvContext->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				}
 				else if (bitCnt == 128)
 				{
-					sptr = Text::StrHexVal64(Text::StrHexVal64(sbuff, ReadInt64(buff)), ReadInt64(&buff[8]));
+					sptr = Text::StrHexVal64(Text::StrHexVal64(sbuff, ReadLInt64(buff)), ReadLInt64(&buff[8]));
 					this->lvContext->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				}
 				else if (bitCnt == 80)

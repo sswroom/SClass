@@ -123,9 +123,9 @@ static Bool AVIFExporter_CopyMetadata(NN<Media::RasterImage> img, avifImage *avi
 		UnsafeArray<UInt8> exifBuff;
 		outExif->GetExifBuffSize(exifSize, endOfst);
 		exifBuff = MemAllocArr(UInt8, (UIntOS)exifSize + 8);
-		WriteInt16(&exifBuff[0], ReadInt16((const UInt8*)"II"));
-		WriteInt16(&exifBuff[2], 42);
-		WriteInt32(&exifBuff[4], 8);
+		WriteLInt16(&exifBuff[0], ReadLInt16((const UInt8*)"II"));
+		WriteLInt16(&exifBuff[2], 42);
+		WriteLInt32(&exifBuff[4], 8);
 		k = 8;
 		l = (UInt32)endOfst + 8;
 		outExif->ToExifBuff(exifBuff, k, l);

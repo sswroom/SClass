@@ -188,7 +188,7 @@ Bool DB::DBRow::SetFieldBinary(NN<DB::DBRow::Field> field, UnsafeArrayOpt<const 
 	{
 		UnsafeArray<UInt8> newBuff;
 		field->currentData.bin = newBuff = MemAllocArr(UInt8, buffSize + 4);
-		WriteUInt32(&newBuff[0], (UInt32)buffSize);
+		WriteLUInt32(&newBuff[0], (UInt32)buffSize);
 		MemCopyNO(&newBuff[4], &nnbuff[0], buffSize);
 		field->currentNull = false;
 	}
@@ -312,7 +312,7 @@ UnsafeArrayOpt<const UInt8> DB::DBRow::GetFieldBinary(NN<DB::DBRow::Field> field
 	
 	if (binBuff.SetTo(nnbinBuff))
 	{
-		buffSize.Set(ReadUInt32(&nnbinBuff[0]));
+		buffSize.Set(ReadLUInt32(&nnbinBuff[0]));
 		return nnbinBuff + 4;
 	}
 	else

@@ -137,7 +137,7 @@ Bool SSWR::DataSync::SyncClient::SendLogin()
 	UInt8 cmdBuff[512];
 	UInt8 packetBuff[512];
 	UIntOS len;
-	WriteInt32(cmdBuff, this->serverId);
+	WriteLInt32(cmdBuff, this->serverId);
 	len = this->serverName->leng;
 	cmdBuff[4] = (UInt8)(len & 0xff);
 	this->serverName->ConcatTo((UTF8Char*)&cmdBuff[5]);

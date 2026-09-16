@@ -214,6 +214,6 @@ UInt64 Net::SocketFactory::GenSocketId(NN<Socket> socket)
 
 void Net::SocketFactory::FromSocketId(UInt64 socketId, OptOut<UInt32> ip, OptOut<UInt16> port)
 {
-	ip.Set(ReadUInt32((UInt8*)&socketId));
-	port.Set(ReadUInt16(((UInt8*)&socketId) + 4));
+	ip.Set(ReadLUInt32((UInt8*)&socketId));
+	port.Set(ReadLUInt16(((UInt8*)&socketId) + 4));
 }

@@ -20,7 +20,7 @@ Int32 Data::BinaryParser::NextI32()
 		this->error = true;
 		return 0;
 	}
-	Int32 ret = ReadInt32(&this->buff[this->currOfst]);
+	Int32 ret = ReadLInt32(&this->buff[this->currOfst]);
 	this->currOfst += 4;
 	return ret;
 }
@@ -34,7 +34,7 @@ UInt32 Data::BinaryParser::NextU32()
 		this->error = true;
 		return 0;
 	}
-	UInt32 ret = ReadUInt32(&this->buff[this->currOfst]);
+	UInt32 ret = ReadLUInt32(&this->buff[this->currOfst]);
 	this->currOfst += 4;
 	return ret;
 }
@@ -48,7 +48,7 @@ NInt32 Data::BinaryParser::NextNI32()
 		this->error = true;
 		return 0;
 	}
-	NInt32 ret = ReadInt32(&this->buff[this->currOfst]);
+	NInt32 ret = ReadLInt32(&this->buff[this->currOfst]);
 	this->currOfst += 4;
 	return ret;
 }
@@ -62,7 +62,7 @@ Int64 Data::BinaryParser::NextI64()
 		this->error = true;
 		return 0;
 	}
-	Int64 ret = ReadInt64(&this->buff[this->currOfst]);
+	Int64 ret = ReadLInt64(&this->buff[this->currOfst]);
 	this->currOfst += 8;
 	return ret;
 }
@@ -76,7 +76,7 @@ Double Data::BinaryParser::NextF64()
 		this->error = true;
 		return 0;
 	}
-	Double ret = ReadDouble(&this->buff[this->currOfst]);
+	Double ret = ReadLDouble(&this->buff[this->currOfst]);
 	this->currOfst += 8;
 	return ret;
 }
@@ -100,7 +100,7 @@ Text::CString Data::BinaryParser::NextStr()
 		this->error = true;
 		return nullptr;
 	}
-	UInt16 b1 = ReadUInt16(&buff[this->currOfst]);
+	UInt16 b1 = ReadLUInt16(&buff[this->currOfst]);
 	if (b1 == 65535)
 	{
 		this->currOfst += 2;
@@ -122,7 +122,7 @@ Text::CString Data::BinaryParser::NextStr()
 		this->error = true;
 		return nullptr;
 	}
-	UIntOS len = ReadUInt32(&this->buff[this->currOfst + 2]) + 65534;
+	UIntOS len = ReadLUInt32(&this->buff[this->currOfst + 2]) + 65534;
 	if (this->currOfst + 6 + len > this->buff.GetSize())
 	{
 		this->error = true;
@@ -184,7 +184,7 @@ Data::Timestamp Data::BinaryParser::NextTS()
 		this->error = true;
 		return 0;
 	}
-	Data::Timestamp ret = Data::Timestamp(Data::TimeInstant(ReadInt64(&this->buff[this->currOfst]), ReadUInt32(&this->buff[this->currOfst + 8])), (Int8)this->buff[this->currOfst + 12]);
+	Data::Timestamp ret = Data::Timestamp(Data::TimeInstant(ReadLInt64(&this->buff[this->currOfst]), ReadLUInt32(&this->buff[this->currOfst + 8])), (Int8)this->buff[this->currOfst + 12]);
 	this->currOfst += 13;
 	return ret;
 }
@@ -198,7 +198,7 @@ Data::Date Data::BinaryParser::NextDate()
 		this->error = true;
 		return nullptr;
 	}
-	Data::Date ret = Data::Date(ReadInt64(&this->buff[this->currOfst]));
+	Data::Date ret = Data::Date(ReadLInt64(&this->buff[this->currOfst]));
 	this->currOfst += 8;
 	return ret;
 }

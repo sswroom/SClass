@@ -47,8 +47,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TILParser::ParseFileHdr(NN<IO::St
 	
 	Data::DateTime dt;
 	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
-	dirOfst = ReadUInt64(&hdr[8]);
-	flags = ReadInt32(&hdr[4]);
+	dirOfst = ReadLUInt64(&hdr[8]);
+	flags = ReadLInt32(&hdr[4]);
 	fileSize = fd->GetDataSize();
 	if (flags & 2)
 	{
@@ -65,16 +65,16 @@ Optional<IO::ParsedObject> Parser::FileParser::TILParser::ParseFileHdr(NN<IO::St
 		while (i < indexSize)
 		{
 			Int32 imgType;
-			Int64 timeTicks = ReadInt64(&indexBuff[i]);
+			Int64 timeTicks = ReadLInt64(&indexBuff[i]);
 			dt.SetTicks(timeTicks);
 			dt.ToLocalTime();
 			srcPtr = dt.ToString(fileName, "yyyyMMdd HHmmss");
-			imgType = ReadInt32(&indexBuff[i + 12]);
+			imgType = ReadLInt32(&indexBuff[i + 12]);
 			if (imgType == 0)
 			{
 				srcPtr = Text::StrConcatC(srcPtr, UTF8STRC(".jpg"));
 			}
-			pf->AddData(fd, ReadUInt64(&indexBuff[i + 16]), ReadUInt64(&indexBuff[i + 24]), IO::PackFileItem::HeaderType::No, CSTRP(fileName, srcPtr), Data::Timestamp(timeTicks, 0), nullptr, nullptr, 0);
+			pf->AddData(fd, ReadLUInt64(&indexBuff[i + 16]), ReadLUInt64(&indexBuff[i + 24]), IO::PackFileItem::HeaderType::No, CSTRP(fileName, srcPtr), Data::Timestamp(timeTicks, 0), nullptr, nullptr, 0);
 			i += 32;
 		}
 	}
@@ -89,19 +89,19 @@ Optional<IO::ParsedObject> Parser::FileParser::TILParser::ParseFileHdr(NN<IO::St
 
 			UInt64 fileOfst;
 			Int32 imgType;
-			Int64 timeTicks = ReadInt64(&indexBuff[0]);
+			Int64 timeTicks = ReadLInt64(&indexBuff[0]);
 			dt.SetTicks(timeTicks);
 			dt.ToLocalTime();
-			fileOfst = ReadUInt64(&indexBuff[16]);
+			fileOfst = ReadLUInt64(&indexBuff[16]);
 			if (fileOfst != dirOfst + 32)
 				break;
 			srcPtr = dt.ToString(fileName, "yyyyMMdd HHmmss");
-			imgType = ReadInt32(&indexBuff[12]);
+			imgType = ReadLInt32(&indexBuff[12]);
 			if (imgType == 0)
 			{
 				srcPtr = Text::StrConcatC(srcPtr, UTF8STRC(".jpg"));
 			}
-			pf->AddData(fd, fileOfst, ReadUInt64(&indexBuff[24]), IO::PackFileItem::HeaderType::No, CSTRP(fileName, srcPtr), Data::Timestamp(timeTicks, 0), nullptr, nullptr, 0);
+			pf->AddData(fd, fileOfst, ReadLUInt64(&indexBuff[24]), IO::PackFileItem::HeaderType::No, CSTRP(fileName, srcPtr), Data::Timestamp(timeTicks, 0), nullptr, nullptr, 0);
 		}
 	}
 	else

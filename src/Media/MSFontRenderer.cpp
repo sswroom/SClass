@@ -6,8 +6,8 @@
 Media::MSFontRenderer::MSFontRenderer(NN<Text::String> sourceName, UnsafeArray<const UInt8> fontBuff, UIntOS buffSize) : Media::FontRenderer(sourceName)
 {
 	this->fontBuff = 0;
-	UIntOS ver = ReadUInt16(&fontBuff[0]);
-	UIntOS fontSize = ReadUInt16(&fontBuff[2]);
+	UIntOS ver = ReadLUInt16(&fontBuff[0]);
+	UIntOS fontSize = ReadLUInt16(&fontBuff[2]);
 	UIntOS hdrSize;
 	if (ver == 0x200)
 	{
@@ -54,11 +54,11 @@ UTF32Char Media::MSFontRenderer::GetMaxChar() const
 
 Optional<Media::StaticImage> Media::MSFontRenderer::CreateImage(UTF32Char charCode, Math::Size2D<UIntOS> targetSize) const
 {
-	UInt32 ver = ReadUInt16(&this->fontBuff[0]);
+	UInt32 ver = ReadLUInt16(&this->fontBuff[0]);
 	UIntOS i;
 	UIntOS ofst;
 	UIntOS fntW;
-	UIntOS fntH = ReadUInt16(&this->fontBuff[88]);
+	UIntOS fntH = ReadLUInt16(&this->fontBuff[88]);
 	if (charCode < this->fontBuff[95] || charCode > this->fontBuff[96])
 	{
 		charCode = this->fontBuff[97];
@@ -67,14 +67,14 @@ Optional<Media::StaticImage> Media::MSFontRenderer::CreateImage(UTF32Char charCo
 	if (ver == 0x200)
 	{
 		i = 118 + i * 4;
-		fntW = ReadUInt16(&this->fontBuff[i]);
-		ofst = ReadUInt16(&this->fontBuff[i + 2]);
+		fntW = ReadLUInt16(&this->fontBuff[i]);
+		ofst = ReadLUInt16(&this->fontBuff[i + 2]);
 	}
 	else if (ver == 0x300)
 	{
 		i = 148 + i * 6;
-		fntW = ReadUInt16(&this->fontBuff[i]);
-		ofst = ReadUInt32(&this->fontBuff[i + 2]);
+		fntW = ReadLUInt16(&this->fontBuff[i]);
+		ofst = ReadLUInt32(&this->fontBuff[i + 2]);
 	}
 	else
 	{
@@ -85,8 +85,8 @@ Optional<Media::StaticImage> Media::MSFontRenderer::CreateImage(UTF32Char charCo
 	Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
 	UnsafeArray<UInt8> pal;
 	NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UIntOS>(fntW, fntH), 0, 1, Media::PF_PAL_W1, imgSize, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_PREMUL_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-	simg->info.hdpi = ReadUInt16(&this->fontBuff[72]);
-	simg->info.vdpi = ReadUInt16(&this->fontBuff[70]);
+	simg->info.hdpi = ReadLUInt16(&this->fontBuff[72]);
+	simg->info.vdpi = ReadLUInt16(&this->fontBuff[70]);
 	if (simg->pal.SetTo(pal))
 	{
 		pal[0] = 0;

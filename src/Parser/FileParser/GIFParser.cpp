@@ -64,8 +64,8 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 	UIntOS i;
 	UIntOS j;
 	UIntOS currOfst = 13;
-	UInt32 scnWidth = ReadUInt16(&hdr[6]);
-	UInt32 scnHeight = ReadUInt16(&hdr[8]);
+	UInt32 scnWidth = ReadLUInt16(&hdr[6]);
+	UInt32 scnHeight = ReadLUInt16(&hdr[8]);
 //	Int32 bpp = ((hdr[10] >> 4) & 7) + 1;
 	Int32 colorSize = (hdr[10] & 7) + 1;
 //	Int32 colorIndex = -1;
@@ -108,10 +108,10 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 				break;
 			currOfst += 9;
 
-			left = ReadUInt16(&imgDesc[0]);
-			top = ReadUInt16(&imgDesc[2]);
-			imgW = ReadUInt16(&imgDesc[4]);
-			imgH = ReadUInt16(&imgDesc[6]);
+			left = ReadLUInt16(&imgDesc[0]);
+			top = ReadLUInt16(&imgDesc[2]);
+			imgW = ReadLUInt16(&imgDesc[4]);
+			imgH = ReadLUInt16(&imgDesc[6]);
 			if (imgDesc[8] & 0x80)
 			{
 				Int32 colorSize = (imgDesc[8] & 7) + 1;
@@ -717,7 +717,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 				currOfst += readSize + 1;
 				if (readSize >= 4)
 				{
-					frameDelay = (UInt32)ReadUInt16(&readBlock[1]) * 10;
+					frameDelay = (UInt32)ReadLUInt16(&readBlock[1]) * 10;
 					if (readBlock[0] & 1)
 					{
 						transparentIndex = readBlock[3];

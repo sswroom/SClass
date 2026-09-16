@@ -959,29 +959,29 @@ void Media::RGBLUTGen::GenLARGB_A2B10G10R10(UnsafeArray<UInt8> rgbTable, NN<cons
 		Double gV = (gBright - 1.0 + Math_Pow(gv, gGammaVal) * gContr) * 1023.0;
 		Double bV = (bBright - 1.0 + Math_Pow(bv, bGammaVal) * bContr) * 1023.0;
 		if (i > 32767)
-			WriteUInt32(&rgbTable[i * 4 + 786432], 0);
+			WriteLUInt32(&rgbTable[i * 4 + 786432], 0);
 		else if (i > ibitVal)
-			WriteUInt32(&rgbTable[i * 4 + 786432], 0xc0000000);
+			WriteLUInt32(&rgbTable[i * 4 + 786432], 0xc0000000);
 		else
-			WriteInt32(&rgbTable[i * 4 + 786432], (Int32)(((i >> (nBitLRGB - 2)) & 0xff) << 30));
+			WriteLInt32(&rgbTable[i * 4 + 786432], (Int32)(((i >> (nBitLRGB - 2)) & 0xff) << 30));
 		if (rV > 1023.0)
-			WriteUInt32(&rgbTable[i * 4 + 524288], 1023);
+			WriteLUInt32(&rgbTable[i * 4 + 524288], 1023);
 		else if (rV < 0)
-			WriteUInt32(&rgbTable[i * 4 + 524288], 0);
+			WriteLUInt32(&rgbTable[i * 4 + 524288], 0);
 		else
-			WriteInt32(&rgbTable[i * 4 + 524288], Double2Int32(rV));
+			WriteLInt32(&rgbTable[i * 4 + 524288], Double2Int32(rV));
 		if (gV > 1023.0)
-			WriteInt32(&rgbTable[i * 4 + 262144], ((Int32)1023) << 10);
+			WriteLInt32(&rgbTable[i * 4 + 262144], ((Int32)1023) << 10);
 		else if (gV < 0)
-			WriteInt32(&rgbTable[i * 4 + 262144], 0);
+			WriteLInt32(&rgbTable[i * 4 + 262144], 0);
 		else
-			WriteInt32(&rgbTable[i * 4 + 262144], Double2Int32(gV) << 10);
+			WriteLInt32(&rgbTable[i * 4 + 262144], Double2Int32(gV) << 10);
 		if (bV > 1023.0)
-			WriteInt32(&rgbTable[i * 4 + 0], ((Int32)1023) << 20);
+			WriteLInt32(&rgbTable[i * 4 + 0], ((Int32)1023) << 20);
 		else if (bV < 0)
-			WriteInt32(&rgbTable[i * 4 + 0], 0);
+			WriteLInt32(&rgbTable[i * 4 + 0], 0);
 		else
-			WriteInt32(&rgbTable[i * 4 + 0], Double2Int32(bV) << 20);
+			WriteLInt32(&rgbTable[i * 4 + 0], Double2Int32(bV) << 20);
 	}
 	frFunc.Delete();
 	fgFunc.Delete();
@@ -1103,29 +1103,29 @@ void Media::RGBLUTGen::GenLARGB_B8G8R8A8(UnsafeArray<UInt8> rgbTable, NN<const M
 		Double gV = (gBright - 1.0 + Math_Pow(gv, gGammaVal) * gContr) * 255.0;
 		Double bV = (bBright - 1.0 + Math_Pow(bv, bGammaVal) * bContr) * 255.0;
 		if (i > 32767)
-			WriteUInt32(&rgbTable[i * 4 + 786432], 0);
+			WriteLUInt32(&rgbTable[i * 4 + 786432], 0);
 		else if (i > ibitVal)
-			WriteUInt32(&rgbTable[i * 4 + 786432], 0xff000000);
+			WriteLUInt32(&rgbTable[i * 4 + 786432], 0xff000000);
 		else
-			WriteInt32(&rgbTable[i * 4 + 786432], (Int32)(((i >> (nBitLRGB - 8)) & 0xff) << 24));
+			WriteLInt32(&rgbTable[i * 4 + 786432], (Int32)(((i >> (nBitLRGB - 8)) & 0xff) << 24));
 		if (rV > 255.0)
-			WriteUInt32(&rgbTable[i * 4 + 524288], 0xff0000);
+			WriteLUInt32(&rgbTable[i * 4 + 524288], 0xff0000);
 		else if (rV < 0)
-			WriteInt32(&rgbTable[i * 4 + 524288], 0);
+			WriteLInt32(&rgbTable[i * 4 + 524288], 0);
 		else
-			WriteInt32(&rgbTable[i * 4 + 524288], Double2Int32(rV) << 16);
+			WriteLInt32(&rgbTable[i * 4 + 524288], Double2Int32(rV) << 16);
 		if (gV > 255.0)
-			WriteInt32(&rgbTable[i * 4 + 262144], 0xff00);
+			WriteLInt32(&rgbTable[i * 4 + 262144], 0xff00);
 		else if (gV < 0)
-			WriteInt32(&rgbTable[i * 4 + 262144], 0);
+			WriteLInt32(&rgbTable[i * 4 + 262144], 0);
 		else
-			WriteInt32(&rgbTable[i * 4 + 262144], Double2Int32(gV) << 8);
+			WriteLInt32(&rgbTable[i * 4 + 262144], Double2Int32(gV) << 8);
 		if (bV > 255.0)
-			WriteInt32(&rgbTable[i * 4 + 0], 0xff);
+			WriteLInt32(&rgbTable[i * 4 + 0], 0xff);
 		else if (bV < 0)
-			WriteInt32(&rgbTable[i * 4 + 0], 0);
+			WriteLInt32(&rgbTable[i * 4 + 0], 0);
 		else
-			WriteInt32(&rgbTable[i * 4 + 0], Double2Int32(bV));
+			WriteLInt32(&rgbTable[i * 4 + 0], Double2Int32(bV));
 	}
 	frFunc.Delete();
 	fgFunc.Delete();

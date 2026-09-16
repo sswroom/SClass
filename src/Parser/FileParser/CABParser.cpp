@@ -50,18 +50,18 @@ Optional<IO::ParsedObject> Parser::FileParser::CABParser::ParseFileHdr(NN<IO::St
 	UTF8Char fileName[256];
 	UnsafeArray<UTF8Char> sptr;
 
-	if (ReadInt32(&hdr[0]) != 0x4643534d || ReadInt32(&hdr[4]) != 0 || ReadInt32(&hdr[12]) != 0 || ReadInt32(&hdr[20]) != 0)
+	if (ReadLInt32(&hdr[0]) != 0x4643534d || ReadLInt32(&hdr[4]) != 0 || ReadLInt32(&hdr[12]) != 0 || ReadLInt32(&hdr[20]) != 0)
 		return nullptr;
-	if (ReadUInt32(&hdr[4]) != fd->GetDataSize())
+	if (ReadLUInt32(&hdr[4]) != fd->GetDataSize())
 		return nullptr;
 	return nullptr;
 	/////////////////////////////////////
-//	coffFiles = ReadUInt32(&hdrBuff[16]);
-//	cFolders = ReadUInt16(&hdrBuff[26]);
-//	cFiles = ReadUInt16(&hdrBuff[28]);
+//	coffFiles = ReadLUInt32(&hdrBuff[16]);
+//	cFolders = ReadLUInt16(&hdrBuff[26]);
+//	cFiles = ReadLUInt16(&hdrBuff[28]);
 
-	dataOfst = ReadUInt32(&hdr[4]);
-	recSize = ReadUInt32(&hdr[8]);
+	dataOfst = ReadLUInt32(&hdr[4]);
+	recSize = ReadLUInt32(&hdr[8]);
 	if (recSize % 40 != 0 || dataOfst > fd->GetDataSize())
 		return nullptr;
 	if (dataOfst - recSize != 273)
@@ -92,8 +92,8 @@ Optional<IO::ParsedObject> Parser::FileParser::CABParser::ParseFileHdr(NN<IO::St
 	nextOfst = 0;
 	while (i < recCnt)
 	{
-		fileOfst = ReadUInt32(&recBuff[j + 32]);
-		fileSize = ReadUInt32(&recBuff[j + 36]);
+		fileOfst = ReadLUInt32(&recBuff[j + 32]);
+		fileSize = ReadLUInt32(&recBuff[j + 36]);
 		if (fileOfst != nextOfst)
 		{
 			pf.Delete();

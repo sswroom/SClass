@@ -17,9 +17,9 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV1Directory(NN<IO::StreamData> fd, UI
 	fd->GetRealData(dirOfst, (UIntOS)dirSize, buff);
 	while (dirSize - ofst >= 26)
 	{
-		UInt64 fileOfst = ReadUInt64(&buff[ofst]);
-		UInt64 fileSize = ReadUInt64(&buff[ofst + 8]);
-		UInt16 fileNameSize = ReadUInt16(&buff[ofst + 24]);
+		UInt64 fileOfst = ReadLUInt64(&buff[ofst]);
+		UInt64 fileSize = ReadLUInt64(&buff[ofst + 8]);
+		UInt16 fileNameSize = ReadLUInt16(&buff[ofst + 24]);
 		if (dirSize - ofst - 26 < fileNameSize)
 		{
 			break;
@@ -51,7 +51,7 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV2Directory(NN<IO::StreamData> fd, UI
 	}
 	UInt8 buff[16];
 	fd->GetRealData(dirOfst, 16, BYTEARR(buff));
-	this->ParseV2Directory(fd, ReadUInt64(&buff[0]), ReadUInt64(&buff[8]));
+	this->ParseV2Directory(fd, ReadLUInt64(&buff[0]), ReadLUInt64(&buff[8]));
 	this->ParseV1Directory(fd, dirOfst + 16, dirSize - 16);
 
 	NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack = MemAllocNN(IO::FileAnalyse::SPKFileAnalyse::PackInfo);
@@ -73,14 +73,14 @@ void __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		return;
 	}
 	fd->GetRealData(0, 256, BYTEARR(buff));
-	Int32 flags = ReadInt32(&buff[4]);
+	Int32 flags = ReadLInt32(&buff[4]);
 	UIntOS endOfst;
-	UInt64 lastOfst = ReadUInt64(&buff[8]);
+	UInt64 lastOfst = ReadLUInt64(&buff[8]);
 	UInt64 lastSize;
 	PackType dirType;
 	if (flags & 2)
 	{
-		lastSize = ReadUInt64(&buff[16]);
+		lastSize = ReadLUInt64(&buff[16]);
 		endOfst = 24;
 		dirType = PT_V2DIRECTORY;
 	}
@@ -92,7 +92,7 @@ void __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	}
 	if (flags & 1)
 	{
-		UInt32 customSize = ReadUInt32(&buff[endOfst + 4]);
+		UInt32 customSize = ReadLUInt32(&buff[endOfst + 4]);
 		endOfst += 8 + customSize;
 	}
 
@@ -265,20 +265,20 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrame
 		Data::ByteBuffer packBuff(pack->packSize);
 		fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
-		frame->AddHex32(4, CSTR("Flags"), flags = ReadUInt32(&packBuff[4]));
-		frame->AddUInt64(8, CSTR("Last Directory Offset"), ReadUInt64(&packBuff[8]));
+		frame->AddHex32(4, CSTR("Flags"), flags = ReadLUInt32(&packBuff[4]));
+		frame->AddUInt64(8, CSTR("Last Directory Offset"), ReadLUInt64(&packBuff[8]));
 		endOfst = 16;
 		if (flags & 2)
 		{
-			frame->AddUInt64(16, CSTR("Last Directory Size"), ReadUInt64(&packBuff[16]));
+			frame->AddUInt64(16, CSTR("Last Directory Size"), ReadLUInt64(&packBuff[16]));
 			endOfst = 24;
 		}
 		if (flags & 1)
 		{
 			Int32 customType;
 			UInt32 customSize;
-			frame->AddInt(endOfst, 4, CSTR("Custom Type"), customType = ReadInt32(&packBuff[endOfst]));
-			frame->AddUInt(endOfst + 4, 4, CSTR("Custom Size"), customSize = ReadUInt32(&packBuff[endOfst + 4]));
+			frame->AddInt(endOfst, 4, CSTR("Custom Type"), customType = ReadLInt32(&packBuff[endOfst]));
+			frame->AddUInt(endOfst + 4, 4, CSTR("Custom Size"), customSize = ReadLUInt32(&packBuff[endOfst + 4]));
 			if (customType == 1)
 			{
 				UIntOS customOfst;
@@ -314,8 +314,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrame
 	{
 		Data::ByteBuffer packBuff(pack->packSize);
 		fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-		frame->AddUInt64(0, CSTR("Prev Directory Offset"), ReadUInt64(&packBuff[0]));
-		frame->AddUInt64(8, CSTR("Prev Directory Size"), ReadUInt64(&packBuff[8]));
+		frame->AddUInt64(0, CSTR("Prev Directory Offset"), ReadLUInt64(&packBuff[0]));
+		frame->AddUInt64(8, CSTR("Prev Directory Size"), ReadLUInt64(&packBuff[8]));
 		this->GetDetailDirs(packBuff.Arr() + 16, pack->packSize - 16, 16, frame);
 	}
 	else if (pack->packType == PT_FILE)
@@ -361,9 +361,9 @@ void IO::FileAnalyse::SPKFileAnalyse::GetDetailDirs(UnsafeArray<const UInt8> dir
 	UIntOS ofst = 0;
 	while (dirSize - ofst >= 26)
 	{
-		UInt64 fileOfst = ReadUInt64(&dirBuff[ofst]);
-		UInt64 fileSize = ReadUInt64(&dirBuff[ofst + 8]);
-		UInt16 fileNameSize = ReadUInt16(&dirBuff[ofst + 24]);
+		UInt64 fileOfst = ReadLUInt64(&dirBuff[ofst]);
+		UInt64 fileSize = ReadLUInt64(&dirBuff[ofst + 8]);
+		UInt16 fileNameSize = ReadLUInt16(&dirBuff[ofst + 24]);
 		if (dirSize - ofst - 26 < fileNameSize)
 		{
 			break;
@@ -371,7 +371,7 @@ void IO::FileAnalyse::SPKFileAnalyse::GetDetailDirs(UnsafeArray<const UInt8> dir
 
 		frame->AddUInt64(frameOfst, CSTR("File Offset"), fileOfst);
 		frame->AddUInt64(frameOfst + 8, CSTR("File Size"), fileSize);
-		frame->AddUInt64(frameOfst + 16, CSTR("Reserved"), ReadUInt64(&dirBuff[ofst + 16]));
+		frame->AddUInt64(frameOfst + 16, CSTR("Reserved"), ReadLUInt64(&dirBuff[ofst + 16]));
 		frame->AddUInt(frameOfst + 24, 2, CSTR("File Name Size"), fileNameSize);
 		frame->AddStrC(frameOfst + 26, fileNameSize, CSTR("File Name"), &dirBuff[ofst + 26]);
 		ofst += 26 + (UIntOS)fileNameSize;

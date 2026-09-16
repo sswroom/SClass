@@ -9,7 +9,7 @@ void IO::LNKFile::InitBuff(UnsafeArray<const UInt8> buff, UIntOS buffSize)
 	{
 		return;
 	}
-	if (ReadUInt32(&buff[0]) != 0x4C || ReadUInt32(&buff[4]) != 0x00021401 || ReadUInt32(&buff[8]) != 0 || ReadUInt32(&buff[12]) != 0xC0 || ReadUInt32(&buff[16]) != 0x46000000)
+	if (ReadLUInt32(&buff[0]) != 0x4C || ReadLUInt32(&buff[4]) != 0x00021401 || ReadLUInt32(&buff[8]) != 0 || ReadLUInt32(&buff[12]) != 0xC0 || ReadLUInt32(&buff[16]) != 0x46000000)
 	{
 		return;
 	}
@@ -88,16 +88,16 @@ UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetLocalBasePath(UnsafeArray<UTF8Char> sbu
 	UnsafeArray<UInt8> buff;
 	if (!this->buff.SetTo(buff))
 		return nullptr;
-	UInt32 flags = ReadUInt32(&buff[20]);
+	UInt32 flags = ReadLUInt32(&buff[20]);
 	if ((flags & 2) == 0)
 		return nullptr;
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) + 2;
 	}
-	UInt32 linkInfoFlags = ReadUInt32(&buff[ofst + 8]);
-	UInt32 localBasePathOffset = ReadUInt32(&buff[ofst + 16]);
+	UInt32 linkInfoFlags = ReadLUInt32(&buff[ofst + 8]);
+	UInt32 localBasePathOffset = ReadLUInt32(&buff[ofst + 16]);
 	if ((linkInfoFlags & 1) && localBasePathOffset != 0)
 	{
 		return Text::StrConcat(sbuff, &buff[ofst + localBasePathOffset]);
@@ -113,19 +113,19 @@ UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetNameString(UnsafeArray<UTF8Char> sbuff)
 	UnsafeArray<UInt8> buff;
 	if (!this->buff.SetTo(buff))
 		return nullptr;
-	UInt32 flags = ReadUInt32(&buff[20]);
+	UInt32 flags = ReadLUInt32(&buff[20]);
 	if ((flags & 4) == 0)
 		return nullptr;
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) + 2;
 	}
 	if (flags & 2)
 	{
-		ofst += (UIntOS)ReadUInt32(&buff[ofst]);
+		ofst += (UIntOS)ReadLUInt32(&buff[ofst]);
 	}
-	UInt16 charCnt = ReadUInt16(&buff[ofst]);
+	UInt16 charCnt = ReadLUInt16(&buff[ofst]);
 	sbuff = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&buff[ofst + 2], charCnt);
 	*sbuff = 0;
 	return sbuff;
@@ -136,23 +136,23 @@ UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetRelativePath(UnsafeArray<UTF8Char> sbuf
 	UnsafeArray<UInt8> buff;
 	if (!this->buff.SetTo(buff))
 		return nullptr;
-	UInt32 flags = ReadUInt32(&buff[20]);
+	UInt32 flags = ReadLUInt32(&buff[20]);
 	if ((flags & 8) == 0)
 		return nullptr;
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) + 2;
 	}
 	if (flags & 2)
 	{
-		ofst += (UIntOS)ReadUInt32(&buff[ofst]);
+		ofst += (UIntOS)ReadLUInt32(&buff[ofst]);
 	}
 	if (flags & 4)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) * 2 + 2;
 	}
-	UInt16 charCnt = ReadUInt16(&buff[ofst]);
+	UInt16 charCnt = ReadLUInt16(&buff[ofst]);
 	sbuff = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&buff[ofst + 2], charCnt);
 	*sbuff = 0;
 	return sbuff;
@@ -163,27 +163,27 @@ UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetWorkingDirectory(UnsafeArray<UTF8Char> 
 	UnsafeArray<UInt8> buff;
 	if (!this->buff.SetTo(buff))
 		return nullptr;
-	UInt32 flags = ReadUInt32(&buff[20]);
+	UInt32 flags = ReadLUInt32(&buff[20]);
 	if ((flags & 16) == 0)
 		return nullptr;
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) + 2;
 	}
 	if (flags & 2)
 	{
-		ofst += (UIntOS)ReadUInt32(&buff[ofst]);
+		ofst += (UIntOS)ReadLUInt32(&buff[ofst]);
 	}
 	if (flags & 4)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 8)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) * 2 + 2;
 	}
-	UInt16 charCnt = ReadUInt16(&buff[ofst]);
+	UInt16 charCnt = ReadLUInt16(&buff[ofst]);
 	sbuff = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&buff[ofst + 2], charCnt);
 	*sbuff = 0;
 	return sbuff;
@@ -194,31 +194,31 @@ UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetCommandLineArguments(UnsafeArray<UTF8Ch
 	UnsafeArray<UInt8> buff;
 	if (!this->buff.SetTo(buff))
 		return nullptr;
-	UInt32 flags = ReadUInt32(&buff[20]);
+	UInt32 flags = ReadLUInt32(&buff[20]);
 	if ((flags & 32) == 0)
 		return nullptr;
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) + 2;
 	}
 	if (flags & 2)
 	{
-		ofst += (UIntOS)ReadUInt32(&buff[ofst]);
+		ofst += (UIntOS)ReadLUInt32(&buff[ofst]);
 	}
 	if (flags & 4)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 8)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 16)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) * 2 + 2;
 	}
-	UInt16 charCnt = ReadUInt16(&buff[ofst]);
+	UInt16 charCnt = ReadLUInt16(&buff[ofst]);
 	sbuff = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&buff[ofst + 2], charCnt);
 	*sbuff = 0;
 	return sbuff;
@@ -229,35 +229,35 @@ UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetIconLocation(UnsafeArray<UTF8Char> sbuf
 	UnsafeArray<UInt8> buff;
 	if (!this->buff.SetTo(buff))
 		return nullptr;
-	UInt32 flags = ReadUInt32(&buff[20]);
+	UInt32 flags = ReadLUInt32(&buff[20]);
 	if ((flags & 64) == 0)
 		return nullptr;
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) + 2;
 	}
 	if (flags & 2)
 	{
-		ofst += (UIntOS)ReadUInt32(&buff[ofst]);
+		ofst += (UIntOS)ReadLUInt32(&buff[ofst]);
 	}
 	if (flags & 4)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 8)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 16)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 32)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) * 2 + 2;
 	}
-	UInt16 charCnt = ReadUInt16(&buff[ofst]);
+	UInt16 charCnt = ReadLUInt16(&buff[ofst]);
 	sbuff = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&buff[ofst + 2], charCnt);
 	*sbuff = 0;
 	return sbuff;
@@ -268,44 +268,44 @@ UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetTarget(UnsafeArray<UTF8Char> sbuff)
 	UnsafeArray<UInt8> buff;
 	if (!this->buff.SetTo(buff))
 		return nullptr;
-	UInt32 flags = ReadUInt32(&buff[20]);
+	UInt32 flags = ReadLUInt32(&buff[20]);
 	UIntOS ofst = 0x4C;
 	if (flags & 1)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) + 2;
 	}
 	if (flags & 2)
 	{
-		ofst += (UIntOS)ReadUInt32(&buff[ofst]);
+		ofst += (UIntOS)ReadLUInt32(&buff[ofst]);
 	}
 	if (flags & 4)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 8)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 16)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 32)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) * 2 + 2;
 	}
 	if (flags & 64)
 	{
-		ofst += (UIntOS)ReadUInt16(&buff[ofst]) * 2 + 2;
+		ofst += (UIntOS)ReadLUInt16(&buff[ofst]) * 2 + 2;
 	}
 	while (ofst < this->buffSize)
 	{
-		UInt32 size = ReadUInt32(&buff[ofst]);
+		UInt32 size = ReadLUInt32(&buff[ofst]);
 		if (size < 4)
 		{
 			return nullptr;
 		}
-		if (ReadUInt32(&buff[ofst + 4]) == 0xA0000001)
+		if (ReadLUInt32(&buff[ofst + 4]) == 0xA0000001)
 		{
 			return Text::StrUTF16_UTF8(sbuff, (const UTF16Char*)&buff[ofst + 268]);
 		}

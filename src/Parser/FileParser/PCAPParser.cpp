@@ -47,9 +47,9 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPParser::ParseFileHdr(NN<IO::S
 	Data::DateTime dt;
 	UInt8 dataBuff[16];
 
-	if (ReadUInt32(&hdr[0]) == 0xa1b2c3d4)
+	if (ReadLUInt32(&hdr[0]) == 0xa1b2c3d4)
 	{
-		linkType = ReadUInt32(&hdr[20]);
+		linkType = ReadLUInt32(&hdr[20]);
 		NEW_CLASSNN(analyzer, Net::EthernetAnalyzer(nullptr, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
 		NEW_CLASSNN(dataRate, IO::DataRateCalc(fd->GetFullFileName()));
 		Data::ByteBuffer packetBuff(maxSize);
@@ -60,8 +60,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPParser::ParseFileHdr(NN<IO::S
 			{
 				break;
 			}
-			inclLen = ReadUInt32(&dataBuff[8]);
-			origLen = ReadUInt32(&dataBuff[12]);
+			inclLen = ReadLUInt32(&dataBuff[8]);
+			origLen = ReadLUInt32(&dataBuff[12]);
 			if (inclLen < 14 || inclLen > maxSize)
 			{
 				break;
@@ -69,8 +69,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPParser::ParseFileHdr(NN<IO::S
 			if (fd->GetRealData(currOfst + 16, inclLen, packetBuff) != inclLen)
 				break;
 			analyzer->PacketData((IO::PacketAnalyse::LinkType)linkType, packetBuff.Arr().Ptr(), origLen);
-			dt.SetSecond(ReadUInt32(&dataBuff[0]));
-			dt.SetNS(ReadUInt32(&dataBuff[4]) * 1000);
+			dt.SetSecond(ReadLUInt32(&dataBuff[0]));
+			dt.SetNS(ReadLUInt32(&dataBuff[4]) * 1000);
 			dataRate->AddData(dt, origLen);
 			currOfst += 16 + inclLen;
 		}

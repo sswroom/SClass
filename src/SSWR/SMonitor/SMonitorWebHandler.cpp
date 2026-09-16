@@ -169,27 +169,27 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(NN<SSWR::SMonitor::S
 				sptr = Text::StrInt64(sbuff, dev->cliId);
 				writer->Write(CSTRP(sbuff, sptr));
 				writer->Write(CSTR("&sensor="));
-				sptr = Text::StrInt32(sbuff, ReadInt16(dev->readings[k].status));
+				sptr = Text::StrInt32(sbuff, ReadLInt16(dev->readings[k].status));
 				writer->Write(CSTRP(sbuff, sptr));
 				writer->Write(CSTR("&reading="));
-				sptr = Text::StrInt32(sbuff, ReadInt16(&dev->readings[k].status[4]));
+				sptr = Text::StrInt32(sbuff, ReadLInt16(&dev->readings[k].status[4]));
 				writer->Write(CSTRP(sbuff, sptr));
 				writer->Write(CSTR("&readingType="));
-				sptr = Text::StrInt32(sbuff, ReadInt16(&dev->readings[k].status[6]));
+				sptr = Text::StrInt32(sbuff, ReadLInt16(&dev->readings[k].status[6]));
 				writer->Write(CSTRP(sbuff, sptr));
 				writer->Write(CSTR("\"/>"));
 
-				if (ReadInt16(&dev->readings[k].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
+				if (ReadLInt16(&dev->readings[k].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
 				{
 					writer->Write(CSTR("<br/>"));
 					writer->Write(CSTR("<img src=\"devreadingimg?id="));
 					sptr = Text::StrInt64(sbuff, dev->cliId);
 					writer->Write(CSTRP(sbuff, sptr));
 					writer->Write(CSTR("&sensor="));
-					sptr = Text::StrInt32(sbuff, ReadInt16(dev->readings[k].status));
+					sptr = Text::StrInt32(sbuff, ReadLInt16(dev->readings[k].status));
 					writer->Write(CSTRP(sbuff, sptr));
 					writer->Write(CSTR("&reading="));
-					sptr = Text::StrInt32(sbuff, ReadInt16(&dev->readings[k].status[4]));
+					sptr = Text::StrInt32(sbuff, ReadLInt16(&dev->readings[k].status[4]));
 					writer->Write(CSTRP(sbuff, sptr));
 					writer->Write(CSTR("&readingType="));
 					sptr = Text::StrInt32(sbuff, SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY);
@@ -466,10 +466,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(NN<SSWR::SMonitor::
 			else
 			{
 				writer->Write(CSTR("Sensor "));
-				sptr = Text::StrInt32(sbuff, ReadInt16(dev->readings[k].status));
+				sptr = Text::StrInt32(sbuff, ReadLInt16(dev->readings[k].status));
 				writer->Write(CSTRP(sbuff, sptr));
 				writer->Write(CSTR(" "));
-				writer->Write(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadUInt16(&dev->readings[k].status[6])));
+				writer->Write(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadLUInt16(&dev->readings[k].status[6])));
 			}
 
 			writer->Write(CSTR(" = "));
@@ -761,21 +761,21 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(NN<SSWR::SMo
 			WriteAttrText(writer, nns);
 		}
 		writer->Write(CSTR("/></td><td>Sensor "));
-		sptr = Text::StrInt32(sbuff, ReadInt16(&dev->readings[i].status[0]));
+		sptr = Text::StrInt32(sbuff, ReadLInt16(&dev->readings[i].status[0]));
 		writer->Write(CSTRP(sbuff, sptr));
-		if (ReadInt16(&dev->readings[i].status[2]) != SSWR::SMonitor::SAnalogSensor::ST_UNKNOWN)
+		if (ReadLInt16(&dev->readings[i].status[2]) != SSWR::SMonitor::SAnalogSensor::ST_UNKNOWN)
 		{
 			writer->Write(CSTR(" ("));
-			writer->Write(SSWR::SMonitor::SAnalogSensor::GetSensorTypeName((SSWR::SMonitor::SAnalogSensor::SensorType)ReadInt16(&dev->readings[i].status[2])));
+			writer->Write(SSWR::SMonitor::SAnalogSensor::GetSensorTypeName((SSWR::SMonitor::SAnalogSensor::SensorType)ReadLInt16(&dev->readings[i].status[2])));
 			writer->Write(CSTR(")"));
 		}
 		writer->Write(CSTR(" Reading "));
-		sptr = Text::StrInt32(sbuff, ReadInt16(&dev->readings[i].status[4]));
+		sptr = Text::StrInt32(sbuff, ReadLInt16(&dev->readings[i].status[4]));
 		writer->Write(CSTRP(sbuff, sptr));
-		if (ReadInt16(&dev->readings[i].status[6]) != SSWR::SMonitor::SAnalogSensor::RT_UNKNOWN)
+		if (ReadLInt16(&dev->readings[i].status[6]) != SSWR::SMonitor::SAnalogSensor::RT_UNKNOWN)
 		{
 			writer->Write(CSTR(" "));
-			writer->Write(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadInt16(&dev->readings[i].status[6])));
+			writer->Write(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadLInt16(&dev->readings[i].status[6])));
 		}
 		writer->WriteLine(CSTR("</td></tr>"));
 		i++;
@@ -1035,18 +1035,18 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 		i = 0;
 		while (i < j)
 		{
-			if (ReadInt16(&dev->readings[i].status[0]) == sensorId && ReadInt16(&dev->readings[i].status[4]) == readingId)
+			if (ReadLInt16(&dev->readings[i].status[0]) == sensorId && ReadLInt16(&dev->readings[i].status[4]) == readingId)
 			{
-				if (readingType == ReadInt16(&dev->readings[i].status[6]))
+				if (readingType == ReadLInt16(&dev->readings[i].status[6]))
 				{
 					readingIndex = i;
-					readingTypeD = ReadInt16(&dev->readings[i].status[6]);
+					readingTypeD = ReadLInt16(&dev->readings[i].status[6]);
 					break;
 				}
-				else if (readingType == SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY && ReadInt16(&dev->readings[i].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
+				else if (readingType == SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY && ReadLInt16(&dev->readings[i].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
 				{
 					readingIndex = i;
-					readingTypeD = ReadInt16(&dev->readings[i].status[6]);
+					readingTypeD = ReadLInt16(&dev->readings[i].status[6]);
 					break;
 				}
 			}
@@ -1079,7 +1079,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 				j = dev->nReading;
 				while (i < j)
 				{
-					if (ReadInt16(&dev->readings[i].status[0]) == sensorId && ReadInt16(&dev->readings[i].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
+					if (ReadLInt16(&dev->readings[i].status[0]) == sensorId && ReadLInt16(&dev->readings[i].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
 					{
 						treadingIndex = i;
 						break;
@@ -1094,9 +1094,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 					rec = dev->todayRecs.GetItemNoCheck(i);
 					hasTemp = false;
 					hasRH = false;
-					if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
+					if (rec->nreading > readingIndex && ReadLInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadLInt16(&rec->readings[readingIndex].status[4]) == readingId)
 					{
-						if (ReadInt16(&rec->readings[readingIndex].status[6]) == readingTypeD)
+						if (ReadLInt16(&rec->readings[readingIndex].status[6]) == readingTypeD)
 						{
 							hasRH = true;
 							rh = rec->readings[readingIndex].reading;
@@ -1107,7 +1107,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 						k = rec->nreading;
 						while (k-- > 0)
 						{
-							if (ReadInt16(&rec->readings[k].status[0]) == sensorId && ReadInt16(&rec->readings[k].status[4]) == readingId && ReadInt16(&rec->readings[k].status[6]) == readingTypeD)
+							if (ReadLInt16(&rec->readings[k].status[0]) == sensorId && ReadLInt16(&rec->readings[k].status[4]) == readingId && ReadLInt16(&rec->readings[k].status[6]) == readingTypeD)
 							{
 								hasRH = true;
 								rh = rec->readings[k].reading;
@@ -1116,7 +1116,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 						}
 					}
 
-					if (treadingIndex != (UIntOS)-1 && rec->nreading > treadingIndex && ReadInt16(&rec->readings[treadingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[treadingIndex].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
+					if (treadingIndex != (UIntOS)-1 && rec->nreading > treadingIndex && ReadLInt16(&rec->readings[treadingIndex].status[0]) == sensorId && ReadLInt16(&rec->readings[treadingIndex].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
 					{
 						hasTemp = true;
 						tempDeg = rec->readings[treadingIndex].reading;
@@ -1126,7 +1126,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 						k = rec->nreading;
 						while (k-- > 0)
 						{
-							if (ReadInt16(&rec->readings[k].status[0]) == sensorId && ReadInt16(&rec->readings[k].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
+							if (ReadLInt16(&rec->readings[k].status[0]) == sensorId && ReadLInt16(&rec->readings[k].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
 							{
 								hasTemp = true;
 								tempDeg = rec->readings[k].reading;
@@ -1150,9 +1150,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 				while (i < j)
 				{
 					rec = dev->todayRecs.GetItemNoCheck(i);
-					if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
+					if (rec->nreading > readingIndex && ReadLInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadLInt16(&rec->readings[readingIndex].status[4]) == readingId)
 					{
-						if (ReadInt16(&rec->readings[readingIndex].status[6]) == readingType)
+						if (ReadLInt16(&rec->readings[readingIndex].status[6]) == readingType)
 						{
 							dateList.Add(rec->recTime);
 							valList.Add(rec->readings[readingIndex].reading);
@@ -1163,9 +1163,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 						k = rec->nreading;
 						while (k-- > 0)
 						{
-							if (ReadInt16(&rec->readings[k].status[0]) == sensorId && ReadInt16(&rec->readings[k].status[4]) == readingId)
+							if (ReadLInt16(&rec->readings[k].status[0]) == sensorId && ReadLInt16(&rec->readings[k].status[4]) == readingId)
 							{
-								if (ReadInt16(&rec->readings[k].status[6]) == readingType)
+								if (ReadLInt16(&rec->readings[k].status[6]) == readingType)
 								{
 									dateList.Add(rec->recTime);
 									valList.Add(rec->readings[k].reading);
@@ -1187,11 +1187,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 			else
 			{
 				sb.AppendC(UTF8STRC("Sensor "));
-				sb.AppendI32(ReadInt16(dev->readings[readingIndex].status));
-				if (ReadInt16(&dev->readings[readingIndex].status[6]) != SSWR::SMonitor::SAnalogSensor::RT_UNKNOWN)
+				sb.AppendI32(ReadLInt16(dev->readings[readingIndex].status));
+				if (ReadLInt16(&dev->readings[readingIndex].status[6]) != SSWR::SMonitor::SAnalogSensor::RT_UNKNOWN)
 				{
 					sb.AppendC(UTF8STRC(" "));
-					sb.Append(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadInt16(&dev->readings[readingIndex].status[6])));
+					sb.Append(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadLInt16(&dev->readings[readingIndex].status[6])));
 				}
 			}
 			Double currVal;
@@ -1202,7 +1202,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 				j = dev->nReading;
 				while (i < j)
 				{
-					if (ReadInt16(&dev->readings[i].status[0]) == sensorId && ReadInt16(&dev->readings[i].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
+					if (ReadLInt16(&dev->readings[i].status[0]) == sensorId && ReadLInt16(&dev->readings[i].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
 					{
 						currVal = Math::Unit::Pressure::WaterVapourPressure(Math::Unit::Pressure::PU_PASCAL, Math::Unit::Temperature::TU_CELSIUS, dev->readings[i].reading, dev->readings[readingIndex].reading);
 						break;
@@ -1237,7 +1237,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 					j = dev->nReading;
 					while (i < j)
 					{
-						if (ReadInt16(&dev->readings[i].status[0]) == sensorId && ReadInt16(&dev->readings[i].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
+						if (ReadLInt16(&dev->readings[i].status[0]) == sensorId && ReadLInt16(&dev->readings[i].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
 						{
 							treadingIndex = i;
 							break;
@@ -1252,9 +1252,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 						rec = dev->yesterdayRecs.GetItemNoCheck(i);
 						hasTemp = false;
 						hasRH = false;
-						if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
+						if (rec->nreading > readingIndex && ReadLInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadLInt16(&rec->readings[readingIndex].status[4]) == readingId)
 						{
-							if (ReadInt16(&rec->readings[readingIndex].status[6]) == readingTypeD)
+							if (ReadLInt16(&rec->readings[readingIndex].status[6]) == readingTypeD)
 							{
 								hasRH = true;
 								rh = rec->readings[readingIndex].reading;
@@ -1265,9 +1265,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 							k = rec->nreading;
 							while (k-- > 0)
 							{
-								if (ReadInt16(&rec->readings[k].status[0]) == sensorId && ReadInt16(&rec->readings[k].status[4]) == readingId)
+								if (ReadLInt16(&rec->readings[k].status[0]) == sensorId && ReadLInt16(&rec->readings[k].status[4]) == readingId)
 								{
-									if (ReadInt16(&rec->readings[k].status[6]) == readingTypeD)
+									if (ReadLInt16(&rec->readings[k].status[6]) == readingTypeD)
 									{
 										hasRH = true;
 										rh = rec->readings[readingIndex].reading;
@@ -1277,7 +1277,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 							}
 						}
 
-						if (treadingIndex != (UIntOS)-1 && rec->nreading > treadingIndex && ReadInt16(&rec->readings[treadingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[treadingIndex].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
+						if (treadingIndex != (UIntOS)-1 && rec->nreading > treadingIndex && ReadLInt16(&rec->readings[treadingIndex].status[0]) == sensorId && ReadLInt16(&rec->readings[treadingIndex].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
 						{
 							hasTemp = true;
 							tempDeg = rec->readings[treadingIndex].reading;
@@ -1287,7 +1287,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 							k = rec->nreading;
 							while (k-- > 0)
 							{
-								if (ReadInt16(&rec->readings[k].status[0]) == sensorId && ReadInt16(&rec->readings[k].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
+								if (ReadLInt16(&rec->readings[k].status[0]) == sensorId && ReadLInt16(&rec->readings[k].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE)
 								{
 									hasTemp = true;
 									tempDeg = rec->readings[k].reading;
@@ -1334,9 +1334,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 					while (i < j)
 					{
 						rec = dev->yesterdayRecs.GetItemNoCheck(i);
-						if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
+						if (rec->nreading > readingIndex && ReadLInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadLInt16(&rec->readings[readingIndex].status[4]) == readingId)
 						{
-							if (ReadInt16(&rec->readings[readingIndex].status[6]) == readingType)
+							if (ReadLInt16(&rec->readings[readingIndex].status[6]) == readingType)
 							{
 								thisTime = rec->recTime + 86400000LL;
 								if (thisTime <= maxTime)
@@ -1356,9 +1356,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 							k = rec->nreading;
 							while (k-- > 0)
 							{
-								if (ReadInt16(&rec->readings[k].status[0]) == sensorId && ReadInt16(&rec->readings[k].status[4]) == readingId)
+								if (ReadLInt16(&rec->readings[k].status[0]) == sensorId && ReadLInt16(&rec->readings[k].status[4]) == readingId)
 								{
-									if (ReadInt16(&rec->readings[k].status[6]) == readingType)
+									if (ReadLInt16(&rec->readings[k].status[6]) == readingType)
 									{
 										thisTime = rec->recTime + 86400000LL;
 										if (thisTime <= maxTime)
@@ -1525,16 +1525,16 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(NN<SSWR::SM
 			}
 			else
 			{
-				Text::StrInt32(Text::StrConcatC(Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Sensor ")), ReadInt16(dev->readings[k].status)), UTF8STRC(" Reading ")), ReadInt16(&dev->readings[k].status[4]));
+				Text::StrInt32(Text::StrConcatC(Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Sensor ")), ReadLInt16(dev->readings[k].status)), UTF8STRC(" Reading ")), ReadLInt16(&dev->readings[k].status[4]));
 				WriteJSText(writer, sbuff);
 			}
 			writer->WriteLine(CSTR(";"));
 			writer->Write(CSTR("reading.sensor = "));
-			sptr = Text::StrInt32(sbuff, ReadInt16(dev->readings[k].status));
+			sptr = Text::StrInt32(sbuff, ReadLInt16(dev->readings[k].status));
 			writer->Write(CSTRP(sbuff, sptr));
 			writer->WriteLine(CSTR(";"));
 			writer->Write(CSTR("reading.reading = "));
-			sptr = Text::StrInt32(sbuff, ReadInt16(&dev->readings[k].status[4]));
+			sptr = Text::StrInt32(sbuff, ReadLInt16(&dev->readings[k].status[4]));
 			writer->Write(CSTRP(sbuff, sptr));
 			writer->WriteLine(CSTR(";"));
 
@@ -1663,10 +1663,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 		i = dev->nReading;
 		while (i-- > 0)
 		{
-			if (ReadInt16(&dev->readings[i].status[0]) == sensorId && ReadInt16(&dev->readings[i].status[4]) == readingId)
+			if (ReadLInt16(&dev->readings[i].status[0]) == sensorId && ReadLInt16(&dev->readings[i].status[4]) == readingId)
 			{
 				readingIndex = i;
-				readingType = ReadInt16(&dev->readings[i].status[6]);
+				readingType = ReadLInt16(&dev->readings[i].status[6]);
 				break;
 			}
 		}
@@ -1695,9 +1695,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 			while (i < j)
 			{
 				rec = recList.GetItemNoCheck(i);
-				if (rec->nreading > readingIndex && ReadInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadInt16(&rec->readings[readingIndex].status[4]) == readingId)
+				if (rec->nreading > readingIndex && ReadLInt16(&rec->readings[readingIndex].status[0]) == sensorId && ReadLInt16(&rec->readings[readingIndex].status[4]) == readingId)
 				{
-					if (ReadInt16(&rec->readings[readingIndex].status[6]) == readingType)
+					if (ReadLInt16(&rec->readings[readingIndex].status[6]) == readingType)
 					{
 						dateList.Add(rec->recTime);
 						valList.Add(rec->readings[readingIndex].reading);
@@ -1708,9 +1708,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 					k = rec->nreading;
 					while (k-- > 0)
 					{
-						if (ReadInt16(&rec->readings[k].status[0]) == sensorId && ReadInt16(&rec->readings[k].status[4]) == readingId)
+						if (ReadLInt16(&rec->readings[k].status[0]) == sensorId && ReadLInt16(&rec->readings[k].status[4]) == readingId)
 						{
-							if (ReadInt16(&rec->readings[k].status[6]) == readingType)
+							if (ReadLInt16(&rec->readings[k].status[6]) == readingType)
 							{
 								dateList.Add(rec->recTime);
 								valList.Add(rec->readings[k].reading);
@@ -1733,11 +1733,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 			else
 			{
 				sb.AppendC(UTF8STRC("Sensor "));
-				sb.AppendI32(ReadInt16(dev->readings[readingIndex].status));
-				if (ReadInt16(&dev->readings[readingIndex].status[6]) != SSWR::SMonitor::SAnalogSensor::RT_UNKNOWN)
+				sb.AppendI32(ReadLInt16(dev->readings[readingIndex].status));
+				if (ReadLInt16(&dev->readings[readingIndex].status[6]) != SSWR::SMonitor::SAnalogSensor::RT_UNKNOWN)
 				{
 					sb.AppendC(UTF8STRC(" "));
-					sb.Append(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadInt16(&dev->readings[readingIndex].status[6])));
+					sb.Append(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadLInt16(&dev->readings[readingIndex].status[6])));
 				}
 			}
 			mutUsage.EndUse();

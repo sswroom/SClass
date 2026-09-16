@@ -158,7 +158,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	frame->AddUIntName(0, 1, CSTR("Type"), pack->packType, SMBIOSTypeGetName(pack->packType));
 	frame->AddUInt(1, 1, CSTR("Length"), packBuff[1]);
-	frame->AddHex16(2, CSTR("Handle"), ReadUInt16(&packBuff[2]));
+	frame->AddHex16(2, CSTR("Handle"), ReadLUInt16(&packBuff[2]));
 	switch (pack->packType)
 	{
 	case 0:
@@ -196,7 +196,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 		AddUInt8(frame, 23, packBuff, carr, CSTR("Embedded Controller Firmware Minor Release"));
 		if (packBuff[1] >= 26)
 		{
-			UInt16 sz = ReadUInt16(&packBuff[24]);
+			UInt16 sz = ReadLUInt16(&packBuff[24]);
 			sptr = Text::StrUIntOS(sbuff, sz & 0x3FFF);
 			switch (sz >> 14)
 			{
@@ -375,7 +375,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 		AddBits(frame, 39, packBuff, carr, names4_4);
 		if (packBuff[1] > 41)
 		{
-			frame->AddUIntName(40, 2, CSTR("Processor Family 2"), ReadUInt16(&packBuff[40]), IO::SMBIOS::GetProcessorFamily(ReadUInt16(&packBuff[40])));
+			frame->AddUIntName(40, 2, CSTR("Processor Family 2"), ReadLUInt16(&packBuff[40]), IO::SMBIOS::GetProcessorFamily(ReadLUInt16(&packBuff[40])));
 		}
 		AddUInt16(frame, 42, packBuff, carr, CSTR("Core Count 2"));
 		AddUInt16(frame, 44, packBuff, carr, CSTR("Core Enabled 2"));
@@ -522,34 +522,34 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 		{
 			if (packBuff[8] & 0x80)
 			{
-				frame->AddUInt(7, 2, CSTR("Maximum Cache Size (KB)"), (UIntOS)(ReadUInt16(&packBuff[7]) & 0x7FFF) * 64);
+				frame->AddUInt(7, 2, CSTR("Maximum Cache Size (KB)"), (UIntOS)(ReadLUInt16(&packBuff[7]) & 0x7FFF) * 64);
 			}
 			else
 			{
-				frame->AddUInt(7, 2, CSTR("Maximum Cache Size (KB)"), ReadUInt16(&packBuff[7]));
+				frame->AddUInt(7, 2, CSTR("Maximum Cache Size (KB)"), ReadLUInt16(&packBuff[7]));
 			}
 		}
 		if (packBuff[1] > 10)
 		{
 			if (packBuff[10] & 0x80)
 			{
-				frame->AddUInt(9, 2, CSTR("Installed Size (KB)"), (UIntOS)(ReadUInt16(&packBuff[9]) & 0x7FFF) * 64);
+				frame->AddUInt(9, 2, CSTR("Installed Size (KB)"), (UIntOS)(ReadLUInt16(&packBuff[9]) & 0x7FFF) * 64);
 			}
 			else
 			{
-				frame->AddUInt(9, 2, CSTR("Installed Size (KB)"), ReadUInt16(&packBuff[9]));
+				frame->AddUInt(9, 2, CSTR("Installed Size (KB)"), ReadLUInt16(&packBuff[9]));
 			}
 		}
 		const Char *names7_1[] = {"Other", "Unknown", "Non-Burst", "Burst", "Pipeline Burst", "Synchronous", "Asynchronous", "Reserved"};
 		if (packBuff[1] > 12)
 		{
-			frame->AddHex16(11, CSTR("Supported SRAM Type"), ReadUInt16(&packBuff[11]));
+			frame->AddHex16(11, CSTR("Supported SRAM Type"), ReadLUInt16(&packBuff[11]));
 			AddBits(frame, 11, packBuff, carr, names7_1);
 			AddHex8(frame, 12, packBuff, carr, CSTR("Reserved"));
 		}
 		if (packBuff[1] > 14)
 		{
-			frame->AddHex16(13, CSTR("Current SRAM Type"), ReadUInt16(&packBuff[13]));
+			frame->AddHex16(13, CSTR("Current SRAM Type"), ReadLUInt16(&packBuff[13]));
 			AddBits(frame, 13, packBuff, carr, names7_1);
 			AddHex8(frame, 14, packBuff, carr, CSTR("Reserved"));
 		}
@@ -565,22 +565,22 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 		{
 			if (packBuff[22] & 0x80)
 			{
-				frame->AddUInt(19, 4, CSTR("Maximum Cache Size 2 (KB)"), (UIntOS)(ReadUInt32(&packBuff[19]) & 0x7FFFFFFF) * 64);
+				frame->AddUInt(19, 4, CSTR("Maximum Cache Size 2 (KB)"), (UIntOS)(ReadLUInt32(&packBuff[19]) & 0x7FFFFFFF) * 64);
 			}
 			else
 			{
-				frame->AddUInt(19, 4, CSTR("Maximum Cache Size 2 (KB)"), ReadUInt32(&packBuff[19]));
+				frame->AddUInt(19, 4, CSTR("Maximum Cache Size 2 (KB)"), ReadLUInt32(&packBuff[19]));
 			}
 		}
 		if (packBuff[1] > 26)
 		{
 			if (packBuff[26] & 0x80)
 			{
-				frame->AddUInt(23, 4, CSTR("Maximum Cache Size 2 (KB)"), (UIntOS)(ReadUInt32(&packBuff[23]) & 0x7FFFFFFF) * 64);
+				frame->AddUInt(23, 4, CSTR("Maximum Cache Size 2 (KB)"), (UIntOS)(ReadLUInt32(&packBuff[23]) & 0x7FFFFFFF) * 64);
 			}
 			else
 			{
-				frame->AddUInt(23, 4, CSTR("Maximum Cache Size 2 (KB)"), ReadUInt32(&packBuff[23]));
+				frame->AddUInt(23, 4, CSTR("Maximum Cache Size 2 (KB)"), ReadLUInt32(&packBuff[23]));
 			}
 		}
 		break;
@@ -702,7 +702,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 		AddEnum(frame, 5, packBuff, carr, CSTR("Use"), names13_2, sizeof(names13_2) / sizeof(names13_2[0]));
 		const Char *names13_3[] = {"Unspecified", "Other", "Unknown", "None", "Parity", "Single-bit ECC", "Multi-bit ECC", "CRC"};
 		AddEnum(frame, 6, packBuff, carr, CSTR("Memory Error Correction"), names13_3, sizeof(names13_3) / sizeof(names13_3[0]));
-		frame->AddUInt(7, 4, CSTR("Maximum Capacity (KiB)"), ReadUInt32(&packBuff[7]));
+		frame->AddUInt(7, 4, CSTR("Maximum Capacity (KiB)"), ReadLUInt32(&packBuff[7]));
 		AddHex16(frame, 11, packBuff, carr, CSTR("Memory Error Information Handle"));
 		AddUInt16(frame, 13, packBuff, carr, CSTR("Number of Memory Devices"));
 		AddUInt64(frame, 15, packBuff, carr, CSTR("Extended Maximum Capacity (Bytes)"));
@@ -714,22 +714,22 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 		AddHex16(frame, 6, packBuff, carr, CSTR("Memory Error Information Handle"));
 		AddUInt16(frame, 8, packBuff, carr, CSTR("Total Width (bits)"));
 		AddUInt16(frame, 10, packBuff, carr, CSTR("Data Width (bits)"));
-		if (ReadUInt16(&packBuff[12]) == 0xFFFF)
+		if (ReadLUInt16(&packBuff[12]) == 0xFFFF)
 		{
 			frame->AddField(12, 2, CSTR("Size"), CSTR("Unknown"));
 		}
-		else if (ReadUInt16(&packBuff[12]) == 0x7FFF)
+		else if (ReadLUInt16(&packBuff[12]) == 0x7FFF)
 		{
 			frame->AddField(12, 2, CSTR("Size"), CSTR("Use Extended Size"));
 		}
 		else if (packBuff[13] & 0x80)
 		{
-			sptr = Text::StrConcatC(Text::StrUIntOS(sbuff, ReadUInt16(&packBuff[12]) & 0x7FFF), UTF8STRC("KB"));
+			sptr = Text::StrConcatC(Text::StrUIntOS(sbuff, ReadLUInt16(&packBuff[12]) & 0x7FFF), UTF8STRC("KB"));
 			frame->AddField(12, 2, CSTR("Size"), CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			sptr = Text::StrConcatC(Text::StrUIntOS(sbuff, ReadUInt16(&packBuff[12]) & 0x7FFF), UTF8STRC("MB"));
+			sptr = Text::StrConcatC(Text::StrUIntOS(sbuff, ReadLUInt16(&packBuff[12]) & 0x7FFF), UTF8STRC("MB"));
 			frame->AddField(12, 2, CSTR("Size"), CSTRP(sbuff, sptr));
 		}
 		const Char *names17_1[] = {"Unspecified", "Other", "Unknown", "SIMM", "SIP", "Chip", "DIP", "ZIP",
@@ -756,7 +756,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 		AddString(frame, 26, packBuff, carr, CSTR("Part Number"));
 		frame->AddUInt(27, 1, CSTR("Rank"), packBuff[27] & 15);
 		frame->AddUInt(27, 1, CSTR("Reserved"), (UIntOS)packBuff[27] >> 4);
-		frame->AddUInt(28, 4, CSTR("Extended Size (MB)"), ReadUInt32(&packBuff[28]));
+		frame->AddUInt(28, 4, CSTR("Extended Size (MB)"), ReadLUInt32(&packBuff[28]));
 		AddUInt16(frame, 32, packBuff, carr, CSTR("Configured Memory Speed (MT/s)"));
 		AddUInt16(frame, 34, packBuff, carr, CSTR("Minimum voltage (mV)"));
 		AddUInt16(frame, 36, packBuff, carr, CSTR("Maximum voltage (mV)"));
@@ -777,11 +777,11 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 		AddUInt64(frame, 76, packBuff, carr, CSTR("Logical Size (Bytes)"));
 		if (packBuff[1] >= 88)
 		{
-			frame->AddUInt(84, 4, CSTR("Extended Speed (MT/s)"), ReadUInt32(&packBuff[84]) & 0x7fffffff);
+			frame->AddUInt(84, 4, CSTR("Extended Speed (MT/s)"), ReadLUInt32(&packBuff[84]) & 0x7fffffff);
 		}
 		if (packBuff[1] >= 92)
 		{
-			frame->AddUInt(88, 4, CSTR("Extended Configured Memory Speed (MT/s)"), ReadUInt32(&packBuff[88]) & 0x7fffffff);
+			frame->AddUInt(88, 4, CSTR("Extended Configured Memory Speed (MT/s)"), ReadLUInt32(&packBuff[88]) & 0x7fffffff);
 		}
 		break;
 	}
@@ -839,8 +839,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 		AddEnum(frame, 9, packBuff, carr, CSTR("Device Chemistry"), names22_1, sizeof(names22_1) / sizeof(names22_1[0]));
 		UIntOS dcMul = 1;
 		if (packBuff[1] > 21) dcMul = packBuff[21];
-		if (packBuff[1] > 11) frame->AddUInt(10, 2, CSTR("Design Capacity (mWh)"), ReadUInt16(&packBuff[10]) * dcMul);
-		if (packBuff[1] > 13) frame->AddUInt(12, 2, CSTR("Design Voltage (mV)"), ReadUInt16(&packBuff[12]));
+		if (packBuff[1] > 11) frame->AddUInt(10, 2, CSTR("Design Capacity (mWh)"), ReadLUInt16(&packBuff[10]) * dcMul);
+		if (packBuff[1] > 13) frame->AddUInt(12, 2, CSTR("Design Voltage (mV)"), ReadLUInt16(&packBuff[12]));
 		AddString(frame, 14, packBuff, carr, CSTR("SBDS Version Number"));
 		AddUInt8(frame, 15, packBuff, carr, CSTR("Maximum Error in Battery Data (%)"));
 		AddHex16(frame, 16, packBuff, carr, CSTR("SBDS Serial Number"));
@@ -901,9 +901,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 		}
 		AddUInt16(frame, 6, packBuff, carr, CSTR("Maximum Value (mV)"));
 		AddUInt16(frame, 8, packBuff, carr, CSTR("Minimum Value (mV)"));
-		if (packBuff[1] > 11) frame->AddFloat(10, 2, CSTR("Resolution (mV)"), ReadUInt16(&packBuff[10]) * 0.1);
+		if (packBuff[1] > 11) frame->AddFloat(10, 2, CSTR("Resolution (mV)"), ReadLUInt16(&packBuff[10]) * 0.1);
 		AddUInt16(frame, 12, packBuff, carr, CSTR("Tolerance (mV)"));
-		if (packBuff[1] > 15) frame->AddFloat(14, 2, CSTR("Accuracy (%)"), ReadUInt16(&packBuff[14]) * 0.01);
+		if (packBuff[1] > 15) frame->AddFloat(14, 2, CSTR("Accuracy (%)"), ReadLUInt16(&packBuff[14]) * 0.01);
 		AddHex32(frame, 16, packBuff, carr, CSTR("OEM-defined"));
 		AddUInt16(frame, 20, packBuff, carr, CSTR("Nominal Value (mV)"));
 		break;
@@ -979,69 +979,69 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 		}
 		if (packBuff[1] > 7)
 		{
-			if (ReadUInt16(&packBuff[6]) == 0x8000)
+			if (ReadLUInt16(&packBuff[6]) == 0x8000)
 			{
 				frame->AddField(6, 2, CSTR("Maximum Value"), CSTR("Unknown"));
 			}
 			else
 			{
-				frame->AddFloat(6, 2, CSTR("Maximum Value"), ReadUInt16(&packBuff[6]) * 0.1);
+				frame->AddFloat(6, 2, CSTR("Maximum Value"), ReadLUInt16(&packBuff[6]) * 0.1);
 			}
 		}
 		if (packBuff[1] > 9)
 		{
-			if (ReadUInt16(&packBuff[8]) == 0x8000)
+			if (ReadLUInt16(&packBuff[8]) == 0x8000)
 			{
 				frame->AddField(8, 2, CSTR("Minimum Value"), CSTR("Unknown"));
 			}
 			else
 			{
-				frame->AddFloat(8, 2, CSTR("Minimum Value"), ReadUInt16(&packBuff[8]) * 0.1);
+				frame->AddFloat(8, 2, CSTR("Minimum Value"), ReadLUInt16(&packBuff[8]) * 0.1);
 			}
 		}
 		if (packBuff[1] > 11)
 		{
-			if (ReadUInt16(&packBuff[10]) == 0x8000)
+			if (ReadLUInt16(&packBuff[10]) == 0x8000)
 			{
 				frame->AddField(10, 2, CSTR("Resolution"), CSTR("Unknown"));
 			}
 			else
 			{
-				frame->AddFloat(10, 2, CSTR("Resolution"), ReadUInt16(&packBuff[10]) * 0.001);
+				frame->AddFloat(10, 2, CSTR("Resolution"), ReadLUInt16(&packBuff[10]) * 0.001);
 			}
 		}
 		if (packBuff[1] > 13)
 		{
-			if (ReadUInt16(&packBuff[12]) == 0x8000)
+			if (ReadLUInt16(&packBuff[12]) == 0x8000)
 			{
 				frame->AddField(12, 2, CSTR("Tolerance"), CSTR("Unknown"));
 			}
 			else
 			{
-				frame->AddFloat(12, 2, CSTR("Tolerance"), ReadUInt16(&packBuff[12]) * 0.1);
+				frame->AddFloat(12, 2, CSTR("Tolerance"), ReadLUInt16(&packBuff[12]) * 0.1);
 			}
 		}
 		if (packBuff[1] > 15)
 		{
-			if (ReadUInt16(&packBuff[14]) == 0x8000)
+			if (ReadLUInt16(&packBuff[14]) == 0x8000)
 			{
 				frame->AddField(14, 2, CSTR("Accuracy"), CSTR("Unknown"));
 			}
 			else
 			{
-				frame->AddFloat(14, 2, CSTR("Accuracy"), ReadUInt16(&packBuff[14]) * 0.01);
+				frame->AddFloat(14, 2, CSTR("Accuracy"), ReadLUInt16(&packBuff[14]) * 0.01);
 			}
 		}
 		AddHex32(frame, 16, packBuff, carr, CSTR("OEM-defined"));
 		if (packBuff[1] > 21)
 		{
-			if (ReadUInt16(&packBuff[20]) == 0x8000)
+			if (ReadLUInt16(&packBuff[20]) == 0x8000)
 			{
 				frame->AddField(20, 2, CSTR("Nominal Value"), CSTR("Unknown"));
 			}
 			else
 			{
-				frame->AddFloat(20, 2, CSTR("Nominal Value"), ReadUInt16(&packBuff[20]) * 0.01);
+				frame->AddFloat(20, 2, CSTR("Nominal Value"), ReadLUInt16(&packBuff[20]) * 0.01);
 			}
 		}
 		break;
@@ -1059,69 +1059,69 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 		}
 		if (packBuff[1] > 7)
 		{
-			if (ReadUInt16(&packBuff[6]) == 0x8000)
+			if (ReadLUInt16(&packBuff[6]) == 0x8000)
 			{
 				frame->AddField(6, 2, CSTR("Maximum Value"), CSTR("Unknown"));
 			}
 			else
 			{
-				frame->AddFloat(6, 2, CSTR("Maximum Value(mA)"), ReadUInt16(&packBuff[6]));
+				frame->AddFloat(6, 2, CSTR("Maximum Value(mA)"), ReadLUInt16(&packBuff[6]));
 			}
 		}
 		if (packBuff[1] > 9)
 		{
-			if (ReadUInt16(&packBuff[8]) == 0x8000)
+			if (ReadLUInt16(&packBuff[8]) == 0x8000)
 			{
 				frame->AddField(8, 2, CSTR("Minimum Value"), CSTR("Unknown"));
 			}
 			else
 			{
-				frame->AddFloat(8, 2, CSTR("Minimum Value(mA)"), ReadUInt16(&packBuff[8]));
+				frame->AddFloat(8, 2, CSTR("Minimum Value(mA)"), ReadLUInt16(&packBuff[8]));
 			}
 		}
 		if (packBuff[1] > 11)
 		{
-			if (ReadUInt16(&packBuff[10]) == 0x8000)
+			if (ReadLUInt16(&packBuff[10]) == 0x8000)
 			{
 				frame->AddField(10, 2, CSTR("Resolution"), CSTR("Unknown"));
 			}
 			else
 			{
-				frame->AddFloat(10, 2, CSTR("Resolution(mA)"), ReadUInt16(&packBuff[10]) * 10.0);
+				frame->AddFloat(10, 2, CSTR("Resolution(mA)"), ReadLUInt16(&packBuff[10]) * 10.0);
 			}
 		}
 		if (packBuff[1] > 13)
 		{
-			if (ReadUInt16(&packBuff[12]) == 0x8000)
+			if (ReadLUInt16(&packBuff[12]) == 0x8000)
 			{
 				frame->AddField(12, 2, CSTR("Tolerance"), CSTR("Unknown"));
 			}
 			else
 			{
-				frame->AddFloat(12, 2, CSTR("Tolerance(mA)"), ReadUInt16(&packBuff[12]));
+				frame->AddFloat(12, 2, CSTR("Tolerance(mA)"), ReadLUInt16(&packBuff[12]));
 			}
 		}
 		if (packBuff[1] > 15)
 		{
-			if (ReadUInt16(&packBuff[14]) == 0x8000)
+			if (ReadLUInt16(&packBuff[14]) == 0x8000)
 			{
 				frame->AddField(14, 2, CSTR("Accuracy"), CSTR("Unknown"));
 			}
 			else
 			{
-				frame->AddFloat(14, 2, CSTR("Accuracy(%)"), ReadUInt16(&packBuff[14]) * 0.01);
+				frame->AddFloat(14, 2, CSTR("Accuracy(%)"), ReadLUInt16(&packBuff[14]) * 0.01);
 			}
 		}
 		AddHex32(frame, 16, packBuff, carr, CSTR("OEM-defined"));
 		if (packBuff[1] > 21)
 		{
-			if (ReadUInt16(&packBuff[20]) == 0x8000)
+			if (ReadLUInt16(&packBuff[20]) == 0x8000)
 			{
 				frame->AddField(20, 2, CSTR("Nominal Value"), CSTR("Unknown"));
 			}
 			else
 			{
-				frame->AddFloat(20, 2, CSTR("Nominal Value(mA)"), ReadUInt16(&packBuff[20]));
+				frame->AddFloat(20, 2, CSTR("Nominal Value(mA)"), ReadLUInt16(&packBuff[20]));
 			}
 		}
 		break;
@@ -1188,7 +1188,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 			const Char *names39_1[] = {"Unspecified", "Other", "Unknown", "Manual", "Auto-switch", "Wide range", "Not applicable"};
 			AddEnum(frame, 14, (packBuff[14] >> 3) & 15, carr, CSTR("DMTF Input Voltage Range Switching"), names39_1, sizeof(names39_1) / sizeof(names39_1[0]));
 			const Char *names39_2[] = {"Unspecified", "Other", "Unknown", "OK", "Non-critical", "Critical"};
-			AddEnum(frame, 14, (ReadUInt16(&packBuff[14]) >> 7) & 7, carr, CSTR("Status"), names39_2, sizeof(names39_2) / sizeof(names39_2[0]));
+			AddEnum(frame, 14, (ReadLUInt16(&packBuff[14]) >> 7) & 7, carr, CSTR("Status"), names39_2, sizeof(names39_2) / sizeof(names39_2[0]));
 			const Char *names39_3[] = {"Unspecified", "Other", "Unknown", "Linear", "Switching", "Battery", "UPS", "Converter", "Regulator"};
 			AddEnum(frame, 15, (packBuff[15] >> 2) & 15, carr, CSTR("DMTF Power Supply Type"), names39_3, sizeof(names39_3) / sizeof(names39_3[0]));
 			frame->AddBit(15, CSTR("Reserved"), packBuff[15], 6);
@@ -1758,21 +1758,21 @@ void IO::FileAnalyse::SMBIOSFileAnalyse::AddHex16(NN<FrameDetail> frame, UIntOS 
 {
 	if (ofst + 1 >= packBuff[1])
 		return;
-	frame->AddHex16(ofst, name, ReadUInt16(&packBuff[ofst]));
+	frame->AddHex16(ofst, name, ReadLUInt16(&packBuff[ofst]));
 }
 
 void IO::FileAnalyse::SMBIOSFileAnalyse::AddHex32(NN<FrameDetail> frame, UIntOS ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, Text::CStringNN name)
 {
 	if (ofst + 3 >= packBuff[1])
 		return;
-	frame->AddHex32(ofst, name, ReadUInt32(&packBuff[ofst]));
+	frame->AddHex32(ofst, name, ReadLUInt32(&packBuff[ofst]));
 }
 
 void IO::FileAnalyse::SMBIOSFileAnalyse::AddHex64(NN<FrameDetail> frame, UIntOS ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, Text::CStringNN name)
 {
 	if (ofst + 7 >= packBuff[1])
 		return;
-	frame->AddHex64(ofst, name, ReadUInt64(&packBuff[ofst]));
+	frame->AddHex64(ofst, name, ReadLUInt64(&packBuff[ofst]));
 }
 
 void IO::FileAnalyse::SMBIOSFileAnalyse::AddUInt8(NN<FrameDetail> frame, UIntOS ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, Text::CStringNN name)
@@ -1786,21 +1786,21 @@ void IO::FileAnalyse::SMBIOSFileAnalyse::AddUInt16(NN<FrameDetail> frame, UIntOS
 {
 	if (ofst + 1 >= packBuff[1])
 		return;
-	frame->AddUInt(ofst, 2, name, ReadUInt16(&packBuff[ofst]));
+	frame->AddUInt(ofst, 2, name, ReadLUInt16(&packBuff[ofst]));
 }
 
 void IO::FileAnalyse::SMBIOSFileAnalyse::AddUInt32(NN<FrameDetail> frame, UIntOS ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, Text::CStringNN name)
 {
 	if (ofst + 3 >= packBuff[1])
 		return;
-	frame->AddUInt(ofst, 4, name, ReadUInt32(&packBuff[ofst]));
+	frame->AddUInt(ofst, 4, name, ReadLUInt32(&packBuff[ofst]));
 }
 
 void IO::FileAnalyse::SMBIOSFileAnalyse::AddUInt64(NN<FrameDetail> frame, UIntOS ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, Text::CStringNN name)
 {
 	if (ofst + 7 >= packBuff[1])
 		return;
-	frame->AddUInt64(ofst, name, ReadUInt64(&packBuff[ofst]));
+	frame->AddUInt64(ofst, name, ReadLUInt64(&packBuff[ofst]));
 }
 
 void IO::FileAnalyse::SMBIOSFileAnalyse::AddUUID(NN<FrameDetail> frame, UIntOS ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, Text::CStringNN name)
@@ -1818,7 +1818,7 @@ void IO::FileAnalyse::SMBIOSFileAnalyse::AddDate(NN<FrameDetail> frame, UIntOS o
 {
 	if (ofst + 1 >= packBuff[1])
 		return;
-	UInt16 val = ReadUInt16(&packBuff[ofst]);
+	UInt16 val = ReadLUInt16(&packBuff[ofst]);
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	if (val == 0)

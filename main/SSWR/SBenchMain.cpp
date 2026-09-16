@@ -1842,7 +1842,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.AppendC(UTF8STRC("LRGB First Pixel: "));
 			sb.AppendHexBuff(tmpBuff, 8, ' ', Text::LineBreakType::None);
 			sb.AppendC(UTF8STRC(" ("));
-			sb.AppendI32(ReadInt16(tmpBuff));
+			sb.AppendI32(ReadLInt16(tmpBuff));
 			sb.AppendC(UTF8STRC(")"));
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
@@ -1851,7 +1851,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.AppendC(UTF8STRC("LRGB Second Pixel: "));
 			sb.AppendHexBuff(&tmpBuff[8], 8, ' ', Text::LineBreakType::None);
 			sb.AppendC(UTF8STRC(" ("));
-			sb.AppendI32(ReadInt16(tmpBuff));
+			sb.AppendI32(ReadLInt16(tmpBuff));
 			sb.AppendC(UTF8STRC(")"));
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());

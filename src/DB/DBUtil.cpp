@@ -1667,12 +1667,12 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBVector(UnsafeArray<UTF8Char> sqlstr, Option
 		{
 			NN<Math::Geometry::Point> pt = NN<Math::Geometry::Point>::ConvertFrom(nnvec);
 			UInt8 buff[22];
-			WriteUInt32(buff, nnvec->GetSRID());
+			WriteLUInt32(buff, nnvec->GetSRID());
 			buff[4] = 1;
 			buff[5] = 12;
 			Math::Coord2DDbl coord = pt->GetCenter();
-			WriteDouble(&buff[6], coord.x);
-			WriteDouble(&buff[14], coord.y);
+			WriteLDouble(&buff[6], coord.x);
+			WriteLDouble(&buff[14], coord.y);
 			return SDBBin(sqlstr, buff, 22, sqlType);
 		}
 		else

@@ -225,7 +225,7 @@ Optional<IO::ParsedObject> Parser::FileParser::RLOCParser::ParseFileHdr(NN<IO::S
 	if (fileSize & 127)
 		return nullptr;
 
-	if (ReadInt32(&hdr[0]) != devId || ReadInt32(&hdr[128]) != devId || ReadInt32(&hdr[256]) != devId)
+	if (ReadLInt32(&hdr[0]) != devId || ReadLInt32(&hdr[128]) != devId || ReadLInt32(&hdr[256]) != devId)
 		return nullptr;
 
 	NN<Map::GPSTrack> track;
@@ -243,17 +243,17 @@ Optional<IO::ParsedObject> Parser::FileParser::RLOCParser::ParseFileHdr(NN<IO::S
 		ExtraInfo extInfo;
 
 		fd->GetRealData(currPos, 128, BYTEARR(buff));
-		extInfo.devId = ReadInt32(&buff[0]);
-		extInfo.devType = ReadInt32(&buff[4]);
-		rec.speed = ReadUInt16(&buff[8]) * 0.1;
-		rec.heading = ReadUInt16(&buff[10]) * 0.01;
-		rec.recTime = Data::TimeInstant(ReadInt32(&buff[12]), 0);
-		extInfo.funcs = ReadInt24(&buff[16]);
+		extInfo.devId = ReadLInt32(&buff[0]);
+		extInfo.devType = ReadLInt32(&buff[4]);
+		rec.speed = ReadLUInt16(&buff[8]) * 0.1;
+		rec.heading = ReadLUInt16(&buff[10]) * 0.01;
+		rec.recTime = Data::TimeInstant(ReadLInt32(&buff[12]), 0);
+		extInfo.funcs = ReadLInt24(&buff[16]);
 		rec.nSateUsedGPS = buff[19];
-		rec.pos.SetLat(ReadInt32(&buff[20]) / 200000.0);
-		rec.pos.SetLon(ReadInt32(&buff[24]) / 200000.0);
-		extInfo.status = ReadUInt32(&buff[28]);
-		extInfo.status2 = ReadUInt32(&buff[32]);
+		rec.pos.SetLat(ReadLInt32(&buff[20]) / 200000.0);
+		rec.pos.SetLon(ReadLInt32(&buff[24]) / 200000.0);
+		extInfo.status = ReadLUInt32(&buff[28]);
+		extInfo.status2 = ReadLUInt32(&buff[32]);
 		rec.nSateViewGPS = buff[36];
 		rec.valid = buff[38] & 1;
 		rec.nSateUsed = rec.nSateUsedGPS;
@@ -263,16 +263,16 @@ Optional<IO::ParsedObject> Parser::FileParser::RLOCParser::ParseFileHdr(NN<IO::S
 		rec.nSateViewGA = 0;
 		rec.nSateViewQZSS = 0;
 		rec.nSateViewBD = 0;
-		extInfo.other0 = ReadUInt32(&buff[40]) * 0.001;
-		extInfo.other1 = ReadUInt32(&buff[44]) * 0.001;
-		extInfo.other2 = ReadInt16(&buff[48]) * 0.01;
-		extInfo.other3 = ReadInt16(&buff[50]) * 0.01;
-		extInfo.locTimeTS = ReadUInt32(&buff[52]);
-		extInfo.recvTimeTS = ReadUInt32(&buff[56]);
-		extInfo.connId = ReadInt64(&buff[64]);
-		extInfo.gtime = ReadInt32(&buff[72]);
-		extInfo.gpsLat = ReadInt32(&buff[76]) / 200000.0;
-		extInfo.gpsLon = ReadInt32(&buff[80]) / 200000.0;
+		extInfo.other0 = ReadLUInt32(&buff[40]) * 0.001;
+		extInfo.other1 = ReadLUInt32(&buff[44]) * 0.001;
+		extInfo.other2 = ReadLInt16(&buff[48]) * 0.01;
+		extInfo.other3 = ReadLInt16(&buff[50]) * 0.01;
+		extInfo.locTimeTS = ReadLUInt32(&buff[52]);
+		extInfo.recvTimeTS = ReadLUInt32(&buff[56]);
+		extInfo.connId = ReadLInt64(&buff[64]);
+		extInfo.gtime = ReadLInt32(&buff[72]);
+		extInfo.gpsLat = ReadLInt32(&buff[76]) / 200000.0;
+		extInfo.gpsLon = ReadLInt32(&buff[80]) / 200000.0;
 		if ((*(Int16*)&buff[16] & 0x22) == 0x22)
 		{
 			rec.altitude = (*(Int32*)&buff[44]) * 0.001;

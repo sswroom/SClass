@@ -29,7 +29,7 @@ void __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(NN<Sync::Thread> th
 		}
 		else
 		{
-			thisSize = ReadUInt32(&packetHdr[8]);
+			thisSize = ReadLUInt32(&packetHdr[8]);
 		}
 		if (thisSize + ofst > dataSize)
 		{
@@ -53,11 +53,11 @@ IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(NN<IO::StreamData> fd) : packe
 	{
 		return;
 	}
-	if (ReadUInt32(buff) == 0xa1b2c3d4)
+	if (ReadLUInt32(buff) == 0xa1b2c3d4)
 	{
 		this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 		this->isBE = false;
-		this->linkType = ReadUInt32(&buff[20]);
+		this->linkType = ReadLUInt32(&buff[20]);
 	}
 	else if (ReadMUInt32(buff) == 0xa1b2c3d4)
 	{
@@ -120,7 +120,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UIntOS index, NN<Text::Strin
 	}
 	else
 	{
-		psize = ReadUInt32(&this->packetBuff[12]);
+		psize = ReadLUInt32(&this->packetBuff[12]);
 	}
 	sb->AppendU32(psize);
 	sb->AppendC(UTF8STRC(", "));
@@ -160,12 +160,12 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UIntOS index, NN<Text::Str
 		}
 		else
 		{
-			version_major = ReadUInt16(&this->packetBuff[4]);
-			version_minor = ReadUInt16(&this->packetBuff[6]);
-			thiszone = ReadInt32(&this->packetBuff[8]);
-			sigfigs = ReadUInt32(&this->packetBuff[12]);
-			snaplen = ReadUInt32(&this->packetBuff[16]);
-			network = ReadUInt32(&this->packetBuff[20]);
+			version_major = ReadLUInt16(&this->packetBuff[4]);
+			version_minor = ReadLUInt16(&this->packetBuff[6]);
+			thiszone = ReadLInt32(&this->packetBuff[8]);
+			sigfigs = ReadLUInt32(&this->packetBuff[12]);
+			snaplen = ReadLUInt32(&this->packetBuff[16]);
+			network = ReadLUInt32(&this->packetBuff[20]);
 		}
 		sb->AppendC(UTF8STRC("\r\nVersionMajor="));
 		sb->AppendU16(version_major);
@@ -212,9 +212,9 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UIntOS index, NN<Text::Str
 	}
 	else
 	{
-		dt.SetUnixTimestamp(ReadUInt32(&this->packetBuff[0]));
-		dt.SetNS(ReadUInt32(&this->packetBuff[4]) * 1000);
-		psize = ReadUInt32(&this->packetBuff[12]);
+		dt.SetUnixTimestamp(ReadLUInt32(&this->packetBuff[0]));
+		dt.SetNS(ReadLUInt32(&this->packetBuff[4]) * 1000);
+		psize = ReadLUInt32(&this->packetBuff[12]);
 	}
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -293,12 +293,12 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapFileAnalyse::GetFram
 		else
 		{
 			frame->AddField(0, 4, CSTR("Endian"), CSTR("Little Endian"));
-			version_major = ReadUInt16(&this->packetBuff[4]);
-			version_minor = ReadUInt16(&this->packetBuff[6]);
-			thiszone = ReadInt32(&this->packetBuff[8]);
-			sigfigs = ReadUInt32(&this->packetBuff[12]);
-			snaplen = ReadUInt32(&this->packetBuff[16]);
-			network = ReadUInt32(&this->packetBuff[20]);
+			version_major = ReadLUInt16(&this->packetBuff[4]);
+			version_minor = ReadLUInt16(&this->packetBuff[6]);
+			thiszone = ReadLInt32(&this->packetBuff[8]);
+			sigfigs = ReadLUInt32(&this->packetBuff[12]);
+			snaplen = ReadLUInt32(&this->packetBuff[16]);
+			network = ReadLUInt32(&this->packetBuff[20]);
 		}
 		frame->AddUInt(4, 2, CSTR("VersionMajor"), version_major);
 		frame->AddUInt(6, 2, CSTR("VersionMinor"), version_minor);
@@ -334,10 +334,10 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapFileAnalyse::GetFram
 	}
 	else
 	{
-		dt.SetUnixTimestamp(ReadUInt32(&this->packetBuff[0]));
-		dt.SetNS(ReadUInt32(&this->packetBuff[4]) * 1000);
-		storeSize = ReadUInt32(&this->packetBuff[8]);
-		psize = ReadUInt32(&this->packetBuff[12]);
+		dt.SetUnixTimestamp(ReadLUInt32(&this->packetBuff[0]));
+		dt.SetNS(ReadLUInt32(&this->packetBuff[4]) * 1000);
+		storeSize = ReadLUInt32(&this->packetBuff[8]);
+		psize = ReadLUInt32(&this->packetBuff[12]);
 	}
 	dt.ToLocalTime();
 	sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");

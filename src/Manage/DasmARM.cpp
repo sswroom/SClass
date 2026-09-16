@@ -232,7 +232,7 @@ Bool DasmARM_0A(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("beq 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -257,7 +257,7 @@ Bool DasmARM_0B(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bleq 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -352,7 +352,7 @@ Bool DasmARM_1A(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bne 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -377,7 +377,7 @@ Bool DasmARM_1B(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blne 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -472,7 +472,7 @@ Bool DasmARM_2A(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bcs 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -497,7 +497,7 @@ Bool DasmARM_2B(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blcs 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -592,7 +592,7 @@ Bool DasmARM_3A(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bcc 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -617,7 +617,7 @@ Bool DasmARM_3B(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blcc 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -712,7 +712,7 @@ Bool DasmARM_4A(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bmi 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -737,7 +737,7 @@ Bool DasmARM_4B(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blmi 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -832,7 +832,7 @@ Bool DasmARM_5A(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bpl 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -857,7 +857,7 @@ Bool DasmARM_5B(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blpl 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -952,7 +952,7 @@ Bool DasmARM_6A(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bvs 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -977,7 +977,7 @@ Bool DasmARM_6B(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blvs 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -1072,7 +1072,7 @@ Bool DasmARM_7A(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bvc 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -1097,7 +1097,7 @@ Bool DasmARM_7B(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blvc 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -1333,7 +1333,7 @@ Bool DasmARM_8A(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bhi 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -1358,7 +1358,7 @@ Bool DasmARM_8B(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blhi 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -1453,7 +1453,7 @@ Bool DasmARM_9A(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bls 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -1478,7 +1478,7 @@ Bool DasmARM_9B(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blls 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -1573,7 +1573,7 @@ Bool DasmARM_AA(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bge 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -1598,7 +1598,7 @@ Bool DasmARM_AB(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blge 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -1693,7 +1693,7 @@ Bool DasmARM_BA(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blt 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -1718,7 +1718,7 @@ Bool DasmARM_BB(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bllt 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -1813,7 +1813,7 @@ Bool DasmARM_CA(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bgt 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -1838,7 +1838,7 @@ Bool DasmARM_CB(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blgt 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -1933,7 +1933,7 @@ Bool DasmARM_DA(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ble 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -1958,7 +1958,7 @@ Bool DasmARM_DB(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blle 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -2918,7 +2918,7 @@ Bool DasmARM_EA(NN<Manage::DasmARM::Session> sess)
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("b 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
@@ -2948,7 +2948,7 @@ Bool DasmARM_EB(NN<Manage::DasmARM::Session> sess)
 	UnsafeArray<UTF8Char> sptr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bl 0x"));
-	addr = ReadInt24(&sess->codeBuff[0]) << 2;
+	addr = ReadLInt24(&sess->codeBuff[0]) << 2;
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)

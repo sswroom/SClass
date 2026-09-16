@@ -62,22 +62,22 @@ UInt32 Media::ColorConv::ConvRGB8(UInt32 c)
 #else
 	UInt8 *srcC = (UInt8*)&c;
 	UInt8 outp[4];
-	Int32 a = ReadInt16(&rgbTable[srcC[0] * 8 + 4096 + 6]);
-	Int32 r = ReadInt16(&rgbTable[srcC[0] * 8 + 4096 + 4]);
-	Int32 g = ReadInt16(&rgbTable[srcC[0] * 8 + 4096 + 2]);
-	Int32 b = ReadInt16(&rgbTable[srcC[0] * 8 + 4096 + 0]);
-	a += ReadInt16(&rgbTable[srcC[1] * 8 + 2048 + 6]);
-	r += ReadInt16(&rgbTable[srcC[1] * 8 + 2048 + 4]);
-	g += ReadInt16(&rgbTable[srcC[1] * 8 + 2048 + 2]);
-	b += ReadInt16(&rgbTable[srcC[1] * 8 + 2048 + 0]);
-	a += ReadInt16(&rgbTable[srcC[2] * 8 + 6]);
-	r += ReadInt16(&rgbTable[srcC[2] * 8 + 4]);
-	g += ReadInt16(&rgbTable[srcC[2] * 8 + 2]);
-	b += ReadInt16(&rgbTable[srcC[2] * 8 + 0]);
-	a += ReadInt16(&rgbTable[srcC[3] * 8 + 6144 + 6]);
-	r += ReadInt16(&rgbTable[srcC[3] * 8 + 6144 + 4]);
-	g += ReadInt16(&rgbTable[srcC[3] * 8 + 6144 + 2]);
-	b += ReadInt16(&rgbTable[srcC[3] * 8 + 6144 + 0]);
+	Int32 a = ReadLInt16(&rgbTable[srcC[0] * 8 + 4096 + 6]);
+	Int32 r = ReadLInt16(&rgbTable[srcC[0] * 8 + 4096 + 4]);
+	Int32 g = ReadLInt16(&rgbTable[srcC[0] * 8 + 4096 + 2]);
+	Int32 b = ReadLInt16(&rgbTable[srcC[0] * 8 + 4096 + 0]);
+	a += ReadLInt16(&rgbTable[srcC[1] * 8 + 2048 + 6]);
+	r += ReadLInt16(&rgbTable[srcC[1] * 8 + 2048 + 4]);
+	g += ReadLInt16(&rgbTable[srcC[1] * 8 + 2048 + 2]);
+	b += ReadLInt16(&rgbTable[srcC[1] * 8 + 2048 + 0]);
+	a += ReadLInt16(&rgbTable[srcC[2] * 8 + 6]);
+	r += ReadLInt16(&rgbTable[srcC[2] * 8 + 4]);
+	g += ReadLInt16(&rgbTable[srcC[2] * 8 + 2]);
+	b += ReadLInt16(&rgbTable[srcC[2] * 8 + 0]);
+	a += ReadLInt16(&rgbTable[srcC[3] * 8 + 6144 + 6]);
+	r += ReadLInt16(&rgbTable[srcC[3] * 8 + 6144 + 4]);
+	g += ReadLInt16(&rgbTable[srcC[3] * 8 + 6144 + 2]);
+	b += ReadLInt16(&rgbTable[srcC[3] * 8 + 6144 + 0]);
 	if (a > 65535)
 		a = 65535;
 	else if (a < 0)
@@ -98,7 +98,7 @@ UInt32 Media::ColorConv::ConvRGB8(UInt32 c)
 	outp[1] = rgbTable[g + 73728];
 	outp[2] = rgbTable[r + 139264];
 	outp[3] = rgbTable[a + 204800];
-	return ReadUInt32(outp);
+	return ReadLUInt32(outp);
 #endif
 }
 

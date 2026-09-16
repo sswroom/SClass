@@ -369,7 +369,7 @@ Optional<Math::Geometry::Vector2D> DB::SQLiteFile::GPGeometryParse(UnsafeArray<c
 	UInt32 srsId;
 	if (buff[3] & 1)
 	{
-		srsId = ReadUInt32(&buff[4]);
+		srsId = ReadLUInt32(&buff[4]);
 	}
 	else
 	{

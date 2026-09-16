@@ -12,17 +12,17 @@ void __stdcall SSWR::SMonitor::SMonitorRedir::OnDataUDPPacket(NN<const Net::Sock
 		me->CalcCRC(data.Arr(), data.GetSize() - 2, calcVal);
 		if (calcVal[0] == (data[data.GetSize() - 2] ^ 0x12) && calcVal[1] == (data[data.GetSize() - 1] ^ 0x34))
 		{
-			UInt16 cmdType = ReadUInt16(&data[2]);
+			UInt16 cmdType = ReadLUInt16(&data[2]);
 			switch (cmdType)
 			{
 			case 1:
 				if (data.GetSize() >= 14)
 				{
-					Int64 recTime = ReadInt64(&data[4]);
+					Int64 recTime = ReadLInt64(&data[4]);
 					Int64 svrTime;
 					if (data.GetSize() >= 22)
 					{
-						svrTime = ReadInt64(&data[12]);
+						svrTime = ReadLInt64(&data[12]);
 					}
 					else
 					{
@@ -96,13 +96,13 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReading(Int64 cliId, NN<const SSWR::S
 	UInt8 buff[1024];
 	buff[0] = 'S';
 	buff[1] = 'm';
-	WriteInt16(&buff[2], 0);
-	WriteInt32(&buff[4], rec->profileId);
-	WriteInt64(&buff[8], cliId);
-	WriteInt64(&buff[16], rec->recTime);
-	WriteUInt32(&buff[24], rec->digitalVals);
-	WriteInt32(&buff[28], reportInterval);
-	WriteInt32(&buff[32], kaInterval);
+	WriteLInt16(&buff[2], 0);
+	WriteLInt32(&buff[4], rec->profileId);
+	WriteLInt64(&buff[8], cliId);
+	WriteLInt64(&buff[16], rec->recTime);
+	WriteLUInt32(&buff[24], rec->digitalVals);
+	WriteLInt32(&buff[28], reportInterval);
+	WriteLInt32(&buff[32], kaInterval);
 	buff[36] = (UInt8)rec->nreading;
 	buff[37] = (UInt8)rec->ndigital;
 	buff[38] = (UInt8)rec->nOutput;
@@ -111,7 +111,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReading(Int64 cliId, NN<const SSWR::S
 	while (i < rec->nreading)
 	{
 		WriteNInt64(&buff[40 + 16 * i], ReadNInt64(rec->readings[i].status));
-		WriteDouble(&buff[40 + 16 * i + 8], rec->readings[i].reading);
+		WriteLDouble(&buff[40 + 16 * i + 8], rec->readings[i].reading);
 		i++;
 	}
 	i = 40 + 16 * rec->nreading;
@@ -134,8 +134,8 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevName(Int64 cliId, UnsafeArray<const U
 	UIntOS size;
 	buff[0] = 'S';
 	buff[1] = 'm';
-	WriteInt16(&buff[2], 16);
-	WriteInt64(&buff[4], cliId);
+	WriteLInt16(&buff[2], 16);
+	WriteLInt64(&buff[4], cliId);
 	size = (UIntOS)(Text::StrConcatC(&buff[12], name, nameLen) - buff);
 	UInt8 calcVal[2];
 	this->CalcCRC(buff, size, calcVal);
@@ -156,8 +156,8 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevPlatform(Int64 cliId, UnsafeArray<con
 	UIntOS size;
 	buff[0] = 'S';
 	buff[1] = 'm';
-	WriteInt16(&buff[2], 18);
-	WriteInt64(&buff[4], cliId);
+	WriteLInt16(&buff[2], 18);
+	WriteLInt64(&buff[4], cliId);
 	size = (UIntOS)(Text::StrConcatC(&buff[12], platform, nameLen) - buff);
 	UInt8 calcVal[2];
 	Sync::MutexUsage mutUsage(this->dataCRCMut);
@@ -182,8 +182,8 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevCPUName(Int64 cliId, UnsafeArray<cons
 	UIntOS size;
 	buff[0] = 'S';
 	buff[1] = 'm';
-	WriteInt16(&buff[2], 20);
-	WriteInt64(&buff[4], cliId);
+	WriteLInt16(&buff[2], 20);
+	WriteLInt64(&buff[4], cliId);
 	size = (UIntOS)(Text::StrConcatC(&buff[12], cpuName, nameLen) - buff);
 	UInt8 calcVal[2];
 	this->CalcCRC(buff, size, calcVal);
@@ -204,11 +204,11 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReadingName(Int64 cliId, UIntOS index
 	UIntOS size;
 	buff[0] = 'S';
 	buff[1] = 'm';
-	WriteInt16(&buff[2], 22);
-	WriteInt64(&buff[4], cliId);
-	WriteUInt32(&buff[12], (UInt32)index);
-	WriteInt16(&buff[16], sensorId);
-	WriteInt16(&buff[18], readingId);
+	WriteLInt16(&buff[2], 22);
+	WriteLInt64(&buff[4], cliId);
+	WriteLUInt32(&buff[12], (UInt32)index);
+	WriteLInt16(&buff[16], sensorId);
+	WriteLInt16(&buff[18], readingId);
 	size = (UIntOS)(Text::StrConcatC(&buff[20], readingName, nameLen) - buff);
 	UInt8 calcVal[2];
 	this->CalcCRC(buff, size, calcVal);
@@ -229,9 +229,9 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevVersion(Int64 cliId, Int64 progVersio
 	UIntOS size;
 	buff[0] = 'S';
 	buff[1] = 'm';
-	WriteInt16(&buff[2], 24);
-	WriteInt64(&buff[4], cliId);
-	WriteInt64(&buff[12], progVersion);
+	WriteLInt16(&buff[2], 24);
+	WriteLInt64(&buff[4], cliId);
+	WriteLInt64(&buff[12], progVersion);
 	size = 20;
 	UInt8 calcVal[2];
 	this->CalcCRC(buff, 20, calcVal);

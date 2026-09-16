@@ -50,7 +50,7 @@ Bool LZODecompressor_Decompress(const UInt8 *in, UIntOS in_len, UInt8 *out, UInt
 		t += 3;
 		while (t >= 4)
 		{
-			WriteInt32(op, ReadInt32(ip));
+			WriteLInt32(op, ReadLInt32(ip));
 			op += 4;
 			ip += 4;
 			t -= 4;
@@ -72,7 +72,7 @@ first_literal_run:
 		if (m_pos < out || m_pos >= op)
 			goto lookbehind_overrun;
 
-        WriteInt16(op, ReadInt16(m_pos));
+        WriteLInt16(op, ReadLInt16(m_pos));
 		op[2] = m_pos[2];
 		op += 3;
 		m_pos += 2;
@@ -109,7 +109,7 @@ match:
 					t += 31 + *ip++;
 				}
 				m_pos = op - 1;
-				m_pos -= ReadUInt16(ip) >> 2;
+				m_pos -= ReadLUInt16(ip) >> 2;
 				ip += 2;
 			}
 			else if (t >= 16)
@@ -131,7 +131,7 @@ match:
 					}
 					t += 7 + *ip++;
 				}
-				m_pos -= ReadUInt16(ip) >> 2;
+				m_pos -= ReadLUInt16(ip) >> 2;
 				ip += 2;
 				if (m_pos == op)
 					goto eof_found;
@@ -146,7 +146,7 @@ match:
 				if (m_pos < out || m_pos >= op)
 					goto lookbehind_overrun;
 
-				WriteInt16(op, ReadInt16(m_pos));
+				WriteLInt16(op, ReadLInt16(m_pos));
 				op += 2;
 				m_pos++;
 				goto match_done;
@@ -157,13 +157,13 @@ match:
 
 			if (t >= 2 * 4 - (3 - 1) && (op - m_pos) >= 4)
 			{
-				WriteInt32(op, ReadInt32(m_pos));
+				WriteLInt32(op, ReadLInt32(m_pos));
 				op += 4;
 				m_pos += 4;
 				t -= 4 - (3 - 1);
 				while (t >= 4)
 				{
-					WriteInt32(op, ReadInt32(m_pos));
+					WriteLInt32(op, ReadLInt32(m_pos));
 					op += 4;
 					m_pos += 4;
 					t -= 4;
@@ -310,7 +310,7 @@ match:
 					t += 31 + *ip++;
 				}
 				m_pos = op - 1;
-				m_pos -= ReadUInt16(ip) >> 2;
+				m_pos -= ReadLUInt16(ip) >> 2;
 				ip += 2;
 			}
 			else if (t >= 16)
@@ -332,7 +332,7 @@ match:
 					}
 					t += 7 + *ip++;
 				}
-				m_pos -= ReadUInt16(ip) >> 2;
+				m_pos -= ReadLUInt16(ip) >> 2;
 				ip += 2;
 				if (m_pos == op)
 					goto eof_found;

@@ -1266,7 +1266,7 @@ UInt64 IO::BTUtil::GetAddrMAC(UnsafeArray<const UInt8> addr)
 	buff[5] = addr[5];
 	buff[6] = 0;
 	buff[7] = 0;
-	return ReadUInt64(buff);
+	return ReadLUInt64(buff);
 }
 
 Text::CStringNN IO::BTUtil::GetUUIDName(UInt16 uuid)

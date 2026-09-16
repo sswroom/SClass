@@ -51,8 +51,8 @@ Optional<IO::ParsedObject> Parser::FileParser::MEDParser::ParseFileHdr(NN<IO::St
 	}
 	if (hdr[0] != 'M' || hdr[1] != 'D')
 		return nullptr;
-	recCnt = ReadUInt16(&hdr[6]);
-	recSize = ReadUInt16(&hdr[4]);
+	recCnt = ReadLUInt16(&hdr[6]);
+	recSize = ReadLUInt16(&hdr[4]);
 	if (recSize < 9 || recSize > 32)
 		return nullptr;
 	if (recCnt == 0)
@@ -77,8 +77,8 @@ Optional<IO::ParsedObject> Parser::FileParser::MEDParser::ParseFileHdr(NN<IO::St
 	nextOfst = 16 + recCnt * recSize;
 	while (i < recCnt)
 	{
-		fileSize = ReadUInt32(&recBuff[j + recSize - 8]);
-		fileOfst = ReadUInt32(&recBuff[j + recSize - 4]);
+		fileSize = ReadLUInt32(&recBuff[j + recSize - 8]);
+		fileOfst = ReadLUInt32(&recBuff[j + recSize - 4]);
 		if (fileOfst != nextOfst)
 		{
 			pf.Delete();

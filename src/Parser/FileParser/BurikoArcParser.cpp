@@ -51,9 +51,9 @@ Optional<IO::ParsedObject> Parser::FileParser::BurikoArcParser::ParseFileHdr(NN<
 	{
 		return nullptr;
 	}
-	if (ReadInt32(&hdr[0]) != 0x49525542 || ReadInt32(&hdr[4]) != 0x41204f4b || ReadInt32(&hdr[8]) != 0x30324352)
+	if (ReadLInt32(&hdr[0]) != 0x49525542 || ReadLInt32(&hdr[4]) != 0x41204f4b || ReadLInt32(&hdr[8]) != 0x30324352)
 		return nullptr;
-	recCnt = ReadUInt32(&hdr[12]);
+	recCnt = ReadLUInt32(&hdr[12]);
 	if (recCnt == 0 || recCnt * 128 + 16 >= fd->GetDataSize())
 	{
 		return nullptr;
@@ -75,8 +75,8 @@ Optional<IO::ParsedObject> Parser::FileParser::BurikoArcParser::ParseFileHdr(NN<
 	nextOfst = 0;
 	while (i < recCnt)
 	{
-		fileOfst = ReadUInt32(&recBuff[j + 96]);
-		fileSize = ReadUInt32(&recBuff[j + 100]);
+		fileOfst = ReadLUInt32(&recBuff[j + 96]);
+		fileSize = ReadLUInt32(&recBuff[j + 100]);
 		if (fileOfst != nextOfst)
 		{
 			pf.Delete();

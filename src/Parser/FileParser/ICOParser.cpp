@@ -53,15 +53,15 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 	IntOS dbpl;
 	UInt16 fileType;
 
-	if (ReadUInt16(&hdr[0]) != 0)
+	if (ReadLUInt16(&hdr[0]) != 0)
 		return nullptr;
-	fileType = ReadUInt16(&hdr[2]);
+	fileType = ReadLUInt16(&hdr[2]);
 	if (fileType != 1 && fileType != 2)
 	{
 		return nullptr;
 	}
 
-	icoCnt = ReadUInt16(&hdr[4]);
+	icoCnt = ReadLUInt16(&hdr[4]);
 	if (icoCnt > 16 || icoCnt < 1)
 		return nullptr;
 
@@ -78,8 +78,8 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 			imgWidth = 256;
 		if (imgHeight == 0)
 			imgHeight = 256;
-		thisSize = ReadUInt32(&icoImageHdr[8]);
-		if (nextOfst != ReadUInt32(&icoImageHdr[12]) || thisSize > 1572904)
+		thisSize = ReadLUInt32(&icoImageHdr[8]);
+		if (nextOfst != ReadLUInt32(&icoImageHdr[12]) || thisSize > 1572904)
 		{
 			imgList.Delete();
 			return nullptr;
@@ -87,13 +87,13 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 
 		Data::ByteBuffer imgBuff(thisSize);
 		fd->GetRealData(nextOfst, thisSize, imgBuff);
-		if (ReadUInt32(&imgBuff[0]) != 40 || ReadUInt32(&imgBuff[4]) != imgWidth || ReadUInt32(&imgBuff[8]) != (imgHeight << 1))
+		if (ReadLUInt32(&imgBuff[0]) != 40 || ReadLUInt32(&imgBuff[4]) != imgWidth || ReadLUInt32(&imgBuff[8]) != (imgHeight << 1))
 		{
 			imgList.Delete();
 			return nullptr;
 		}
 		pal = &imgBuff[40];
-		bitCnt = ReadUInt16(&imgBuff[14]);
+		bitCnt = ReadLUInt16(&imgBuff[14]);
 
 		switch (bitCnt)
 		{
@@ -358,7 +358,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 		}
 		if (fileType == 2)
 		{
-			currImg->SetHotSpot(ReadUInt16(&icoImageHdr[4]), ReadUInt16(&icoImageHdr[6]));
+			currImg->SetHotSpot(ReadLUInt16(&icoImageHdr[4]), ReadLUInt16(&icoImageHdr[6]));
 		}
 
 		imgList->AddImage(currImg, 0);

@@ -1269,7 +1269,7 @@ UnsafeArray<UTF8Char> Text::StrToUpperC(UnsafeArray<UTF8Char> oriStr, UnsafeArra
 #if _OSINT_SIZE == 64
 	while (strLen >= 8)
 	{
-		UInt64 v = ReadUInt64(&strToJoin[0]);
+		UInt64 v = ReadLUInt64(&strToJoin[0]);
 		oriStr[0] = MyString_StrUpperArr[v & 0xff];
 		oriStr[1] = MyString_StrUpperArr[(v >> 8) & 0xff];
 		oriStr[2] = MyString_StrUpperArr[(v >> 16) & 0xff];
@@ -1284,7 +1284,7 @@ UnsafeArray<UTF8Char> Text::StrToUpperC(UnsafeArray<UTF8Char> oriStr, UnsafeArra
 	}
 	if (strLen >= 4)
 	{
-		UInt32 v = ReadUInt32(&strToJoin[0]);
+		UInt32 v = ReadLUInt32(&strToJoin[0]);
 		oriStr[0] = MyString_StrUpperArr[v & 0xff];
 		oriStr[1] = MyString_StrUpperArr[(v >> 8) & 0xff];
 		oriStr[2] = MyString_StrUpperArr[(v >> 16) & 0xff];
@@ -1296,7 +1296,7 @@ UnsafeArray<UTF8Char> Text::StrToUpperC(UnsafeArray<UTF8Char> oriStr, UnsafeArra
 #else
 	while (strLen >= 4)
 	{
-		UInt32 v = ReadUInt32(&strToJoin[0]);
+		UInt32 v = ReadLUInt32(&strToJoin[0]);
 		oriStr[0] = MyString_StrUpperArr[v & 0xff];
 		oriStr[1] = MyString_StrUpperArr[(v >> 8) & 0xff];
 		oriStr[2] = MyString_StrUpperArr[(v >> 16) & 0xff];
@@ -1309,7 +1309,7 @@ UnsafeArray<UTF8Char> Text::StrToUpperC(UnsafeArray<UTF8Char> oriStr, UnsafeArra
 #endif
 	if (strLen >= 2)
 	{
-		UInt16 v = ReadUInt16(&strToJoin[0]);
+		UInt16 v = ReadLUInt16(&strToJoin[0]);
 		oriStr[0] = MyString_StrUpperArr[v & 0xff];
 		oriStr[1] = MyString_StrUpperArr[(v >> 8)];
 		strToJoin += 2;
@@ -1341,7 +1341,7 @@ UnsafeArray<UTF8Char> Text::StrToLowerC(UnsafeArray<UTF8Char> oriStr, UnsafeArra
 #if _OSINT_SIZE == 64
 	while (strLen >= 8)
 	{
-		UInt64 v = ReadUInt64(&strToJoin[0]);
+		UInt64 v = ReadLUInt64(&strToJoin[0]);
 		oriStr[0] = MyString_StrLowerArr[v & 0xff];
 		oriStr[1] = MyString_StrLowerArr[(v >> 8) & 0xff];
 		oriStr[2] = MyString_StrLowerArr[(v >> 16) & 0xff];
@@ -1356,7 +1356,7 @@ UnsafeArray<UTF8Char> Text::StrToLowerC(UnsafeArray<UTF8Char> oriStr, UnsafeArra
 	}
 	if (strLen >= 4)
 	{
-		UInt32 v = ReadUInt32(&strToJoin[0]);
+		UInt32 v = ReadLUInt32(&strToJoin[0]);
 		oriStr[0] = MyString_StrLowerArr[v & 0xff];
 		oriStr[1] = MyString_StrLowerArr[(v >> 8) & 0xff];
 		oriStr[2] = MyString_StrLowerArr[(v >> 16) & 0xff];
@@ -1368,7 +1368,7 @@ UnsafeArray<UTF8Char> Text::StrToLowerC(UnsafeArray<UTF8Char> oriStr, UnsafeArra
 #else
 	while (strLen >= 4)
 	{
-		UInt32 v = ReadUInt32(&strToJoin[0]);
+		UInt32 v = ReadLUInt32(&strToJoin[0]);
 		oriStr[0] = MyString_StrLowerArr[v & 0xff];
 		oriStr[1] = MyString_StrLowerArr[(v >> 8) & 0xff];
 		oriStr[2] = MyString_StrLowerArr[(v >> 16) & 0xff];
@@ -1381,7 +1381,7 @@ UnsafeArray<UTF8Char> Text::StrToLowerC(UnsafeArray<UTF8Char> oriStr, UnsafeArra
 #endif
 	if (strLen >= 2)
 	{
-		UInt16 v = ReadUInt16(&strToJoin[0]);
+		UInt16 v = ReadLUInt16(&strToJoin[0]);
 		oriStr[0] = MyString_StrLowerArr[v & 0xff];
 		oriStr[1] = MyString_StrLowerArr[(v >> 8)];
 		strToJoin += 2;
@@ -3064,7 +3064,7 @@ UIntOS Text::StrIndexOfCharC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UTF8
 	}
 	if (len1 >= 2)
 	{
-		c2 = ReadUInt16(&ptr[0]);
+		c2 = ReadLUInt16(&ptr[0]);
 		if ((UTF8Char)(c2 & 0xff) == c)
 			return (UIntOS)(ptr - str1);
 		if ((UTF8Char)(c2 >> 8) == c)
@@ -3217,12 +3217,12 @@ UIntOS Text::StrLastIndexOfCharC(UnsafeArray<const UTF8Char> str1, UIntOS len1, 
 	{
 		UInt16 c2;
 		len1 -= 4;
-		c2 = ReadUInt16(&str1[len1 + 2]);
+		c2 = ReadLUInt16(&str1[len1 + 2]);
 		if ((UTF8Char)(c2 >> 8) == c)
 			return len1 + 3;
 		if ((UTF8Char)(c2 & 0xff) == c)
 			return len1 + 2;
-		c2 = ReadUInt16(&str1[len1]);
+		c2 = ReadLUInt16(&str1[len1]);
 		if ((UTF8Char)(c2 >> 8) == c)
 			return len1 + 1;
 		if ((UTF8Char)(c2 & 0xff) == c)
@@ -3232,7 +3232,7 @@ UIntOS Text::StrLastIndexOfCharC(UnsafeArray<const UTF8Char> str1, UIntOS len1, 
 	{
 		UInt16 c2;
 		len1 -= 2;
-		c2 = ReadUInt16(&str1[len1]);
+		c2 = ReadLUInt16(&str1[len1]);
 		if ((UTF8Char)(c2 >> 8) == c)
 			return len1 + 1;
 		if ((UTF8Char)(c2 & 0xff) == c)

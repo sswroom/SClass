@@ -53,9 +53,9 @@ Optional<IO::ParsedObject> Parser::FileParser::NFPParser::ParseFileHdr(NN<IO::St
 	if (!Text::StrStartsWithC(&hdr[0], 64, UTF8STRC("NFP2.0 (c)NOBORI 1997-2002")))
 		return nullptr;
 
-	fileCnt = ReadUInt32(&hdr[52]);
-	fileOfst = ReadUInt32(&hdr[56]);
-//	dataOfst = ReadInt32(&hdr[60]);
+	fileCnt = ReadLUInt32(&hdr[52]);
+	fileOfst = ReadLUInt32(&hdr[56]);
+//	dataOfst = ReadLInt32(&hdr[60]);
 	Text::Encoding enc(932);
 	NN<IO::VirtualPackageFile> pf;
 	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));

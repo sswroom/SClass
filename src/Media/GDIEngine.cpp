@@ -343,7 +343,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 		case 8:
 			{
 				fstm->Read(BYTEARR(pal));
-				fstm->SeekFromBeginning(ReadUInt32(&hdr[10]));
+				fstm->SeekFromBeginning(ReadLUInt32(&hdr[10]));
 				lineW = bmi.bmiHeader.biWidth;
 				if (lineW & 3)
 				{
@@ -381,7 +381,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 			break;
 		case 16:
 			{
-				fstm->SeekFromBeginning(ReadUInt32(&hdr[10]));
+				fstm->SeekFromBeginning(ReadLUInt32(&hdr[10]));
 				buff = MemAlloc(UInt8, buffSize = ((bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight) << 1));
 				fstm->Read(Data::ByteArray(buff, buffSize));
 				//////////////////////////////////////////////////////////////////////
@@ -401,7 +401,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 			break;
 		case 24:
 			{
-				fstm->SeekFromBeginning(ReadUInt32(&hdr[10]));
+				fstm->SeekFromBeginning(ReadLUInt32(&hdr[10]));
 				lineW = bmi.bmiHeader.biWidth * 3;
 				if (lineW & 3)
 				{
@@ -439,7 +439,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 			break;
 		case 32:
 			{
-				fstm->SeekFromBeginning(ReadUInt32(&hdr[10]));
+				fstm->SeekFromBeginning(ReadLUInt32(&hdr[10]));
 				fstm->Read(Data::ByteArray((UInt8*)pBits, (bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight) << 2));
 
 				Sync::MutexUsage mutUsage(this->gdiMut);

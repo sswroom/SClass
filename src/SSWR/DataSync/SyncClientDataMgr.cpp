@@ -15,7 +15,7 @@ SSWR::DataSync::SyncClientDataMgr::~SyncClientDataMgr()
 void SSWR::DataSync::SyncClientDataMgr::AddUserData(UnsafeArray<const UInt8> data, UIntOS dataSize)
 {
 	UnsafeArray<UInt8> newData = MemAllocArr(UInt8, dataSize + 4);
-	WriteInt32(&newData[0], (Int32)dataSize);
+	WriteLInt32(&newData[0], (Int32)dataSize);
 	MemCopyNO(&newData[4], &data[0], dataSize);
 	Sync::MutexUsage mutUsage(this->mut);
 	this->dataList.Add(newData);
@@ -35,7 +35,7 @@ UnsafeArrayOpt<const UInt8> SSWR::DataSync::SyncClientDataMgr::GetData(UIntOS in
 	{
 		return nullptr;
 	}
-	dataSize.Set(ReadUInt32(&buff[0]));
+	dataSize.Set(ReadLUInt32(&buff[0]));
 	return UnsafeArray<const UInt8>(buff) + 4;
 }
 

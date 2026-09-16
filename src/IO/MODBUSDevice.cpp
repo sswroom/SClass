@@ -87,19 +87,19 @@ void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, Uns
 			}
 			else if (resultSize == 2)
 			{
-				me->reqIResult.SetNoCheck(ReadUInt16(&result[0]));
+				me->reqIResult.SetNoCheck(ReadLUInt16(&result[0]));
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
 			else if (resultSize == 3)
 			{
-				me->reqIResult.SetNoCheck((Int32)ReadUInt24(&result[0]));
+				me->reqIResult.SetNoCheck((Int32)ReadLUInt24(&result[0]));
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
 			else if (resultSize == 4)
 			{
-				me->reqIResult.SetNoCheck(ReadInt32(&result[0]));
+				me->reqIResult.SetNoCheck(ReadLInt32(&result[0]));
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
@@ -117,19 +117,19 @@ void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, Uns
 			}
 			else if (resultSize == 2)
 			{
-				me->reqIResult.SetNoCheck(ReadUInt16(&result[0]));
+				me->reqIResult.SetNoCheck(ReadLUInt16(&result[0]));
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
 			else if (resultSize == 3)
 			{
-				me->reqIResult.SetNoCheck((Int32)ReadUInt24(&result[0]));
+				me->reqIResult.SetNoCheck((Int32)ReadLUInt24(&result[0]));
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
 			else if (resultSize == 4)
 			{
-				me->reqIResult.SetNoCheck(ReadInt32(&result[0]));
+				me->reqIResult.SetNoCheck(ReadLInt32(&result[0]));
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
