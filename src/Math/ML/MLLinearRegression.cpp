@@ -23,7 +23,7 @@ void Math::ML::MLLinearRegression::Fit(NN<Data::ArrayListNN<Data::ArrayListDbl>>
 {
 	arma::mat xMat;
 	arma::rowvec yVec;
-	Math::ML::MLUtil::SetupMat(xMat, x);
+	Math::ML::MLUtil::SetupMatInv(xMat, x);
 	Math::ML::MLUtil::SetupRowVec(yVec, y);
 	this->data->model.Train(xMat, yVec);
 }
@@ -31,7 +31,7 @@ void Math::ML::MLLinearRegression::Fit(NN<Data::ArrayListNN<Data::ArrayListDbl>>
 Optional<Data::ArrayListDbl> Math::ML::MLLinearRegression::Predict(NN<Data::ArrayListNN<Data::ArrayListDbl>> x)
 {
 	arma::mat xMat;
-	Math::ML::MLUtil::SetupMat(xMat, x);
+	Math::ML::MLUtil::SetupMatInv(xMat, x);
 	arma::rowvec yVec;
 	this->data->model.Predict(xMat, yVec);
 	return Math::ML::MLUtil::FromRowVec(yVec);

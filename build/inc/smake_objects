@@ -1107,6 +1107,7 @@ $-Wno-unused-function
 $-Wno-conversion
 $-Wno-switch-enum
 $-Wno-unknown-pragmas
+!-larmadillo
 MLUtil.o: ../../src/Math/ML/MLUtil.cpp
 $-I ../../ThirdParty/mlpack/src
 $-I ../../ThirdParty/ensmallen/include
@@ -1115,6 +1116,7 @@ $-Wno-unused-function
 $-Wno-conversion
 $-Wno-switch-enum
 $-Wno-unknown-pragmas
+!-larmadillo
 Acceleration.o: ../../src/Math/Unit/Acceleration.cpp
 Angle.o: ../../src/Math/Unit/Angle.cpp
 ApparentPower.o: ../../src/Math/Unit/ApparentPower.cpp
