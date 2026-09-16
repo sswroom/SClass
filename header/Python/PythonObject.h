@@ -16,7 +16,8 @@ namespace Python
 		Type,
 		Function,
 		Boolean,
-		List
+		List,
+		Method
 	};
 
 	class PythonObject

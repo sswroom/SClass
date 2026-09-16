@@ -1990,6 +1990,9 @@ $`$(PKG-CONFIG) --cflags python3-embed`
 PythonList.o: ../../src/Python/PythonList.cpp
 $`$(PKG-CONFIG) --cflags python3-embed`
 !`$(PKG-CONFIG) --libs python3-embed`
+PythonMethod.o: ../../src/Python/PythonMethod.cpp
+$`$(PKG-CONFIG) --cflags python3-embed`
+!`$(PKG-CONFIG) --libs python3-embed`
 PythonModule.o: ../../src/Python/PythonModule.cpp
 $`$(PKG-CONFIG) --cflags python3-embed`
 !`$(PKG-CONFIG) --libs python3-embed`

@@ -14,27 +14,32 @@ Python::PythonSklearnLinearModel::~PythonSklearnLinearModel()
 	this->linearModel.Delete();
 }
 
-static PyObject *PythonSklearnLinearModel_CreateFloatMatrix(NN<Data::ArrayListNN<Data::ArrayListDbl>> values)
+static PyObject *PythonSklearnLinearModel_CreateFloatMatrixInv(NN<Data::ArrayListNN<Data::ArrayListDbl>> values)
 {
-	PyObject *matrix = PyList_New((Py_ssize_t)values->GetCount());
+	if (values->GetCount() == 0)
+	{
+		return nullptr;
+	}
+	PyObject *matrix = PyList_New((Py_ssize_t)values->GetItemNoCheck(0)->GetCount());
 	if (matrix == nullptr)
 	{
 		return nullptr;
 	}
 	UIntOS i = 0;
-	while (i < values->GetCount())
+	UIntOS i2 = values->GetItemNoCheck(0)->GetCount();
+	while (i < i2)
 	{
-		NN<Data::ArrayListDbl> row = values->GetItemNoCheck(i);
-		PyObject *pyRow = PyList_New((Py_ssize_t)row->GetCount());
+		PyObject *pyRow = PyList_New((Py_ssize_t)values->GetCount());
 		if (pyRow == nullptr)
 		{
 			Py_DECREF(matrix);
 			return nullptr;
 		}
 		UIntOS j = 0;
-		while (j < row->GetCount())
+		UIntOS j2 = values->GetCount();
+		while (j < j2)
 		{
-			PyList_SET_ITEM(pyRow, (Py_ssize_t)j, PyFloat_FromDouble(row->GetItem(j)));
+			PyList_SET_ITEM(pyRow, (Py_ssize_t)j, PyFloat_FromDouble(values->GetItemNoCheck(j)->GetItem(i)));
 			j++;
 		}
 		PyList_SET_ITEM(matrix, (Py_ssize_t)i, pyRow);
@@ -45,7 +50,7 @@ static PyObject *PythonSklearnLinearModel_CreateFloatMatrix(NN<Data::ArrayListNN
 
 void Python::PythonSklearnLinearModel::Fit(NN<Data::ArrayListNN<Data::ArrayListDbl>> x, NN<Data::ArrayListDbl> y)
 {
-	PyObject *pyX = PythonSklearnLinearModel_CreateFloatMatrix(x);
+	PyObject *pyX = PythonSklearnLinearModel_CreateFloatMatrixInv(x);
 	PyObject *pyY = PyList_New((Py_ssize_t)y->GetCount());
 	if (pyX == nullptr || pyY == nullptr)
 	{
@@ -73,6 +78,7 @@ void Python::PythonSklearnLinearModel::Fit(NN<Data::ArrayListNN<Data::ArrayListD
 		{
 			Py_DECREF(ret);
 		}
+		fitFunc.Delete();
 	}
 	Py_DECREF(pyX);
 	Py_DECREF(pyY);
@@ -80,7 +86,7 @@ void Python::PythonSklearnLinearModel::Fit(NN<Data::ArrayListNN<Data::ArrayListD
 
 Optional<Data::ArrayListDbl> Python::PythonSklearnLinearModel::Predict(NN<Data::ArrayListNN<Data::ArrayListDbl>> x)
 {
-	PyObject *pyX = PythonSklearnLinearModel_CreateFloatMatrix(x);
+	PyObject *pyX = PythonSklearnLinearModel_CreateFloatMatrixInv(x);
 	if (pyX == nullptr)
 	{
 		return nullptr;

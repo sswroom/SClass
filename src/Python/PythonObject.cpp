@@ -4,6 +4,7 @@
 #include "Python/PythonFloat.h"
 #include "Python/PythonFunction.h"
 #include "Python/PythonList.h"
+#include "Python/PythonMethod.h"
 #include "Python/PythonModule.h"
 #include "Python/PythonObject.h"
 #include "Python/PythonType.h"
@@ -138,13 +139,18 @@ Optional<Python::PythonObject> Python::PythonObject::FromPtr(AnyType obj)
 			NEW_CLASSNN(ret, PythonList(obj));
 			return ret;
 		}
+		else if (PyMethod_Check((PyObject*)obj.p))
+		{
+			NEW_CLASSNN(ret, PythonMethod(obj));
+			return ret;
+		}
 		else
 		{
 			PyObject *type = PyObject_Type((PyObject*)obj.p);
 			if (type)
 			{
 				PyObject *name = PyType_GetName((PyTypeObject*)type);
-				printf("Object Type: %s\r\n", PyUnicode_AsUTF8(name));
+				printf("PythonObject: Object Type: %s\r\n", PyUnicode_AsUTF8(name));
 				Py_DECREF(name);
 				Py_DECREF(type);
 				NEW_CLASSNN(ret, PythonObject(obj));
@@ -152,7 +158,7 @@ Optional<Python::PythonObject> Python::PythonObject::FromPtr(AnyType obj)
 			}
 			else
 			{
-				printf("Object Type: NULL\r\n");
+				printf("PythonObject: Object Type: NULL\r\n");
 				PyErr_Clear();
 				NEW_CLASSNN(ret, PythonObject(obj));
 				return ret;
@@ -185,6 +191,8 @@ Text::CStringNN Python::ObjectTypeGetName(Python::ObjectType objType)
 		return CSTR("Bool");
 	case Python::ObjectType::List:
 		return CSTR("List");
+	case Python::ObjectType::Method:
+		return CSTR("Method");
 	case Python::ObjectType::Unknown:
 	default:
 		return CSTR("Unknown");

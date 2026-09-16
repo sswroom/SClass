@@ -4512,6 +4512,8 @@ Python/PythonFunction.h:
 @PythonFunction.o
 Python/PythonList.h:
 @PythonList.o
+Python/PythonMethod.h:
+@PythonMethod.o
 Python/PythonModule.h:
 @?(NO_PYTHON == 0)PythonModule.o
 @?(NO_PYTHON > 0)PythonModuleNull.o
