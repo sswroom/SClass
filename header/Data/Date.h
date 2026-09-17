@@ -95,6 +95,32 @@ namespace Data
 			return Data::Date(this->dateVal + day);
 		}
 
+		Data::Date AddMonth(IntOS month) const
+		{
+			DateTimeUtil::DateValue d;
+			DateTimeUtil::TotalDays2DateValue(this->dateVal, d);
+			month += d.month;
+			while (month > 12)
+			{
+				month -= 12;
+				d.year++;
+			}
+			while (month < 1)
+			{
+				month += 12;
+				d.year--;
+			}
+			return Data::Date(DateTimeUtil::Date2TotalDays(d.year, (Int32)month, d.day));
+		}
+
+		Data::Date AddYear(IntOS year) const
+		{
+			DateTimeUtil::DateValue d;
+			DateTimeUtil::TotalDays2DateValue(this->dateVal, d);
+			d.year += (Int32)year;
+			return Data::Date(DateTimeUtil::Date2TotalDays(d.year, d.month, d.day));
+		}
+
 		Bool IsYearLeap() const
 		{
 			DateTimeUtil::DateValue d;

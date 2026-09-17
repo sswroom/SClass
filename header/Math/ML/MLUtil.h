@@ -15,7 +15,7 @@ namespace Math
 			static void SetupMat(arma::mat& xMat, NN<Data::ArrayListNN<Data::ArrayListDbl>> x);
 			static void SetupMatInv(arma::mat& xMat, NN<Data::ArrayListNN<Data::ArrayListDbl>> x);
 			static void SetupCubeInv(arma::cube& xCube, NN<Data::ArrayListNN<Data::ArrayListDbl>> x);
-			static void SetupLastRow(arma::cube& yCube, UIntOS batchSize, NN<Data::ArrayListDbl> y);
+			static void SetupLastRow(arma::cube& yCube, NN<Data::ArrayListDbl> y);
 			static void SetupRowVec(arma::rowvec& yVec, NN<Data::ArrayListDbl> y);
 			static NN<Data::ArrayListDbl> FromRowVec(arma::rowvec& yVec);
 			static NN<Data::ArrayListDbl> FromLastRow(arma::cube& yCube);

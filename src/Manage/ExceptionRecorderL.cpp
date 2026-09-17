@@ -120,6 +120,7 @@ Manage::ExceptionRecorder::ExceptionRecorder(Text::CStringNN fileName, Exception
 	sigact.sa_sigaction = ExceptionRecorder_Signal;
 	sigact.sa_flags = SA_SIGINFO;
 	sigaction(SIGSEGV, &sigact, 0);
+//	sigaction(SIGABRT, &sigact, 0);
 	sigaction(SIGFPE, &sigact, 0);
 	sigaction(SIGILL, &sigact, 0);
 	//signal(SIGSEGV, ExceptionRecorder_Signal);
