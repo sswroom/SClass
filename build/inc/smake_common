@@ -3182,6 +3182,8 @@ Math/ML/MachineLearning.h:
 Math/ML/MLLinearRegression.h:
 @MLLinearRegression.o
 Math/ML/MLModel.h:
+Math/ML/MLRNN.h:
+@MLRNN.o
 Math/ML/MLUtil.h:
 @MLUtil.o
 Math/Unit/Acceleration.h:

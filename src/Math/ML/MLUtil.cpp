@@ -79,6 +79,7 @@ void Math::ML::MLUtil::SetupLastRow(arma::cube& yCube, UIntOS batchSize, NN<Data
 		return;
 	}
 	yCube.set_size(batchSize, 1, j);
+	yCube.zeros();
 	while (i < j)
 	{
 		yCube(batchSize - 1, 0, i) = y->GetItem(i);

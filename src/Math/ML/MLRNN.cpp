@@ -26,9 +26,9 @@ Math::ML::MLRNN::MLRNN(UIntOS inputSize, UIntOS hiddenSize, UIntOS outputSize, U
 	this->data->hiddenSize = hiddenSize;
 	this->data->outputSize = outputSize;
 	this->data->batchSize = batchSize;
-	this->data->model.Add<mlpack::Linear<>>(inputSize, hiddenSize);
-	this->data->model.Add<mlpack::LSTM<>>(hiddenSize, hiddenSize);
-	this->data->model.Add<mlpack::Linear<>>(hiddenSize, outputSize);
+	this->data->model.Add<mlpack::Linear<>>(hiddenSize);
+	this->data->model.Add<mlpack::LSTM<>>(hiddenSize);
+	this->data->model.Add<mlpack::Linear<>>(outputSize);
 }
 
 Math::ML::MLRNN::~MLRNN()
@@ -41,8 +41,8 @@ void Math::ML::MLRNN::Fit(NN<Data::ArrayListNN<Data::ArrayListDbl>> x, NN<Data::
 	arma::cube xData;
 	arma::cube yData;
 	Math::ML::MLUtil::SetupCubeInv(xData, x);
-	Math::ML::MLUtil::SetupLastRow(yData, this->data->batchSize, y);
-	this->data->model.Train(xData, yData, this->data->optimizer, false);
+	Math::ML::MLUtil::SetupLastRow(yData, this->data->outputSize, y);
+	this->data->model.Train(xData, yData, this->data->optimizer);
 }
 
 Optional<Data::ArrayListDbl> Math::ML::MLRNN::Predict(NN<Data::ArrayListNN<Data::ArrayListDbl>> x)
