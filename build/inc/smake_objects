@@ -1109,6 +1109,7 @@ $-Wno-conversion
 $-Wno-switch-enum
 $-Wno-unknown-pragmas
 !-larmadillo
+MLLinearRegression_Null.o: ../../src/Math/ML/MLLinearRegression_Null.cpp
 MLRNN.o: ../../src/Math/ML/MLRNN.cpp
 $-I ../../ThirdParty/mlpack/src
 $-I ../../ThirdParty/ensmallen/include
@@ -1118,6 +1119,7 @@ $-Wno-conversion
 $-Wno-switch-enum
 $-Wno-unknown-pragmas
 !-larmadillo
+MLRNN_Null.o: ../../src/Math/ML/MLRNN_Null.cpp
 MLUtil.o: ../../src/Math/ML/MLUtil.cpp
 $-I ../../ThirdParty/mlpack/src
 $-I ../../ThirdParty/ensmallen/include
@@ -1494,6 +1496,10 @@ XADecoder.o: ../../src/Media/Decoder/XADecoder.cpp
 DShowVideoCapture.o: ../../src/Media/DShow/DShowVideoCapture.cpp
 $-I ../../ThirdParty/baseclasses
 $-fpermissive
+$-Wno-unknown-pragmas
+$-Wno-reorder
+$-Wno-literal-suffix
+$-Wno-overloaded-virtual
 !-lole32
 !-loleaut32
 ColorImageGen.o: ../../src/Media/ImageGen/ColorImageGen.cpp
@@ -2916,44 +2922,112 @@ WMIReader.o: ../../src/Win32/WMIReader.cpp
 
 amfilter.o: !../../ThirdParty/baseclasses/amfilter.cpp
 $-I ../../ThirdParty/baseclasses
-$-fpermissive
+$-Wno-unknown-pragmas
+$-Wno-unused-value
+$-Wno-overloaded-virtual
+$-Wno-reorder
+$-Wno-literal-suffix
+$-Wno-sign-compare
+$-Wno-conversion-null
+$-Wno-parentheses
 !-lstrmiids
 !-lole32
 arithutil.o: !../../ThirdParty/baseclasses/arithutil.cpp
 $-I ../../ThirdParty/baseclasses
-$-fpermissive
+$-Wno-unknown-pragmas
+$-Wno-unused-value
+$-Wno-overloaded-virtual
+$-Wno-reorder
+$-Wno-literal-suffix
+$-Wno-sign-compare
+$-Wno-conversion-null
+$-Wno-parentheses
 combase.o: !../../ThirdParty/baseclasses/combase.cpp
 $-I ../../ThirdParty/baseclasses
-$-fpermissive
+$-Wno-unknown-pragmas
+$-Wno-unused-value
+$-Wno-overloaded-virtual
+$-Wno-reorder
+$-Wno-literal-suffix
+$-Wno-sign-compare
+$-Wno-conversion-null
+$-Wno-parentheses
+$-Wno-unused-variable
 ctlutil.o: !../../ThirdParty/baseclasses/ctlutil.cpp
 $-I ../../ThirdParty/baseclasses
-$-fpermissive
+$-Wno-unknown-pragmas
+$-Wno-unused-value
+$-Wno-unused-variable
+$-Wno-overloaded-virtual
+$-Wno-reorder
+$-Wno-literal-suffix
+$-Wno-sign-compare
+$-Wno-conversion-null
+$-Wno-parentheses
 !-luuid
 mtype.o: !../../ThirdParty/baseclasses/mtype.cpp
 $-I ../../ThirdParty/baseclasses
-$-fpermissive
+$-Wno-unknown-pragmas
+$-Wno-unused-value
+$-Wno-overloaded-virtual
+$-Wno-reorder
+$-Wno-literal-suffix
+$-Wno-sign-compare
+$-Wno-conversion-null
+$-Wno-parentheses
 !-lole32
 renbase.o: !../../ThirdParty/baseclasses/renbase.cpp
 $-I ../../ThirdParty/baseclasses
-$-fpermissive
+$-Wno-unknown-pragmas
+$-Wno-unused-value
+$-Wno-overloaded-virtual
+$-Wno-reorder
+$-Wno-literal-suffix
+$-Wno-sign-compare
+$-Wno-conversion-null
+$-Wno-parentheses
 !-lwinmm
 wxlist.o: !../../ThirdParty/baseclasses/wxlist.cpp
 $-I ../../ThirdParty/baseclasses
-$-fpermissive
+$-Wno-unknown-pragmas
+$-Wno-unused-value
+$-Wno-overloaded-virtual
+$-Wno-reorder
+$-Wno-literal-suffix
+$-Wno-sign-compare
+$-Wno-conversion-null
+$-Wno-parentheses
 wxutil.o: !../../ThirdParty/baseclasses/wxutil.cpp
 $-I ../../ThirdParty/baseclasses
-$-fpermissive
+$-Wno-unknown-pragmas
+$-Wno-unused-value
+$-Wno-overloaded-virtual
+$-Wno-reorder
+$-Wno-literal-suffix
+$-Wno-sign-compare
+$-Wno-conversion-null
+$-Wno-parentheses
+$-Wno-maybe-uninitialized
 !-lwinmm
 !-lole32
 !-loleaut32
 audfilter.o: !../../ThirdParty/KSSample/audfilter.cpp
+$-Wno-unused-variable
 audpin.o: !../../ThirdParty/KSSample/audpin.cpp
+$-Wno-parentheses
+$-Wno-unused-variable
 enum.o: !../../ThirdParty/KSSample/enum.cpp
+$-Wno-unused-variable
 !-lsetupapi
 filter.o: !../../ThirdParty/KSSample/filter.cpp
+$-Wno-unused-variable
 irptgt.o: !../../ThirdParty/KSSample/irptgt.cpp
 node.o: !../../ThirdParty/KSSample/node.cpp
+$-Wno-multichar
 pin.o: !../../ThirdParty/KSSample/pin.cpp
+$-Wno-attributes
+$-Wno-reorder
+$-Wno-unused-variable
 util.o: !../../ThirdParty/KSSample/util.cpp
 miniz.o: ../../ThirdParty/miniz/miniz.c
 $-I ../../ThirdParty/miniz/_build

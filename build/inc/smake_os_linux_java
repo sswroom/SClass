@@ -72,6 +72,13 @@ Manage/SymbolResolver.h:
 Manage/ThreadInfo.h:
 @ThreadInfoL.o
 
+Math/ML/MLLinearRegression.h:
+@?(NO_MLPACK == 0)MLLinearRegression.o
+@?(NO_MLPACK > 0)MLLinearRegression_Null.o
+Math/ML/MLRNN.h:
+@?(NO_MLPACK == 0)MLRNN.o
+@?(NO_MLPACK > 0)MLRNN_Null.o
+
 Media/ALSARenderer.h:
 @ALSARenderer.o
 Media/AudioDevice.h:

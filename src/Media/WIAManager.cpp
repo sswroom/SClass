@@ -38,10 +38,9 @@ Media::WIAManager::WIAManager()
 			
 			while ((hr = enumDevInfo->Next( 1, &pWiaPropertyStorage, 0 )) == S_OK)
 			{
+#ifdef CINTERFACE
 				PROPSPEC PropSpec[2] = {0};
-				PROPVARIANT PropVar[2] = {0};
 
-				const ULONG c_nPropertyCount = sizeof(PropSpec)/sizeof(PropSpec[0]);
 
 				PropSpec[0].ulKind = PRSPEC_PROPID;
 				PropSpec[0].propid = WIA_DIP_DEV_ID;
@@ -49,7 +48,8 @@ Media::WIAManager::WIAManager()
 				PropSpec[1].ulKind = PRSPEC_PROPID;
 				PropSpec[1].propid = WIA_DIP_DEV_NAME;
 
-#ifdef CINTERFACE
+				PROPVARIANT PropVar[2] = {0};
+				const ULONG c_nPropertyCount = sizeof(PropSpec)/sizeof(PropSpec[0]);
 				HRESULT hr = pWiaPropertyStorage->ReadMultiple( c_nPropertyCount, PropSpec, PropVar );
 				if (SUCCEEDED(hr))
 				{

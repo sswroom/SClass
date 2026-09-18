@@ -3178,12 +3178,7 @@ Math/Geometry/VectorImage.h:
 @VectorImage.o
 Math/Geometry/VectorString.h:
 @VectorString.o
-Math/ML/MachineLearning.h:
-Math/ML/MLLinearRegression.h:
-@MLLinearRegression.o
 Math/ML/MLModel.h:
-Math/ML/MLRNN.h:
-@MLRNN.o
 Math/ML/MLUtil.h:
 @MLUtil.o
 Math/Unit/Acceleration.h:

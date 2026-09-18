@@ -229,7 +229,9 @@ inline T _rotl(T x, UInt8 r)
 	return x;
 }
 #else
+#ifndef _rotl
 #define _rotl(a, b) (((a) << (b)) | ((a) >> (32 - b)));
+#endif
 #endif
 
 #define F1(x, y, z) (x ^ y ^ z)

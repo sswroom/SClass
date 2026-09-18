@@ -31,7 +31,7 @@
 #include "Math/WKBWriter.h"
 #include "Math/WKTReader.h"
 #include "Media/DrawEngineFactory.h"
-#include "Media/DRMMonitorSurfaceMgr.h"
+#include "Media/MonitorSurfaceMgrFactory.h"
 #include "Media/PaperSize.h"
 #include "Media/Printer.h"
 #include "Media/SVGDocument.h"
@@ -1553,10 +1553,11 @@ Int32 ReportBuilderTest()
 Int32 DRMSurfaceTest()
 {
 	Media::ColorManager colorMgr;
-	Media::DRMMonitorSurfaceMgr mgr(0, nullptr, colorMgr);
-	printf("Monitor Count = %d\r\n", (UInt32)mgr.GetMonitorCount());
+	NN<Media::ColorManagerSess> colorSess = colorMgr.CreateSess(nullptr);
+	NN<Media::MonitorSurfaceMgr> mgr = Media::MonitorSurfaceMgrFactory::Create(nullptr, colorSess);
+	printf("Monitor Count = %d\r\n", (UInt32)mgr->GetMonitorCount());
 	NN<Media::MonitorSurface> primarySurface;
-	if (mgr.CreatePrimarySurface((MonitorHandle*)1, nullptr, Media::RotateType::None).SetTo(primarySurface))
+	if (mgr->CreatePrimarySurface((MonitorHandle*)1, nullptr, Media::RotateType::None).SetTo(primarySurface))
 	{
 		printf("PrimarySurface created\n");
 		primarySurface.Delete();
@@ -1565,6 +1566,8 @@ Int32 DRMSurfaceTest()
 	{
 		printf("Error in creating primary surface\n");
 	}
+	mgr.Delete();
+	colorMgr.DeleteSess(colorSess);
 	return 0;
 }
 

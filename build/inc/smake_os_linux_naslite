@@ -69,6 +69,11 @@ Manage/SymbolResolver.h:
 Manage/ThreadInfo.h:
 @ThreadInfoL.o
 
+Math/ML/MLLinearRegression.h:
+@MLLinearRegression_Null.o
+Math/ML/MLRNN.h:
+@MLRNN_Null.o
+
 Media/AudioDevice.h:
 @AudioDeviceNull.o
 Media/FBMonitorSurfaceMgr.h:

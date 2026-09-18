@@ -119,7 +119,7 @@ Net::HTTPOSClient::HTTPOSClient(NN<Net::TCPClientFactory> clif, Text::CString us
 			data->hSession = WinHttpOpen(wptr.Ptr(), WINHTTP_ACCESS_TYPE_NO_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
 			if (data->hSession == 0)
 			{
-				printf("HTTPOSClient: hSession is null, code = %ld\r\n", (UInt32)GetLastError());
+				printf("HTTPOSClient: hSession is null, code = %d\r\n", (UInt32)GetLastError());
 			}
 		}
 	}
