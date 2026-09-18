@@ -30,7 +30,7 @@ Math::ML::MLRNN::MLRNN(UIntOS inputSize, UIntOS hiddenSize, UIntOS outputSize, U
 	}
 	NEW_CLASSNN(this->data, ClassData());
 	this->data->model = mlpack::RNN<mlpack::MeanSquaredError>(batchSize, true);
-	this->data->optimizer = ens::Adam(0.001, 1, 1e-8, 10);
+	this->data->optimizer = ens::Adam(0.001, 1, 0.9, 0.999, 1e-8, 10);
 	this->data->inputSize = inputSize;
 	this->data->hiddenSize = effectiveHidden;
 	this->data->outputSize = outputSize;
