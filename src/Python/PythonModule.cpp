@@ -24,15 +24,24 @@ UnsafeArrayOpt<const UTF8Char> Python::PythonModule::GetName() const
 	return (const UTF8Char*)PyModule_GetName(this->clsData->obj);
 }
 
-UnsafeArrayOpt<const UTF8Char> Python::PythonModule::GetFileName() const
+Optional<Text::String> Python::PythonModule::GetFileNameNew() const
 {
-	UnsafeArray<const Char> ret;
-	if (!ret.Set(PyModule_GetFilename(this->clsData->obj)))
+	PyObject* filename_obj = PyModule_GetFilenameObject(this->clsData->obj);
+	if (!filename_obj)
 	{
 		PyErr_Clear();
 		return nullptr;
 	}
-	return UnsafeArray<const UTF8Char>::ConvertFrom(ret);
+	const char* filename_cstr = PyUnicode_AsUTF8(filename_obj);
+	if (!filename_cstr)
+	{
+		PyErr_Clear();
+		Py_DECREF(filename_obj);
+		return nullptr;
+	}
+	NN<Text::String> ret = Text::String::NewNotNullSlow((const UTF8Char*)filename_cstr);
+	Py_DECREF(filename_obj);
+	return ret;
 }
 
 Optional<Python::PythonDict> Python::PythonModule::GetDict() const

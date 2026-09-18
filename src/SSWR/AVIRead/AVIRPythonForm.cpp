@@ -9,16 +9,17 @@ void __stdcall SSWR::AVIRead::AVIRPythonForm::OnModuleClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtModuleName->GetText(sb);
 	NN<Python::PythonModule> mod;
-	UnsafeArray<const UTF8Char> s;
+	NN<Text::String> s;
 	if (sb.GetLength() > 0)
 	{
 		if (me->pyCore.ImportModule(sb.v).SetTo(mod))
 		{
 			me->pyModule.Delete();
 			me->pyModule = mod;
-			if (mod->GetFileName().SetTo(s))
+			if (mod->GetFileNameNew().SetTo(s))
 			{
-				me->txtModuleFile->SetText(Text::CStringNN::FromPtr(s));
+				me->txtModuleFile->SetText(s->ToCString());
+				s->Release();
 			}
 			else
 			{

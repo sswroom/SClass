@@ -2,12 +2,39 @@
 #include "Media/ZXingWriter.h"
 #include "Text/MyStringW.h"
 
+#if defined(__has_include)
+    #if __has_include(<ZXing/Version.h>)
+        #include <ZXing/Version.h>
+    #elif __has_include(<ZXing/ZXingVersion.h>)
+        #include <ZXing/ZXingVersion.h>
+    #elif __has_include(<ZXing/ZXVersion.h>)
+		#include <ZXing/ZXVersion.h>
+    #else
+        #error "ZXing header not found"
+    #endif
+#else
+	#include <ZXing/ZXVersion.h>
+#endif
 #include <ZXing/BitMatrix.h>
+#if (ZXING_VERSION_MAJOR * 10000 + ZXING_VERSION_MINOR * 100 + ZXING_VERSION_PATCH) >= 30000
+#include <ZXing/ZXingCpp.h>
 #include <ZXing/MultiFormatWriter.h>
-#include <ZXing/ZXVersion.h>
+#else
+#include <ZXing/MultiFormatWriter.h>
+#endif
 
 Optional<Media::StaticImage> Media::ZXingWriter::GenQRCode(Text::CStringNN content, Math::Size2D<UIntOS> outputSize)
 {
+#if (ZXING_VERSION_MAJOR * 10000 + ZXING_VERSION_MINOR * 100 + ZXING_VERSION_PATCH) >= 30000
+//	ZXing::Barcode barcode = ZXing::CreateBarcodeFromText((const Char*)content.v.Ptr(), ZXing::BarcodeFormat::QRCode);
+//	ZXing::WriterOptions writerOptions;
+//	writerOptions.scale((int)outputSize.y / barcode.lineCount());
+//	ZXing::ImageView bitMatrix = ZXing::WriteBarcodeToImage(barcode, writerOptions);
+
+	ZXing::MultiFormatWriter writer(ZXing::BarcodeFormat::QRCode);
+	std::string s((const char*)content.v.Ptr(), (size_t)content.leng);
+	ZXing::BitMatrix bitMatrix = writer.encode(s, (int)outputSize.x, (int) outputSize.y);
+#else
 #if (ZXING_VERSION_MAJOR * 10000 + ZXING_VERSION_MINOR * 100 + ZXING_VERSION_PATCH) >= 10200
 	ZXing::MultiFormatWriter writer(ZXing::BarcodeFormat::QRCode);
 #else
@@ -21,6 +48,7 @@ Optional<Media::StaticImage> Media::ZXingWriter::GenQRCode(Text::CStringNN conte
 	Text::StrDelNew(wptr);
 #endif
 	ZXing::BitMatrix bitMatrix = writer.encode(s, (int)outputSize.x, (int) outputSize.y);
+#endif
 	NN<Media::StaticImage> simg;
 	UnsafeArray<UInt8> pal;
 	NEW_CLASSNN(simg, Media::StaticImage(outputSize, 0, 1, Media::PixelFormat::PF_PAL_W1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
