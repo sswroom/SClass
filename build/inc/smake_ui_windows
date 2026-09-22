@@ -14,6 +14,8 @@ Media/DDrawManager.h:
 @DDrawManager.o
 Media/DrawEngineFactory.h:
 @DrawEngineFactoryWin.o
+Media/Engine3DFactory.h:
+@Engine3DFactoryNull.o
 Media/GDIEngine.h:
 @GDIEngine.o
 Media/MonitorInfo.h:

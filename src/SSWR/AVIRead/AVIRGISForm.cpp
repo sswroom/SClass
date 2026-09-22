@@ -41,6 +41,7 @@
 #include "SSWR/AVIRead/AVIRGISGroupQueryForm.h"
 #include "SSWR/AVIRead/AVIRGISHKTDTonnesForm.h"
 #include "SSWR/AVIRead/AVIRGISHKTrafficForm.h"
+#include "SSWR/AVIRead/AVIRMap3DForm.h"
 #include "SSWR/AVIRead/AVIRGISOSMDataForm.h"
 #include "SSWR/AVIRead/AVIRGISPropForm.h"
 #include "SSWR/AVIRead/AVIRGISQueryForm.h"
@@ -78,6 +79,7 @@ typedef enum
 	MNU_EXPORT_IMAGE,
 	MNU_EXPORT_VECTOR,
 	MNU_EXPORT_TEMPLATE,
+	MNU_MAP_3D_VIEW,
 	MNU_GROUP_ADD,
 	MNU_GROUP_REMOVE,
 	MNU_GROUP_NEW_IMAGE,
@@ -820,6 +822,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	mnu->AddItem(CSTR("Export &Image..."), MNU_EXPORT_IMAGE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_E);
 	mnu->AddItem(CSTR("Export &Vector..."), MNU_EXPORT_VECTOR, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_V);
 	mnu->AddItem(CSTR("Export with &Template..."), MNU_EXPORT_TEMPLATE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_T);
+	mnu->AddItem(CSTR("Open &3D View"), MNU_MAP_3D_VIEW, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_3);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Add Layer"));
 	NN<UI::GUIMenu> mnu2 = mnu->AddSubMenu(CSTR("&MTK GPS Tracker"));
 	mnu2->AddItem(CSTR("From &Device"), MNU_MTK_GPS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -1944,6 +1947,13 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRGISExportTemplateForm frm(nullptr, this->ui, this->core, this->env, this->mapCtrl->GetMapCenter(), this->mapCtrl->GetMapScale());
 			frm.ShowDialog(this);
 			this->mapCtrl->PauseUpdate(false);
+			break;
+		}
+	case MNU_MAP_3D_VIEW:
+		{
+			NN<SSWR::AVIRead::AVIRMap3DForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMap3DForm(nullptr, this->ui, this->core, this->env, false));
+			this->AddSubForm(frm);
 			break;
 		}
 	case MNU_OSM_URL:

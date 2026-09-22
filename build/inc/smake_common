@@ -2909,6 +2909,8 @@ Map/LeveledMapView.h:
 @LeveledMapView.o
 Map/LocationService.h:
 @LocationService.o
+Map/Map3DView.h:
+@Map3DView.o
 Map/MapConfig2.h:
 @MapConfig2.o
 Map/MapConfig2TGen.h:
@@ -3273,6 +3275,7 @@ Media/DrawImageTool.h:
 @DrawImageTool.o
 Media/EDID.h:
 @EDID.o
+Media/Engine3D.h:
 Media/EXIFData.h:
 @EXIFData.o
 Media/FileVideoSource.h:
@@ -3365,6 +3368,8 @@ Media/MPGFile.h:
 @MPGFile.o
 Media/MSFontRenderer.h:
 @MSFontRenderer.o
+Media/NullEngine3D.h:
+@NullEngine3D.o
 Media/NullRenderer.h:
 @NullRenderer.o
 Media/NWASource.h:
@@ -3434,6 +3439,8 @@ Media/VOBAC3StreamSource.h:
 @VOBAC3StreamSource.o
 Media/VOBLPCMStreamSource.h:
 @VOBLPCMStreamSource.o
+Media/VulkanEngine.h:
+@VulkanEngine.o
 Media/ABlend/AlphaBlend8_8.h:
 @AlphaBlend8_8.o
 @AlphaBlend8_8_CPP.o
@@ -4945,6 +4952,8 @@ SSWR/AVIRead/AVIRMACManagerEntryForm.h:
 @AVIRMACManagerEntryForm.o
 SSWR/AVIRead/AVIRMACManagerForm.h:
 @AVIRMACManagerForm.o
+SSWR/AVIRead/AVIRMap3DForm.h:
+@AVIRMap3DForm.o
 SSWR/AVIRead/AVIRMapNavigator.h:
 SSWR/AVIRead/AVIRMD5CompareForm.h:
 @AVIRMD5CompareForm.o
@@ -5719,6 +5728,8 @@ UI/GUILabel.h:
 @GUILabel.o
 UI/GUIListBox.h:
 @GUIListBox.o
+UI/GUIMap3DControl.h:
+@GUIMap3DControl.o
 UI/GUIMapControl.h:
 @GUIMapControl.o
 UI/GUIMapTreeView.h:

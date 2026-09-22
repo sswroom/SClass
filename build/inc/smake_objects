@@ -978,6 +978,7 @@ KMLXML.o: ../../src/Map/KMLXML.cpp
 LayerTools.o: ../../src/Map/LayerTools.cpp
 LeveledMapView.o: ../../src/Map/LeveledMapView.cpp
 LocationService.o: ../../src/Map/LocationService.cpp
+Map3DView.o: ../../src/Map/Map3DView.cpp
 MapConfig2.o: ../../src/Map/MapConfig2.cpp
 MapConfig2TGen.o: ../../src/Map/MapConfig2TGen.cpp
 MapDrawLayer.o: ../../src/Map/MapDrawLayer.cpp
@@ -1206,6 +1207,8 @@ DrawEngine.o: ../../src/Media/DrawEngine.cpp
 DrawEngineFactoryGTK.o: ../../src/Media/DrawEngineFactoryGTK.cpp
 DrawEngineFactorySEng.o: ../../src/Media/DrawEngineFactorySEng.cpp
 DrawEngineFactoryWin.o: ../../src/Media/DrawEngineFactoryWin.cpp
+Engine3DFactoryNull.o: ../../src/Media/Engine3DFactoryNull.cpp
+Engine3DFactoryVulkan.o: ../../src/Media/Engine3DFactoryVulkan.cpp
 DrawImageTool.o: ../../src/Media/DrawImageTool.cpp
 DRMMonitorSurfaceMgr.o: ../../src/Media/DRMMonitorSurfaceMgr.cpp
 $`$(PKG-CONFIG) --cflags libdrm`
@@ -1291,6 +1294,7 @@ PulseAudioRenderer.o: ../../src/Media/PulseAudioRenderer.cpp
 $`$(PKG-CONFIG) --cflags libpulse`
 !`$(PKG-CONFIG) --libs libpulse`
 NoGUIDrawEngine.o: ../../src/Media/NoGUIDrawEngine.cpp
+NullEngine3D.o: ../../src/Media/NullEngine3D.cpp
 NullRenderer.o: ../../src/Media/NullRenderer.cpp
 NWASource.o: ../../src/Media/NWASource.cpp
 OCREngine.o: ../../src/Media/OCREngine.cpp
@@ -1350,6 +1354,10 @@ VideoSource.o: ../../src/Media/VideoSource.cpp
 VideoSourceBase.o: ../../src/Media/VideoSourceBase.cpp
 VOBAC3StreamSource.o: ../../src/Media/VOBAC3StreamSource.cpp
 VOBLPCMStreamSource.o: ../../src/Media/VOBLPCMStreamSource.cpp
+VulkanEngine.o: ../../src/Media/VulkanEngine.cpp
+$`$(PKG-CONFIG) --cflags gtk+-3.0`
+!-lvulkan
+!`$(PKG-CONFIG) --libs shaderc`
 WaveInSource.o: ../../src/Media/WaveInSource.cpp
 WaveInSourceNull.o: ../../src/Media/WaveInSourceNull.cpp
 WaveOutRenderer.o: ../../src/Media/WaveOutRenderer.cpp
@@ -2257,6 +2265,7 @@ AVIRLUTForm.o: ../../src/SSWR/AVIRead/AVIRLUTForm.cpp
 AVIRMACGenForm.o: ../../src/SSWR/AVIRead/AVIRMACGenForm.cpp
 AVIRMACManagerEntryForm.o: ../../src/SSWR/AVIRead/AVIRMACManagerEntryForm.cpp
 AVIRMACManagerForm.o: ../../src/SSWR/AVIRead/AVIRMACManagerForm.cpp
+AVIRMap3DForm.o: ../../src/SSWR/AVIRead/AVIRMap3DForm.cpp
 AVIRMD5CompareForm.o: ../../src/SSWR/AVIRead/AVIRMD5CompareForm.cpp
 AVIRMDNSForm.o: ../../src/SSWR/AVIRead/AVIRMDNSForm.cpp
 AVIRMediaForm.o: ../../src/SSWR/AVIRead/AVIRMediaForm.cpp
@@ -2640,6 +2649,7 @@ GUIHSplitter.o: ../../src/UI/GUIHSplitter.cpp
 GUILabel.o: ../../src/UI/GUILabel.cpp
 GUIListBox.o: ../../src/UI/GUIListBox.cpp
 GUIMainMenu.o: ../../src/UI/GUIMainMenu.cpp
+GUIMap3DControl.o: ../../src/UI/GUIMap3DControl.cpp
 GUIMapControl.o: ../../src/UI/GUIMapControl.cpp
 GUIMapTreeView.o: ../../src/UI/GUIMapTreeView.cpp
 GUIPanel.o: ../../src/UI/GUIPanel.cpp

@@ -14,6 +14,8 @@ Exporter/GUITIFExporter.h:
 Media/DDrawManager.h:
 Media/DrawEngineFactory.h:
 @DrawEngineFactoryGTK.o
+Media/Engine3DFactory.h:
+@Engine3DFactoryVulkan.o
 Media/DrawEngineGUI.h:
 @GTKDrawEngineNoGDK.o
 Media/GTKDrawEngine.h:
