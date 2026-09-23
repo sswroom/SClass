@@ -19,6 +19,10 @@
 #include <signal.h>
 #if defined(__FreeBSD__)
 #include <sys/thr.h>
+#elif defined(__GLIBC__) && __GLIBC__ == 2 && __GLIBC_MINOR__ < 30
+#include <sys/syscall.h>
+#define gettid() syscall(SYS_gettid)
+#define tgkill(pid, tid, sig) syscall(SYS_tgkill, pid, tid, sig)
 #endif
 
 //#define VERBOSE
