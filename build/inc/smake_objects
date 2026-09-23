@@ -2261,6 +2261,7 @@ AVIRLogServerForm.o: ../../src/SSWR/AVIRead/AVIRLogServerForm.cpp
 AVIRLogZipperForm.o: ../../src/SSWR/AVIRead/AVIRLogZipperForm.cpp
 AVIRLoraGWSimForm.o: ../../src/SSWR/AVIRead/AVIRLoraGWSimForm.cpp
 AVIRLoRaJSONForm.o: ../../src/SSWR/AVIRead/AVIRLoRaJSONForm.cpp
+AVIRLoRaLogForm.o: ../../src/SSWR/AVIRead/AVIRLoRaLogForm.cpp
 AVIRLUTForm.o: ../../src/SSWR/AVIRead/AVIRLUTForm.cpp
 AVIRMACGenForm.o: ../../src/SSWR/AVIRead/AVIRMACGenForm.cpp
 AVIRMACManagerEntryForm.o: ../../src/SSWR/AVIRead/AVIRMACManagerEntryForm.cpp

@@ -4944,6 +4944,8 @@ SSWR/AVIRead/AVIRLoraGWSimForm.h:
 @AVIRLoraGWSimForm.o
 SSWR/AVIRead/AVIRLoRaJSONForm.h:
 @AVIRLoRaJSONForm.o
+SSWR/AVIRead/AVIRLoRaLogForm.h:
+@AVIRLoRaLogForm.o
 SSWR/AVIRead/AVIRLUTForm.h:
 @AVIRLUTForm.o
 SSWR/AVIRead/AVIRMACGenForm.h:

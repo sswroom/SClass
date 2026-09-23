@@ -266,3 +266,28 @@ void Net::LoRaGWUtil::GenStatJSON(NN<Text::StringBuilderUTF8> sb, const Data::Ti
 	sb->AppendI32(altitude);
 	sb->AppendC(UTF8STRC("}}"));
 }
+
+Text::CStringNN Net::LoRaGWUtil::MessageTypeGetName(UInt8 msgType)
+{
+	switch (msgType)
+	{
+	case 0:
+		return CSTR("Join Request");
+	case 1:
+		return CSTR("Join Accept");
+	case 2:
+		return CSTR("Unconfirmed Data Up");
+	case 3:
+		return CSTR("Unconfirmed Data Down");
+	case 4:
+		return CSTR("Confirmed Data Up");
+	case 5:
+		return CSTR("Confirmed Data Down");
+	case 6:
+		return CSTR("RFU");
+	case 7:
+		return CSTR("Proprietary");
+	default:
+		return CSTR("Unknown");
+	}
+}

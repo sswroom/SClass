@@ -152,6 +152,7 @@
 #include "SSWR/AVIRead/AVIRLogZipperForm.h"
 #include "SSWR/AVIRead/AVIRLoraGWSimForm.h"
 #include "SSWR/AVIRead/AVIRLoRaJSONForm.h"
+#include "SSWR/AVIRead/AVIRLoRaLogForm.h"
 #include "SSWR/AVIRead/AVIRMACGenForm.h"
 #include "SSWR/AVIRead/AVIRMACManagerForm.h"
 #include "SSWR/AVIRead/AVIRMD5CompareForm.h"
@@ -572,7 +573,8 @@ typedef enum
 	MNU_KEYTEST,
 	MNU_LOGZIPPER,
 	MNU_JAVASPRING,
-	MNU_SYSTEM_LOG
+	MNU_SYSTEM_LOG,
+	MNU_LORA_LOG
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -870,6 +872,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2 = mnu->AddSubMenu(CSTR("LoRa"));
 	mnu2->AddItem(CSTR("GW Simulator"), MNU_LORA_GW_SIM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("JSON Parser"), MNU_LORA_JSON, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Log Parser"), MNU_LORA_LOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Load Balancer"));
 	mnu2->AddItem(CSTR("UDP Load Balancer"), MNU_LB_UDP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("TCP Load Balancer"), MNU_LB_TCP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2722,6 +2725,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRLoRaJSONForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLoRaJSONForm(nullptr, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_LORA_LOG:
+		{
+			NN<SSWR::AVIRead::AVIRLoRaLogForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLoRaLogForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

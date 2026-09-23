@@ -284,7 +284,7 @@ SSWR::AVIRead::AVIRLoRaJSONForm::AVIRLoRaJSONForm(Optional<UI::GUIClientControl>
 	this->pnlDevice = ui->NewPanel(*this);
 	this->pnlDevice->SetRect(0, 0, 100, 23, false);
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
-	this->lblDevice = ui->NewLabel(this->pnlDevice, CSTR("Devices"));
+	this->lblDevice = ui->NewLabel(this->pnlDevice, CSTR("Devices (CSV)"));
 	this->lblDevice->SetRect(0, 0, 100, 23, false);
 	this->lblDevice->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->txtDevice = ui->NewTextBox(this->pnlDevice, CSTR(""));
