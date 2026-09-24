@@ -15,6 +15,7 @@ namespace Net
 		virtual IO::StreamType GetStreamType() const;
 		virtual Optional<Crypto::Cert::Certificate> GetRemoteCert() = 0;
 		virtual Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> GetRemoteCerts() = 0;
+		virtual void CloseSession() = 0;
 	};
 }
 #endif

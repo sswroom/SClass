@@ -59,6 +59,7 @@
 #include "Text/TextWriteUtil.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
+#include "Text/XML.h"
 #include "Text/XMLReader.h"
 #include <stdio.h>
 
@@ -1609,11 +1610,26 @@ public:
 	virtual Bool ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
 	{
 		NN<Crypto::Cert::X509Cert> cert;
+		NN<Text::String> s;
+		if (req->GetCookieAsNew(CSTR("certExist")).SetTo(s))
+		{
+			s->Release();
+			resp->AddSetCookie(CSTR("certExist"), CSTR(""), CSTR("/"), true, true, Net::WebServer::SameSiteType::Strict, Data::Timestamp::Now());
+			return resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
+		}
 		if (req->GetClientCert().SetTo(cert))
 		{
+			Text::StringBuilderUTF8 sbHTML;
+			sbHTML.AppendC(UTF8STRC("<html><head><title>Client Cert</title></head><body>"));
 			Text::StringBuilderUTF8 sb;
 			cert->ToString(sb);
-			return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/plain"), sb.ToCString());
+			NN<Text::String> s = Text::XML::ToNewHTMLBodyText(sb.v);
+			sbHTML.Append(s);
+			s->Release();
+			sbHTML.AppendC(UTF8STRC("</body></html>"));
+//			resp->AddSetCookie(CSTR("certExist"), CSTR("true"), CSTR("/"), true, true, Net::WebServer::SameSiteType::Strict, Data::Timestamp::Now().AddDay(1));
+			resp->CloseSSLSession();
+			return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/html"), sbHTML.ToCString());
 		}
 		else
 		{

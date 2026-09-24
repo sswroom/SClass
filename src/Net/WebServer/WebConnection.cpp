@@ -67,6 +67,7 @@ Net::WebServer::WebConnection::WebConnection(NN<Net::TCPClientFactory> clif, Opt
 	this->sseHdlr = 0;
 	this->sseHdlrObj = 0;
 	this->protoHdlr = nullptr;
+	this->endSSLSession = false;
 }
 
 Net::WebServer::WebConnection::~WebConnection()
@@ -726,6 +727,14 @@ void Net::WebServer::WebConnection::ProcessResponse()
 					}
 				}
 				this->currReq.Delete();
+				if (this->endSSLSession)
+				{
+					if (this->cli->IsSSL())
+					{
+						NN<Net::SSLClient> sslCli = NN<Net::SSLClient>::ConvertFrom(this->cli);
+						sslCli->CloseSession();
+					}
+				}
 			}
 		}
 	}
@@ -905,6 +914,11 @@ Bool Net::WebServer::WebConnection::SwitchProtocol(Optional<ProtocolHandler> pro
 Text::CStringNN Net::WebServer::WebConnection::GetRespHeaders()
 {
 	return this->respHeaders.ToCString();
+}
+
+void Net::WebServer::WebConnection::CloseSSLSession()
+{
+	this->endSSLSession = true;
 }
 
 Bool Net::WebServer::WebConnection::IsDown() const

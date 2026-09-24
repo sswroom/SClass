@@ -47,6 +47,7 @@ namespace Net
 			virtual Bool SSESend(UnsafeArrayOpt<const UTF8Char> eventName, UnsafeArray<const UTF8Char> data) = 0;
 			virtual Bool SwitchProtocol(Optional<ProtocolHandler> protoHdlr) = 0;
 			virtual Text::CStringNN GetRespHeaders() = 0;
+			virtual void CloseSSLSession() = 0;
 
 			Bool ResponseError(NN<Net::WebServer::WebRequest> req, Net::WebStatus::StatusCode code);
 			Bool RedirectURL(NN<Net::WebServer::WebRequest> req, Text::CStringNN url, IntOS cacheAge);
