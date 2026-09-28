@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRLORAJSONFORM
 #define _SM_SSWR_AVIREAD_AVIRLORAJSONFORM
+#include "Net/LoRaGWUtil.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/ListBoxLogger.h"
 #include "UI/GUIButton.h"
@@ -20,13 +21,6 @@ namespace SSWR
 		class AVIRLoRaJSONForm : public UI::GUIForm
 		{
 		private:
-			struct LoRaDevInfo
-			{
-				UInt8 devEUI[8];
-				UInt8 nwkSKey[16];
-				UInt8 appSKey[16];
-			};
-		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 
 			NN<UI::GUIPanel> pnlDevice;
@@ -39,13 +33,11 @@ namespace SSWR
 			NN<UI::GUIButton> btnJSONParse;
 			NN<UI::GUILabel> lblInfo;
 			NN<UI::GUITextBox> txtInfo;
-			Data::UInt32FastMapNN<LoRaDevInfo> devMap;
+			Data::UInt32FastMapNN<Net::LoRaGWUtil::LoRaDevInfo> devMap;
 
 		private:
 			static void __stdcall OnJSONParseClick(AnyType userObj);
 			static void __stdcall OnCSVFile(AnyType userObj, Data::DataArray<NN<Text::String>> files);
-			void PHYPayloadDetail(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> buff, UIntOS buffSize);
-			UInt32 MACPayloadDetail(NN<Text::StringBuilderUTF8> sb, Bool downLink, UnsafeArray<const UInt8> buff, UIntOS buffSize, OutParam<UInt32> fCnt);
 			Bool LoadCSV(NN<Text::String> fileName);
 		public:
 			AVIRLoRaJSONForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);

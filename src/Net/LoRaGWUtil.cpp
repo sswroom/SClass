@@ -2,6 +2,7 @@
 #include "Crypto/Encrypt/AES128.h"
 #include "Crypto/Hash/AESCMAC.h"
 #include "Data/Timestamp.h"
+#include "DB/CSVFile.h"
 #include "Net/LoRaGWUtil.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
@@ -265,6 +266,218 @@ void Net::LoRaGWUtil::GenStatJSON(NN<Text::StringBuilderUTF8> sb, const Data::Ti
 	sb->AppendC(UTF8STRC(",\"alti\":"));
 	sb->AppendI32(altitude);
 	sb->AppendC(UTF8STRC("}}"));
+}
+
+void Net::LoRaGWUtil::PHYPayloadDetail(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> buff, UIntOS buffSize, NN<Data::UInt32FastMapNN<LoRaDevInfo>> devMap)
+{
+	UInt32 devAddr = 0;
+	UInt32 fCnt = 0;
+	Bool downLink = false;
+	switch (buff[0] >> 5)
+	{
+	case 0:
+		sb->AppendC(UTF8STRC("Message Type = Join Request\r\n"));
+		break;
+	case 1:
+		sb->AppendC(UTF8STRC("Message Type = Join Accept\r\n"));
+		break;
+	case 2:
+		sb->AppendC(UTF8STRC("Message Type = Unconfirmed Data Up\r\n"));
+		devAddr = MACPayloadDetail(sb, devMap, downLink = false, buff + 1, buffSize - 5, fCnt);
+		break;
+	case 3:
+		sb->AppendC(UTF8STRC("Message Type = Unconfirmed Data Down\r\n"));
+		devAddr = MACPayloadDetail(sb, devMap, downLink = true, buff + 1, buffSize - 5, fCnt);
+		break;
+	case 4:
+		sb->AppendC(UTF8STRC("Message Type = Confirmed Data Up\r\n"));
+		devAddr = MACPayloadDetail(sb, devMap, downLink = false, buff + 1, buffSize - 5, fCnt);
+		break;
+	case 5:
+		sb->AppendC(UTF8STRC("Message Type = Confirmed Data Down\r\n"));
+		devAddr = MACPayloadDetail(sb, devMap, downLink = true, buff + 1, buffSize - 5, fCnt);
+		break;
+	case 6:
+		sb->AppendC(UTF8STRC("Message Type = RFU\r\n"));
+		break;
+	case 7:
+		sb->AppendC(UTF8STRC("Message Type = Propriety\r\n"));
+		break;
+	}
+	UInt32 mic = ReadMUInt32(&buff[buffSize - 4]);
+	sb->AppendC(UTF8STRC("MIC = 0x"));
+	sb->AppendHex32(mic);
+	sb->AppendC(UTF8STRC("\r\n"));
+	UInt8 calcMIC[4];
+	NN<Net::LoRaGWUtil::LoRaDevInfo> dev;
+	if (devMap->Get(devAddr).SetTo(dev))
+	{
+		UInt32 defMIC;
+		UInt32 actualFCnt = fCnt;
+		Net::LoRaGWUtil::CalcMIC(calcMIC, devAddr, fCnt, downLink, dev->nwkSKey, buff, buffSize - 4);
+		defMIC = ReadMUInt32(calcMIC);
+		UIntOS i = 8;
+		if (defMIC != mic)
+		{
+			while (i-- > 0)
+			{
+				fCnt += 65536;
+				Net::LoRaGWUtil::CalcMIC(calcMIC, devAddr, fCnt, downLink, dev->nwkSKey, buff, buffSize - 4);
+				if (ReadMUInt32(calcMIC) == mic)
+				{
+					defMIC = ReadMUInt32(calcMIC);
+					actualFCnt = fCnt;
+				}
+			}
+
+		}
+		sb->AppendC(UTF8STRC("Calculated MIC = 0x"));
+		sb->AppendHex32(defMIC);
+		sb->AppendC(UTF8STRC("\r\n"));
+		sb->AppendC(UTF8STRC("Actual FCnt = "));
+		sb->AppendU32(actualFCnt);
+		sb->AppendC(UTF8STRC("\r\n"));
+	}
+}
+
+UInt32 Net::LoRaGWUtil::MACPayloadDetail(NN<Text::StringBuilderUTF8> sb, NN<Data::UInt32FastMapNN<LoRaDevInfo>> devMap, Bool downLink, UnsafeArray<const UInt8> buff, UIntOS buffSize, OutParam<UInt32> fCnt)
+{
+	if (buffSize < 7)
+	{
+		return 0;
+	}
+	UInt32 devAddr = ReadLUInt32(&buff[0]);
+	sb->AppendC(UTF8STRC("DevAddr = 0x"));
+	sb->AppendHex32(devAddr);
+	sb->AppendC(UTF8STRC("\r\nADR = "));
+	sb->AppendUIntOS(((UIntOS)buff[4] & 0x80) >> 7);
+	sb->AppendC(UTF8STRC("\r\nACK = "));
+	sb->AppendUIntOS(((UIntOS)buff[4] & 0x20) >> 5);
+	if (downLink)
+	{
+		sb->AppendC(UTF8STRC("\r\nRFU = "));
+		sb->AppendUIntOS(((UIntOS)buff[4] & 0x40) >> 6);
+		sb->AppendC(UTF8STRC("\r\nFPending = "));
+		sb->AppendUIntOS(((UIntOS)buff[4] & 0x10) >> 4);
+	}
+	else
+	{
+		sb->AppendC(UTF8STRC("\r\nADRACKReq = "));
+		sb->AppendUIntOS(((UIntOS)buff[4] & 0x40) >> 6);
+		sb->AppendC(UTF8STRC("\r\nClassB = "));
+		sb->AppendUIntOS(((UIntOS)buff[4] & 0x10) >> 4);
+	}
+	UIntOS fOptsLen = (UIntOS)buff[4] & 0xF;
+	sb->AppendC(UTF8STRC("\r\nFOptsLen = "));
+	sb->AppendUIntOS(fOptsLen);
+	sb->AppendC(UTF8STRC("\r\nFCnt = "));
+	sb->AppendU16(ReadLUInt16(&buff[5]));
+	fCnt.Set(ReadLUInt16(&buff[5]));
+	if (fOptsLen + 7 > buffSize)
+	{
+		sb->AppendC(UTF8STRC("\r\n"));
+		return devAddr;
+	}
+	if (fOptsLen > 0)
+	{
+		sb->AppendC(UTF8STRC("\r\nFOpts = "));
+		sb->AppendHexBuff(buff + 7, fOptsLen, ' ', Text::LineBreakType::None);
+	}
+	sb->AppendC(UTF8STRC("\r\n"));
+	buff += fOptsLen + 7;
+	buffSize -= fOptsLen + 7;
+	if (buffSize == 0)
+	{
+		return devAddr;
+	}
+	sb->AppendC(UTF8STRC("FPort = "));
+	sb->AppendU16(buff[0]);
+	if (buffSize > 1)
+	{
+		sb->AppendC(UTF8STRC("\r\nFRMPayload = "));
+		sb->AppendHexBuff(buff + 1, buffSize - 1, ' ', Text::LineBreakType::None);
+	}
+	sb->AppendC(UTF8STRC("\r\n"));
+	NN<Net::LoRaGWUtil::LoRaDevInfo> dev;
+	if (devMap->Get(devAddr).SetTo(dev))
+	{
+		sb->AppendC(UTF8STRC("DevEUI = 0x"));
+		sb->AppendHexBuff(dev->devEUI, 8, 0, Text::LineBreakType::None);
+		sb->AppendC(UTF8STRC("\r\n"));
+		sb->AppendC(UTF8STRC("NwkSKey = 0x"));
+		sb->AppendHexBuff(dev->nwkSKey, 16, 0, Text::LineBreakType::None);
+		sb->AppendC(UTF8STRC("\r\n"));
+		sb->AppendC(UTF8STRC("AppSKey = 0x"));
+		sb->AppendHexBuff(dev->appSKey, 16, 0, Text::LineBreakType::None);
+		sb->AppendC(UTF8STRC("\r\n"));
+	}
+	return devAddr;
+}
+
+Bool Net::LoRaGWUtil::LoadCSV(Text::CStringNN fileName, NN<Data::UInt32FastMapNN<LoRaDevInfo>> devMap)
+{
+	UIntOS devEUICol = INVALID_INDEX;
+	UIntOS nwkSKeyCol = INVALID_INDEX;
+	UIntOS appSKeyCol = INVALID_INDEX;
+	DB::CSVFile csv(fileName, 65001);
+	NN<DB::DBReader> r;
+	if (!csv.QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
+	{
+		return false;
+	}
+	UTF8Char sbuff[256];
+	UnsafeArray<UTF8Char> sptr;
+	UIntOS j = r->ColCount();
+	while (j-- > 0)
+	{
+		if (r->GetName(j, sbuff).SetTo(sptr))
+		{
+			Text::CStringNN colName = CSTRP(sbuff, sptr);
+			if (colName.EqualsICase(UTF8STRC("DevEUI")))
+			{
+				devEUICol = j;
+			}
+			else if (colName.EqualsICase(UTF8STRC("NwkSKey")))
+			{
+				nwkSKeyCol = j;
+			}
+			else if (colName.EqualsICase(UTF8STRC("AppSKey")))
+			{
+				appSKeyCol = j;
+			}
+		}
+	}
+
+	if (devEUICol == INVALID_INDEX || nwkSKeyCol == INVALID_INDEX || appSKeyCol == INVALID_INDEX)
+	{
+		csv.CloseReader(r);
+		return false;
+	}
+	devMap->MemFreeAll();
+	while (r->ReadNext())
+	{
+		NN<LoRaDevInfo> dev;
+		NN<Text::String> devEUI = r->GetNewStrNN(devEUICol);
+		NN<Text::String> nwkSKey = r->GetNewStrNN(nwkSKeyCol);
+		NN<Text::String> appSKey = r->GetNewStrNN(appSKeyCol);
+		if (devEUI->leng == 16 && nwkSKey->leng == 32 && appSKey->leng == 32)
+		{
+			dev = MemAllocNN(LoRaDevInfo);
+			if (devEUI->Hex2Bytes(dev->devEUI) == 8 && nwkSKey->Hex2Bytes(dev->nwkSKey) == 16 && appSKey->Hex2Bytes(dev->appSKey) == 16)
+			{
+				devMap->Put(ReadMUInt32(&dev->devEUI[4]), dev);
+			}
+			else
+			{
+				MemFreeNN(dev);
+			}
+		}
+		devEUI->Release();
+		nwkSKey->Release();
+		appSKey->Release();
+	}
+	csv.CloseReader(r);
+	return true;
 }
 
 Text::CStringNN Net::LoRaGWUtil::MessageTypeGetName(UInt8 msgType)

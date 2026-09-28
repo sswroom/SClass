@@ -29,6 +29,7 @@ namespace Net
 			virtual Bool SSESend(UnsafeArrayOpt<const UTF8Char> eventName, UnsafeArray<const UTF8Char> data);
 			virtual Bool SwitchProtocol(Optional<ProtocolHandler> protoHdlr);
 			virtual Text::CStringNN GetRespHeaders();
+			virtual void CloseSSLSession();
 
 			virtual Bool IsDown() const;
 			virtual UIntOS Read(const Data::ByteArray &buff);

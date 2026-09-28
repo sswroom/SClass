@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRLORALOGFORM
 #define _SM_SSWR_AVIREAD_AVIRLORALOGFORM
+#include "Net/LoRaGWUtil.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
@@ -15,13 +16,6 @@ namespace SSWR
 		class AVIRLoRaLogForm : public UI::GUIForm
 		{
 		private:
-			struct LoRaDevInfo
-			{
-				UInt8 devEUI[8];
-				UInt8 nwkSKey[16];
-				UInt8 appSKey[16];
-			};
-
 			struct LoRaLogEntry
 			{
 				Data::Timestamp ts;
@@ -46,7 +40,7 @@ namespace SSWR
 			NN<UI::GUIListView> lvLog;
 			NN<UI::GUITextBox> txtDetail;
 
-			Data::UInt32FastMapNN<LoRaDevInfo> devMap;
+			Data::UInt32FastMapNN<Net::LoRaGWUtil::LoRaDevInfo> devMap;
 			Data::ArrayListNN<LoRaLogEntry> logList;
 
 		private:
@@ -58,8 +52,6 @@ namespace SSWR
 			Bool LoadLog(NN<Text::String> fileName);
 			void ShowLog(Text::CString gateway);
 			void ParseJSONText(NN<Text::String> jsonText);
-			void PHYPayloadDetail(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> buff, UIntOS buffSize);
-			UInt32 MACPayloadDetail(NN<Text::StringBuilderUTF8> sb, Bool downLink, UnsafeArray<const UInt8> buff, UIntOS buffSize, OutParam<UInt32> fCnt);
 		public:
 			AVIRLoRaLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLoRaLogForm();

@@ -88,6 +88,11 @@ Text::CStringNN Net::WebServer::PrintLogWebResponse::GetRespHeaders()
 	return this->resp->GetRespHeaders();
 }
 
+void Net::WebServer::PrintLogWebResponse::CloseSSLSession()
+{
+	this->resp->CloseSSLSession();
+}
+
 Bool Net::WebServer::PrintLogWebResponse::IsDown() const
 {
 	return this->resp->IsDown();
