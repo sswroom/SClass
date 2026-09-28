@@ -474,12 +474,12 @@ SSWR::AVIRead::AVIRLoRaLogForm::AVIRLoRaLogForm(Optional<UI::GUIClientControl> p
 	this->txtDetail->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lvLog = ui->NewListView(*this, UI::ListViewStyle::Table, 8);
 	this->lvLog->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvLog->AddColumn(CSTR("Timestamp"), 150);
-	this->lvLog->AddColumn(CSTR("From Server"), 100);
-	this->lvLog->AddColumn(CSTR("GW EUI"), 150);
-	this->lvLog->AddColumn(CSTR("Push"), 100);
-	this->lvLog->AddColumn(CSTR("Token"), 100);
-	this->lvLog->AddColumn(CSTR("Dev Addr"), 150);
+	this->lvLog->AddColumn(CSTR("Timestamp"), 130);
+	this->lvLog->AddColumn(CSTR("From Server"), 60);
+	this->lvLog->AddColumn(CSTR("GW EUI"), 120);
+	this->lvLog->AddColumn(CSTR("Push"), 30);
+	this->lvLog->AddColumn(CSTR("Token"), 40);
+	this->lvLog->AddColumn(CSTR("Dev Addr"), 80);
 	this->lvLog->AddColumn(CSTR("Message Type"), 150);
 	this->lvLog->HandleSelChg(OnLogSelChg, this);
 
