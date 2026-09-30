@@ -13,6 +13,7 @@
 #include "Text/JSON.h"
 
 #include <stdio.h>
+//#define VERBOSE
 
 Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Bool noResource)
 {
@@ -35,6 +36,7 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::TCPClientFa
 	this->supportQuery = false;
 	this->supportData = false;
 	this->noResource = noResource;
+	this->imgFormat = Text::String::New(UTF8STRC("png8"));
 	this->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 
 	sptr = url.ConcatTo(sbuff);
@@ -92,6 +94,7 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::TCPClientFa
 					NN<Text::JSONBase> o;
 					NN<Text::JSONBase> v;
 					NN<Text::JSONObject> vobj;
+					NN<Text::String> s;
 					Bool hasInit = false;
 					if (jobj->GetObjectValue(CSTR("initialExtent")).SetTo(o) && o->GetType() == Text::JSONType::Object)
 					{
@@ -191,6 +194,24 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::TCPClientFa
 							}
 						}
 					}
+					if (jobj->GetObjectString(CSTR("supportedImageFormatTypes")).SetTo(s) && s->leng > 0)
+					{
+						sptr = s->ConcatTo(sbuff);
+						Text::PString sarr[2];
+						sarr[1] = Text::PString(sbuff, (UIntOS)(sptr - sbuff));
+						while (true)
+						{
+							i = Text::StrSplitP(sarr, 2, sarr[1], ',');
+							if (sarr[0].EqualsICase(UTF8STRC("PNG8")) || sarr[0].EqualsICase(UTF8STRC("PNG32")) || sarr[0].EqualsICase(UTF8STRC("PNG")))
+							{
+								this->imgFormat->Release();
+								this->imgFormat = Text::String::New(sarr[0].ToCString());
+								break;
+							}
+							if (i != 2)
+								break;
+						}
+					}
 				}
 			
 				json->EndUse();
@@ -206,6 +227,7 @@ Map::ESRI::ESRIMapServer::~ESRIMapServer()
 	this->url->Release();
 	this->csys.Delete();
 	this->name->Release();
+	this->imgFormat->Release();
 }
 
 Bool Map::ESRI::ESRIMapServer::IsError() const
@@ -499,7 +521,9 @@ Optional<Media::ImageList> Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl b
 	sptr = this->url->ConcatTo(url);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/export?dpi="));
 	sptr = Text::StrDouble(sptr, dpi);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("&transparent=true&format=png8&bbox="));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("&transparent=true&format="));
+	sptr = this->imgFormat->ConcatTo(sptr);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("&bbox="));
 	sptr = Text::StrDouble(sptr, bounds.min.x);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("%2C"));
 	sptr = Text::StrDouble(sptr, bounds.min.y);
@@ -525,6 +549,9 @@ Optional<Media::ImageList> Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl b
 		sb->AppendC(url, (UIntOS)(sptr - url));
 
 	Optional<Media::ImageList> ret = nullptr;
+#ifdef VERBOSE
+	printf("ESRIMapServer: DrawMap URL: %s\r\n", url);
+#endif
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
 	if (succ)

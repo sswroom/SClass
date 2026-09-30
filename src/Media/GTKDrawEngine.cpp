@@ -1325,7 +1325,14 @@ Bool Media::GTKDrawImage::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadri
 		IntOS dbpl = cairo_image_surface_get_stride((cairo_surface_t*)this->surface);
 		Media::ImgRemapper::LinearImageRemapper remapper;
 		remapper.SetSourceImage(img);
-		remapper.Remap(dimgPtr, (UIntOS)dbpl, this->info.dispSize.x, this->info.dispSize.y, quad);
+		if (img->info.atype == Media::AT_ALPHA_ALL_FF || img->info.atype == Media::AT_IGNORE_ALPHA)
+		{
+			remapper.RemapDirect(dimgPtr, (UIntOS)dbpl, this->info.dispSize.x, this->info.dispSize.y, quad);
+		}
+		else
+		{
+			remapper.RemapAlpha(dimgPtr, (UIntOS)dbpl, this->info.dispSize.x, this->info.dispSize.y, quad);
+		}
 		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 		return true;
 	}

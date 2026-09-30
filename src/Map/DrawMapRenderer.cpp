@@ -13,6 +13,7 @@
 
 #define IsDoorNum(a) Text::StrIsInt32(a.v)
 #define LBLMINDIST 150
+//#define VERBOSE
 
 UIntOS Map::DrawMapRenderer::NewLabel(UnsafeArray<Map::DrawMapRenderer::MapLabels> labels, UIntOS maxLabel, InOutParam<UIntOS> labelCnt, Int32 priority)
 {
@@ -2288,6 +2289,9 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 				NN<Media::StaticImage> newImg;
 				if (this->resizer->ProcessToNew(img).SetTo(newImg))
 				{
+#ifdef VERBOSE
+					printf("DrawMapRenderer: DrawImageObject (%lf, %lf), %d, %d, %d, %d, %d\r\n", scnBR.x - scnTL.x, scnBR.y - scnTL.y, newImg->data[0], newImg->data[1], newImg->data[2], newImg->data[3], (Int32)newImg->info.atype);
+#endif
 					if (srcAlpha >= 0 && srcAlpha < 1)
 					{
 						newImg->MultiplyAlpha(srcAlpha);
@@ -2359,7 +2363,9 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 				{
 					if (this->resizer->ProcessToNewPartial(img, cimgPt, cimgPt2).SetTo(newImg))
 					{
-						//printf("(%lf, %lf), (%lf, %lf), %d, %d, %d, %d, %d\r\n", cimgPt.x, cimgPt.y, cimgPt2.x, cimgPt2.y, newImg->data[0], newImg->data[1], newImg->data[2], newImg->data[3], (Int32)newImg->info.atype);
+#ifdef VERBOSE
+						printf("DrawMapRenderer: DrawImageObject2 (%lf, %lf), (%lf, %lf), %d, %d, %d, %d, %d\r\n", cimgPt.x, cimgPt.y, cimgPt2.x, cimgPt2.y, newImg->data[0], newImg->data[1], newImg->data[2], newImg->data[3], (Int32)newImg->info.atype);
+#endif
 						if (srcAlpha >= 0 && srcAlpha < 1)
 						{
 							newImg->MultiplyAlpha(srcAlpha);

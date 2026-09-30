@@ -23,7 +23,8 @@ namespace Media
 
 		void SetSourceImage32(UnsafeArray<const UInt8> srcImgPtr, UIntOS srcBpl, UIntOS srcWidth, UIntOS srcHeight);
 		void SetSourceImage(NN<Media::StaticImage> srcImg);
-		Bool Remap(UnsafeArray<UInt8> destImgPtr, UIntOS destBpl, UIntOS destWidth, UIntOS destHeight, Math::Quadrilateral destQuad);
+		Bool RemapDirect(UnsafeArray<UInt8> destImgPtr, UIntOS destBpl, UIntOS destWidth, UIntOS destHeight, Math::Quadrilateral destQuad);
+		Bool RemapAlpha(UnsafeArray<UInt8> destImgPtr, UIntOS destBpl, UIntOS destWidth, UIntOS destHeight, Math::Quadrilateral destQuad);
 	};
 }
 #endif

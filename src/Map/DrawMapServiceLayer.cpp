@@ -9,6 +9,7 @@
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
+//f#define VERBOSE
 
 UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(AnyType userObj)
 {
@@ -39,6 +40,14 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(AnyType userObj)
 					mutUsage.BeginUse();
 					if (me->dispId == thisId)
 					{
+#ifdef VERBOSE						
+						NN<Media::Image> img;
+						if (imgList->GetImage2(0, nullptr).SetTo(img) && img->GetImageType() == Media::ImageType::Raster)
+						{
+							NN<Media::RasterImage> rimg = NN<Media::RasterImage>::ConvertFrom(img);
+							printf("DrawMapServiceLayer: atype = %s, pf = %s\r\n", Media::AlphaTypeGetName(rimg->info.atype).v.Ptr(), Media::PixelFormatGetName(rimg->info.pf).v.Ptr());
+						}
+#endif
 						NEW_CLASSOPT(me->dispImage, Media::SharedImage(imgList, nullptr));
 						me->dispImageURL = Text::String::New(sb.ToCString());
 						me->dispLoaded = true;

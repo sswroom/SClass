@@ -23,6 +23,7 @@ namespace Map
 			Math::RectAreaDbl bounds;
 			Math::RectAreaDbl initBounds;
 			NN<Math::CoordinateSystem> csys;
+			NN<Text::String> imgFormat;
 			Bool noResource;
 
 			Bool supportMap;

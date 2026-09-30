@@ -2467,7 +2467,14 @@ Bool Media::GDIImage::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilate
 		IntOS dbpl = (IntOS)this->size.x << 2;
 		Media::ImgRemapper::LinearImageRemapper remapper;
 		remapper.SetSourceImage(img);
-		remapper.Remap(dimgPtr + dbpl * (IntOS)(this->size.y - 1), (UIntOS)-dbpl, this->info.dispSize.x, this->info.dispSize.y, quad);
+		if (img->info.atype == Media::AT_ALPHA_ALL_FF || img->info.atype == Media::AT_IGNORE_ALPHA)
+		{
+			remapper.RemapDirect(dimgPtr + dbpl * (IntOS)(this->size.y - 1), (UIntOS)-dbpl, this->info.dispSize.x, this->info.dispSize.y, quad);
+		}
+		else
+		{
+			remapper.RemapAlpha(dimgPtr + dbpl * (IntOS)(this->size.y - 1), (UIntOS)-dbpl, this->info.dispSize.x, this->info.dispSize.y, quad);
+		}
 		return true;
 	}
 }
