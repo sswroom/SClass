@@ -14,12 +14,12 @@ Optional<IO::ConfigFile> IO::UnixConfigFile::Parse(Text::CStringNN fileName)
 	else
 	{
 		Text::UTF8Reader reader(fstm);
-		cfg = ParseReader(reader);
+		cfg = ParseReader(fileName, reader);
 	}
 	return cfg;
 }
 
-Optional<IO::ConfigFile> IO::UnixConfigFile::ParseReader(NN<Text::UTF8Reader> reader)
+Optional<IO::ConfigFile> IO::UnixConfigFile::ParseReader(Text::CStringNN fileName, NN<Text::UTF8Reader> reader)
 {
 	UTF8Char buff[1024];
 	UnsafeArray<UTF8Char> name;
@@ -30,7 +30,7 @@ Optional<IO::ConfigFile> IO::UnixConfigFile::ParseReader(NN<Text::UTF8Reader> re
 	UTF8Char c;
 	NN<IO::ConfigFile> cfg;
 	UIntOS i;
-	NEW_CLASSNN(cfg, IO::ConfigFile());
+	NEW_CLASSNN(cfg, IO::ConfigFile(fileName));
 	while (reader->ReadLine(buff, 1023).SetTo(valueEnd))
 	{
 		while (valueEnd > buff)

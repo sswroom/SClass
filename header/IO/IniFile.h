@@ -14,7 +14,7 @@ namespace IO
 		static Optional<IO::ConfigFile> ParseProgConfig(UInt32 codePage);
 
 	private:
-		static Optional<IO::ConfigFile> ParseReader(NN<IO::StreamReader> reader);
+		static Optional<IO::ConfigFile> ParseReader(Text::CStringNN fileName, NN<IO::StreamReader> reader);
 
 	public:
 		static Bool SaveConfig(NN<IO::Stream> stm, UInt32 codePage, NN<IO::ConfigFile> cfg);

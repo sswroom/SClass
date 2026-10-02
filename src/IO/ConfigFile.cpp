@@ -18,7 +18,12 @@ void IO::ConfigFile::MergeCate(NN<Data::FastStringMapNN<Text::String>> myCate, N
 	}
 }
 
-IO::ConfigFile::ConfigFile()
+IO::ConfigFile::ConfigFile(NN<Text::String> sourceName) : IO::ParsedObject(sourceName)
+{
+	this->defCate = Text::String::NewEmpty();
+}
+
+IO::ConfigFile::ConfigFile(Text::CStringNN sourceName) : IO::ParsedObject(sourceName)
 {
 	this->defCate = Text::String::NewEmpty();
 }
@@ -42,6 +47,11 @@ IO::ConfigFile::~ConfigFile()
 		cate.Delete();
 	}
 	this->defCate->Release();
+}
+
+IO::ParserType IO::ConfigFile::GetParserType() const
+{
+	return IO::ParserType::ConfigFile;
 }
 
 Optional<Text::String> IO::ConfigFile::GetValue(NN<Text::String> name)
@@ -218,7 +228,7 @@ Optional<IO::ConfigFile> IO::ConfigFile::CloneCate(Text::CString category)
 		return nullptr;
 	}
 	NN<IO::ConfigFile> cfg;
-	NEW_CLASSNN(cfg, IO::ConfigFile());
+	NEW_CLASSNN(cfg, IO::ConfigFile(this->sourceName));
 	Data::FastStringNNKeyIterator<Text::String> it = cate->KeyIterator();
 	NN<Text::String> key;
 	while (it.HasNext())

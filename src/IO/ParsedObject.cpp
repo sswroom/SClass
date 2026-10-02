@@ -68,6 +68,8 @@ Text::CStringNN IO::ParserTypeGetName(ParserType pt)
 		return CSTR("DataRateCalc");
 	case ParserType::SQLFile:
 		return CSTR("SQLFile");
+	case ParserType::ConfigFile:
+		return CSTR("ConfigFile");
 	case ParserType::Unknown:
 	default:
 		return CSTR("Unknwon");

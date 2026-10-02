@@ -17,7 +17,7 @@ Optional<IO::ConfigFile> IO::WSConfigFile::Parse(Text::CStringNN fileName)
 	UIntOS i;
 	Text::PString sarr[2];
 	Text::UTF8Reader reader(fs);
-	NEW_CLASSNN(cfg, IO::ConfigFile());
+	NEW_CLASSNN(cfg, IO::ConfigFile(fileName));
 	while (reader.ReadLine(sb, 4096))
 	{
 		i = sb.IndexOf('#');

@@ -40,8 +40,9 @@ namespace IO
 		CesiumTile,
 		DataRateCalc,
 		SQLFile,
+		ConfigFile,
 
-		LastType = SQLFile
+		LastType = ConfigFile
 	};
 
 	Text::CStringNN ParserTypeGetName(ParserType pt);

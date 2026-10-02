@@ -2087,6 +2087,8 @@ DB/ReadingDB.h:
 @ReadingDB.o
 DB/ReadingDBTool.h:
 @ReadingDBTool.o
+DB/RedisClient.h:
+@RedisClient.o
 DB/SDFFile.h:
 @SDFFile.o
 DB/SharedDBConn.h:
@@ -4637,6 +4639,8 @@ SSWR/AVIRead/AVIRColorCustomForm.h:
 @AVIRColorCustomForm.o
 SSWR/AVIRead/AVIRColorSettingForm.h:
 @AVIRColorSettingForm.o
+SSWR/AVIRead/AVIRConfigForm.h:
+@AVIRConfigForm.o
 SSWR/AVIRead/AVIRConsoleMediaPlayerForm.h:
 @AVIRConsoleMediaPlayerForm.o
 SSWR/AVIRead/AVIRCoordConvForm.h:

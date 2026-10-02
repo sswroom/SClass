@@ -2,7 +2,7 @@
 #include "Crypto/Encrypt/JasyptConfigFile.h"
 #include "Text/StringTool.h"
 
-Crypto::Encrypt::JasyptConfigFile::JasyptConfigFile(NN<IO::ConfigFile> cfg, Crypto::Encrypt::JasyptEncryptor::KeyAlgorithm keyAlg, Crypto::Encrypt::JasyptEncryptor::CipherAlgorithm cipherAlg, Data::ByteArrayR key) : enc(keyAlg, cipherAlg, key)
+Crypto::Encrypt::JasyptConfigFile::JasyptConfigFile(NN<IO::ConfigFile> cfg, Crypto::Encrypt::JasyptEncryptor::KeyAlgorithm keyAlg, Crypto::Encrypt::JasyptEncryptor::CipherAlgorithm cipherAlg, Data::ByteArrayR key) : IO::ConfigFile(cfg->GetSourceNameObj()), enc(keyAlg, cipherAlg, key)
 {
 	this->cfg = cfg;
 }

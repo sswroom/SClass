@@ -24,7 +24,7 @@ Text::CodeObject::ObjectType Text::CodeFile::GetObjectType() const
 	return Text::CodeObject::OT_FILE;
 }
 
-Text::CodeProjectCfg::CodeProjectCfg(NN<Text::String> name)
+Text::CodeProjectCfg::CodeProjectCfg(NN<Text::String> name) : IO::ConfigFile(name)
 {
 	this->cfgName = name->Clone();
 }

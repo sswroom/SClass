@@ -26,12 +26,12 @@ Optional<IO::ConfigFile> IO::Java::JavaProperties::Parse(Text::CStringNN fileNam
 	else
 	{
 		Text::UTF8Reader reader(fstm);
-		cfg = ParseReader(reader);
+		cfg = ParseReader(fileName, reader);
 	}
 	return cfg;
 }
 
-Optional<IO::ConfigFile> IO::Java::JavaProperties::ParseReader(NN<Text::UTF8Reader> reader)
+Optional<IO::ConfigFile> IO::Java::JavaProperties::ParseReader(Text::CStringNN fileName, NN<Text::UTF8Reader> reader)
 {
 	UTF8Char buff[1024];
 	UnsafeArray<UTF8Char> name;
@@ -40,7 +40,7 @@ Optional<IO::ConfigFile> IO::Java::JavaProperties::ParseReader(NN<Text::UTF8Read
 	UnsafeArray<UTF8Char> valueEnd;
 	NN<IO::ConfigFile> cfg;
 	UIntOS i;
-	NEW_CLASSNN(cfg, IO::ConfigFile());
+	NEW_CLASSNN(cfg, IO::ConfigFile(fileName));
 	while (reader->ReadLine(buff, 1023).SetTo(valueEnd))
 	{
 		i = 0;

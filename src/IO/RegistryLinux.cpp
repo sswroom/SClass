@@ -287,7 +287,7 @@ void IO::Registry::SetValue(UnsafeArray<const WChar> name, Int32 value)
 	NN<IO::ConfigFile> cfg;
 	if (!this->clsData->reg->cfg.SetTo(cfg))
 	{
-		NEW_CLASSNN(cfg, IO::ConfigFile());
+		NEW_CLASSNN(cfg, IO::ConfigFile(this->clsData->reg->fileName));
 		this->clsData->reg->cfg = cfg;
 	}
 	NN<Text::String> s = Text::String::NewNotNull(name);
@@ -313,7 +313,7 @@ void IO::Registry::SetValue(UnsafeArray<const WChar> name, UnsafeArrayOpt<const 
 	NN<IO::ConfigFile> cfg;
 	if (!this->clsData->reg->cfg.SetTo(cfg))
 	{
-		NEW_CLASSNN(cfg, IO::ConfigFile());
+		NEW_CLASSNN(cfg, IO::ConfigFile(this->clsData->reg->fileName));
 		this->clsData->reg->cfg = cfg;
 	}
 	s = Text::String::NewNotNull(name);

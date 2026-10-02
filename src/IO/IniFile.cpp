@@ -12,14 +12,14 @@
 Optional<IO::ConfigFile> IO::IniFile::Parse(NN<IO::Stream> stm, UInt32 codePage)
 {
 	IO::StreamReader reader(stm, codePage);
-	return ParseReader(reader);
+	return ParseReader(stm->GetSourceNameObj()->ToCString(), reader);
 }
 
 Optional<IO::ConfigFile> IO::IniFile::Parse(Text::CStringNN fileName, UInt32 codePage)
 {
 	IO::FileStream fstm(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 	IO::StreamReader reader(fstm, codePage);
-	return ParseReader(reader);
+	return ParseReader(fileName, reader);
 }
 
 Optional<IO::ConfigFile> IO::IniFile::ParseProgConfig(UInt32 codePage)
@@ -31,7 +31,7 @@ Optional<IO::ConfigFile> IO::IniFile::ParseProgConfig(UInt32 codePage)
 	return Parse(CSTRP(sbuff, sptr), codePage);
 }
 
-Optional<IO::ConfigFile> IO::IniFile::ParseReader(NN<IO::StreamReader> reader)
+Optional<IO::ConfigFile> IO::IniFile::ParseReader(Text::CStringNN fileName, NN<IO::StreamReader> reader)
 {
 	UTF8Char cate[128];
 	UnsafeArray<UTF8Char> cateEnd;
@@ -43,7 +43,7 @@ Optional<IO::ConfigFile> IO::IniFile::ParseReader(NN<IO::StreamReader> reader)
 	UnsafeArray<UTF8Char> src;
 	UTF8Char lbrk[3];
 	NN<IO::ConfigFile> cfg;
-	NEW_CLASSNN(cfg, IO::ConfigFile());
+	NEW_CLASSNN(cfg, IO::ConfigFile(fileName));
 	cate[0] = 0;
 	cateEnd = cate;
 	while (reader->ReadLine(buff, 1023).SetTo(valueEnd))

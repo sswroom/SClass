@@ -30,6 +30,7 @@ libdrm-dev
 libavif-dev
 libvulkan-dev
 libshaderc-dev
+libhiredis-dev
 
 libarmadillo-dev
 libcereal-dev

@@ -13,7 +13,7 @@ namespace IO
 			static Optional<IO::ConfigFile> Parse(Text::CStringNN fileName);
 			static Optional<IO::ConfigFile> ParseAppProp();
 		private:
-			static Optional<IO::ConfigFile> ParseReader(NN<Text::UTF8Reader> reader);
+			static Optional<IO::ConfigFile> ParseReader(Text::CStringNN fileName, NN<Text::UTF8Reader> reader);
 			static UnsafeArray<UTF8Char> EscapeStr(UnsafeArray<UTF8Char> str, UnsafeArray<UTF8Char> strEnd);
 		};
 	}

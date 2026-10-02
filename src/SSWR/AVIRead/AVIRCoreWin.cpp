@@ -8,6 +8,7 @@
 #include "SSWR/AVIRead/AVIRBTScanLogForm.h"
 #include "SSWR/AVIRead/AVIRCesiumTileForm.h"
 #include "SSWR/AVIRead/AVIRCodeProjectForm.h"
+#include "SSWR/AVIRead/AVIRConfigForm.h"
 #include "SSWR/AVIRead/AVIRCoordSysForm.h"
 #include "SSWR/AVIRead/AVIRCoreWin.h"
 #include "SSWR/AVIRead/AVIRDataRateForm.h"
@@ -287,6 +288,14 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 		{
 			NN<SSWR::AVIRead::AVIRDataRateForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDataRateForm(nullptr, this->ui, *this, NN<IO::DataRateCalc>::ConvertFrom(pobj)));
+			InitForm(frm);
+			frm->Show();
+		}
+		break;
+	case IO::ParserType::ConfigFile:
+		{
+			NN<SSWR::AVIRead::AVIRConfigForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRConfigForm(nullptr, this->ui, *this, NN<IO::ConfigFile>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}

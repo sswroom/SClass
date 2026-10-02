@@ -10,7 +10,7 @@ namespace IO
 	public:
 		static Optional<IO::ConfigFile> Parse(Text::CStringNN fileName);
 	private:
-		static Optional<IO::ConfigFile> ParseReader(NN<Text::UTF8Reader> reader);
+		static Optional<IO::ConfigFile> ParseReader(Text::CStringNN fileName, NN<Text::UTF8Reader> reader);
 	};
 }
 #endif

@@ -282,6 +282,9 @@ PostgreSQLTCPConn.o: ../../src/DB/PostgreSQLTCPConn.cpp
 PostgreSQLUtil.o: ../../src/DB/PostgreSQLUtil.cpp
 ReadingDB.o: ../../src/DB/ReadingDB.cpp
 ReadingDBTool.o: ../../src/DB/ReadingDBTool.cpp
+RedisClient.o: ../../src/DB/RedisClient.cpp
+$`$(PKG-CONFIG) --cflags hiredis`
+!`$(PKG-CONFIG) --libs hiredis`
 SDFFile.o: ../../src/DB/SDFFile.cpp
 SharedDBConn.o: ../../src/DB/SharedDBConn.cpp
 SharedReadingDB.o: ../../src/DB/SharedReadingDB.cpp
@@ -2107,6 +2110,7 @@ AVIRCodePageForm.o: ../../src/SSWR/AVIRead/AVIRCodePageForm.cpp
 AVIRCodeProjectForm.o: ../../src/SSWR/AVIRead/AVIRCodeProjectForm.cpp
 AVIRColorCustomForm.o: ../../src/SSWR/AVIRead/AVIRColorCustomForm.cpp
 AVIRColorSettingForm.o: ../../src/SSWR/AVIRead/AVIRColorSettingForm.cpp
+AVIRConfigForm.o: ../../src/SSWR/AVIRead/AVIRConfigForm.cpp
 AVIRConsoleMediaPlayerForm.o: ../../src/SSWR/AVIRead/AVIRConsoleMediaPlayerForm.cpp
 AVIRCoordConvForm.o: ../../src/SSWR/AVIRead/AVIRCoordConvForm.cpp
 AVIRCoordInfoForm.o: ../../src/SSWR/AVIRead/AVIRCoordInfoForm.cpp
