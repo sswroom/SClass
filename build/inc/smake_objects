@@ -2300,6 +2300,7 @@ AVIRODBCDSNForm.o: ../../src/SSWR/AVIRead/AVIRODBCDSNForm.cpp
 AVIRODBCStrForm.o: ../../src/SSWR/AVIRead/AVIRODBCStrForm.cpp
 AVIROLEDBForm.o: ../../src/SSWR/AVIRead/AVIROLEDBForm.cpp
 AVIROpenAIForm.o: ../../src/SSWR/AVIRead/AVIROpenAIForm.cpp
+AVIROpenConfigForm.o: ../../src/SSWR/AVIRead/AVIROpenConfigForm.cpp
 AVIROpenFileForm.o: ../../src/SSWR/AVIRead/AVIROpenFileForm.cpp
 AVIROSMCacheCfgForm.o: ../../src/SSWR/AVIRead/AVIROSMCacheCfgForm.cpp
 AVIROSMCacheForm.o: ../../src/SSWR/AVIRead/AVIROSMCacheForm.cpp

@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/Sort/ArtificialQuickSort.h"
 #include "SSWR/AVIRead/AVIRConfigForm.h"
 
 void __stdcall SSWR::AVIRead::AVIRConfigForm::OnCategorySelChg(AnyType userObj)
@@ -14,6 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRConfigForm::OnCategorySelChg(AnyType userObj)
 		return;
 	}
 	me->cfg->GetKeys(s, keyList);
+	Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(keyList, keyList);
 	UIntOS i = 0;
 	UIntOS j = keyList.GetCount();
 	while (i < j)
@@ -24,7 +26,6 @@ void __stdcall SSWR::AVIRead::AVIRConfigForm::OnCategorySelChg(AnyType userObj)
 		{
 			me->lvKeyValues->SetSubItem(i, 1, v);
 		}
-
 		i++;
 	}
 	s->Release();

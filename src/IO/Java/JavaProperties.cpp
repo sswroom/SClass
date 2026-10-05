@@ -49,6 +49,10 @@ Optional<IO::ConfigFile> IO::Java::JavaProperties::ParseReader(Text::CStringNN f
 			i++;
 		}
 		name = &buff[i];
+		if (name[0] == '#')
+		{
+			continue;
+		}
 		i = Text::StrIndexOfCharC(name, (UIntOS)(valueEnd - name), '=');
 		if (i == INVALID_INDEX)
 		{

@@ -5017,6 +5017,8 @@ SSWR/AVIRead/AVIRODBCStrForm.h:
 @AVIRODBCStrForm.o
 SSWR/AVIRead/AVIROpenAIForm.h:
 @AVIROpenAIForm.o
+SSWR/AVIRead/AVIROpenConfigForm.h:
+@AVIROpenConfigForm.o
 SSWR/AVIRead/AVIROpenFileForm.h:
 @AVIROpenFileForm.o
 SSWR/AVIRead/AVIROSMCacheCfgForm.h:

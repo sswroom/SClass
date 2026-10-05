@@ -182,6 +182,7 @@
 #include "SSWR/AVIRead/AVIRODBCStrForm.h"
 #include "SSWR/AVIRead/AVIROLEDBForm.h"
 #include "SSWR/AVIRead/AVIROpenAIForm.h"
+#include "SSWR/AVIRead/AVIROpenConfigForm.h"
 #include "SSWR/AVIRead/AVIROpenFileForm.h"
 #include "SSWR/AVIRead/AVIROSMCacheCfgForm.h"
 #include "SSWR/AVIRead/AVIROSMTileBoundsForm.h"
@@ -574,7 +575,8 @@ typedef enum
 	MNU_LOGZIPPER,
 	MNU_JAVASPRING,
 	MNU_SYSTEM_LOG,
-	MNU_LORA_LOG
+	MNU_LORA_LOG,
+	MNU_OPEN_CONFIG
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -684,6 +686,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("M&isc"));
 	mnu->AddItem(CSTR("Open File"), MNU_OPEN_FILE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_O);
+	mnu->AddItem(CSTR("Open Config"), MNU_OPEN_CONFIG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu->AddItem(CSTR("Sudoku Solver"), MNU_SUDOKU_SOLVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Process Info"), MNU_PROC_INFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3338,6 +3341,19 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			NN<SSWR::AVIRead::AVIRSystemLogForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSystemLogForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_OPEN_CONFIG:
+		{
+			SSWR::AVIRead::AVIROpenConfigForm dlg(nullptr, this->ui, this->core);
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
+			{
+				NN<IO::ConfigFile> cfg;
+				if (dlg.GetConfigFile().SetTo(cfg))
+				{
+					this->core->OpenObject(cfg);
+				}
+			}
 		}
 		break;
 	}
