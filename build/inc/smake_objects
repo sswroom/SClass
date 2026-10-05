@@ -2326,6 +2326,7 @@ AVIRPushServerForm.o: ../../src/SSWR/AVIRead/AVIRPushServerForm.cpp
 AVIRPythonForm.o: ../../src/SSWR/AVIRead/AVIRPythonForm.cpp
 AVIRRadioScanForm.o: ../../src/SSWR/AVIRead/AVIRRadioScanForm.cpp
 AVIRRAWMonitorForm.o: ../../src/SSWR/AVIRead/AVIRRAWMonitorForm.cpp
+AVIRRedisConnForm.o: ../../src/SSWR/AVIRead/AVIRRedisConnForm.cpp
 AVIRRegionalMapForm.o: ../../src/SSWR/AVIRead/AVIRRegionalMapForm.cpp
 AVIRRESTfulForm.o: ../../src/SSWR/AVIRead/AVIRRESTfulForm.cpp
 AVIRRNCryptorForm.o: ../../src/SSWR/AVIRead/AVIRRNCryptorForm.cpp

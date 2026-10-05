@@ -5069,6 +5069,8 @@ SSWR/AVIRead/AVIRRadioScanForm.h:
 @AVIRRadioScanForm.o
 SSWR/AVIRead/AVIRRAWMonitorForm.h:
 @AVIRRAWMonitorForm.o
+SSWR/AVIRead/AVIRRedisConnForm.h:
+@AVIRRedisConnForm.o
 SSWR/AVIRead/AVIRRegionalMapForm.h:
 @AVIRRegionalMapForm.o
 SSWR/AVIRead/AVIRRESTfulForm.h:

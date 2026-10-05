@@ -9,18 +9,29 @@ namespace DB
 	{
 	private:
 		AnyType context;
-		NN<Text::String> keyPrefix;
+		Data::ArrayListStringNN cateList;
+		Data::ArrayListStringNN keyList;
 
 		Bool Connect(Text::CStringNN host, UInt16 port, Text::CString password, Int32 db);
-		Optional<Text::String> GetCategoryKey(Text::CString category) const;
-		Optional<Text::String> GetCategoriesKey() const;
-		Optional<Text::String> GetDefaultKey(Text::CStringNN name) const;
-		Optional<Text::String> GetDefaultKeysKey() const;
+		void UpdateCateList();
+
+		AnyType SendAuth(Text::CString password) const;
+		AnyType SendSelect(Int32 db) const;
+		AnyType SendType(Text::CStringNN key) const;
+		AnyType SendGet(Text::CStringNN key) const;
+		AnyType SendSet(Text::CStringNN key, Text::CStringNN value) const;
+		AnyType SendDel(Text::CStringNN key) const;
+		AnyType SendKeys(Text::CStringNN pattern) const;
+		AnyType SendHGet(Text::CStringNN key, Text::CStringNN field) const;
+		AnyType SendHSet(Text::CStringNN key, Text::CStringNN field, Text::CStringNN value) const;
+		AnyType SendHDel(Text::CStringNN key, Text::CStringNN field) const;
+		AnyType SendHLen(Text::CStringNN key) const;
+		AnyType SendHKeys(Text::CStringNN key) const;
 		AnyType SendCommand(Int32 argc, UnsafeArray<UnsafeArray<const Char>> argv, UnsafeArray<const UIntOS> argvlen) const;
 
 	public:
 		RedisClient(Text::CStringNN host, UInt16 port);
-		RedisClient(Text::CStringNN host, UInt16 port, Text::CString password, Int32 db, Text::CStringNN keyPrefix);
+		RedisClient(Text::CStringNN host, UInt16 port, Text::CString password, Int32 db);
 		virtual ~RedisClient();
 
 		Bool IsConnected() const;

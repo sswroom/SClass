@@ -1,7 +1,10 @@
 #include "Stdafx.h"
+#include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/RedisClient.h"
 #include "Text/StringBuilderUTF8.h"
 #include <hiredis/hiredis.h>
+
+//#define VERBOSE
 
 Bool DB::RedisClient::Connect(Text::CStringNN host, UInt16 port, Text::CString password, Int32 db)
 {
@@ -21,9 +24,7 @@ Bool DB::RedisClient::Connect(Text::CStringNN host, UInt16 port, Text::CString p
 	Text::CStringNN passwordNN;
 	if (password.SetTo(passwordNN))
 	{
-		UnsafeArray<const Char> argv[2] = {"AUTH", (const Char*)passwordNN.v.Ptr()};
-		UIntOS argvlen[2] = {4, passwordNN.leng};
-		redisReply *reply = (redisReply*)this->SendCommand(2, argv, argvlen).p;
+		redisReply *reply = (redisReply*)this->SendAuth(passwordNN).p;
 		if (reply == 0 || reply->type == REDIS_REPLY_ERROR)
 		{
 			if (reply)
@@ -36,11 +37,7 @@ Bool DB::RedisClient::Connect(Text::CStringNN host, UInt16 port, Text::CString p
 	}
 	if (db != 0)
 	{
-		UTF8Char dbStr[32];
-		UnsafeArray<UTF8Char> dbEnd = Text::StrInt32(dbStr, db);
-		UnsafeArray<const Char> argv[2] = {"SELECT", (const Char*)dbStr};
-		UIntOS argvlen[2] = {6, (UIntOS)(dbEnd.Ptr() - dbStr)};
-		redisReply *reply = (redisReply*)this->SendCommand(2, argv, argvlen).p;
+		redisReply *reply = (redisReply*)this->SendSelect(db).p;
 		if (reply == 0 || reply->type == REDIS_REPLY_ERROR)
 		{
 			if (reply)
@@ -51,27 +48,164 @@ Bool DB::RedisClient::Connect(Text::CStringNN host, UInt16 port, Text::CString p
 		}
 		freeReplyObject(reply);
 	}
+	this->UpdateCateList();
 	return true;
+}
+
+void DB::RedisClient::UpdateCateList()
+{
+	Data::ArrayListStringNN newCateList;
+	Data::ArrayListStringNN newKeyList;
+	redisReply *reply = (redisReply*)this->SendKeys(CSTR("*")).p;
+	if (!reply)
+		return;
+	if (reply->type == REDIS_REPLY_ARRAY)
+	{
+		for (size_t i = 0; i < reply->elements; i++)
+		{
+			redisReply *item = reply->element[i];
+			if (item->type == REDIS_REPLY_STRING)
+			{
+				redisReply *typeReply = (redisReply*)this->SendType(Text::CStringNN((const UTF8Char*)item->str, item->len)).p;
+				if (typeReply)
+				{
+					if (typeReply->type == REDIS_REPLY_STATUS)
+					{
+						if (Text::StrEqualsC((const UTF8Char*)typeReply->str, typeReply->len, UTF8STRC("hash")))
+						{
+							newCateList.Add(Text::String::New((const UTF8Char*)item->str, item->len));
+						}
+						else
+						{
+							newKeyList.Add(Text::String::New((const UTF8Char*)item->str, item->len));
+						}
+					}
+					freeReplyObject(typeReply);
+				}
+			}
+		}
+	}
+	freeReplyObject(reply);
+	this->cateList.FreeAll();
+	this->keyList.FreeAll();
+	Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(newCateList, newCateList);
+	Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(newKeyList, newKeyList);
+	this->cateList.AddAll(newCateList);
+	this->keyList.AddAll(newKeyList);
+}
+
+AnyType DB::RedisClient::SendAuth(Text::CString password) const
+{
+	UnsafeArray<const Char> argv[2] = {"AUTH", (const Char*)password.v.Ptr()};
+	UIntOS argvlen[2] = {4, password.leng};
+	return this->SendCommand(2, argv, argvlen);
+}
+
+AnyType DB::RedisClient::SendSelect(Int32 db) const
+{
+	UTF8Char dbStr[32];
+	UnsafeArray<UTF8Char> dbEnd = Text::StrInt32(dbStr, db);
+	UnsafeArray<const Char> argv[2] = {"SELECT", (const Char*)dbStr};
+	UIntOS argvlen[2] = {6, (UIntOS)(dbEnd.Ptr() - dbStr)};
+	return this->SendCommand(2, argv, argvlen);
+}
+
+AnyType DB::RedisClient::SendType(Text::CStringNN key) const
+{
+	UnsafeArray<const Char> argv[2] = {"TYPE", (const Char*)key.v.Ptr()};
+	UIntOS argvlen[2] = {4, key.leng};
+	return this->SendCommand(2, argv, argvlen);
+}
+
+AnyType DB::RedisClient::SendGet(Text::CStringNN key) const
+{
+	UnsafeArray<const Char> argv[2] = {"GET", (const Char*)key.v.Ptr()};
+	UIntOS argvlen[2] = {3, key.leng};
+	return this->SendCommand(2, argv, argvlen);
+}
+
+AnyType DB::RedisClient::SendSet(Text::CStringNN key, Text::CStringNN value) const
+{
+	UnsafeArray<const Char> argv[3] = {"SET", (const Char*)key.v.Ptr(), (const Char*)value.v.Ptr()};
+	UIntOS argvlen[3] = {3, key.leng, value.leng};
+	return this->SendCommand(3, argv, argvlen);
+}
+
+AnyType DB::RedisClient::SendDel(Text::CStringNN key) const
+{
+	UnsafeArray<const Char> argv[2] = {"DEL", (const Char*)key.v.Ptr()};
+	UIntOS argvlen[2] = {3, key.leng};
+	return this->SendCommand(2, argv, argvlen);
+}
+
+AnyType DB::RedisClient::SendKeys(Text::CStringNN pattern) const
+{
+	UnsafeArray<const Char> argv[2] = {"KEYS", (const Char*)pattern.v.Ptr()};
+	UIntOS argvlen[2] = {4, pattern.leng};
+	return this->SendCommand(2, argv, argvlen);
+}
+
+AnyType DB::RedisClient::SendHGet(Text::CStringNN key, Text::CStringNN field) const
+{
+	UnsafeArray<const Char> argv[3] = {"HGET", (const Char*)key.v.Ptr(), (const Char*)field.v.Ptr()};
+	UIntOS argvlen[3] = {4, key.leng, field.leng};
+	return this->SendCommand(3, argv, argvlen);
+}
+
+AnyType DB::RedisClient::SendHSet(Text::CStringNN key, Text::CStringNN field, Text::CStringNN value) const
+{
+	UnsafeArray<const Char> argv[4] = {"HSET", (const Char*)key.v.Ptr(), (const Char*)field.v.Ptr(), (const Char*)value.v.Ptr()};
+	UIntOS argvlen[4] = {4, key.leng, field.leng, value.leng};
+	return this->SendCommand(4, argv, argvlen);
+}
+
+AnyType DB::RedisClient::SendHDel(Text::CStringNN key, Text::CStringNN field) const
+{
+	UnsafeArray<const Char> argv[3] = {"HDEL", (const Char*)key.v.Ptr(), (const Char*)field.v.Ptr()};
+	UIntOS argvlen[3] = {4, key.leng, field.leng};
+	return this->SendCommand(3, argv, argvlen);
+}
+
+AnyType DB::RedisClient::SendHLen(Text::CStringNN key) const
+{
+	UnsafeArray<const Char> argv[2] = {"HLEN", (const Char*)key.v.Ptr()};
+	UIntOS argvlen[2] = {4, key.leng};
+	return this->SendCommand(2, argv, argvlen);
+}
+
+AnyType DB::RedisClient::SendHKeys(Text::CStringNN key) const
+{
+	UnsafeArray<const Char> argv[2] = {"HKEYS", (const Char*)key.v.Ptr()};
+	UIntOS argvlen[2] = {5, key.leng};
+	return this->SendCommand(2, argv, argvlen);
 }
 
 AnyType DB::RedisClient::SendCommand(Int32 argc, UnsafeArray<UnsafeArray<const Char>> argv, UnsafeArray<const UIntOS> argvlen) const
 {
 	if (this->context.IsNull() || ((redisContext*)this->context.p)->err)
 		return 0;
+#ifdef VERBOSE
+	printf("RedisClient: Sending command");
+	Int32 i = 0;
+	while (i < argc)
+	{
+		printf(" %s", argv[i].Ptr());
+		i++;
+	}
+	printf("\r\n");
+#endif
 	return redisCommandArgv((redisContext*)this->context.p, argc, (const Char**)argv.Ptr(), (const size_t*)argvlen.Ptr());
 }
 
 DB::RedisClient::RedisClient(Text::CStringNN host, UInt16 port) : IO::ConfigFile(CSTR("RedisClient"))
 {
 	this->context = 0;
-	this->keyPrefix = Text::String::New(CSTR("SClass"));
 	this->Connect(host, port, nullptr, 0);
 }
 
-DB::RedisClient::RedisClient(Text::CStringNN host, UInt16 port, Text::CString password, Int32 db, Text::CStringNN keyPrefix) : IO::ConfigFile(CSTR("RedisClient"))
+DB::RedisClient::RedisClient(Text::CStringNN host, UInt16 port, Text::CString password, Int32 db) : IO::ConfigFile(CSTR("RedisClient"))
 {
 	this->context = 0;
-	this->keyPrefix = Text::String::New(keyPrefix);
 	this->Connect(host, port, password, db);
 }
 
@@ -79,46 +213,13 @@ DB::RedisClient::~RedisClient()
 {
 	if (!this->context.IsNull())
 		redisFree((redisContext*)this->context.p);
-	this->keyPrefix->Release();
+	this->cateList.FreeAll();
+	this->keyList.FreeAll();
 }
 
 Bool DB::RedisClient::IsConnected() const
 {
 	return !this->context.IsNull() && ((redisContext*)this->context.p)->err == 0;
-}
-
-Optional<Text::String> DB::RedisClient::GetCategoryKey(Text::CString category) const
-{
-	Text::StringBuilderUTF8 sb;
-	sb.Append(this->keyPrefix);
-	sb.AppendC(UTF8STRC(":category:"));
-	sb.Append(category.OrEmpty());
-	return Text::String::New(sb.ToString(), sb.GetLength());
-}
-
-Optional<Text::String> DB::RedisClient::GetCategoriesKey() const
-{
-	Text::StringBuilderUTF8 sb;
-	sb.Append(this->keyPrefix);
-	sb.AppendC(UTF8STRC(":categories"));
-	return Text::String::New(sb.ToString(), sb.GetLength());
-}
-
-Optional<Text::String> DB::RedisClient::GetDefaultKey(Text::CStringNN name) const
-{
-	Text::StringBuilderUTF8 sb;
-	sb.Append(this->keyPrefix);
-	sb.AppendC(UTF8STRC(":default:"));
-	sb.Append(name);
-	return Text::String::New(sb.ToString(), sb.GetLength());
-}
-
-Optional<Text::String> DB::RedisClient::GetDefaultKeysKey() const
-{
-	Text::StringBuilderUTF8 sb;
-	sb.Append(this->keyPrefix);
-	sb.AppendC(UTF8STRC(":default:keys"));
-	return Text::String::New(sb.ToString(), sb.GetLength());
 }
 
 Optional<Text::String> DB::RedisClient::GetCateValue(NN<Text::String> category, NN<Text::String> name)
@@ -130,28 +231,37 @@ Optional<Text::String> DB::RedisClient::GetCateValue(Text::CStringNN category, T
 {
 	if (category.leng == 0)
 	{
-		NN<Text::String> valueKey;
-		if (!this->GetDefaultKey(name).SetTo(valueKey))
+		redisReply *typeReply = (redisReply*)this->SendType(name).p;
+		if (!typeReply)
 			return nullptr;
-		UnsafeArray<const Char> argv[2] = {"GET", (const Char*)valueKey->v.Ptr()};
-		UIntOS argvlen[2] = {3, valueKey->leng};
-		redisReply *reply = (redisReply*)this->SendCommand(2, argv, argvlen).p;
-		valueKey->Release();
-		if (!reply)
-			return nullptr;
+		redisReply *reply = 0;
 		Optional<Text::String> ret = nullptr;
-		if (reply->type == REDIS_REPLY_STRING)
-			ret = Text::String::New((const UTF8Char*)reply->str, reply->len);
-		freeReplyObject(reply);
+		if (Text::StrEqualsC((const UTF8Char*)typeReply->str, typeReply->len, UTF8STRC("string")))
+		{
+			reply = (redisReply*)this->SendGet(name).p;
+			if (!reply)
+			{
+				freeReplyObject(typeReply);
+				return nullptr;
+			}
+			if (reply->type == REDIS_REPLY_STRING)
+			{
+				ret = Text::String::New((const UTF8Char*)reply->str, reply->len);
+			}
+			else
+			{
+				printf("RedisClient: GetCateValue failed for category '%s' and name '%s', type=%d\n", category.v.Ptr(), name.v.Ptr(), reply->type);
+			}
+			freeReplyObject(reply);
+		}
+		else
+		{
+			printf("RedisClient: GetCateValue type for category '%s' and name '%s', type=%d, str=%s\n", category.v.Ptr(), name.v.Ptr(), typeReply->type, typeReply->str);
+		}
+		freeReplyObject(typeReply);
 		return ret;
 	}
-	NN<Text::String> categoryKey;
-	if (!this->GetCategoryKey(category).SetTo(categoryKey))
-		return nullptr;
-	UnsafeArray<const Char> argv[3] = {"HGET", (const Char*)categoryKey->v.Ptr(), (const Char*)name.v.Ptr()};
-	UIntOS argvlen[3] = {4, categoryKey->leng, name.leng};
-	redisReply *reply = (redisReply*)this->SendCommand(3, argv, argvlen).p;
-	categoryKey->Release();
+	redisReply *reply = (redisReply*)this->SendHGet(category, name).p;
 	if (!reply)
 		return nullptr;
 	Optional<Text::String> ret = nullptr;
@@ -173,115 +283,48 @@ Bool DB::RedisClient::SetValue(Text::CStringNN category, Text::CStringNN name, T
 {
 	if (category.leng == 0)
 	{
-		NN<Text::String> valueKey;
-		NN<Text::String> defaultKeysKey;
-		NN<Text::String> categoriesKey;
-		if (!this->GetDefaultKey(name).SetTo(valueKey) || !this->GetDefaultKeysKey().SetTo(defaultKeysKey) || !this->GetCategoriesKey().SetTo(categoriesKey))
-			return false;
 		Text::CStringNN valueNN;
 		redisReply *reply;
 		if (value.SetTo(valueNN))
 		{
-			UnsafeArray<const Char> argv[3] = {"SET", (const Char*)valueKey->v.Ptr(), (const Char*)valueNN.v.Ptr()};
-			UIntOS argvlen[3] = {3, valueKey->leng, valueNN.leng};
-			reply = (redisReply*)this->SendCommand(3, argv, argvlen).p;
+			reply = (redisReply*)this->SendSet(name, valueNN).p;
 		}
 		else
 		{
-			UnsafeArray<const Char> argv[2] = {"DEL", (const Char*)valueKey->v.Ptr()};
-			UIntOS argvlen[2] = {3, valueKey->leng};
-			reply = (redisReply*)this->SendCommand(2, argv, argvlen).p;
+			reply = (redisReply*)this->SendDel(name).p;
 		}
-		valueKey->Release();
 		if (!reply)
 		{
-			defaultKeysKey->Release();
-			categoriesKey->Release();
 			return false;
 		}
 		Bool success = reply->type != REDIS_REPLY_ERROR;
 		freeReplyObject(reply);
 		if (!success)
 		{
-			defaultKeysKey->Release();
-			categoriesKey->Release();
 			return false;
 		}
-		if (value.SetTo(valueNN))
-		{
-			UnsafeArray<const Char> argv[3] = {"SADD", (const Char*)defaultKeysKey->v.Ptr(), (const Char*)name.v.Ptr()};
-			UIntOS argvlen[3] = {4, defaultKeysKey->leng, name.leng};
-			reply = (redisReply*)this->SendCommand(3, argv, argvlen).p;
-		}
-		else
-		{
-			UnsafeArray<const Char> argv[3] = {"SREM", (const Char*)defaultKeysKey->v.Ptr(), (const Char*)name.v.Ptr()};
-			UIntOS argvlen[3] = {4, defaultKeysKey->leng, name.leng};
-			reply = (redisReply*)this->SendCommand(3, argv, argvlen).p;
-		}
-		defaultKeysKey->Release();
-		if (!reply)
-		{
-			categoriesKey->Release();
-			return false;
-		}
-		success = reply->type != REDIS_REPLY_ERROR;
-		freeReplyObject(reply);
-		if (success && value.SetTo(valueNN))
-		{
-			UnsafeArray<const Char> argv[3] = {"SADD", (const Char*)categoriesKey->v.Ptr(), (const Char*)category.v.Ptr()};
-			UIntOS argvlen[3] = {4, categoriesKey->leng, category.leng};
-			reply = (redisReply*)this->SendCommand(3, argv, argvlen).p;
-			if (!reply)
-				success = false;
-			else
-			{
-				success = reply->type != REDIS_REPLY_ERROR;
-				freeReplyObject(reply);
-			}
-		}
-		categoriesKey->Release();
-		return success;
+		return true;
 	}
-	NN<Text::String> categoryKey;
-	NN<Text::String> categoriesKey;
-	if (!this->GetCategoryKey(category).SetTo(categoryKey) || !this->GetCategoriesKey().SetTo(categoriesKey))
-		return false;
 	Text::CStringNN valueNN;
 	redisReply *reply;
 	if (value.SetTo(valueNN))
 	{
-		UnsafeArray<const Char> argv[4] = {"HSET", (const Char*)categoryKey->v.Ptr(), (const Char*)name.v.Ptr(), (const Char*)valueNN.v.Ptr()};
-		UIntOS argvlen[4] = {4, categoryKey->leng, name.leng, valueNN.leng};
-		reply = (redisReply*)this->SendCommand(4, argv, argvlen).p;
+		reply = (redisReply*)this->SendHSet(category, name, valueNN).p;
 	}
 	else
 	{
-		UnsafeArray<const Char> argv[3] = {"HDEL", (const Char*)categoryKey->v.Ptr(), (const Char*)name.v.Ptr()};
-		UIntOS argvlen[3] = {4, categoryKey->leng, name.leng};
-		reply = (redisReply*)this->SendCommand(3, argv, argvlen).p;
+		reply = (redisReply*)this->SendHDel(category, name).p;
 	}
-	categoryKey->Release();
 	if (!reply)
 	{
-		categoriesKey->Release();
 		return false;
 	}
 	Bool success = reply->type != REDIS_REPLY_ERROR;
 	freeReplyObject(reply);
 	if (!success)
 	{
-		categoriesKey->Release();
 		return false;
 	}
-	UnsafeArray<const Char> argv[3] = {"SADD", (const Char*)categoriesKey->v.Ptr(), (const Char*)category.v.Ptr()};
-	UIntOS argvlen[3] = {4, categoriesKey->leng, category.leng};
-	reply = (redisReply*)this->SendCommand(3, argv, argvlen).p;
-	categoriesKey->Release();
-	if (!reply)
-		return false;
-	success = reply->type != REDIS_REPLY_ERROR;
-	freeReplyObject(reply);
 	return success;
 }
 
@@ -292,46 +335,29 @@ Bool DB::RedisClient::RemoveValue(Text::CString category, Text::CStringNN name)
 
 UIntOS DB::RedisClient::GetCateCount() const
 {
-	NN<Text::String> categoriesKey;
-	if (!this->GetCategoriesKey().SetTo(categoriesKey))
-		return 0;
-	UnsafeArray<const Char> argv[2] = {"SCARD", (const Char*)categoriesKey->v.Ptr()};
-	UIntOS argvlen[2] = {5, categoriesKey->leng};
-	redisReply *reply = (redisReply*)this->SendCommand(2, argv, argvlen).p;
-	categoriesKey->Release();
-	if (!reply)
-		return 0;
-	UIntOS count = reply->type == REDIS_REPLY_INTEGER ? (UIntOS)reply->integer : 0;
-	freeReplyObject(reply);
-	return count;
+	return this->cateList.GetCount();
 }
 
 UIntOS DB::RedisClient::GetCateList(NN<Data::ArrayListStringNN> cateList, Bool withEmpty)
 {
-	NN<Text::String> categoriesKey;
-	if (!this->GetCategoriesKey().SetTo(categoriesKey))
-		return 0;
-	UnsafeArray<const Char> argv[2] = {"SMEMBERS", (const Char*)categoriesKey->v.Ptr()};
-	UIntOS argvlen[2] = {8, categoriesKey->leng};
-	redisReply *reply = (redisReply*)this->SendCommand(2, argv, argvlen).p;
-	categoriesKey->Release();
-	if (!reply)
-		return 0;
-	UIntOS count = 0;
-	if (reply->type == REDIS_REPLY_ARRAY)
+	UIntOS i;
+	UIntOS j;
+	if (withEmpty)
 	{
-		for (size_t i = 0; i < reply->elements; i++)
-		{
-			redisReply *item = reply->element[i];
-			if (item->type == REDIS_REPLY_STRING && (withEmpty || item->len > 0))
-			{
-				cateList->Add(Text::String::New((const UTF8Char*)item->str, item->len));
-				count++;
-			}
-		}
+		cateList->Add(Text::String::NewEmpty());
 	}
-	freeReplyObject(reply);
-	return count;
+	i = 0;
+	j = this->cateList.GetCount();
+	while (i < j)
+	{
+		cateList->Add(this->cateList.GetItemNoCheck(i)->Clone());
+		i++;
+	}
+	if (withEmpty)
+	{
+		j++;
+	}
+	return j;
 }
 
 UIntOS DB::RedisClient::GetKeys(NN<Text::String> category, NN<Data::ArrayListStringNN> keyList)
@@ -343,38 +369,16 @@ UIntOS DB::RedisClient::GetKeys(Text::CStringNN category, NN<Data::ArrayListStri
 {
 	if (category.leng == 0)
 	{
-		NN<Text::String> defaultKeysKey;
-		if (!this->GetDefaultKeysKey().SetTo(defaultKeysKey))
-			return 0;
-		UnsafeArray<const Char> argv[2] = {"SMEMBERS", (const Char*)defaultKeysKey->v.Ptr()};
-		UIntOS argvlen[2] = {8, defaultKeysKey->leng};
-		redisReply *reply = (redisReply*)this->SendCommand(2, argv, argvlen).p;
-		defaultKeysKey->Release();
-		if (!reply)
-			return 0;
-		UIntOS count = 0;
-		if (reply->type == REDIS_REPLY_ARRAY)
+		UIntOS i = 0;
+		UIntOS j = this->keyList.GetCount();
+		while (i < j)
 		{
-			for (size_t i = 0; i < reply->elements; i++)
-			{
-				redisReply *item = reply->element[i];
-				if (item->type == REDIS_REPLY_STRING)
-				{
-					keyList->Add(Text::String::New((const UTF8Char*)item->str, item->len));
-					count++;
-				}
-			}
+			keyList->Add(this->keyList.GetItemNoCheck(i)->Clone());
+			i++;
 		}
-		freeReplyObject(reply);
-		return count;
+		return j;
 	}
-	NN<Text::String> categoryKey;
-	if (!this->GetCategoryKey(category).SetTo(categoryKey))
-		return 0;
-	UnsafeArray<const Char> argv[2] = {"HKEYS", (const Char*)categoryKey->v.Ptr()};
-	UIntOS argvlen[2] = {5, categoryKey->leng};
-	redisReply *reply = (redisReply*)this->SendCommand(2, argv, argvlen).p;
-	categoryKey->Release();
+	redisReply *reply = (redisReply*)this->SendHKeys(category).p;
 	if (!reply)
 		return 0;
 	UIntOS count = 0;
@@ -396,28 +400,12 @@ UIntOS DB::RedisClient::GetKeys(Text::CStringNN category, NN<Data::ArrayListStri
 
 UIntOS DB::RedisClient::GetCount(Text::CString category) const
 {
-	if (category.IsNull() || category.leng == 0)
+	Text::CStringNN categoryNN;
+	if (!category.SetTo(categoryNN) || category.leng == 0)
 	{
-		NN<Text::String> defaultKeysKey;
-		if (!this->GetDefaultKeysKey().SetTo(defaultKeysKey))
-			return 0;
-		UnsafeArray<const Char> argv[2] = {"SCARD", (const Char*)defaultKeysKey->v.Ptr()};
-		UIntOS argvlen[2] = {5, defaultKeysKey->leng};
-		redisReply *reply = (redisReply*)this->SendCommand(2, argv, argvlen).p;
-		defaultKeysKey->Release();
-		if (!reply)
-			return 0;
-		UIntOS count = reply->type == REDIS_REPLY_INTEGER ? (UIntOS)reply->integer : 0;
-		freeReplyObject(reply);
-		return count;
+		return this->keyList.GetCount();
 	}
-	NN<Text::String> categoryKey;
-	if (!this->GetCategoryKey(category).SetTo(categoryKey))
-		return 0;
-	UnsafeArray<const Char> argv[2] = {"HLEN", (const Char*)categoryKey->v.Ptr()};
-	UIntOS argvlen[2] = {4, categoryKey->leng};
-	redisReply *reply = (redisReply*)this->SendCommand(2, argv, argvlen).p;
-	categoryKey->Release();
+	redisReply *reply = (redisReply*)this->SendHLen(categoryNN).p;
 	if (!reply)
 		return 0;
 	UIntOS count = reply->type == REDIS_REPLY_INTEGER ? (UIntOS)reply->integer : 0;
@@ -427,34 +415,12 @@ UIntOS DB::RedisClient::GetCount(Text::CString category) const
 
 Optional<Text::String> DB::RedisClient::GetKey(Text::CString category, UIntOS index) const
 {
-	if (category.IsNull() || category.leng == 0)
+	Text::CStringNN categoryNN;
+	if (!category.SetTo(categoryNN) || category.leng == 0)
 	{
-		NN<Text::String> defaultKeysKey;
-		if (!this->GetDefaultKeysKey().SetTo(defaultKeysKey))
-			return nullptr;
-		UnsafeArray<const Char> argv[2] = {"SMEMBERS", (const Char*)defaultKeysKey->v.Ptr()};
-		UIntOS argvlen[2] = {8, defaultKeysKey->leng};
-		redisReply *reply = (redisReply*)this->SendCommand(2, argv, argvlen).p;
-		defaultKeysKey->Release();
-		if (!reply)
-			return nullptr;
-		Optional<Text::String> ret = nullptr;
-		if (reply->type == REDIS_REPLY_ARRAY && index < reply->elements)
-		{
-			redisReply *item = reply->element[index];
-			if (item->type == REDIS_REPLY_STRING)
-				ret = Text::String::New((const UTF8Char*)item->str, item->len);
-		}
-		freeReplyObject(reply);
-		return ret;
+		return this->keyList.GetItem(index);
 	}
-	NN<Text::String> categoryKey;
-	if (!this->GetCategoryKey(category).SetTo(categoryKey))
-		return nullptr;
-	UnsafeArray<const Char> argv[2] = {"HKEYS", (const Char*)categoryKey->v.Ptr()};
-	UIntOS argvlen[2] = {5, categoryKey->leng};
-	redisReply *reply = (redisReply*)this->SendCommand(2, argv, argvlen).p;
-	categoryKey->Release();
+	redisReply *reply = (redisReply*)this->SendHKeys(categoryNN).p;
 	if (!reply)
 		return nullptr;
 	Optional<Text::String> ret = nullptr;
@@ -470,17 +436,12 @@ Optional<Text::String> DB::RedisClient::GetKey(Text::CString category, UIntOS in
 
 Bool DB::RedisClient::HasCategory(Text::CString category) const
 {
-	NN<Text::String> categoriesKey;
-	if (!this->GetCategoriesKey().SetTo(categoriesKey))
-		return false;
-	Text::CStringNN categoryNN = category.OrEmpty();
-	UnsafeArray<const Char> argv[3] = {"SISMEMBER", (const Char*)categoriesKey->v.Ptr(), (const Char*)categoryNN.v.Ptr()};
-	UIntOS argvlen[3] = {9, categoriesKey->leng, categoryNN.leng};
-	redisReply *reply = (redisReply*)this->SendCommand(3, argv, argvlen).p;
-	categoriesKey->Release();
-	if (!reply)
-		return false;
-	Bool ret = reply->type == REDIS_REPLY_INTEGER && reply->integer != 0;
-	freeReplyObject(reply);
-	return ret;
+	Text::CStringNN categoryNN;
+	if (!category.SetTo(categoryNN))
+		return true;
+	if (categoryNN.leng == 0)
+		return true;
+	if (this->cateList.SortedIndexOfC(categoryNN) >= 0)
+		return true;
+	return false;
 }

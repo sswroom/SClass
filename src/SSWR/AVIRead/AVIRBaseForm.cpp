@@ -203,6 +203,7 @@
 #include "SSWR/AVIRead/AVIRPushServerForm.h"
 #include "SSWR/AVIRead/AVIRRadioScanForm.h"
 #include "SSWR/AVIRead/AVIRRAWMonitorForm.h"
+#include "SSWR/AVIRead/AVIRRedisConnForm.h"
 #include "SSWR/AVIRead/AVIRRegionalMapForm.h"
 #include "SSWR/AVIRead/AVIRRESTfulForm.h"
 #include "SSWR/AVIRead/AVIRRNCryptorForm.h"
@@ -576,7 +577,8 @@ typedef enum
 	MNU_JAVASPRING,
 	MNU_SYSTEM_LOG,
 	MNU_LORA_LOG,
-	MNU_OPEN_CONFIG
+	MNU_OPEN_CONFIG,
+	MNU_REDIS_CONN
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -764,6 +766,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu->AddItem(CSTR("Open MSSQL Conn"), MNU_MSSQL_CONN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Open MySQL Conn"), MNU_MYSQL_CONN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Open PostgerSQL Conn"), MNU_POSTGRESQL_CONN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Open Redis Conn"), MNU_REDIS_CONN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	mnu = this->mnuMain->AddSubMenu(CSTR("&IO"));
 	mnu->AddItem(CSTR("Stream Converter"), MNU_STREAM_CONV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3352,6 +3355,19 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				if (dlg.GetConfigFile().SetTo(cfg))
 				{
 					this->core->OpenObject(cfg);
+				}
+			}
+		}
+		break;
+	case MNU_REDIS_CONN:
+		{
+			SSWR::AVIRead::AVIRRedisConnForm dlg(nullptr, this->ui, this->core);
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
+			{
+				NN<IO::ConfigFile> redis;
+				if (dlg.GetRedis().SetTo(redis))
+				{
+					this->core->OpenObject(redis);
 				}
 			}
 		}
