@@ -2527,6 +2527,8 @@ IO/WriterLogHandler.h:
 @WriterLogHandler.o
 IO/WSConfigFile.h:
 @WSConfigFile.o
+IO/YAMLParser.h:
+@YAMLParser.o
 IO/ZIPBuilder.h:
 @ZIPBuilder.o
 IO/ZIPMTBuilder.h:

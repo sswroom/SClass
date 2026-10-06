@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "IO/IniFile.h"
+#include "IO/YAMLParser.h"
 #include "IO/Java/JavaProperties.h"
 #include "SSWR/AVIRead/AVIROpenConfigForm.h"
 #include "Text/MyString.h"
@@ -44,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIROpenConfigForm::OnOKClicked(AnyType userObj)
 	}
 	else if (typeIndex == 2)
 	{
-		me->cfg = nullptr; //IO::YAMLFile::ParseFile(sb.ToCString());
+		me->cfg = IO::YAMLParser::ParseFile(sb.ToCString());
 	}
 	if (me->cfg.NotNull())
 	{

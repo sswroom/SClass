@@ -675,6 +675,7 @@ WindowsError.o: ../../src/IO/WindowsError.cpp
 WriteCacheStream.o: ../../src/IO/WriteCacheStream.cpp
 WriterLogHandler.o: ../../src/IO/WriterLogHandler.cpp
 WSConfigFile.o: ../../src/IO/WSConfigFile.cpp
+YAMLParser.o: ../../src/IO/YAMLParser.cpp
 ZIPBuilder.o: ../../src/IO/ZIPBuilder.cpp
 ZIPMTBuilder.o: ../../src/IO/ZIPMTBuilder.cpp
 AM2315.o: ../../src/IO/Device/AM2315.cpp

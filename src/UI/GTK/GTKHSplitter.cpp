@@ -84,6 +84,7 @@ UI::GTK::GTKHSplitter::GTKHSplitter(NN<UI::GUICore> ui, NN<UI::GUIClientControl>
 	parent->AddChild(*this);
 	this->Show();
 
+	this->SetCursor(UI::GUIControl::CT_SIZEH);
 	this->SetRect(0, 0, width, 100, false);
 	this->SetDockType(isRight?DOCK_RIGHT:DOCK_LEFT);
 }
