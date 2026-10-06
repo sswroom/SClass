@@ -2,51 +2,38 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/RedisClient.h"
 #include "Text/StringBuilderUTF8.h"
-#include <hiredis/hiredis.h>
+#include "Text/StringTool.h"
 
 //#define VERBOSE
 
-Bool DB::RedisClient::Connect(Text::CStringNN host, UInt16 port, Text::CString password, Int32 db)
+Bool DB::RedisClient::ConnInit(Text::CString password, Int32 db)
 {
-	if (!this->context.IsNull())
+	if (!this->redis.IsConnected())
 	{
-		redisFree((redisContext*)this->context.p);
-		this->context = 0;
-	}
-	redisContext *ctx = redisConnect((const Char*)host.v.Ptr(), port);
-	if (ctx == 0 || ctx->err)
-	{
-		if (ctx)
-			redisFree(ctx);
 		return false;
 	}
-	this->context = ctx;
 	Text::CStringNN passwordNN;
 	if (password.SetTo(passwordNN))
 	{
-		redisReply *reply = (redisReply*)this->SendAuth(passwordNN).p;
-		if (reply == 0 || reply->type == REDIS_REPLY_ERROR)
+		NN<DB::RedisConn::ReplyInfo> reply;;
+		if (!this->redis.SendAuth(passwordNN).SetTo(reply)) return false;
+		if (reply->replyType == DB::RedisConn::ReplyType::Error)
 		{
-			if (reply)
-				freeReplyObject(reply);
-			redisFree(ctx);
-			this->context = 0;
+			DB::RedisConn::FreeReplyData(reply);
 			return false;
 		}
-		freeReplyObject(reply);
+		DB::RedisConn::FreeReplyData(reply);
 	}
 	if (db != 0)
 	{
-		redisReply *reply = (redisReply*)this->SendSelect(db).p;
-		if (reply == 0 || reply->type == REDIS_REPLY_ERROR)
+		NN<DB::RedisConn::ReplyInfo> reply;
+		if (!this->redis.SendSelect(db).SetTo(reply)) return false;
+		if (reply->replyType == DB::RedisConn::ReplyType::Error)
 		{
-			if (reply)
-				freeReplyObject(reply);
-			redisFree(ctx);
-			this->context = 0;
+			DB::RedisConn::FreeReplyData(reply);
 			return false;
 		}
-		freeReplyObject(reply);
+		DB::RedisConn::FreeReplyData(reply);
 	}
 	this->UpdateCateList();
 	return true;
@@ -56,36 +43,38 @@ void DB::RedisClient::UpdateCateList()
 {
 	Data::ArrayListStringNN newCateList;
 	Data::ArrayListStringNN newKeyList;
-	redisReply *reply = (redisReply*)this->SendKeys(CSTR("*")).p;
-	if (!reply)
+	NN<DB::RedisConn::ReplyInfo> reply;
+	if (!this->redis.SendKeys(CSTR("*")).SetTo(reply))
 		return;
-	if (reply->type == REDIS_REPLY_ARRAY)
+	if (reply->replyType == DB::RedisConn::ReplyType::Array)
 	{
-		for (size_t i = 0; i < reply->elements; i++)
+		UIntOS i = 0;
+		while (i < reply->arr.size)
 		{
-			redisReply *item = reply->element[i];
-			if (item->type == REDIS_REPLY_STRING)
+			NN<DB::RedisConn::ReplyData> item = reply->arr.items[i];
+			if (item->type == DB::RedisConn::DataType::String)
 			{
-				redisReply *typeReply = (redisReply*)this->SendType(Text::CStringNN((const UTF8Char*)item->str, item->len)).p;
-				if (typeReply)
+				NN<DB::RedisConn::ReplyInfo> typeReply;
+				if (this->redis.SendType(item->str->ToCString()).SetTo(typeReply))
 				{
-					if (typeReply->type == REDIS_REPLY_STATUS)
+					if (typeReply->replyType == DB::RedisConn::ReplyType::Status && typeReply->type == DB::RedisConn::DataType::String)
 					{
-						if (Text::StrEqualsC((const UTF8Char*)typeReply->str, typeReply->len, UTF8STRC("hash")))
+						if (typeReply->str->Equals(UTF8STRC("hash")))
 						{
-							newCateList.Add(Text::String::New((const UTF8Char*)item->str, item->len));
+							newCateList.Add(item->str->Clone());
 						}
 						else
 						{
-							newKeyList.Add(Text::String::New((const UTF8Char*)item->str, item->len));
+							newKeyList.Add(item->str->Clone());
 						}
 					}
-					freeReplyObject(typeReply);
+					DB::RedisConn::FreeReplyData(typeReply);
 				}
 			}
+			i++;
 		}
 	}
-	freeReplyObject(reply);
+	DB::RedisConn::FreeReplyData(reply);
 	this->cateList.FreeAll();
 	this->keyList.FreeAll();
 	Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(newCateList, newCateList);
@@ -94,132 +83,28 @@ void DB::RedisClient::UpdateCateList()
 	this->keyList.AddAll(newKeyList);
 }
 
-AnyType DB::RedisClient::SendAuth(Text::CString password) const
+DB::RedisClient::RedisClient(NN<Net::TCPClientFactory> clif, Text::CStringNN host, UInt16 port) : IO::ConfigFile(CSTR("RedisClient")), redis(clif, host, port)
 {
-	UnsafeArray<const Char> argv[2] = {"AUTH", (const Char*)password.v.Ptr()};
-	UIntOS argvlen[2] = {4, password.leng};
-	return this->SendCommand(2, argv, argvlen);
+	this->lastVal = nullptr;
+	this->ConnInit(nullptr, 0);
 }
 
-AnyType DB::RedisClient::SendSelect(Int32 db) const
+DB::RedisClient::RedisClient(NN<Net::TCPClientFactory> clif, Text::CStringNN host, UInt16 port, Text::CString password, Int32 db) : IO::ConfigFile(CSTR("RedisClient")), redis(clif, host, port)
 {
-	UTF8Char dbStr[32];
-	UnsafeArray<UTF8Char> dbEnd = Text::StrInt32(dbStr, db);
-	UnsafeArray<const Char> argv[2] = {"SELECT", (const Char*)dbStr};
-	UIntOS argvlen[2] = {6, (UIntOS)(dbEnd.Ptr() - dbStr)};
-	return this->SendCommand(2, argv, argvlen);
-}
-
-AnyType DB::RedisClient::SendType(Text::CStringNN key) const
-{
-	UnsafeArray<const Char> argv[2] = {"TYPE", (const Char*)key.v.Ptr()};
-	UIntOS argvlen[2] = {4, key.leng};
-	return this->SendCommand(2, argv, argvlen);
-}
-
-AnyType DB::RedisClient::SendGet(Text::CStringNN key) const
-{
-	UnsafeArray<const Char> argv[2] = {"GET", (const Char*)key.v.Ptr()};
-	UIntOS argvlen[2] = {3, key.leng};
-	return this->SendCommand(2, argv, argvlen);
-}
-
-AnyType DB::RedisClient::SendSet(Text::CStringNN key, Text::CStringNN value) const
-{
-	UnsafeArray<const Char> argv[3] = {"SET", (const Char*)key.v.Ptr(), (const Char*)value.v.Ptr()};
-	UIntOS argvlen[3] = {3, key.leng, value.leng};
-	return this->SendCommand(3, argv, argvlen);
-}
-
-AnyType DB::RedisClient::SendDel(Text::CStringNN key) const
-{
-	UnsafeArray<const Char> argv[2] = {"DEL", (const Char*)key.v.Ptr()};
-	UIntOS argvlen[2] = {3, key.leng};
-	return this->SendCommand(2, argv, argvlen);
-}
-
-AnyType DB::RedisClient::SendKeys(Text::CStringNN pattern) const
-{
-	UnsafeArray<const Char> argv[2] = {"KEYS", (const Char*)pattern.v.Ptr()};
-	UIntOS argvlen[2] = {4, pattern.leng};
-	return this->SendCommand(2, argv, argvlen);
-}
-
-AnyType DB::RedisClient::SendHGet(Text::CStringNN key, Text::CStringNN field) const
-{
-	UnsafeArray<const Char> argv[3] = {"HGET", (const Char*)key.v.Ptr(), (const Char*)field.v.Ptr()};
-	UIntOS argvlen[3] = {4, key.leng, field.leng};
-	return this->SendCommand(3, argv, argvlen);
-}
-
-AnyType DB::RedisClient::SendHSet(Text::CStringNN key, Text::CStringNN field, Text::CStringNN value) const
-{
-	UnsafeArray<const Char> argv[4] = {"HSET", (const Char*)key.v.Ptr(), (const Char*)field.v.Ptr(), (const Char*)value.v.Ptr()};
-	UIntOS argvlen[4] = {4, key.leng, field.leng, value.leng};
-	return this->SendCommand(4, argv, argvlen);
-}
-
-AnyType DB::RedisClient::SendHDel(Text::CStringNN key, Text::CStringNN field) const
-{
-	UnsafeArray<const Char> argv[3] = {"HDEL", (const Char*)key.v.Ptr(), (const Char*)field.v.Ptr()};
-	UIntOS argvlen[3] = {4, key.leng, field.leng};
-	return this->SendCommand(3, argv, argvlen);
-}
-
-AnyType DB::RedisClient::SendHLen(Text::CStringNN key) const
-{
-	UnsafeArray<const Char> argv[2] = {"HLEN", (const Char*)key.v.Ptr()};
-	UIntOS argvlen[2] = {4, key.leng};
-	return this->SendCommand(2, argv, argvlen);
-}
-
-AnyType DB::RedisClient::SendHKeys(Text::CStringNN key) const
-{
-	UnsafeArray<const Char> argv[2] = {"HKEYS", (const Char*)key.v.Ptr()};
-	UIntOS argvlen[2] = {5, key.leng};
-	return this->SendCommand(2, argv, argvlen);
-}
-
-AnyType DB::RedisClient::SendCommand(Int32 argc, UnsafeArray<UnsafeArray<const Char>> argv, UnsafeArray<const UIntOS> argvlen) const
-{
-	if (this->context.IsNull() || ((redisContext*)this->context.p)->err)
-		return 0;
-#ifdef VERBOSE
-	printf("RedisClient: Sending command");
-	Int32 i = 0;
-	while (i < argc)
-	{
-		printf(" %s", argv[i].Ptr());
-		i++;
-	}
-	printf("\r\n");
-#endif
-	return redisCommandArgv((redisContext*)this->context.p, argc, (const Char**)argv.Ptr(), (const size_t*)argvlen.Ptr());
-}
-
-DB::RedisClient::RedisClient(Text::CStringNN host, UInt16 port) : IO::ConfigFile(CSTR("RedisClient"))
-{
-	this->context = 0;
-	this->Connect(host, port, nullptr, 0);
-}
-
-DB::RedisClient::RedisClient(Text::CStringNN host, UInt16 port, Text::CString password, Int32 db) : IO::ConfigFile(CSTR("RedisClient"))
-{
-	this->context = 0;
-	this->Connect(host, port, password, db);
+	this->lastVal = nullptr;
+	this->ConnInit(password, db);
 }
 
 DB::RedisClient::~RedisClient()
 {
-	if (!this->context.IsNull())
-		redisFree((redisContext*)this->context.p);
 	this->cateList.FreeAll();
 	this->keyList.FreeAll();
+	OPTSTR_DEL(this->lastVal);
 }
 
 Bool DB::RedisClient::IsConnected() const
 {
-	return !this->context.IsNull() && ((redisContext*)this->context.p)->err == 0;
+	return this->redis.IsConnected();
 }
 
 Optional<Text::String> DB::RedisClient::GetCateValue(NN<Text::String> category, NN<Text::String> name)
@@ -231,43 +116,212 @@ Optional<Text::String> DB::RedisClient::GetCateValue(Text::CStringNN category, T
 {
 	if (category.leng == 0)
 	{
-		redisReply *typeReply = (redisReply*)this->SendType(name).p;
-		if (!typeReply)
+		NN<DB::RedisConn::ReplyInfo> typeReply;
+		if (!this->redis.SendType(name).SetTo(typeReply))
 			return nullptr;
-		redisReply *reply = 0;
+		NN<DB::RedisConn::ReplyInfo> reply;
 		Optional<Text::String> ret = nullptr;
-		if (Text::StrEqualsC((const UTF8Char*)typeReply->str, typeReply->len, UTF8STRC("string")))
+		if (typeReply->type == DB::RedisConn::DataType::String && typeReply->str->Equals(UTF8STRC("string")))
 		{
-			reply = (redisReply*)this->SendGet(name).p;
-			if (!reply)
+			if (!this->redis.SendGet(name).SetTo(reply))
 			{
-				freeReplyObject(typeReply);
+				DB::RedisConn::FreeReplyData(typeReply);
 				return nullptr;
 			}
-			if (reply->type == REDIS_REPLY_STRING)
+			if (reply->replyType == DB::RedisConn::ReplyType::String && reply->type == DB::RedisConn::DataType::String)
 			{
-				ret = Text::String::New((const UTF8Char*)reply->str, reply->len);
+				if (Text::StringTool::IsTextUTF8(reply->str->ToByteArray()))
+					ret = reply->str->Clone();
+				else
+				{
+					Text::StringBuilderUTF8 sbRet;
+					sbRet.Append(CSTR("0x"));
+					sbRet.AppendHexBuff(reply->str->ToByteArray(), 0, Text::LineBreakType::None);
+					ret = Text::String::New(sbRet.ToCString());
+				}
 			}
 			else
 			{
-				printf("RedisClient: GetCateValue failed for category '%s' and name '%s', type=%d\n", category.v.Ptr(), name.v.Ptr(), reply->type);
+				printf("RedisClient: GetCateValue failed for category '%s' and name '%s', type=%d\n", category.v.Ptr(), name.v.Ptr(), (UInt32)reply->type);
 			}
-			freeReplyObject(reply);
+			DB::RedisConn::FreeReplyData(reply);
+		}
+		else if (typeReply->type == DB::RedisConn::DataType::String && typeReply->str->Equals(UTF8STRC("set")))
+		{
+			if (!this->redis.SendSMembers(name).SetTo(reply))
+			{
+				DB::RedisConn::FreeReplyData(typeReply);
+				return nullptr;
+			}
+			if (reply->replyType == DB::RedisConn::ReplyType::Array && reply->type == DB::RedisConn::DataType::Array)
+			{
+				Text::StringBuilderUTF8 sbRet;
+				UIntOS i = 0;
+				UIntOS cnt = reply->arr.size;
+				sbRet.AppendUTF8Char('[');
+				while (i < cnt)
+				{
+					if (reply->arr.items[i].type == DB::RedisConn::DataType::String)
+					{
+						if (i > 0)
+							sbRet.AppendUTF8Char(',');
+						if (Text::StringTool::IsTextUTF8(reply->arr.items[i].str->ToByteArray()))
+						{
+							sbRet.AppendUTF8Char('\"');
+							sbRet.Append(reply->arr.items[i].str);
+							sbRet.AppendUTF8Char('\"');
+						}
+						else
+						{
+							sbRet.Append(CSTR("0x"));
+							sbRet.AppendHexBuff(reply->arr.items[i].str->ToByteArray(), 0, Text::LineBreakType::None);
+						}
+					}
+					i++;
+				}
+				sbRet.AppendUTF8Char(']');
+				ret = Text::String::New(sbRet.ToCString());
+			}
+			else
+			{
+				printf("RedisClient: GetCateValue failed for category '%s' and name '%s', type=%d\n", category.v.Ptr(), name.v.Ptr(), (UInt32)reply->type);
+			}
+			DB::RedisConn::FreeReplyData(reply);
+		}
+		else if (typeReply->type == DB::RedisConn::DataType::String && typeReply->str->Equals(UTF8STRC("stream")))
+		{
+			if (!this->redis.SendXRange(name, 0, 0, 0).SetTo(reply))
+			{
+				DB::RedisConn::FreeReplyData(typeReply);
+				return nullptr;
+			}
+			if (reply->replyType == DB::RedisConn::ReplyType::Array && reply->type == DB::RedisConn::DataType::Array)
+			{
+				Text::StringBuilderUTF8 sbRet;
+				UIntOS i = 0;
+				UIntOS cnt = reply->arr.size;
+				sbRet.AppendUTF8Char('{');
+				while (i < cnt)
+				{
+					if (reply->arr.items[i].type == DB::RedisConn::DataType::String)
+					{
+						if (i > 0)
+							sbRet.AppendUTF8Char(',');
+						if (Text::StringTool::IsTextUTF8(reply->arr.items[i].str->ToByteArray()))
+						{
+							sbRet.AppendUTF8Char('\"');
+							sbRet.Append(reply->arr.items[i].str);
+							sbRet.AppendUTF8Char('\"');
+						}
+						else
+						{
+							sbRet.Append(CSTR("0x"));
+							sbRet.AppendHexBuff(reply->arr.items[i].str->ToByteArray(), 0, Text::LineBreakType::None);
+						}
+					}
+					else if (reply->arr.items[i].type == DB::RedisConn::DataType::Array)
+					{
+						if (i > 0)
+						{
+							sbRet.Append(CSTR(",\r\n"));
+						}
+						UIntOS j = 0;
+						UIntOS nestedCnt = reply->arr.items[i].arr.size;
+						while (j < nestedCnt)
+						{
+							if (reply->arr.items[i].arr.items[j].type == DB::RedisConn::DataType::String)
+							{
+								if (j > 0)
+									sbRet.AppendUTF8Char(',');
+								if (Text::StringTool::IsTextUTF8(reply->arr.items[i].arr.items[j].str->ToByteArray()))
+								{
+									sbRet.AppendUTF8Char('\"');
+									sbRet.Append(reply->arr.items[i].arr.items[j].str);
+									sbRet.AppendUTF8Char('\"');
+								}
+								else
+								{
+									sbRet.Append(CSTR("0x"));
+									sbRet.AppendHexBuff(reply->arr.items[i].arr.items[j].str->ToByteArray(), 0, Text::LineBreakType::None);
+								}
+							}
+							else if (reply->arr.items[i].arr.items[j].type == DB::RedisConn::DataType::Array)
+							{
+								if (j > 0)
+									sbRet.AppendUTF8Char(':');
+								sbRet.AppendUTF8Char('{');
+								UIntOS k = 0;
+								UIntOS nestedNestedCnt = reply->arr.items[i].arr.items[j].arr.size;
+								while (k < nestedNestedCnt)
+								{
+									if (reply->arr.items[i].arr.items[j].arr.items[k].type == DB::RedisConn::DataType::String)
+									{
+										if (k > 0)
+											sbRet.AppendUTF8Char(',');
+										if (Text::StringTool::IsTextUTF8(reply->arr.items[i].arr.items[j].arr.items[k].str->ToByteArray()))
+										{
+											sbRet.AppendUTF8Char('\"');
+											sbRet.Append(reply->arr.items[i].arr.items[j].arr.items[k].str);
+											sbRet.AppendUTF8Char('\"');
+										}
+										else
+										{
+											sbRet.Append(CSTR("0x"));
+											sbRet.AppendHexBuff(reply->arr.items[i].arr.items[j].arr.items[k].str->ToByteArray(), 0, Text::LineBreakType::None);
+										}
+									}
+									else
+									{
+										printf("RedisClient: GetCateValue unexpected nested nested item type for category '%s' and name '%s', type=%d\n", category.v.Ptr(), name.v.Ptr(), (UInt32)reply->arr.items[i].arr.items[j].arr.items[k].type);
+									}
+									k++;
+								}
+								sbRet.AppendUTF8Char('}');
+							}
+							else
+							{
+								printf("RedisClient: GetCateValue unexpected nested item type for category '%s' and name '%s', type=%d\n", category.v.Ptr(), name.v.Ptr(), (UInt32)reply->arr.items[i].arr.items[j].type);
+							}
+							j++;
+						}
+					}
+					else
+					{
+						printf("RedisClient: GetCateValue unexpected item type for category '%s' and name '%s', type=%d\n", category.v.Ptr(), name.v.Ptr(), (UInt32)reply->arr.items[i].type);
+					}
+					i++;
+				}
+				sbRet.AppendUTF8Char('}');
+				ret = Text::String::New(sbRet.ToCString());
+			}
+			else
+			{
+				printf("RedisClient: GetCateValue failed for category '%s' and name '%s', type=%d\n", category.v.Ptr(), name.v.Ptr(), (UInt32)reply->type);
+			}
+			DB::RedisConn::FreeReplyData(reply);
+		}
+		else if (typeReply->type == DB::RedisConn::DataType::String && typeReply->str->Equals(CSTR("none")))
+		{
+			ret = nullptr;
 		}
 		else
 		{
-			printf("RedisClient: GetCateValue type for category '%s' and name '%s', type=%d, str=%s\n", category.v.Ptr(), name.v.Ptr(), typeReply->type, typeReply->str);
+			printf("RedisClient: GetCateValue type for category '%s' and name '%s', type=%d, str=%s\n", category.v.Ptr(), name.v.Ptr(), (UInt32)typeReply->type, typeReply->str->v.Ptr());
 		}
-		freeReplyObject(typeReply);
+		DB::RedisConn::FreeReplyData(typeReply);
+		OPTSTR_DEL(this->lastVal);
+		this->lastVal = ret;
 		return ret;
 	}
-	redisReply *reply = (redisReply*)this->SendHGet(category, name).p;
-	if (!reply)
+	NN<DB::RedisConn::ReplyInfo> reply;
+	if (!this->redis.SendHGet(category, name).SetTo(reply))
 		return nullptr;
 	Optional<Text::String> ret = nullptr;
-	if (reply->type == REDIS_REPLY_STRING)
-		ret = Text::String::New((const UTF8Char*)reply->str, reply->len);
-	freeReplyObject(reply);
+	if (reply->replyType == DB::RedisConn::ReplyType::String && reply->type == DB::RedisConn::DataType::String)
+		ret = reply->str->Clone();
+	DB::RedisConn::FreeReplyData(reply);
+	OPTSTR_DEL(this->lastVal);
+	this->lastVal = ret;
 	return ret;
 }
 
@@ -284,21 +338,22 @@ Bool DB::RedisClient::SetValue(Text::CStringNN category, Text::CStringNN name, T
 	if (category.leng == 0)
 	{
 		Text::CStringNN valueNN;
-		redisReply *reply;
+		Optional<DB::RedisConn::ReplyInfo> optreply;
+		NN<DB::RedisConn::ReplyInfo> reply;
 		if (value.SetTo(valueNN))
 		{
-			reply = (redisReply*)this->SendSet(name, valueNN).p;
+			optreply = this->redis.SendSet(name, valueNN);
 		}
 		else
 		{
-			reply = (redisReply*)this->SendDel(name).p;
+			optreply = this->redis.SendDel(name);
 		}
-		if (!reply)
+		if (!optreply.SetTo(reply))
 		{
 			return false;
 		}
-		Bool success = reply->type != REDIS_REPLY_ERROR;
-		freeReplyObject(reply);
+		Bool success = reply->replyType != DB::RedisConn::ReplyType::Error;
+		DB::RedisConn::FreeReplyData(reply);
 		if (!success)
 		{
 			return false;
@@ -306,21 +361,22 @@ Bool DB::RedisClient::SetValue(Text::CStringNN category, Text::CStringNN name, T
 		return true;
 	}
 	Text::CStringNN valueNN;
-	redisReply *reply;
+	Optional<DB::RedisConn::ReplyInfo> optreply;
+	NN<DB::RedisConn::ReplyInfo> reply;
 	if (value.SetTo(valueNN))
 	{
-		reply = (redisReply*)this->SendHSet(category, name, valueNN).p;
+		optreply = this->redis.SendHSet(category, name, valueNN);
 	}
 	else
 	{
-		reply = (redisReply*)this->SendHDel(category, name).p;
+		optreply = this->redis.SendHDel(category, name);
 	}
-	if (!reply)
+	if (!optreply.SetTo(reply))
 	{
 		return false;
 	}
-	Bool success = reply->type != REDIS_REPLY_ERROR;
-	freeReplyObject(reply);
+	Bool success = reply->replyType != DB::RedisConn::ReplyType::Error;
+	DB::RedisConn::FreeReplyData(reply);
 	if (!success)
 	{
 		return false;
@@ -350,7 +406,7 @@ UIntOS DB::RedisClient::GetCateList(NN<Data::ArrayListStringNN> cateList, Bool w
 	j = this->cateList.GetCount();
 	while (i < j)
 	{
-		cateList->Add(this->cateList.GetItemNoCheck(i)->Clone());
+		cateList->Add(this->cateList.GetItemNoCheck(i));
 		i++;
 	}
 	if (withEmpty)
@@ -373,28 +429,30 @@ UIntOS DB::RedisClient::GetKeys(Text::CStringNN category, NN<Data::ArrayListStri
 		UIntOS j = this->keyList.GetCount();
 		while (i < j)
 		{
-			keyList->Add(this->keyList.GetItemNoCheck(i)->Clone());
+			keyList->Add(this->keyList.GetItemNoCheck(i));
 			i++;
 		}
 		return j;
 	}
-	redisReply *reply = (redisReply*)this->SendHKeys(category).p;
-	if (!reply)
+	NN<DB::RedisConn::ReplyInfo> reply;
+	if (!this->redis.SendHKeys(category).SetTo(reply))
 		return 0;
 	UIntOS count = 0;
-	if (reply->type == REDIS_REPLY_ARRAY)
+	if (reply->type == DB::RedisConn::DataType::Array)
 	{
-		for (size_t i = 0; i < reply->elements; i++)
+		UIntOS i = 0;
+		while (i < reply->arr.size)
 		{
-			redisReply *item = reply->element[i];
-			if (item->type == REDIS_REPLY_STRING)
+			NN<DB::RedisConn::ReplyData> item = reply->arr.items[i];
+			if (item->type == DB::RedisConn::DataType::String)
 			{
-				keyList->Add(Text::String::New((const UTF8Char*)item->str, item->len));
+				keyList->Add(item->str->Clone());
 				count++;
 			}
+			i++;
 		}
 	}
-	freeReplyObject(reply);
+	DB::RedisConn::FreeReplyData(reply);
 	return count;
 }
 
@@ -405,11 +463,11 @@ UIntOS DB::RedisClient::GetCount(Text::CString category) const
 	{
 		return this->keyList.GetCount();
 	}
-	redisReply *reply = (redisReply*)this->SendHLen(categoryNN).p;
-	if (!reply)
+	NN<DB::RedisConn::ReplyInfo> reply;
+	if (!this->redis.SendHLen(categoryNN).SetTo(reply))
 		return 0;
-	UIntOS count = reply->type == REDIS_REPLY_INTEGER ? (UIntOS)reply->integer : 0;
-	freeReplyObject(reply);
+	UIntOS count = reply->type == DB::RedisConn::DataType::Integer ? (UIntOS)reply->integer : 0;
+	DB::RedisConn::FreeReplyData(reply);
 	return count;
 }
 
@@ -420,17 +478,20 @@ Optional<Text::String> DB::RedisClient::GetKey(Text::CString category, UIntOS in
 	{
 		return this->keyList.GetItem(index);
 	}
-	redisReply *reply = (redisReply*)this->SendHKeys(categoryNN).p;
-	if (!reply)
+	NN<DB::RedisConn::ReplyInfo> reply;
+	if (!this->redis.SendHKeys(categoryNN).SetTo(reply))
 		return nullptr;
 	Optional<Text::String> ret = nullptr;
-	if (reply->type == REDIS_REPLY_ARRAY && index < reply->elements)
+	if (reply->type == DB::RedisConn::DataType::Array && index < reply->arr.size)
 	{
-		redisReply *item = reply->element[index];
-		if (item->type == REDIS_REPLY_STRING)
-			ret = Text::String::New((const UTF8Char*)item->str, item->len);
+		NN<DB::RedisConn::ReplyData> item = reply->arr.items[index];
+		if (item->type == DB::RedisConn::DataType::String)
+			ret = item->str->Clone();
 	}
-	freeReplyObject(reply);
+	DB::RedisConn::FreeReplyData(reply);
+	DB::RedisClient* me = (DB::RedisClient*)this;
+	OPTSTR_DEL(me->lastVal);
+	me->lastVal = ret;
 	return ret;
 }
 

@@ -29,11 +29,11 @@ void __stdcall SSWR::AVIRead::AVIRRedisConnForm::OnOKClicked(AnyType userObj)
 	NN<DB::RedisClient> conn;
 	if (sb3.leng > 0)
 	{
-		NEW_CLASSNN(conn, DB::RedisClient(sb.ToCString(), port, sb3.ToCString(), 0));
+		NEW_CLASSNN(conn, DB::RedisClient(me->core->GetTCPClientFactory(), sb.ToCString(), port, sb3.ToCString(), 0));
 	}
 	else
 	{
-		NEW_CLASSNN(conn, DB::RedisClient(sb.ToCString(), port));
+		NEW_CLASSNN(conn, DB::RedisClient(me->core->GetTCPClientFactory(), sb.ToCString(), port));
 	}
 	if (!conn->IsConnected())
 	{

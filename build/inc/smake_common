@@ -2089,6 +2089,9 @@ DB/ReadingDBTool.h:
 @ReadingDBTool.o
 DB/RedisClient.h:
 @RedisClient.o
+DB/RedisConn.h:
+@RedisConn.o
+@RedisConnBase.o
 DB/SDFFile.h:
 @SDFFile.o
 DB/SharedDBConn.h:
