@@ -14,7 +14,7 @@ UnsafeArrayOpt<const UTF8Char> Python::PythonModule::GetName() const
 	return nullptr;
 }
 
-UnsafeArrayOpt<const UTF8Char> Python::PythonModule::GetFileName() const
+Optional<Text::String> Python::PythonModule::GetFileNameNew() const
 {
 	return nullptr;
 }

@@ -223,10 +223,10 @@ Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> Net::OpenSSLClien
 	return this->clsData->remoteCerts;
 }
 
-void Net::OpenSSLClient::CloseSession()
+/*void Net::OpenSSLClient::CloseSession()
 {
 	SSL_SESSION *session = SSL_get_session(this->clsData->ssl);
 	if (session != NULL) {
 		SSL_SESSION_free(session); 
 	}
-}
+}*/

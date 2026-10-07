@@ -729,11 +729,11 @@ void Net::WebServer::WebConnection::ProcessResponse()
 				this->currReq.Delete();
 				if (this->endSSLSession)
 				{
-					if (this->cli->IsSSL())
+/*					if (this->cli->IsSSL())
 					{
 						NN<Net::SSLClient> sslCli = NN<Net::SSLClient>::ConvertFrom(this->cli);
 						sslCli->CloseSession();
-					}
+					}*/
 				}
 			}
 		}

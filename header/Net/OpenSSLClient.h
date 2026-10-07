@@ -32,7 +32,6 @@ namespace Net
 		virtual void ShutdownSend();
 		virtual Optional<Crypto::Cert::Certificate> GetRemoteCert();
 		virtual Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> GetRemoteCerts();
-		virtual void CloseSession();
 	};
 }
 #endif
