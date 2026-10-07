@@ -283,6 +283,7 @@ PostgreSQLUtil.o: ../../src/DB/PostgreSQLUtil.cpp
 ReadingDB.o: ../../src/DB/ReadingDB.cpp
 ReadingDBTool.o: ../../src/DB/ReadingDBTool.cpp
 RedisClient.o: ../../src/DB/RedisClient.cpp
+RedisConn.o: ../../src/DB/RedisConn.cpp
 RedisConnBase.o: ../../src/DB/RedisConnBase.cpp
 RedisConnHiredis.o: ../../src/DB/RedisConnHiredis.cpp
 $`$(PKG-CONFIG) --cflags hiredis`

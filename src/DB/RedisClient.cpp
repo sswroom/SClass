@@ -100,6 +100,7 @@ DB::RedisClient::~RedisClient()
 	this->cateList.FreeAll();
 	this->keyList.FreeAll();
 	OPTSTR_DEL(this->lastVal);
+	this->lastKeyList.FreeAll();
 }
 
 Bool DB::RedisClient::IsConnected() const
@@ -437,7 +438,8 @@ UIntOS DB::RedisClient::GetKeys(Text::CStringNN category, NN<Data::ArrayListStri
 	NN<DB::RedisConn::ReplyInfo> reply;
 	if (!this->redis.SendHKeys(category).SetTo(reply))
 		return 0;
-	UIntOS count = 0;
+	this->lastKeyList.FreeAll();
+	Data::ArrayListStringNN lastKeyList;
 	if (reply->type == DB::RedisConn::DataType::Array)
 	{
 		UIntOS i = 0;
@@ -446,14 +448,15 @@ UIntOS DB::RedisClient::GetKeys(Text::CStringNN category, NN<Data::ArrayListStri
 			NN<DB::RedisConn::ReplyData> item = reply->arr.items[i];
 			if (item->type == DB::RedisConn::DataType::String)
 			{
-				keyList->Add(item->str->Clone());
-				count++;
+				lastKeyList.Add(item->str->Clone());
 			}
 			i++;
 		}
 	}
 	DB::RedisConn::FreeReplyData(reply);
-	return count;
+	this->lastKeyList.AddAll(lastKeyList);
+	keyList->AddAll(lastKeyList);
+	return lastKeyList.GetCount();
 }
 
 UIntOS DB::RedisClient::GetCount(Text::CString category) const

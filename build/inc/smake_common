@@ -2090,7 +2090,7 @@ DB/ReadingDBTool.h:
 DB/RedisClient.h:
 @RedisClient.o
 DB/RedisConn.h:
-@RedisConnHiredis.o
+@RedisConn.o
 @RedisConnBase.o
 DB/SDFFile.h:
 @SDFFile.o

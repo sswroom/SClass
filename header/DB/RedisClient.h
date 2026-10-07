@@ -11,6 +11,7 @@ namespace DB
 	private:
 		DB::RedisConn redis;
 		Optional<Text::String> lastVal;
+		Data::ArrayListStringNN lastKeyList;
 		Data::ArrayListStringNN cateList;
 		Data::ArrayListStringNN keyList;
 
