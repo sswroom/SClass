@@ -229,6 +229,5 @@ namespace Data
 		this->AddAll(v);
 		return NNTHIS;
 	}
-
 }
 #endif

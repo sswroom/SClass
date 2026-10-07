@@ -148,13 +148,137 @@ Int32 TestPage31()
 			NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 			Data::ArrayListUInt32 cnts;
 			ds->ValueCounts(NN<Data::ArrayListNative<UInt32>>(cnts));
-
 			NN<Data::ChartPlotter::Axis> axis;
 			Data::ChartPlotter chart(nullptr);
 			chart.AddHistogramCount(CSTR(""), Data::ChartPlotter::NewData(cnts), 21, 0xff000000, 0xff000000);
 			if (chart.GetXAxis().SetTo(axis)) axis->SetLabelRotate(0);
 			chart.SetDblFormat(CSTR("0"));
 			chart.SavePng(deng, {640, 480}, CSTR("Chapter1-4.png"));
+			ds.Delete();
+			deng.Delete();
+		}
+		dfInfo.Delete();
+	}
+	return 0;
+}
+
+Int32 TestPage33()
+{
+	IO::ConsoleWriter console;
+	UIntOS tsCols[] = {0};
+	NN<Data::TableData> dfInfo;
+	Double epsiron = 1;
+	UIntOS num = 15;
+
+	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter1/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
+	{
+		NN<Data::DataSet> ds;
+		if (dfInfo->GetDataSet(CSTR("顧客ID")).SetTo(ds))
+		{
+			Data::ArrayListUInt32 cnts;
+			ds->ValueCounts(NN<Data::ArrayListNative<UInt32>>(cnts));
+			Data::ArrayListDbl xHist;
+			Data::ArrayListUInt32 yHist;
+			Data::ArrayListDbl tHist;
+			Math::NumArrayTool::CreateHistogramCount(cnts.Arr(), cnts.GetCount(), tHist, yHist, 21);
+			xHist.AddAllConv<UInt32>(yHist);
+
+			Data::ArrayListDbl weight(xHist, 0, num);
+			Data::ArrayListDbl t;
+			UIntOS i = 0;
+			UIntOS j = tHist.GetCount() - 1;
+			while (i < j)
+			{
+				t.Add((tHist.GetItem(i) + tHist.GetItem(i + 1)) / 2);
+				i++;
+			}
+
+			Data::ArrayListDbl ab;
+			Data::ArrayListDbl tSub(t, 0, num);
+			Data::ArrayListDbl xHistSub(xHist, 0, num);
+			xHistSub.CalcLn();
+			Math::NumArrayTool::PolyFit(tSub, xHistSub, ab, 1, weight);
+			Data::ArrayListDbl xt;
+			i = 0;
+			j = t.GetCount();
+			while (i < j)
+			{
+				xt.Add(ab.GetItem(0) * t.GetItem(i) + ab.GetItem(1));
+				i++;
+			}
+
+			NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
+			NN<Data::ChartPlotter::Axis> axis;
+			Data::ChartPlotter chart(nullptr);
+			xHist.CalcAdd(epsiron);
+			xHist.CalcLn();
+			chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewData(xHist), Data::ChartPlotter::NewData(tHist), 0xff000000);
+			chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewData(xt), Data::ChartPlotter::NewData(t), 0xffff0000);
+			if (chart.GetXAxis().SetTo(axis)) axis->SetLabelRotate(0);
+			chart.SetDblFormat(CSTR("0"));
+			chart.SavePng(deng, {640, 480}, CSTR("Chapter1-5.png"));
+			ds.Delete();
+			deng.Delete();
+		}
+		dfInfo.Delete();
+	}
+	return 0;
+}
+
+Int32 TestPage34()
+{
+	IO::ConsoleWriter console;
+	UIntOS tsCols[] = {0};
+	NN<Data::TableData> dfInfo;
+	UIntOS num = 15;
+
+	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter1/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
+	{
+		NN<Data::DataSet> ds;
+		if (dfInfo->GetDataSet(CSTR("顧客ID")).SetTo(ds))
+		{
+			Data::ArrayListUInt32 cnts;
+			ds->ValueCounts(NN<Data::ArrayListNative<UInt32>>(cnts));
+			Data::ArrayListDbl xHist;
+			Data::ArrayListUInt32 yHist;
+			Data::ArrayListDbl tHist;
+			Math::NumArrayTool::CreateHistogramCount(cnts.Arr(), cnts.GetCount(), tHist, yHist, 21);
+			xHist.AddAllConv<UInt32>(yHist);
+
+			Data::ArrayListDbl weight(xHist, 0, num);
+			Data::ArrayListDbl t;
+			UIntOS i = 0;
+			UIntOS j = tHist.GetCount() - 1;
+			while (i < j)
+			{
+				t.Add((tHist.GetItem(i) + tHist.GetItem(i + 1)) / 2);
+				i++;
+			}
+
+			Data::ArrayListDbl ab;
+			Data::ArrayListDbl tSub(t, 0, num);
+			Data::ArrayListDbl xHistSub(xHist, 0, num);
+			xHistSub.CalcLn();
+			Math::NumArrayTool::PolyFit(tSub, xHistSub, ab, 1, weight);
+			t.Clear();
+			t.AddAll(tHist);
+			Data::ArrayListDbl xt;
+			i = 0;
+			j = t.GetCount();
+			while (i < j)
+			{
+				xt.Add(Math_Exp(ab.GetItem(0) * t.GetItem(i) + ab.GetItem(1)));
+				i++;
+			}
+
+			NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
+			NN<Data::ChartPlotter::Axis> axis;
+			Data::ChartPlotter chart(nullptr);
+			chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewData(xHist), Data::ChartPlotter::NewData(tHist), 0xff000000);
+			chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewData(xt), Data::ChartPlotter::NewData(t), 0xffff0000);
+			if (chart.GetXAxis().SetTo(axis)) axis->SetLabelRotate(0);
+			chart.SetDblFormat(CSTR("0"));
+			chart.SavePng(deng, {640, 480}, CSTR("Chapter1-5b.png"));
 			ds.Delete();
 			deng.Delete();
 		}
@@ -1109,22 +1233,24 @@ Int32 TestPage331()
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UIntOS page = 81;
+	UIntOS page = 34;
 	switch (page)
 	{
 	// Chapter 1
-	case 26:
+	case 26: //1-2
 		return TestPage26();
-	case 27:
+	case 27: //1-2
 		return TestPage27();
-	case 28:
+	case 28: //1-2
 		return TestPage28();
-	case 29:
+	case 29: //1-3
 		return TestPage29_2();
-	case 31:
+	case 31: //1-4
 		return TestPage31();
-	//case 33: //1-5 (polyfit)
-	//case 34: //1-5 (polyfit)
+	case 33: //1-5 (polyfit)
+		return TestPage33();
+	case 34: //1-5 (polyfit)
+		return TestPage34();
 	//case 36: //1-5 (polyfit)
 	case 37:
 		return TestPage37();

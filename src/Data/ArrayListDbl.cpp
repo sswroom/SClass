@@ -7,6 +7,13 @@ Data::ArrayListDbl::ArrayListDbl() : Data::SortableArrayListNative<Double>()
 {
 }
 
+Data::ArrayListDbl::ArrayListDbl(NN<Data::ArrayListDbl> src, UIntOS startIndex, UIntOS count) : Data::SortableArrayListNative<Double>(count)
+{
+	if (startIndex + count > src->GetCount())
+		count = src->GetCount() - startIndex;
+	this->AddRange(&src->arr[startIndex], count);
+}
+
 Data::ArrayListDbl::ArrayListDbl(UIntOS capacity) : Data::SortableArrayListNative<Double>(capacity)
 {
 }
@@ -72,4 +79,24 @@ UIntOS Data::ArrayListDbl::Subset(NN<ArrayListDbl> outList, UIntOS firstIndex, U
 UIntOS Data::ArrayListDbl::Subset(NN<ArrayListDbl> outList, UIntOS firstIndex) const
 {
 	return Subset(outList, firstIndex, this->objCnt);
+}
+
+NN<Data::ArrayListDbl> Data::ArrayListDbl::CalcLn()
+{
+	UIntOS i = this->objCnt;
+	while (i-- > 0)
+	{
+		this->arr[i] = Math_Ln(this->arr[i]);
+	}
+	return *this;
+}
+
+NN<Data::ArrayListDbl> Data::ArrayListDbl::CalcAdd(Double val)
+{
+	UIntOS i = this->objCnt;
+	while (i-- > 0)
+	{
+		this->arr[i] += val;
+	}
+	return *this;
 }
