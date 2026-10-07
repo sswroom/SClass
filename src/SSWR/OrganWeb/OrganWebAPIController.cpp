@@ -3064,6 +3064,7 @@ void SSWR::OrganWeb::OrganWebAPIController::AppendGroupDispInfo(NN<Text::JSONBui
 	json->ObjectAddInt32(CSTR("cateId"), group->cateId);
 	json->ObjectAddStr(CSTR("engName"), group->engName);
 	json->ObjectAddStr(CSTR("chiName"), group->chiName);
+	json->ObjectAddInt32(CSTR("groupType"), group->groupType);
 	json->ObjectAddUInt64(CSTR("myPhotoCount"), group->myPhotoCount);
 	json->ObjectAddUInt64(CSTR("photoCount"), group->photoCount);
 	json->ObjectAddUInt64(CSTR("totalCount"), group->totalCount);
