@@ -3092,7 +3092,6 @@ void SSWR::OrganWeb::OrganWebAPIController::AppendGroupInfo(NN<Text::JSONBuilder
 	json->ObjectAddInt32(CSTR("flags"), group->flags);
 	json->ObjectAddStr(CSTR("descript"), group->descript);
 	json->ObjectAddInt32(CSTR("parentId"), group->parentId);
-	json->ObjectAddInt32(CSTR("groupType"), group->groupType);
 }
 
 void SSWR::OrganWeb::OrganWebAPIController::AddSpeciesList(NN<Text::JSONBuilder> json, NN<Data::ArrayListNN<SpeciesInfo>> speciesList, NN<Sync::RWMutexUsage> mutUsage)
