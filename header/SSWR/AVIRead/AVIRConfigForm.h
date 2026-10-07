@@ -22,6 +22,7 @@ namespace SSWR
 			NN<IO::ConfigFile> cfg;
 
 			static void __stdcall OnCategorySelChg(AnyType userObj);
+			static void __stdcall OnKeyValuesDblClk(AnyType userObj, UIntOS index);
 		public:
 			AVIRConfigForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::ConfigFile> cfg);
 			virtual ~AVIRConfigForm();

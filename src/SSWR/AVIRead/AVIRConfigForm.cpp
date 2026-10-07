@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "SSWR/AVIRead/AVIRConfigForm.h"
+#include "UI/Clipboard.h"
 
 void __stdcall SSWR::AVIRead::AVIRConfigForm::OnCategorySelChg(AnyType userObj)
 {
@@ -31,6 +32,16 @@ void __stdcall SSWR::AVIRead::AVIRConfigForm::OnCategorySelChg(AnyType userObj)
 	s->Release();
 }
 
+void __stdcall SSWR::AVIRead::AVIRConfigForm::OnKeyValuesDblClk(AnyType userObj, UIntOS index)
+{
+	NN<SSWR::AVIRead::AVIRConfigForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConfigForm>();
+	Text::StringBuilderUTF8 sb;
+	me->lvKeyValues->GetSubItem(index, 0, sb);
+	sb.AppendUTF8Char(' ');
+	me->lvKeyValues->GetSubItem(index, 1, sb);
+	UI::Clipboard::SetString(me->GetHandle(), sb.ToCString());
+}
+
 SSWR::AVIRead::AVIRConfigForm::AVIRConfigForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::ConfigFile> cfg) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	Text::StringBuilderUTF8 sb;
@@ -54,6 +65,7 @@ SSWR::AVIRead::AVIRConfigForm::AVIRConfigForm(Optional<UI::GUIClientControl> par
 	this->lvKeyValues->AddColumn(CSTR("Value"), 400);
 	this->lvKeyValues->SetShowGrid(true);
 	this->lvKeyValues->SetFullRowSelect(true);
+	this->lvKeyValues->HandleDblClk(OnKeyValuesDblClk, this);
 
 	Data::ArrayListStringNN cateList;
 	cfg->GetCateList(cateList, true);

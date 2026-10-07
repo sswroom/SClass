@@ -5,7 +5,6 @@ libcups2-dev (Apache)
 libbluetooth-dev (GPL)
 libiw-dev
 
-libmysqlclient-dev (GPL) / libmariadbclient-dev (LGPL) / libmariadb-client-lgpl-dev
 libvpx-dev (BSD)
 libopencv-dev
 libavcodec-dev
@@ -30,7 +29,9 @@ libdrm-dev
 libavif-dev
 libvulkan-dev
 libshaderc-dev
-libhiredis-dev
 
 libarmadillo-dev
 libcereal-dev
+
+libhiredis-dev
+libmysqlclient-dev (GPL) / libmariadbclient-dev (LGPL) / libmariadb-client-lgpl-dev
