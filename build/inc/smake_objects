@@ -780,6 +780,7 @@ ProtoMDataHandler.o: ../../src/IO/ProtoHdlr/ProtoMDataHandler.cpp
 ProtoMDataLSHandler.o: ../../src/IO/ProtoHdlr/ProtoMDataLSHandler.cpp
 ProtoMQTTHandler.o: ../../src/IO/ProtoHdlr/ProtoMQTTHandler.cpp
 ProtoRevGeoHandler.o: ../../src/IO/ProtoHdlr/ProtoRevGeoHandler.cpp
+ProtoRodBinHandler.o: ../../src/IO/ProtoHdlr/ProtoRodBinHandler.cpp
 ProtoSMonHandler.o: ../../src/IO/ProtoHdlr/ProtoSMonHandler.cpp
 ProtoSyncHandler.o: ../../src/IO/ProtoHdlr/ProtoSyncHandler.cpp
 BlockStreamData.o: ../../src/IO/StmData/BlockStreamData.cpp
@@ -1750,6 +1751,8 @@ TCPPortScanner.o: ../../src/Net/TCPPortScanner.cpp
 TCPServer.o: ../../src/Net/TCPServer.cpp
 TCPServerController.o: ../../src/Net/TCPServerController.cpp
 TCPServerStream.o: ../../src/Net/TCPServerStream.cpp
+TETRALIP.o: ../../src/Net/TETRALIP.cpp
+TETRALRRP.o: ../../src/Net/TETRALRRP.cpp
 TFTPClient.o: ../../src/Net/TFTPClient.cpp
 TFTPServer.o: ../../src/Net/TFTPServer.cpp
 TraceRoute.o: ../../src/Net/TraceRoute.cpp

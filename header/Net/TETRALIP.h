@@ -8,8 +8,8 @@ namespace Net
 	class TETRALIP
 	{
 	public:
-		static Bool ParseProtocol(UInt8 *buff, IntOS buffSize, Data::DateTime *recvTime, Map::GPSTrack::GPSRecord *record, Int32 *reason);
-		static IntOS GenLocReq(UInt8 *buff);
+		static Bool ParseProtocol(UnsafeArray<const UInt8> buff, UIntOS buffSize, NN<Data::DateTime> recvTime, NN<Map::GPSTrack::GPSRecord3> record, OutParam<Int32> reason);
+		static UIntOS GenLocReq(UnsafeArray<UInt8> buff);
 	};
 };
 #endif

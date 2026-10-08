@@ -2734,6 +2734,8 @@ IO/ProtoHdlr/ProtoMQTTHandler.h:
 @ProtoMQTTHandler.o
 IO/ProtoHdlr/ProtoRevGeoHandler.h:
 @ProtoRevGeoHandler.o
+IO/ProtoHdlr/ProtoRodBinHandler.h:
+@ProtoRodBinHandler.o
 IO/ProtoHdlr/ProtoSMonHandler.h:
 @ProtoSMonHandler.o
 IO/ProtoHdlr/ProtoSyncHandler.h:
@@ -4052,6 +4054,10 @@ Net/TCPServerController.h:
 @TCPServerController.o
 Net/TCPServerStream.h:
 @TCPServerStream.o
+Net/TETRALIP.h:
+@TETRALIP.o
+Net/TETRALRRP.h:
+@TETRALRRP.o
 Net/TFTPClient.h:
 @TFTPClient.o
 Net/TFTPServer.h:

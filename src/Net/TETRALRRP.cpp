@@ -4,14 +4,14 @@
 #include "Math/Math_C.h"
 #include "Net/TETRALRRP.h"
 
-Bool Net::TETRALRRP::ParseProtocol(UnsafeArray<UInt8> buff, UIntOS buffSize, NN<Data::DateTime> recvTime, NN<Map::GPSTrack::GPSRecord3> record, OutParam<Int32> requestId, OutParam<Int32> resultCode)
+Bool Net::TETRALRRP::ParseProtocol(UnsafeArray<const UInt8> buff, UIntOS buffSize, NN<Data::DateTime> recvTime, NN<Map::GPSTrack::GPSRecord3> record, OutParam<Int32> requestId, OutParam<Int32> resultCode)
 {
 	if (buff[0] != 0x80)
 	{
 		return false;
 	}
 
-	Bool constTab = false;
+//	Bool constTab = false;
 	Bool isRequest = false;
 	switch (buff[1])
 	{
@@ -24,7 +24,7 @@ Bool Net::TETRALRRP::ParseProtocol(UnsafeArray<UInt8> buff, UIntOS buffSize, NN<
 	case 0x1b:
 	case 0x21:
 	case 0x26:
-		constTab = false;
+//		constTab = false;
 		isRequest = true;
 		break;
 	case 7:
@@ -39,7 +39,7 @@ Bool Net::TETRALRRP::ParseProtocol(UnsafeArray<UInt8> buff, UIntOS buffSize, NN<
 	case 0x23:
 	case 0x25:
 	case 0x27:
-		constTab = false;
+//		constTab = false;
 		isRequest = false;
 		break;
 	case 2:
@@ -49,7 +49,7 @@ Bool Net::TETRALRRP::ParseProtocol(UnsafeArray<UInt8> buff, UIntOS buffSize, NN<
 	case 0x16:
 	case 0x1a:
 	case 0x20:
-		constTab = true;
+//		constTab = true;
 		isRequest = true;
 		break;
 	case 6:
@@ -62,7 +62,7 @@ Bool Net::TETRALRRP::ParseProtocol(UnsafeArray<UInt8> buff, UIntOS buffSize, NN<
 	case 0x1e:
 	case 0x22:
 	case 0x24:
-		constTab = true;
+//		constTab = true;
 		isRequest = false;
 		break;
 	default:
@@ -70,8 +70,8 @@ Bool Net::TETRALRRP::ParseProtocol(UnsafeArray<UInt8> buff, UIntOS buffSize, NN<
 	}
 	if (buff[2] > buffSize - 3)
 		return false;
-	UInt8 *endPtr = &buff[3] + buff[2];
-	UnsafeArray<UInt8> ptr = &buff[3];
+	const UInt8 *endPtr = &buff[3] + buff[2];
+	UnsafeArray<const UInt8> ptr = &buff[3];
 	Data::DateTime dt;
 	Int32 reqId = -1;
 	Int32 res = -1;
@@ -82,15 +82,15 @@ Bool Net::TETRALRRP::ParseProtocol(UnsafeArray<UInt8> buff, UIntOS buffSize, NN<
 	record->valid = false;
 	record->speed = 0;
 	record->heading = 0;
-	record->nSateUsed = -1;
-	record->nSateUsedGPS = -1;
-	record->nSateUsedSBAS = -1;
-	record->nSateUsedGLO = -1; //GLONASS
-	record->nSateViewGPS = -1;
-	record->nSateViewGLO = -1;
-	record->nSateViewGA = -1;
-	record->nSateViewQZSS = -1;
-	record->nSateViewBD = -1;
+	record->nSateUsed = 0;
+	record->nSateUsedGPS = 0;
+	record->nSateUsedSBAS = 0;
+	record->nSateUsedGLO = 0; //GLONASS
+	record->nSateViewGPS = 0;
+	record->nSateViewGLO = 0;
+	record->nSateViewGA = 0;
+	record->nSateViewQZSS = 0;
+	record->nSateViewBD = 0;
 
 	if (isRequest)
 	{
@@ -240,7 +240,7 @@ Bool Net::TETRALRRP::ParseProtocol(UnsafeArray<UInt8> buff, UIntOS buffSize, NN<
 				break;
 			case 0x37: //result
 				ptr++;
-				res = ReadUIntVar(ptr);
+				res = (Int32)ReadUIntVar(ptr);
 				break;
 			//case 0x38: //result
 			case 0x6B: //speed-hor
@@ -262,11 +262,11 @@ Bool Net::TETRALRRP::ParseProtocol(UnsafeArray<UInt8> buff, UIntOS buffSize, NN<
 	return true;
 }
 
-Double Net::TETRALRRP::ReadLat(InOutParam<UnsafeArray<UInt8>> buff)
+Double Net::TETRALRRP::ReadLat(InOutParam<UnsafeArray<const UInt8>> buff)
 {
-	Int32 i;
-	UnsafeArray<UInt8> buffPtr = buff.Get();
-	i = ReadMInt32(&buffPtr[0]);
+	UInt32 i;
+	UnsafeArray<const UInt8> buffPtr = buff.Get();
+	i = ReadMUInt32(&buffPtr[0]);
 	buff.Set(buffPtr + 4);
 	if (i & 0x80000000)
 	{
@@ -278,10 +278,10 @@ Double Net::TETRALRRP::ReadLat(InOutParam<UnsafeArray<UInt8>> buff)
 	}
 }
 
-Double Net::TETRALRRP::ReadLong(InOutParam<UnsafeArray<UInt8>> buff)
+Double Net::TETRALRRP::ReadLong(InOutParam<UnsafeArray<const UInt8>> buff)
 {
 	Int32 i;
-	UnsafeArray<UInt8> buffPtr = buff.Get();
+	UnsafeArray<const UInt8> buffPtr = buff.Get();
 	i = ReadMInt32(&buffPtr[0]);
 	buff.Set(buffPtr + 4);
 	Double v = i * 0.00000008381903171539306640625;
@@ -292,16 +292,16 @@ Double Net::TETRALRRP::ReadLong(InOutParam<UnsafeArray<UInt8>> buff)
 	return v;
 }
 
-Int32 Net::TETRALRRP::ReadSIntVar(InOutParam<UnsafeArray<UInt8>> buff)
+Int32 Net::TETRALRRP::ReadSIntVar(InOutParam<UnsafeArray<const UInt8>> buff)
 {
-	UInt32 v = 0;
+/*	UInt32 v = 0;
 	UInt8 b;
 	Bool sign;
-	UnsafeArray<UInt8> buffPtr = buff.Get();
+	UnsafeArray<const UInt8> buffPtr = buff.Get();
 	b = buffPtr[0];
 	buffPtr++;
 	sign = (b & 0x40) != 0;
-	b = b & ~0x40;
+	b = b & (UInt8)~0x40;
 	while (true)
 	{
 		v = (v << 7) | (b & 0x7f);
@@ -311,14 +311,30 @@ Int32 Net::TETRALRRP::ReadSIntVar(InOutParam<UnsafeArray<UInt8>> buff)
 		buffPtr++;
 	}
 	buff.Set(buffPtr);
-	return v;
+	return (Int32)v;*/
+	UInt32 v = 0;
+	UInt8 b;
+	UnsafeArray<const UInt8> buffPtr = buff.Get();
+	while (true)
+	{
+		b = buffPtr[0];
+		buffPtr++;
+		v = (v << 7) | (b & 0x7f);
+		if ((b & 0x80) == 0)
+			break;
+	}
+	buff.Set(buffPtr);
+	if (v & 1)
+		return -(Int32)(v >> 1);
+	else
+		return (Int32)(v >> 1);
 }
 
-UInt32 Net::TETRALRRP::ReadUIntVar(InOutParam<UnsafeArray<UInt8>> buff)
+UInt32 Net::TETRALRRP::ReadUIntVar(InOutParam<UnsafeArray<const UInt8>> buff)
 {
 	UInt32 v = 0;
 	UInt8 b;
-	UnsafeArray<UInt8> buffPtr = buff.Get();
+	UnsafeArray<const UInt8> buffPtr = buff.Get();
 	while (true)
 	{
 		b = buffPtr[0];
@@ -331,21 +347,21 @@ UInt32 Net::TETRALRRP::ReadUIntVar(InOutParam<UnsafeArray<UInt8>> buff)
 	return v;
 }
 
-Double Net::TETRALRRP::ReadSFloatVar(InOutParam<UnsafeArray<UInt8>> buff)
+Double Net::TETRALRRP::ReadSFloatVar(InOutParam<UnsafeArray<const UInt8>> buff)
 {
 	Int32 v1;
-	UnsafeArray<UInt8> ptr;
+	UnsafeArray<const UInt8> ptr;
 	UInt32 v2;
 	v1 = ReadSIntVar(buff);
 	ptr = buff.Get();
 	v2 = ReadUIntVar(buff);
-	return v1 + v2 / (1 << (7 * (buff.Get() - ptr)));
+	return v1 + (Double)(v2 / (1 << (7 * (buff.Get() - ptr))));
 }
 
-Double Net::TETRALRRP::ReadUFloatVar(InOutParam<UnsafeArray<UInt8>>buff)
+Double Net::TETRALRRP::ReadUFloatVar(InOutParam<UnsafeArray<const UInt8>>buff)
 {
 	UInt32 v1;
-	UnsafeArray<UInt8> ptr;
+	UnsafeArray<const UInt8> ptr;
 	UInt32 v2;
 	v1 = ReadUIntVar(buff);
 	ptr = buff.Get();
@@ -379,7 +395,7 @@ UnsafeArray<UInt8> Net::TETRALRRP::WriteLat(UnsafeArray<UInt8> buff, Double lat)
 	Int32 i = Double2Int32(lat * 23860929.422222222222222222222222);
 	if (i < 0)
 	{
-		i = (-i) | 0x80000000;
+		i = (-i) | (Int32)0x80000000;
 	}
 	WriteMInt32(&buff[0], i);
 	return buff + 4;
@@ -454,7 +470,7 @@ UIntOS Net::TETRALRRP::BuildPacket(UnsafeArray<UInt8> buff, NN<Map::GPSTrack::GP
 	if (resultCode >= 0)
 	{
 		ptr[0] = 0x37;
-		ptr = WriteUIntVar(ptr + 1, resultCode);
+		ptr = WriteUIntVar(ptr + 1, (UInt32)resultCode);
 	}
 
 	ptr[0] = 0x34;
@@ -473,7 +489,7 @@ UIntOS Net::TETRALRRP::BuildPacket(UnsafeArray<UInt8> buff, NN<Map::GPSTrack::GP
 		ptr += 2;
 	}
 
-	retSize = ptr - buff;
+	retSize = (UIntOS)(ptr - buff);
 	buff[2] = (UInt8)(retSize - 3);
 	return retSize;
 }

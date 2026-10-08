@@ -57,14 +57,14 @@ UIntOS IO::ProtoHdlr::ProtoRodBinHandler::ParseProtocol(NN<IO::Stream> stm, AnyT
 UIntOS IO::ProtoHdlr::ProtoRodBinHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UIntOS cmdSize, AnyType stmData)
 {
 	*(Int16*)&buff[0] = *(Int16*)"Af";
-	*(Int16*)&buff[2] = cmdType;
-	*(Int16*)&buff[4] = seqId;
+	*(Int16*)&buff[2] = (Int16)cmdType;
+	*(Int16*)&buff[4] = (Int16)seqId;
 	*(Int16*)&buff[6] = (Int16)(cmdSize + 10);
 	if (cmdSize > 0)
 	{
 		MemCopyNO(&buff[8], cmd.Ptr(), cmdSize);
 	}
-	*(Int16*)&buff[cmdSize + 8] = CalCheck(buff, cmdSize + 8);
+	*(UInt16*)&buff[cmdSize + 8] = CalCheck(buff, cmdSize + 8);
 	return cmdSize + 10;
 }
 
