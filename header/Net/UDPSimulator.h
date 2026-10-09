@@ -9,7 +9,7 @@ namespace Net
 	class UDPSimulator
 	{
 	public:
-		typedef Bool (CALLBACKFUNC UDPPacketHdlr)(UInt32 ip, UInt16 port, UnsafeArray<UInt8> buff, IntOS dataSize, AnyType userData, NN<Data::DateTime> recvTime); //return true to continue
+		typedef Bool (CALLBACKFUNC UDPPacketHdlr)(UInt32 ip, UInt16 port, UnsafeArray<UInt8> buff, UIntOS dataSize, AnyType userData, NN<Data::DateTime> recvTime); //return true to continue
 
 	private:
 		NN<Text::String> logFileName;

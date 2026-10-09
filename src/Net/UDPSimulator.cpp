@@ -53,8 +53,8 @@ void Net::UDPSimulator::Run()
 					sarr[1].v[i + 9 + j] = 0;
 					sarr[2].leng = sarr[1].leng;
 					sarr[1].leng = i + 9 + j;
-					byteSize = Text::StrToInt32(&sarr[1].v[i + 9]);
-					Text::StrInt32(sarr[1].v, byteSize);
+					byteSize = Text::StrToUInt32(&sarr[1].v[i + 9]);
+					Text::StrUInt32(sarr[1].v, byteSize);
 					sarr[2].v = &sarr[1].v[i + j + 21];
 					sarr[2].leng -= i + j + 21;
 

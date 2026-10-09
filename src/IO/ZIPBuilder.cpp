@@ -303,7 +303,7 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, NN<IO::SeekableStream> st
 	UInt32 crcVal;
 	if (compLevel == Data::Compress::Deflater::CompLevel::NoCompression)
 	{
-		UInt64 totalSize = 0;
+		//UInt64 totalSize = 0;
 		UIntOS readSize;
 		Data::ByteBuffer fileBuff(1048576);
 		Crypto::Hash::CRC32RIEEE crc;
@@ -311,7 +311,7 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, NN<IO::SeekableStream> st
 		while ((readSize = stm->Read(fileBuff)) != 0)
 		{
 			crc.Calc(fileBuff.Arr(), readSize);
-			totalSize += readSize;
+		//	totalSize += readSize;
 		}
 		crcVal = crc.GetValueU32();
 		stm->SeekFromBeginning(0);

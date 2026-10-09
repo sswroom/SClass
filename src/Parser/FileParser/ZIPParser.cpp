@@ -644,7 +644,7 @@ UIntOS Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf
 					break;
 				}
 			}
-			UIntOS hdrLen = 30 + (UIntOS)fnameLen;
+/*			UIntOS hdrLen = 30 + (UIntOS)fnameLen;
 			if (compSize >= 0xffffffffLL || uncompSize >= 0xffffffffLL)
 			{
 				hdrLen += 4;
@@ -652,7 +652,7 @@ UIntOS Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf
 					hdrLen += 8;
 				if (uncompSize >= 0xffffffffLL)
 					hdrLen += 8;
-			}
+			}*/
 			if (compMeth == 0)
 			{
 				pf2->AddData(fd, ofst, compSize, IO::PackFileItem::HeaderType::Zip, CSTRP(sptr, sptrEnd), modTime, accTime, createTime, unixAttr);

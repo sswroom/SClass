@@ -498,7 +498,7 @@ void Map::MapLayerCollection::ReorderLayers()
 	UIntOS imageIndex = 0;
 	UIntOS areaIndex = 0;
 	UIntOS lineIndex = 0;
-	UIntOS pointIndex = 0;
+//	UIntOS pointIndex = 0;
 	NN<Map::MapDrawLayer> layer;
 	Map::DrawLayerType type;
 	UIntOS i = 0;
@@ -517,7 +517,7 @@ void Map::MapLayerCollection::ReorderLayers()
 			imageIndex++;
 			areaIndex++;
 			lineIndex++;
-			pointIndex++;
+//			pointIndex++;
 		}
 		else if (type == Map::DRAW_LAYER_POLYGON || type == Map::DRAW_LAYER_MIXED)
 		{
@@ -528,7 +528,7 @@ void Map::MapLayerCollection::ReorderLayers()
 			}
 			areaIndex++;
 			lineIndex++;
-			pointIndex++;
+//			pointIndex++;
 		}
 		else if (type == Map::DRAW_LAYER_POLYLINE3D || type == Map::DRAW_LAYER_POLYLINE)
 		{
@@ -538,11 +538,11 @@ void Map::MapLayerCollection::ReorderLayers()
 				this->layerList.Insert(lineIndex, layer);
 			}
 			lineIndex++;
-			pointIndex++;
+//			pointIndex++;
 		}
 		else
 		{
-			pointIndex++;
+//			pointIndex++;
 		}
 		i++;
 	}

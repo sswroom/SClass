@@ -631,7 +631,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 								Double lastLat = Map::OSM::OSMTileMap::TileY2Lat(pack->tileY, pack->baseZoomLevel);
 								Double lastLon = Map::OSM::OSMTileMap::TileX2Lon(pack->tileX, pack->baseZoomLevel);
 								Int64 lastLatOffset = 0;
-								Int64 lastLonOffset = 0;
+//								Int64 lastLonOffset = 0;
 								k = 0;
 								while (k < nNodes)
 								{
@@ -652,7 +652,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 									frame->AddInt(ofst, nextOfst - ofst, CSTR("Way node lon-diff"), iv);
 									if (k > 0)
 									{
-										lastLonOffset += iv;
+//										lastLonOffset += iv;
 										lastLon += (Double)iv * 0.000001;
 									}
 									else

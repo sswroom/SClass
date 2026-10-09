@@ -144,5 +144,6 @@ namespace Text
 	UIntOS StrSplitLineP(UnsafeArray<PString> strs, UIntOS maxStrs, PString strToSplit); //Optimized
 	UIntOS StrSplitWSP(UnsafeArray<PString> strs, UIntOS maxStrs, PString strToSplit); //Optimized
 	UIntOS StrCSVSplitP(UnsafeArray<Text::PString> strs, UIntOS maxStrs, UnsafeArray<UTF8Char> strToSplit);
+	UnsafeArray<UTF8Char> StrCSVJoinP(UnsafeArray<UTF8Char> oriStr, UnsafeArray<Text::PString> strs, UIntOS nStrs);
 }
 #endif

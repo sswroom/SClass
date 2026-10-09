@@ -328,3 +328,29 @@ UIntOS Text::StrCSVSplitP(UnsafeArray<PString> strs, UIntOS maxStrs, UnsafeArray
 	}
 	return i;
 }
+
+UnsafeArray<UTF8Char> Text::StrCSVJoinP(UnsafeArray<UTF8Char> oriStr, UnsafeArray<Text::PString> strs, UIntOS nStrs)
+{
+	UIntOS i = 0;
+	UnsafeArray<const UTF8Char> sptr;
+	UTF8Char c;
+	while (i < nStrs)
+	{
+		if (i)
+			*oriStr++ = ',';
+		*oriStr++ = '"';
+		sptr = strs[i].v;
+		while ((c = *sptr++) != 0)
+		{
+			if (c == '"')
+			{
+				*oriStr++ = '"';
+			}
+			*oriStr++ = c;
+		}
+		*oriStr++ = '"';
+		i++;
+	}
+	*oriStr = 0;
+	return oriStr;
+}

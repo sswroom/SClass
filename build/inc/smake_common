@@ -4068,6 +4068,8 @@ Net/UDPServer.h:
 @UDPServer.o
 Net/UDPServerStream.h:
 @UDPServerStream.o
+Net/UDPSimulator.h:
+@UDPSimulator.o
 Net/URL.h:
 @URL.o
 Net/UserAgentDB.h:

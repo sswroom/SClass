@@ -1758,6 +1758,7 @@ TFTPServer.o: ../../src/Net/TFTPServer.cpp
 TraceRoute.o: ../../src/Net/TraceRoute.cpp
 UDPServer.o: ../../src/Net/UDPServer.cpp
 UDPServerStream.o: ../../src/Net/UDPServerStream.cpp
+UDPSimulator.o: ../../src/Net/UDPSimulator.cpp
 URL.o: ../../src/Net/URL.cpp
 UserAgentDB.o: ../../src/Net/UserAgentDB.cpp
 WebBrowser.o: ../../src/Net/WebBrowser.cpp
