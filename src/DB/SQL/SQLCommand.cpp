@@ -674,6 +674,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 				{
 					printf("SQLCommand: Value list is not supported\r\n");
 					cmd.Delete();
+					row.DeleteAll();
 					return nullptr;
 				}
 				row.Add(val);

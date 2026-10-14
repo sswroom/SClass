@@ -47,10 +47,18 @@ Optional<IO::ParsedObject> Parser::FileParser::SQLParser::ParseFileHdr(NN<IO::St
 	Text::UTF8Reader reader(stm);
 	NN<DB::SQL::SQLCommand> sql;
 	DB::SQLType sqlType = this->defSQLType;
+	UIntOS contLine = 0;
 	Text::StringBuilderUTF8 sb;
 	while (reader.ReadLine(sb, 4096))
 	{
-		sb.Trim();
+		if (contLine == 0)
+		{
+			sb.Trim();
+		}
+		else
+		{
+			sb.RTrim();
+		}
 		if (sb.GetLength() == 0)
 		{
 		}
@@ -86,6 +94,12 @@ Optional<IO::ParsedObject> Parser::FileParser::SQLParser::ParseFileHdr(NN<IO::St
 			{
 				sqlFile->AddSQL(sql);
 				sb.ClearStr();
+				contLine = 0;
+			}
+			else if (sb.StartsWithICase(CSTR("INSERT INTO ")) && contLine < 5)
+			{
+				contLine += 1;
+				reader.GetLastLineBreak(sb);
 			}
 			else
 			{
