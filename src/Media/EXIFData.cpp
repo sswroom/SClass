@@ -5444,6 +5444,24 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(NN<IO::StreamData> fd, UInt6
 				exif->AddDouble(tag, fcnt, (Double*)tmpBuff.Arr().Ptr());
 			}
 			break;
+		case 13:
+		{
+			UInt32 tmp;
+			if (fcnt == 1)
+			{
+				tmp = bo->GetUInt32(&ifdEntries[ifdOfst + 8]);
+				NN<Media::EXIFData> subexif;
+				if (ParseIFD(fd, tmp + readBase, bo, 0, readBase).SetTo(subexif))
+				{
+					exif->AddSubEXIF(tag, subexif);
+				}
+			}
+			else
+			{
+				printf("EXIFData.ParseIFD: Unhandled field type: %d, tag = %d\r\n", ftype, tag);
+			}
+			break;
+		}
 		default:
 			printf("EXIFData.ParseIFD: Unsupported field type: %d, tag = %d\r\n", ftype, tag);
 			if (fcnt <= 4)

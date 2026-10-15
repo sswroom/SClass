@@ -5060,6 +5060,8 @@ cp1_p8lop3:
 	lea rsi,[rsi+8]
 	dec rdx
 	jnz cp1_p8lop3
+	test r9,r9
+	jz cp1_p8lop3c
 	mov rdx,r9
 	mov al,byte [rdi]
 	align 16
@@ -5070,6 +5072,8 @@ cp1_p8lop3b:
 	shl al,1
 	dec rdx
 	jnz cp1_p8lop3b
+	align 16
+cp1_p8lop3c:
 	pop rdx
 	add rdi,r8
 	dec rcx
