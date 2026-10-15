@@ -157,7 +157,7 @@ namespace Media
 		virtual Bool DrawSImagePt(NN<Media::StaticImage> img, Math::Coord2DDbl tl);
 		virtual Bool DrawSImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize);
 		Bool DrawImageRect(NN<DrawImage> img, IntOS tlx, IntOS tly, IntOS brx, IntOS bry);
-		virtual Bool DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad);
+		virtual Bool DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad, Double srcAlpha);
 		virtual void SetClip(Math::RectAreaDbl clipRect);
 		virtual void ClearClip();
 

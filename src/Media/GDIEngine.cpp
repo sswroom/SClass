@@ -2446,7 +2446,7 @@ Bool Media::GDIImage::DrawImageRect(NN<DrawImage> img, IntOS tlx, IntOS tly, Int
 	return true;
 }
 
-Bool Media::GDIImage::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad)
+Bool Media::GDIImage::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad, Double alpha)
 {
 	if (!this->IsOffScreen() || this->info.storeBPP != 32)
 	{
@@ -2469,11 +2469,11 @@ Bool Media::GDIImage::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilate
 		remapper.SetSourceImage(img);
 		if (img->info.atype == Media::AT_ALPHA_ALL_FF || img->info.atype == Media::AT_IGNORE_ALPHA)
 		{
-			remapper.RemapDirect(dimgPtr + dbpl * (IntOS)(this->size.y - 1), (UIntOS)-dbpl, this->info.dispSize.x, this->info.dispSize.y, quad);
+			remapper.RemapDirectAlpha(dimgPtr + dbpl * (IntOS)(this->size.y - 1), (UIntOS)-dbpl, this->info.dispSize.x, this->info.dispSize.y, quad, alpha);
 		}
 		else
 		{
-			remapper.RemapAlpha(dimgPtr + dbpl * (IntOS)(this->size.y - 1), (UIntOS)-dbpl, this->info.dispSize.x, this->info.dispSize.y, quad);
+			remapper.RemapAlpha(dimgPtr + dbpl * (IntOS)(this->size.y - 1), (UIntOS)-dbpl, this->info.dispSize.x, this->info.dispSize.y, quad, alpha);
 		}
 		return true;
 	}

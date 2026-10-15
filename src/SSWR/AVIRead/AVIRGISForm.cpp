@@ -2181,12 +2181,18 @@ void SSWR::AVIRead::AVIRGISForm::HideMarker()
 
 void SSWR::AVIRead::AVIRGISForm::SetSelectedVector(Optional<Math::Geometry::Vector2D> vec)
 {
-	this->mapCtrl->SetSelectedVector(vec);
+	if (this->children.GetCount() > 0)
+	{
+		this->mapCtrl->SetSelectedVector(vec);
+	}
 }
 
 void SSWR::AVIRead::AVIRGISForm::SetSelectedVectors(NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList)
 {
-	this->mapCtrl->SetSelectedVectors(vecList);
+	if (this->children.GetCount() > 0)
+	{
+		this->mapCtrl->SetSelectedVectors(vecList);
+	}
 }
 
 void SSWR::AVIRead::AVIRGISForm::RedrawMap()

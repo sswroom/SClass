@@ -493,9 +493,9 @@ Bool Media::SVGWriter::DrawSImagePt2(NN<Media::StaticImage> img, Math::Coord2DDb
 	return succ;
 }
 
-Bool Media::SVGWriter::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad)
+Bool Media::SVGWriter::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad, Double alpha)
 {
-	// Implementation for drawing image in a quadrilateral
+	printf("SVGWriter.DrawImageQuad: Not implemented\r\n");
 	return false;
 }
 

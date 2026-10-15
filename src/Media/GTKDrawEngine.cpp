@@ -1292,7 +1292,7 @@ Bool Media::GTKDrawImage::DrawSImagePt2(NN<StaticImage> img, Math::Coord2DDbl de
 	}
 }
 
-Bool Media::GTKDrawImage::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad)
+Bool Media::GTKDrawImage::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad, Double alpha)
 {
 	if (quad.tl.y == quad.tr.y && quad.bl.y == quad.br.y && quad.tl.x == quad.bl.x && quad.tr.x == quad.br.x && quad.bl.y > quad.tl.y && quad.tr.x > quad.tl.x)
 	{
@@ -1327,11 +1327,11 @@ Bool Media::GTKDrawImage::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadri
 		remapper.SetSourceImage(img);
 		if (img->info.atype == Media::AT_ALPHA_ALL_FF || img->info.atype == Media::AT_IGNORE_ALPHA)
 		{
-			remapper.RemapDirect(dimgPtr, (UIntOS)dbpl, this->info.dispSize.x, this->info.dispSize.y, quad);
+			remapper.RemapDirectAlpha(dimgPtr, (UIntOS)dbpl, this->info.dispSize.x, this->info.dispSize.y, quad, alpha);
 		}
 		else
 		{
-			remapper.RemapAlpha(dimgPtr, (UIntOS)dbpl, this->info.dispSize.x, this->info.dispSize.y, quad);
+			remapper.RemapAlpha(dimgPtr, (UIntOS)dbpl, this->info.dispSize.x, this->info.dispSize.y, quad, alpha);
 		}
 		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 		return true;

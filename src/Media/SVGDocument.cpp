@@ -1466,9 +1466,9 @@ Bool Media::SVGContainer::DrawSImagePt2(NN<Media::StaticImage> img, Math::Coord2
 	return succ;
 }
 
-Bool Media::SVGContainer::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad)
+Bool Media::SVGContainer::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad, Double alpha)
 {
-	/////////////////////////////
+	printf("SVGContainer.DrawImageQuad: Not implemented\r\n");
 	return false;
 }
 

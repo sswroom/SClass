@@ -608,7 +608,7 @@ Bool Media::VectorGraph::DrawSImagePt2(NN<Media::StaticImage> img, Math::Coord2D
 	return true;
 }
 
-Bool Media::VectorGraph::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad)
+Bool Media::VectorGraph::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad, Double alpha)
 {
 	printf("VectorGraph.DrawImageQuad: Not supported\r\n");
 	/////////////////////////////////

@@ -6,21 +6,33 @@
 UInt32 __inline LinearImageRemapper_CalcPixel32(UInt32 c00, UInt32 c01, UInt32 c10, UInt32 c11, Double xRate, Double yRate)
 {
 #if defined(CPU_X86_64) || defined(CPU_X86_32)
-	Double xiRate = 1 - xRate;
-	Double yiRate = 1 - yRate;
-	Double c0 = (c00 & 0xff) * xiRate + (c10 & 0xff) * xRate;
-	Double c1 = (c01 & 0xff) * xiRate + (c11 & 0xff) * xRate;
-	UInt32 c = (UInt32)(Math_Round(c0 * yiRate + c1 * yRate));
-	c0 = ((c00 & 0xff00) >> 8) * xiRate + ((c10 & 0xff00) >> 8) * xRate;
-	c1 = ((c01 & 0xff00) >> 8) * xiRate + ((c11 & 0xff00) >> 8) * xRate;
-	c |= (UInt32)(Math_Round(c0 * yiRate + c1 * yRate)) << 8;
-	c0 = ((c00 & 0xff0000) >> 16) * xiRate + ((c10 & 0xff0000) >> 16) * xRate;
-	c1 = ((c01 & 0xff0000) >> 16) * xiRate + ((c11 & 0xff0000) >> 16) * xRate;
-	c |= (UInt32)(Math_Round(c0 * yiRate + c1 * yRate)) << 16;
-	c0 = ((c00 & 0xff000000) >> 24) * xiRate + ((c10 & 0xff000000) >> 24) * xRate;
-	c1 = ((c01 & 0xff000000) >> 24) * xiRate + ((c11 & 0xff000000) >> 24) * xRate;
-	c |= (UInt32)(Math_Round(c0 * yiRate + c1 * yRate)) << 24;
-	return c;
+	__m128i zero = _mm_setzero_si128();
+	__m128i i00 = _mm_cvtsi32_si128((Int32)c00);
+	__m128i i01 = _mm_cvtsi32_si128((Int32)c01);
+	__m128i i10 = _mm_cvtsi32_si128((Int32)c10);
+	__m128i i11 = _mm_cvtsi32_si128((Int32)c11);
+
+	__m128 p00 = _mm_cvtepi32_ps(_mm_unpacklo_epi16(_mm_unpacklo_epi8(i00, zero), zero));
+	__m128 p01 = _mm_cvtepi32_ps(_mm_unpacklo_epi16(_mm_unpacklo_epi8(i01, zero), zero));
+	__m128 p10 = _mm_cvtepi32_ps(_mm_unpacklo_epi16(_mm_unpacklo_epi8(i10, zero), zero));
+	__m128 p11 = _mm_cvtepi32_ps(_mm_unpacklo_epi16(_mm_unpacklo_epi8(i11, zero), zero));
+
+	Single xRateF = (Single)xRate;
+	Single yRateF = (Single)yRate;
+	__m128 xw = _mm_set1_ps(xRateF);
+	__m128 yw = _mm_set1_ps(yRateF);
+	__m128 xi = _mm_set1_ps(1.0f - xRateF);
+	__m128 yi = _mm_set1_ps(1.0f - yRateF);
+
+	__m128 p0 = _mm_add_ps(_mm_mul_ps(p00, xi), _mm_mul_ps(p10, xw));
+	__m128 p1 = _mm_add_ps(_mm_mul_ps(p01, xi), _mm_mul_ps(p11, xw));
+	__m128 pr = _mm_add_ps(_mm_mul_ps(p0, yi), _mm_mul_ps(p1, yw));
+
+	// Match scalar-style rounding for non-negative channel values.
+	__m128i ir = _mm_cvtps_epi32(pr);
+	__m128i p16 = _mm_packs_epi32(ir, zero);
+	__m128i p8 = _mm_packus_epi16(p16, zero);
+	return (UInt32)_mm_cvtsi128_si32(p8);
 #else
 	Double xiRate = 1 - xRate;
 	Double yiRate = 1 - yRate;

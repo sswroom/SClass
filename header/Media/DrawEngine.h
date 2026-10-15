@@ -121,7 +121,7 @@ namespace Media
 		virtual Bool DrawImagePt2(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize) = 0;
 		virtual Bool DrawSImagePt(NN<Media::StaticImage> img, Math::Coord2DDbl tl) = 0;
 		virtual Bool DrawSImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize) = 0;
-		virtual Bool DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad) = 0;
+		virtual Bool DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad, Double alpha) = 0;
 		virtual void SetClip(Math::RectAreaDbl clipRect){};
 		virtual void ClearClip(){};
 		Bool DrawStringHAlign(Math::Coord2DDbl tl, Double brx, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, Text::HAlignment hAlign);

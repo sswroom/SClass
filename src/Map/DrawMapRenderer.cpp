@@ -2388,7 +2388,7 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 
 void Map::DrawMapRenderer::DrawImageObjectQuad(NN<DrawEnv> denv, NN<Media::StaticImage> img, Math::Quadrilateral scnCoords, Double srcAlpha)
 {
-	denv->img->DrawImageQuad(img, scnCoords);
+	denv->img->DrawImageQuad(img, scnCoords, srcAlpha);
 }
 
 void Map::DrawMapRenderer::GetCharsSize(NN<DrawEnv> denv, OutParam<Math::Coord2DDbl> size, Text::CStringNN label, Map::MapEnv::FontType fontType, UIntOS fontStyle, Double scaleW, Double scaleH)
