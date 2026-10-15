@@ -20,6 +20,7 @@
 #include "Exporter/GPXExporter.h"
 #include "Exporter/HEIFExporter.h"
 #include "Exporter/ICOExporter.h"
+#include "Exporter/JXLExporter.h"
 #include "Exporter/KMLExporter.h"
 #include "Exporter/MapCSVExporter.h"
 #include "Exporter/MD4Exporter.h"
@@ -115,6 +116,8 @@ Exporter::ExporterList::ExporterList()
 	NEW_CLASSNN(exporter, Exporter::SFVExporter());
 	this->exporters.Add(exporter);
 	NEW_CLASSNN(exporter, Exporter::WebPExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::JXLExporter());
 	this->exporters.Add(exporter);
 	NEW_CLASSNN(exporter, Exporter::AVIFExporter());
 	this->exporters.Add(exporter);

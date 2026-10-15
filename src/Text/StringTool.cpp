@@ -516,3 +516,130 @@ void Text::StringTool::RemoveEmptyOrWS(NN<Data::ArrayListStringNN> strList)
 		}
 	}
 }
+
+void Text::StringTool::FixUTF8String(UnsafeArray<UTF8Char> s, UIntOS len)
+{
+	UTF32Char c;
+	UTF8Char b;
+	UnsafeArray<UTF8Char> sptr = s;
+	UnsafeArray<UTF8Char> endPtr = &s[len];
+	while (sptr < endPtr)
+	{
+		b = sptr[0];
+		if (b & 0x80)
+		{
+			if (b >= 0xf8)
+			{
+				sptr[0] = ' ';
+				sptr++;
+			}
+			else if ((b & 0xc0) == 0x80)
+			{
+				sptr[0] = ' ';
+				sptr++;
+			}
+			else if ((b & 0xe0) == 0xc0)
+			{
+				if (endPtr - sptr < 2)
+				{
+					sptr[0] = ' ';
+					sptr++;
+				}
+				else if ((sptr[1] & 0xc0) != 0x80)
+				{
+					sptr[0] = ' ';
+					sptr++;
+				}
+				else
+				{
+					c = (UTF32Char)(((b & 0x1f) << 6) | (sptr[1] & 0x3f));
+					if (c < 0x80)
+					{
+						sptr[0] = ' ';
+						sptr++;
+					}
+					else
+					{
+						sptr += 2;
+					}
+				}
+			}
+			else if ((b & 0xf0) == 0xe0)
+			{
+				if (endPtr - sptr < 3)
+				{
+					sptr[0] = ' ';
+					sptr++;
+				}
+				else if ((sptr[1] & 0xc0) != 0x80 || (sptr[2] & 0xc0) != 0x80)
+				{
+					sptr[0] = ' ';
+					sptr++;
+				}
+				else
+				{
+					c = (UTF32Char)(((b & 0x0f) << 12) | ((sptr[1] & 0x3f) << 6) | (sptr[2] & 0x3f));
+					if (c < 0x800)
+					{
+						sptr[0] = ' ';
+						sptr++;
+					}
+					else if (c >= 0xd800 && c <= 0xdfff)
+					{
+						sptr[0] = ' ';
+						sptr++;
+					}
+					else
+					{
+						sptr += 3;
+					}
+				}
+			}
+			else if ((b & 0xf8) == 0xf0)
+			{
+				if (endPtr - sptr < 4)
+				{
+					sptr[0] = ' ';
+					sptr++;
+				}
+				else if ((sptr[1] & 0xc0) != 0x80 || (sptr[2] & 0xc0) != 0x80 || (sptr[3] & 0xc0) != 0x80)
+				{
+					sptr[0] = ' ';
+					sptr++;
+				}
+				else
+				{
+					c = (UTF32Char)(((b & 0x07) << 18) | ((sptr[1] & 0x3f) << 12) | ((sptr[2] & 0x3f) << 6) | (sptr[3] & 0x3f));
+					if (c < 0x10000)
+					{
+						sptr[0] = ' ';
+						sptr++;
+					}
+					else if (c > 0x10FFFF)
+					{
+						sptr[0] = ' ';
+						sptr++;
+					}
+					else
+					{
+						sptr += 4;
+					}
+				}
+			}
+			else
+			{
+				sptr[0] = ' ';
+				sptr++;
+			}
+		}
+		else if (b == 0)
+		{
+			sptr[0] = ' ';
+			sptr++;
+		}
+		else
+		{
+			sptr++;
+		}
+	}
+}

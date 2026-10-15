@@ -375,6 +375,10 @@ HEIFExporter.o: ../../src/Exporter/HEIFExporter.cpp
 !-lheif
 HEIFExporter_Null.o: ../../src/Exporter/HEIFExporter_Null.cpp
 ICOExporter.o: ../../src/Exporter/ICOExporter.cpp
+JXLExporter.o: ../../src/Exporter/JXLExporter.cpp
+$`$(PKG-CONFIG) --cflags libjxl`
+!`$(PKG-CONFIG) --libs libjxl`
+JXLExporter_Null.o: ../../src/Exporter/JXLExporter_Null.cpp
 KMLExporter.o: ../../src/Exporter/KMLExporter.cpp
 MapCSVExporter.o: ../../src/Exporter/MapCSVExporter.cpp
 MD4Exporter.o: ../../src/Exporter/MD4Exporter.cpp

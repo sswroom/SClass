@@ -37,6 +37,7 @@ namespace Text
 		static IntOS CompareICase(Optional<Text::String> s1, Optional<Text::String> s2);
 		static Math::Size2D<UIntOS> GetMonospaceSize(UnsafeArray<const UTF8Char> s);
 		static void RemoveEmptyOrWS(NN<Data::ArrayListStringNN> strList);
+		static void FixUTF8String(UnsafeArray<UTF8Char> s, UIntOS len);
 	};
 }
 

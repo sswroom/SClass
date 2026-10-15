@@ -22,6 +22,9 @@ Exporter/HEIFExporter.h:
 @HEIFExporter_Null.o
 Exporter/WebPExporter.h:
 @WebPExporter_Null.o
+Exporter/JXLExporter.h:
+@?(NO_JXL == 0)JXLExporter.o
+@?(NO_JXL > 0)JXLExporter_Null.o
 
 IO/BTController.h:
 @BTControllerNull.o

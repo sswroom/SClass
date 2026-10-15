@@ -351,6 +351,7 @@ Media::EXIFData::EXIFInfo Media::EXIFData::panasonicInfos[] = {
 	{28, CSTR("Macro")},
 	{31, CSTR("ShootingMode")},
 	{32, CSTR("Audio")},
+	{33, CSTR("DataDump")},
 	{36, CSTR("FlashBias")},
 	{37, CSTR("InternalSerialNumber")},
 	{38, CSTR("ExifVersion")},

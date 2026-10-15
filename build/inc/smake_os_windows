@@ -36,6 +36,8 @@ Exporter/HEIFExporter.h:
 @HEIFExporter_Null.o
 Exporter/WebPExporter.h:
 @WebPExporter_Null.o
+Exporter/JXLExporter.h:
+@JXLExporter_Null.o
 
 IO/AMDGPUControl.h:
 @AMDGPUControl.o

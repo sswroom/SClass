@@ -1,0 +1,84 @@
+#include "Stdafx.h"
+#include "Exporter/JXLExporter.h"
+#include "Text/MyString.h"
+
+Exporter::JXLExporter::JXLExporter()
+{
+}
+
+Exporter::JXLExporter::~JXLExporter()
+{
+}
+
+Int32 Exporter::JXLExporter::GetName()
+{
+	return *(Int32*)"JXLE";
+}
+
+IO::FileExporter::SupportType Exporter::JXLExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
+{
+	return IO::FileExporter::SupportType::NotSupported;
+}
+
+Bool Exporter::JXLExporter::GetOutputName(UIntOS index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
+{
+	return false;
+}
+
+Bool Exporter::JXLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
+{
+	return false;
+}
+
+UIntOS Exporter::JXLExporter::GetParamCnt()
+{
+	return 1;
+}
+
+Optional<IO::FileExporter::ParamData> Exporter::JXLExporter::CreateParam(NN<IO::ParsedObject> pobj)
+{
+	UnsafeArray<Int32> val = MemAllocArr(Int32, 1);
+	val[0] = 90;
+	return (ParamData*)val.Ptr();
+}
+
+void Exporter::JXLExporter::DeleteParam(Optional<ParamData> param)
+{
+	NN<ParamData> para;
+	if (param.SetTo(para))
+		MemFree(para.Ptr());
+}
+
+Bool Exporter::JXLExporter::GetParamInfo(UIntOS index, NN<ParamInfo> info)
+{
+	if (index == 0)
+	{
+		info->name = CSTR("Quality");
+		info->paramType = IO::FileExporter::ParamType::INT32;
+		info->allowNull = false;
+		return true;
+	}
+	return false;
+}
+
+Bool Exporter::JXLExporter::SetParamInt32(Optional<ParamData> param, UIntOS index, Int32 val)
+{
+	NN<ParamData> para;
+	if (index == 0 && param.SetTo(para))
+	{
+		if (val >= 0 && val <= 100)
+		{
+			*(Int32*)para.Ptr() = val;
+			return true;
+		}
+	}
+	return false;
+}
+
+Int32 Exporter::JXLExporter::GetParamInt32(Optional<ParamData> param, UIntOS index)
+{
+	NN<ParamData> para;
+	if (index == 0 && param.SetTo(para))
+		return *(Int32*)para.Ptr();
+	return 0;
+}

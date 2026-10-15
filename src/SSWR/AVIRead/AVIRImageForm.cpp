@@ -15,6 +15,7 @@
 #include "SSWR/AVIRead/AVIRImageResizeForm.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
+#include "Text/StringTool.h"
 #include "UI/GUIFileDialog.h"
 
 typedef enum
@@ -820,6 +821,7 @@ void SSWR::AVIRead::AVIRImageForm::UpdateInfo()
 		sb.AppendU32(this->currImgDelay);
 		sb.AppendC(UTF8STRC("\r\n"));
 		this->imgList->ToValueString(sb);
+		Text::StringTool::FixUTF8String(sb.v, sb.leng);
 		this->txtInfo->SetText(sb.ToCString());
 		if (currImg->GetImageType() == Media::ImageType::Raster && NN<Media::RasterImage>::ConvertFrom(currImg)->info.color.GetRAWICC().NotNull())
 		{
