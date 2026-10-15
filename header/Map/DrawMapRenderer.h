@@ -104,7 +104,7 @@ namespace Map
 		DrawMapRenderer(NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, NN<const Media::ColorProfile> color, Optional<Media::ColorManagerSess> colorSess, DrawType drawType);
 		virtual ~DrawMapRenderer();
 
-		virtual Bool DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, OptOut<UInt32> imgDurMS);
+		virtual Bool DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, OptOut<UInt32> imgDurMS); //return true if any layer is loading
 		virtual void SetUpdatedHandler(Map::MapRenderer::UpdatedHandler updHdlr, AnyType userObj);
 		Bool GetLastsLayerEmpty();
 		void SetEnv(NN<Map::MapEnv> env);

@@ -5040,6 +5040,8 @@ SSWR/AVIRead/AVIROSMCacheForm.h:
 @AVIROSMCacheForm.o
 SSWR/AVIRead/AVIROSMTileBoundsForm.h:
 @AVIROSMTileBoundsForm.o
+SSWR/AVIRead/AVIROSMTileGeneratorForm.h:
+@AVIROSMTileGeneratorForm.o
 SSWR/AVIRead/AVIROSMURLForm.h:
 @AVIROSMURLForm.o
 SSWR/AVIRead/AVIROTPForm.h:
