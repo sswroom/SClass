@@ -51,6 +51,7 @@
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Net/WebServer/WebListener.h"
 #include "Parser/FullParserList.h"
+#include "Parser/FileParser/IFCParser.h"
 #include "Parser/ObjParser/FileGDB2Parser.h"
 #include "Sync/SimpleThread.h"
 #include "Text/CPPText.h"
@@ -1657,9 +1658,27 @@ Int32 HTTPClientCertTest(NN<Core::ProgControl> progCtrl)
 	return 0;
 }
 
+Int32 IFCParserTest()
+{
+	Text::CStringNN fileName = CSTR("/home/sswroom/ProgsHome/FileTest/BIM/Building.ifc");
+	Parser::FileParser::IFCParser parser;
+	NN<IO::ParsedObject> pobj;
+	if (parser.ParseFilePath(fileName).SetTo(pobj))
+	{
+		pobj.Delete();
+		printf("IFC parse Success\r\n");
+		return 0;
+	}
+	else
+	{
+		printf("IFC parse Failed\r\n");
+		return 1;
+	}
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UIntOS testType = 42;
+	UIntOS testType = 43;
 	switch (testType)
 	{
 	case 0:
@@ -1748,6 +1767,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return PostgreSQLTCPTest();
 	case 42:
 		return HTTPClientCertTest(progCtrl);
+	case 43:
+		return IFCParserTest();
 	default:
 		return 0;
 	}

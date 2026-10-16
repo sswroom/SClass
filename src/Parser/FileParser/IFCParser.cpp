@@ -151,7 +151,7 @@ UInt32 Parser::FileParser::IFCParser::Ref(Text::CString s)
 	Text::CStringNN nns;
 	UIntOS i;
 	if (!s.SetTo(nns) || (i = nns.IndexOf('#')) == INVALID_INDEX) return 0;
-	return Text::StrToUInt32B(nns.v, nullptr);
+	return Text::StrToUInt32B(nns.v + i + 1, nullptr);
 }
 
 Data::ArrayListNative<UInt32> Parser::FileParser::IFCParser::Refs(Text::CString s)
@@ -180,7 +180,8 @@ Data::ArrayListNative<Double> Parser::FileParser::IFCParser::Numbers(Text::CStri
 	Text::CStringNN nns;
 	if (!s.SetTo(nns)) return values;
 	UnsafeArray<const UTF8Char> p = nns.v;
-	while (*p)
+	UnsafeArray<const UTF8Char> pEnd = p + nns.leng;
+	while (p < pEnd)
 	{
 		if ((*p >= '0' && *p <= '9') || *p == '-' || *p == '+')
 		{
@@ -189,7 +190,7 @@ Data::ArrayListNative<Double> Parser::FileParser::IFCParser::Numbers(Text::CStri
 			if (end != p)
 			{
 				values.Add(v);
-				p = end;
+				p = end < pEnd ? end : pEnd;
 				continue;
 			}
 		}
