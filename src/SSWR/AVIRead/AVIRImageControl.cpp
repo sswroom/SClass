@@ -2,6 +2,7 @@
 #include "Data/ICaseStringUTF8Map.hpp"
 #include "Exporter/GUIJPGExporter.h"
 #include "Exporter/GUIPNGExporter.h"
+#include "Exporter/JXLExporter.h"
 #include "Exporter/TIFFExporter.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
@@ -287,6 +288,7 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 	NN<Media::StaticImage> img;
 	Exporter::TIFFExporter tifExporter;
 	Exporter::GUIJPGExporter jpgExporter;
+	Exporter::JXLExporter jxlExporter;
 	while (this->threadCtrlCode != 2 && this->threadCtrlCode != 3)
 	{
 		Sync::MutexUsage mutUsage(this->exportMut);
@@ -309,7 +311,7 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 				Optional<IO::FileExporter::ParamData> param = jpgExporter.CreateParam(imgList);
 				if (!param.IsNull())
 				{
-					jpgExporter.SetParamInt32(param, 0, 100);
+					jpgExporter.SetParamInt32(param, 0, this->quality);
 				}
 				jpgExporter.ExportFile(fs, CSTRP(sbuff, sptr2), imgList, param);
 				if (!param.IsNull())
@@ -322,6 +324,21 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 				sptr2 = IO::Path::ReplaceExt(sptr, UTF8STRC("tif"));
 				IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 				tifExporter.ExportFile(fs, CSTRP(sbuff, sptr2), imgList, nullptr);
+			}
+			else if (this->exportFmt == EF_JXL)
+			{
+				sptr2 = IO::Path::ReplaceExt(sptr, UTF8STRC("jxl"));
+				IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+				Optional<IO::FileExporter::ParamData> param = jxlExporter.CreateParam(imgList);
+				if (!param.IsNull())
+				{
+					jxlExporter.SetParamInt32(param, 0, this->quality);
+				}
+				jxlExporter.ExportFile(fs, CSTRP(sbuff, sptr2), imgList, param);
+				if (!param.IsNull())
+				{
+					jxlExporter.DeleteParam(param);
+				}
 			}
 			ioMutUsage.EndUse();
 		}
@@ -518,6 +535,7 @@ SSWR::AVIRead::AVIRImageControl::AVIRImageControl(NN<UI::GUICore> ui, NN<UI::GUI
 	this->dispImgChg = true;
 	this->progHdlr = 0;
 	this->progHdlrObj = 0;
+	this->quality = 100;
 
 	this->threadState = 0;
 	this->threadCtrlCode = 0;
@@ -1122,6 +1140,11 @@ void SSWR::AVIRead::AVIRImageControl::SetExportFormat(ExportFormat fmt)
 {
 	this->exportFmt = fmt;
 }
+
+void SSWR::AVIRead::AVIRImageControl::SetExportQuality(Int32 quality)
+{
+	this->quality = quality;
+} 
 
 UIntOS SSWR::AVIRead::AVIRImageControl::ExportSelected()
 {

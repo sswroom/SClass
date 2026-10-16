@@ -20,7 +20,8 @@ namespace SSWR
 			typedef enum
 			{
 				EF_JPG,
-				EF_TIF
+				EF_TIF,
+				EF_JXL
 			} ExportFormat;
 			typedef struct
 			{
@@ -90,6 +91,7 @@ namespace SSWR
 
 			Sync::Mutex cameraMut;
 			Data::StringMapNN<CameraCorr> cameraMap;
+			Int32 quality;
 
 			Int32 threadState; //0 = not started, 1 = idle, 2 = initDir, 3 = exporting
 			Int32 threadCtrlCode; //0 = no control, 1 = initDir, 2 = stop thread, 3 = force idle
@@ -132,6 +134,7 @@ namespace SSWR
 			void UpdateImgSetting(NN<ImageSetting> setting);
 			Bool IsLoadingDir();
 			void SetExportFormat(ExportFormat fmt);
+			void SetExportQuality(Int32 quality);
 			UIntOS ExportSelected();
 			void MoveUp();
 			void MoveDown();

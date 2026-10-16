@@ -303,6 +303,10 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 			destLUT[i] = Math::SDouble2UInt16(rtFunc->ForwardTransfer(UIntOS2Double(i) * tmpD) * 65535.0);
 		}
 	}
+	else
+	{
+		printf("RGBColorFilter: Unsupported parameter format: bpp %d, pf %s\r\n", this->bpp, Media::PixelFormatGetName(this->pf).v.Ptr());
+	}
 	rtFunc.Delete();
 	gtFunc.Delete();
 	btFunc.Delete();
@@ -342,5 +346,9 @@ void Media::RGBColorFilter::ProcessImage(UnsafeArray<UInt8> srcPtr, UnsafeArray<
 			lastHeight = currHeight;
 		}
 		WaitForThread(2);
+	}
+	else
+	{
+		printf("RGBColorFilter: Unsupported bpp %d\r\n", this->bpp);
 	}
 }
