@@ -122,6 +122,22 @@ namespace Text
 			}
 		}
 
+		CStringNN SubstringNoZ(UIntOS index, UIntOS length) const
+		{
+			if (index >= this->leng)
+			{
+				return CStringNN(this->v, 0);
+			}
+			else if (index + length > this->leng)
+			{
+				return CStringNN(this->v + index, this->leng - index);
+			}
+			else
+			{
+				return CStringNN(this->v + index, length);
+			}
+		}
+
 		CStringNN LTrim() const
 		{
 			UIntOS i = 0;

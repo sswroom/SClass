@@ -70,6 +70,8 @@ Text::CStringNN IO::ParserTypeGetName(ParserType pt)
 		return CSTR("SQLFile");
 	case ParserType::ConfigFile:
 		return CSTR("ConfigFile");
+	case ParserType::Model3D:
+		return CSTR("Model3D");
 	case ParserType::Unknown:
 	default:
 		return CSTR("Unknwon");

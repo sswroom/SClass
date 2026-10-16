@@ -16,12 +16,14 @@ namespace Math
 
 		void Inverse();
 		void Transposition();
-		void Set(NN<const Matrix3> matrix);
-		void Multiply(NN<const Matrix3> matrix);
-		void MultiplyBA(NN<const Matrix3> matrix);
+		void Set(const Matrix3 &matrix);
+		Matrix3 Multiply(const Matrix3 &matrix) const;
+		void MultiplyInplace(const Matrix3 &matrix);
+		void MultiplyInplaceBA(const Matrix3 &matrix);
 		void Multiply(Double x, Double y, Double z, OutParam<Double> outX, OutParam<Double> outY, OutParam<Double> outZ);
 		Vector3 Multiply(const Vector3 &srcVec) const;
 		void SetIdentity();
+		static Matrix3 Identity();
 	};
 }
 #endif

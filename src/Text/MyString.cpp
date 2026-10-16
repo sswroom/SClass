@@ -2809,6 +2809,21 @@ UInt32 Text::StrToUInt32(UnsafeArray<const UTF8Char> intStr)
 	return retVal;
 }
 
+UInt32 Text::StrToUInt32B(UnsafeArray<const UTF8Char> intStr, OptOut<UnsafeArray<const UTF8Char>> numEnd)
+{
+	UInt32 retVal = 0;
+	UInt32 c;
+	while ((c = *intStr) != 0)
+	{
+		if (c < '0' || c > '9')
+			break;
+		retVal = retVal * 10 + c - 48;
+		intStr++;
+	}
+	numEnd.Set(intStr);
+	return retVal;
+}
+
 Bool Text::StrToInt32(UnsafeArray<const UTF8Char> intStr, OutParam<Int32> outVal)
 {
 	Bool sign;

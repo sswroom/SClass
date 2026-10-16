@@ -40,6 +40,7 @@
 #include "Parser/FileParser/HTRecParser.h"
 #include "Parser/FileParser/ICOParser.h"
 #include "Parser/FileParser/ID3Parser.h"
+#include "Parser/FileParser/IFCParser.h"
 #include "Parser/FileParser/IMGParser.h"
 #include "Parser/FileParser/IPACParser.h"
 #include "Parser/FileParser/IS2Parser.h"
@@ -138,6 +139,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 {
 	NN<IO::FileParser> parser;
 	NEW_CLASSNN(parser, Parser::FileParser::WAVParser())
+	this->AddFileParser(parser);
+	NEW_CLASSNN(parser, Parser::FileParser::IFCParser());
 	this->AddFileParser(parser);
 	NEW_CLASSNN(parser, Parser::FileParser::BMPParser());
 	this->AddFileParser(parser);

@@ -63,45 +63,53 @@ void Math::Matrix3::Transposition()
 }
 
 
-void Math::Matrix3::Set(NN<const Matrix3> matrix)
+void Math::Matrix3::Set(const Matrix3 &matrix)
 {
-	this->vec[0] = matrix->vec[0];
-	this->vec[1] = matrix->vec[1];
-	this->vec[2] = matrix->vec[2];
+	this->vec[0] = matrix.vec[0];
+	this->vec[1] = matrix.vec[1];
+	this->vec[2] = matrix.vec[2];
 }
 
-void Math::Matrix3::Multiply(NN<const Matrix3> matrix)
+Math::Matrix3 Math::Matrix3::Multiply(const Matrix3 &matrix) const
+{
+	Matrix3 result;
+	result.Set(*this);
+	result.MultiplyInplace(matrix);
+	return result;
+}
+
+void Math::Matrix3::MultiplyInplace(const Matrix3 &matrix)
 {
 	Vector3 tmpVec[3];
 	tmpVec[0] = this->vec[0];
 	tmpVec[1] = this->vec[1];
 	tmpVec[2] = this->vec[2];
-	this->vec[0].val[0] = tmpVec[0].val[0] * matrix->vec[0].val[0] + tmpVec[0].val[1] * matrix->vec[1].val[0] + tmpVec[0].val[2] * matrix->vec[2].val[0];
-	this->vec[0].val[1] = tmpVec[0].val[0] * matrix->vec[0].val[1] + tmpVec[0].val[1] * matrix->vec[1].val[1] + tmpVec[0].val[2] * matrix->vec[2].val[1];
-	this->vec[0].val[2] = tmpVec[0].val[0] * matrix->vec[0].val[2] + tmpVec[0].val[1] * matrix->vec[1].val[2] + tmpVec[0].val[2] * matrix->vec[2].val[2];
-	this->vec[1].val[0] = tmpVec[1].val[0] * matrix->vec[0].val[0] + tmpVec[1].val[1] * matrix->vec[1].val[0] + tmpVec[1].val[2] * matrix->vec[2].val[0];
-	this->vec[1].val[1] = tmpVec[1].val[0] * matrix->vec[0].val[1] + tmpVec[1].val[1] * matrix->vec[1].val[1] + tmpVec[1].val[2] * matrix->vec[2].val[1];
-	this->vec[1].val[2] = tmpVec[1].val[0] * matrix->vec[0].val[2] + tmpVec[1].val[1] * matrix->vec[1].val[2] + tmpVec[1].val[2] * matrix->vec[2].val[2];
-	this->vec[2].val[0] = tmpVec[2].val[0] * matrix->vec[0].val[0] + tmpVec[2].val[1] * matrix->vec[1].val[0] + tmpVec[2].val[2] * matrix->vec[2].val[0];
-	this->vec[2].val[1] = tmpVec[2].val[0] * matrix->vec[0].val[1] + tmpVec[2].val[1] * matrix->vec[1].val[1] + tmpVec[2].val[2] * matrix->vec[2].val[1];
-	this->vec[2].val[2] = tmpVec[2].val[0] * matrix->vec[0].val[2] + tmpVec[2].val[1] * matrix->vec[1].val[2] + tmpVec[2].val[2] * matrix->vec[2].val[2];
+	this->vec[0].val[0] = tmpVec[0].val[0] * matrix.vec[0].val[0] + tmpVec[0].val[1] * matrix.vec[1].val[0] + tmpVec[0].val[2] * matrix.vec[2].val[0];
+	this->vec[0].val[1] = tmpVec[0].val[0] * matrix.vec[0].val[1] + tmpVec[0].val[1] * matrix.vec[1].val[1] + tmpVec[0].val[2] * matrix.vec[2].val[1];
+	this->vec[0].val[2] = tmpVec[0].val[0] * matrix.vec[0].val[2] + tmpVec[0].val[1] * matrix.vec[1].val[2] + tmpVec[0].val[2] * matrix.vec[2].val[2];
+	this->vec[1].val[0] = tmpVec[1].val[0] * matrix.vec[0].val[0] + tmpVec[1].val[1] * matrix.vec[1].val[0] + tmpVec[1].val[2] * matrix.vec[2].val[0];
+	this->vec[1].val[1] = tmpVec[1].val[0] * matrix.vec[0].val[1] + tmpVec[1].val[1] * matrix.vec[1].val[1] + tmpVec[1].val[2] * matrix.vec[2].val[1];
+	this->vec[1].val[2] = tmpVec[1].val[0] * matrix.vec[0].val[2] + tmpVec[1].val[1] * matrix.vec[1].val[2] + tmpVec[1].val[2] * matrix.vec[2].val[2];
+	this->vec[2].val[0] = tmpVec[2].val[0] * matrix.vec[0].val[0] + tmpVec[2].val[1] * matrix.vec[1].val[0] + tmpVec[2].val[2] * matrix.vec[2].val[0];
+	this->vec[2].val[1] = tmpVec[2].val[0] * matrix.vec[0].val[1] + tmpVec[2].val[1] * matrix.vec[1].val[1] + tmpVec[2].val[2] * matrix.vec[2].val[1];
+	this->vec[2].val[2] = tmpVec[2].val[0] * matrix.vec[0].val[2] + tmpVec[2].val[1] * matrix.vec[1].val[2] + tmpVec[2].val[2] * matrix.vec[2].val[2];
 }
 
-void Math::Matrix3::MultiplyBA(NN<const Matrix3> matrix)
+void Math::Matrix3::MultiplyInplaceBA(const Matrix3 &matrix)
 {
 	Vector3 tmpVec[3];
 	tmpVec[0] = this->vec[0];
 	tmpVec[1] = this->vec[1];
 	tmpVec[2] = this->vec[2];
-	this->vec[0].val[0] = tmpVec[0].val[0] * matrix->vec[0].val[0] + tmpVec[1].val[0] * matrix->vec[0].val[1] + tmpVec[2].val[0] * matrix->vec[0].val[2];
-	this->vec[0].val[1] = tmpVec[0].val[1] * matrix->vec[0].val[0] + tmpVec[1].val[1] * matrix->vec[0].val[1] + tmpVec[2].val[1] * matrix->vec[0].val[2];
-	this->vec[0].val[2] = tmpVec[0].val[2] * matrix->vec[0].val[0] + tmpVec[1].val[2] * matrix->vec[0].val[1] + tmpVec[2].val[2] * matrix->vec[0].val[2];
-	this->vec[1].val[0] = tmpVec[0].val[0] * matrix->vec[1].val[0] + tmpVec[1].val[0] * matrix->vec[1].val[1] + tmpVec[2].val[0] * matrix->vec[1].val[2];
-	this->vec[1].val[1] = tmpVec[0].val[1] * matrix->vec[1].val[0] + tmpVec[1].val[1] * matrix->vec[1].val[1] + tmpVec[2].val[1] * matrix->vec[1].val[2];
-	this->vec[1].val[2] = tmpVec[0].val[2] * matrix->vec[1].val[0] + tmpVec[1].val[2] * matrix->vec[1].val[1] + tmpVec[2].val[2] * matrix->vec[1].val[2];
-	this->vec[2].val[0] = tmpVec[0].val[0] * matrix->vec[2].val[0] + tmpVec[1].val[0] * matrix->vec[2].val[1] + tmpVec[2].val[0] * matrix->vec[2].val[2];
-	this->vec[2].val[1] = tmpVec[0].val[1] * matrix->vec[2].val[0] + tmpVec[1].val[1] * matrix->vec[2].val[1] + tmpVec[2].val[1] * matrix->vec[2].val[2];
-	this->vec[2].val[2] = tmpVec[0].val[2] * matrix->vec[2].val[0] + tmpVec[1].val[2] * matrix->vec[2].val[1] + tmpVec[2].val[2] * matrix->vec[2].val[2];
+	this->vec[0].val[0] = tmpVec[0].val[0] * matrix.vec[0].val[0] + tmpVec[1].val[0] * matrix.vec[0].val[1] + tmpVec[2].val[0] * matrix.vec[0].val[2];
+	this->vec[0].val[1] = tmpVec[0].val[1] * matrix.vec[0].val[0] + tmpVec[1].val[1] * matrix.vec[0].val[1] + tmpVec[2].val[1] * matrix.vec[0].val[2];
+	this->vec[0].val[2] = tmpVec[0].val[2] * matrix.vec[0].val[0] + tmpVec[1].val[2] * matrix.vec[0].val[1] + tmpVec[2].val[2] * matrix.vec[0].val[2];
+	this->vec[1].val[0] = tmpVec[0].val[0] * matrix.vec[1].val[0] + tmpVec[1].val[0] * matrix.vec[1].val[1] + tmpVec[2].val[0] * matrix.vec[1].val[2];
+	this->vec[1].val[1] = tmpVec[0].val[1] * matrix.vec[1].val[0] + tmpVec[1].val[1] * matrix.vec[1].val[1] + tmpVec[2].val[1] * matrix.vec[1].val[2];
+	this->vec[1].val[2] = tmpVec[0].val[2] * matrix.vec[1].val[0] + tmpVec[1].val[2] * matrix.vec[1].val[1] + tmpVec[2].val[2] * matrix.vec[1].val[2];
+	this->vec[2].val[0] = tmpVec[0].val[0] * matrix.vec[2].val[0] + tmpVec[1].val[0] * matrix.vec[2].val[1] + tmpVec[2].val[0] * matrix.vec[2].val[2];
+	this->vec[2].val[1] = tmpVec[0].val[1] * matrix.vec[2].val[0] + tmpVec[1].val[1] * matrix.vec[2].val[1] + tmpVec[2].val[1] * matrix.vec[2].val[2];
+	this->vec[2].val[2] = tmpVec[0].val[2] * matrix.vec[2].val[0] + tmpVec[1].val[2] * matrix.vec[2].val[1] + tmpVec[2].val[2] * matrix.vec[2].val[2];
 }
 
 void Math::Matrix3::Multiply(Double x, Double y, Double z, OutParam<Double> outX, OutParam<Double> outY, OutParam<Double> outZ)
@@ -122,3 +130,11 @@ void Math::Matrix3::SetIdentity()
 	this->vec[1].Set(0.0, 1.0, 0.0);
 	this->vec[2].Set(0.0, 0.0, 1.0);
 }
+
+Math::Matrix3 Math::Matrix3::Identity()
+{
+	Matrix3 mat;
+	mat.SetIdentity();
+	return mat;
+}
+

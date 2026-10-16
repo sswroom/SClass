@@ -1086,6 +1086,7 @@ Quadrilateral.o: ../../src/Math/Quadrilateral.cpp
 SRESRIWKTWriter.o: ../../src/Math/SRESRIWKTWriter.cpp
 SROGCWKTWriter.o: ../../src/Math/SROGCWKTWriter.cpp
 SRWKTWriter.o: ../../src/Math/SRWKTWriter.cpp
+Transform.o: ../../src/Math/Transform.cpp
 TSPFile.o: ../../src/Math/TSPFile.cpp
 UTMGridConvertDbl.o: ../../src/Math/UTMGridConvertDbl.cpp
 VectorTextWriterList.o: ../../src/Math/VectorTextWriterList.cpp
@@ -2244,6 +2245,9 @@ AVIRImageGRForm.o: ../../src/SSWR/AVIRead/AVIRImageGRForm.cpp
 AVIRImagePSNRForm.o: ../../src/SSWR/AVIRead/AVIRImagePSNRForm.cpp
 AVIRImageResizeForm.o: ../../src/SSWR/AVIRead/AVIRImageResizeForm.cpp
 AVIRImageViewerForm.o: ../../src/SSWR/AVIRead/AVIRImageViewerForm.cpp
+AVIRModel3DViewerForm.o: ../../src/SSWR/AVIRead/AVIRModel3DViewerForm.cpp
+Model3D.o: ../../src/Model/Model3D.cpp
+IFCParser.o: ../../src/Parser/FileParser/IFCParser.cpp
 AVIRInvestmentAccountForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentAccountForm.cpp
 AVIRInvestmentAInterestForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentAInterestForm.cpp
 AVIRInvestmentAssetForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentAssetForm.cpp

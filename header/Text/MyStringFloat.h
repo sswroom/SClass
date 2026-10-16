@@ -36,6 +36,7 @@ namespace Text
 	UnsafeArray<UTF32Char> StrDoubleFmtW(UnsafeArray<UTF32Char> oriStr, Double val, UnsafeArray<const Char> format);
 
 	Bool StrToDouble(UnsafeArray<const UTF8Char> str, OutParam<Double> outVal);
+	Double StrToDoubleB(UnsafeArray<const UTF8Char> str, OptOut<UnsafeArray<const UTF8Char>> numEnd);
 	FORCEINLINE Bool StrToDoubleCh(UnsafeArray<const Char> str, OutParam<Double> outVal) { return StrToDouble(UnsafeArray<const UTF8Char>::ConvertFrom(str), outVal); }
 	Bool StrToDoubleW(UnsafeArray<const UTF16Char> str, OutParam<Double> outVal);
 	Bool StrToDoubleW(UnsafeArray<const UTF32Char> str, OutParam<Double> outVal);

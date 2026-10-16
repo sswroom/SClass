@@ -484,7 +484,7 @@ void Media::ColorProfile::ColorPrimaries::GetAdaptationMatrix(NN<Math::Matrix3> 
 
 	//color.primaries.GetConvMatrix(&mat);
 	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(mat);
-	mat2.Set(mat);
+	mat2.Set(*mat.Ptr());
 	mat3.SetIdentity();
 
 	vec1 = mat->Multiply(Media::ColorProfile::ColorPrimaries::GetWhitePointXYZ(srcWP));
@@ -493,8 +493,8 @@ void Media::ColorProfile::ColorPrimaries::GetAdaptationMatrix(NN<Math::Matrix3> 
 	mat3.vec[0].val[0] = vec2.val[0] / vec1.val[0];
 	mat3.vec[1].val[1] = vec2.val[1] / vec1.val[1];
 	mat3.vec[2].val[2] = vec2.val[2] / vec1.val[2];
-	mat->Multiply(mat3);
-	mat->Multiply(mat2);
+	mat->MultiplyInplace(mat3);
+	mat->MultiplyInplace(mat2);
 }
 
 Media::ColorProfile::ColorProfile()
@@ -744,8 +744,8 @@ void Media::ColorProfile::XYZWPTransform(WhitePointType srcWP, Double srcX, Doub
 	mat4.vec[0].val[0] = vec2.val[0] / vec1.val[0];
 	mat4.vec[1].val[1] = vec2.val[1] / vec1.val[1];
 	mat4.vec[2].val[2] = vec2.val[2] / vec1.val[2];
-	mat2.Multiply(mat4);
-	mat2.Multiply(mat3);
+	mat2.MultiplyInplace(mat4);
+	mat2.MultiplyInplace(mat3);
 	mat2.Multiply(srcX, srcY, srcZ, outX, outY, outZ);
 }
 
@@ -1098,7 +1098,7 @@ void Media::ColorProfile::RGB2RGB(NN<Media::ColorProfile> srcColor, NN<Media::Co
 	srcColor->primaries.GetConvMatrix(mat);
 	destColor->primaries.GetConvMatrix(mat2);
 	mat2.Inverse();
-	mat.MultiplyBA(mat2);
+	mat.MultiplyInplaceBA(mat2);
 	func1r = Media::CS::TransferFunc::CreateFunc(srcColor->rtransfer);
 	func1g = Media::CS::TransferFunc::CreateFunc(srcColor->gtransfer);
 	func1b = Media::CS::TransferFunc::CreateFunc(srcColor->btransfer);
@@ -1142,8 +1142,8 @@ void Media::ColorProfile::GetConvMatrix(NN<Math::Matrix3> mat, NN<const ColorPro
 	mat4.vec[0].val[0] = vec2.val[0] / vec1.val[0];
 	mat4.vec[1].val[1] = vec2.val[1] / vec1.val[1];
 	mat4.vec[2].val[2] = vec2.val[2] / vec1.val[2];
-	mat2.Multiply(mat4);
-	mat2.Multiply(mat3);
-	mat->MultiplyBA(mat2);
-	mat->MultiplyBA(mat5);
+	mat2.MultiplyInplace(mat4);
+	mat2.MultiplyInplace(mat3);
+	mat->MultiplyInplaceBA(mat2);
+	mat->MultiplyInplaceBA(mat5);
 }

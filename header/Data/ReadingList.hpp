@@ -7,6 +7,10 @@ namespace Data
 	public:
 		virtual UIntOS GetCount() const = 0;
 		virtual T GetItem(UIntOS index) const = 0;
+		Bool IsEmpty() const 
+		{
+			return this->GetCount() == 0;
+		}
 	};
 }
 #endif

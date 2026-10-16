@@ -212,6 +212,7 @@ namespace Text
 	Bool StrToUInt32(UnsafeArray<const UTF8Char> intStr, OutParam<UInt32> outVal);
 	Bool StrToUInt32S(UnsafeArray<const UTF8Char> intStr, OutParam<UInt32> outVal, UInt32 failVal);
 	UInt32 StrToUInt32(UnsafeArray<const UTF8Char> intStr);
+	UInt32 StrToUInt32B(UnsafeArray<const UTF8Char> intStr, OptOut<UnsafeArray<const UTF8Char>> numEnd);
 	Bool StrToInt32(UnsafeArray<const UTF8Char> str, OutParam<Int32> outVal);
 	Int32 StrToInt32(UnsafeArray<const UTF8Char> str);
 #ifdef HAS_INT64

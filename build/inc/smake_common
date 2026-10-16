@@ -3129,6 +3129,8 @@ Math/SROGCWKTWriter.h:
 @SROGCWKTWriter.o
 Math/SRWKTWriter.h:
 @SRWKTWriter.o
+Math/Transform.h:
+@Transform.o
 Math/Triangle.h:
 Math/TSPFile.h:
 @TSPFile.o
@@ -4895,6 +4897,12 @@ SSWR/AVIRead/AVIRImageResizeForm.h:
 @AVIRImageResizeForm.o
 SSWR/AVIRead/AVIRImageViewerForm.h:
 @AVIRImageViewerForm.o
+SSWR/AVIRead/AVIRModel3DViewerForm.h:
+@AVIRModel3DViewerForm.o
+Model/Model3D.h:
+@Model3D.o
+Parser/FileParser/IFCParser.h:
+@IFCParser.o
 SSWR/AVIRead/AVIRInvestmentAccountForm.h:
 @AVIRInvestmentAccountForm.o
 SSWR/AVIRead/AVIRInvestmentAInterestForm.h:

@@ -41,8 +41,9 @@ namespace IO
 		DataRateCalc,
 		SQLFile,
 		ConfigFile,
+		Model3D,
 
-		LastType = ConfigFile
+		LastType = Model3D
 	};
 
 	Text::CStringNN ParserTypeGetName(ParserType pt);

@@ -30,7 +30,10 @@ Double Math_MyPow(Double x, Double y);
 #define Math_ArcCos(val) acos(val)
 #define Math_ArcTan(val) atan(val)
 #define Math_ArcTan2(valY, valX) atan2(valY, valX)
-#define Math_Abs(val) (((val) < 0)?(-val):(val))
+Double FORCEINLINE Math_Abs(Double val)
+{
+	return (val < 0) ? -val : val;
+}
 #define Math_Sqrt(val) sqrt((Double)(val))
 
 #define Math_Sinh(val) (0.5 * (Math_Exp(val) - Math_Exp(-val)))

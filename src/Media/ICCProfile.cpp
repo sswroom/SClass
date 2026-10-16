@@ -809,8 +809,8 @@ Bool Media::ICCProfile::GetColorPrimaries(NN<Media::ColorProfile::ColorPrimaries
 		mat3.vec[0].val[0] = vec2.val[0] / vec1.val[0];
 		mat3.vec[1].val[1] = vec2.val[1] / vec1.val[1];
 		mat3.vec[2].val[2] = vec2.val[2] / vec1.val[2];
-		mat.Multiply(mat3);
-		mat.Multiply(mat2);
+		mat.MultiplyInplace(mat3);
+		mat.MultiplyInplace(mat2);
 
 		color->colorType = Media::ColorProfile::CT_CUSTOM;
 		color->r = Media::ColorProfile::ColorPrimaries::XYZToxyY(mat.Multiply(rxyz)).GetXY();

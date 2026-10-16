@@ -25,6 +25,7 @@
 #include "SSWR/AVIRead/AVIRLogFileForm.h"
 #include "SSWR/AVIRead/AVIRLUTForm.h"
 #include "SSWR/AVIRead/AVIRMediaForm.h"
+#include "SSWR/AVIRead/AVIRModel3DViewerForm.h"
 #include "SSWR/AVIRead/AVIRMIMEViewerForm.h"
 #include "SSWR/AVIRead/AVIRPackageForm.h"
 #include "SSWR/AVIRead/AVIRPDFObjectForm.h"
@@ -280,6 +281,14 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 			tileList.Add(NN<Map::CesiumTile>::ConvertFrom(pobj));
 			NN<SSWR::AVIRead::AVIRCesiumTileForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCesiumTileForm(nullptr, this->ui, *this, tileList));
+			InitForm(frm);
+			frm->Show();
+		}
+		break;
+	case IO::ParserType::Model3D:
+		{
+			NN<SSWR::AVIRead::AVIRModel3DViewerForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRModel3DViewerForm(nullptr, this->ui, *this, NN<Model::Model3D>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}

@@ -2323,6 +2323,131 @@ Bool Text::StrToDouble(UnsafeArray<const UTF8Char> str1, OutParam<Double> outVal
 	return true;
 }
 
+Double Text::StrToDoubleB(UnsafeArray<const UTF8Char> str, OptOut<UnsafeArray<const UTF8Char>> numEnd)
+{
+	Bool neg = false;
+	UTF8Char c;
+	if (*str == '-')
+	{
+		neg = true;
+		++str;
+	}
+	else if (*str == '+')
+	{
+		++str;
+	}
+#if _OSINT_SIZE == 64
+	Double r = 0;
+	while (true)
+	{
+		c = *str++;
+		if (c < '0' || c > '9')
+			break;
+		r = r * 10 + (c - '0');
+	}
+	if (c == '.')
+	{
+		Double fmul = 1;
+        while (true)
+		{
+			c = *str++;
+			if (c < '0' || c > '9')
+				break;
+			fmul *= 0.1;
+			r = r + (c - '0') * fmul;
+        }
+    }
+	else if (c == 0)
+	{
+		if (neg)
+		{
+			numEnd.Set(str - 1);
+			return -r;
+		}
+		else
+		{
+			numEnd.Set(str - 1);
+			return r;
+		}
+	}
+#else
+	Double r = 0.0;
+	while (true)
+	{
+		c = *str++;
+		if (c < '0' || c > '9')
+			break;
+		r = (r * 10.0) + (c - '0');
+	}
+	if (c == '.')
+	{
+		Double fmul = 1;
+        while (true)
+		{
+			c = *str++;
+			if (c < '0' || c > '9')
+				break;
+			fmul *= 0.1;
+			r += (c - '0') * fmul;
+        }
+    }
+	else if (c == 0)
+	{
+		if (neg)
+		{
+			r = -r;
+		}
+		numEnd.Set(str - 1);
+		return r;
+	}
+#endif
+	else
+	{
+		return false;
+	}
+	if (c == 'e' || c == 'E')
+	{
+		c = *str++;
+		Bool eneg;
+		Int32 expV;
+		if (c == '+')
+		{
+			eneg = false;
+		}
+		else if (c == '-')
+		{
+			eneg = true;
+		}
+		else
+		{
+			str--;
+			eneg = false;
+		}
+		expV = 0;
+		while (true)
+		{
+			c = *str++;
+			if (c < '0' || c > '9')
+				break;
+			expV = expV * 10 + c - '0';
+		}
+		if (eneg)
+		{
+			r = r * Math_Pow(10.0, -expV);
+		}
+		else
+		{
+			r = r * Math_Pow(10.0, expV);
+		}
+	}
+    if (neg)
+	{
+        r = -r;
+    }
+	numEnd.Set(str - 1);
+	return r;
+}
+
 Bool Text::StrToDoubleW(UnsafeArray<const UTF16Char> str1, OutParam<Double> outVal)
 {
 	Double r = 0.0;

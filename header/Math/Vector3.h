@@ -9,6 +9,13 @@ namespace Math
 		Double val[3];
 		
 		Vector3() = default;
+		Vector3(std::nullptr_t)
+		{
+			this->val[0] = 0;
+			this->val[1] = 0;
+			this->val[2] = 0;
+		}
+
 		Vector3(Double x, Double y, Double z)
 		{
 			this->val[0] = x;
@@ -65,6 +72,16 @@ namespace Math
 		Vector3 operator/(Double val) const
 		{
 			return Math::Vector3(this->val[0] / val, this->val[1] / val, this->val[2] / val);
+		}
+
+		Bool operator==(const Vector3 &val) const
+		{
+			return this->val[0] == val.val[0] && this->val[1] == val.val[1] && this->val[2] == val.val[2];
+		}
+
+		Bool operator!=(const Vector3 &val) const
+		{
+			return !(*this == val);
 		}
 
 		Double GetLength() const
@@ -129,6 +146,13 @@ namespace Math
 		Bool IsZero() const
 		{
 			return this->val[0] == 0 && this->val[1] == 0 && this->val[2] == 0;
+		}
+
+		Math::Vector3 Normalized() const
+		{
+			Double len = this->GetLength();
+			if (len <= 1e-20) return Math::Vector3(0, 0, 0);
+			return *this / len;
 		}
 
 		Math::Vector3 Abs() const
