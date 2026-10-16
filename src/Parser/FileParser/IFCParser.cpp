@@ -3,8 +3,6 @@
 #include "Data/ArrayListNN.hpp"
 #include "Data/ByteBuffer.h"
 #include "Data/Sort/ArtificialQuickSort.h"
-#include "Math/Transform.h"
-#include "Model/Model3D.h"
 #include "Parser/FileParser/IFCParser.h"
 
 class IFCEntityComparator : public Data::Comparator<NN<Parser::FileParser::IFCParser::IFCEntity>>
@@ -248,7 +246,7 @@ Math::Transform Parser::FileParser::IFCParser::GetObjectPlacement(NN<Data::Array
 	return GetObjectPlacement(entities, Ref(ent->args.GetItem(0)), depth + 1).Compose(GetAxisPlacement(entities, Ref(ent->args.GetItem(1))));
 }
 
-void Parser::FileParser::IFCParser::AddPolygon(NN<Model::Model3D> model, NN<Data::ArrayListObj<Math::Vector3>> points, const Math::Transform &t, UInt32 elementId)
+void Parser::FileParser::IFCParser::AddPolygon(NN<Math::Model3D> model, NN<Data::ArrayListObj<Math::Vector3>> points, const Math::Transform &t, UInt32 elementId)
 {
 	if (points->GetCount() < 3) return;
 	Math::Vector3 p0 = t.TransformPoint(points->GetItem(0));
@@ -257,7 +255,7 @@ void Parser::FileParser::IFCParser::AddPolygon(NN<Model::Model3D> model, NN<Data
 	{
 		Math::Vector3 p1 = t.TransformPoint(points->GetItem(i));
 		Math::Vector3 p2 = t.TransformPoint(points->GetItem(i + 1));
-		model->AddTriangle(p0.GetX(), p0.GetY(), p0.GetZ(), p1.GetX(), p1.GetY(), p1.GetZ(), p2.GetX(), p2.GetY(), p2.GetZ(), elementId);
+		model->AddTriangle(p0, p1, p2, elementId);
 		i++;
 	}
 }
@@ -326,7 +324,7 @@ Data::ArrayListObj<Math::Vector3> Parser::FileParser::IFCParser::GetProfilePoint
 	return points;
 }
 
-void Parser::FileParser::IFCParser::ParseExtrusion(NN<Model::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, NN<IFCEntity> solid, const Math::Transform &productT, UInt32 elementId)
+void Parser::FileParser::IFCParser::ParseExtrusion(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, NN<IFCEntity> solid, const Math::Transform &productT, UInt32 elementId)
 {
 	if (solid->args.GetCount() < 4) return;
 	Data::ArrayListObj<Math::Vector3> profile = GetProfilePoints(entities, Ref(solid->args.GetItem(0)));
@@ -357,7 +355,7 @@ void Parser::FileParser::IFCParser::ParseExtrusion(NN<Model::Model3D> model, NN<
 	}
 }
 
-void Parser::FileParser::IFCParser::ParseFacetedBrep(NN<Model::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 brepId, const Math::Transform &t, UInt32 elementId)
+void Parser::FileParser::IFCParser::ParseFacetedBrep(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 brepId, const Math::Transform &t, UInt32 elementId)
 {
 	NN<Parser::FileParser::IFCParser::IFCEntity> brep;
 	if (!Find(entities, brepId).SetTo(brep) || brep->args.IsEmpty()) return;
@@ -399,7 +397,7 @@ Data::ArrayListObj<Math::Vector3> Parser::FileParser::IFCParser::GetPointList3D(
 	return points;
 }
 
-void Parser::FileParser::IFCParser::ParseTriangulatedFaceSet(NN<Model::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, NN<IFCEntity> faceSet, const Math::Transform &t, UInt32 elementId)
+void Parser::FileParser::IFCParser::ParseTriangulatedFaceSet(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, NN<IFCEntity> faceSet, const Math::Transform &t, UInt32 elementId)
 {
 	if (faceSet->args.GetCount() < 4) return;
 	Data::ArrayListObj<Math::Vector3> points = GetPointList3D(entities, Ref(faceSet->args.GetItem(0)));
@@ -422,7 +420,7 @@ void Parser::FileParser::IFCParser::ParseTriangulatedFaceSet(NN<Model::Model3D> 
 	}
 }
 
-void Parser::FileParser::IFCParser::ParsePolygonalFaceSet(NN<Model::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, NN<IFCEntity> faceSet, const Math::Transform &t, UInt32 elementId)
+void Parser::FileParser::IFCParser::ParsePolygonalFaceSet(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, NN<IFCEntity> faceSet, const Math::Transform &t, UInt32 elementId)
 {
 	if (faceSet->args.GetCount() < 3) return;
 	Data::ArrayListObj<Math::Vector3> points = GetPointList3D(entities, Ref(faceSet->args.GetItem(0)));
@@ -468,7 +466,7 @@ Math::Transform Parser::FileParser::IFCParser::GetMappingTarget(NN<Data::ArrayLi
 	return t;
 }
 
-void Parser::FileParser::IFCParser::ParseItem(NN<Model::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 itemId, const Math::Transform &t, UInt32 elementId, UInt32 depth)
+void Parser::FileParser::IFCParser::ParseItem(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 itemId, const Math::Transform &t, UInt32 elementId, UInt32 depth)
 {
 	if (depth > 16) return;
 	NN<Parser::FileParser::IFCParser::IFCEntity> item;
@@ -515,7 +513,7 @@ void Parser::FileParser::IFCParser::ParseItem(NN<Model::Model3D> model, NN<Data:
 	}
 }
 
-void Parser::FileParser::IFCParser::ParseModel(NN<Model::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities)
+void Parser::FileParser::IFCParser::ParseModel(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities)
 {
 	NN<IFCEntity> ent;
 	UIntOS i = 0;
@@ -600,11 +598,11 @@ Optional<IO::ParsedObject> Parser::FileParser::IFCParser::ParseFileHdr(NN<IO::St
 	Data::ArrayListNN<IFCEntity> entities;
 	ParseEntities(entities, buff);
 	if (entities.GetCount() == 0) return nullptr;
-	NN<Model::Model3D> model;
-	NEW_CLASSNN(model, Model::Model3D(fd->GetFullName()));
+	NN<Math::Model3D> model;
+	NEW_CLASSNN(model, Math::Model3D(fd->GetFullName()));
 	ParseModel(model, entities);
 	entities.DeleteAll();
-	if (model->GetTriangleCount() == 0)
+	if (model->GetCount() == 0)
 	{
 		model.Delete();
 		return nullptr;

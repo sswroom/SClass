@@ -3109,6 +3109,8 @@ Math/Mercator1SPProjectedCoordinateSystem.h:
 @Mercator1SPProjectedCoordinateSystem.o
 Math/MercatorProjectedCoordinateSystem.h:
 @MercatorProjectedCoordinateSystem.o
+Math/Model3D.h:
+@Model3D.o
 Math/MSGeography.h:
 @MSGeography.o
 Math/NumArrayTool.h:
@@ -4348,6 +4350,8 @@ Parser/FileParser/ICOParser.h:
 @ICOParser.o
 Parser/FileParser/ID3Parser.h:
 @ID3Parser.o
+Parser/FileParser/IFCParser.h:
+@IFCParser.o
 Parser/FileParser/IMGParser.h:
 @IMGParser.o
 Parser/FileParser/IPACParser.h:
@@ -4899,10 +4903,6 @@ SSWR/AVIRead/AVIRImageViewerForm.h:
 @AVIRImageViewerForm.o
 SSWR/AVIRead/AVIRModel3DViewerForm.h:
 @AVIRModel3DViewerForm.o
-Model/Model3D.h:
-@Model3D.o
-Parser/FileParser/IFCParser.h:
-@IFCParser.o
 SSWR/AVIRead/AVIRInvestmentAccountForm.h:
 @AVIRInvestmentAccountForm.o
 SSWR/AVIRead/AVIRInvestmentAInterestForm.h:

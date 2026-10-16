@@ -161,6 +161,20 @@ namespace Math
 				(this->val[1] < 0)?-this->val[1]:this->val[1],
 				(this->val[2] < 0)?-this->val[2]:this->val[2]);
 		}
+
+		Math::Vector3 Min(const Math::Vector3 &val) const
+		{
+			return Math::Vector3((this->val[0] < val.val[0])?this->val[0]:val.val[0],
+				(this->val[1] < val.val[1])?this->val[1]:val.val[1],
+				(this->val[2] < val.val[2])?this->val[2]:val.val[2]);
+		}
+
+		Math::Vector3 Max(const Math::Vector3 &val) const
+		{
+			return Math::Vector3((this->val[0] > val.val[0])?this->val[0]:val.val[0],
+				(this->val[1] > val.val[1])?this->val[1]:val.val[1],
+				(this->val[2] > val.val[2])?this->val[2]:val.val[2]);
+		}
 	};
 }
 #endif

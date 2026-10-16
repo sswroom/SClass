@@ -1078,6 +1078,7 @@ Math.o: ../../src/Math/Math.cpp
 Matrix3.o: ../../src/Math/Matrix3.cpp
 MercatorProjectedCoordinateSystem.o: ../../src/Math/MercatorProjectedCoordinateSystem.cpp
 Mercator1SPProjectedCoordinateSystem.o: ../../src/Math/Mercator1SPProjectedCoordinateSystem.cpp
+Model3D.o: ../../src/Math/Model3D.cpp
 MSGeography.o: ../../src/Math/MSGeography.cpp
 NumArrayTool.o: ../../src/Math/NumArrayTool.cpp
 PointMappingCoordinateSystem.o: ../../src/Math/PointMappingCoordinateSystem.cpp
@@ -1925,6 +1926,7 @@ HEIFParser_Null.o: ../../src/Parser/FileParser/HEIFParser_Null.cpp
 HTRecParser.o: ../../src/Parser/FileParser/HTRecParser.cpp
 ICOParser.o: ../../src/Parser/FileParser/ICOParser.cpp
 ID3Parser.o: ../../src/Parser/FileParser/ID3Parser.cpp
+IFCParser.o: ../../src/Parser/FileParser/IFCParser.cpp
 IMGParser.o: ../../src/Parser/FileParser/IMGParser.cpp
 IPACParser.o: ../../src/Parser/FileParser/IPACParser.cpp
 IS2Parser.o: ../../src/Parser/FileParser/IS2Parser.cpp
@@ -2246,8 +2248,6 @@ AVIRImagePSNRForm.o: ../../src/SSWR/AVIRead/AVIRImagePSNRForm.cpp
 AVIRImageResizeForm.o: ../../src/SSWR/AVIRead/AVIRImageResizeForm.cpp
 AVIRImageViewerForm.o: ../../src/SSWR/AVIRead/AVIRImageViewerForm.cpp
 AVIRModel3DViewerForm.o: ../../src/SSWR/AVIRead/AVIRModel3DViewerForm.cpp
-Model3D.o: ../../src/Model/Model3D.cpp
-IFCParser.o: ../../src/Parser/FileParser/IFCParser.cpp
 AVIRInvestmentAccountForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentAccountForm.cpp
 AVIRInvestmentAInterestForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentAInterestForm.cpp
 AVIRInvestmentAssetForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentAssetForm.cpp

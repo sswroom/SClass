@@ -288,7 +288,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::Model3D:
 		{
 			NN<SSWR::AVIRead::AVIRModel3DViewerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRModel3DViewerForm(nullptr, this->ui, *this, NN<Model::Model3D>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRModel3DViewerForm(nullptr, this->ui, *this, NN<Math::Model3D>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}

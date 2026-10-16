@@ -1,9 +1,8 @@
 #include "Stdafx.h"
+#include "Data/Sort/ArtificialQuickSort.h"
 #include "Math/Math_C.h"
+#include "Math/Vector3.h"
 #include "SSWR/AVIRead/AVIRModel3DViewerForm.h"
-#include <algorithm>
-#include <cmath>
-#include <vector>
 
 class SSWR::AVIRead::AVIRModel3DViewerForm::ModelControl : public UI::GUICustomDraw
 {
@@ -14,7 +13,18 @@ class SSWR::AVIRead::AVIRModel3DViewerForm::ModelControl : public UI::GUICustomD
 		Double light;
 	};
 
-	NN<Model::Model3D> model;
+	class ViewTriangleComparator : public Data::Comparator<NN<ViewTriangle>>
+	{
+	public:
+		virtual IntOS Compare(NN<ViewTriangle> a, NN<ViewTriangle> b) const
+		{
+			if (a->depth < b->depth) return -1;
+			if (a->depth > b->depth) return 1;
+			return 0;
+		}
+	};
+
+	NN<Math::Model3D> model;
 	Bool mouseDown;
 	Math::Coord2D<IntOS> lastMouse;
 	Double yaw;
@@ -67,75 +77,58 @@ protected:
 		dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize(), nullptr, background);
 		dimg->DelBrush(background);
 
-		UIntOS triCount = this->model->GetTriangleCount();
+		UIntOS triCount = this->model->GetCount();
 		if (triCount == 0) return;
-		Double minX = 0;
-		Double minY = 0;
-		Double minZ = 0;
-		Double maxX = 0;
-		Double maxY = 0;
-		Double maxZ = 0;
+		Math::Vector3 minPt = nullptr;
+		Math::Vector3 maxPt = nullptr;
 		UIntOS i = 0;
 		while (i < triCount)
 		{
-			const Model::Model3D::Triangle &tri = this->model->GetTriangle(i);
-			Double xs[3] = {tri.x1, tri.x2, tri.x3};
-			Double ys[3] = {tri.y1, tri.y2, tri.y3};
-			Double zs[3] = {tri.z1, tri.z2, tri.z3};
+			NN<Math::Model3D::Triangle> tri = NN<Math::Model3D::Triangle>::ConvertFrom(this->model->GetItemNoCheck(i));
 			if (i == 0)
 			{
-				minX = maxX = xs[0]; minY = maxY = ys[0]; minZ = maxZ = zs[0];
+				minPt = maxPt = tri->pt1;
 			}
-			UIntOS j = 0;
-			while (j < 3)
-			{
-				if (xs[j] < minX) minX = xs[j];
-				if (ys[j] < minY) minY = ys[j];
-				if (zs[j] < minZ) minZ = zs[j];
-				if (xs[j] > maxX) maxX = xs[j];
-				if (ys[j] > maxY) maxY = ys[j];
-				if (zs[j] > maxZ) maxZ = zs[j];
-				j++;
-			}
+			minPt = minPt.Min(tri->pt1).Min(tri->pt2).Min(tri->pt3);
+			maxPt = maxPt.Max(tri->pt1).Max(tri->pt2).Max(tri->pt3);
 			i++;
 		}
-		Double centerX = (minX + maxX) * 0.5;
-		Double centerY = (minY + maxY) * 0.5;
-		Double centerZ = (minZ + maxZ) * 0.5;
-		Double extent = std::max(maxX - minX, std::max(maxY - minY, maxZ - minZ));
+		Math::Vector3 centerPt = (minPt + maxPt) * 0.5;
+		Double extent = Math_Max(maxPt.GetX() - minPt.GetX(), Math_Max(maxPt.GetY() - minPt.GetY(), maxPt.GetZ() - minPt.GetZ()));
 		if (extent <= 1e-20) extent = 1;
-		Double scale = std::min(dimg->GetWidth(), dimg->GetHeight()) * 0.76 / extent * this->zoom;
-		Double sinYaw = std::sin(this->yaw);
-		Double cosYaw = std::cos(this->yaw);
-		Double sinPitch = std::sin(this->pitch);
-		Double cosPitch = std::cos(this->pitch);
+		Double scale = Math_Min(dimg->GetWidth(), dimg->GetHeight()) * 0.76 / extent * this->zoom;
+		Double sinYaw = Math_Sin(this->yaw);
+		Double cosYaw = Math_Cos(this->yaw);
+		Double sinPitch = Math_Sin(this->pitch);
+		Double cosPitch = Math_Cos(this->pitch);
 		Double screenCX = dimg->GetWidth() * 0.5;
 		Double screenCY = dimg->GetHeight() * 0.5;
-		std::vector<ViewTriangle> viewTris;
-		viewTris.reserve((size_t)triCount);
+		Data::ArrayListNN<ViewTriangle> viewTris(triCount);
 		i = 0;
 		while (i < triCount)
 		{
-			const Model::Model3D::Triangle &tri = this->model->GetTriangle(i);
-			Double x[3] = {tri.x1 - centerX, tri.x2 - centerX, tri.x3 - centerX};
-			Double y[3] = {tri.y1 - centerY, tri.y2 - centerY, tri.y3 - centerY};
-			Double z[3] = {tri.z1 - centerZ, tri.z2 - centerZ, tri.z3 - centerZ};
+			NN<ViewTriangle> viewTri;
+			NEW_CLASSNN(viewTri, ViewTriangle());
+			NN<Math::Model3D::Triangle> tri = NN<Math::Model3D::Triangle>::ConvertFrom(this->model->GetItemNoCheck(i));
+			Math::Vector3 pts[3];
+			pts[0] = tri->pt1 - centerPt;
+			pts[1] = tri->pt2 - centerPt;
+			pts[2] = tri->pt3 - centerPt;
 			Double vx[3];
 			Double vy[3];
 			Double vz[3];
-			ViewTriangle viewTri;
 			UIntOS j = 0;
 			while (j < 3)
 			{
-				Double rx = x[j] * cosYaw - y[j] * sinYaw;
-				Double ry = x[j] * sinYaw + y[j] * cosYaw;
+				Double rx = pts[j].GetX() * cosYaw - pts[j].GetY() * sinYaw;
+				Double ry = pts[j].GetX() * sinYaw + pts[j].GetY() * cosYaw;
 				vx[j] = rx;
-				vy[j] = ry * cosPitch - z[j] * sinPitch;
-				vz[j] = ry * sinPitch + z[j] * cosPitch;
-				viewTri.points[j] = Math::Coord2DDbl(screenCX + rx * scale, screenCY - vy[j] * scale);
+				vy[j] = ry * cosPitch - pts[j].GetZ() * sinPitch;
+				vz[j] = ry * sinPitch + pts[j].GetZ() * cosPitch;
+				viewTri->points[j] = Math::Coord2DDbl(screenCX + rx * scale, screenCY - vy[j] * scale);
 				j++;
 			}
-			viewTri.depth = (vz[0] + vz[1] + vz[2]) / 3.0;
+			viewTri->depth = (vz[0] + vz[1] + vz[2]) / 3.0;
 			Double ax = vx[1] - vx[0];
 			Double ay = vy[1] - vy[0];
 			Double az = vz[1] - vz[0];
@@ -147,11 +140,12 @@ protected:
 			Double nz = ax * by - ay * bx;
 			Double nLen = std::sqrt(nx * nx + ny * ny + nz * nz);
 			Double dot = nLen > 1e-20 ? std::abs((nx * 0.25 - ny * 0.35 + nz * 0.9) / nLen) : 0.3;
-			viewTri.light = 0.30 + 0.65 * dot;
-			viewTris.push_back(viewTri);
+			viewTri->light = 0.30 + 0.65 * dot;
+			viewTris.Add(viewTri);
 			i++;
 		}
-		std::stable_sort(viewTris.begin(), viewTris.end(), [](const ViewTriangle &a, const ViewTriangle &b) { return a.depth < b.depth; });
+		ViewTriangleComparator comp;
+		Data::Sort::ArtificialQuickSort::Sort<NN<ViewTriangle>>(viewTris, comp);
 
 		NN<Media::DrawBrush> brushes[16];
 		i = 0;
@@ -162,11 +156,15 @@ protected:
 			brushes[i] = dimg->NewBrushARGB(color);
 			i++;
 		}
-		for (const ViewTriangle &tri : viewTris)
+		i = 0;
+		UIntOS j = viewTris.GetCount();
+		while (i < j)
 		{
-			UIntOS level = (UIntOS)((tri.light - 0.30) / 0.65 * 15.0);
+			NN<ViewTriangle> tri = viewTris.GetItemNoCheck(i);
+			UIntOS level = (UIntOS)((tri->light - 0.30) / 0.65 * 15.0);
 			if (level > 15) level = 15;
-			dimg->DrawPolygon(tri.points, 3, nullptr, brushes[level]);
+			dimg->DrawPolygon(tri->points, 3, nullptr, brushes[level]);
+			i++;
 		}
 		i = 0;
 		while (i < 16)
@@ -174,10 +172,11 @@ protected:
 			dimg->DelBrush(brushes[i]);
 			i++;
 		}
+		viewTris.DeleteAll();
 	}
 
 public:
-	ModelControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, NN<Media::ColorManagerSess> colorSess, NN<Model::Model3D> model) : UI::GUICustomDraw(ui, parent, eng, colorSess)
+	ModelControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, NN<Media::ColorManagerSess> colorSess, NN<Math::Model3D> model) : UI::GUICustomDraw(ui, parent, eng, colorSess)
 	{
 		this->model = model;
 		this->mouseDown = false;
@@ -188,7 +187,7 @@ public:
 	}
 };
 
-SSWR::AVIRead::AVIRModel3DViewerForm::AVIRModel3DViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Model::Model3D> model) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRModel3DViewerForm::AVIRModel3DViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Math::Model3D> model) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->model = model;
@@ -200,7 +199,7 @@ SSWR::AVIRead::AVIRModel3DViewerForm::AVIRModel3DViewerForm(Optional<UI::GUIClie
 	this->lblInfo->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblInfo->SetRect(0, 0, 100, 26, false);
 	UTF8Char sbuff[128];
-	UnsafeArray<UTF8Char> sptr = Text::StrUIntOS(sbuff, model->GetTriangleCount());
+	UnsafeArray<UTF8Char> sptr = Text::StrUIntOS(sbuff, model->GetCount());
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" triangles"));
 	this->lblInfo->SetText(CSTRP(sbuff, sptr));
 	NEW_CLASSNN(this->modelCtrl, ModelControl(ui, *this, this->core->GetDrawEngine(), this->colorSess, model));

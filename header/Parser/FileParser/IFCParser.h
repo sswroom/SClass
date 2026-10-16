@@ -2,8 +2,8 @@
 #define _SM_PARSER_FILEPARSER_IFCPARSER
 #include "Data/ArrayListObj.hpp"
 #include "IO/FileParser.h"
+#include "Math/Model3D.h"
 #include "Math/Transform.h"
-#include "Model/Model3D.h"
 
 namespace Parser
 {
@@ -29,16 +29,16 @@ namespace Parser
 			static Math::Vector3 GetDirection(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 id, Math::Vector3 defVal);
 			static Math::Transform GetAxisPlacement(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 id);
 			static Math::Transform GetObjectPlacement(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 id, UInt32 depth);
-			static void AddPolygon(NN<Model::Model3D> model, NN<Data::ArrayListObj<Math::Vector3>> points, const Math::Transform &t, UInt32 elementId);
+			static void AddPolygon(NN<Math::Model3D> model, NN<Data::ArrayListObj<Math::Vector3>> points, const Math::Transform &t, UInt32 elementId);
 			static Data::ArrayListObj<Math::Vector3> GetProfilePoints(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 profileId);
-			static void ParseExtrusion(NN<Model::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, NN<IFCEntity> solid, const Math::Transform &productT, UInt32 elementId);
-			static void ParseFacetedBrep(NN<Model::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 brepId, const Math::Transform &t, UInt32 elementId);
+			static void ParseExtrusion(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, NN<IFCEntity> solid, const Math::Transform &productT, UInt32 elementId);
+			static void ParseFacetedBrep(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 brepId, const Math::Transform &t, UInt32 elementId);
 			static Data::ArrayListObj<Math::Vector3> GetPointList3D(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 listId);
-			static void ParseTriangulatedFaceSet(NN<Model::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, NN<IFCEntity> faceSet, const Math::Transform &t, UInt32 elementId);
-			static void ParsePolygonalFaceSet(NN<Model::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, NN<IFCEntity> faceSet, const Math::Transform &t, UInt32 elementId);
+			static void ParseTriangulatedFaceSet(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, NN<IFCEntity> faceSet, const Math::Transform &t, UInt32 elementId);
+			static void ParsePolygonalFaceSet(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, NN<IFCEntity> faceSet, const Math::Transform &t, UInt32 elementId);
 			static Math::Transform GetMappingTarget(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 id);
-			static void ParseItem(NN<Model::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 itemId, const Math::Transform &t, UInt32 elementId, UInt32 depth);
-			static void ParseModel(NN<Model::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities);
+			static void ParseItem(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 itemId, const Math::Transform &t, UInt32 elementId, UInt32 depth);
+			static void ParseModel(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities);
 		public:
 			IFCParser();
 			virtual ~IFCParser();
