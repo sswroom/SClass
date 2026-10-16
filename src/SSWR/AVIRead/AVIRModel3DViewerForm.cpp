@@ -105,6 +105,8 @@ protected:
 
 	virtual UI::EventState OnMouseWheel(Math::Coord2D<IntOS> scnPos, Int32 delta)
 	{
+		if (delta == 0)
+			return UI::EventState::StopEvent;
 		this->zoom *= delta > 0 ? 1.15 : 0.87;
 		if (this->zoom < 0.05) this->zoom = 0.05;
 		if (this->zoom > 100) this->zoom = 100;
