@@ -2,6 +2,7 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "Math/Math_C.h"
 #include "Math/Vector3.h"
+#include "Media/Engine3DFactory.h"
 #include "SSWR/AVIRead/AVIRModel3DViewerForm.h"
 
 class SSWR::AVIRead::AVIRModel3DViewerForm::ModelControl : public UI::GUICustomDraw
@@ -30,6 +31,46 @@ class SSWR::AVIRead::AVIRModel3DViewerForm::ModelControl : public UI::GUICustomD
 	Double yaw;
 	Double pitch;
 	Double zoom;
+	NN<Media::Engine3D> engine3d;
+	Optional<Media::Engine3DScene> scene;
+
+	Bool RenderHardware(NN<Media::DrawImage> dimg)
+	{
+		NN<Media::Engine3DScene> scene;
+		if (!this->scene.SetTo(scene))
+			return false;
+		if (this->model->GetCount() == 0)
+			return false;
+
+		Math::Vector3 minPt;
+		Math::Vector3 maxPt;
+		this->model->GetBounds(minPt, maxPt);
+
+		Math::Vector3 centerPt = (minPt + maxPt) * 0.5;
+		Double extent = Math_Max(maxPt.GetX() - minPt.GetX(), Math_Max(maxPt.GetY() - minPt.GetY(), maxPt.GetZ() - minPt.GetZ()));
+		if (extent <= 1e-20)
+			extent = 1;
+
+		Media::Engine3D::CameraState camera;
+		camera.fovDeg = 45;
+		camera.hAngle = this->yaw;
+		camera.vAngle = this->pitch;
+		camera.targetPos = centerPt;
+		Math::Size2D<UInt32> frameSize((UInt32)dimg->GetWidth(), (UInt32)dimg->GetHeight());
+		if (frameSize.x == 0 || frameSize.y == 0)
+			return false;
+		Double aspect = (Double)frameSize.x / frameSize.y;
+		Double fitRatio = Math_Min(1.0, aspect);
+		Double camDist = extent * 0.5 / (Math_Tan(camera.fovDeg * Math::PI / 360.0) * 0.76 * fitRatio * this->zoom);
+		Double cosPitch = Math_Cos(this->pitch);
+		camera.camPos = centerPt + Math::Vector3(camDist * cosPitch * Math_Cos(this->yaw), camDist * cosPitch * Math_Sin(this->yaw), camDist * Math_Sin(this->pitch));
+
+		if (!this->engine3d->BeginFrame(scene, frameSize))
+			return false;
+		Bool ret = this->engine3d->RenderModel3D(camera, this->model);
+		this->engine3d->EndFrame();
+		return ret;
+	}
 
 protected:
 	virtual UI::EventState OnMouseDown(Math::Coord2D<IntOS> scnPos, UI::GUIControl::MouseButton btn)
@@ -73,6 +114,9 @@ protected:
 
 	virtual void OnDraw(NN<Media::DrawImage> dimg)
 	{
+		if (RenderHardware(dimg))
+			return;
+
 		NN<Media::DrawBrush> background = dimg->NewBrushARGB(0xfff2f4f3);
 		dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize(), nullptr, background);
 		dimg->DelBrush(background);
@@ -176,14 +220,23 @@ protected:
 	}
 
 public:
-	ModelControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, NN<Media::ColorManagerSess> colorSess, NN<Math::Model3D> model) : UI::GUICustomDraw(ui, parent, eng, colorSess)
+	ModelControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, NN<Media::ColorManagerSess> colorSess, NN<Media::Engine3D> engine3d, NN<Math::Model3D> model) : UI::GUICustomDraw(ui, parent, eng, colorSess)
 	{
 		this->model = model;
+		this->engine3d = engine3d;
+		this->scene = this->engine3d->CreateScene(this->GetHandle());
 		this->mouseDown = false;
 		this->lastMouse = Math::Coord2D<IntOS>(0, 0);
 		this->yaw = 0.65;
 		this->pitch = 0.45;
 		this->zoom = 1;
+	}
+
+	virtual ~ModelControl()
+	{
+		NN<Media::Engine3DScene> scene;
+		if (this->scene.SetTo(scene))
+			this->engine3d->DeleteScene(scene);
 	}
 };
 
@@ -191,6 +244,7 @@ SSWR::AVIRead::AVIRModel3DViewerForm::AVIRModel3DViewerForm(Optional<UI::GUIClie
 {
 	this->core = core;
 	this->model = model;
+	this->engine3d = Media::Engine3DFactory::CreateEngine3D();
 	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->SetText(model->GetSourceNameObj()->ToCString());
 	this->SetFont(nullptr, 8.25, false);
@@ -202,13 +256,14 @@ SSWR::AVIRead::AVIRModel3DViewerForm::AVIRModel3DViewerForm(Optional<UI::GUIClie
 	UnsafeArray<UTF8Char> sptr = Text::StrUIntOS(sbuff, model->GetCount());
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" triangles"));
 	this->lblInfo->SetText(CSTRP(sbuff, sptr));
-	NEW_CLASSNN(this->modelCtrl, ModelControl(ui, *this, this->core->GetDrawEngine(), this->colorSess, model));
+	NEW_CLASSNN(this->modelCtrl, ModelControl(ui, *this, this->core->GetDrawEngine(), this->colorSess, this->engine3d, model));
 	this->modelCtrl->SetDockType(UI::GUIControl::DOCK_FILL);
 }
 
 SSWR::AVIRead::AVIRModel3DViewerForm::~AVIRModel3DViewerForm()
 {
 	this->ClearChildren();
+	this->engine3d.Delete();
 	this->model.Delete();
 	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->core->GetColorManager()->DeleteSess(this->colorSess);

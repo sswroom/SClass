@@ -16,6 +16,7 @@ namespace Media
 		virtual void DeleteScene(NN<Engine3DScene> scene);
 		virtual Bool BeginFrame(NN<Engine3DScene> scene, Math::Size2D<UInt32> frameSize);
 		virtual Bool RenderScene(const CameraState &camera, NN<const Data::ArrayListNN<SceneObject>> sceneObjs);
+		virtual Bool RenderModel3D(const CameraState &camera, NN<const Math::Model3D> model);
 		virtual void EndFrame();
 	};
 }

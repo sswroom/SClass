@@ -54,6 +54,13 @@ Bool Media::NullEngine3D::RenderScene(const CameraState &camera, NN<const Data::
 	return false;
 }
 
+Bool Media::NullEngine3D::RenderModel3D(const CameraState &camera, NN<const Math::Model3D> model)
+{
+	(void)camera;
+	(void)model;
+	return false;
+}
+
 void Media::NullEngine3D::EndFrame()
 {
 }

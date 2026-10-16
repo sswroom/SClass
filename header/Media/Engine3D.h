@@ -3,6 +3,7 @@
 #include "Data/ArrayListA.hpp"
 #include "Data/ArrayListNN.hpp"
 #include "Handles.h"
+#include "Math/Model3D.h"
 #include "Math/Coord2DDbl.h"
 #include "Math/Size2D.h"
 #include "Math/Vector3.h"
@@ -81,6 +82,7 @@ namespace Media
 		virtual void DeleteScene(NN<Engine3DScene> scene) = 0;
 		virtual Bool BeginFrame(NN<Engine3DScene> scene, Math::Size2D<UInt32> frameSize) = 0;
 		virtual Bool RenderScene(const CameraState &camera, NN<const Data::ArrayListNN<SceneObject>> sceneObjs) = 0;
+		virtual Bool RenderModel3D(const CameraState &camera, NN<const Math::Model3D> model) = 0;
 		virtual void EndFrame() = 0;
 	};
 }

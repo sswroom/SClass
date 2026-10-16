@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include <string.h>
+#include "Data/Sort/ArtificialQuickSort.h"
 #include "Math/Math_C.h"
 #include "Media/VulkanEngine.h"
 
@@ -968,6 +969,7 @@ static Bool VulkanCreateSwapchain(NN<VulkanEngineScene> scene, Math::Size2D<UInt
 static Bool VulkanProjectPoint(
 	const Media::Engine3D::CameraState &camera,
 	Math::Vector3 pos,
+	Double aspect,
 	float *outX,
 	float *outY,
 	float *outZ)
@@ -1002,12 +1004,13 @@ static Bool VulkanProjectPoint(
 	if (viewZ <= 0.1)
 		return false;
 
-	Double aspect = 1.0;
+	if (aspect <= 0.0)
+		aspect = 1.0;
 	Double tanHalfFov = Math_Tan(camera.fovDeg * Math::PI / 360.0);
 	if (tanHalfFov < 0.0001)
 		tanHalfFov = 0.0001;
 	Double ndcX = viewX / (viewZ * tanHalfFov * aspect);
-	Double ndcY = viewY / (viewZ * tanHalfFov);
+	Double ndcY = -viewY / (viewZ * tanHalfFov);
 	Double ndcZ = viewZ / (viewZ + 1000.0);
 	if (ndcX < -2.0 || ndcX > 2.0 || ndcY < -2.0 || ndcY > 2.0)
 		return false;
@@ -1031,6 +1034,7 @@ static Bool VulkanBuildSceneMesh(
 	NN<const Data::ArrayListNN<Media::Engine3D::SceneObject>> sceneObjs)
 {
 	scene->ClearSceneMesh();
+	Double aspect = (Double)scene->extent.width / scene->extent.height;
 
 	UIntOS i = 0;
 	UIntOS objCnt = sceneObjs->GetCount();
@@ -1062,9 +1066,9 @@ static Bool VulkanBuildSceneMesh(
 					VulkanDrawVertex v0;
 					VulkanDrawVertex v1;
 					VulkanDrawVertex v2;
-					if (VulkanProjectPoint(camera, Math::Vector3(c0, obj->z), &v0.x, &v0.y, &v0.z) &&
-						VulkanProjectPoint(camera, Math::Vector3(c1, obj->z), &v1.x, &v1.y, &v1.z) &&
-						VulkanProjectPoint(camera, Math::Vector3(c2, obj->z), &v2.x, &v2.y, &v2.z))
+					if (VulkanProjectPoint(camera, Math::Vector3(c0, obj->z), aspect, &v0.x, &v0.y, &v0.z) &&
+						VulkanProjectPoint(camera, Math::Vector3(c1, obj->z), aspect, &v1.x, &v1.y, &v1.z) &&
+						VulkanProjectPoint(camera, Math::Vector3(c2, obj->z), aspect, &v2.x, &v2.y, &v2.z))
 					{
 						v0.r = cr; v0.g = cg; v0.b = cb;
 						v1.r = cr; v1.g = cg; v1.b = cb;
@@ -1092,10 +1096,10 @@ static Bool VulkanBuildSceneMesh(
 					VulkanDrawVertex v1;
 					VulkanDrawVertex v2;
 					VulkanDrawVertex v3;
-					if (VulkanProjectPoint(camera, Math::Vector3(p0, obj->z), &v0.x, &v0.y, &v0.z) &&
-						VulkanProjectPoint(camera, Math::Vector3(p1, obj->z), &v1.x, &v1.y, &v1.z) &&
-						VulkanProjectPoint(camera, Math::Vector3(p2, obj->z), &v2.x, &v2.y, &v2.z) &&
-						VulkanProjectPoint(camera, Math::Vector3(p3, obj->z), &v3.x, &v3.y, &v3.z))
+					if (VulkanProjectPoint(camera, Math::Vector3(p0, obj->z), aspect, &v0.x, &v0.y, &v0.z) &&
+						VulkanProjectPoint(camera, Math::Vector3(p1, obj->z), aspect, &v1.x, &v1.y, &v1.z) &&
+						VulkanProjectPoint(camera, Math::Vector3(p2, obj->z), aspect, &v2.x, &v2.y, &v2.z) &&
+						VulkanProjectPoint(camera, Math::Vector3(p3, obj->z), aspect, &v3.x, &v3.y, &v3.z))
 					{
 						v0.r = cr; v0.g = cg; v0.b = cb;
 						v1.r = cr; v1.g = cg; v1.b = cb;
@@ -1128,10 +1132,10 @@ static Bool VulkanBuildSceneMesh(
 						VulkanDrawVertex v1;
 						VulkanDrawVertex v2;
 						VulkanDrawVertex v3;
-						if (VulkanProjectPoint(camera, Math::Vector3(p0, obj->z), &v0.x, &v0.y, &v0.z) &&
-							VulkanProjectPoint(camera, Math::Vector3(p1, obj->z), &v1.x, &v1.y, &v1.z) &&
-							VulkanProjectPoint(camera, Math::Vector3(p2, obj->z), &v2.x, &v2.y, &v2.z) &&
-							VulkanProjectPoint(camera, Math::Vector3(p3, obj->z), &v3.x, &v3.y, &v3.z))
+						if (VulkanProjectPoint(camera, Math::Vector3(p0, obj->z), aspect, &v0.x, &v0.y, &v0.z) &&
+							VulkanProjectPoint(camera, Math::Vector3(p1, obj->z), aspect, &v1.x, &v1.y, &v1.z) &&
+							VulkanProjectPoint(camera, Math::Vector3(p2, obj->z), aspect, &v2.x, &v2.y, &v2.z) &&
+							VulkanProjectPoint(camera, Math::Vector3(p3, obj->z), aspect, &v3.x, &v3.y, &v3.z))
 						{
 							v0.r = cr; v0.g = cg; v0.b = cb;
 							v1.r = cr; v1.g = cg; v1.b = cb;
@@ -1147,6 +1151,92 @@ static Bool VulkanBuildSceneMesh(
 		}
 		i++;
 	}
+	return true;
+}
+
+class VulkanModelTriangle
+{
+public:
+	Math::Vector3 points[3];
+	Double depth;
+	Double light;
+};
+
+class VulkanModelTriangleComparator : public Data::Comparator<NN<VulkanModelTriangle>>
+{
+public:
+	virtual IntOS Compare(NN<VulkanModelTriangle> a, NN<VulkanModelTriangle> b) const
+	{
+		if (a->depth > b->depth) return -1;
+		if (a->depth < b->depth) return 1;
+		return 0;
+	}
+};
+
+static Bool VulkanBuildModelMesh(
+	NN<VulkanEngineScene> scene,
+	const Media::Engine3D::CameraState &camera,
+	NN<const Math::Model3D> model)
+{
+	scene->ClearSceneMesh();
+	Math::Vector3 forward = (camera.targetPos - camera.camPos).Normalized();
+	Data::ArrayListNN<VulkanModelTriangle> triangles;
+	UIntOS i = 0;
+	UIntOS triCount = model->GetCount();
+	while (i < triCount)
+	{
+		NN<Math::Model3D::Triangle> modelTri = NN<Math::Model3D::Triangle>::ConvertFrom(model->GetItemNoCheck(i));
+		NN<VulkanModelTriangle> tri;
+		NEW_CLASSNN(tri, VulkanModelTriangle());
+		tri->points[0] = modelTri->pt1;
+		tri->points[1] = modelTri->pt2;
+		tri->points[2] = modelTri->pt3;
+		Math::Vector3 center = (tri->points[0] + tri->points[1] + tri->points[2]) / 3.0;
+		tri->depth = (center - camera.camPos).DotProduct(forward);
+		Math::Vector3 normal = (tri->points[1] - tri->points[0]).CrossProduct(tri->points[2] - tri->points[0]);
+		Double normalLen = normal.GetLength();
+		Double light = normalLen > 1e-20 ? std::abs((normal.GetX() * 0.25 - normal.GetY() * 0.35 + normal.GetZ() * 0.9) / normalLen) : 0.3;
+		tri->light = 0.30 + 0.65 * light;
+		triangles.Add(tri);
+		i++;
+	}
+
+	VulkanModelTriangleComparator comparator;
+	if (triangles.GetCount() > 1)
+	{
+		Data::Sort::ArtificialQuickSort::Sort<NN<VulkanModelTriangle>>(triangles, comparator);
+	}
+
+	Double aspect = scene->extent.height == 0 ? 1.0 : (Double)scene->extent.width / scene->extent.height;
+	i = 0;
+	triCount = triangles.GetCount();
+	while (i < triCount)
+	{
+		NN<VulkanModelTriangle> tri = triangles.GetItemNoCheck(i);
+		VulkanDrawVertex vertices[3];
+		if (VulkanProjectPoint(camera, tri->points[0], aspect, &vertices[0].x, &vertices[0].y, &vertices[0].z) &&
+			VulkanProjectPoint(camera, tri->points[1], aspect, &vertices[1].x, &vertices[1].y, &vertices[1].z) &&
+			VulkanProjectPoint(camera, tri->points[2], aspect, &vertices[2].x, &vertices[2].y, &vertices[2].z))
+		{
+			UInt32 level = (UInt32)(96 + (tri->light - 0.30) / 0.65 * 150.0);
+			if (level > 246)
+				level = 246;
+			float red = (float)level / 255.0f;
+			float green = (float)(level + 9) / 255.0f;
+			float blue = (float)(level + 3) / 255.0f;
+			UIntOS j = 0;
+			while (j < 3)
+			{
+				vertices[j].r = red;
+				vertices[j].g = green;
+				vertices[j].b = blue;
+				j++;
+			}
+			scene->AddTriangle(vertices[0], vertices[1], vertices[2]);
+		}
+		i++;
+	}
+	triangles.DeleteAll();
 	return true;
 }
 
@@ -1398,6 +1488,32 @@ Bool Media::VulkanEngine::RenderScene(const CameraState &camera, NN<const Data::
 	#else
 	(void)camera;
 	(void)sceneObjs;
+	return false;
+	#endif
+}
+
+Bool Media::VulkanEngine::RenderModel3D(const CameraState &camera, NN<const Math::Model3D> model)
+{
+	#if HAS_VULKAN_HEADER && defined(__linux__) && defined(GDK_WINDOWING_X11)
+	NN<Engine3DScene> scene;
+	if (!this->currScene.SetTo(scene))
+		return false;
+	VulkanEngineScene *vkScene = (VulkanEngineScene*)scene.Ptr();
+	if (!VulkanBuildModelMesh(*vkScene, camera, model) || !VulkanUploadSceneMesh(*vkScene))
+		return false;
+
+	if (!VulkanDrawFrame(*vkScene, 0.949f, 0.957f, 0.953f))
+	{
+		if (vkScene->initialized && VulkanCreateSwapchain(*vkScene, this->frameSize))
+		{
+			return VulkanDrawFrame(*vkScene, 0.949f, 0.957f, 0.953f);
+		}
+		return false;
+	}
+	return true;
+	#else
+	(void)camera;
+	(void)model;
 	return false;
 	#endif
 }
