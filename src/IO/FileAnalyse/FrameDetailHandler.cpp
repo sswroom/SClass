@@ -232,6 +232,25 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex32Name(UIntOS frameOfst, Text::C
 	this->AddField(frameOfst, 4, name, sb.ToCString());
 }
 
+void IO::FileAnalyse::FrameDetailHandler::AddHex64Name(UIntOS frameOfst, Text::CStringNN name, UInt64 v, Text::CString vName)
+{
+	Text::StringBuilderUTF8 sb;
+	sb.AppendC(UTF8STRC("0x"));
+	sb.AppendHex64(v);
+	Text::CStringNN nns;
+	if (vName.SetTo(nns))
+	{
+		sb.AppendC(UTF8STRC(" ("));
+		sb.Append(nns);
+		sb.AppendUTF8Char(')');
+	}
+	else
+	{
+		sb.AppendC(UTF8STRC(" (Unkonwn)"));
+	}
+	this->AddField(frameOfst, 8, name, sb.ToCString());
+}
+
 void IO::FileAnalyse::FrameDetailHandler::AddStrC(UIntOS frameOfst, UIntOS size, Text::CStringNN name, UnsafeArray<const UTF8Char> vBuff)
 {
 	NN<Text::String> s = Text::String::New(vBuff, size);

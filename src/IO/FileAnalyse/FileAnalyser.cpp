@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Core/ByteTool_C.h"
+#include "IO/FileAnalyse/CFBFileAnalyse.h"
 #include "IO/FileAnalyse/CCacheV2FileAnalyse.h"
 #include "IO/FileAnalyse/DBF3FileAnalyse.h"
 #include "IO/FileAnalyse/DWGFileAnalyse.h"
@@ -128,6 +129,10 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::MDBFileAnalyse(fd));
 	}
+	else if (buffSize >= 256 && ReadLUInt32(&buff[0]) == 0xe011cfd0 && ReadLUInt32(&buff[4]) == 0xe11ab1a1)
+	{
+		NEW_CLASSNN(analyse, IO::FileAnalyse::CFBFileAnalyse(fd));
+	}
 	else if (buff[0] == 'A' && buff[1] == 'C' && buff[2] == '1' && buff[3] == '0')
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::DWGFileAnalyse(fd));
@@ -235,4 +240,5 @@ void IO::FileAnalyse::FileAnalyser::AddFilters(NN<IO::FileSelector> selector)
 	selector->AddFilter(CSTR("*.btf"), CSTR("TIFF file"));
 	selector->AddFilter(CSTR("*.gdbtable"), CSTR("FGDB Table file"));
 	selector->AddFilter(CSTR("*.bundle"), CSTR("Compact Cache V2 file"));
+	selector->AddFilter(CSTR("*.cfb"), CSTR("Compound File Binary"));
 }

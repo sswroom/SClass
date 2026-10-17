@@ -39,6 +39,7 @@ namespace IO
 			void AddHex8Name(UIntOS frameOfst, Text::CStringNN name, UInt8 v, Text::CString vName);
 			void AddHex16Name(UIntOS frameOfst, Text::CStringNN name, UInt16 v, Text::CString vName);
 			void AddHex32Name(UIntOS frameOfst, Text::CStringNN name, UInt32 v, Text::CString vName);
+			void AddHex64Name(UIntOS frameOfst, Text::CStringNN name, UInt64 v, Text::CString vName);
 			void AddStrC(UIntOS frameOfst, UIntOS size, Text::CStringNN name, UnsafeArray<const UTF8Char> vBuff);
 			void AddStrS(UIntOS frameOfst, UIntOS size, Text::CStringNN name, UnsafeArray<const UTF8Char> vBuff);
 			void AddStrZ(UIntOS frameOfst, Text::CStringNN name, UnsafeArray<const UTF8Char> vBuff);

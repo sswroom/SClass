@@ -17,6 +17,7 @@
 #include "IO/Path.h"
 #include "IO/Device/AXCAN.h"
 #include "IO/Device/BYDC9RHandler.h"
+#include "IO/FileAnalyse/CFBFileAnalyse.h"
 #include "IO/ProtoHdlr/ProtoJMVL01Handler.h"
 #include "IO/StmData/FileData.h"
 #include "IO/StmData/MemoryDataRef.h"
@@ -1676,9 +1677,38 @@ Int32 IFCParserTest()
 	}
 }
 
+Int32 CFBFileAnalyseTest()
+{
+	Text::CStringNN fileName = CSTR("/home/sswroom/ProgsHome/FileTest/BIM/LR.rvt");
+	IO::StmData::FileData fd(fileName, false);
+	IO::FileAnalyse::CFBFileAnalyse cfb(fd);
+	NN<IO::FileAnalyse::FrameDetail> detail;
+	while (cfb.IsParsing())
+	{
+		Sync::ThreadUtil::SleepDur(100);
+	}
+	printf("CFB File Analyse Completed, error = %b, count = %d\r\n", cfb.IsError(), (UInt32)cfb.GetFrameCount());
+	Text::StringBuilderUTF8 sb;
+	UIntOS i = 0;
+	UIntOS j = cfb.GetFrameCount();
+	while (i < j)
+	{
+		if (!cfb.GetFrameDetail(i).SetTo(detail))
+		{
+			printf("Failed to get frame detail for index %d\r\n", (UInt32)i);
+			break;
+		}
+		sb.ClearStr();
+		detail->ToString(sb);
+		detail.Delete();
+		i++;
+	}
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UIntOS testType = 43;
+	UIntOS testType = 44;
 	switch (testType)
 	{
 	case 0:
@@ -1769,6 +1799,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return HTTPClientCertTest(progCtrl);
 	case 43:
 		return IFCParserTest();
+	case 44:
+		return CFBFileAnalyseTest();
 	default:
 		return 0;
 	}
