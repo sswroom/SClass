@@ -55,10 +55,15 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 //	Int32 dirCnt = ReadLInt32(&hdr[40]);
 	UInt32 fatCnt = ReadLUInt32(&hdr[44]);
 	UInt32 dirSect = ReadLUInt32(&hdr[48]);
+	UInt32 miniStreamCutoff = ReadLUInt32(&hdr[56]);
 	UInt32 miniFatSect = ReadLUInt32(&hdr[60]);
 	UInt32 miniFatCnt = ReadLUInt32(&hdr[64]);
+	UInt32 difatSect = ReadLUInt32(&hdr[68]);
+	UInt32 difatCnt = ReadLUInt32(&hdr[72]);
 	UInt32 sectorNum;
 	if (fatCnt <= 0)
+		return nullptr;
+	if ((sectorSize != 512 && sectorSize != 4096) || miniStmSectSize == 0 || miniStreamCutoff == 0)
 		return nullptr;
 
 	UInt32 currSect;
@@ -77,34 +82,63 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 	while (i < j)
 	{
 		sectorNum = ReadLUInt32(&hdr[76 + i * 4]);
-		if (sectorNum != 0xffffffff)
+		if (sectorNum < 0xfffffffc)
 		{
-			fd->GetRealData(sectorSize * (sectorNum + 1), sectorSize, fat.SubArray(fatSize));
+			if (fd->GetRealData(sectorSize * ((UInt64)sectorNum + 1), sectorSize, fat.SubArray(fatSize)) != sectorSize)
+				return nullptr;
 			fatSize += sectorSize;
 		}
 		i++;
 	}
+	if (fatSize < sectorSize * fatCnt && difatCnt > 0)
+	{
+		UInt8 difatBuff[4096];
+		UInt32 difatIndex = 0;
+		while (difatIndex < difatCnt && fatSize < sectorSize * fatCnt)
+		{
+			if (difatSect >= 0xfffffffc || fd->GetRealData(sectorSize * ((UInt64)difatSect + 1), sectorSize, BYTEARR(difatBuff)) != sectorSize)
+				return nullptr;
+			i = 0;
+			while (i + 1 < sectorSize / 4 && fatSize < sectorSize * fatCnt)
+			{
+				sectorNum = ReadLUInt32(&difatBuff[i * 4]);
+				if (sectorNum < 0xfffffffc)
+				{
+					if (fd->GetRealData(sectorSize * ((UInt64)sectorNum + 1), sectorSize, fat.SubArray(fatSize)) != sectorSize)
+						return nullptr;
+					fatSize += sectorSize;
+				}
+				i++;
+			}
+			difatSect = ReadLUInt32(&difatBuff[sectorSize - 4]);
+			difatIndex++;
+		}
+	}
+	if (fatSize != sectorSize * fatCnt)
+		return nullptr;
 	Data::ByteBuffer miniFat(sectorSize * miniFatCnt);
 	if (miniFatCnt > 0)
 	{
+		UIntOS miniFatSize = 0;
 		i = 0;
-		while (true)
+		while (i < miniFatCnt)
 		{
-			sectorNum = fat.ReadU32(miniFatSect * 4);
-			if (sectorNum >= 0xfffffffc && sectorNum != 0xfffffffe)
+			if (miniFatSect >= 0xfffffffc || (UInt64)miniFatSect * 4 + 4 > fatSize)
 			{
 				return nullptr;
 			}
-			fd->GetRealData(sectorSize * (miniFatSect + 1), sectorSize, miniFat.SubArray(i * sectorSize));
+			if (fd->GetRealData(sectorSize * ((UInt64)miniFatSect + 1), sectorSize, miniFat.SubArray(miniFatSize)) != sectorSize)
+				return nullptr;
+			miniFatSize += sectorSize;
 			i++;
 
-			if (sectorNum == 0xfffffffe)
+			if (i == miniFatCnt)
+				break;
+			miniFatSect = fat.ReadU32(miniFatSect * 4);
+			if (miniFatSect == 0xfffffffe)
 			{
-				if (i == miniFatCnt)
-					break;
 				return nullptr;
 			}
-			miniFatSect = sectorNum;
 		}
 	}
 
@@ -113,10 +147,12 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 	NEW_CLASSNN(pkg, IO::VirtualPackageFileFast(fd->GetFullFileName()));
 	Optional<Text::String> workbookName = nullptr;
 	IO::StmData::BlockStreamData miniStmFd(fd);
+	UIntOS dirSectCount = 0;
 	while (true)
 	{
-		if (fd->GetRealData(512 + sectorSize * dirSect, sectorSize, BYTEARR(buff)) != sectorSize)
+		if (dirSectCount >= fatSize / 4 || dirSect >= 0xfffffffc || (UInt64)dirSect * 4 + 4 > fatSize || fd->GetRealData(sectorSize * ((UInt64)dirSect + 1), sectorSize, BYTEARR(buff)) != sectorSize)
 			break;
+		dirSectCount++;
 		i = 0;
 		while (i < sectorSize)
 		{
@@ -142,17 +178,17 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 				sizeLeft = ReadLUInt64(&buff[i + 120]);
 				while (sizeLeft > 0)
 				{
-					if ((UInt32)currSect == 0xfffffffd)
+					if (currSect == 0xfffffffe || currSect >= 0xfffffffc || (UInt64)currSect * 4 + 4 > fatSize)
 						break;
 					if (sizeLeft < sectorSize)
 					{
-						miniStmFd.Append(512 + sectorSize * currSect, (UInt32)sizeLeft);
+						miniStmFd.Append(sectorSize * ((UInt64)currSect + 1), (UInt32)sizeLeft);
 						sizeLeft = 0;
 						break;
 					}
 					else
 					{
-						miniStmFd.Append(512 + sectorSize * currSect, (UInt32)sectorSize);
+						miniStmFd.Append(sectorSize * ((UInt64)currSect + 1), (UInt32)sectorSize);
 						sizeLeft -= sectorSize;
 					}
 					currSect = ReadLUInt32(&fat[currSect * 4]);
@@ -161,13 +197,10 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 			else
 			{
 				sb.ClearStr();
-				if (ReadLUInt16(&buff[i]) < 32)
+				UInt16 nameSize = ReadLUInt16(&buff[i + 64]);
+				if (nameSize >= 2 && nameSize <= 64)
 				{
-					sb.AppendUTF16((const UTF16Char *)&buff[i + 2]);
-				}
-				else
-				{
-					sb.AppendUTF16((const UTF16Char *)&buff[i]);
+					sb.AppendUTF16((const UTF16Char *)&buff[i], nameSize / 2 - 1);
 				}
 				if (sb.EqualsICase(UTF8STRC("WORKBOOK")))
 				{
@@ -176,28 +209,22 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 				}
 				currSect = ReadLUInt32(&buff[i + 116]);
 				sizeLeft = ReadLUInt64(&buff[i + 120]);
-				if (sizeLeft >= 4096)
+				if (sizeLeft >= miniStreamCutoff)
 				{
 					IO::StmData::BlockStreamData itemFd(fd);
 					while (sizeLeft > 0)
 					{
-						if ((UInt32)currSect == 0xfffffffd)
-						{
+						if (currSect == 0xfffffffe || currSect >= 0xfffffffc || (UInt64)currSect * 4 + 4 > fatSize)
 							break;
-						}
-						else if ((UInt32)(currSect & 0xfffffff0) == 0xfffffff0)
-						{
-							printf("Found unknown sec %x, sizeLeft = %lld\r\n", currSect, sizeLeft);
-						}
 						if (sizeLeft < sectorSize)
 						{
-							itemFd.Append(512 + sectorSize * currSect, (UInt32)sizeLeft);
+							itemFd.Append(sectorSize * ((UInt64)currSect + 1), (UInt32)sizeLeft);
 							sizeLeft = 0;
 							break;
 						}
 						else
 						{
-							itemFd.Append(512 + sectorSize * currSect, (UInt32)sectorSize);
+							itemFd.Append(sectorSize * ((UInt64)currSect + 1), (UInt32)sectorSize);
 							sizeLeft -= sectorSize;
 						}
 						currSect = ReadLUInt32(&fat[currSect * 4]);
@@ -209,14 +236,8 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 					IO::StmData::BlockStreamData itemFd(miniStmFd);
 					while (sizeLeft > 0)
 					{
-						if ((UInt32)currSect == 0xfffffffd)
-						{
+						if (currSect == 0xfffffffe || currSect >= 0xfffffffc || (UInt64)currSect * 4 + 4 > miniFat.GetSize())
 							break;
-						}
-						else if ((UInt32)(currSect & 0xfffffff0) == 0xfffffff0)
-						{
-							printf("Found unknown sec %x, sizeLeft = %lld\r\n", currSect, sizeLeft);
-						}
 						if (sizeLeft < miniStmSectSize)
 						{
 							itemFd.Append(miniStmSectSize * currSect, (UInt32)sizeLeft);
@@ -433,7 +454,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 					if (nnfont->bls == 0x2bc)
 						isBold = true;
 					NN<Text::SpreadSheet::WorkbookFont> f = wb->NewFont(nnfont->fontName->ToCString(), nnfont->height * 0.05, isBold);
-					if (nnfont->icv >= 64)
+					if (nnfont->icv < 8 || nnfont->icv >= 64)
 					{
 					}
 					else
@@ -540,7 +561,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 					borderBottom.borderType = (Text::SpreadSheet::BorderType)((tmpV & 0xf000) >> 12);
 					tmpV = ReadLInt16(&readBuff[i + 16]);
 					icv = (tmpV & 0x7f);
-					if (icv >= 64)
+					if (icv < 8 || icv >= 64)
 					{
 						borderLeft.borderColor = 0;
 					}
@@ -549,7 +570,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 						borderLeft.borderColor = status.palette[icv - 8];
 					}
 					icv = (tmpV & 0x3f80) >> 7;
-					if (icv >= 64)
+					if (icv < 8 || icv >= 64)
 					{
 						borderRight.borderColor = 0;
 					}
@@ -559,7 +580,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 					}
 					tmpV = ReadLInt16(&readBuff[i + 18]);
 					icv = (tmpV & 0x7f);
-					if (icv >= 64)
+					if (icv < 8 || icv >= 64)
 					{
 						borderTop.borderColor = 0;
 					}
@@ -568,7 +589,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 						borderTop.borderColor = status.palette[icv - 8];
 					}
 					icv = (tmpV & 0x3f80) >> 7;
-					if (icv >= 64)
+					if (icv < 8 || icv >= 64)
 					{
 						borderBottom.borderColor = 0;
 					}
@@ -594,7 +615,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 					}
 
 					icv = (ReadLInt16(&readBuff[i + 22]) & 0x7f);
-					if (icv >= 64)
+					if (icv < 8 || icv >= 64)
 					{
 					}
 					else

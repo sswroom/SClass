@@ -52,6 +52,7 @@
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Net/WebServer/WebListener.h"
 #include "Parser/FullParserList.h"
+#include "Parser/FileParser/CFBParser.h"
 #include "Parser/FileParser/IFCParser.h"
 #include "Parser/ObjParser/FileGDB2Parser.h"
 #include "Sync/SimpleThread.h"
@@ -1706,9 +1707,39 @@ Int32 CFBFileAnalyseTest()
 	return 0;
 }
 
+Int32 CFBParserTest()
+{
+	Text::CStringNN fileNames[] = {CSTR("/home/sswroom/ProgsHome/FileTest/BIM/LR.rvt"),
+							CSTR("/home/sswroom/ProgsHome/FileTest/BIM/2010001_TMRTC_FB_CL_ARCH.rvt"),
+							CSTR("/home/sswroom/ProgsHome/FileTest/BIM/2010001_TMRTC_NE_ARCH.rvt")};
+	Parser::FileParser::CFBParser parser;
+	NN<IO::ParsedObject> pobj;
+	UIntOS i = 0;
+	UIntOS j = sizeof(fileNames) / sizeof(fileNames[0]);
+	while (i < j)
+	{
+		if (parser.ParseFilePath(fileNames[i]).SetTo(pobj))
+		{
+			printf("CFB parse Success for file %s, type = %s\r\n", fileNames[i].v.Ptr(), IO::ParserTypeGetName(pobj->GetParserType()).v.Ptr());
+			if (pobj->GetParserType() == IO::ParserType::PackageFile)
+			{
+				NN<IO::PackageFile> pkg = NN<IO::PackageFile>::ConvertFrom(pobj);
+				printf("Package file found %d files in %s\r\n", (UInt32)pkg->GetCount(), fileNames[i].v.Ptr());
+			}
+			pobj.Delete();
+		}
+		else
+		{
+			printf("CFB parse Failed for file %s\r\n", fileNames[i].v.Ptr());
+		}
+		i++;
+	}
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UIntOS testType = 44;
+	UIntOS testType = 45;
 	switch (testType)
 	{
 	case 0:
@@ -1801,6 +1832,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return IFCParserTest();
 	case 44:
 		return CFBFileAnalyseTest();
+	case 45:
+		return CFBParserTest();
 	default:
 		return 0;
 	}
