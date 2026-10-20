@@ -6,7 +6,7 @@
 #include "Text/Locale.h"
 
 
-DB::MDBFileConn::MDBFileConn(Text::CStringNN fileName, NN<IO::LogTool> log, UInt32 codePage, const WChar *uid, const WChar *pwd) : DB::ODBCConn(fileName, log)
+DB::MDBFileConn::MDBFileConn(Text::CStringNN fileName, NN<IO::LogTool> log, UInt32 codePage, Text::CString uid, Text::CString pwd) : DB::ODBCConn(fileName, log)
 {
 }
 
@@ -17,11 +17,11 @@ Bool DB::MDBFileConn::CreateMDBFile(Text::CStringNN fileName)
 
 Optional<DB::DBTool> DB::MDBFileConn::CreateDBTool(NN<Text::String> fileName, NN<IO::LogTool> log, Text::CString logPrefix)
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<DB::DBTool> DB::MDBFileConn::CreateDBTool(Text::CStringNN fileName, NN<IO::LogTool> log, Text::CString logPrefix)
 {
-	return 0;
+	return nullptr;
 }
 

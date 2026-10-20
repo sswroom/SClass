@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(AnyType userObj)
 		return;
 	}
 	NN<DB::MDBFileConn> conn;
-	NEW_CLASSNN(conn, DB::MDBFileConn(sbFileName.ToCString(), me->core->GetLog(), 0, 0, 0));
+	NEW_CLASSNN(conn, DB::MDBFileConn(sbFileName.ToCString(), me->core->GetLog(), 0, nullptr, nullptr));
 	if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 	{
 		me->conn = conn;

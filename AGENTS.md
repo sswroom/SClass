@@ -20,7 +20,8 @@ This is a C++ framework support multi-platform and minimum dependencies.
 - *_C.h are files with C-style function syntax_
 - *.hpp are files with function body in headers
 - build/Linux_dbg_x64 is the default build and test environment
-​
+​- Do not declare pointer (*) in header. Use NN<> for single object cannot be nullptr, Optional<> for single object can be nullptr, UnsafeArray<> for array of object cannnot be nullptr, UnsafeArrayOpt<> for array of object can be nullptr.
+
 ## Commands
 * smake all: Build all programs and do self test
 * smake test: Build all test objects

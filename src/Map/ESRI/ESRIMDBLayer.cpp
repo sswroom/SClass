@@ -10,9 +10,9 @@ Optional<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>> 
 {
 	UTF8Char sbuff[512];
 	Sync::MutexUsage mutUsage;
-	NN<DB::DBConn> currDB;
+	NN<DB::ReadingDB> currDB;
 	NN<DB::DBReader> r;
-	this->currDB = currDB = this->conn->UseConn(mutUsage);
+	this->currDB = currDB = this->conn->UseDB(mutUsage);
 	if (currDB->QueryTableData(nullptr, this->tableName->ToCString(), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		NN<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> nameArr;
@@ -58,7 +58,7 @@ Optional<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>> 
 	}
 }
 
-void Map::ESRI::ESRIMDBLayer::Init(NN<DB::SharedDBConn> conn, UInt32 srid, Text::CStringNN tableName)
+void Map::ESRI::ESRIMDBLayer::Init(NN<DB::SharedReadingDB> conn, UInt32 srid, Text::CStringNN tableName)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -78,9 +78,9 @@ void Map::ESRI::ESRIMDBLayer::Init(NN<DB::SharedDBConn> conn, UInt32 srid, Text:
 	UIntOS nameCol = 0;
 
 	Sync::MutexUsage mutUsage;
-	NN<DB::DBConn> currDB;
+	NN<DB::ReadingDB> currDB;
 	NN<DB::DBReader> r;
-	this->currDB = currDB = this->conn->UseConn(mutUsage);
+	this->currDB = currDB = this->conn->UseDB(mutUsage);
 	if (currDB->QueryTableData(nullptr, tableName, nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		UIntOS i;
@@ -187,13 +187,13 @@ void Map::ESRI::ESRIMDBLayer::Init(NN<DB::SharedDBConn> conn, UInt32 srid, Text:
 	this->currDB = nullptr;
 }
 
-Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(NN<DB::SharedDBConn> conn, UInt32 srid, NN<Text::String> sourceName, Text::CStringNN tableName) : Map::MapDrawLayer(sourceName->ToCString(), 0, tableName, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid))
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(NN<DB::SharedReadingDB> conn, UInt32 srid, NN<Text::String> sourceName, Text::CStringNN tableName) : Map::MapDrawLayer(sourceName->ToCString(), 0, tableName, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid))
 {
 	OPTSTR_DEL(this->layerName);
 	this->Init(conn, srid, tableName);
 }
 
-Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(NN<DB::SharedDBConn> conn, UInt32 srid, Text::CStringNN sourceName, Text::CStringNN tableName) : Map::MapDrawLayer(sourceName, 0, tableName, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid))
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(NN<DB::SharedReadingDB> conn, UInt32 srid, Text::CStringNN sourceName, Text::CStringNN tableName) : Map::MapDrawLayer(sourceName, 0, tableName, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid))
 {
 	this->Init(conn, srid, tableName);
 }
@@ -390,7 +390,7 @@ Optional<DB::DBReader> Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString sch
 {
 	NN<Sync::MutexUsage> mutUsage;
 	NEW_CLASSNN(mutUsage, Sync::MutexUsage());
-	NN<DB::DBConn> currDB = this->conn->UseConn(mutUsage);
+	NN<DB::ReadingDB> currDB = this->conn->UseDB(mutUsage);
 	this->currDB = currDB;
 	this->lastDB = this->currDB;
 	NN<DB::DBReader> rdr;
@@ -408,8 +408,8 @@ Optional<DB::DBReader> Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString sch
 Optional<DB::TableDef> Map::ESRI::ESRIMDBLayer::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	Sync::MutexUsage mutUsage;
-	NN<DB::DBConn> currDB;
-	this->currDB = currDB = this->conn->UseConn(mutUsage);
+	NN<DB::ReadingDB> currDB;
+	this->currDB = currDB = this->conn->UseDB(mutUsage);
 	this->lastDB = this->currDB;
 	Optional<DB::TableDef> tab = currDB->GetTableDef(schemaName, tableName);
 	this->currDB = nullptr;
@@ -425,7 +425,7 @@ void Map::ESRI::ESRIMDBLayer::CloseReader(NN<DB::DBReader> r)
 
 void Map::ESRI::ESRIMDBLayer::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
-	NN<DB::DBConn> lastDB;
+	NN<DB::ReadingDB> lastDB;
 	if (this->lastDB.SetTo(lastDB))
 	{
 		lastDB->GetLastErrorMsg(str);
@@ -447,7 +447,7 @@ Map::MapDrawLayer::ObjectClass Map::ESRI::ESRIMDBLayer::GetObjectClass() const
 	return Map::MapDrawLayer::OC_ESRI_MDB_LAYER;
 }
 
-Map::ESRI::ESRIMDBReader::ESRIMDBReader(NN<DB::DBConn> conn, NN<DB::DBReader> r, NN<Sync::MutexUsage> mutUsage)
+Map::ESRI::ESRIMDBReader::ESRIMDBReader(NN<DB::ReadingDB> conn, NN<DB::DBReader> r, NN<Sync::MutexUsage> mutUsage)
 {
 	this->conn = conn;
 	this->r = r;

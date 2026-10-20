@@ -3,7 +3,7 @@
 #include "Data/ArrayListStringNN.h"
 #include "Data/FastMapObj.hpp"
 #include "DB/DBReader.h"
-#include "DB/SharedDBConn.h"
+#include "DB/SharedReadingDB.h"
 #include "Map/MapDrawLayer.h"
 
 namespace Map
@@ -13,10 +13,10 @@ namespace Map
 		class ESRIMDBLayer : public Map::MapDrawLayer
 		{
 		private:
-			NN<DB::SharedDBConn> conn;
+			NN<DB::SharedReadingDB> conn;
 			Data::FastMapNN<Int32, Math::Geometry::Vector2D> objects;
-			Optional<DB::DBConn> currDB;
-			Optional<DB::DBConn> lastDB;
+			Optional<DB::ReadingDB> currDB;
+			Optional<DB::ReadingDB> lastDB;
 			Map::DrawLayerType layerType;
 			Data::ArrayListStringNN colNames;
 			Math::Coord2DDbl min;
@@ -28,10 +28,10 @@ namespace Map
 		private:
 			Optional<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> ReadNameArr();
 
-			void Init(NN<DB::SharedDBConn> conn, UInt32 srid, Text::CStringNN tableName);
+			void Init(NN<DB::SharedReadingDB> conn, UInt32 srid, Text::CStringNN tableName);
 		public:
-			ESRIMDBLayer(NN<DB::SharedDBConn> conn, UInt32 srid, NN<Text::String> sourceName, Text::CStringNN tableName);
-			ESRIMDBLayer(NN<DB::SharedDBConn> conn, UInt32 srid, Text::CStringNN sourceName, Text::CStringNN tableName);
+			ESRIMDBLayer(NN<DB::SharedReadingDB> conn, UInt32 srid, NN<Text::String> sourceName, Text::CStringNN tableName);
+			ESRIMDBLayer(NN<DB::SharedReadingDB> conn, UInt32 srid, Text::CStringNN sourceName, Text::CStringNN tableName);
 			virtual ~ESRIMDBLayer();
 
 			virtual DrawLayerType GetLayerType() const;
@@ -71,11 +71,11 @@ namespace Map
 		class ESRIMDBReader : public DB::DBReader
 		{
 		private:
-			NN<DB::DBConn> conn;
+			NN<DB::ReadingDB> conn;
 			NN<DB::DBReader> r;
 			NN<Sync::MutexUsage> mutUsage;
 		public:
-			ESRIMDBReader(NN<DB::DBConn> conn, NN<DB::DBReader> r, NN<Sync::MutexUsage> mutUsage);
+			ESRIMDBReader(NN<DB::ReadingDB> conn, NN<DB::DBReader> r, NN<Sync::MutexUsage> mutUsage);
 			virtual ~ESRIMDBReader();
 
 			virtual Bool ReadNext();

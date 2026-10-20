@@ -2043,6 +2043,11 @@ DB/DBExporter.h:
 @DBExporter.o
 DB/DBFFile.h:
 @DBFFile.o
+DB/MDBFile.h:
+@MDBFile.o
+DB/MDBFileInt.h:
+DB/MDBUtil.h:
+@MDBUtil.o
 DB/DBFFixWriter.h:
 @DBFFixWriter.o
 DB/DBList.h:

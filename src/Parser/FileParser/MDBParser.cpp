@@ -3,8 +3,9 @@
 #include "Data/ArrayListStrUTF8.h"
 #include "DB/ColDef.h"
 #include "DB/DBReader.h"
-#include "DB/SharedDBConn.h"
-#include "DB/MDBFileConn.h"
+//#include "DB/MDBFileConn.h"
+#include "DB/MDBFile.h"
+#include "DB/SharedReadingDB.h"
 #include "Map/ESRI/ESRIMDBLayer.h"
 #include "Map/MapLayerCollection.h"
 #include "Math/ArcGISPRJParser.h"
@@ -76,7 +77,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 		return nullptr;
 	}
 #ifndef _WIN32_WCE
-	NN<DB::MDBFileConn> mdb;
+/*	NN<DB::MDBFileConn> mdb;
 	NN<IO::LogTool> log;
 	if (!this->log.SetTo(log))
 	{
@@ -84,6 +85,13 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 	}
 	NEW_CLASSNN(mdb, DB::MDBFileConn(fd->GetFullFileName()->ToCString(), log, this->codePage, 0, 0));
 	if (mdb->GetConnError() != DB::ODBCConn::CE_NONE)
+	{
+		mdb.Delete();
+		return nullptr;
+	}*/
+	NN<DB::MDBFile> mdb;
+	NEW_CLASSNN(mdb, DB::MDBFile(fd));
+	if (mdb->IsError())
 	{
 		mdb.Delete();
 		return nullptr;
@@ -141,7 +149,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 		NN<Map::MapLayerCollection> lyrColl;
 		Optional<Math::CoordinateSystem> csys = nullptr;
 		NN<Math::CoordinateSystem> nncsys;
-		NN<DB::SharedDBConn> conn;
+		NN<DB::SharedReadingDB> conn;
 		NN<Map::ESRI::ESRIMDBLayer> lyr;
 		NN<Math::ArcGISPRJParser> prjParser;
 		UInt32 srid = 0;
@@ -170,7 +178,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 				mdb->CloseReader(rdr);
 			}
 		}
-		NEW_CLASSNN(conn, DB::SharedDBConn(mdb));
+		NEW_CLASSNN(conn, DB::SharedReadingDB(mdb));
 		NEW_CLASSNN(lyrColl, Map::MapLayerCollection(fd->GetFullName(), 0));
 
 		UIntOS i;

@@ -16,7 +16,7 @@
 #endif
 #include <odbcinst.h>
 
-DB::MDBFileConn::MDBFileConn(Text::CStringNN fileName, NN<IO::LogTool> log, UInt32 codePage, const WChar *uid, const WChar *pwd) : DB::ODBCConn(fileName, log)
+DB::MDBFileConn::MDBFileConn(Text::CStringNN fileName, NN<IO::LogTool> log, UInt32 codePage, Text::CString uid, Text::CString pwd) : DB::ODBCConn(fileName, log)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Driver={Microsoft Access Driver (*.mdb)};Dbq="));
@@ -35,19 +35,20 @@ DB::MDBFileConn::MDBFileConn(Text::CStringNN fileName, NN<IO::LogTool> log, UInt
 //			sb.Append(loc->lcid);
 		}*/
 	}
-	if (uid != 0 || pwd != 0)
+	Text::CStringNN cstr;
+	if (uid.leng != 0 || pwd.leng != 0)
 	{
 		sb.AppendC(UTF8STRC(";Uid="));
-		if (uid)
+		if (uid.SetTo(cstr) && cstr.leng != 0)
 		{
-			NN<Text::String> s = Text::String::NewNotNull(uid);
+			NN<Text::String> s = Text::String::New(cstr);
 			sb.Append(s);
 			s->Release();
 		}
 		sb.AppendC(UTF8STRC(";Pwd="));
-		if (pwd)
+		if (pwd.SetTo(cstr) && cstr.leng != 0)
 		{
-			NN<Text::String> s = Text::String::NewNotNull(pwd);
+			NN<Text::String> s = Text::String::New(cstr);
 			sb.Append(s);
 			s->Release();
 		}
@@ -71,19 +72,19 @@ DB::MDBFileConn::MDBFileConn(Text::CStringNN fileName, NN<IO::LogTool> log, UInt
 	//			sb.Append(loc->lcid);
 			}*/
 		}
-		if (uid != 0 || pwd != 0)
+		if (uid.leng != 0 || pwd.leng != 0)
 		{
 			sb.AppendC(UTF8STRC(";Uid="));
-			if (uid)
+			if (uid.SetTo(cstr) && cstr.leng != 0)
 			{
-				NN<Text::String> s = Text::String::NewNotNull(uid);
+				NN<Text::String> s = Text::String::New(cstr);
 				sb.Append(s);
 				s->Release();
 			}
 			sb.AppendC(UTF8STRC(";Pwd="));
-			if (pwd)
+			if (pwd.SetTo(cstr) && cstr.leng != 0)
 			{
-				NN<Text::String> s = Text::String::NewNotNull(pwd);
+				NN<Text::String> s = Text::String::New(cstr);
 				sb.Append(s);
 				s->Release();
 			}
@@ -108,19 +109,19 @@ DB::MDBFileConn::MDBFileConn(Text::CStringNN fileName, NN<IO::LogTool> log, UInt
 		//			sb.Append(loc->lcid);
 				}*/
 			}
-			if (uid != 0 || pwd != 0)
+			if (uid.leng != 0 || pwd.leng != 0)
 			{
 				sb.AppendC(UTF8STRC(";Uid="));
-				if (uid)
+				if (uid.SetTo(cstr) && cstr.leng != 0)
 				{
-					NN<Text::String> s = Text::String::NewNotNull(uid);
+					NN<Text::String> s = Text::String::New(cstr);
 					sb.Append(s);
 					s->Release();
 				}
 				sb.AppendC(UTF8STRC(";Pwd="));
-				if (pwd)
+				if (pwd.SetTo(cstr) && cstr.leng != 0)
 				{
-					NN<Text::String> s = Text::String::NewNotNull(pwd);
+					NN<Text::String> s = Text::String::New(cstr);
 					sb.Append(s);
 					s->Release();
 				}
@@ -183,7 +184,7 @@ Optional<DB::DBTool> DB::MDBFileConn::CreateDBTool(NN<Text::String> fileName, NN
 {
 	NN<DB::MDBFileConn> conn;
 	NN<DB::DBTool> db;
-	NEW_CLASSNN(conn, DB::MDBFileConn(fileName->ToCString(), log, 0, 0, 0));
+	NEW_CLASSNN(conn, DB::MDBFileConn(fileName->ToCString(), log, 0, nullptr, nullptr));
 	if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 	{
 		NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
@@ -200,7 +201,7 @@ Optional<DB::DBTool> DB::MDBFileConn::CreateDBTool(Text::CStringNN fileName, NN<
 {
 	NN<DB::MDBFileConn> conn;
 	NN<DB::DBTool> db;
-	NEW_CLASSNN(conn, DB::MDBFileConn(fileName, log, 0, 0, 0));
+	NEW_CLASSNN(conn, DB::MDBFileConn(fileName, log, 0, nullptr, nullptr));
 	if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 	{
 		NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
