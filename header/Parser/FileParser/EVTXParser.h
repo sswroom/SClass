@@ -17,7 +17,7 @@ namespace Parser
 			virtual IO::ParserType GetParserType();
 			virtual Optional<IO::ParsedObject> ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr);
 
-			static UIntOS ParseBinXML(UnsafeArray<const UInt8> chunk, UIntOS ofst, UIntOS endOfst, NN<Text::StringBuilderUTF8> sb, const UTF16Char *elementName, UIntOS nNameChar);
+			static UIntOS ParseBinXML(UnsafeArray<const UInt8> chunk, UIntOS ofst, UIntOS endOfst, NN<Text::StringBuilderUTF8> sb, UnsafeArrayOpt<const UTF8Char> elementName, UIntOS nNameChar);
 		};
 	}
 }

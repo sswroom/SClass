@@ -1626,7 +1626,7 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 	if (field->srsValue.SetTo(valArr))
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.AppendUTF16(UnsafeArray<const UTF16Char>::ConvertFrom(valArr), field->srsSize >> 1);
+		sb.AppendUTF16LE(valArr, field->srsSize >> 1);
 		colDef->SetAttr(sb.ToCString());
 	}
 	if (colDef->GetColType() == DB::DBUtil::CT_Vector)

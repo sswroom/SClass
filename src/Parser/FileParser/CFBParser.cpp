@@ -200,7 +200,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 				UInt16 nameSize = ReadLUInt16(&buff[i + 64]);
 				if (nameSize >= 2 && nameSize <= 64)
 				{
-					sb.AppendUTF16((const UTF16Char *)&buff[i], nameSize / 2 - 1);
+					sb.AppendUTF16LE(&buff[i], nameSize / 2 - 1);
 				}
 				if (sb.EqualsICase(UTF8STRC("WORKBOOK")))
 				{
