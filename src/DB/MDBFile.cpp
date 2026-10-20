@@ -7,6 +7,7 @@
 #include "DB/TableDef.h"
 #include "Data/Timestamp.h"
 #include "Text/MyString.h"
+#include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 #include "DB/MDBFileInt.h"
 
@@ -172,8 +173,8 @@ public:
 		default:
 		{
 			Text::StringBuilderUTF8 sb;
-			MDBUtil::CellToString(col, cell, NN<Text::StringBuilderUTF8>::FromPtr(&sb));
-			return Text::StrToInt32(sb.ToString());
+			MDBUtil::CellToString(col, cell, sb);
+			return sb.ToInt32();
 		}
 		}
 	}
@@ -197,7 +198,7 @@ public:
 		if (!this->hasRow || colIndex >= this->columnCount || this->cells[colIndex].isNull)
 			return nullptr;
 		Text::StringBuilderUTF8 sb;
-		MDBUtil::CellToString(this->columns[colIndex], this->cells[colIndex], NN<Text::StringBuilderUTF8>::FromPtr(&sb));
+		MDBUtil::CellToString(this->columns[colIndex], this->cells[colIndex], sb);
 		return Text::StrUTF8_WCharC(buff, sb.ToString(), sb.GetLength(), 0);
 	}
 
@@ -205,9 +206,7 @@ public:
 	{
 		if (!this->hasRow || colIndex >= this->columnCount || this->cells[colIndex].isNull)
 			return false;
-		Text::StringBuilderUTF8 tmp;
-		MDBUtil::CellToString(this->columns[colIndex], this->cells[colIndex], NN<Text::StringBuilderUTF8>::FromPtr(&tmp));
-		sb->AppendC(tmp.ToString(), tmp.GetLength());
+		MDBUtil::CellToString(this->columns[colIndex], this->cells[colIndex], sb);
 		return true;
 	}
 
@@ -216,8 +215,8 @@ public:
 		if (!this->hasRow || colIndex >= this->columnCount || this->cells[colIndex].isNull)
 			return nullptr;
 		Text::StringBuilderUTF8 sb;
-		MDBUtil::CellToString(this->columns[colIndex], this->cells[colIndex], NN<Text::StringBuilderUTF8>::FromPtr(&sb));
-		return Text::String::New(sb.ToString(), sb.GetLength());
+		MDBUtil::CellToString(this->columns[colIndex], this->cells[colIndex], sb);
+		return Text::String::New(sb.ToCString());
 	}
 
 	virtual UnsafeArrayOpt<UTF8Char> GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
@@ -225,11 +224,8 @@ public:
 		if (!this->hasRow || colIndex >= this->columnCount || this->cells[colIndex].isNull)
 			return nullptr;
 		Text::StringBuilderUTF8 sb;
-		MDBUtil::CellToString(this->columns[colIndex], this->cells[colIndex], NN<Text::StringBuilderUTF8>::FromPtr(&sb));
-		if (sb.GetLength() + 1 > buffSize)
-			return nullptr;
-		MemCopyNO(buff.Ptr(), sb.ToString().Ptr(), sb.GetLength() + 1);
-		return buff + sb.GetLength();
+		MDBUtil::CellToString(this->columns[colIndex], this->cells[colIndex], sb);
+		return sb.ConcatToS(buff, buffSize);
 	}
 
 	virtual Data::Timestamp GetTimestamp(UIntOS colIndex)
@@ -275,7 +271,11 @@ public:
 				return ReadLDouble(p);
 			break;
 		default:
-			return (Double)GetInt64(colIndex);
+			if (col.type == 1)
+				return cell.value ? 1.0 : 0.0;
+			Text::StringBuilderUTF8 sb;
+			MDBUtil::CellToString(col, cell, sb);
+			return sb.ToDoubleOrNAN();
 		}
 		return NAN;
 	}
@@ -296,13 +296,14 @@ public:
 
 	virtual UIntOS GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 	{
+		UnsafeArray<const UInt8> data;
 		UIntOS size = GetBinarySize(colIndex);
 		if (size && this->columns[colIndex].type == 1)
 		{
 			buff[0] = this->cells[colIndex].value;
 		}
-		else if (size)
-			MemCopyNO(buff.Ptr(), this->cells[colIndex].data.Ptr(), size);
+		else if (size && this->cells[colIndex].data.SetTo(data))
+			MemCopyNO(buff.Ptr(), data.Ptr(), size);
 		return size;
 	}
 
@@ -313,10 +314,11 @@ public:
 
 	virtual Bool GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
 	{
+		UnsafeArray<const UInt8> data;
 		if (!this->hasRow || colIndex >= this->columnCount || this->cells[colIndex].isNull ||
-			this->columns[colIndex].type != 15 || this->cells[colIndex].size != 16)
+			this->columns[colIndex].type != 15 || this->cells[colIndex].size != 16 || !this->cells[colIndex].data.SetTo(data))
 			return false;
-		uuid->SetValue(UnsafeArray<const UInt8>(this->cells[colIndex].data.Ptr()));
+		uuid->SetValue(data);
 		return true;
 	}
 
@@ -576,7 +578,7 @@ Bool DB::MDBFile::ReadCatalog()
 				continue;
 			UTF8Char name[256];
 			Text::StringBuilderUTF8 nameSB;
-			MDBUtil::CellToString(catalogColumns[(UIntOS)nameIndex], cells[(UIntOS)nameIndex], NN<Text::StringBuilderUTF8>::FromPtr(&nameSB));
+			MDBUtil::CellToString(catalogColumns[(UIntOS)nameIndex], cells[(UIntOS)nameIndex], nameSB);
 			if (nameSB.GetLength() == 0 || nameSB.GetLength() >= sizeof(name))
 				continue;
 			MemCopyNO(name, nameSB.ToString().Ptr(), nameSB.GetLength() + 1);
