@@ -57,6 +57,8 @@ namespace Text
 		NN<StringBuilderUTF8> AppendW(UnsafeArray<const WChar> s, UIntOS len);
 		NN<StringBuilderUTF8> AppendUTF16(UnsafeArray<const UTF16Char> s);
 		NN<StringBuilderUTF8> AppendUTF16(UnsafeArray<const UTF16Char> s, UIntOS utf16Cnt);
+		NN<StringBuilderUTF8> AppendUTF16LE(UnsafeArray<const UInt8> s, UIntOS utf16Cnt);
+		NN<StringBuilderUTF8> AppendUTF16LES(UnsafeArray<const UInt8> s, UIntOS maxUTF16Cnt);
 		NN<StringBuilderUTF8> AppendUTF16BE(UnsafeArray<const UInt8> s, UIntOS utf16Cnt);
 		NN<StringBuilderUTF8> AppendUTF32(UnsafeArray<const UTF32Char> s);
 		NN<StringBuilderUTF8> AppendUTF32(UnsafeArray<const UTF32Char> s, UIntOS utf32Cnt);

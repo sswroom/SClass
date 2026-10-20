@@ -173,19 +173,44 @@ void DB::MDBUtil::CellToString(const DB::MDBFile::ColumnInfo &col, const Cell &c
 	case 10:
 	case 12:
 		if (col.miscFlags & 0x01)
-			out->AppendS(UnsafeArray<const UTF8Char>(data), size);
+		{
+			if (size >= 2 && data[0] == 0xff && data[1] == 0xfe)
+			{
+				UTF16Char utf16[2048];
+				UIntOS utf16Size = 0;
+				UIntOS i = 2;
+				Bool compressed = true;
+				while (i < size && utf16Size < 2048)
+				{
+					if (data[i] == 0)
+					{
+						compressed = !compressed;
+						i++;
+					}
+					else if (compressed)
+					{
+						utf16[utf16Size++] = data[i++];
+					}
+					else if (i + 1 < size)
+					{
+						utf16[utf16Size++] = ReadLUInt16(&data[i]);
+						i += 2;
+					}
+					else
+					{
+						break;
+					}
+				}
+				out->AppendUTF16(utf16, utf16Size);
+			}
+			else
+			{
+				out->AppendUTF16LES(data, size >> 1);
+			}
+		}
 		else
 		{
-			UTF16Char utf16[2048];
-			UIntOS utf16Size = 0;
-			for (UIntOS i = 0; i + 1 < size && utf16Size < 2048; i += 2)
-			{
-				UTF16Char c = ReadLUInt16(&data[i]);
-				if (c == 0)
-					break;
-				utf16[utf16Size++] = c;
-			}
-			out->AppendUTF16(utf16, utf16Size);
+			out->AppendUTF16LES(data, size >> 1);
 		}
 		return;
 	default:

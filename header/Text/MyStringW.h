@@ -263,15 +263,19 @@ namespace Text
 	UnsafeArray<UTF8Char> StrUTF16_UTF8C(UnsafeArray<UTF8Char> bytes, UnsafeArray<const UTF16Char> wstr, UIntOS strLen);
 	UIntOS StrUTF16_UTF8Cnt(UnsafeArray<const UTF16Char> stri);
 	UIntOS StrUTF16_UTF8CntC(UnsafeArray<const UTF16Char> stri, UIntOS strLen);
-	UnsafeArray<UTF8Char> StrUTF32_UTF8(UnsafeArray<UTF8Char> bytes, UnsafeArray<const UTF32Char> wstr);
-	UnsafeArray<UTF8Char> StrUTF32_UTF8C(UnsafeArray<UTF8Char> bytes, UnsafeArray<const UTF32Char> wstr, UIntOS strLen);
-	UIntOS StrUTF32_UTF8Cnt(UnsafeArray<const UTF32Char> stri);
-	UIntOS StrUTF32_UTF8CntC(UnsafeArray<const UTF32Char> stri, UIntOS strLen);
-
+	UnsafeArray<UTF8Char> StrUTF16LE_UTF8(UnsafeArray<UTF8Char> bytes, UnsafeArray<const UInt8> u16Buff);
+	UnsafeArray<UTF8Char> StrUTF16LE_UTF8C(UnsafeArray<UTF8Char> bytes, UnsafeArray<const UInt8> u16Buff, UIntOS utf16Cnt);
+	UIntOS StrUTF16LE_UTF8Cnt(UnsafeArray<const UInt8> u16Buff);
+	UIntOS StrUTF16LE_UTF8CntC(UnsafeArray<const UInt8> u16Buff, UIntOS utf16Cnt);
 	UnsafeArray<UTF8Char> StrUTF16BE_UTF8(UnsafeArray<UTF8Char> bytes, UnsafeArray<const UInt8> u16Buff);
 	UnsafeArray<UTF8Char> StrUTF16BE_UTF8C(UnsafeArray<UTF8Char> bytes, UnsafeArray<const UInt8> u16Buff, UIntOS utf16Cnt);
 	UIntOS StrUTF16BE_UTF8Cnt(UnsafeArray<const UInt8> u16Buff);
 	UIntOS StrUTF16BE_UTF8CntC(UnsafeArray<const UInt8> u16Buff, UIntOS utf16Cnt);
+
+	UnsafeArray<UTF8Char> StrUTF32_UTF8(UnsafeArray<UTF8Char> bytes, UnsafeArray<const UTF32Char> wstr);
+	UnsafeArray<UTF8Char> StrUTF32_UTF8C(UnsafeArray<UTF8Char> bytes, UnsafeArray<const UTF32Char> wstr, UIntOS strLen);
+	UIntOS StrUTF32_UTF8Cnt(UnsafeArray<const UTF32Char> stri);
+	UIntOS StrUTF32_UTF8CntC(UnsafeArray<const UTF32Char> stri, UIntOS strLen);
 
 	FORCEINLINE UnsafeArray<UTF16Char> StrUTF8_UTF16(UnsafeArray<UTF16Char> oriStr, UnsafeArray<const UTF8Char> strToJoin) { return StrUTF8_UTF16(oriStr, strToJoin, 0); }
 	FORCEINLINE UnsafeArray<UTF32Char> StrUTF8_UTF32(UnsafeArray<UTF32Char> oriStr, UnsafeArray<const UTF8Char> strToJoin) { return StrUTF8_UTF32(oriStr, strToJoin, 0); }

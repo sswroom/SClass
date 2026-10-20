@@ -129,6 +129,34 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16(UnsafeArray<con
 	return *this;
 }
 
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16LE(UnsafeArray<const UInt8> s, UIntOS utf16Cnt)
+{
+	UIntOS charCnt = Text::StrUTF16LE_UTF8CntC(s, utf16Cnt);
+	STRINGBUILDER_ALLOCLENG(charCnt);
+	Text::StrUTF16LE_UTF8C(&this->v[this->leng], s, utf16Cnt);
+	this->leng += charCnt;
+	this->v[this->leng] = 0;
+	return *this;
+}
+
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16LES(UnsafeArray<const UInt8> s, UIntOS maxUTF16Cnt)
+{
+	UIntOS utf16Cnt = 0;
+	while (utf16Cnt < maxUTF16Cnt)
+	{
+		if (s[utf16Cnt * 2] == 0 && s[utf16Cnt * 2 + 1] == 0)
+		{
+			break;
+		}
+		utf16Cnt++;
+	}
+#if IS_BYTEORDER_LE
+	return this->AppendUTF16(UnsafeArray<const UTF16Char>::ConvertFrom(s), utf16Cnt);
+#else
+	return this->AppendUTF16LE(s, utf16Cnt);
+#endif
+}
+
 NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16BE(UnsafeArray<const UInt8> s, UIntOS utf16Cnt)
 {
 	UIntOS charCnt = Text::StrUTF16BE_UTF8CntC(s, utf16Cnt);

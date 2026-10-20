@@ -590,11 +590,13 @@ Bool DB::MDBFile::ReadCatalog()
 				continue;
 			}
 			Text::StrConcat(table->name, name);
+			UnsafeArray<UInt8> dataPageBuff = MemAllocArr(UInt8, this->pageSize);
 			for (UInt32 dataPage = 1; dataPage < pageCount; ++dataPage)
 			{
-				if (this->ReadPage(dataPage, page) && page[0] == 0x01 && ReadLUInt32(&page[4]) == defPage)
+				if (this->ReadPage(dataPage, dataPageBuff) && dataPageBuff[0] == 0x01 && ReadLUInt32(&dataPageBuff[4]) == defPage)
 					table->dataPages.Add(dataPage);
 			}
+			MemFreeArr(dataPageBuff);
 			this->tables.Add(table);
 		}
 	}
