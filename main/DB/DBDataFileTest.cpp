@@ -760,6 +760,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::ConsoleWriter console;
 	IO::LogTool log;
 	Net::OSSocketFactory sockf(false);
+	Net::TCPClientFactory clif(sockf);
 	NN<IO::ConfigFile> cfg;
 	Text::StringBuilderUTF8 sb;
 	if (IO::Java::JavaProperties::ParseAppProp().SetTo(cfg))
@@ -772,7 +773,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 //		console.WriteLine(Text::String::OrEmpty(cfg->GetValue(UTF8STRC("spring.datasource.password")))->v);
 		if (DB::JavaDBUtil::OpenJDBC(Text::String::OrEmpty(cfg->GetValue(CSTR("spring.datasource.url"))),
 			cfg->GetValue(CSTR("spring.datasource.username")),
-			cfg->GetValue(CSTR("spring.datasource.password")), log, sockf).SetTo(db))
+			cfg->GetValue(CSTR("spring.datasource.password")), log, clif).SetTo(db))
 		{
 			UIntOS i;
 			Data::ArrayListNN<LamppostData> dataList;

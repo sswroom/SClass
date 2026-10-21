@@ -2899,14 +2899,14 @@ UInt16 Net::MySQLTCPClient::GetDefaultPort()
 	return 3306;
 }
 
-Optional<DB::DBTool> Net::MySQLTCPClient::CreateDBTool(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> Net::MySQLTCPClient::CreateDBTool(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Text::String> serverName, UInt16 port, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<Net::MySQLTCPClient> conn;
 	NN<DB::DBTool> db;
 	Net::SocketUtil::AddressInfo addr;
 	if (clif->GetSocketFactory()->DNSResolveIP(serverName->ToCString(), addr))
 	{
-		NEW_CLASSNN(conn, Net::MySQLTCPClient(clif, ssl, addr, 3306, uid, pwd, dbName));
+		NEW_CLASSNN(conn, Net::MySQLTCPClient(clif, ssl, addr, port, uid, pwd, dbName));
 		if (conn->IsError() == 0)
 		{
 			NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
@@ -2914,6 +2914,13 @@ Optional<DB::DBTool> Net::MySQLTCPClient::CreateDBTool(NN<Net::TCPClientFactory>
 		}
 		else
 		{
+			if (log->HasHandler())
+			{
+				Text::StringBuilderUTF8 errMsg;
+				errMsg.AppendC(UTF8STRC("DB: Error in connecting to MySQL server: "));
+				conn->GetLastErrorMsg(errMsg);
+				log->LogMessage(errMsg.ToCString(), IO::LogHandler::LogLevel::Error);
+			}
 			conn.Delete();
 			return nullptr;
 		}
@@ -2924,14 +2931,14 @@ Optional<DB::DBTool> Net::MySQLTCPClient::CreateDBTool(NN<Net::TCPClientFactory>
 	}
 }
 
-Optional<DB::DBTool> Net::MySQLTCPClient::CreateDBTool(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN serverName, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> Net::MySQLTCPClient::CreateDBTool(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN serverName, UInt16 port, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<Net::MySQLTCPClient> conn;
 	NN<DB::DBTool> db;
 	Net::SocketUtil::AddressInfo addr;
 	if (clif->GetSocketFactory()->DNSResolveIP(serverName, addr))
 	{
-		NEW_CLASSNN(conn, Net::MySQLTCPClient(clif, ssl, addr, 3306, uid, pwd, dbName));
+		NEW_CLASSNN(conn, Net::MySQLTCPClient(clif, ssl, addr, port, uid, pwd, dbName));
 		if (conn->IsError() == 0)
 		{
 			NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
@@ -2939,6 +2946,13 @@ Optional<DB::DBTool> Net::MySQLTCPClient::CreateDBTool(NN<Net::TCPClientFactory>
 		}
 		else
 		{
+			if (log->HasHandler())
+			{
+				Text::StringBuilderUTF8 errMsg;
+				errMsg.AppendC(UTF8STRC("DB: Error in connecting to MySQL server: "));
+				conn->GetLastErrorMsg(errMsg);
+				log->LogMessage(errMsg.ToCString(), IO::LogHandler::LogLevel::Error);
+			}
 			conn.Delete();
 			return nullptr;
 		}

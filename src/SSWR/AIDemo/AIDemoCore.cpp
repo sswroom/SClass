@@ -65,7 +65,7 @@ SSWR::AIDemo::AIDemoCore::AIDemoCore(NN<Core::ProgControl> progCtrl) : sockf(tru
 			this->log.LogMessage(CSTR("Error in creating OpenAI client"), IO::LogHandler::LogLevel::Error);
 			port = 0;
 		}
-		else if ((this->db = DB::DBConfig::LoadFromConfig(this->sockf, cfg, nullptr, this->log, false)).IsNull())
+		else if ((this->db = DB::DBConfig::LoadFromConfig(this->clif, cfg, nullptr, this->log, false)).IsNull())
 		{
 			this->log.LogMessage(CSTR("Error in creating DB connection"), IO::LogHandler::LogLevel::Error);
 			port = 0;

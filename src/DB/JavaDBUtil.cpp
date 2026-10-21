@@ -3,6 +3,9 @@
 #include "DB/DBReader.h"
 #include "DB/JavaDBUtil.h"
 #include "DB/MSSQLConn.h"
+#include "DB/PostgreSQLConn.h"
+#include "Net/MySQLTCPClient.h"
+#include "Net/SocketUtil.h"
 #include "Text/JavaText.h"
 #include "Text/JSText.h"
 
@@ -198,7 +201,7 @@ void DB::JavaDBUtil::AppendFieldOrderItem(NN<Text::StringBuilderUTF8> sb, NN<Tex
 	}
 }
 
-Optional<DB::DBTool> DB::JavaDBUtil::OpenJDBC(NN<Text::String> url, Optional<Text::String> username, Optional<Text::String> password, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf)
+Optional<DB::DBTool> DB::JavaDBUtil::OpenJDBC(NN<Text::String> url, Optional<Text::String> username, Optional<Text::String> password, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif)
 {
 	if (!url->StartsWith(UTF8STRC("jdbc:")))
 	{
@@ -239,6 +242,138 @@ Optional<DB::DBTool> DB::JavaDBUtil::OpenJDBC(NN<Text::String> url, Optional<Tex
 		}
 		return MSSQLConn::CreateDBToolTCP(sarr2[0].ToCString(), port, encrypt, dbName, OPTSTR_CSTR(username), OPTSTR_CSTR(password), log, LOGPREFIX);
 	}
+
+	UIntOS prefixLen;
+	UInt16 defaultPort;
+	Bool isPostgreSQL;
+	if (url->StartsWith(5, UTF8STRC("postgresql://")))
+	{
+		prefixLen = 18;
+		defaultPort = 5432;
+		isPostgreSQL = true;
+	}
+	else if (url->StartsWith(5, UTF8STRC("mysql://")))
+	{
+		prefixLen = 13;
+		defaultPort = 3306;
+		isPostgreSQL = false;
+	}
+	else
+	{
+		return nullptr;
+	}
+
+	Text::StringBuilderUTF8 sb;
+	Text::PString urlParts[2];
+	sb.AppendC(&url->v[prefixLen], url->leng - prefixLen);
+	urlParts[1] = sb;
+	UIntOS partCnt = Text::StrSplitP(urlParts, 2, urlParts[1], '/');
+	Text::PString hostPort = urlParts[0];
+	Text::PString databasePart;
+	Bool hasDatabase = partCnt == 2;
+	if (hasDatabase)
+	{
+		databasePart = urlParts[1];
+		UIntOS queryPos = databasePart.IndexOf('?');
+		if (queryPos != INVALID_INDEX)
+		{
+			databasePart.TrimToLength(queryPos);
+		}
+	}
+	else
+	{
+		UIntOS queryPos = hostPort.IndexOf('?');
+		if (queryPos != INVALID_INDEX)
+		{
+			hostPort.TrimToLength(queryPos);
+		}
+	}
+	if (hostPort.leng == 0)
+	{
+		return nullptr;
+	}
+
+	UInt16 port = defaultPort;
+	Text::PString hostPart;
+	if (hostPort.v[0] == '[')
+	{
+		UIntOS closePos = hostPort.IndexOf(']');
+		if (closePos == INVALID_INDEX || closePos == 1)
+		{
+			return nullptr;
+		}
+		hostPart = Text::PString(hostPort.v + 1, closePos - 1);
+		if (closePos + 1 < hostPort.leng)
+		{
+			if (hostPort.v[closePos + 1] != ':' || !Text::PString(hostPort.v + closePos + 2, hostPort.leng - closePos - 2).ToUInt16(port) || port == 0)
+			{
+				return nullptr;
+			}
+		}
+	}
+	else
+	{
+		UIntOS colonPos = hostPort.IndexOf(':');
+		if (colonPos != INVALID_INDEX)
+		{
+			if (hostPort.IndexOf(':', colonPos + 1) != INVALID_INDEX || !Text::PString(hostPort.v + colonPos + 1, hostPort.leng - colonPos - 1).ToUInt16(port) || port == 0)
+			{
+				return nullptr;
+			}
+			hostPart = Text::PString(hostPort.v, colonPos);
+		}
+		else
+		{
+			hostPart = hostPort;
+		}
+	}
+	if (hostPart.leng == 0)
+	{
+		return nullptr;
+	}
+
+	NN<Text::String> host = Text::String::New(hostPart.v, hostPart.leng);
+	Optional<Text::String> database = nullptr;
+	if (hasDatabase)
+	{
+		database = Text::String::New(databasePart.v, databasePart.leng);
+	}
+	if (isPostgreSQL)
+	{
+		NN<Text::String> dbName;
+		if (!database.SetTo(dbName))
+		{
+			dbName = Text::String::NewEmpty();
+		}
+		Optional<DB::DBTool> db = DB::PostgreSQLConn::CreateDBTool(host->ToCString(), port, dbName->ToCString(), OPTSTR_CSTR(username), OPTSTR_CSTR(password), log, LOGPREFIX);
+		if (database.IsNull())
+		{
+			dbName->Release();
+		}
+		host->Release();
+		OPTSTR_DEL(database);
+		return db;
+	}
+	else
+	{
+		NN<Text::String> userName;
+		NN<Text::String> pwd;
+		if (!username.SetTo(userName) || !password.SetTo(pwd))
+		{
+			host->Release();
+			OPTSTR_DEL(database);
+			if (log->HasHandler())
+			{
+				log->LogMessage(CSTR("DB: MySQL JDBC URL requires a username and password"), IO::LogHandler::LogLevel::Error);
+			}
+			return nullptr;
+		}
+		Optional<DB::DBTool> db = Net::MySQLTCPClient::CreateDBTool(clif, nullptr, host, port, database, userName, pwd, log, LOGPREFIX);
+		host->Release();
+		OPTSTR_DEL(database);
+		return db;
+	}
+
 	return nullptr;
 }
 

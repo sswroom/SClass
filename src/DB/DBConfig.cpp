@@ -1,11 +1,12 @@
 #include "Stdafx.h"
 #include "DB/DBConfig.h"
+#include "DB/JavaDBUtil.h"
 #include "DB/MSSQLConn.h"
 #include "DB/PostgreSQLConn.h"
 #include "DB/SQLiteFile.h"
 #include "Net/SSHManager.h"
 
-Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NN<Net::SocketFactory> sockf, NN<IO::ConfigFile> cfg, Text::CString cfgCategory, NN<IO::LogTool> log, Bool continueOnConnError)
+Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NN<Net::TCPClientFactory> clif, NN<IO::ConfigFile> cfg, Text::CString cfgCategory, NN<IO::LogTool> log, Bool continueOnConnError)
 {
 	Text::CStringNN logPrefix = CSTR("DB: ");
 	Text::CStringNN category = cfgCategory.OrEmpty();
@@ -14,6 +15,10 @@ Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NN<Net::SocketFactory> sockf, 
 	NN<Text::String> sshUser;
 	NN<Text::String> sshPassword;
 	NN<Text::String> s;
+	if (cfg->GetValue(CSTR("spring.datasource.url")).SetTo(s))
+	{
+		return DB::JavaDBUtil::OpenJDBC(s, cfg->GetValue(CSTR("spring.datasource.username")), cfg->GetValue(CSTR("spring.datasource.password")), log, clif);
+	}
 	if (!cfg->GetCateValue(category, CSTR("DBType")).SetTo(s))
 	{
 		log->LogMessage(CSTR("DBType not found in config"), IO::LogHandler::LogLevel::Error);
@@ -35,7 +40,7 @@ Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NN<Net::SocketFactory> sockf, 
 			log->LogMessage(CSTR("MSSQLHost is missing"), IO::LogHandler::LogLevel::Error);
 			return nullptr;
 		}
-		else if (!sockf->DNSResolveIP(serverHost->ToCString(), addr))
+		else if (!clif->GetSocketFactory()->DNSResolveIP(serverHost->ToCString(), addr))
 		{
 			log->LogMessage(CSTR("MSSQLHost is not valid"), IO::LogHandler::LogLevel::Error);
 			return nullptr;
@@ -128,7 +133,7 @@ Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NN<Net::SocketFactory> sockf, 
 				NN<Net::SSHManager> ssh;
 				NN<Net::SSHClient> cli;
 				NN<Net::SSHForwarder> fwd;
-				NEW_CLASSNN(ssh, Net::SSHManager(sockf));
+				NEW_CLASSNN(ssh, Net::SSHManager(clif->GetSocketFactory()));
 				if (ssh->IsError())
 				{
 					ssh.Delete();

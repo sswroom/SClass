@@ -2,14 +2,14 @@
 #define _SM_DB_DBCONFIG
 #include "DB/DBTool.h"
 #include "IO/ConfigFile.h"
-#include "Net/SocketFactory.h"
+#include "Net/TCPClientFactory.h"
 
 namespace DB
 {
 	class DBConfig
 	{
 	public:
-		static Optional<DB::DBTool> LoadFromConfig(NN<Net::SocketFactory> sockf, NN<IO::ConfigFile> cfg, Text::CString cfgCategory, NN<IO::LogTool> log, Bool continueOnConnError = false);
+		static Optional<DB::DBTool> LoadFromConfig(NN<Net::TCPClientFactory> clif, NN<IO::ConfigFile> cfg, Text::CString cfgCategory, NN<IO::LogTool> log, Bool continueOnConnError = false);
 	};
 }
 #endif

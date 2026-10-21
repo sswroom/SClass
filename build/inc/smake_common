@@ -59,6 +59,7 @@ test:
 
 console:
 @test
+@AIAgentTest
 @Adler32Speed
 @Adler32Test
 @AES128GCMTest
@@ -319,6 +320,11 @@ all:
 @GUITest7
 #@GUITest8
 #@GUITest9
+
+#AI
+AIAgentTest:
+@AIAgentTest.o
+@ConsoleStartup.o
 
 #CryptoTest
 Adler32Speed:
@@ -1298,6 +1304,7 @@ GUITest9:
 @GUITest9.o
 @GUIStartup.o
 
+AIAgentTest.o: ../../main/AI/AIAgentTest.cpp
 Adler32Speed.o: ../../main/CryptoTest/Adler32Speed.cpp
 Adler32Test.o: ../../main/CryptoTest/Adler32Test.cpp
 AES128GCMTest.o: ../../main/CryptoTest/AES128GCMTest.cpp
