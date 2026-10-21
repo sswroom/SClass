@@ -259,7 +259,13 @@ Net::OpenAIMessage::OpenAIMessage(NN<OpenAIMessage> msg)
 {
 	this->role = msg->role;
 	this->content = msg->content->Clone();
-	this->next = msg->next;
+	NN<OpenAIMessage> nextMsg;
+	if (msg->next.SetTo(nextMsg))
+		this->next = nextMsg->Clone();
+	else
+		this->next = nullptr;
+	this->rawMessage = Text::String::CopyOrNull(msg->rawMessage);
+	this->toolCallId = Text::String::CopyOrNull(msg->toolCallId);
 }
 
 Net::OpenAIMessage::OpenAIMessage(OpenAIMessageRole role, Text::CStringNN content)
@@ -267,11 +273,33 @@ Net::OpenAIMessage::OpenAIMessage(OpenAIMessageRole role, Text::CStringNN conten
 	this->role = role;
 	this->content = Text::String::New(content);
 	this->next = nullptr;
+	this->rawMessage = nullptr;
+	this->toolCallId = nullptr;
+}
+
+Net::OpenAIMessage::OpenAIMessage(Text::CStringNN rawMessage)
+{
+	this->role = OpenAIMessageRole::Assistant;
+	this->content = Text::String::NewEmpty();
+	this->next = nullptr;
+	this->rawMessage = Text::String::New(rawMessage);
+	this->toolCallId = nullptr;
+}
+
+Net::OpenAIMessage::OpenAIMessage(Text::CStringNN toolCallId, Text::CStringNN content)
+{
+	this->role = OpenAIMessageRole::Tool;
+	this->content = Text::String::New(content);
+	this->next = nullptr;
+	this->rawMessage = nullptr;
+	this->toolCallId = Text::String::New(toolCallId);
 }
 
 Net::OpenAIMessage::~OpenAIMessage()
 {
 	this->content->Release();
+	OPTSTR_DEL(this->rawMessage);
+	OPTSTR_DEL(this->toolCallId);
 	this->next.Delete();
 }
 
@@ -299,16 +327,18 @@ Optional<Net::OpenAIMessage> Net::OpenAIMessage::GetNext() const
 
 void Net::OpenAIMessage::SetNext(Optional<OpenAIMessage> next)
 {
-	NN<OpenAIMessage> msg;
 	this->next.Delete();
-	if (next.SetTo(msg))
-	{
-		this->next = msg->Clone();
-	}
+	this->next = next;
 }
 
 void Net::OpenAIMessage::ToJSON(NN<Text::StringBuilderUTF8> sb) const
 {
+	NN<Text::String> s;
+	if (this->rawMessage.SetTo(s))
+	{
+		sb->Append(s);
+		return;
+	}
 	sb->Append(CSTR("{\"role\":\""));
 	switch (this->role)
 	{
@@ -321,8 +351,18 @@ void Net::OpenAIMessage::ToJSON(NN<Text::StringBuilderUTF8> sb) const
 	case OpenAIMessageRole::Assistant:
 		sb->Append(CSTR("assistant"));
 		break;
+	case OpenAIMessageRole::Tool:
+		sb->Append(CSTR("tool"));
+		break;
 	}
-	sb->Append(CSTR("\",\"content\":"));
+	sb->Append(CSTR("\","));
+	if (this->toolCallId.SetTo(s))
+	{
+		sb->Append(CSTR("\"tool_call_id\":"));
+		Text::JSText::ToJSTextDQuote(sb, s->v);
+		sb->Append(CSTR(","));
+	}
+	sb->Append(CSTR("\"content\":"));
 	Text::JSText::ToJSTextDQuote(sb, this->content->v);
 	sb->AppendUTF8Char('}');
 }
@@ -495,6 +535,7 @@ Net::OpenAIChatCompletion::OpenAIChatCompletion(Text::CStringNN model)
 
 Net::OpenAIChatCompletion::~OpenAIChatCompletion()
 {
+	this->firstMessage.Delete();
 	UIntOS i = 0;
 	UIntOS j = this->tools.GetCount();
 	while (i < j)
@@ -516,18 +557,38 @@ Optional<Net::OpenAIMessage> Net::OpenAIChatCompletion::GetFirstMessage() const
 
 void Net::OpenAIChatCompletion::AddMessage(OpenAIMessageRole role, Text::CStringNN content)
 {
-	NN<OpenAIMessage> lastMessage;
 	NN<OpenAIMessage> msg;
 	NEW_CLASSNN(msg, OpenAIMessage(role, content));
+	this->AddMessage(msg);
+}
+
+void Net::OpenAIChatCompletion::AddAssistantToolCallMessage(Text::CStringNN rawMessage)
+{
+	NN<OpenAIMessage> msg;
+	NEW_CLASSNN(msg, OpenAIMessage(rawMessage));
+	this->AddMessage(msg);
+}
+
+void Net::OpenAIChatCompletion::AddToolResultMessage(Text::CStringNN toolCallId, Text::CStringNN content)
+{
+	NN<OpenAIMessage> msg;
+	NEW_CLASSNN(msg, OpenAIMessage(toolCallId, content));
+	this->AddMessage(msg);
+}
+
+void Net::OpenAIChatCompletion::AddMessage(NN<OpenAIMessage> msg)
+{
+	NN<OpenAIMessage> lastMessage;
 	if (this->lastMessage.SetTo(lastMessage))
 	{
 		lastMessage->SetNext(msg);
+		this->lastMessage = msg;
 	}
 	else
 	{
 		this->firstMessage = msg;
+		this->lastMessage = msg;
 	}
-	this->lastMessage = msg;
 }
 
 void Net::OpenAIChatCompletion::AddTool(NN<OpenAITool> tool)

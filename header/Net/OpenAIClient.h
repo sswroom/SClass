@@ -47,7 +47,8 @@ namespace Net
 	{
 		System,
 		User,
-		Assistant
+		Assistant,
+		Tool
 	};
 
 	class OpenAIMessage
@@ -56,10 +57,14 @@ namespace Net
 		Optional<OpenAIMessage> next;
 		OpenAIMessageRole role;
 		NN<Text::String> content;
+		Optional<Text::String> rawMessage;
+		Optional<Text::String> toolCallId;
 
 		OpenAIMessage(NN<OpenAIMessage> msg);
 	public:
 		OpenAIMessage(OpenAIMessageRole role, Text::CStringNN content);
+		OpenAIMessage(Text::CStringNN rawMessage);
+		OpenAIMessage(Text::CStringNN toolCallId, Text::CStringNN content);
 		~OpenAIMessage();
 
 		NN<OpenAIMessage> Clone() const;
@@ -132,6 +137,8 @@ namespace Net
 		Optional<OpenAIMessage> firstMessage;
 		Optional<OpenAIMessage> lastMessage;
 		Data::ArrayListNN<OpenAITool> tools;
+
+		void AddMessage(NN<OpenAIMessage> msg);
 	public:
 		OpenAIChatCompletion(Text::CStringNN model);
 		~OpenAIChatCompletion();
@@ -139,6 +146,8 @@ namespace Net
 		Text::CStringNN GetModel() const;
 		Optional<OpenAIMessage> GetFirstMessage() const;
 		void AddMessage(OpenAIMessageRole role, Text::CStringNN content);
+		void AddAssistantToolCallMessage(Text::CStringNN rawMessage);
+		void AddToolResultMessage(Text::CStringNN toolCallId, Text::CStringNN content);
 		void AddTool(NN<OpenAITool> tool);
 		void ToJSON(NN<Text::StringBuilderUTF8> sb) const;
 	};

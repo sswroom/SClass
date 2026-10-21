@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "AI/AIReadDBSkill.h"
+#include "DB/TableDef.h"
 #include "DB/DBReader.h"
 #include "Text/JSONBuilder.h"
 
@@ -74,7 +75,16 @@ void AI::AIReadDBSkill::GetDescription(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->AppendC(UTF8STRC("Read tables from schema "));
 	sb->Append(this->schemaName);
-	sb->AppendC(UTF8STRC(". Use action list_tables to list tables, or read_table with tableName, optional offset and maxCount (1-1000) to read rows. Results are returned as JSON in data."));
+	sb->AppendC(UTF8STRC(". Use list_tables to list tables. Use read_table with tableName, optional SQL-like condition, offset and maxCount to inspect rows. Conditions support comparisons, IN, BETWEEN and AND; for example site_code = 'SK-03'. Filter by condition instead of reading many rows. maxCount is limited to 100 and defaults to 20. Results are returned as JSON in data."));
+}
+
+void AI::AIReadDBSkill::GetParameters(NN<Net::OpenAIToolParameters> parameters) const
+{
+	parameters->AddParameter(CSTR("action"), CSTR("list_tables or read_table"), Net::OpenAIToolParameterType::String, true);
+	parameters->AddParameter(CSTR("tableName"), CSTR("Table name; required for read_table"), Net::OpenAIToolParameterType::String, false);
+	parameters->AddParameter(CSTR("condition"), CSTR("Optional SQL-like filter, e.g. site_code = 'SK-03'"), Net::OpenAIToolParameterType::String, false);
+	parameters->AddParameter(CSTR("offset"), CSTR("Row offset; defaults to 0"), Net::OpenAIToolParameterType::Integer, false);
+	parameters->AddParameter(CSTR("maxCount"), CSTR("Maximum rows to return (1-100); defaults to 20"), Net::OpenAIToolParameterType::Integer, false);
 }
 
 Text::CStringNN AI::AIReadDBSkill::GetSchemaName() const
@@ -125,7 +135,9 @@ Bool AI::AIReadDBSkill::Invoke(NN<Data::VariObject> input, NN<Data::VariObject> 
 			i++;
 		}
 		names.FreeAll();
-		output->SetItemStr(U8STR("data"), json.Build().v);
+		NN<Text::String> dataStr = Text::String::New(json.Build());
+		output->SetItemStr(U8STR("data"), dataStr);
+		dataStr->Release();
 		return true;
 	}
 
@@ -139,18 +151,47 @@ Bool AI::AIReadDBSkill::Invoke(NN<Data::VariObject> input, NN<Data::VariObject> 
 
 	UIntOS dataOfst;
 	UIntOS maxCnt;
-	if (!GetUIntOSInput(input, U8STR("offset"), 0, dataOfst) || !GetUIntOSInput(input, U8STR("maxCount"), 100, maxCnt) || maxCnt == 0 || maxCnt > 1000)
+	if (!GetUIntOSInput(input, U8STR("offset"), 0, dataOfst) || !GetUIntOSInput(input, U8STR("maxCount"), 20, maxCnt) || maxCnt == 0 || maxCnt > 100)
 	{
 		tableName->Release();
 		return false;
 	}
 
-	NN<DB::DBReader> reader;
-	if (!this->QueryTableData(tableName->ToCString(), nullptr, dataOfst, maxCnt, nullptr, nullptr).SetTo(reader))
+	Optional<Data::QueryConditions> condition = nullptr;
+	NN<Data::VariItem> conditionItem;
+	if (input->GetItem(U8STR("condition")).SetTo(conditionItem))
 	{
+		NN<Text::String> conditionText;
+		NN<DB::TableDef> tableDef;
+		if (!conditionItem->GetAsNewString().SetTo(conditionText))
+		{
+			tableName->Release();
+			return false;
+		}
+		if (!this->GetTableDef(tableName->ToCString()).SetTo(tableDef))
+		{
+			conditionText->Release();
+			tableName->Release();
+			return false;
+		}
+		condition = Data::QueryConditions::ParseStr(conditionText->ToCString(), tableDef->GetSQLType(), this->db->GetTzQhr());
+		conditionText->Release();
+		tableDef.Delete();
+		if (condition.IsNull())
+		{
+			tableName->Release();
+			return false;
+		}
+	}
+
+	NN<DB::DBReader> reader;
+	if (!this->QueryTableData(tableName->ToCString(), nullptr, dataOfst, maxCnt, nullptr, condition).SetTo(reader))
+	{
+		condition.Delete();
 		tableName->Release();
 		return false;
 	}
+	condition.Delete();
 	tableName->Release();
 
 	Text::JSONBuilder json(Text::JSONBuilder::OT_ARRAY);
@@ -181,6 +222,8 @@ Bool AI::AIReadDBSkill::Invoke(NN<Data::VariObject> input, NN<Data::VariObject> 
 		json.ObjectEnd();
 	}
 	this->CloseReader(reader);
-	output->SetItemStr(U8STR("data"), json.Build().v);
+	NN<Text::String> dataStr = Text::String::New(json.Build());
+	output->SetItemStr(U8STR("data"), dataStr);
+	dataStr->Release();
 	return true;
 }

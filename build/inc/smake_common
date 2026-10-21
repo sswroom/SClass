@@ -1642,6 +1642,8 @@ AI/AIReadDBSkill.h:
 @AIReadDBSkill.o
 AI/AISkill.h:
 @AISkill.o
+AI/SimpleAIAgent.h:
+@SimpleAIAgent.o
 
 Core/ByteTool_C.h:
 Core/ConsoleControl.h:

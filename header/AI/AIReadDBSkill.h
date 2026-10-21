@@ -20,6 +20,7 @@ namespace AI
 		virtual ~AIReadDBSkill();
 		virtual Text::CStringNN GetName() const;
 		virtual void GetDescription(NN<Text::StringBuilderUTF8> sb) const;
+		virtual void GetParameters(NN<Net::OpenAIToolParameters> parameters) const;
 		Text::CStringNN GetSchemaName() const;
 		UIntOS QueryTableNames(NN<Data::ArrayListStringNN> names) const;
 		Optional<DB::TableDef> GetTableDef(Text::CStringNN tableName) const;

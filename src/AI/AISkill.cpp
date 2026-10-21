@@ -4,3 +4,7 @@
 AI::AISkill::~AISkill()
 {
 }
+
+void AI::AISkill::GetParameters(NN<Net::OpenAIToolParameters> parameters) const
+{
+}

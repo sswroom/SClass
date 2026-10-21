@@ -11,6 +11,7 @@ MyMemoryW.o: ../../src/MyMemoryW.cpp
 AIAgent.o: ../../src/AI/AIAgent.cpp
 AIReadDBSkill.o: ../../src/AI/AIReadDBSkill.cpp
 AISkill.o: ../../src/AI/AISkill.cpp
+SimpleAIAgent.o: ../../src/AI/SimpleAIAgent.cpp
 
 Core.o: ../../src/Core/Core.cpp
 X86Util_32.o: ../../src/Core/X86Util_32.asm

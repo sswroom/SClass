@@ -1,6 +1,6 @@
 #include "Stdafx.h"
-#include "AI/AIAgent.h"
 #include "AI/AIReadDBSkill.h"
+#include "AI/SimpleAIAgent.h"
 #include "Core/Core.h"
 #include "DB/DBConfig.h"
 #include "DB/DBTool.h"
@@ -58,13 +58,19 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 	log.LogMessage(Text::StringBuilderUTF8().Append(CSTR("Using model: "))->Append(modelName)->ToCString(), IO::LogHandler::LogLevel::Command);
 	{
-		NN<AI::AIAgent> agent;
-		// Create the AI agent
+		AI::SimpleAIAgent agent(openAI, modelName->ToCString());
 		AI::AIReadDBSkill dbSkill(db->GetDBConn(), dbSchema);
-
-		// Use the AI agent to answer the question
-
-		// Print the answer to the question
+		agent.AddSkill(dbSkill);
+		NN<Text::String> answer;
+		if (agent.Ask(systemPrompt, question).SetTo(answer))
+		{
+			log.LogMessage(answer->ToCString(), IO::LogHandler::LogLevel::Command);
+			answer->Release();
+		}
+		else
+		{
+			log.LogMessage(CSTR("Failed to get an answer from the AI agent"), IO::LogHandler::LogLevel::Error);
+		}
 	}
 
 	openAI.Delete();
