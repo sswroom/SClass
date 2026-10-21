@@ -70,12 +70,68 @@ namespace Net
 		void ToJSON(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
+	enum class OpenAIToolParameterType
+	{
+		String,
+		Number,
+		Integer,
+		Boolean
+	};
+
+	class OpenAIToolParameters
+	{
+	private:
+		class Parameter
+		{
+		public:
+			NN<Text::String> name;
+			NN<Text::String> description;
+			OpenAIToolParameterType type;
+			Bool required;
+
+			Parameter(Text::CStringNN name, Text::CStringNN description, OpenAIToolParameterType type, Bool required);
+			~Parameter();
+		};
+
+		IntOS useCnt;
+		Data::ArrayListNN<Parameter> parameterList;
+
+	public:
+		OpenAIToolParameters();
+		~OpenAIToolParameters();
+
+		void BeginUse();
+		void EndUse();
+		void AddParameter(Text::CStringNN name, Text::CStringNN description, OpenAIToolParameterType type, Bool required);
+		void ToJSON(NN<Text::StringBuilderUTF8> sb) const;
+	};
+
+	class OpenAITool
+	{
+	private:
+		IntOS useCnt;
+		NN<Text::String> name;
+		NN<Text::String> description;
+		NN<OpenAIToolParameters> parameters;
+		Bool strict;
+
+	public:
+		OpenAITool(Text::CStringNN name, Text::CStringNN description, NN<OpenAIToolParameters> parameters);
+		~OpenAITool();
+
+		void BeginUse();
+		void EndUse();
+		void SetStrict(Bool strict);
+		void ToJSON(NN<Text::StringBuilderUTF8> sb, Bool chatCompletion) const;
+	};
+
 	class OpenAIChatCompletion
 	{
 	private:
 		Text::CStringNN model;
 		Optional<OpenAIMessage> firstMessage;
 		Optional<OpenAIMessage> lastMessage;
+		Data::ArrayListNN<OpenAITool> tools;
 	public:
 		OpenAIChatCompletion(Text::CStringNN model);
 		~OpenAIChatCompletion();
@@ -83,6 +139,7 @@ namespace Net
 		Text::CStringNN GetModel() const;
 		Optional<OpenAIMessage> GetFirstMessage() const;
 		void AddMessage(OpenAIMessageRole role, Text::CStringNN content);
+		void AddTool(NN<OpenAITool> tool);
 		void ToJSON(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
@@ -101,6 +158,7 @@ namespace Net
 		Double topP;
 		Bool background;
 		Bool stream;
+		Data::ArrayListNN<OpenAITool> tools;
 
 	public:
 		OpenAIResponse(Text::CStringNN model, Text::CStringNN userInput, Text::CString systemInput);
@@ -116,6 +174,7 @@ namespace Net
 		void SetTopP(Double topP);
 		void SetBackground(Bool background);
 		void SetStream(Bool stream);
+		void AddTool(NN<OpenAITool> tool);
 		Bool AddFile(Text::CStringNN filePath);
 		void ToJSON(NN<Text::StringBuilderUTF8> sb) const;
 	};

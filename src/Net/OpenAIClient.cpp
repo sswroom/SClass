@@ -327,6 +327,165 @@ void Net::OpenAIMessage::ToJSON(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendUTF8Char('}');
 }
 
+Net::OpenAIToolParameters::Parameter::Parameter(Text::CStringNN name, Text::CStringNN description, OpenAIToolParameterType type, Bool required)
+{
+	this->name = Text::String::New(name);
+	this->description = Text::String::New(description);
+	this->type = type;
+	this->required = required;
+}
+
+Net::OpenAIToolParameters::Parameter::~Parameter()
+{
+	this->name->Release();
+	this->description->Release();
+}
+
+Net::OpenAIToolParameters::OpenAIToolParameters()
+{
+	this->useCnt = 1;
+}
+
+Net::OpenAIToolParameters::~OpenAIToolParameters()
+{
+	this->parameterList.DeleteAll();
+}
+
+void Net::OpenAIToolParameters::BeginUse()
+{
+	this->useCnt++;
+}
+
+void Net::OpenAIToolParameters::EndUse()
+{
+	if (--this->useCnt == 0)
+	{
+		DEL_CLASS(this);
+	}
+}
+
+void Net::OpenAIToolParameters::AddParameter(Text::CStringNN name, Text::CStringNN description, OpenAIToolParameterType type, Bool required)
+{
+	NN<Parameter> param;
+	NEW_CLASSNN(param, Parameter(name, description, type, required));
+	this->parameterList.Add(param);
+}
+
+void Net::OpenAIToolParameters::ToJSON(NN<Text::StringBuilderUTF8> sb) const
+{
+	sb->Append(CSTR("{\"type\":\"object\",\"properties\":{"));
+	UIntOS i = 0;
+	UIntOS j = this->parameterList.GetCount();
+	Bool first = true;
+	while (i < j)
+	{
+		NN<Parameter> param = this->parameterList.GetItemNoCheck(i);
+		if (!first)
+		{
+			sb->AppendUTF8Char(',');
+		}
+		Text::JSText::ToJSTextDQuote(sb, param->name->v);
+		sb->Append(CSTR(":{\"type\":\""));
+		switch (param->type)
+		{
+		case OpenAIToolParameterType::String:
+			sb->Append(CSTR("string"));
+			break;
+		case OpenAIToolParameterType::Number:
+			sb->Append(CSTR("number"));
+			break;
+		case OpenAIToolParameterType::Integer:
+			sb->Append(CSTR("integer"));
+			break;
+		case OpenAIToolParameterType::Boolean:
+			sb->Append(CSTR("boolean"));
+			break;
+		}
+		sb->Append(CSTR("\",\"description\":"));
+		Text::JSText::ToJSTextDQuote(sb, param->description->v);
+		sb->AppendUTF8Char('}');
+		first = false;
+		i++;
+	}
+	sb->Append(CSTR("},\"required\":["));
+	i = 0;
+	first = true;
+	while (i < j)
+	{
+		NN<Parameter> param = this->parameterList.GetItemNoCheck(i);
+		if (param->required)
+		{
+			if (!first)
+			{
+				sb->AppendUTF8Char(',');
+			}
+			Text::JSText::ToJSTextDQuote(sb, param->name->v);
+			first = false;
+		}
+		i++;
+	}
+	sb->Append(CSTR("]}"));
+}
+
+Net::OpenAITool::OpenAITool(Text::CStringNN name, Text::CStringNN description, NN<OpenAIToolParameters> parameters)
+{
+	this->useCnt = 1;
+	this->name = Text::String::New(name);
+	this->description = Text::String::New(description);
+	this->parameters = parameters;
+	this->parameters->BeginUse();
+	this->strict = false;
+}
+
+Net::OpenAITool::~OpenAITool()
+{
+	this->name->Release();
+	this->description->Release();
+	this->parameters->EndUse();
+}
+
+void Net::OpenAITool::BeginUse()
+{
+	this->useCnt++;
+}
+
+void Net::OpenAITool::EndUse()
+{
+	if (--this->useCnt == 0)
+	{
+		DEL_CLASS(this);
+	}
+}
+
+void Net::OpenAITool::SetStrict(Bool strict)
+{
+	this->strict = strict;
+}
+
+void Net::OpenAITool::ToJSON(NN<Text::StringBuilderUTF8> sb, Bool chatCompletion) const
+{
+	sb->Append(CSTR("{\"type\":\"function\","));
+	if (chatCompletion)
+	{
+		sb->Append(CSTR("\"function\":{"));
+	}
+	sb->Append(CSTR("\"name\":"));
+	Text::JSText::ToJSTextDQuote(sb, this->name->v);
+	sb->Append(CSTR(",\"description\":"));
+	Text::JSText::ToJSTextDQuote(sb, this->description->v);
+	sb->Append(CSTR(",\"parameters\":"));
+	this->parameters->ToJSON(sb);
+	if (this->strict)
+	{
+		sb->Append(CSTR(",\"strict\":true"));
+	}
+	if (chatCompletion)
+	{
+		sb->AppendUTF8Char('}');
+	}
+	sb->AppendUTF8Char('}');
+}
+
 Net::OpenAIChatCompletion::OpenAIChatCompletion(Text::CStringNN model)
 {
 	this->model = model;
@@ -336,6 +495,13 @@ Net::OpenAIChatCompletion::OpenAIChatCompletion(Text::CStringNN model)
 
 Net::OpenAIChatCompletion::~OpenAIChatCompletion()
 {
+	UIntOS i = 0;
+	UIntOS j = this->tools.GetCount();
+	while (i < j)
+	{
+		this->tools.GetItemNoCheck(i)->EndUse();
+		i++;
+	}
 }
 
 Text::CStringNN Net::OpenAIChatCompletion::GetModel() const
@@ -364,6 +530,12 @@ void Net::OpenAIChatCompletion::AddMessage(OpenAIMessageRole role, Text::CString
 	this->lastMessage = msg;
 }
 
+void Net::OpenAIChatCompletion::AddTool(NN<OpenAITool> tool)
+{
+	tool->BeginUse();
+	this->tools.Add(tool);
+}
+
 void Net::OpenAIChatCompletion::ToJSON(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->Append(CSTR("{\"model\":"));
@@ -379,7 +551,24 @@ void Net::OpenAIChatCompletion::ToJSON(NN<Text::StringBuilderUTF8> sb) const
 			msg->ToJSON(sb);
 		}
 	}
-	sb->Append(CSTR("]}"));
+	sb->AppendUTF8Char(']');
+	if (this->tools.GetCount() > 0)
+	{
+		sb->Append(CSTR(",\"tools\":["));
+		UIntOS i = 0;
+		UIntOS j = this->tools.GetCount();
+		while (i < j)
+		{
+			if (i > 0)
+			{
+				sb->AppendUTF8Char(',');
+			}
+			this->tools.GetItemNoCheck(i)->ToJSON(sb, true);
+			i++;
+		}
+		sb->AppendUTF8Char(']');
+	}
+	sb->AppendUTF8Char('}');
 }
 
 Net::OpenAIResponse::OpenAIResponse(Text::CStringNN model, Text::CStringNN userInput, Text::CString systemInput)
@@ -400,6 +589,13 @@ Net::OpenAIResponse::~OpenAIResponse()
 {
 	this->fileList.FreeAll();
 	this->fileNameList.FreeAll();
+	UIntOS i = 0;
+	UIntOS j = this->tools.GetCount();
+	while (i < j)
+	{
+		this->tools.GetItemNoCheck(i)->EndUse();
+		i++;
+	}
 }
 
 Text::CStringNN Net::OpenAIResponse::GetModel() const
@@ -450,6 +646,12 @@ void Net::OpenAIResponse::SetBackground(Bool background)
 void Net::OpenAIResponse::SetStream(Bool stream)
 {
 	this->stream = stream;
+}
+
+void Net::OpenAIResponse::AddTool(NN<OpenAITool> tool)
+{
+	tool->BeginUse();
+	this->tools.Add(tool);
 }
 
 Bool Net::OpenAIResponse::AddFile(Text::CStringNN filePath)
@@ -566,6 +768,22 @@ void Net::OpenAIResponse::ToJSON(NN<Text::StringBuilderUTF8> sb) const
 			break;
 		}
 		sb->Append(CSTR("\"}"));
+	}
+	if (this->tools.GetCount() > 0)
+	{
+		sb->Append(CSTR(",\"tools\":["));
+		UIntOS i = 0;
+		UIntOS j = this->tools.GetCount();
+		while (i < j)
+		{
+			if (i > 0)
+			{
+				sb->AppendUTF8Char(',');
+			}
+			this->tools.GetItemNoCheck(i)->ToJSON(sb, false);
+			i++;
+		}
+		sb->AppendUTF8Char(']');
 	}
 	sb->AppendUTF8Char('}');
 }
