@@ -10,7 +10,7 @@ Math::Matrix3D::Matrix3D(Vector3D row1, Vector3D row2, Vector3D row3)
 	this->vec[2] = row3;
 }
 
-Math::Matrix3D::Matrix3D(Double *val)
+Math::Matrix3D::Matrix3D(UnsafeArray<Double> val)
 {
 	this->vec[0] = Math::Vector3D(val[0], val[1], val[2]);
 	this->vec[1] = Math::Vector3D(val[3], val[4], val[5]);

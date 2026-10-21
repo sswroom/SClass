@@ -10,7 +10,7 @@ Math::Matrix3S::Matrix3S(Vector3S row1, Vector3S row2, Vector3S row3)
 	this->vec[2] = row3;
 }
 
-Math::Matrix3S::Matrix3S(Double *val)
+Math::Matrix3S::Matrix3S(UnsafeArray<Double> val)
 {
 	this->vec[0] = Math::Vector3S(val[0], val[1], val[2]);
 	this->vec[1] = Math::Vector3S(val[3], val[4], val[5]);

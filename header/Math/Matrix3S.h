@@ -12,7 +12,7 @@ namespace Math
 	public:
 		Matrix3S() = default;
 		Matrix3S(Vector3S row1, Vector3S row2, Vector3S row3);
-		Matrix3S(Double *val);
+		Matrix3S(UnsafeArray<Double> val);
 
 		void Inverse();
 		void Transposition();
