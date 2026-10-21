@@ -168,29 +168,29 @@ Bool Exporter::BMPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		{
 			
 			NN<Media::ColorProfile::ColorPrimaries> primaries = img->info.color.GetPrimaries();
-			Math::Vector3 xyzVec;
+			Math::Vector3D xyzVec;
 			hdrSize = 124;
 			WriteLInt32(&buff[70], 0); //bV5CSType = LCS_CALIBRATED_RGB
-			xyzVec.val[0] = primaries->r.x;
-			xyzVec.val[1] = primaries->r.y;
-			xyzVec.val[2] = 1.0 - primaries->r.x - primaries->r.y;
-			WriteLInt32(&buff[74], Double2Int32(xyzVec.val[0] * 0x40000000));
-			WriteLInt32(&buff[78], Double2Int32(xyzVec.val[1] * 0x40000000));
-			WriteLInt32(&buff[82], Double2Int32(xyzVec.val[2] * 0x40000000));
+			xyzVec.xy.x = primaries->r.x;
+			xyzVec.xy.y = primaries->r.y;
+			xyzVec.zn.x = 1.0 - primaries->r.x - primaries->r.y;
+			WriteLInt32(&buff[74], Double2Int32(xyzVec.xy.x * 0x40000000));
+			WriteLInt32(&buff[78], Double2Int32(xyzVec.xy.y * 0x40000000));
+			WriteLInt32(&buff[82], Double2Int32(xyzVec.zn.x * 0x40000000));
 
-			xyzVec.val[0] = primaries->g.x;
-			xyzVec.val[1] = primaries->g.y;
-			xyzVec.val[2] = 1.0 - primaries->g.x - primaries->g.y;
-			WriteLInt32(&buff[86], Double2Int32(xyzVec.val[0] * 0x40000000));
-			WriteLInt32(&buff[90], Double2Int32(xyzVec.val[1] * 0x40000000));
-			WriteLInt32(&buff[94], Double2Int32(xyzVec.val[2] * 0x40000000));
+			xyzVec.xy.x = primaries->g.x;
+			xyzVec.xy.y = primaries->g.y;
+			xyzVec.zn.x = 1.0 - primaries->g.x - primaries->g.y;
+			WriteLInt32(&buff[86], Double2Int32(xyzVec.xy.x * 0x40000000));
+			WriteLInt32(&buff[90], Double2Int32(xyzVec.xy.y * 0x40000000));
+			WriteLInt32(&buff[94], Double2Int32(xyzVec.zn.x * 0x40000000));
 
-			xyzVec.val[0] = primaries->b.x;
-			xyzVec.val[1] = primaries->b.y;
-			xyzVec.val[2] = 1.0 - primaries->b.x - primaries->b.y;
-			WriteLInt32(&buff[98], Double2Int32(xyzVec.val[0] * 0x40000000));
-			WriteLInt32(&buff[102], Double2Int32(xyzVec.val[1] * 0x40000000));
-			WriteLInt32(&buff[106], Double2Int32(xyzVec.val[2] * 0x40000000));
+			xyzVec.xy.x = primaries->b.x;
+			xyzVec.xy.y = primaries->b.y;
+			xyzVec.zn.x = 1.0 - primaries->b.x - primaries->b.y;
+			WriteLInt32(&buff[98], Double2Int32(xyzVec.xy.x * 0x40000000));
+			WriteLInt32(&buff[102], Double2Int32(xyzVec.xy.y * 0x40000000));
+			WriteLInt32(&buff[106], Double2Int32(xyzVec.zn.x * 0x40000000));
 
 			WriteLInt32(&buff[110], Double2Int32(img->info.color.rtransfer.GetGamma() * 65536));
 			WriteLInt32(&buff[114], Double2Int32(img->info.color.gtransfer.GetGamma() * 65536));

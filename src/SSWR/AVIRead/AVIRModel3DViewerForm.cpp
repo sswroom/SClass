@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "Math/Math_C.h"
-#include "Math/Vector3.h"
+#include "Math/Vector3D.h"
 #include "Media/Engine3DFactory.h"
 #include "SSWR/AVIRead/AVIRModel3DViewerForm.h"
 
@@ -42,11 +42,11 @@ class SSWR::AVIRead::AVIRModel3DViewerForm::ModelControl : public UI::GUICustomD
 		if (this->model->GetCount() == 0)
 			return false;
 
-		Math::Vector3 minPt;
-		Math::Vector3 maxPt;
+		Math::Vector3D minPt;
+		Math::Vector3D maxPt;
 		this->model->GetBounds(minPt, maxPt);
 
-		Math::Vector3 centerPt = (minPt + maxPt) * 0.5;
+		Math::Vector3D centerPt = (minPt + maxPt) * 0.5;
 		Double extent = Math_Max(maxPt.GetX() - minPt.GetX(), Math_Max(maxPt.GetY() - minPt.GetY(), maxPt.GetZ() - minPt.GetZ()));
 		if (extent <= 1e-20)
 			extent = 1;
@@ -63,7 +63,7 @@ class SSWR::AVIRead::AVIRModel3DViewerForm::ModelControl : public UI::GUICustomD
 		Double fitRatio = Math_Min(1.0, aspect);
 		Double camDist = extent * 0.5 / (Math_Tan(camera.fovDeg * Math::PI / 360.0) * 0.76 * fitRatio * this->zoom);
 		Double cosPitch = Math_Cos(this->pitch);
-		camera.camPos = centerPt + Math::Vector3(camDist * cosPitch * Math_Cos(this->yaw), camDist * cosPitch * Math_Sin(this->yaw), camDist * Math_Sin(this->pitch));
+		camera.camPos = centerPt + Math::Vector3D(camDist * cosPitch * Math_Cos(this->yaw), camDist * cosPitch * Math_Sin(this->yaw), camDist * Math_Sin(this->pitch));
 
 		if (!this->engine3d->BeginFrame(scene, frameSize))
 			return false;
@@ -125,8 +125,8 @@ protected:
 
 		UIntOS triCount = this->model->GetCount();
 		if (triCount == 0) return;
-		Math::Vector3 minPt = nullptr;
-		Math::Vector3 maxPt = nullptr;
+		Math::Vector3D minPt = nullptr;
+		Math::Vector3D maxPt = nullptr;
 		UIntOS i = 0;
 		while (i < triCount)
 		{
@@ -139,7 +139,7 @@ protected:
 			maxPt = maxPt.Max(tri->pt1).Max(tri->pt2).Max(tri->pt3);
 			i++;
 		}
-		Math::Vector3 centerPt = (minPt + maxPt) * 0.5;
+		Math::Vector3D centerPt = (minPt + maxPt) * 0.5;
 		Double extent = Math_Max(maxPt.GetX() - minPt.GetX(), Math_Max(maxPt.GetY() - minPt.GetY(), maxPt.GetZ() - minPt.GetZ()));
 		if (extent <= 1e-20) extent = 1;
 		Double scale = Math_Min(dimg->GetWidth(), dimg->GetHeight()) * 0.76 / extent * this->zoom;
@@ -156,7 +156,7 @@ protected:
 			NN<ViewTriangle> viewTri;
 			NEW_CLASSNN(viewTri, ViewTriangle());
 			NN<Math::Model3D::Triangle> tri = NN<Math::Model3D::Triangle>::ConvertFrom(this->model->GetItemNoCheck(i));
-			Math::Vector3 pts[3];
+			Math::Vector3D pts[3];
 			pts[0] = tri->pt1 - centerPt;
 			pts[1] = tri->pt2 - centerPt;
 			pts[2] = tri->pt3 - centerPt;

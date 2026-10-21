@@ -214,7 +214,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 					}
 					if (needConv)
 					{
-						Math::Vector3 vec = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3(coord, z));
+						Math::Vector3D vec = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(coord, z));
 						coord = vec.GetXY();
 						z = vec.GetZ();
 					}
@@ -253,13 +253,13 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 					UnsafeArray<Double> alts;
 					if (needConv)
 					{
-						Math::Vector3 v;
+						Math::Vector3D v;
 						if (vec->HasZ() && pl->GetZList(nPoints).SetTo(alts))
 						{
 							k = 0;
 							while (k < nPoints)
 							{
-								v = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3(points[k], alts[k]));
+								v = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(points[k], alts[k]));
 
 								sptr = sbuff2;
 								sptr = Text::StrDouble(sptr, v.GetX());
@@ -279,7 +279,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 							k = 0;
 							while (k < nPoints)
 							{
-								v = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3(points[k], defHeight));
+								v = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(points[k], defHeight));
 								sptr = sbuff2;
 								sptr = Text::StrDouble(sptr, v.GetX());
 								*sptr++ = ',';
@@ -362,13 +362,13 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 						UnsafeArray<Double> alts;
 						if (needConv)
 						{
-							Math::Vector3 v;
+							Math::Vector3D v;
 							if (lineString->HasZ() && lineString->GetZList(nPoints).SetTo(alts))
 							{
 								k = 0;
 								while (k < nPoints)
 								{
-									v = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3(points[k], alts[k]));
+									v = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(points[k], alts[k]));
 
 									sptr = sbuff2;
 									sptr = Text::StrDouble(sptr, v.GetX());
@@ -388,7 +388,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 								k = 0;
 								while (k < nPoints)
 								{
-									v = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3(points[k], defHeight));
+									v = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(points[k], defHeight));
 									sptr = sbuff2;
 									sptr = Text::StrDouble(sptr, v.GetX());
 									*sptr++ = ',';
@@ -471,7 +471,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 					if (needConv)
 					{
-						Math::Vector3 v;
+						Math::Vector3D v;
 						Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = pg->Iterator();
 						while (it.HasNext())
 						{
@@ -481,7 +481,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 							points = lr->GetPointList(nPoints);
 							while (k < nPoints)
 							{
-								v = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3(points[k], defHeight));
+								v = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(points[k], defHeight));
 								sptr = Text::StrDouble(sbuff2, v.GetX());
 								sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 								sptr = Text::StrDouble(sptr, v.GetY());
@@ -672,8 +672,8 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 						bounds = img->GetBounds();
 						if (needConv)
 						{
-							bounds.min = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3(bounds.min, defHeight)).GetXY();
-							bounds.max = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3(bounds.max, defHeight)).GetXY();
+							bounds.min = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(bounds.min, defHeight)).GetXY();
+							bounds.max = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(bounds.max, defHeight)).GetXY();
 						}
 						sb.AppendC(UTF8STRC("<north>"));
 						sb.AppendDouble(bounds.max.y);

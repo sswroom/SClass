@@ -8,7 +8,7 @@ Map::CesiumTile::CesiumTile(NN<IO::PackageFile> pkg, Optional<Text::String> name
 {
 	this->pkg = pkg->Clone();
 	this->srid = 0;
-	this->srsOrigin = Math::Vector3(NAN, NAN, NAN);
+	this->srsOrigin = Math::Vector3D(NAN, NAN, NAN);
 	this->multijson = false;
 	this->jsonFile = nullptr;
 	UTF8Char sbuff[512];
@@ -54,7 +54,7 @@ Map::CesiumTile::CesiumTile(NN<IO::PackageFile> pkg, Optional<Text::String> name
 									reader.ReadNodeText(sb);
 									if (Text::StrSplitP(sarr, 4, sb, ' ') == 3)
 									{
-										this->srsOrigin = Math::Vector3(sarr[0].ToDoubleOrNAN(), sarr[1].ToDoubleOrNAN(), sarr[2].ToDoubleOrNAN());
+										this->srsOrigin = Math::Vector3D(sarr[0].ToDoubleOrNAN(), sarr[1].ToDoubleOrNAN(), sarr[2].ToDoubleOrNAN());
 									}
 								}
 								else

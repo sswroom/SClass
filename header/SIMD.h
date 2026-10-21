@@ -92,8 +92,6 @@ static UInt8x16 bswap128Mask = _mm_set_epi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
 #define PInt32x4SetA(v) _mm_set1_epi32(v)
 #define PUInt32x4SetA(v) _mm_set1_epi32((Int32)v)
 #define PUInt64x2Set(v1, v2) _mm_set_epi64x((Int64)v2, (Int64)v1)
-#define PDoublex2SetA(v) _mm_set1_pd(v)
-#define PDoublex2Set(lo, hi) _mm_set_pd(hi, lo)
 #define PLoadUInt8x4(ptr) _mm_cvtsi32_si128(*(Int32*)(ptr))
 #define PLoadUInt8x8(ptr) _mm_loadl_epi64((__m128i*)(ptr))
 #define PLoadUInt8x16(ptr) _mm_loadu_si128((__m128i*)(ptr))
@@ -210,6 +208,8 @@ static UInt8x16 bswap128Mask = _mm_set_epi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
 #define SI32ToI16x8(v1, v2) _mm_packs_epi32(v1, v2)
 #define BSWAP128(v) _mm_shuffle_epi8(v, bswap128Mask)
 
+#define PDoublex2SetA(v) _mm_set1_pd(v)
+#define PDoublex2Set(lo, hi) _mm_set_pd(hi, lo)
 #define PADDPD(v1, v2) _mm_add_pd(v1, v2)
 #define PSUBPD(v1, v2) _mm_sub_pd(v1, v2)
 #define PMULPD(v1, v2) _mm_mul_pd(v1, v2)

@@ -9,15 +9,15 @@ namespace IO
 	private:
 		NN<IO::SensorAccelerometer> acc;
 		Bool toRelease;
-		Math::Vector3 currAcc;
+		Math::Vector3D currAcc;
 		Bool currMoving;
 	public:
 		MotionDetectorAccelerometer(NN<IO::SensorAccelerometer> acc, Bool toRelease);
 		~MotionDetectorAccelerometer();
 
 		Bool UpdateStatus();
-		Math::Vector3 GetValues() const;
-		Bool IsMovving();
+		Math::Vector3D GetValues() const;
+		Bool IsMoving();
 	};
 }
 

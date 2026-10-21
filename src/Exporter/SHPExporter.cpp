@@ -145,7 +145,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	{
 		NN<Math::Geometry::PointZ> pt;
 		Math::Coord2DDbl coord;
-		Math::Vector3 pos;
+		Math::Vector3D pos;
 		ilayerType = 11;
 		i = 0;
 		while (i < recCnt)

@@ -66,7 +66,7 @@ static Double Map3DView_CalcLayerScale(
 	NN<Math::CoordinateSystem> envCSys,
 	Math::Size2DDbl scnSize,
 	Double fovDeg,
-	Math::Vector3 camPos,
+	Math::Vector3D camPos,
 	Math::RectAreaDbl layerRect)
 {
 	Math::Coord2DDbl nearPos = camPos.GetXY();
@@ -342,8 +342,8 @@ Bool Map::Map3DView::Render(NN<Media::Engine3DScene> scene3d, Math::Size2D<UInt3
 {
 	Double camZ = this->camDistance * Math_Sin(this->vAngle);
 	Double camH = this->camDistance * Math_Cos(this->vAngle);
-	Math::Vector3 targetPos(this->mapCenter, 0);
-	Math::Vector3 camPos(this->mapCenter.x + camH * Math_Cos(this->hAngle), this->mapCenter.y + camH * Math_Sin(this->hAngle), camZ);
+	Math::Vector3D targetPos(this->mapCenter, 0);
+	Math::Vector3D camPos(this->mapCenter.x + camH * Math_Cos(this->hAngle), this->mapCenter.y + camH * Math_Sin(this->hAngle), camZ);
 
 	Media::Engine3D::CameraState camera;
 	camera.camPos = camPos;

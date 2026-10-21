@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 	if (me->motion.SetTo(motion))
 	{
 		motion->UpdateStatus();
-		if (motion->IsMovving())
+		if (motion->IsMoving())
 		{
 			me->txtMotion->SetText(CSTR("Moving"));
 			Sync::MutexUsage mutUsage(me->captureMut);

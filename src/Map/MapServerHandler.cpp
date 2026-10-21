@@ -130,7 +130,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::WebReq
 							l = pg->GetCoordinates(pointList);
 							while (k < l)
 							{
-								json.ArrayAddVector3(Math::CoordinateSystem::ConvertToCartesianCoord(csys, Math::Vector3(pointList.GetItem(k), 0)));
+								json.ArrayAddVector3D(Math::CoordinateSystem::ConvertToCartesianCoord(csys, Math::Vector3D(pointList.GetItem(k), 0)));
 								k++;
 							}
 							json.ArrayEnd();
@@ -494,9 +494,9 @@ Bool Map::MapServerHandler::InSphereRange(NN<Text::JSONBase> sphere, Double x1, 
 		return false;
 	}
 	NN<Text::JSONArray> arr = NN<Text::JSONArray>::ConvertFrom(sphere);
-	Math::Vector3 pos;
+	Math::Vector3D pos;
 	Double radius = arr->GetArrayDoubleOr(3, 0);
-	pos = this->wgs84->FromCartesianCoordDeg(Math::Vector3(arr->GetArrayDoubleOr(0, 0), arr->GetArrayDoubleOr(1, 0), arr->GetArrayDoubleOr(2, 0)));
+	pos = this->wgs84->FromCartesianCoordDeg(Math::Vector3D(arr->GetArrayDoubleOr(0, 0), arr->GetArrayDoubleOr(1, 0), arr->GetArrayDoubleOr(2, 0)));
 	if (x1 <= pos.GetLon() && x2 >= pos.GetLon())
 	{
 	}

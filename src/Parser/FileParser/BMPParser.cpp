@@ -452,20 +452,20 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 			if (bg == 0) valid = false;
 			if (valid)
 			{
-				Math::Vector3 xyzVec;
-				xyzVec.val[0] = rx / (Double)0x40000000;
-				xyzVec.val[1] = ry / (Double)0x40000000;
-				xyzVec.val[2] = rz / (Double)0x40000000;
+				Math::Vector3D xyzVec;
+				xyzVec.xy.x = rx / (Double)0x40000000;
+				xyzVec.xy.y = ry / (Double)0x40000000;
+				xyzVec.zn.x = rz / (Double)0x40000000;
 				nnimg->info.color.primaries.r = Media::ColorProfile::ColorPrimaries::XYZToxyY(xyzVec).GetXY();
 
-				xyzVec.val[0] = gx / (Double)0x40000000;
-				xyzVec.val[1] = gy / (Double)0x40000000;
-				xyzVec.val[2] = gz / (Double)0x40000000;
+				xyzVec.xy.x = gx / (Double)0x40000000;
+				xyzVec.xy.y = gy / (Double)0x40000000;
+				xyzVec.zn.x = gz / (Double)0x40000000;
 				nnimg->info.color.primaries.g = Media::ColorProfile::ColorPrimaries::XYZToxyY(xyzVec).GetXY();
 
-				xyzVec.val[0] = bx / (Double)0x40000000;
-				xyzVec.val[1] = by / (Double)0x40000000;
-				xyzVec.val[2] = bz / (Double)0x40000000;
+				xyzVec.xy.x = bx / (Double)0x40000000;
+				xyzVec.xy.y = by / (Double)0x40000000;
+				xyzVec.zn.x = bz / (Double)0x40000000;
 				nnimg->info.color.primaries.b = Media::ColorProfile::ColorPrimaries::XYZToxyY(xyzVec).GetXY();
 				nnimg->info.color.primaries.colorType = Media::ColorProfile::CT_CUSTOM;
 

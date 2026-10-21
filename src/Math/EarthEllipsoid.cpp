@@ -256,7 +256,7 @@ NN<Math::EarthEllipsoid> Math::EarthEllipsoid::Clone() const
 	return ellipsoid;
 }
 
-Math::Vector3 Math::EarthEllipsoid::ToCartesianCoordRad(Math::Vector3 lonLatH) const
+Math::Vector3D Math::EarthEllipsoid::ToCartesianCoordRad(Math::Vector3D lonLatH) const
 {
 	Double cLat = Math_Cos(lonLatH.GetLat());
 	Double sLat = Math_Sin(lonLatH.GetLat());
@@ -264,13 +264,13 @@ Math::Vector3 Math::EarthEllipsoid::ToCartesianCoordRad(Math::Vector3 lonLatH) c
 	Double sLon = Math_Sin(lonLatH.GetLon());
 	Double e2 = this->eccentricity * this->eccentricity;
 	Double v = this->semiMajorAxis / Math_Sqrt(1 - e2 * sLat * sLat);
-	return Math::Vector3(
+	return Math::Vector3D(
 		(v + lonLatH.GetH()) * cLat * cLon,
 		(v + lonLatH.GetH()) * cLat * sLon,
 		((1 - e2) * v + lonLatH.GetH()) * sLat);
 }
 
-Math::Vector3 Math::EarthEllipsoid::FromCartesianCoordRad(Math::Vector3 coord) const
+Math::Vector3D Math::EarthEllipsoid::FromCartesianCoordRad(Math::Vector3D coord) const
 {
 	Double e2 = this->eccentricity * this->eccentricity;
 	Double rLon = Math_ArcTan2(coord.GetY(), coord.GetX());
@@ -289,7 +289,7 @@ Math::Vector3 Math::EarthEllipsoid::FromCartesianCoordRad(Math::Vector3 coord) c
 			break;
 		rLat = thisLat;
 	}
-	return Math::Vector3(rLon, rLat, p / Math_Cos(rLat) - v);
+	return Math::Vector3D(rLon, rLat, p / Math_Cos(rLat) - v);
 }
 
 NN<const Math::EarthEllipsoid::EarthEllipsoidInfo> Math::EarthEllipsoid::GetEarthInfo(EarthEllipsoidType eet)

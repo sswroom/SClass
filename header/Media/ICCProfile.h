@@ -15,10 +15,10 @@ namespace Media
 	class ICCProfile
 	{
 	public:
-		struct CIEXYZ : public Math::Vector3
+		struct CIEXYZ : public Math::Vector3D	
 		{
 			CIEXYZ() = default;
-			CIEXYZ(Double x, Double y, Double z) : Math::Vector3(x, y, z)
+			CIEXYZ(Double x, Double y, Double z) : Math::Vector3D(x, y, z)
 			{
 			}
 		};

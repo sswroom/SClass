@@ -445,7 +445,7 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 	Double x;
 	Double y;
 	Double z;
-	Math::Vector3 destPos;
+	Math::Vector3D destPos;
 	Optional<Math::CoordinateSystem> srcCoord;
 	Optional<Math::CoordinateSystem> destCoord;
 	NN<Math::CoordinateSystem> srcCsys;
@@ -514,7 +514,7 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 		this->lvCoord->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 		if (srcCoord.SetTo(srcCsys) && destCoord.SetTo(destCsys))
 		{
-			destPos = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3(x, y, z));
+			destPos = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(x, y, z));
 			sptr = Text::StrDouble(sbuff, destPos.GetX());
 			this->lvCoord->SetSubItem(k, 4, CSTRP(sbuff, sptr));
 			sptr = Text::StrDouble(sbuff, destPos.GetY());

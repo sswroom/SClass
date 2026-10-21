@@ -42,7 +42,7 @@ Bool Math::GeoJSONWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::
 		if (vec->HasZ())
 		{
 			Math::Geometry::PointZ *pt = (Math::Geometry::PointZ*)vec.Ptr();
-			Math::Vector3 pos = pt->GetPos3D();
+			Math::Vector3D pos = pt->GetPos3D();
 			sb->AppendDouble(pos.GetX());
 			sb->AppendC(UTF8STRC(", "));
 			sb->AppendDouble(pos.GetY());
@@ -355,7 +355,7 @@ Bool Math::GeoJSONWriter::ToGeometry(NN<Text::JSONBuilder> json, NN<const Math::
 		if (vec->HasZ())
 		{
 			Math::Geometry::PointZ *pt = (Math::Geometry::PointZ*)vec.Ptr();
-			json->ObjectAddVector3(CSTR("coordinates"), pt->GetPos3D());
+			json->ObjectAddVector3D(CSTR("coordinates"), pt->GetPos3D());
 		}
 		else
 		{

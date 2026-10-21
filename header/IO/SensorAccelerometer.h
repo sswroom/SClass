@@ -1,6 +1,6 @@
 #ifndef _SM_IO_SENSORACCELEROMETER
 #define _SM_IO_SENSORACCELEROMETER
-#include "Math/Vector3.h"
+#include "Math/Vector3D.h"
 #include "Math/Unit/Acceleration.h"
 
 namespace IO
@@ -10,7 +10,7 @@ namespace IO
 	public:
 		virtual ~SensorAccelerometer() {};
 
-		virtual Bool ReadAcceleration(OutParam<Math::Vector3> acc) = 0;
+		virtual Bool ReadAcceleration(OutParam<Math::Vector3D> acc) = 0;
 		virtual Math::Unit::Acceleration::AccelerationUnit GetAccelerationUnit() = 0;
 	};
 };

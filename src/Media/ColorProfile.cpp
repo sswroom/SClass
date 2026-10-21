@@ -279,7 +279,7 @@ Math::Double2D Media::ColorProfile::ColorPrimaries::GetWhitexy() const
 	return this->w;
 }
 
-void Media::ColorProfile::ColorPrimaries::GetConvMatrix(NN<Math::Matrix3> matrix) const
+void Media::ColorProfile::ColorPrimaries::GetConvMatrix(NN<Math::Matrix3D> matrix) const
 {
 	Double Sr;
 	Double Sg;
@@ -309,51 +309,51 @@ void Media::ColorProfile::ColorPrimaries::GetConvMatrix(NN<Math::Matrix3> matrix
 	Xw = this->w.x / this->w.y;
 	Yw = 1.0;
 	Zw = (1 - this->w.x - this->w.y) / this->w.y;
-	Math::Matrix3 matrixTmp;
-	matrixTmp.vec[0].val[0] = Xr;
-	matrixTmp.vec[0].val[1] = Xg;
-	matrixTmp.vec[0].val[2] = Xb;
-	matrixTmp.vec[1].val[0] = Yr;
-	matrixTmp.vec[1].val[1] = Yg;
-	matrixTmp.vec[1].val[2] = Yb;
-	matrixTmp.vec[2].val[0] = Zr;
-	matrixTmp.vec[2].val[1] = Zg;
-	matrixTmp.vec[2].val[2] = Zb;
+	Math::Matrix3D matrixTmp;
+	matrixTmp.vec[0].xy.x = Xr;
+	matrixTmp.vec[0].xy.y = Xg;
+	matrixTmp.vec[0].zn.x = Xb;
+	matrixTmp.vec[1].xy.x = Yr;
+	matrixTmp.vec[1].xy.y = Yg;
+	matrixTmp.vec[1].zn.x = Yb;
+	matrixTmp.vec[2].xy.x = Zr;
+	matrixTmp.vec[2].xy.y = Zg;
+	matrixTmp.vec[2].zn.x = Zb;
 	matrixTmp.Inverse();
 
 	matrixTmp.Multiply(Xw, Yw, Zw, Sr, Sg, Sb);
-	matrix->vec[0].val[0] = Sr * Xr;
-	matrix->vec[0].val[1] = Sg * Xg;
-	matrix->vec[0].val[2] = Sb * Xb;
-	matrix->vec[1].val[0] = Sr * Yr;
-	matrix->vec[1].val[1] = Sg * Yg;
-	matrix->vec[1].val[2] = Sb * Yb;
-	matrix->vec[2].val[0] = Sr * Zr;
-	matrix->vec[2].val[1] = Sg * Zg;
-	matrix->vec[2].val[2] = Sb * Zb;
+	matrix->vec[0].xy.x = Sr * Xr;
+	matrix->vec[0].xy.y = Sg * Xg;
+	matrix->vec[0].zn.x = Sb * Xb;
+	matrix->vec[1].xy.x = Sr * Yr;
+	matrix->vec[1].xy.y = Sg * Yg;
+	matrix->vec[1].zn.x = Sb * Yb;
+	matrix->vec[2].xy.x = Sr * Zr;
+	matrix->vec[2].xy.y = Sg * Zg;
+	matrix->vec[2].zn.x = Sb * Zb;
 }
 
-void Media::ColorProfile::ColorPrimaries::SetConvMatrix(NN<const Math::Matrix3> matrix)
+void Media::ColorProfile::ColorPrimaries::SetConvMatrix(NN<const Math::Matrix3D> matrix)
 {
-	Double Sr = matrix->vec[1].val[0];
-	Double Sg = matrix->vec[1].val[1];
-	Double Sb = matrix->vec[1].val[2];
+	Double Sr = matrix->vec[1].xy.x;
+	Double Sg = matrix->vec[1].xy.y;
+	Double Sb = matrix->vec[1].zn.x;
 	Double X;
 //	Double Y;
 	Double Z;
-	X = matrix->vec[0].val[0] / Sr;
-//	Y = matrix->vec[1].val[0] / Sr;
-	Z = matrix->vec[2].val[0] / Sr;
+	X = matrix->vec[0].xy.x / Sr;
+//	Y = matrix->vec[1].xy.x / Sr;
+	Z = matrix->vec[2].xy.x / Sr;
 	this->r.y = 1 / (Z + X + 1);
 	this->r.x = X * this->r.y;
-	X = matrix->vec[0].val[1] / Sg;
-//	Y = matrix->vec[1].val[1] / Sg;
-	Z = matrix->vec[2].val[1] / Sg;
+	X = matrix->vec[0].xy.y / Sg;
+//	Y = matrix->vec[1].xy.y / Sg;
+	Z = matrix->vec[2].xy.y / Sg;
 	this->g.y = 1 / (Z + X + 1);
 	this->g.x = X * this->g.y;
-	X = matrix->vec[0].val[2] / Sb;
-//	Y = matrix->vec[1].val[2] / Sb;
-	Z = matrix->vec[2].val[2] / Sb;
+	X = matrix->vec[0].zn.x / Sb;
+//	Y = matrix->vec[1].zn.x / Sb;
+	Z = matrix->vec[2].zn.x / Sb;
 	this->b.y = 1 / (Z + X + 1);
 	this->b.x = X * this->b.y;
 	X = this->r.x / this->r.y * Sr + this->g.x / this->g.y * Sg + this->b.x / this->b.y * Sb;
@@ -444,43 +444,43 @@ Math::Double2D Media::ColorProfile::ColorPrimaries::GetWhitePointXY(Double color
 	return Math::Double2D(currX, currY);
 }
 
-Math::Vector3 Media::ColorProfile::ColorPrimaries::GetWhitePointXYZ(WhitePointType wpType)
+Math::Vector3D Media::ColorProfile::ColorPrimaries::GetWhitePointXYZ(WhitePointType wpType)
 {
-	return xyYToXYZ(Math::Vector3(GetWhitePointXY(wpType), 1.0));
+	return xyYToXYZ(Math::Vector3D(GetWhitePointXY(wpType), 1.0));
 }
 
-void Media::ColorProfile::ColorPrimaries::GetMatrixBradford(NN<Math::Matrix3> mat)
+void Media::ColorProfile::ColorPrimaries::GetMatrixBradford(NN<Math::Matrix3D> mat)
 {
 	mat->vec[0].Set( 0.8951,  0.2664, -0.1614);
 	mat->vec[1].Set(-0.7502,  1.7135,  0.0367);
 	mat->vec[2].Set( 0.0389, -0.0685,  1.0296);
 }
 
-void Media::ColorProfile::ColorPrimaries::GetMatrixVonKries(NN<Math::Matrix3> mat)
+void Media::ColorProfile::ColorPrimaries::GetMatrixVonKries(NN<Math::Matrix3D> mat)
 {
 	mat->vec[0].Set( 0.40024,  0.70760, -0.08081);
 	mat->vec[1].Set(-0.22630,  1.16532,  0.04570);
 	mat->vec[2].Set( 0.00000,  0.00000,  0.91822);
 }
 
-Math::Vector3 Media::ColorProfile::ColorPrimaries::xyYToXYZ(const Math::Vector3 &xyY)
+Math::Vector3D Media::ColorProfile::ColorPrimaries::xyYToXYZ(const Math::Vector3D &xyY)
 {
-	Double v = xyY.val[2] / xyY.val[1];
-	return Math::Vector3(xyY.val[0] * v, xyY.val[2], (1 - xyY.val[0] - xyY.val[1]) * v);
+	Double v = xyY.zn.x / xyY.xy.y;
+	return Math::Vector3D(xyY.xy.x * v, xyY.zn.x, (1 - xyY.xy.x - xyY.xy.y) * v);
 }
 
-Math::Vector3 Media::ColorProfile::ColorPrimaries::XYZToxyY(const Math::Vector3 &XYZ)
+Math::Vector3D Media::ColorProfile::ColorPrimaries::XYZToxyY(const Math::Vector3D &XYZ)
 {
-	Double sum = XYZ.val[0] + XYZ.val[1] + XYZ.val[2];
-	return Math::Vector3(XYZ.val[0] / sum, XYZ.val[1] / sum, XYZ.val[1]);
+	Double sum = XYZ.xy.x + XYZ.xy.y + XYZ.zn.x;
+	return Math::Vector3D(XYZ.xy.x / sum, XYZ.xy.y / sum, XYZ.xy.y);
 }
 
-void Media::ColorProfile::ColorPrimaries::GetAdaptationMatrix(NN<Math::Matrix3> mat, WhitePointType srcWP, WhitePointType destWP)
+void Media::ColorProfile::ColorPrimaries::GetAdaptationMatrix(NN<Math::Matrix3D> mat, WhitePointType srcWP, WhitePointType destWP)
 {
-	Math::Matrix3 mat2;
-	Math::Matrix3 mat3;
-	Math::Vector3 vec1;
-	Math::Vector3 vec2;
+	Math::Matrix3D mat2;
+	Math::Matrix3D mat3;
+	Math::Vector3D vec1;
+	Math::Vector3D vec2;
 
 	//color.primaries.GetConvMatrix(&mat);
 	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(mat);
@@ -490,9 +490,9 @@ void Media::ColorProfile::ColorPrimaries::GetAdaptationMatrix(NN<Math::Matrix3> 
 	vec1 = mat->Multiply(Media::ColorProfile::ColorPrimaries::GetWhitePointXYZ(srcWP));
 	vec2 = mat->Multiply(Media::ColorProfile::ColorPrimaries::GetWhitePointXYZ(destWP));
 	mat->Inverse();
-	mat3.vec[0].val[0] = vec2.val[0] / vec1.val[0];
-	mat3.vec[1].val[1] = vec2.val[1] / vec1.val[1];
-	mat3.vec[2].val[2] = vec2.val[2] / vec1.val[2];
+	mat3.vec[0].xy.x = vec2.xy.x / vec1.xy.x;
+	mat3.vec[1].xy.y = vec2.xy.y / vec1.xy.y;
+	mat3.vec[2].zn.x = vec2.zn.x / vec1.zn.x;
 	mat->MultiplyInplace(mat3);
 	mat->MultiplyInplace(mat2);
 }
@@ -663,7 +663,7 @@ void Media::ColorProfile::SetCommonProfile(Media::ColorProfile::CommonProfileTyp
 
 void Media::ColorProfile::RGB32ToXYZ(Int32 rgb, OutParam<Double> X, OutParam<Double> Y, OutParam<Double> Z) const
 {
-	Math::Matrix3 matrix;
+	Math::Matrix3D matrix;
 	this->primaries.GetConvMatrix(matrix);
 	NN<Media::CS::TransferFunc> rtrant = Media::CS::TransferFunc::CreateFunc(this->rtransfer);
 	NN<Media::CS::TransferFunc> gtrant = Media::CS::TransferFunc::CreateFunc(this->gtransfer);
@@ -680,7 +680,7 @@ void Media::ColorProfile::RGB32ToXYZ(Int32 rgb, OutParam<Double> X, OutParam<Dou
 
 Int32 Media::ColorProfile::XYZToRGB32(Double a, Double X, Double Y, Double Z) const
 {
-	Math::Matrix3 matrix;
+	Math::Matrix3D matrix;
 	Double R;
 	Double G;
 	Double B;
@@ -729,11 +729,11 @@ Int32 Media::ColorProfile::XYZToRGB32(Double a, Double X, Double Y, Double Z) co
 
 void Media::ColorProfile::XYZWPTransform(WhitePointType srcWP, Double srcX, Double srcY, Double srcZ, WhitePointType destWP, OutParam<Double> outX, OutParam<Double> outY, OutParam<Double> outZ)
 {
-	Math::Matrix3 mat2;
-	Math::Matrix3 mat3;
-	Math::Matrix3 mat4;
-	Math::Vector3 vec1;
-	Math::Vector3 vec2;
+	Math::Matrix3D mat2;
+	Math::Matrix3D mat3;
+	Math::Matrix3D mat4;
+	Math::Vector3D vec1;
+	Math::Vector3D vec2;
 
 	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(mat2);
 	mat3.Set(mat2);
@@ -741,9 +741,9 @@ void Media::ColorProfile::XYZWPTransform(WhitePointType srcWP, Double srcX, Doub
 	vec1 = mat2.Multiply(Media::ColorProfile::ColorPrimaries::GetWhitePointXYZ(srcWP));
 	vec2 = mat2.Multiply(Media::ColorProfile::ColorPrimaries::GetWhitePointXYZ(destWP));
 	mat2.Inverse();
-	mat4.vec[0].val[0] = vec2.val[0] / vec1.val[0];
-	mat4.vec[1].val[1] = vec2.val[1] / vec1.val[1];
-	mat4.vec[2].val[2] = vec2.val[2] / vec1.val[2];
+	mat4.vec[0].xy.x = vec2.xy.x / vec1.xy.x;
+	mat4.vec[1].xy.y = vec2.xy.y / vec1.xy.y;
+	mat4.vec[2].zn.x = vec2.zn.x / vec1.zn.x;
 	mat2.MultiplyInplace(mat4);
 	mat2.MultiplyInplace(mat3);
 	mat2.Multiply(srcX, srcY, srcZ, outX, outY, outZ);
@@ -1090,8 +1090,8 @@ void Media::ColorProfile::RGB2RGB(NN<Media::ColorProfile> srcColor, NN<Media::Co
 	NN<Media::CS::TransferFunc> func2r;
 	NN<Media::CS::TransferFunc> func2g;
 	NN<Media::CS::TransferFunc> func2b;
-	Math::Matrix3 mat;
-	Math::Matrix3 mat2;
+	Math::Matrix3D mat;
+	Math::Matrix3D mat2;
 	Double v1;
 	Double v2;
 	Double v3;
@@ -1108,9 +1108,9 @@ void Media::ColorProfile::RGB2RGB(NN<Media::ColorProfile> srcColor, NN<Media::Co
 	v1 = func1r->InverseTransfer(srcR);
 	v2 = func1g->InverseTransfer(srcG);
 	v3 = func1b->InverseTransfer(srcB);
-	destR.Set(func2r->ForwardTransfer(mat.vec[0].val[0] * v1 + mat.vec[0].val[1] * v2 + mat.vec[0].val[2] * v3));
-	destG.Set(func2g->ForwardTransfer(mat.vec[1].val[0] * v1 + mat.vec[1].val[1] * v2 + mat.vec[1].val[2] * v3));
-	destB.Set(func2b->ForwardTransfer(mat.vec[2].val[0] * v1 + mat.vec[2].val[1] * v2 + mat.vec[2].val[2] * v3));
+	destR.Set(func2r->ForwardTransfer(mat.vec[0].xy.x * v1 + mat.vec[0].xy.y * v2 + mat.vec[0].zn.x * v3));
+	destG.Set(func2g->ForwardTransfer(mat.vec[1].xy.x * v1 + mat.vec[1].xy.y * v2 + mat.vec[1].zn.x * v3));
+	destB.Set(func2b->ForwardTransfer(mat.vec[2].xy.x * v1 + mat.vec[2].xy.y * v2 + mat.vec[2].zn.x * v3));
 	func1r.Delete();
 	func1g.Delete();
 	func1b.Delete();
@@ -1119,14 +1119,14 @@ void Media::ColorProfile::RGB2RGB(NN<Media::ColorProfile> srcColor, NN<Media::Co
 	func2b.Delete();
 }
 
-void Media::ColorProfile::GetConvMatrix(NN<Math::Matrix3> mat, NN<const ColorProfile::ColorPrimaries> srcColor, NN<const ColorProfile::ColorPrimaries> destColor)
+void Media::ColorProfile::GetConvMatrix(NN<Math::Matrix3D> mat, NN<const ColorProfile::ColorPrimaries> srcColor, NN<const ColorProfile::ColorPrimaries> destColor)
 {
-	Math::Matrix3 mat2;
-	Math::Matrix3 mat3;
-	Math::Matrix3 mat4;
-	Math::Matrix3 mat5;
-	Math::Vector3 vec1;
-	Math::Vector3 vec2;
+	Math::Matrix3D mat2;
+	Math::Matrix3D mat3;
+	Math::Matrix3D mat4;
+	Math::Matrix3D mat5;
+	Math::Vector3D vec1;
+	Math::Vector3D vec2;
 	srcColor->GetConvMatrix(mat);
 	destColor->GetConvMatrix(mat5);
 	mat5.Inverse();
@@ -1134,14 +1134,14 @@ void Media::ColorProfile::GetConvMatrix(NN<Math::Matrix3> mat, NN<const ColorPro
 	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(mat2);
 	mat3.Set(mat2);
 	mat4.SetIdentity();
-	vec2 = Media::ColorProfile::ColorPrimaries::xyYToXYZ(Math::Vector3(destColor->w, 1.0));
-	vec1 = Media::ColorProfile::ColorPrimaries::xyYToXYZ(Math::Vector3(srcColor->w, 1.0));
+	vec2 = Media::ColorProfile::ColorPrimaries::xyYToXYZ(Math::Vector3D(destColor->w, 1.0));
+	vec1 = Media::ColorProfile::ColorPrimaries::xyYToXYZ(Math::Vector3D(srcColor->w, 1.0));
 	vec1 = mat2.Multiply(vec1);
 	vec2 = mat2.Multiply(vec2);
 	mat2.Inverse();
-	mat4.vec[0].val[0] = vec2.val[0] / vec1.val[0];
-	mat4.vec[1].val[1] = vec2.val[1] / vec1.val[1];
-	mat4.vec[2].val[2] = vec2.val[2] / vec1.val[2];
+	mat4.vec[0].xy.x = vec2.xy.x / vec1.xy.x;
+	mat4.vec[1].xy.y = vec2.xy.y / vec1.xy.y;
+	mat4.vec[2].zn.x = vec2.zn.x / vec1.zn.x;
 	mat2.MultiplyInplace(mat4);
 	mat2.MultiplyInplace(mat3);
 	mat->MultiplyInplaceBA(mat2);

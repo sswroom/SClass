@@ -367,11 +367,11 @@ void Math::Geometry::LineString::Convert(NN<Math::CoordinateConverter> converter
 	UnsafeArray<Double> zArr;
 	if (this->zArr.SetTo(zArr))
 	{
-		Math::Vector3 tmpPos;
+		Math::Vector3D tmpPos;
 		UIntOS i = this->nPoint;
 		while (i-- > 0)
 		{
-			tmpPos = converter->Convert3D(Math::Vector3(this->pointArr[i], zArr[i]));
+			tmpPos = converter->Convert3D(Math::Vector3D(this->pointArr[i], zArr[i]));
 			this->pointArr[i] = tmpPos.GetXY();
 			zArr[i] = tmpPos.GetZ();
 		}

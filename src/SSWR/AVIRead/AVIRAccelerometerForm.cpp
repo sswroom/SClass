@@ -8,19 +8,19 @@ void __stdcall SSWR::AVIRead::AVIRAccelerometerForm::OnTimerTick(AnyType userObj
 	NN<SSWR::AVIRead::AVIRAccelerometerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAccelerometerForm>();
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	Math::Vector3 acc;
+	Math::Vector3D acc;
 	if (me->motion.UpdateStatus())
 	{
 		acc = me->motion.GetValues();
 
-		sptr = Text::StrDouble(sbuff, acc.val[0]);
+		sptr = Text::StrDouble(sbuff, acc.xy.x);
 		me->txtX->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, acc.val[1]);
+		sptr = Text::StrDouble(sbuff, acc.xy.y);
 		me->txtY->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrDouble(sbuff, acc.val[2]);
+		sptr = Text::StrDouble(sbuff, acc.zn.x);
 		me->txtZ->SetText(CSTRP(sbuff, sptr));
 
-		if (me->currMoving != me->motion.IsMovving())
+		if (me->currMoving != me->motion.IsMoving())
 		{
 			me->currMoving = !me->currMoving;
 			if (me->currMoving)

@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ArrayListA.hpp"
 #include "Data/ArrayListNative.hpp"
 #include "Data/ArrayListNN.hpp"
 #include "Data/ByteBuffer.h"
@@ -197,7 +198,7 @@ Data::ArrayListNative<Double> Parser::FileParser::IFCParser::Numbers(Text::CStri
 	return values;
 }
 
-Math::Vector3 Parser::FileParser::IFCParser::GetPoint(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 id)
+Math::Vector3D Parser::FileParser::IFCParser::GetPoint(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 id)
 {
 	NN<Parser::FileParser::IFCParser::IFCEntity> ent;
 	if (Find(entities, id).SetTo(ent) && ent->type.Equals(CSTR("IFCCARTESIANPOINT")) && !ent->args.IsEmpty())
@@ -208,13 +209,13 @@ Math::Vector3 Parser::FileParser::IFCParser::GetPoint(NN<Data::ArrayListNN<IFCEn
 	return {0, 0, 0};
 }
 
-Math::Vector3 Parser::FileParser::IFCParser::GetDirection(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 id, Math::Vector3 defVal)
+Math::Vector3D Parser::FileParser::IFCParser::GetDirection(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 id, Math::Vector3D defVal)
 {
 	NN<IFCEntity> ent;
 	if (Find(entities, id).SetTo(ent) && ent->type.Equals(CSTR("IFCDIRECTION")) && !ent->args.IsEmpty())
 	{
 		Data::ArrayListNative<Double> nums = Numbers(ent->args.GetItem(0));
-		if (nums.GetCount() >= 2) return Math::Vector3(nums.GetItem(0), nums.GetItem(1), nums.GetCount() >= 3 ? nums.GetItem(2) : 0).Normalized();
+		if (nums.GetCount() >= 2) return Math::Vector3D(nums.GetItem(0), nums.GetItem(1), nums.GetCount() >= 3 ? nums.GetItem(2) : 0).Normalized();
 	}
 	return defVal;
 }
@@ -228,7 +229,7 @@ Math::Transform Parser::FileParser::IFCParser::GetAxisPlacement(NN<Data::ArrayLi
 	if (ent->type.Equals(CSTR("IFCAXIS2PLACEMENT2D")))
 	{
 		if (ent->args.GetCount() > 1) t.axis.vec[0] = GetDirection(entities, Ref(ent->args.GetItem(1)), {1, 0, 0});
-		t.axis.vec[1] = Math::Vector3(-t.axis.vec[0].GetY(), t.axis.vec[0].GetX(), 0);
+		t.axis.vec[1] = Math::Vector3D(-t.axis.vec[0].GetY(), t.axis.vec[0].GetX(), 0);
 		return t;
 	}
 	if (ent->args.GetCount() > 1) t.axis.vec[2] = GetDirection(entities, Ref(ent->args.GetItem(1)), {0, 0, 1});
@@ -246,23 +247,23 @@ Math::Transform Parser::FileParser::IFCParser::GetObjectPlacement(NN<Data::Array
 	return GetObjectPlacement(entities, Ref(ent->args.GetItem(0)), depth + 1).Compose(GetAxisPlacement(entities, Ref(ent->args.GetItem(1))));
 }
 
-void Parser::FileParser::IFCParser::AddPolygon(NN<Math::Model3D> model, NN<Data::ArrayListObj<Math::Vector3>> points, const Math::Transform &t, UInt32 elementId)
+void Parser::FileParser::IFCParser::AddPolygon(NN<Math::Model3D> model, NN<Data::ArrayListA<Math::Vector3D>> points, const Math::Transform &t, UInt32 elementId)
 {
 	if (points->GetCount() < 3) return;
-	Math::Vector3 p0 = t.TransformPoint(points->GetItem(0));
+	Math::Vector3D p0 = t.TransformPoint(points->GetItem(0));
 	UIntOS i = 1;
 	while (i + 1 < points->GetCount())
 	{
-		Math::Vector3 p1 = t.TransformPoint(points->GetItem(i));
-		Math::Vector3 p2 = t.TransformPoint(points->GetItem(i + 1));
+		Math::Vector3D p1 = t.TransformPoint(points->GetItem(i));
+		Math::Vector3D p2 = t.TransformPoint(points->GetItem(i + 1));
 		model->AddTriangle(p0, p1, p2, elementId);
 		i++;
 	}
 }
 
-Data::ArrayListObj<Math::Vector3> Parser::FileParser::IFCParser::GetProfilePoints(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 profileId)
+Data::ArrayListA<Math::Vector3D> Parser::FileParser::IFCParser::GetProfilePoints(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 profileId)
 {
-	Data::ArrayListObj<Math::Vector3> points;
+	Data::ArrayListA<Math::Vector3D> points;
 	NN<IFCEntity> profile;
 	if (!Find(entities, profileId).SetTo(profile)) return points;
 	if (profile->type.Equals(CSTR("IFCARBITRARYCLOSEDPROFILEDEF")) || profile->type.Equals(CSTR("IFCARBITRARYPROFILEDEFWITHVOIDS")))
@@ -327,12 +328,12 @@ Data::ArrayListObj<Math::Vector3> Parser::FileParser::IFCParser::GetProfilePoint
 void Parser::FileParser::IFCParser::ParseExtrusion(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, NN<IFCEntity> solid, const Math::Transform &productT, UInt32 elementId)
 {
 	if (solid->args.GetCount() < 4) return;
-	Data::ArrayListObj<Math::Vector3> profile = GetProfilePoints(entities, Ref(solid->args.GetItem(0)));
+	Data::ArrayListA<Math::Vector3D> profile = GetProfilePoints(entities, Ref(solid->args.GetItem(0)));
 	if (profile.GetCount() < 3) return;
 	Math::Transform t = productT.Compose(GetAxisPlacement(entities, Ref(solid->args.GetItem(1))));
-	Math::Vector3 direction = GetDirection(entities, Ref(solid->args.GetItem(2)), {0, 0, 1});
+	Math::Vector3D direction = GetDirection(entities, Ref(solid->args.GetItem(2)), {0, 0, 1});
 	Double depth = Text::StrToDoubleB(solid->args.GetItem(3).OrEmpty().v, nullptr);
-	Data::ArrayListObj<Math::Vector3> top(profile.GetCount());
+	Data::ArrayListA<Math::Vector3D> top(profile.GetCount());
 	UIntOS i = 0;
 	while (i < profile.GetCount())
 	{
@@ -341,7 +342,7 @@ void Parser::FileParser::IFCParser::ParseExtrusion(NN<Math::Model3D> model, NN<D
 	}
 	AddPolygon(model, profile, t, elementId);
 	AddPolygon(model, top, t, elementId);
-	Data::ArrayListObj<Math::Vector3> side(4); 
+	Data::ArrayListA<Math::Vector3D> side(4); 
 	i = 0;
 	while (i < profile.GetCount())
 	{
@@ -375,16 +376,16 @@ void Parser::FileParser::IFCParser::ParseFacetedBrep(NN<Math::Model3D> model, NN
 		if (!Find(entities, bounds.GetItem(0)).SetTo(bound) || bound->args.IsEmpty()) continue;
 		NN<Parser::FileParser::IFCParser::IFCEntity> loop;
 		if (!Find(entities, Ref(bound->args.GetItem(0))).SetTo(loop) || !loop->type.Equals(CSTR("IFCPOLYLOOP")) || loop->args.IsEmpty()) continue;
-		Data::ArrayListObj<Math::Vector3> points;
+		Data::ArrayListA<Math::Vector3D> points;
 		Data::ArrayListNative<UInt32> loopRefs = Refs(loop->args.GetItem(0));
 		for (UInt32 i = 0; i < loopRefs.GetCount(); i++) points.Add(GetPoint(entities, loopRefs.GetItem(i)));
 		AddPolygon(model, points, t, elementId);
 	}
 }
 
-Data::ArrayListObj<Math::Vector3> Parser::FileParser::IFCParser::GetPointList3D(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 listId)
+Data::ArrayListA<Math::Vector3D> Parser::FileParser::IFCParser::GetPointList3D(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 listId)
 {
-	Data::ArrayListObj<Math::Vector3> points;
+	Data::ArrayListA<Math::Vector3D> points;
 	NN<IFCEntity> list;
 	if (!Find(entities, listId).SetTo(list) || !list->type.Equals(CSTR("IFCCARTESIANPOINTLIST3D")) || list->args.IsEmpty()) return points;
 	Data::ArrayListNative<Double> nums = Numbers(list->args.GetItem(0));
@@ -400,9 +401,9 @@ Data::ArrayListObj<Math::Vector3> Parser::FileParser::IFCParser::GetPointList3D(
 void Parser::FileParser::IFCParser::ParseTriangulatedFaceSet(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, NN<IFCEntity> faceSet, const Math::Transform &t, UInt32 elementId)
 {
 	if (faceSet->args.GetCount() < 4) return;
-	Data::ArrayListObj<Math::Vector3> points = GetPointList3D(entities, Ref(faceSet->args.GetItem(0)));
+	Data::ArrayListA<Math::Vector3D> points = GetPointList3D(entities, Ref(faceSet->args.GetItem(0)));
 	Data::ArrayListNative<Double> indices = Numbers(faceSet->args.GetItem(3));
-	Data::ArrayListObj<Math::Vector3> triangle(3); 
+	Data::ArrayListA<Math::Vector3D> triangle(3); 
 	UIntOS i = 0;
 	while (i + 2 < indices.GetCount())
 	{
@@ -423,7 +424,7 @@ void Parser::FileParser::IFCParser::ParseTriangulatedFaceSet(NN<Math::Model3D> m
 void Parser::FileParser::IFCParser::ParsePolygonalFaceSet(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, NN<IFCEntity> faceSet, const Math::Transform &t, UInt32 elementId)
 {
 	if (faceSet->args.GetCount() < 3) return;
-	Data::ArrayListObj<Math::Vector3> points = GetPointList3D(entities, Ref(faceSet->args.GetItem(0)));
+	Data::ArrayListA<Math::Vector3D> points = GetPointList3D(entities, Ref(faceSet->args.GetItem(0)));
 	Data::ArrayListNative<UInt32> faceIds = Refs(faceSet->args.GetItem(2));
 	for (UInt32 i = 0; i < faceIds.GetCount(); i++)
 	{
@@ -431,7 +432,7 @@ void Parser::FileParser::IFCParser::ParsePolygonalFaceSet(NN<Math::Model3D> mode
 		NN<Parser::FileParser::IFCParser::IFCEntity> face;
 		if (!Find(entities, faceId).SetTo(face) || face->args.IsEmpty()) continue;
 		Data::ArrayListNative<Double> indices = Numbers(face->args.GetItem(0));
-		Data::ArrayListObj<Math::Vector3> polygon;
+		Data::ArrayListA<Math::Vector3D> polygon;
 		for (UIntOS j = 0; j < indices.GetCount(); j++)
 		{
 			Double index = indices.GetItem(j);

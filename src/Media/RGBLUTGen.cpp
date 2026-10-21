@@ -282,7 +282,7 @@ void Media::RGBLUTGen::GenRGBA8_LRGBC(UnsafeArray<Int64> rgbTable, NN<const Medi
 	NN<Media::CS::TransferFunc> igFunc = Media::CS::TransferFunc::CreateFunc(gTran);
 	NN<Media::CS::TransferFunc> ibFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 
-	Math::Matrix3 mat1;
+	Math::Matrix3D mat1;
 	NN<Media::ColorSess> colorSess;
 	if (destPrimaries->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
@@ -329,23 +329,23 @@ void Media::RGBLUTGen::GenRGBA8_LRGBC(UnsafeArray<Int64> rgbTable, NN<const Medi
 	while (i-- > 0)
 	{
 		thisV = irFunc->InverseTransfer(UIntOS2Double(i) / 255.0) * maxRGBVal;
-		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[0]);
-		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[0]);
-		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[0]);
+		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].xy.x);
+		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].xy.x);
+		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].xy.x);
 		v[3] = 0;
 		rgbTable[i] = *(Int64*)&v[0];
 
 		thisV = igFunc->InverseTransfer(UIntOS2Double(i) / 255.0) * maxRGBVal;
-		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[1]);
-		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[1]);
-		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[1]);
+		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].xy.y);
+		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].xy.y);
+		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].xy.y);
 		v[3] = 0;
 		rgbTable[i + 256] = *(Int64*)&v[0];
 
 		thisV = ibFunc->InverseTransfer(UIntOS2Double(i) / 255.0) * maxRGBVal;
-		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[2]);
-		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[2]);
-		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[2]);
+		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].zn.x);
+		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].zn.x);
+		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].zn.x);
 		v[3] = 0;
 		rgbTable[i + 512] = *(Int64*)&v[0];
 
@@ -373,7 +373,7 @@ void Media::RGBLUTGen::GenRGB16_LRGBC(UnsafeArray<Int64> rgbTable, NN<const Medi
 	NN<Media::CS::TransferFunc> ibFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 
 	NN<Media::ColorSess> colorSess;
-	Math::Matrix3 mat1;
+	Math::Matrix3D mat1;
 	if (destPrimaries->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
 		if (this->colorSess.SetTo(colorSess))
@@ -406,23 +406,23 @@ void Media::RGBLUTGen::GenRGB16_LRGBC(UnsafeArray<Int64> rgbTable, NN<const Medi
 	while (i-- > 0)
 	{
 		thisV = irFunc->InverseTransfer(UIntOS2Double(i) / 65535.0) * maxRGBVal;
-		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[0]);
-		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[0]);
-		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[0]);
+		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].xy.x);
+		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].xy.x);
+		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].xy.x);
 		v[3] = 0;
 		rgbTable[i] = *(Int64*)&v[0];
 
 		thisV = igFunc->InverseTransfer(UIntOS2Double(i) / 65535.0) * maxRGBVal;
-		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[1]);
-		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[1]);
-		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[1]);
+		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].xy.y);
+		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].xy.y);
+		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].xy.y);
 		v[3] = 0;
 		rgbTable[i + 65536] = *(Int64*)&v[0];
 
 		thisV = ibFunc->InverseTransfer(UIntOS2Double(i) / 65535.0) * maxRGBVal;
-		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[2]);
-		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[2]);
-		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[2]);
+		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].zn.x);
+		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].zn.x);
+		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].zn.x);
 		v[3] = 0;
 		rgbTable[i + 131072] = *(Int64*)&v[0];
 

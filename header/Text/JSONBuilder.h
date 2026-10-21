@@ -4,7 +4,7 @@
 #include "Data/ArrayListNative.hpp"
 #include "Data/VariItem.h"
 #include "Math/Coord2DDbl.h"
-#include "Math/Vector3.h"
+#include "Math/Vector3D.h"
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Polyline.h"
 #include "Math/Geometry/Vector2D.h"
@@ -63,7 +63,7 @@ namespace Text
 		Bool ArrayAddDateStr(Data::Date dat);
 		Bool ArrayAddNull();
 		Bool ArrayAddCoord2D(Math::Coord2DDbl coord);
-		Bool ArrayAddVector3(Math::Vector3 vec3);
+		Bool ArrayAddVector3D(Math::Vector3D vec3);
 		Bool ArrayAddFeature(NN<Map::MapDrawLayer> layer, Int64 id, Optional<Map::NameArray> nameArr, NN<Math::Geometry::Vector2D> vec);
 		Bool ArrayAddGeometry(NN<Math::Geometry::Vector2D> vec);
 		Bool ArrayAdd(NN<Text::JSONArray> arr);
@@ -91,7 +91,7 @@ namespace Text
 		Bool ObjectAddArrayInt32(Text::CStringNN name, Optional<Data::ArrayListNative<Int32>> i32Arr);
 		Bool ObjectAddCoord2D(Text::CStringNN name, Math::Coord2DDbl coord);
 		Bool ObjectAddArrayCoord2D(Text::CStringNN name, Optional<Data::ArrayListA<Math::Coord2DDbl>> coordArr);
-		Bool ObjectAddVector3(Text::CStringNN name, Math::Vector3 vec3);
+		Bool ObjectAddVector3D(Text::CStringNN name, Math::Vector3D vec3);
 		Bool ObjectAddGeometry(Text::CStringNN name, NN<Math::Geometry::Vector2D> vec);
 		Bool ObjectAddGeometryOpt(Text::CStringNN name, Optional<Math::Geometry::Vector2D> vec);
 		Bool ObjectAddVarItem(Text::CStringNN name, NN<Data::VariItem> item);

@@ -1,21 +1,21 @@
 #ifndef _SM_MATH_TRANSFORM
 #define _SM_MATH_TRANSFORM
-#include "Math/Matrix3.h"
+#include "Math/Matrix3D.h"
 
 namespace Math
 {
 	class Transform
 	{
 	public:
-		Matrix3 axis;
-		Vector3 origin;
+		Matrix3D axis;
+		Vector3D origin;
 
 	public:
 		Transform() = default;
-		Transform(Matrix3 axis, Vector3 origin);
+		Transform(Matrix3D axis, Vector3D origin);
 
-		Vector3 TransformPoint(const Vector3 &point) const;
-		Vector3 TransformVector(const Vector3 &vector) const;
+		Vector3D TransformPoint(const Vector3D &point) const;
+		Vector3D TransformVector(const Vector3D &vector) const;
 		Transform Compose(const Transform &other) const;
 		Transform InversePlacement() const;
 		void SetIdentity();

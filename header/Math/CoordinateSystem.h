@@ -3,7 +3,7 @@
 #include "IO/ParsedObject.h"
 #include "Math/Coord2DDbl.h"
 #include "Math/EarthEllipsoid.h"
-#include "Math/Vector3.h"
+#include "Math/Vector3D.h"
 #include "Math/Unit/Angle.h"
 #include "Math/Unit/Distance.h"
 #include "Text/CString.h"
@@ -95,9 +95,9 @@ namespace Math
 		UInt32 GetSRID() const { return this->srid; }
  
 		static Math::Coord2DDbl Convert(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, Math::Coord2DDbl coord);
-		static Math::Vector3 Convert3D(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, Math::Vector3 srcPos);
+		static Math::Vector3D Convert3D(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, Math::Vector3D srcPos);
 		static void ConvertArray(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UIntOS nPoints);
-		static Math::Vector3 ConvertToCartesianCoord(NN<const Math::CoordinateSystem> srcCoord, Math::Vector3 srcPos);
+		static Math::Vector3D ConvertToCartesianCoord(NN<const Math::CoordinateSystem> srcCoord, Math::Vector3D srcPos);
 		static void DatumData1ToString(NN<const DatumData1> datum, NN<Text::StringBuilderUTF8> sb);
 		static Text::CStringNN CoordinateSystemTypeGetName(CoordinateSystemType csysType);
 	};

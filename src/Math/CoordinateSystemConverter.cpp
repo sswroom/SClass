@@ -26,7 +26,7 @@ Math::Coord2DDbl Math::CoordinateSystemConverter::Convert2D(Math::Coord2DDbl coo
 	return Math::CoordinateSystem::Convert(this->srcCsys, this->destCsys, coord);
 }
 
-Math::Vector3 Math::CoordinateSystemConverter::Convert3D(Math::Vector3 vec3) const
+Math::Vector3D Math::CoordinateSystemConverter::Convert3D(Math::Vector3D vec3) const
 {
 	return Math::CoordinateSystem::Convert3D(this->srcCsys, this->destCsys, vec3);
 }

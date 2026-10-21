@@ -2043,11 +2043,6 @@ DB/DBExporter.h:
 @DBExporter.o
 DB/DBFFile.h:
 @DBFFile.o
-DB/MDBFile.h:
-@MDBFile.o
-DB/MDBFileInt.h:
-DB/MDBUtil.h:
-@MDBUtil.o
 DB/DBFFixWriter.h:
 @DBFFixWriter.o
 DB/DBList.h:
@@ -2078,6 +2073,11 @@ DB/JSONDB.h:
 @JSONDB.o
 DB/JSONDB2.h:
 @JSONDB2.o
+DB/MDBFile.h:
+@MDBFile.o
+DB/MDBFileInt.h:
+DB/MDBUtil.h:
+@MDBUtil.o
 DB/MSSQLConn.h:
 @MSSQLConn.o
 DB/MySQLMaintance.h:
@@ -3110,8 +3110,8 @@ Math/LithiumBattery.h:
 Math/Math_C.h:
 @Math.o
 @Math_CPP.o
-Math/Matrix3.h:
-@Matrix3.o
+Math/Matrix3D.h:
+@Matrix3D.o
 Math/Mercator1SPProjectedCoordinateSystem.h:
 @Mercator1SPProjectedCoordinateSystem.o
 Math/MercatorProjectedCoordinateSystem.h:
@@ -3146,7 +3146,7 @@ Math/TSPFile.h:
 Math/UTMGridConvertDbl.h:
 @UTMGridConvertDbl.o
 Math/Value2D.h:
-Math/Vector3.h:
+Math/Vector3D.h:
 Math/VectorTextWriter.h:
 Math/VectorTextWriterList.h:
 @VectorTextWriterList.o

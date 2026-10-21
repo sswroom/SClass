@@ -124,9 +124,9 @@ Math::Coord2DDbl Map::MapView::Convert2D(Math::Coord2DDbl coord) const
 	return this->MapXYToScnXY(coord) + this->converterOfst;
 }
 
-Math::Vector3 Map::MapView::Convert3D(Math::Vector3 vec3) const
+Math::Vector3D Map::MapView::Convert3D(Math::Vector3D vec3) const
 {
-	return Math::Vector3(this->MapXYToScnXY(vec3.GetXY()) + this->converterOfst, 0);
+	return Math::Vector3D(this->MapXYToScnXY(vec3.GetXY()) + this->converterOfst, 0);
 }
 
 void Map::MapView::Convert2DArr(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UIntOS nPoints) const

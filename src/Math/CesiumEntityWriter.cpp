@@ -37,7 +37,7 @@ Bool Math::CesiumEntityWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const M
 		if (vec->HasZ())
 		{
 			Math::Geometry::PointZ *pt = (Math::Geometry::PointZ*)vec.Ptr();
-			Math::Vector3 pos = pt->GetPos3D();
+			Math::Vector3D pos = pt->GetPos3D();
 			sb->AppendC(UTF8STRC("position: Cesium.Cartesian3.fromDegrees("));
 			sb->AppendDouble(pos.GetX());
 			sb->AppendC(UTF8STRC(", "));

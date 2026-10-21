@@ -31,9 +31,9 @@ Bool Math::Geometry::PointZ::GetZBounds(OutParam<Double> min, OutParam<Double> m
 	return true;
 }
 
-Math::Vector3 Math::Geometry::PointZ::GetPos3D() const
+Math::Vector3D Math::Geometry::PointZ::GetPos3D() const
 {
-	return Math::Vector3(this->pos, this->z);
+	return Math::Vector3D(this->pos, this->z);
 }
 
 Bool Math::Geometry::PointZ::HasZ() const
@@ -43,7 +43,7 @@ Bool Math::Geometry::PointZ::HasZ() const
 
 void Math::Geometry::PointZ::Convert(NN<Math::CoordinateConverter> converter)
 {
-	Math::Vector3 tmpPos = converter->Convert3D(Math::Vector3(this->pos, this->z));
+	Math::Vector3D tmpPos = converter->Convert3D(Math::Vector3D(this->pos, this->z));
 	this->pos = tmpPos.GetXY();
 	this->z = tmpPos.GetZ();
 	this->srid = converter->GetOutputSRID();

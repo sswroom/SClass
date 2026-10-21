@@ -1,5 +1,6 @@
 #ifndef _SM_PARSER_FILEPARSER_IFCPARSER
 #define _SM_PARSER_FILEPARSER_IFCPARSER
+#include "Data/ArrayListA.hpp"
 #include "Data/ArrayListObj.hpp"
 #include "IO/FileParser.h"
 #include "Math/Model3D.h"
@@ -25,15 +26,15 @@ namespace Parser
 			static UInt32 Ref(Text::CString s);
 			static Data::ArrayListNative<UInt32> Refs(Text::CString s);
 			static Data::ArrayListNative<Double> Numbers(Text::CString s);
-			static Math::Vector3 GetPoint(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 id);
-			static Math::Vector3 GetDirection(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 id, Math::Vector3 defVal);
+			static Math::Vector3D GetPoint(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 id);
+			static Math::Vector3D GetDirection(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 id, Math::Vector3D defVal);
 			static Math::Transform GetAxisPlacement(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 id);
 			static Math::Transform GetObjectPlacement(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 id, UInt32 depth);
-			static void AddPolygon(NN<Math::Model3D> model, NN<Data::ArrayListObj<Math::Vector3>> points, const Math::Transform &t, UInt32 elementId);
-			static Data::ArrayListObj<Math::Vector3> GetProfilePoints(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 profileId);
+			static void AddPolygon(NN<Math::Model3D> model, NN<Data::ArrayListA<Math::Vector3D>> points, const Math::Transform &t, UInt32 elementId);
+			static Data::ArrayListA<Math::Vector3D> GetProfilePoints(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 profileId);
 			static void ParseExtrusion(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, NN<IFCEntity> solid, const Math::Transform &productT, UInt32 elementId);
 			static void ParseFacetedBrep(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 brepId, const Math::Transform &t, UInt32 elementId);
-			static Data::ArrayListObj<Math::Vector3> GetPointList3D(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 listId);
+			static Data::ArrayListA<Math::Vector3D> GetPointList3D(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 listId);
 			static void ParseTriangulatedFaceSet(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, NN<IFCEntity> faceSet, const Math::Transform &t, UInt32 elementId);
 			static void ParsePolygonalFaceSet(NN<Math::Model3D> model, NN<Data::ArrayListNN<IFCEntity>> entities, NN<IFCEntity> faceSet, const Math::Transform &t, UInt32 elementId);
 			static Math::Transform GetMappingTarget(NN<Data::ArrayListNN<IFCEntity>> entities, UInt32 id);

@@ -1122,20 +1122,20 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				case IO::Sensor::SensorType::Accelerometer:
 					if (sensor->EnableSensor() && sensor->GetSensorAccelerator().SetTo(sensorAcc))
 					{
-						Math::Vector3 acc;
+						Math::Vector3D acc;
 						if (sensorAcc->ReadAcceleration(acc))
 						{
 							Math::Unit::Acceleration::AccelerationUnit aunit = sensorAcc->GetAccelerationUnit();
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Accelerometer x = "));
-							sb.AppendDouble(acc.val[0]);
+							sb.AppendDouble(acc.GetX());
 							sb.Append(Math::Unit::Acceleration::GetUnitShortName(aunit));
 							sb.AppendC(UTF8STRC(", y = "));
-							sb.AppendDouble(acc.val[1]);
+							sb.AppendDouble(acc.GetY());
 							sb.Append(Math::Unit::Acceleration::GetUnitShortName(aunit));
 							sb.AppendC(UTF8STRC(", z = "));
-							sb.AppendDouble(acc.val[2]);
+							sb.AppendDouble(acc.GetZ());
 							sb.Append(Math::Unit::Acceleration::GetUnitShortName(aunit));
 							console->WriteLine(sb.ToCString());
 							writer->WriteLine(sb.ToCString());
@@ -1162,20 +1162,20 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				case IO::Sensor::SensorType::Magnetometer:
 					if (sensor->EnableSensor() && sensor->GetSensorMagnetometer().SetTo(sensorMag))
 					{
-						Math::Vector3 mag;
+						Math::Vector3D mag;
 						if (sensorMag->ReadMagneticField(mag))
 						{
 							Math::Unit::MagneticField::MagneticFieldUnit mfunit = sensorMag->GetMagneticFieldUnit();
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Magnetometer x = "));
-							sb.AppendDouble(mag.val[0]);
+							sb.AppendDouble(mag.GetX());
 							sb.Append(Math::Unit::MagneticField::GetUnitShortName(mfunit));
 							sb.AppendC(UTF8STRC(", y = "));
-							sb.AppendDouble(mag.val[1]);
+							sb.AppendDouble(mag.GetY());
 							sb.Append(Math::Unit::MagneticField::GetUnitShortName(mfunit));
 							sb.AppendC(UTF8STRC(", z = "));
-							sb.AppendDouble(mag.val[2]);
+							sb.AppendDouble(mag.GetZ());
 							sb.Append(Math::Unit::MagneticField::GetUnitShortName(mfunit));
 							console->WriteLine(sb.ToCString());
 							writer->WriteLine(sb.ToCString());

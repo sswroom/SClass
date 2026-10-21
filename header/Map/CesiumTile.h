@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_CESIUMTILE
 #define _SM_MAP_CESIUMTILE
 #include "IO/PackageFile.h"
-#include "Math/Vector3.h"
+#include "Math/Vector3D.h"
 #include "Text/EncodingFactory.h"
 
 namespace Map
@@ -11,7 +11,7 @@ namespace Map
 	private:
 		NN<IO::PackageFile> pkg;
 		UInt32 srid;
-		Math::Vector3 srsOrigin;
+		Math::Vector3D srsOrigin;
 		Optional<Text::String> jsonFile;
 		Bool multijson;
 	public:

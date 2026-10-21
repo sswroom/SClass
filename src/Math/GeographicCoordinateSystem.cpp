@@ -111,49 +111,49 @@ void Math::GeographicCoordinateSystem::ToString(NN<Text::StringBuilderUTF8> sb) 
 	DatumData1ToString(this->datum, sb);
 }
 
-Math::Vector3 Math::GeographicCoordinateSystem::ToCartesianCoordRad(Math::Vector3 lonLatH) const
+Math::Vector3D Math::GeographicCoordinateSystem::ToCartesianCoordRad(Math::Vector3D lonLatH) const
 {
-	Math::Vector3 tmpPos = this->datum.spheroid.ellipsoid->ToCartesianCoordRad(lonLatH);
+	Math::Vector3D tmpPos = this->datum.spheroid.ellipsoid->ToCartesianCoordRad(lonLatH);
 	if (this->datum.scale == 0 && this->datum.xAngle == 0 && this->datum.yAngle == 0 && this->datum.zAngle == 0)
 	{
-		return Math::Vector3(
-			tmpPos.val[0] + datum.cX,
-			tmpPos.val[1] + datum.cY,
-			tmpPos.val[2] + datum.cZ);
+		return Math::Vector3D(
+			tmpPos.xy.x + datum.cX,
+			tmpPos.xy.y + datum.cY,
+			tmpPos.zn.x + datum.cZ);
 	}
 	else
 	{
-		tmpPos.val[0] -= this->datum.x0;
-		tmpPos.val[1] -= this->datum.y0;
-		tmpPos.val[2] -= this->datum.z0;
+		tmpPos.xy.x -= this->datum.x0;
+		tmpPos.xy.y -= this->datum.y0;
+		tmpPos.zn.x -= this->datum.z0;
 		Double s = 1 + this->datum.scale * 0.000001;
-		return Math::Vector3(
-			s * (                tmpPos.val[0] - datum.zAngle * tmpPos.val[1] + datum.yAngle * tmpPos.val[2]) + datum.cX + this->datum.x0,
-			s * ( datum.zAngle * tmpPos.val[0] +                tmpPos.val[1] - datum.xAngle * tmpPos.val[2]) + datum.cY + this->datum.y0,
-			s * (-datum.yAngle * tmpPos.val[0] + datum.xAngle * tmpPos.val[1] +                tmpPos.val[2]) + datum.cZ + this->datum.z0);
+		return Math::Vector3D(
+			s * (                tmpPos.xy.x - datum.zAngle * tmpPos.xy.y + datum.yAngle * tmpPos.zn.x) + datum.cX + this->datum.x0,
+			s * ( datum.zAngle * tmpPos.xy.x +                tmpPos.xy.y - datum.xAngle * tmpPos.zn.x) + datum.cY + this->datum.y0,
+			s * (-datum.yAngle * tmpPos.xy.x + datum.xAngle * tmpPos.xy.y +                tmpPos.zn.x) + datum.cZ + this->datum.z0);
 	}
 }
 
-Math::Vector3 Math::GeographicCoordinateSystem::FromCartesianCoordRad(Math::Vector3 coord) const
+Math::Vector3D Math::GeographicCoordinateSystem::FromCartesianCoordRad(Math::Vector3D coord) const
 {
-	Math::Vector3 tmpPos;
+	Math::Vector3D tmpPos;
 	if (this->datum.scale == 0 && this->datum.xAngle == 0 && this->datum.yAngle == 0 && this->datum.zAngle == 0)
 	{
-		tmpPos = Math::Vector3(
-			coord.val[0] - this->datum.cX,
-			coord.val[1] - this->datum.cY,
-			coord.val[2] - this->datum.cZ);
+		tmpPos = Math::Vector3D(
+			coord.xy.x - this->datum.cX,
+			coord.xy.y - this->datum.cY,
+			coord.zn.x - this->datum.cZ);
 	}
 	else
 	{
-		coord.val[0] = coord.val[0] - this->datum.x0 - datum.cX;
-		coord.val[1] = coord.val[1] - this->datum.y0 - datum.cY;
-		coord.val[2] = coord.val[2] - this->datum.z0 - datum.cZ;
+		coord.xy.x = coord.xy.x - this->datum.x0 - datum.cX;
+		coord.xy.y = coord.xy.y - this->datum.y0 - datum.cY;
+		coord.zn.x = coord.zn.x - this->datum.z0 - datum.cZ;
 		Double s = 1 / (1 + this->datum.scale * 0.000001);
-		tmpPos = Math::Vector3(
-			s * (                      coord.val[0] + this->datum.zAngle * coord.val[1] - this->datum.yAngle * coord.val[2]) + this->datum.x0,
-			s * (-this->datum.zAngle * coord.val[0] +                      coord.val[1] + this->datum.xAngle * coord.val[2]) + this->datum.y0,
-			s * ( this->datum.yAngle * coord.val[0] - this->datum.xAngle * coord.val[1] +                      coord.val[2]) + this->datum.z0);
+		tmpPos = Math::Vector3D(
+			s * (                      coord.xy.x + this->datum.zAngle * coord.xy.y - this->datum.yAngle * coord.zn.x) + this->datum.x0,
+			s * (-this->datum.zAngle * coord.xy.x +                      coord.xy.y + this->datum.xAngle * coord.zn.x) + this->datum.y0,
+			s * ( this->datum.yAngle * coord.xy.x - this->datum.xAngle * coord.xy.y +                      coord.zn.x) + this->datum.z0);
 	}
 	return this->datum.spheroid.ellipsoid->FromCartesianCoordRad(tmpPos);
 }

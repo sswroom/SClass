@@ -84,7 +84,7 @@ namespace UtilUI
 		NN<UI::GUIButton> btnCancel;
 
 		ColorType colorType;
-		Math::Vector3 rgbVal;
+		Math::Vector3D rgbVal;
 		Double aVal;
 		Bool autoTextUpdate;
 		ColorType textUpdating;
@@ -92,7 +92,7 @@ namespace UtilUI
 		NN<Media::ColorProfile> colorProfile;
 		Bool alphaShown;
 
-		Math::Vector3 mainXYZ;
+		Math::Vector3D mainXYZ;
 		NN<Media::StaticImage> mainImg;
 		NN<Media::StaticImage> subImg;
 		NN<Media::ColorManager> colorMgr;
@@ -135,12 +135,12 @@ namespace UtilUI
 		static void __stdcall OnAlphaChange(AnyType userObj);
 		static UInt32 __stdcall GenThread(AnyType userObj);
 
-		Math::Vector3 XYZ2RGB(Math::Vector3 xyz);
-		static Math::Vector3 YIQ2RGB(Math::Vector3 yiq);
-		static Math::Vector3 HSV2RGB(Math::Vector3 hsv);
-		Math::Vector3 RGB2XYZ(Math::Vector3 rgb);
-		static Math::Vector3 RGB2YIQ(Math::Vector3 rgb);
-		static Math::Vector3 RGB2HSV(Math::Vector3 rgb);
+		Math::Vector3D XYZ2RGB(Math::Vector3D xyz);
+		static Math::Vector3D YIQ2RGB(Math::Vector3D yiq);
+		static Math::Vector3D HSV2RGB(Math::Vector3D hsv);
+		Math::Vector3D RGB2XYZ(Math::Vector3D rgb);
+		static Math::Vector3D RGB2YIQ(Math::Vector3D rgb);
+		static Math::Vector3D RGB2HSV(Math::Vector3D rgb);
 
 		void GenMainImageInner(UnsafeArray<UInt8> imgPtr, UIntOS startIndex, UIntOS endIndex, UIntOS w, UIntOS h);
 		void GenMainImage();

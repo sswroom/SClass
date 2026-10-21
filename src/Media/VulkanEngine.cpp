@@ -968,36 +968,36 @@ static Bool VulkanCreateSwapchain(NN<VulkanEngineScene> scene, Math::Size2D<UInt
 
 static Bool VulkanProjectPoint(
 	const Media::Engine3D::CameraState &camera,
-	Math::Vector3 pos,
+	Math::Vector3D pos,
 	Double aspect,
 	float *outX,
 	float *outY,
 	float *outZ)
 {
-	Math::Vector3 fwd = camera.targetPos - camera.camPos;
+	Math::Vector3D fwd = camera.targetPos - camera.camPos;
 	Double fwdLen = fwd.GetLength();
 	if (fwdLen < 0.000001)
 		return false;
 	fwd = fwd / fwdLen;
 
-	Math::Vector3 upRef(0, 0, 1);
-	Math::Vector3 right = fwd.CrossProduct(upRef);
+	Math::Vector3D upRef(0, 0, 1);
+	Math::Vector3D right = fwd.CrossProduct(upRef);
 	Double rightLen = right.GetLength();
 	if (rightLen < 0.000001)
 	{
-		right = Math::Vector3(1, 0, 0);
+		right = Math::Vector3D(1, 0, 0);
 	}
 	else
 	{
 		right = right / rightLen;
 	}
-	Math::Vector3 up = right.CrossProduct(fwd);
+	Math::Vector3D up = right.CrossProduct(fwd);
 	Double upLen = up.GetLength();
 	if (upLen < 0.000001)
 		return false;
 	up = up / upLen;
 
-	Math::Vector3 rel = pos - camera.camPos;
+	Math::Vector3D rel = pos - camera.camPos;
 	Double viewX = rel.DotProduct(right);
 	Double viewY = rel.DotProduct(up);
 	Double viewZ = rel.DotProduct(fwd);
@@ -1066,9 +1066,9 @@ static Bool VulkanBuildSceneMesh(
 					VulkanDrawVertex v0;
 					VulkanDrawVertex v1;
 					VulkanDrawVertex v2;
-					if (VulkanProjectPoint(camera, Math::Vector3(c0, obj->z), aspect, &v0.x, &v0.y, &v0.z) &&
-						VulkanProjectPoint(camera, Math::Vector3(c1, obj->z), aspect, &v1.x, &v1.y, &v1.z) &&
-						VulkanProjectPoint(camera, Math::Vector3(c2, obj->z), aspect, &v2.x, &v2.y, &v2.z))
+					if (VulkanProjectPoint(camera, Math::Vector3D(c0, obj->z), aspect, &v0.x, &v0.y, &v0.z) &&
+						VulkanProjectPoint(camera, Math::Vector3D(c1, obj->z), aspect, &v1.x, &v1.y, &v1.z) &&
+						VulkanProjectPoint(camera, Math::Vector3D(c2, obj->z), aspect, &v2.x, &v2.y, &v2.z))
 					{
 						v0.r = cr; v0.g = cg; v0.b = cb;
 						v1.r = cr; v1.g = cg; v1.b = cb;
@@ -1096,10 +1096,10 @@ static Bool VulkanBuildSceneMesh(
 					VulkanDrawVertex v1;
 					VulkanDrawVertex v2;
 					VulkanDrawVertex v3;
-					if (VulkanProjectPoint(camera, Math::Vector3(p0, obj->z), aspect, &v0.x, &v0.y, &v0.z) &&
-						VulkanProjectPoint(camera, Math::Vector3(p1, obj->z), aspect, &v1.x, &v1.y, &v1.z) &&
-						VulkanProjectPoint(camera, Math::Vector3(p2, obj->z), aspect, &v2.x, &v2.y, &v2.z) &&
-						VulkanProjectPoint(camera, Math::Vector3(p3, obj->z), aspect, &v3.x, &v3.y, &v3.z))
+					if (VulkanProjectPoint(camera, Math::Vector3D(p0, obj->z), aspect, &v0.x, &v0.y, &v0.z) &&
+						VulkanProjectPoint(camera, Math::Vector3D(p1, obj->z), aspect, &v1.x, &v1.y, &v1.z) &&
+						VulkanProjectPoint(camera, Math::Vector3D(p2, obj->z), aspect, &v2.x, &v2.y, &v2.z) &&
+						VulkanProjectPoint(camera, Math::Vector3D(p3, obj->z), aspect, &v3.x, &v3.y, &v3.z))
 					{
 						v0.r = cr; v0.g = cg; v0.b = cb;
 						v1.r = cr; v1.g = cg; v1.b = cb;
@@ -1132,10 +1132,10 @@ static Bool VulkanBuildSceneMesh(
 						VulkanDrawVertex v1;
 						VulkanDrawVertex v2;
 						VulkanDrawVertex v3;
-						if (VulkanProjectPoint(camera, Math::Vector3(p0, obj->z), aspect, &v0.x, &v0.y, &v0.z) &&
-							VulkanProjectPoint(camera, Math::Vector3(p1, obj->z), aspect, &v1.x, &v1.y, &v1.z) &&
-							VulkanProjectPoint(camera, Math::Vector3(p2, obj->z), aspect, &v2.x, &v2.y, &v2.z) &&
-							VulkanProjectPoint(camera, Math::Vector3(p3, obj->z), aspect, &v3.x, &v3.y, &v3.z))
+						if (VulkanProjectPoint(camera, Math::Vector3D(p0, obj->z), aspect, &v0.x, &v0.y, &v0.z) &&
+							VulkanProjectPoint(camera, Math::Vector3D(p1, obj->z), aspect, &v1.x, &v1.y, &v1.z) &&
+							VulkanProjectPoint(camera, Math::Vector3D(p2, obj->z), aspect, &v2.x, &v2.y, &v2.z) &&
+							VulkanProjectPoint(camera, Math::Vector3D(p3, obj->z), aspect, &v3.x, &v3.y, &v3.z))
 						{
 							v0.r = cr; v0.g = cg; v0.b = cb;
 							v1.r = cr; v1.g = cg; v1.b = cb;
@@ -1157,7 +1157,7 @@ static Bool VulkanBuildSceneMesh(
 class VulkanModelTriangle
 {
 public:
-	Math::Vector3 points[3];
+	Math::Vector3D points[3];
 	Double depth;
 	Double light;
 };
@@ -1179,7 +1179,7 @@ static Bool VulkanBuildModelMesh(
 	NN<const Math::Model3D> model)
 {
 	scene->ClearSceneMesh();
-	Math::Vector3 forward = (camera.targetPos - camera.camPos).Normalized();
+	Math::Vector3D forward = (camera.targetPos - camera.camPos).Normalized();
 	Data::ArrayListNN<VulkanModelTriangle> triangles;
 	UIntOS i = 0;
 	UIntOS triCount = model->GetCount();
@@ -1191,9 +1191,9 @@ static Bool VulkanBuildModelMesh(
 		tri->points[0] = modelTri->pt1;
 		tri->points[1] = modelTri->pt2;
 		tri->points[2] = modelTri->pt3;
-		Math::Vector3 center = (tri->points[0] + tri->points[1] + tri->points[2]) / 3.0;
+		Math::Vector3D center = (tri->points[0] + tri->points[1] + tri->points[2]) / 3.0;
 		tri->depth = (center - camera.camPos).DotProduct(forward);
-		Math::Vector3 normal = (tri->points[1] - tri->points[0]).CrossProduct(tri->points[2] - tri->points[0]);
+		Math::Vector3D normal = (tri->points[1] - tri->points[0]).CrossProduct(tri->points[2] - tri->points[0]);
 		Double normalLen = normal.GetLength();
 		Double light = normalLen > 1e-20 ? std::abs((normal.GetX() * 0.25 - normal.GetY() * 0.35 + normal.GetZ() * 0.9) / normalLen) : 0.3;
 		tri->light = 0.30 + 0.65 * light;

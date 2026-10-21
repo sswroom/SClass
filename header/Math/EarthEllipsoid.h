@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_EARTHELLIPSOID
 #define _SM_MATH_EARTHELLIPSOID
-#include "Math/Vector3.h"
+#include "Math/Vector3D.h"
 #include "Math/Unit/Distance.h"
 #include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -99,10 +99,10 @@ namespace Math
 		void operator=(const EarthEllipsoid *ellipsoid);
 		NN<EarthEllipsoid> Clone() const;
 
-		Math::Vector3 ToCartesianCoordRad(Math::Vector3 lonLatH) const;
-		Math::Vector3 FromCartesianCoordRad(Math::Vector3 coord) const;
-		Math::Vector3 ToCartesianCoordDeg(Math::Vector3 lonLatH) const { return ToCartesianCoordRad(lonLatH.MulXY(Math::PI / 180.0)); }
-		Math::Vector3 FromCartesianCoordDeg(Math::Vector3 coord) const { return FromCartesianCoordRad(coord).MulXY(180.0 / Math::PI); }
+		Math::Vector3D ToCartesianCoordRad(Math::Vector3D lonLatH) const;
+		Math::Vector3D FromCartesianCoordRad(Math::Vector3D coord) const;
+		Math::Vector3D ToCartesianCoordDeg(Math::Vector3D lonLatH) const { return ToCartesianCoordRad(lonLatH.MulXY(Math::PI / 180.0)); }
+		Math::Vector3D FromCartesianCoordDeg(Math::Vector3D coord) const { return FromCartesianCoordRad(coord).MulXY(180.0 / Math::PI); }
 
 		static NN<const EarthEllipsoidInfo> GetEarthInfo(EarthEllipsoidType eet);
 	};

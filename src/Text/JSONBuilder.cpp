@@ -561,7 +561,7 @@ Bool Text::JSONBuilder::ArrayAddCoord2D(Math::Coord2DDbl coord)
 	return true;
 }
 
-Bool Text::JSONBuilder::ArrayAddVector3(Math::Vector3 vec3)
+Bool Text::JSONBuilder::ArrayAddVector3D(Math::Vector3D vec3)
 {
 	if (this->currType != OT_ARRAY)
 		return false;
@@ -1166,7 +1166,7 @@ Bool Text::JSONBuilder::ObjectAddArrayCoord2D(Text::CStringNN name, Optional<Dat
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddVector3(Text::CStringNN name, Math::Vector3 vec3)
+Bool Text::JSONBuilder::ObjectAddVector3D(Text::CStringNN name, Math::Vector3D vec3)
 {
 	if (this->currType != OT_OBJECT)
 		return false;

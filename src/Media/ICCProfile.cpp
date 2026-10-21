@@ -793,11 +793,11 @@ Bool Media::ICCProfile::GetColorPrimaries(NN<Media::ColorProfile::ColorPrimaries
 	}
 	if (foundR && foundG && foundB && foundW)
 	{
-		Math::Matrix3 mat;
-		Math::Matrix3 mat2;
-		Math::Matrix3 mat3;
-		Math::Vector3 vec1;
-		Math::Vector3 vec2;
+		Math::Matrix3D mat;
+		Math::Matrix3D mat2;
+		Math::Matrix3D mat3;
+		Math::Vector3D vec1;
+		Math::Vector3D vec2;
 
 		Media::ColorProfile::ColorPrimaries::GetMatrixBradford(mat);
 		mat2.Set(mat);
@@ -806,9 +806,9 @@ Bool Media::ICCProfile::GetColorPrimaries(NN<Media::ColorProfile::ColorPrimaries
 		vec1 = mat.Multiply(Media::ColorProfile::ColorPrimaries::GetWhitePointXYZ(Media::ColorProfile::WPT_D50));
 		vec2 = mat.Multiply(wxyz);
 		mat.Inverse();
-		mat3.vec[0].val[0] = vec2.val[0] / vec1.val[0];
-		mat3.vec[1].val[1] = vec2.val[1] / vec1.val[1];
-		mat3.vec[2].val[2] = vec2.val[2] / vec1.val[2];
+		mat3.vec[0].xy.x = vec2.xy.x / vec1.xy.x;
+		mat3.vec[1].xy.y = vec2.xy.y / vec1.xy.y;
+		mat3.vec[2].zn.x = vec2.zn.x / vec1.zn.x;
 		mat.MultiplyInplace(mat3);
 		mat.MultiplyInplace(mat2);
 
@@ -1375,19 +1375,19 @@ Text::CStringNN Media::ICCProfile::GetNameStandardIlluminent(Int32 val)
 void Media::ICCProfile::GetDispCIEXYZ(NN<Text::StringBuilderUTF8> sb, const CIEXYZ &xyz)
 {
 	sb->AppendC(UTF8STRC("X = "));
-	Text::SBAppendF64(sb, xyz.val[0]);
+	Text::SBAppendF64(sb, xyz.GetX());
 	sb->AppendC(UTF8STRC(", Y = "));
-	Text::SBAppendF64(sb, xyz.val[1]);
+	Text::SBAppendF64(sb, xyz.GetY());
 	sb->AppendC(UTF8STRC(", Z = "));
-	Text::SBAppendF64(sb, xyz.val[2]);
+	Text::SBAppendF64(sb, xyz.GetZ());
 
-	Double sum = xyz.val[0] + xyz.val[1] + xyz.val[2];
+	Double sum = xyz.GetX() + xyz.GetY() + xyz.GetZ();
 	if (sum != 0)
 	{
 		sb->AppendC(UTF8STRC(", x = "));
-		Text::SBAppendF64(sb, xyz.val[0] / sum);
+		Text::SBAppendF64(sb, xyz.GetX() / sum);
 		sb->AppendC(UTF8STRC(", y = "));
-		Text::SBAppendF64(sb, xyz.val[1] / sum);
+		Text::SBAppendF64(sb, xyz.GetY() / sum);
 	}
 }
 

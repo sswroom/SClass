@@ -21,14 +21,12 @@ namespace Math
 		Double2D() = default;
 		Double2D(std::nullptr_t)
 		{
-			this->x = 0;
-			this->y = 0;
+			this->vals = PDoublex2SetA(0);
 		}
 
 		Double2D(Double x, Double y)
 		{
-			this->x = x;
-			this->y = y;
+			this->vals = PDoublex2Set(x, y);
 		}
 
 		Double2D(const Doublex2 vals)
@@ -78,7 +76,7 @@ namespace Math
 
 		Double2D Abs() const
 		{
-			return Math::Double2D((this->x < 0)?-x:x, (this->y < 0)?-y:y);
+			return Math::Double2D((this->x < 0)?-this->x:this->x, (this->y < 0)?-this->y:this->y);
 		}
 		
 		Double2D operator+(Double2D v) const

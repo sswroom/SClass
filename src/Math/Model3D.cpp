@@ -17,7 +17,7 @@ IO::ParserType Math::Model3D::GetParserType() const
 	return IO::ParserType::Model3D;
 }
 
-void Math::Model3D::AddTriangle(Vector3 pt1, Vector3 pt2, Vector3 pt3, UInt32 elementId)
+void Math::Model3D::AddTriangle(Vector3D pt1, Vector3D pt2, Vector3D pt3, UInt32 elementId)
 {
 	NN<Triangle> tri;
 	NEW_CLASSNN(tri, Triangle());
@@ -44,7 +44,7 @@ NN<Math::Model3D::ModelItem> Math::Model3D::GetItemNoCheck(UIntOS index) const
 	return this->itemList.GetItemNoCheck(index);
 }
 
-void Math::Model3D::GetBounds(OutParam<Vector3> minPt, OutParam<Vector3> maxPt) const
+void Math::Model3D::GetBounds(OutParam<Vector3D> minPt, OutParam<Vector3D> maxPt) const
 {
 	minPt.Set(this->minPt);
 	maxPt.Set(this->maxPt);

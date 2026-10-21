@@ -23,7 +23,7 @@ void Math::WKTWriter::AppendPoint(NN<Text::StringBuilderUTF8> sb, NN<Math::Geome
 	if (!no3D && pt->HasZ())
 	{
 		NN<Math::Geometry::PointZ> ptZ = NN<Math::Geometry::PointZ>::ConvertFrom(pt);
-		Math::Vector3 pos = ptZ->GetPos3D();
+		Math::Vector3D pos = ptZ->GetPos3D();
 		if (reverseAxis)
 		{
 			sb->AppendDouble(pos.GetY(), DOUBLESIGFIG, Text::DoubleStyleC);

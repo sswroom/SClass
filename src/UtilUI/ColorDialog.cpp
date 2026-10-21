@@ -39,9 +39,9 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnSubDown(AnyType userObj, Math::C
 			scnPos.y = (IntOS)sz.y - 2;
 		}
 		newV = IntOS2Double(scnPos.y - 1) / (Double)(sz.y - 3);
-		if (me->mainXYZ.val[2] != newV)
+		if (me->mainXYZ.zn.x != newV)
 		{
-			me->mainXYZ.val[2] = newV;
+			me->mainXYZ.zn.x = newV;
 			me->GenMainImage();
 			me->UpdateColor();
 		}
@@ -66,9 +66,9 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnSubMove(AnyType userObj, Math::C
 			scnPos.y = (IntOS)sz.y - 2;
 		}
 		newV = IntOS2Double(scnPos.y - 1) / (Double)(sz.y - 3);
-		if (me->mainXYZ.val[2] != newV)
+		if (me->mainXYZ.zn.x != newV)
 		{
-			me->mainXYZ.val[2] = newV;
+			me->mainXYZ.zn.x = newV;
 			me->GenMainImage();
 			me->UpdateColor();
 		}
@@ -97,9 +97,9 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnSubUp(AnyType userObj, Math::Coo
 				scnPos.y = (IntOS)sz.y - 2;
 			}
 			newV = IntOS2Double(scnPos.y - 1) / (Double)(sz.y - 3);
-			if (me->mainXYZ.val[2] != newV)
+			if (me->mainXYZ.zn.x != newV)
 			{
-				me->mainXYZ.val[2] = newV;
+				me->mainXYZ.zn.x = newV;
 				me->GenMainImage();
 				me->UpdateColor();
 			}
@@ -138,10 +138,10 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnMainDown(AnyType userObj, Math::
 		}
 		newV1 = IntOS2Double(scnPos.x - 1) / (Double)(sz.x - 3);
 		newV2 = IntOS2Double(scnPos.y - 1) / (Double)(sz.y - 3);
-		if (me->mainXYZ.val[0] != newV1 || me->mainXYZ.val[1] != newV2)
+		if (me->mainXYZ.xy.x != newV1 || me->mainXYZ.xy.y != newV2)
 		{
-			me->mainXYZ.val[0] = newV1;
-			me->mainXYZ.val[1] = newV2;
+			me->mainXYZ.xy.x = newV1;
+			me->mainXYZ.xy.y = newV2;
 			me->GenSubImage();
 			me->UpdateColor();
 		}
@@ -176,10 +176,10 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnMainMove(AnyType userObj, Math::
 		}
 		newV1 = IntOS2Double(scnPos.x - 1) / (Double)(sz.x - 3);
 		newV2 = IntOS2Double(scnPos.y - 1) / (Double)(sz.y - 3);
-		if (me->mainXYZ.val[0] != newV1 || me->mainXYZ.val[1] != newV2)
+		if (me->mainXYZ.xy.x != newV1 || me->mainXYZ.xy.y != newV2)
 		{
-			me->mainXYZ.val[0] = newV1;
-			me->mainXYZ.val[1] = newV2;
+			me->mainXYZ.xy.x = newV1;
+			me->mainXYZ.xy.y = newV2;
 			me->GenSubImage();
 			me->UpdateColor();
 		}
@@ -218,10 +218,10 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnMainUp(AnyType userObj, Math::Co
 			}
 			newV1 = IntOS2Double(scnPos.x - 1) / (Double)(sz.x - 3);
 			newV2 = IntOS2Double(scnPos.y - 1) / (Double)(sz.y - 3);
-			if (me->mainXYZ.val[0] != newV1 || me->mainXYZ.val[1] != newV2)
+			if (me->mainXYZ.xy.x != newV1 || me->mainXYZ.xy.y != newV2)
 			{
-				me->mainXYZ.val[0] = newV1;
-				me->mainXYZ.val[1] = newV2;
+				me->mainXYZ.xy.x = newV1;
+				me->mainXYZ.xy.y = newV2;
 				me->GenSubImage();
 				me->UpdateColor();
 			}
@@ -342,11 +342,11 @@ void __stdcall UtilUI::ColorDialog::OnRedTChange(AnyType userObj)
 		me->radR->Select();
 	}
 	me->txtR->GetText(sbuff);
-	me->mainXYZ.val[2] = Text::StrToDoubleOr(sbuff, 0) / 255.0;
-	if (me->mainXYZ.val[2] < 0)
-		me->mainXYZ.val[2] = 0;
-	else if (me->mainXYZ.val[2] > 1)
-		me->mainXYZ.val[2] = 1;
+	me->mainXYZ.zn.x = Text::StrToDoubleOr(sbuff, 0) / 255.0;
+	if (me->mainXYZ.zn.x < 0)
+		me->mainXYZ.zn.x = 0;
+	else if (me->mainXYZ.zn.x > 1)
+		me->mainXYZ.zn.x = 1;
 	me->GenMainImage();
 	me->UpdateColor();
 	me->textUpdating = CT_UNKNOWN;
@@ -364,11 +364,11 @@ void __stdcall UtilUI::ColorDialog::OnGreenTChange(AnyType userObj)
 		me->radG->Select();
 	}
 	me->txtG->GetText(sbuff);
-	me->mainXYZ.val[2] = Text::StrToDoubleOr(sbuff, 0) / 255.0;
-	if (me->mainXYZ.val[2] < 0)
-		me->mainXYZ.val[2] = 0;
-	else if (me->mainXYZ.val[2] > 1)
-		me->mainXYZ.val[2] = 1;
+	me->mainXYZ.zn.x = Text::StrToDoubleOr(sbuff, 0) / 255.0;
+	if (me->mainXYZ.zn.x < 0)
+		me->mainXYZ.zn.x = 0;
+	else if (me->mainXYZ.zn.x > 1)
+		me->mainXYZ.zn.x = 1;
 	me->GenMainImage();
 	me->UpdateColor();
 	me->textUpdating = CT_UNKNOWN;
@@ -386,11 +386,11 @@ void __stdcall UtilUI::ColorDialog::OnBlueTChange(AnyType userObj)
 		me->radB->Select();
 	}
 	me->txtB->GetText(sbuff);
-	me->mainXYZ.val[2] = Text::StrToDoubleOr(sbuff, 0) / 255.0;
-	if (me->mainXYZ.val[2] < 0)
-		me->mainXYZ.val[2] = 0;
-	else if (me->mainXYZ.val[2] > 1)
-		me->mainXYZ.val[2] = 1;
+	me->mainXYZ.zn.x = Text::StrToDoubleOr(sbuff, 0) / 255.0;
+	if (me->mainXYZ.zn.x < 0)
+		me->mainXYZ.zn.x = 0;
+	else if (me->mainXYZ.zn.x > 1)
+		me->mainXYZ.zn.x = 1;
 	me->GenMainImage();
 	me->UpdateColor();
 	me->textUpdating = CT_UNKNOWN;
@@ -408,11 +408,11 @@ void __stdcall UtilUI::ColorDialog::OnYIQYTChange(AnyType userObj)
 		me->radYIQY->Select();
 	}
 	me->txtYIQY->GetText(sbuff);
-	me->mainXYZ.val[2] = Text::StrToDoubleOr(sbuff, 0) / 255.0;
-	if (me->mainXYZ.val[2] < 0)
-		me->mainXYZ.val[2] = 0;
-	else if (me->mainXYZ.val[2] > 1)
-		me->mainXYZ.val[2] = 1;
+	me->mainXYZ.zn.x = Text::StrToDoubleOr(sbuff, 0) / 255.0;
+	if (me->mainXYZ.zn.x < 0)
+		me->mainXYZ.zn.x = 0;
+	else if (me->mainXYZ.zn.x > 1)
+		me->mainXYZ.zn.x = 1;
 	me->GenMainImage();
 	me->UpdateColor();
 	me->textUpdating = CT_UNKNOWN;
@@ -430,11 +430,11 @@ void __stdcall UtilUI::ColorDialog::OnYIQITChange(AnyType userObj)
 		me->radYIQI->Select();
 	}
 	me->txtYIQI->GetText(sbuff);
-	me->mainXYZ.val[2] = Text::StrToDoubleOr(sbuff, 0) / 255.0;
-	if (me->mainXYZ.val[2] < 0)
-		me->mainXYZ.val[2] = 0;
-	else if (me->mainXYZ.val[2] > 1)
-		me->mainXYZ.val[2] = 1;
+	me->mainXYZ.zn.x = Text::StrToDoubleOr(sbuff, 0) / 255.0;
+	if (me->mainXYZ.zn.x < 0)
+		me->mainXYZ.zn.x = 0;
+	else if (me->mainXYZ.zn.x > 1)
+		me->mainXYZ.zn.x = 1;
 	me->GenMainImage();
 	me->UpdateColor();
 	me->textUpdating = CT_UNKNOWN;
@@ -452,11 +452,11 @@ void __stdcall UtilUI::ColorDialog::OnYIQQTChange(AnyType userObj)
 		me->radYIQQ->Select();
 	}
 	me->txtYIQQ->GetText(sbuff);
-	me->mainXYZ.val[2] = Text::StrToDoubleOr(sbuff, 0) / 255.0;
-	if (me->mainXYZ.val[2] < 0)
-		me->mainXYZ.val[2] = 0;
-	else if (me->mainXYZ.val[2] > 1)
-		me->mainXYZ.val[2] = 1;
+	me->mainXYZ.zn.x = Text::StrToDoubleOr(sbuff, 0) / 255.0;
+	if (me->mainXYZ.zn.x < 0)
+		me->mainXYZ.zn.x = 0;
+	else if (me->mainXYZ.zn.x > 1)
+		me->mainXYZ.zn.x = 1;
 	me->GenMainImage();
 	me->UpdateColor();
 	me->textUpdating = CT_UNKNOWN;
@@ -474,11 +474,11 @@ void __stdcall UtilUI::ColorDialog::OnHSVHTChange(AnyType userObj)
 		me->radHSVH->Select();
 	}
 	me->txtHSVH->GetText(sbuff);
-	me->mainXYZ.val[2] = Text::StrToDoubleOr(sbuff, 0) / 255.0;
-	if (me->mainXYZ.val[2] < 0)
-		me->mainXYZ.val[2] = 0;
-	else if (me->mainXYZ.val[2] > 1)
-		me->mainXYZ.val[2] = 1;
+	me->mainXYZ.zn.x = Text::StrToDoubleOr(sbuff, 0) / 255.0;
+	if (me->mainXYZ.zn.x < 0)
+		me->mainXYZ.zn.x = 0;
+	else if (me->mainXYZ.zn.x > 1)
+		me->mainXYZ.zn.x = 1;
 	me->GenMainImage();
 	me->UpdateColor();
 	me->textUpdating = CT_UNKNOWN;
@@ -496,11 +496,11 @@ void __stdcall UtilUI::ColorDialog::OnHSVSTChange(AnyType userObj)
 		me->radHSVS->Select();
 	}
 	me->txtHSVS->GetText(sbuff);
-	me->mainXYZ.val[2] = Text::StrToDoubleOr(sbuff, 0) / 255.0;
-	if (me->mainXYZ.val[2] < 0)
-		me->mainXYZ.val[2] = 0;
-	else if (me->mainXYZ.val[2] > 1)
-		me->mainXYZ.val[2] = 1;
+	me->mainXYZ.zn.x = Text::StrToDoubleOr(sbuff, 0) / 255.0;
+	if (me->mainXYZ.zn.x < 0)
+		me->mainXYZ.zn.x = 0;
+	else if (me->mainXYZ.zn.x > 1)
+		me->mainXYZ.zn.x = 1;
 	me->GenMainImage();
 	me->UpdateColor();
 	me->textUpdating = CT_UNKNOWN;
@@ -518,11 +518,11 @@ void __stdcall UtilUI::ColorDialog::OnHSVVTChange(AnyType userObj)
 		me->radHSVV->Select();
 	}
 	me->txtHSVV->GetText(sbuff);
-	me->mainXYZ.val[2] = Text::StrToDoubleOr(sbuff, 0) / 255.0;
-	if (me->mainXYZ.val[2] < 0)
-		me->mainXYZ.val[2] = 0;
-	else if (me->mainXYZ.val[2] > 1)
-		me->mainXYZ.val[2] = 1;
+	me->mainXYZ.zn.x = Text::StrToDoubleOr(sbuff, 0) / 255.0;
+	if (me->mainXYZ.zn.x < 0)
+		me->mainXYZ.zn.x = 0;
+	else if (me->mainXYZ.zn.x > 1)
+		me->mainXYZ.zn.x = 1;
 	me->GenMainImage();
 	me->UpdateColor();
 	me->textUpdating = CT_UNKNOWN;
@@ -560,26 +560,26 @@ UInt32 __stdcall UtilUI::ColorDialog::GenThread(AnyType userObj)
 	return 0;
 }
 
-Math::Vector3 UtilUI::ColorDialog::XYZ2RGB(Math::Vector3 xyz)
+Math::Vector3D UtilUI::ColorDialog::XYZ2RGB(Math::Vector3D xyz)
 {
 	switch (colorType)
 	{
 	case CT_RED:
-		return Math::Vector3(xyz.GetZ(), xyz.GetX(), xyz.GetY());
+		return Math::Vector3D(xyz.GetZ(), xyz.GetX(), xyz.GetY());
 	case CT_GREEN:
-		return Math::Vector3(xyz.GetX(), xyz.GetZ(), xyz.GetY());
+		return Math::Vector3D(xyz.GetX(), xyz.GetZ(), xyz.GetY());
 	case CT_BLUE:
 		return xyz;
 	case CT_YIQY:
-		return YIQ2RGB(Math::Vector3(xyz.GetZ(), xyz.GetX(), xyz.GetY()));
+		return YIQ2RGB(Math::Vector3D(xyz.GetZ(), xyz.GetX(), xyz.GetY()));
 	case CT_YIQI:
-		return YIQ2RGB(Math::Vector3(xyz.GetX(), xyz.GetZ(), xyz.GetY()));
+		return YIQ2RGB(Math::Vector3D(xyz.GetX(), xyz.GetZ(), xyz.GetY()));
 	case CT_YIQQ:
 		return YIQ2RGB(xyz);
 	case CT_HSVH:
-		return HSV2RGB(Math::Vector3(xyz.GetZ(), xyz.GetX(), xyz.GetY()));
+		return HSV2RGB(Math::Vector3D(xyz.GetZ(), xyz.GetX(), xyz.GetY()));
 	case CT_HSVS:
-		return HSV2RGB(Math::Vector3(xyz.GetX(), xyz.GetZ(), xyz.GetY()));
+		return HSV2RGB(Math::Vector3D(xyz.GetX(), xyz.GetZ(), xyz.GetY()));
 	case CT_HSVV:
 		return HSV2RGB(xyz);
 	case CT_UNKNOWN:
@@ -588,25 +588,25 @@ Math::Vector3 UtilUI::ColorDialog::XYZ2RGB(Math::Vector3 xyz)
 	}
 }
 
-Math::Vector3 UtilUI::ColorDialog::YIQ2RGB(Math::Vector3 yiq)
+Math::Vector3D UtilUI::ColorDialog::YIQ2RGB(Math::Vector3D yiq)
 {
-	Double y = yiq.val[0];
-	Double i = yiq.val[1] - 0.5;
-	Double q = yiq.val[2] - 0.5;
-	return Math::Vector3(y + 0.956 * i + 0.621 * q,
+	Double y = yiq.xy.x;
+	Double i = yiq.xy.y - 0.5;
+	Double q = yiq.zn.x - 0.5;
+	return Math::Vector3D(y + 0.956 * i + 0.621 * q,
 			y - 0.272 * i - 0.647 * q,
 			y - 1.105 * i + 1.702 * q);
 }
 
-Math::Vector3 UtilUI::ColorDialog::HSV2RGB(Math::Vector3 hsv)
+Math::Vector3D UtilUI::ColorDialog::HSV2RGB(Math::Vector3D hsv)
 {
-	if (hsv.val[1] == 0)
+	if (hsv.xy.y == 0)
 	{
-		return Math::Vector3(hsv.val[2], hsv.val[2], hsv.val[2]);
+		return Math::Vector3D(hsv.zn.x, hsv.zn.x, hsv.zn.x);
 	}
-	Double h = hsv.val[0];
-	Double s = hsv.val[1];
-	Double v = hsv.val[2];
+	Double h = hsv.xy.x;
+	Double s = hsv.xy.y;
+	Double v = hsv.zn.x;
 	Int32 ih;
 	Double p;
 	Double q;
@@ -629,50 +629,50 @@ Math::Vector3 UtilUI::ColorDialog::HSV2RGB(Math::Vector3 hsv)
 	switch (ih)
 	{
 	case 0:
-		return Math::Vector3(v, t, p);
+		return Math::Vector3D(v, t, p);
 		break;
 	case 1:
-		return Math::Vector3(q, v, p);
+		return Math::Vector3D(q, v, p);
 	case 2:
-		return Math::Vector3(p, v, t);
+		return Math::Vector3D(p, v, t);
 	case 3:
-		return Math::Vector3(p, q, v);
+		return Math::Vector3D(p, q, v);
 	case 4:
-		return Math::Vector3(t, p, v);
+		return Math::Vector3D(t, p, v);
 	default:
-		return Math::Vector3(v, p, q);
+		return Math::Vector3D(v, p, q);
 	}
 }
 
-Math::Vector3 UtilUI::ColorDialog::RGB2XYZ(Math::Vector3 rgb)
+Math::Vector3D UtilUI::ColorDialog::RGB2XYZ(Math::Vector3D rgb)
 {
-	Math::Vector3 v;
+	Math::Vector3D v;
 	switch (colorType)
 	{
 	case CT_RED:
-		return Math::Vector3(rgb.val[1], rgb.val[2], rgb.val[0]);
+		return Math::Vector3D(rgb.xy.y, rgb.zn.x, rgb.xy.x);
 	case CT_GREEN:
-		return Math::Vector3(rgb.val[0], rgb.val[2], rgb.val[1]);
+		return Math::Vector3D(rgb.xy.x, rgb.zn.x, rgb.xy.y);
 	case CT_BLUE:
 		return rgb;
 	case CT_YIQY:
 		v = RGB2YIQ(rgb);
-		return Math::Vector3(v.val[1], v.val[2], v.val[0]);
+		return Math::Vector3D(v.xy.y, v.zn.x, v.xy.x);
 		break;
 	case CT_YIQI:
 		v = RGB2YIQ(rgb);
-		return Math::Vector3(v.val[0], v.val[2], v.val[1]);
+		return Math::Vector3D(v.xy.x, v.zn.x, v.xy.y);
 		break;
 	case CT_YIQQ:
 		return RGB2YIQ(rgb);
 		break;
 	case CT_HSVH:
 		v = RGB2HSV(rgb);
-		return Math::Vector3(v.val[1], v.val[2], v.val[0]);
+		return Math::Vector3D(v.xy.y, v.zn.x, v.xy.x);
 		break;
 	case CT_HSVS:
 		v = RGB2HSV(rgb);
-		return Math::Vector3(v.val[0], v.val[2], v.val[1]);
+		return Math::Vector3D(v.xy.x, v.zn.x, v.xy.y);
 		break;
 	case CT_HSVV:
 		return RGB2HSV(rgb);
@@ -683,21 +683,21 @@ Math::Vector3 UtilUI::ColorDialog::RGB2XYZ(Math::Vector3 rgb)
 	}
 }
 
-Math::Vector3 UtilUI::ColorDialog::RGB2YIQ(Math::Vector3 rgb)
+Math::Vector3D UtilUI::ColorDialog::RGB2YIQ(Math::Vector3D	 rgb)
 {
-	Double r = rgb.val[0];
-	Double g = rgb.val[1];
-	Double b = rgb.val[2];
-	return Math::Vector3(0.299 * r + 0.587 * g + 0.114 * b,
+	Double r = rgb.xy.x;
+	Double g = rgb.xy.y;
+	Double b = rgb.zn.x;
+	return Math::Vector3D(0.299 * r + 0.587 * g + 0.114 * b,
 		0.596 * r - 0.275 * g - 0.321 * b + 0.5,
 		0.212 * r - 0.523 * g + 0.311 * b + 0.5);
 }
 
-Math::Vector3 UtilUI::ColorDialog::RGB2HSV(Math::Vector3 rgb)
+Math::Vector3D UtilUI::ColorDialog::RGB2HSV(Math::Vector3D rgb)
 {
-	Double r = rgb.val[0];
-	Double g = rgb.val[1];
-	Double b = rgb.val[2];
+	Double r = rgb.xy.x;
+	Double g = rgb.xy.y;
+	Double b = rgb.zn.x;
 	Double max;
 	Double min;
 	Double delta;
@@ -739,7 +739,7 @@ Math::Vector3 UtilUI::ColorDialog::RGB2HSV(Math::Vector3 rgb)
 		if (h < 0)
 			h += 1;
 	}
-	return Math::Vector3(h, s, v);
+	return Math::Vector3D(h, s, v);
 }
 
 void UtilUI::ColorDialog::GenMainImageInner(UnsafeArray<UInt8> imgPtr, UIntOS startIndex, UIntOS endIndex, UIntOS w, UIntOS h)
@@ -749,9 +749,9 @@ void UtilUI::ColorDialog::GenMainImageInner(UnsafeArray<UInt8> imgPtr, UIntOS st
 	Double v1;
 	Double v2;
 	Double v3;
-	Math::Vector3 rgbv;
-	Math::Vector3 rgbv2;
-	Math::Vector3 rgbv3;
+	Math::Vector3D rgbv;
+	Math::Vector3D rgbv2;
+	Math::Vector3D rgbv3;
 
 	NN<const Media::ColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 	Double rGammaVal;
@@ -831,11 +831,11 @@ void UtilUI::ColorDialog::GenMainImageInner(UnsafeArray<UInt8> imgPtr, UIntOS st
 		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetRTranParamRead());
 		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetRTranParamRead());
 	}
-	Math::Matrix3 mat1;
-	Math::Matrix3 mat2;
-	Math::Matrix3 mat3;
-	Math::Matrix3 mat4;
-	Math::Matrix3 mat5;
+	Math::Matrix3D mat1;
+	Math::Matrix3D mat2;
+	Math::Matrix3D mat3;
+	Math::Matrix3D mat4;
+	Math::Matrix3D mat5;
 	this->colorProfile->GetPrimaries()->GetConvMatrix(mat1);
 	rgbParam->monProfile.GetPrimariesRead()->GetConvMatrix(mat5);
 	mat5.Inverse();
@@ -850,9 +850,9 @@ void UtilUI::ColorDialog::GenMainImageInner(UnsafeArray<UInt8> imgPtr, UIntOS st
 	rgbv = mat2.Multiply(rgbv2);
 	rgbv2 = mat2.Multiply(rgbv3);
 	mat2.Inverse();
-	mat4.vec[0].val[0] = rgbv2.val[0] / rgbv.val[0];
-	mat4.vec[1].val[1] = rgbv2.val[1] / rgbv.val[1];
-	mat4.vec[2].val[2] = rgbv2.val[2] / rgbv.val[2];
+	mat4.vec[0].xy.x = rgbv2.xy.x / rgbv.xy.x;
+	mat4.vec[1].xy.y = rgbv2.xy.y / rgbv.xy.y;
+	mat4.vec[2].zn.x = rgbv2.zn.x / rgbv.zn.x;
 	mat2.MultiplyInplace(mat4);
 	mat2.MultiplyInplace(mat3);
 	mat1.MultiplyInplaceBA(mat2);
@@ -870,17 +870,17 @@ void UtilUI::ColorDialog::GenMainImageInner(UnsafeArray<UInt8> imgPtr, UIntOS st
 		while (j < w)
 		{
 			v2 = UIntOS2Double(j) * v2R;
-			rgbv = XYZ2RGB(Math::Vector3(v2, v3, v1));
-			rgbv.val[0] = srcRTran->InverseTransfer(rgbv.val[0]);
-			rgbv.val[1] = srcGTran->InverseTransfer(rgbv.val[1]);
-			rgbv.val[2] = srcBTran->InverseTransfer(rgbv.val[2]);
+			rgbv = XYZ2RGB(Math::Vector3D(v2, v3, v1));
+			rgbv.xy.x = srcRTran->InverseTransfer(rgbv.xy.x);
+			rgbv.xy.y = srcGTran->InverseTransfer(rgbv.xy.y);
+			rgbv.zn.x = srcBTran->InverseTransfer(rgbv.zn.x);
 			rgbv2 = mat1.Multiply(rgbv);
-			rgbv.val[0] = dispRTran->ForwardTransfer(rgbv2.val[0] * rMul);
-			rgbv.val[1] = dispGTran->ForwardTransfer(rgbv2.val[1] * gMul);
-			rgbv.val[2] = dispBTran->ForwardTransfer(rgbv2.val[2] * bMul);
-			imgPtr[0] = Math::SDouble2UInt8((bBright - 1.0 + Math_Pow(rgbv.val[2], bGammaVal) * bContr) * 255.0);
-			imgPtr[1] = Math::SDouble2UInt8((gBright - 1.0 + Math_Pow(rgbv.val[1], gGammaVal) * gContr) * 255.0);
-			imgPtr[2] = Math::SDouble2UInt8((rBright - 1.0 + Math_Pow(rgbv.val[0], rGammaVal) * rContr) * 255.0);
+			rgbv.xy.x = dispRTran->ForwardTransfer(rgbv2.xy.x * rMul);
+			rgbv.xy.y = dispGTran->ForwardTransfer(rgbv2.xy.y * gMul);
+			rgbv.zn.x = dispBTran->ForwardTransfer(rgbv2.zn.x * bMul);
+			imgPtr[0] = Math::SDouble2UInt8((bBright - 1.0 + Math_Pow(rgbv.zn.x, bGammaVal) * bContr) * 255.0);
+			imgPtr[1] = Math::SDouble2UInt8((gBright - 1.0 + Math_Pow(rgbv.xy.y, gGammaVal) * gContr) * 255.0);
+			imgPtr[2] = Math::SDouble2UInt8((rBright - 1.0 + Math_Pow(rgbv.xy.x, rGammaVal) * rContr) * 255.0);
 			imgPtr[3] = 255;
 
 			imgPtr += 4;
@@ -946,9 +946,9 @@ void UtilUI::ColorDialog::GenSubImage()
 	Double v1;
 	Double v2;
 	Double v3;
-	Math::Vector3 rgbv;
-	Math::Vector3 rgbv2;
-	Math::Vector3 rgbv3;
+	Math::Vector3D rgbv;
+	Math::Vector3D rgbv2;
+	Math::Vector3D rgbv3;
 
 	UInt8 c[4];
 	UnsafeArray<UInt8> imgPtr = this->subImg->data;
@@ -1032,11 +1032,11 @@ void UtilUI::ColorDialog::GenSubImage()
 		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetGTranParamRead());
 		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetBTranParamRead());
 	}
-	Math::Matrix3 mat1;
-	Math::Matrix3 mat2;
-	Math::Matrix3 mat3;
-	Math::Matrix3 mat4;
-	Math::Matrix3 mat5;
+	Math::Matrix3D mat1;
+	Math::Matrix3D mat2;
+	Math::Matrix3D mat3;
+	Math::Matrix3D mat4;
+	Math::Matrix3D mat5;
 	this->colorProfile->GetPrimaries()->GetConvMatrix(mat1);
 	rgbParam->monProfile.GetPrimariesRead()->GetConvMatrix(mat5);
 	mat5.Inverse();
@@ -1051,9 +1051,9 @@ void UtilUI::ColorDialog::GenSubImage()
 	rgbv = mat2.Multiply(rgbv2);
 	rgbv2 = mat2.Multiply(rgbv3);
 	mat2.Inverse();
-	mat4.vec[0].val[0] = rgbv2.val[0] / rgbv.val[0];
-	mat4.vec[1].val[1] = rgbv2.val[1] / rgbv.val[1];
-	mat4.vec[2].val[2] = rgbv2.val[2] / rgbv.val[2];
+	mat4.vec[0].xy.x = rgbv2.xy.x / rgbv.xy.x;
+	mat4.vec[1].xy.y = rgbv2.xy.y / rgbv.xy.y;
+	mat4.vec[2].zn.x = rgbv2.zn.x / rgbv.zn.x;
 	mat2.MultiplyInplace(mat4);
 	mat2.MultiplyInplace(mat3);
 	mat1.MultiplyInplaceBA(mat2);
@@ -1067,20 +1067,20 @@ void UtilUI::ColorDialog::GenSubImage()
 	while (i < h)
 	{
 		v1 = UIntOS2Double(i) * v1R;
-		rgbv = this->XYZ2RGB(Math::Vector3(v2, v3, v1));
-		rgbv.val[0] = srcRTran->InverseTransfer(rgbv.val[0]);
-		rgbv.val[1] = srcGTran->InverseTransfer(rgbv.val[1]);
-		rgbv.val[2] = srcBTran->InverseTransfer(rgbv.val[2]);
+		rgbv = this->XYZ2RGB(Math::Vector3D(v2, v3, v1));
+		rgbv.xy.x = srcRTran->InverseTransfer(rgbv.xy.x);
+		rgbv.xy.y = srcGTran->InverseTransfer(rgbv.xy.y);
+		rgbv.zn.x = srcBTran->InverseTransfer(rgbv.zn.x);
 		rgbv2 = mat1.Multiply(rgbv);
-		rgbv.val[0] = dispRTran->ForwardTransfer(rgbv2.val[0] * rMul);
-		rgbv.val[1] = dispGTran->ForwardTransfer(rgbv2.val[1] * gMul);
-		rgbv.val[2] = dispBTran->ForwardTransfer(rgbv2.val[2] * bMul);
+		rgbv.xy.x = dispRTran->ForwardTransfer(rgbv2.xy.x * rMul);
+		rgbv.xy.y = dispGTran->ForwardTransfer(rgbv2.xy.y * gMul);
+		rgbv.zn.x = dispBTran->ForwardTransfer(rgbv2.zn.x * bMul);
 		Int32 rV;
 		Int32 gV;
 		Int32 bV;
-		rV = Double2Int32((rBright - 1.0 + Math_Pow(rgbv.val[0], rGammaVal) * rContr) * 255.0);
-		gV = Double2Int32((gBright - 1.0 + Math_Pow(rgbv.val[1], gGammaVal) * gContr) * 255.0);
-		bV = Double2Int32((bBright - 1.0 + Math_Pow(rgbv.val[2], bGammaVal) * bContr) * 255.0);
+		rV = Double2Int32((rBright - 1.0 + Math_Pow(rgbv.xy.x, rGammaVal) * rContr) * 255.0);
+		gV = Double2Int32((gBright - 1.0 + Math_Pow(rgbv.xy.y, gGammaVal) * gContr) * 255.0);
+		bV = Double2Int32((bBright - 1.0 + Math_Pow(rgbv.zn.x, bGammaVal) * bContr) * 255.0);
 		if (bV > 255)
 			c[0] = 255;
 		else if (bV < 0)
@@ -1135,9 +1135,9 @@ void UtilUI::ColorDialog::UpdateColor()
 {
 	UTF8Char sbuff[10];
 	UnsafeArray<UTF8Char> sptr;
-	Math::Vector3 rgbv;
-	Math::Vector3 rgbv2;
-	Math::Vector3 rgbv3;
+	Math::Vector3D rgbv;
+	Math::Vector3D rgbv2;
+	Math::Vector3D rgbv3;
 
 	UInt8 c[4];
 	NN<const Media::ColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
@@ -1218,11 +1218,11 @@ void UtilUI::ColorDialog::UpdateColor()
 		dispGTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetGTranParamRead());
 		dispBTran = Media::CS::TransferFunc::CreateFunc(rgbParam->monProfile.GetBTranParamRead());
 	}
-	Math::Matrix3 mat1;
-	Math::Matrix3 mat2;
-	Math::Matrix3 mat3;
-	Math::Matrix3 mat4;
-	Math::Matrix3 mat5;
+	Math::Matrix3D mat1;
+	Math::Matrix3D mat2;
+	Math::Matrix3D mat3;
+	Math::Matrix3D mat4;
+	Math::Matrix3D mat5;
 	this->colorProfile->GetPrimaries()->GetConvMatrix(mat1);
 	rgbParam->monProfile.GetPrimariesRead()->GetConvMatrix(mat5);
 	mat5.Inverse();
@@ -1237,9 +1237,9 @@ void UtilUI::ColorDialog::UpdateColor()
 	rgbv = mat2.Multiply(rgbv2);
 	rgbv2 = mat2.Multiply(rgbv3);
 	mat2.Inverse();
-	mat4.vec[0].val[0] = rgbv2.val[0] / rgbv.val[0];
-	mat4.vec[1].val[1] = rgbv2.val[1] / rgbv.val[1];
-	mat4.vec[2].val[2] = rgbv2.val[2] / rgbv.val[2];
+	mat4.vec[0].xy.x = rgbv2.xy.x / rgbv.xy.x;
+	mat4.vec[1].xy.y = rgbv2.xy.y / rgbv.xy.y;
+	mat4.vec[2].zn.x = rgbv2.zn.x / rgbv.zn.x;
 	mat2.MultiplyInplace(mat4);
 	mat2.MultiplyInplace(mat3);
 	mat1.MultiplyInplaceBA(mat2);
@@ -1247,19 +1247,19 @@ void UtilUI::ColorDialog::UpdateColor()
 	mat1.MultiplyInplaceBA(mat5);
 
 	rgbv = this->XYZ2RGB(this->mainXYZ);
-	rgbv.val[0] = srcRTran->InverseTransfer(rgbv.val[0]);
-	rgbv.val[1] = srcGTran->InverseTransfer(rgbv.val[1]);
-	rgbv.val[2] = srcBTran->InverseTransfer(rgbv.val[2]);
+	rgbv.xy.x = srcRTran->InverseTransfer(rgbv.xy.x);
+	rgbv.xy.y = srcGTran->InverseTransfer(rgbv.xy.y);
+	rgbv.zn.x = srcBTran->InverseTransfer(rgbv.zn.x);
 	rgbv2 = mat1.Multiply(rgbv);
-	rgbv3.val[0] = dispRTran->ForwardTransfer(rgbv2.val[0] * rMul);
-	rgbv3.val[1] = dispGTran->ForwardTransfer(rgbv2.val[1] * gMul);
-	rgbv3.val[2] = dispBTran->ForwardTransfer(rgbv2.val[2] * bMul);
+	rgbv3.xy.x = dispRTran->ForwardTransfer(rgbv2.xy.x * rMul);
+	rgbv3.xy.y = dispGTran->ForwardTransfer(rgbv2.xy.y * gMul);
+	rgbv3.zn.x = dispBTran->ForwardTransfer(rgbv2.zn.x * bMul);
 	Int32 rV;
 	Int32 gV;
 	Int32 bV;
-	rV = Double2Int32((rBright - 1.0 + Math_Pow(rgbv3.val[0], rGammaVal) * rContr) * 255.0);
-	gV = Double2Int32((gBright - 1.0 + Math_Pow(rgbv3.val[1], gGammaVal) * gContr) * 255.0);
-	bV = Double2Int32((bBright - 1.0 + Math_Pow(rgbv3.val[2], bGammaVal) * bContr) * 255.0);
+	rV = Double2Int32((rBright - 1.0 + Math_Pow(rgbv3.xy.x, rGammaVal) * rContr) * 255.0);
+	gV = Double2Int32((gBright - 1.0 + Math_Pow(rgbv3.xy.y, gGammaVal) * gContr) * 255.0);
+	bV = Double2Int32((bBright - 1.0 + Math_Pow(rgbv3.zn.x, bGammaVal) * bContr) * 255.0);
 	if (bV > 255)
 		c[0] = 255;
 	else if (bV < 0)
@@ -1283,13 +1283,13 @@ void UtilUI::ColorDialog::UpdateColor()
 	this->pbColor->Redraw();
 
 	this->autoTextUpdate = true;
-	rgbv.val[0] = srcRTran->ForwardTransfer(rgbv.val[0]);
-	rgbv.val[1] = srcGTran->ForwardTransfer(rgbv.val[1]);
-	rgbv.val[2] = srcBTran->ForwardTransfer(rgbv.val[2]);
+	rgbv.xy.x = srcRTran->ForwardTransfer(rgbv.xy.x);
+	rgbv.xy.y = srcGTran->ForwardTransfer(rgbv.xy.y);
+	rgbv.zn.x = srcBTran->ForwardTransfer(rgbv.zn.x);
 
-	rV = Double2Int32(rgbv.val[0] * 255.0);
-	gV = Double2Int32(rgbv.val[1] * 255.0);
-	bV = Double2Int32(rgbv.val[2] * 255.0);
+	rV = Double2Int32(rgbv.xy.x * 255.0);
+	gV = Double2Int32(rgbv.xy.y * 255.0);
+	bV = Double2Int32(rgbv.zn.x * 255.0);
 	if (rV > 255)
 		rV = 255;
 	else if (rV < 0)
@@ -1319,9 +1319,9 @@ void UtilUI::ColorDialog::UpdateColor()
 	}
 
 	rgbv2 = RGB2YIQ(rgbv);
-	rV = Double2Int32(rgbv2.val[0] * 255.0);
-	gV = Double2Int32(rgbv2.val[1] * 255.0);
-	bV = Double2Int32(rgbv2.val[2] * 255.0);
+	rV = Double2Int32(rgbv2.xy.x * 255.0);
+	gV = Double2Int32(rgbv2.xy.y * 255.0);
+	bV = Double2Int32(rgbv2.zn.x * 255.0);
 	if (rV > 255)
 		rV = 255;
 	else if (rV < 0)
@@ -1351,9 +1351,9 @@ void UtilUI::ColorDialog::UpdateColor()
 	}
 
 	rgbv2 = RGB2HSV(rgbv);
-	rV = Double2Int32(rgbv2.val[0] * 255.0);
-	gV = Double2Int32(rgbv2.val[1] * 255.0);
-	bV = Double2Int32(rgbv2.val[2] * 255.0);
+	rV = Double2Int32(rgbv2.xy.x * 255.0);
+	gV = Double2Int32(rgbv2.xy.y * 255.0);
+	bV = Double2Int32(rgbv2.zn.x * 255.0);
 	if (rV > 255)
 		rV = 255;
 	else if (rV < 0)
@@ -1398,8 +1398,8 @@ UtilUI::ColorDialog::ColorDialog(Optional<UI::GUIClientControl> parent, NN<UI::G
 	this->SetText(CSTR("Color Setting"));
 	this->SetNoResize(true);
 	this->aVal = 1.0;
-	this->rgbVal = Math::Vector3(0.0, 0.0, 0.0);
-	this->mainXYZ = Math::Vector3(0.0, 0.0, 0.0);
+	this->rgbVal = Math::Vector3D(0.0, 0.0, 0.0);
+	this->mainXYZ = Math::Vector3D(0.0, 0.0, 0.0);
 	this->colorMgr = colorMgr;
 	this->monMgr = monMgr;
 	this->colorSess = this->colorMgr->CreateSess(this->GetHMonitor());
@@ -1602,7 +1602,7 @@ UtilUI::ColorDialog::~ColorDialog()
 void UtilUI::ColorDialog::SetColor32(UInt32 color)
 {
 	this->aVal = ((color >> 24) & 0xff) / 255.0;
-	this->rgbVal = Math::Vector3(((color >> 16) & 0xff) / 255.0,
+	this->rgbVal = Math::Vector3D(((color >> 16) & 0xff) / 255.0,
 		((color >> 8) & 0xff) / 255.0,
 		(color & 0xff) / 255.0);
 	this->LoadColor();
@@ -1621,24 +1621,24 @@ UInt32 UtilUI::ColorDialog::GetColor32()
 		a = 0;
 	else
 		a = (UInt32)Double2Int32(this->aVal * 255.0);
-	if (this->rgbVal.val[0] > 1.0)
+	if (this->rgbVal.xy.x > 1.0)
 		r = 255;
-	else if (this->rgbVal.val[0] < 0)
+	else if (this->rgbVal.xy.x < 0)
 		r = 0;
 	else
-		r = (UInt32)Double2Int32(this->rgbVal.val[0] * 255.0);
-	if (this->rgbVal.val[1] > 1.0)
+		r = (UInt32)Double2Int32(this->rgbVal.xy.x * 255.0);
+	if (this->rgbVal.xy.y > 1.0)
 		g = 255;
-	else if (this->rgbVal.val[1] < 0)
+	else if (this->rgbVal.xy.y < 0)
 		g = 0;
 	else
-		g = (UInt32)Double2Int32(this->rgbVal.val[1] * 255.0);
-	if (this->rgbVal.val[2] > 1.0)
+		g = (UInt32)Double2Int32(this->rgbVal.xy.y * 255.0);
+	if (this->rgbVal.zn.x > 1.0)
 		b = 255;
-	else if (this->rgbVal.val[2] < 0)
+	else if (this->rgbVal.zn.x < 0)
 		b = 0;
 	else
-		b = (UInt32)Double2Int32(this->rgbVal.val[2] * 255.0);
+		b = (UInt32)Double2Int32(this->rgbVal.zn.x * 255.0);
 	return (a << 24) | (r << 16) | (g << 8) | (b);
 }
 

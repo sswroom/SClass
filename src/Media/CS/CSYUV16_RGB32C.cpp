@@ -37,7 +37,7 @@ void Media::CS::CSYUV16_RGB32C::SetupRGB13_LR()
 	NN<Media::CS::TransferFunc> rtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
 	NN<Media::CS::TransferFunc> gtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetGTranParam());
 	NN<Media::CS::TransferFunc> btFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetBTranParam());
-	Math::Matrix3 mat1;
+	Math::Matrix3D mat1;
 	if (this->destProfile.GetPrimaries()->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
 		Media::ColorProfile::GetConvMatrix(mat1, this->srcProfile.GetPrimaries(), this->rgbParam.monProfile.GetPrimaries());
@@ -55,9 +55,9 @@ void Media::CS::CSYUV16_RGB32C::SetupRGB13_LR()
 		{
 			thisV = 2.0;
 		}
-		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[0]);
-		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[0]);
-		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[0]);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].xy.x);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].xy.x);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].xy.x);
 		v[3] = 0;
 		this->rgbGammaCorr[i] = *(Int64*)&v[0];
 
@@ -66,9 +66,9 @@ void Media::CS::CSYUV16_RGB32C::SetupRGB13_LR()
 		{
 			thisV = 2.0;
 		}
-		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[1]);
-		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[1]);
-		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[1]);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].xy.y);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].xy.y);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].xy.y);
 		v[3] = 0;
 		this->rgbGammaCorr[i + 65536] = *(Int64*)&v[0];
 
@@ -77,9 +77,9 @@ void Media::CS::CSYUV16_RGB32C::SetupRGB13_LR()
 		{
 			thisV = 2.0;
 		}
-		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[2]);
-		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[2]);
-		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[2]);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].zn.x);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].zn.x);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].zn.x);
 		v[3] = 0;
 		this->rgbGammaCorr[i + 131072] = *(Int64*)&v[0];
 	}
@@ -91,9 +91,9 @@ void Media::CS::CSYUV16_RGB32C::SetupRGB13_LR()
 		{
 			thisV = -2.0;
 		}
-		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[0]);
-		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[0]);
-		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[0]);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].xy.x);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].xy.x);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].xy.x);
 		v[3] = 0;
 		this->rgbGammaCorr[i] = *(Int64*)&v[0];
 
@@ -102,9 +102,9 @@ void Media::CS::CSYUV16_RGB32C::SetupRGB13_LR()
 		{
 			thisV = -2.0;
 		}
-		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[1]);
-		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[1]);
-		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[1]);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].xy.y);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].xy.y);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].xy.y);
 		v[3] = 0;
 		this->rgbGammaCorr[i + 65536] = *(Int64*)&v[0];
 
@@ -113,9 +113,9 @@ void Media::CS::CSYUV16_RGB32C::SetupRGB13_LR()
 		{
 			thisV = -2.0;
 		}
-		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[2]);
-		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[2]);
-		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].val[2]);
+		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].zn.x);
+		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].zn.x);
+		v[0] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[2].zn.x);
 		v[3] = 0;
 		this->rgbGammaCorr[i + 131072] = *(Int64*)&v[0];
 	}

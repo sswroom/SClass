@@ -208,8 +208,6 @@ DBConn.o: ../../src/DB/DBConn.cpp
 DBClassBuilder.o: ../../src/DB/DBClassBuilder.cpp
 DBExporter.o: ../../src/DB/DBExporter.cpp
 DBFFile.o: ../../src/DB/DBFFile.cpp
-MDBFile.o: ../../src/DB/MDBFile.cpp
-MDBUtil.o: ../../src/DB/MDBUtil.cpp
 DBFFixWriter.o: ../../src/DB/DBFFixWriter.cpp
 DBList.o: ../../src/DB/DBList.cpp
 DBManager.o: ../../src/DB/DBManager.cpp
@@ -225,12 +223,14 @@ ForeignKeyDef.o: ../../src/DB/ForeignKeyDef.cpp
 JavaDBUtil.o: ../../src/DB/JavaDBUtil.cpp
 JSONDB.o: ../../src/DB/JSONDB.cpp
 JSONDB2.o: ../../src/DB/JSONDB2.cpp
+MDBFile.o: ../../src/DB/MDBFile.cpp
 MDBFileConn.o: ../../src/DB/MDBFileConn.cpp
 !-lodbc32
 MDBFileConnL.o: ../../src/DB/MDBFileConn.cpp
 !-lodbc
 !-lodbcinst
 MDBFileConnNul.o: ../../src/DB/MDBFileConnNul.cpp
+MDBUtil.o: ../../src/DB/MDBUtil.cpp
 MongoDB.o: ../../src/DB/MongoDB.cpp
 $@($(PKG-CONFIG) --exists libmongoc-1.0) `$(PKG-CONFIG) --cflags libmongoc-1.0`
 $@($(PKG-CONFIG) --exists mongoc2) `$(PKG-CONFIG) --cflags mongoc2`
@@ -1078,7 +1078,7 @@ GeoJSONWriter.o: ../../src/Math/GeoJSONWriter.cpp
 GeometryTool.o: ../../src/Math/GeometryTool.cpp
 LanczosFilter.o: ../../src/Math/LanczosFilter.cpp
 Math.o: ../../src/Math/Math.cpp
-Matrix3.o: ../../src/Math/Matrix3.cpp
+Matrix3D.o: ../../src/Math/Matrix3D.cpp
 MercatorProjectedCoordinateSystem.o: ../../src/Math/MercatorProjectedCoordinateSystem.cpp
 Mercator1SPProjectedCoordinateSystem.o: ../../src/Math/Mercator1SPProjectedCoordinateSystem.cpp
 Model3D.o: ../../src/Math/Model3D.cpp

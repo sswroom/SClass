@@ -6,7 +6,7 @@
 #include "Math/Model3D.h"
 #include "Math/Coord2DDbl.h"
 #include "Math/Size2D.h"
-#include "Math/Vector3.h"
+#include "Math/Vector3D.h"
 #include "Text/CString.h"
 
 namespace Media
@@ -67,8 +67,8 @@ namespace Media
 
 		struct CameraState
 		{
-			Math::Vector3 camPos;
-			Math::Vector3 targetPos;
+			Math::Vector3D camPos;
+			Math::Vector3D targetPos;
 			Double fovDeg;
 			Double vAngle;
 			Double hAngle;

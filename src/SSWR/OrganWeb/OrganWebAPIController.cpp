@@ -1540,7 +1540,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcUnfinPeak(NN<Net::WebSe
 	Data::ArrayListNN<PeakInfo> peaks;
 	Text::JSONBuilder json(Text::JSONBuilder::ObjectType::OT_ARRAY);
 	NN<PeakInfo> peak;
-	Math::Vector3 pt;
+	Math::Vector3D pt;
 	me->env->PeakGetUnfin(mutUsage, peaks);
 	if (peaks.GetCount() > 0)
 	{
@@ -1558,15 +1558,15 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcUnfinPeak(NN<Net::WebSe
 			json.ObjectAddStr(CSTR("district"), peak->district);
 			if (peak->csys == 1 && csysHK.SetTo(csys))
 			{
-				pt = Math::CoordinateSystem::Convert3D(csys, csysWGS84, Math::Vector3(peak->mapX, peak->mapY, peak->markedHeight));
+				pt = Math::CoordinateSystem::Convert3D(csys, csysWGS84, Math::Vector3D(peak->mapX, peak->mapY, peak->markedHeight));
 			}
 			else if (peak->csys == 2 && csysMO.SetTo(csys))
 			{
-				pt = Math::CoordinateSystem::Convert3D(csys, csysWGS84, Math::Vector3(peak->mapX, peak->mapY, peak->markedHeight));
+				pt = Math::CoordinateSystem::Convert3D(csys, csysWGS84, Math::Vector3D(peak->mapX, peak->mapY, peak->markedHeight));
 			}
 			else
 			{
-				pt = Math::Vector3(peak->mapX, peak->mapY, peak->markedHeight);
+				pt = Math::Vector3D(peak->mapX, peak->mapY, peak->markedHeight);
 			}
 			json.ObjectAddFloat64(CSTR("lon"), pt.GetLon());
 			json.ObjectAddFloat64(CSTR("lat"), pt.GetLat());
