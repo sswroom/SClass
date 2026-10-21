@@ -70,6 +70,7 @@ typedef __m128i UInt16x8;
 typedef __m128i Int32x4;
 typedef __m128i UInt32x4;
 typedef __m128d Doublex2;
+typedef __m128 Singlex4;
 
 static UInt8x16 bswap128Mask = _mm_set_epi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 
@@ -207,6 +208,15 @@ static UInt8x16 bswap128Mask = _mm_set_epi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
 #define SI32ToI16x4(v1) _mm_packs_epi32(v1, v1)
 #define SI32ToI16x8(v1, v2) _mm_packs_epi32(v1, v2)
 #define BSWAP128(v) _mm_shuffle_epi8(v, bswap128Mask)
+
+#define PSinglex4SetA(v) _mm_set1_ps(v)
+#define PSinglex4Set(x, y, z, w) _mm_set_ps(w, z, y, x)
+#define PADDPS(v1, v2) _mm_add_ps(v1, v2)
+#define PSUBPS(v1, v2) _mm_sub_ps(v1, v2)
+#define PMULPS(v1, v2) _mm_mul_ps(v1, v2)
+#define PDIVPS(v1, v2) _mm_div_ps(v1, v2)
+#define PMINPS(v1, v2) _mm_min_ps(v1, v2)
+#define PMAXPS(v1, v2) _mm_max_ps(v1, v2)
 
 #define PDoublex2SetA(v) _mm_set1_pd(v)
 #define PDoublex2Set(lo, hi) _mm_set_pd(hi, lo)

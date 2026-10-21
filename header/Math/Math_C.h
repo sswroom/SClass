@@ -208,6 +208,11 @@ namespace Math
 		return NearlyEquals(val1, val2, 0.00000000001);
 	}
 
+	FORCEINLINE Bool NearlyEqualsSng(Single val1, Single val2)
+	{
+		return NearlyEquals(val1, val2, 0.00000001);
+	}
+
 	FORCEINLINE Bool IsRealNum(Double val)
 	{
 		if ((0x7fffffffffffffffLL == *(Int64*)&val) || (0xffffffffffffffffLL == *(UInt64*)&val) || (0x7ff0000000000000LL == *(Int64*)&val) || (0xfff8000000000000LL == *(UInt64*)&val) || (0x7ff8000000000000LL == *(Int64*)&val))
