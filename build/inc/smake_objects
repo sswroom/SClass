@@ -8,6 +8,10 @@ MyMemoryL.o: ../../src/MyMemoryL.cpp
 MyMemoryW.o: ../../src/MyMemoryW.cpp
 !-ldbghelp
 
+AIAgent.o: ../../src/AI/AIAgent.cpp
+AIReadDBSkill.o: ../../src/AI/AIReadDBSkill.cpp
+AISkill.o: ../../src/AI/AISkill.cpp
+
 Core.o: ../../src/Core/Core.cpp
 X86Util_32.o: ../../src/Core/X86Util_32.asm
 X86Util_Win64.o: ../../src/Core/X86Util_Win64.asm
