@@ -320,6 +320,16 @@ Text::CStringNN Net::OpenAIMessage::GetContent() const
 	return this->content->ToCString();
 }
 
+Optional<Text::String> Net::OpenAIMessage::GetRawMessage() const
+{
+	return this->rawMessage;
+}
+
+Optional<Text::String> Net::OpenAIMessage::GetToolCallId() const
+{
+	return this->toolCallId;
+}
+
 Optional<Net::OpenAIMessage> Net::OpenAIMessage::GetNext() const
 {
 	return this->next;

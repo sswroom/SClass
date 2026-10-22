@@ -1642,6 +1642,8 @@ AI/AIReadDBSkill.h:
 @AIReadDBSkill.o
 AI/AISkill.h:
 @AISkill.o
+AI/AISession.h:
+@SimpleAIAgent.o
 AI/SimpleAIAgent.h:
 @SimpleAIAgent.o
 

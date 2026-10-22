@@ -5,6 +5,7 @@
 #include "DB/DBConfig.h"
 #include "DB/DBTool.h"
 #include "IO/ConsoleLogHandler.h"
+#include "IO/Console.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/Java/JavaProperties.h"
 #include "Net/OpenAIClient.h"
@@ -61,16 +62,42 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		AI::SimpleAIAgent agent(openAI, modelName->ToCString());
 		AI::AIReadDBSkill dbSkill(db->GetDBConn(), dbSchema);
 		agent.AddSkill(dbSkill);
+		NN<AI::AISession> session = agent.CreateSession(systemPrompt);
 		NN<Text::String> answer;
-		if (agent.Ask(systemPrompt, question).SetTo(answer))
+		if (agent.Ask(session, question).SetTo(answer))
 		{
-			log.LogMessage(answer->ToCString(), IO::LogHandler::LogLevel::Command);
 			answer->Release();
+			NN<Text::String> sessionText = session->GetText();
+			log.LogMessage(sessionText->ToCString(), IO::LogHandler::LogLevel::Command);
+			sessionText->Release();
+
+			UTF8Char inputBuff[4096];
+			UnsafeArray<UTF8Char> inputEnd;
+			while (true)
+			{
+				log.LogMessage(CSTR("Ask another question (empty line or q to finish):"), IO::LogHandler::LogLevel::Command);
+				inputEnd = IO::Console::GetLine(inputBuff);
+				Text::CStringNN nextQuestion = CSTRP(inputBuff, inputEnd);
+				if (nextQuestion.leng == 0 || nextQuestion.Equals(UTF8STRC("q")))
+					break;
+				if (agent.Ask(session, nextQuestion).SetTo(answer))
+				{
+					answer->Release();
+					sessionText = session->GetText();
+					log.LogMessage(sessionText->ToCString(), IO::LogHandler::LogLevel::Command);
+					sessionText->Release();
+				}
+				else
+				{
+					log.LogMessage(CSTR("Failed to get an answer from the AI agent"), IO::LogHandler::LogLevel::Error);
+				}
+			}
 		}
 		else
 		{
 			log.LogMessage(CSTR("Failed to get an answer from the AI agent"), IO::LogHandler::LogLevel::Error);
 		}
+		session.Delete();
 	}
 
 	openAI.Delete();

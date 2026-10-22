@@ -70,6 +70,8 @@ namespace Net
 		NN<OpenAIMessage> Clone() const;
 		OpenAIMessageRole GetRole() const;
 		Text::CStringNN GetContent() const;
+		Optional<Text::String> GetRawMessage() const;
+		Optional<Text::String> GetToolCallId() const;
 		Optional<OpenAIMessage> GetNext() const;
 		void SetNext(Optional<OpenAIMessage> next);
 		void ToJSON(NN<Text::StringBuilderUTF8> sb) const;

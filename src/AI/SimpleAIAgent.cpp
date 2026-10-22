@@ -92,12 +92,79 @@ AI::SimpleAIAgent::~SimpleAIAgent()
 	this->modelName->Release();
 }
 
-Optional<Text::String> AI::SimpleAIAgent::Ask(Text::CStringNN systemPrompt, Text::CStringNN question) const
+AI::AISession::AISession(Text::CStringNN modelName, Text::CStringNN systemPrompt) : modelName(Text::String::New(modelName))
 {
-	NN<Net::OpenAIChatCompletion> chat;
-	NEW_CLASSNN(chat, Net::OpenAIChatCompletion(this->modelName->ToCString()));
-	chat->AddMessage(Net::OpenAIMessageRole::System, systemPrompt);
-	chat->AddMessage(Net::OpenAIMessageRole::User, question);
+	NEW_CLASSNN(this->chat, Net::OpenAIChatCompletion(this->modelName->ToCString()));
+	this->chat->AddMessage(Net::OpenAIMessageRole::System, systemPrompt);
+}
+
+AI::AISession::~AISession()
+{
+	this->chat.Delete();
+	this->sessionLines.FreeAll();
+	this->modelName->Release();
+}
+
+NN<Text::String> AI::AISession::GetText() const
+{
+	Text::StringBuilderUTF8 sb;
+	UIntOS i = 0;
+	UIntOS count = this->sessionLines.GetCount();
+	while (i < count)
+	{
+		sb.Append(this->sessionLines.GetItemNoCheck(i));
+		i++;
+	}
+	return Text::String::New(sb.ToCString());
+}
+
+UIntOS AI::AISession::GetMessageCount() const
+{
+	UIntOS count = 0;
+	NN<Net::OpenAIMessage> message;
+	if (this->chat->GetFirstMessage().SetTo(message))
+	{
+		do
+		{
+			count++;
+		}
+		while (message->GetNext().SetTo(message));
+	}
+	return count;
+}
+
+Optional<Net::OpenAIMessage> AI::AISession::GetMessage(UIntOS index) const
+{
+	NN<Net::OpenAIMessage> message;
+	if (!this->chat->GetFirstMessage().SetTo(message))
+		return nullptr;
+	while (index > 0)
+	{
+		if (!message->GetNext().SetTo(message))
+			return nullptr;
+		index--;
+	}
+	return message;
+}
+
+void AI::AISession::AddTurn(Text::CStringNN question, Text::CStringNN answer)
+{
+	Text::StringBuilderUTF8 userLine;
+	userLine.Append(CSTR("User: "));
+	userLine.Append(question);
+	userLine.AppendUTF8Char('\n');
+	this->sessionLines.Add(Text::String::New(userLine.ToCString()));
+	Text::StringBuilderUTF8 assistantLine;
+	assistantLine.Append(CSTR("Assistant: "));
+	assistantLine.Append(answer);
+	assistantLine.AppendUTF8Char('\n');
+	this->sessionLines.Add(Text::String::New(assistantLine.ToCString()));
+}
+
+NN<AI::AISession> AI::SimpleAIAgent::CreateSession(Text::CStringNN systemPrompt) const
+{
+	NN<AISession> session;
+	NEW_CLASSNN(session, AISession(this->modelName->ToCString(), systemPrompt));
 
 	UIntOS i = 0;
 	UIntOS skillCount = this->GetSkillCount();
@@ -113,13 +180,24 @@ Optional<Text::String> AI::SimpleAIAgent::Ask(Text::CStringNN systemPrompt, Text
 			skill->GetDescription(description);
 			NN<Net::OpenAITool> tool;
 			NEW_CLASSNN(tool, Net::OpenAITool(skill->GetName(), description.ToCString(), parameters));
-			chat->AddTool(tool);
+			session->chat->AddTool(tool);
 			tool->EndUse();
 			parameters->EndUse();
 		}
 		i++;
 	}
+	return session;
+}
 
+Optional<Text::String> AI::SimpleAIAgent::Ask(NN<AISession> session, Text::CStringNN question)
+{
+	return this->SendQuestion(session, question);
+}
+
+Optional<Text::String> AI::SimpleAIAgent::SendQuestion(NN<AISession> session, Text::CStringNN question)
+{
+	NN<Net::OpenAIChatCompletion> chat = session->chat;
+	chat->AddMessage(Net::OpenAIMessageRole::User, question);
 	UIntOS toolRound = 0;
 	while (toolRound < 8)
 	{
@@ -128,7 +206,6 @@ Optional<Text::String> AI::SimpleAIAgent::Ask(Text::CStringNN systemPrompt, Text
 		{
 			printf("SimpleAIAgent: HTTP status %u: %s\n", result->GetStatusCode(), result->GetResponseText()->v.Ptr());
 			result.Delete();
-			chat.Delete();
 			return nullptr;
 		}
 
@@ -137,7 +214,6 @@ Optional<Text::String> AI::SimpleAIAgent::Ask(Text::CStringNN systemPrompt, Text
 		{
 			printf("SimpleAIAgent: invalid JSON response: %s\n", result->GetResponseText()->v.Ptr());
 			result.Delete();
-			chat.Delete();
 			return nullptr;
 		}
 		NN<Text::JSONArray> choices;
@@ -150,7 +226,6 @@ Optional<Text::String> AI::SimpleAIAgent::Ask(Text::CStringNN systemPrompt, Text
 			printf("SimpleAIAgent: response has no choices[0].message: %s\n", result->GetResponseText()->v.Ptr());
 			response->EndUse();
 			result.Delete();
-			chat.Delete();
 			return nullptr;
 		}
 
@@ -161,15 +236,15 @@ Optional<Text::String> AI::SimpleAIAgent::Ask(Text::CStringNN systemPrompt, Text
 			Optional<Text::String> answer = message->GetValueNewString(CSTR("content"));
 			if (answer.SetTo(content))
 			{
+				chat->AddMessage(Net::OpenAIMessageRole::Assistant, content->ToCString());
+				session->AddTurn(question, content->ToCString());
 				response->EndUse();
 				result.Delete();
-				chat.Delete();
 				return content;
 			}
 			printf("SimpleAIAgent: assistant response has neither tool calls nor string content: %s\n", result->GetResponseText()->v.Ptr());
 			response->EndUse();
 			result.Delete();
-			chat.Delete();
 			return nullptr;
 		}
 
@@ -195,7 +270,6 @@ Optional<Text::String> AI::SimpleAIAgent::Ask(Text::CStringNN systemPrompt, Text
 				printf("SimpleAIAgent: malformed tool call: %s\n", result->GetResponseText()->v.Ptr());
 				response->EndUse();
 				result.Delete();
-				chat.Delete();
 				return nullptr;
 			}
 
@@ -206,7 +280,6 @@ Optional<Text::String> AI::SimpleAIAgent::Ask(Text::CStringNN systemPrompt, Text
 				printf("SimpleAIAgent: invalid tool arguments: %s\n", arguments->v.Ptr());
 				response->EndUse();
 				result.Delete();
-				chat.Delete();
 				return nullptr;
 			}
 			if (argJSON->GetType() != Text::JSONType::Object)
@@ -215,7 +288,6 @@ Optional<Text::String> AI::SimpleAIAgent::Ask(Text::CStringNN systemPrompt, Text
 				argJSON->EndUse();
 				response->EndUse();
 				result.Delete();
-				chat.Delete();
 				return nullptr;
 			}
 			argObject = NN<Text::JSONObject>::ConvertFrom(argJSON);
@@ -262,8 +334,7 @@ Optional<Text::String> AI::SimpleAIAgent::Ask(Text::CStringNN systemPrompt, Text
 		result.Delete();
 		toolRound++;
 	}
-
 	printf("SimpleAIAgent: stopped after 8 tool-call rounds without a final answer\n");
-	chat.Delete();
+	printf("SimpleAIAgent: stopped after 8 tool-call rounds without a final answer\n");
 	return nullptr;
 }
