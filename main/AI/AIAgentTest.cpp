@@ -44,6 +44,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	if (openAI->IsError())
 	{
 		log.LogMessage(CSTR("Failed to initialize OpenAI client"), IO::LogHandler::LogLevel::Error);
+		openAI.Delete();
 		db.Delete();
 		cfg.Delete();
 		return 1;

@@ -59,6 +59,7 @@ test:
 
 console:
 @test
+@AIAgent
 @AIAgentTest
 @Adler32Speed
 @Adler32Test
@@ -322,6 +323,9 @@ all:
 #@GUITest9
 
 #AI
+AIAgent:
+@AIAgentMain.o
+@ConsoleStartup.o
 AIAgentTest:
 @AIAgentTest.o
 @ConsoleStartup.o
@@ -1304,6 +1308,7 @@ GUITest9:
 @GUITest9.o
 @GUIStartup.o
 
+AIAgentMain.o: ../../main/AI/AIAgentMain.cpp
 AIAgentTest.o: ../../main/AI/AIAgentTest.cpp
 Adler32Speed.o: ../../main/CryptoTest/Adler32Speed.cpp
 Adler32Test.o: ../../main/CryptoTest/Adler32Test.cpp
