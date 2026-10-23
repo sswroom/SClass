@@ -5,7 +5,7 @@
 #include "DB/TableDef.h"
 #include "Text/JSONBuilder.h"
 
-#define VERBOSE
+//#define VERBOSE
 
 Bool AI::AIReadDBSkill::GetUIntOSInput(NN<Data::VariObject> input, UnsafeArray<const UTF8Char> name, UIntOS defaultValue, OutParam<UIntOS> value)
 {

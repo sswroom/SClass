@@ -2684,6 +2684,32 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 			item.Delete();
 			item2.Delete();
 		}
+		else if (sb.EqualsICase(UTF8STRC("IS")))
+		{
+			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (sb.EqualsICase(UTF8STRC("NULL")))
+			{
+				cond->IsNull(sbField.ToCString());
+			}
+			else if (sb.EqualsICase(UTF8STRC("NOT")))
+			{
+				sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+				if (sb.EqualsICase(UTF8STRC("NULL")))
+				{
+					cond->NotNull(sbField.ToCString());
+				}
+				else
+				{
+					cond.Delete();
+					return nullptr;
+				}
+			}
+			else
+			{
+				cond.Delete();
+				return nullptr;
+			}
+		}
 		else
 		{
 			cond.Delete();

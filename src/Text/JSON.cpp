@@ -1217,6 +1217,11 @@ void Text::JSONString::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 			*dptr++ = '\\';
 			*dptr++ = 'n';
 		}
+		else if (c == '\\')
+		{
+			*dptr++ = '\\';
+			*dptr++ = '\\';
+		}
 		else
 		{
 			*dptr++ = c;
