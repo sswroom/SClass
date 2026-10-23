@@ -1442,6 +1442,84 @@ Bool Data::Conditions::StringEqualsCondition::TestValid(NN<Data::VariItem> item)
 	}
 }
 
+Data::Conditions::StringNotEqualsCondition::StringNotEqualsCondition(Text::CStringNN fieldName, Text::CStringNN val) : FieldCondition(fieldName)
+{
+	this->val = Text::String::New(val);
+}
+
+Data::Conditions::StringNotEqualsCondition::~StringNotEqualsCondition()
+{
+	this->val->Release();
+}
+
+Data::Conditions::ObjectType Data::Conditions::StringNotEqualsCondition::GetType() const
+{
+	return ObjectType::StringNotEquals;
+}
+
+Bool Data::Conditions::StringNotEqualsCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
+{
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr2;
+	sptr2 = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
+	sb->AppendC(sbuff, (UIntOS)(sptr2 - sbuff));
+	sb->AppendC(UTF8STRC(" <> "));
+	UIntOS size = DB::DBUtil::SDBStrUTF8Leng(UnsafeArray<const UTF8Char>(this->val->v), sqlType);
+	if (size < 512)
+	{
+		sptr2 = DB::DBUtil::SDBStrUTF8(sbuff, UnsafeArray<const UTF8Char>(this->val->v), sqlType);
+		sb->AppendC(sbuff, (UIntOS)(sptr2 - sbuff));
+	}
+	else
+	{
+		UnsafeArray<UTF8Char> sptr = MemAllocArr(UTF8Char, size + 1);
+		sptr2 = DB::DBUtil::SDBStrUTF8(sptr, UnsafeArray<const UTF8Char>(this->val->v), sqlType);
+		sb->AppendC(sptr, (UIntOS)(sptr2 - sptr));
+		MemFreeArr(sptr);
+	}
+	return true;
+}
+
+Bool Data::Conditions::StringNotEqualsCondition::CanWhereClause(UIntOS maxDBItem) const
+{
+	return true;
+}
+
+Bool Data::Conditions::StringNotEqualsCondition::TestValid(NN<Data::VariItem> item) const
+{
+	switch (item->GetItemType())
+	{
+	case Data::VariItem::ItemType::Str:
+		return !item->GetItemValue().str->Equals(this->val);
+	case Data::VariItem::ItemType::CStr:
+	{
+		Data::VariItem::ItemValue ival = item->GetItemValue();
+		return !this->val->Equals(ival.cstr.v, ival.cstr.leng);		
+	}
+	case Data::VariItem::ItemType::F32:
+	case Data::VariItem::ItemType::F64:
+	case Data::VariItem::ItemType::I8:
+	case Data::VariItem::ItemType::U8:
+	case Data::VariItem::ItemType::I16:
+	case Data::VariItem::ItemType::U16:
+	case Data::VariItem::ItemType::I32:
+	case Data::VariItem::ItemType::U32:
+	case Data::VariItem::ItemType::NI32:
+	case Data::VariItem::ItemType::I64:
+	case Data::VariItem::ItemType::U64:
+	case Data::VariItem::ItemType::BOOL:
+	case Data::VariItem::ItemType::Null:
+	case Data::VariItem::ItemType::Unknown:
+	case Data::VariItem::ItemType::Timestamp:
+	case Data::VariItem::ItemType::Date:
+	case Data::VariItem::ItemType::ByteArr:
+	case Data::VariItem::ItemType::Vector:
+	case Data::VariItem::ItemType::UUID:
+	default:
+		return false;
+	}
+}
+
 Data::Conditions::BooleanCondition::BooleanCondition(Text::CStringNN fieldName, Bool val) : FieldCondition(fieldName)
 {
 	this->val = val;
@@ -1695,10 +1773,26 @@ NN<Data::QueryConditions> Data::QueryConditions::TimeBefore(Text::CStringNN fiel
 	return *this;
 }
 
+NN<Data::QueryConditions> Data::QueryConditions::TimeOnOrBefore(Text::CStringNN fieldName, const Data::Timestamp &val)
+{
+	NN<Conditions::TimeCondition> cond;
+	NEW_CLASSNN(cond, Conditions::TimeCondition(TSField(fieldName), TimeObj(val), Data::CompareCondition::LessOrEqual));
+	this->andCond->AddAnd(cond);
+	return *this;
+}
+
 NN<Data::QueryConditions> Data::QueryConditions::TimeOnOrAfter(Text::CStringNN fieldName, const Data::Timestamp &val)
 {
 	NN<Conditions::TimeCondition> cond;
 	NEW_CLASSNN(cond, Conditions::TimeCondition(TSField(fieldName), TimeObj(val), Data::CompareCondition::GreaterOrEqual));
+	this->andCond->AddAnd(cond);
+	return *this;
+}
+
+NN<Data::QueryConditions> Data::QueryConditions::TimeAfter(Text::CStringNN fieldName, const Data::Timestamp &val)
+{
+	NN<Conditions::TimeCondition> cond;
+	NEW_CLASSNN(cond, Conditions::TimeCondition(TSField(fieldName), TimeObj(val), Data::CompareCondition::Greater));
 	this->andCond->AddAnd(cond);
 	return *this;
 }
@@ -1728,6 +1822,14 @@ NN<Data::QueryConditions> Data::QueryConditions::Int32Equals(Text::CStringNN fie
 {
 	NN<Conditions::NumberCondition> cond;
 	NEW_CLASSNN(cond, Conditions::NumberCondition(NumField(fieldName), Int32Obj(val), CompareCondition::Equal));
+	this->andCond->AddAnd(cond);
+	return *this;
+}
+
+NN<Data::QueryConditions> Data::QueryConditions::Int32NotEquals(Text::CStringNN fieldName, Int32 val)
+{
+	NN<Conditions::NumberCondition> cond;
+	NEW_CLASSNN(cond, Conditions::NumberCondition(NumField(fieldName), Int32Obj(val), CompareCondition::NotEqual));
 	this->andCond->AddAnd(cond);
 	return *this;
 }
@@ -1788,6 +1890,14 @@ NN<Data::QueryConditions> Data::QueryConditions::Int64Equals(Text::CStringNN fie
 	return *this;
 }
 
+NN<Data::QueryConditions> Data::QueryConditions::Int64NotEquals(Text::CStringNN fieldName, Int64 val)
+{
+	NN<Conditions::NumberCondition> cond;
+	NEW_CLASSNN(cond, Conditions::NumberCondition(NumField(fieldName), Int64Obj(val), CompareCondition::NotEqual));
+	this->andCond->AddAnd(cond);
+	return *this;
+}
+
 NN<Data::QueryConditions> Data::QueryConditions::Int64GE(Text::CStringNN fieldName, Int64 val)
 {
 	NN<Conditions::NumberCondition> cond;
@@ -1832,6 +1942,14 @@ NN<Data::QueryConditions> Data::QueryConditions::DoubleEquals(Text::CStringNN fi
 {
 	NN<Conditions::NumberCondition> cond;
 	NEW_CLASSNN(cond, Conditions::NumberCondition(NumField(fieldName), DoubleObj(val), CompareCondition::Equal));
+	this->andCond->AddAnd(cond);
+	return *this;
+}
+
+NN<Data::QueryConditions> Data::QueryConditions::DoubleNotEquals(Text::CStringNN fieldName, Double val)
+{
+	NN<Conditions::NumberCondition> cond;
+	NEW_CLASSNN(cond, Conditions::NumberCondition(NumField(fieldName), DoubleObj(val), CompareCondition::NotEqual));
 	this->andCond->AddAnd(cond);
 	return *this;
 }
@@ -1904,6 +2022,14 @@ NN<Data::QueryConditions> Data::QueryConditions::StrEquals(Text::CStringNN field
 {
 	NN<Conditions::StringEqualsCondition> cond;
 	NEW_CLASSNN(cond, Conditions::StringEqualsCondition(fieldName, val));
+	this->andCond->AddAnd(cond);
+	return *this;
+}
+
+NN<Data::QueryConditions> Data::QueryConditions::StrNotEquals(Text::CStringNN fieldName, Text::CStringNN val)
+{
+	NN<Conditions::StringNotEqualsCondition> cond;
+	NEW_CLASSNN(cond, Conditions::StringNotEqualsCondition(fieldName, val));
 	this->andCond->AddAnd(cond);
 	return *this;
 }
@@ -2237,6 +2363,39 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 			}
 			item.Delete();
 		}
+		else if (sb.Equals(UTF8STRC("<>")))
+		{
+			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (!DB::SQL::SQLUtil::ParseNativeValue(sb.ToCString(), sqlType).SetTo(item))
+			{
+				cond.Delete();
+				return nullptr;
+			}
+			DB::SQL::SQLValue::ValueType itemType = item->GetValueType();
+			if (itemType == DB::SQL::SQLValue::ValueType::String)
+			{
+				cond->StrNotEquals(sbField.ToCString(), NN<DB::SQL::SQLValueString>::ConvertFrom(item)->GetValue()->ToCString());
+			}
+			else if (itemType == DB::SQL::SQLValue::ValueType::I32)
+			{
+				cond->Int32NotEquals(sbField.ToCString(), NN<DB::SQL::SQLValueI32>::ConvertFrom(item)->GetValue());
+			}
+			else if (itemType == DB::SQL::SQLValue::ValueType::I64)
+			{
+				cond->Int64NotEquals(sbField.ToCString(), NN<DB::SQL::SQLValueI64>::ConvertFrom(item)->GetValue());
+			}
+			else if (itemType == DB::SQL::SQLValue::ValueType::F64)
+			{
+				cond->DoubleNotEquals(sbField.ToCString(), NN<DB::SQL::SQLValueF64>::ConvertFrom(item)->GetValue());
+			}
+			else
+			{
+				item.Delete();
+				cond.Delete();
+				return nullptr;
+			}
+			item.Delete();
+		}
 		else if (sb.Equals(UTF8STRC(">")))
 		{
 			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
@@ -2257,6 +2416,20 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 			else if (itemType == DB::SQL::SQLValue::ValueType::F64)
 			{
 				cond->DoubleGT(sbField.ToCString(), NN<DB::SQL::SQLValueF64>::ConvertFrom(item)->GetValue());
+			}
+			else if (itemType == DB::SQL::SQLValue::ValueType::String)
+			{
+				Data::Timestamp t = Data::Timestamp::FromStr(NN<DB::SQL::SQLValueString>::ConvertFrom(item)->GetValue()->ToCString(), tzQhr);
+				if (t.NotNull())
+				{
+					cond->TimeAfter(sbField.ToCString(), t);
+				}
+				else
+				{
+					item.Delete();
+					cond.Delete();
+					return nullptr;
+				}
 			}
 			else
 			{
@@ -2287,6 +2460,20 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 			{
 				cond->DoubleLT(sbField.ToCString(), NN<DB::SQL::SQLValueF64>::ConvertFrom(item)->GetValue());
 			}
+			else if (itemType == DB::SQL::SQLValue::ValueType::String)
+			{
+				Data::Timestamp t = Data::Timestamp::FromStr(NN<DB::SQL::SQLValueString>::ConvertFrom(item)->GetValue()->ToCString(), tzQhr);
+				if (t.NotNull())
+				{
+					cond->TimeBefore(sbField.ToCString(), t);
+				}
+				else
+				{
+					item.Delete();
+					cond.Delete();
+					return nullptr;
+				}
+			}
 			else
 			{
 				item.Delete();
@@ -2316,6 +2503,20 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 			{
 				cond->DoubleGE(sbField.ToCString(), NN<DB::SQL::SQLValueF64>::ConvertFrom(item)->GetValue());
 			}
+			else if (itemType == DB::SQL::SQLValue::ValueType::String)
+			{
+				Data::Timestamp t = Data::Timestamp::FromStr(NN<DB::SQL::SQLValueString>::ConvertFrom(item)->GetValue()->ToCString(), tzQhr);
+				if (t.NotNull())
+				{
+					cond->TimeOnOrAfter(sbField.ToCString(), t);
+				}
+				else
+				{
+					item.Delete();
+					cond.Delete();
+					return nullptr;
+				}
+			}
 			else
 			{
 				item.Delete();
@@ -2344,6 +2545,20 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 			else if (itemType == DB::SQL::SQLValue::ValueType::F64)
 			{
 				cond->DoubleLE(sbField.ToCString(), NN<DB::SQL::SQLValueF64>::ConvertFrom(item)->GetValue());
+			}
+			else if (itemType == DB::SQL::SQLValue::ValueType::String)
+			{
+				Data::Timestamp t = Data::Timestamp::FromStr(NN<DB::SQL::SQLValueString>::ConvertFrom(item)->GetValue()->ToCString(), tzQhr);
+				if (t.NotNull())
+				{
+					cond->TimeOnOrBefore(sbField.ToCString(), t);
+				}
+				else
+				{
+					item.Delete();
+					cond.Delete();
+					return nullptr;
+				}
 			}
 			else
 			{

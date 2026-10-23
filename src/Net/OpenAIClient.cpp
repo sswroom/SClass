@@ -129,7 +129,7 @@ NN<Net::OpenAIResult> Net::OpenAIClient::SendChatCompletion(NN<OpenAIChatComplet
 	sb.ClearStr();
 	chat->ToJSON(sb);
 	cli->AddContentLength(sb.GetLength());
-#if defined(VERBOSE)
+#if defined(VERBOSE) || 1
 	printf("OpenAIClient.SendChatCompletion: %s\n", sb.v.Ptr());
 #endif
 	if (!cli->Write(sb.ToByteArray()))

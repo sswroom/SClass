@@ -47,5 +47,6 @@ Bool AI::AIAgent::InvokeSkill(Text::CStringNN name, NN<Data::VariObject> input, 
 		if (skill->GetName().Equals(name))
 			return skill->Invoke(input, output);
 	}
+	printf("AIAgent: skill not found: %s\n", name.v.Ptr());
 	return false;
 }

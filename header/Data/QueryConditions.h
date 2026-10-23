@@ -22,6 +22,7 @@ namespace Data
 			StringNotIn,
 			StringContains,
 			StringEquals,
+			StringNotEquals,
 			Boolean,
 			BooleanAnd,
 			BooleanOr,
@@ -465,6 +466,22 @@ namespace Data
 			virtual Bool TestValid(NN<Data::VariItem> item) const;
 		};
 
+		class StringNotEqualsCondition : public FieldCondition
+		{
+		private:
+			NN<Text::String> val;
+
+		public:
+			StringNotEqualsCondition(Text::CStringNN fieldName, Text::CStringNN val);
+			virtual ~StringNotEqualsCondition();
+
+			virtual ObjectType GetType() const;
+			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, StringNotEqualsCondition(this->fieldName->ToCString(), this->val->ToCString())); return cond; }
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
+			virtual Bool TestValid(NN<Data::VariItem> item) const;
+		};
+
 		class BooleanCondition : public FieldCondition
 		{
 		private:
@@ -519,10 +536,13 @@ namespace Data
 
 		NN<QueryConditions> TimeBetween(Text::CStringNN fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2);
 		NN<QueryConditions> TimeBefore(Text::CStringNN fieldName, const Data::Timestamp &val);
+		NN<QueryConditions> TimeOnOrBefore(Text::CStringNN fieldName, const Data::Timestamp &val);
 		NN<QueryConditions> TimeOnOrAfter(Text::CStringNN fieldName, const Data::Timestamp &val);
+		NN<QueryConditions> TimeAfter(Text::CStringNN fieldName, const Data::Timestamp &val);
 		NN<QueryConditions> Or();
 		NN<QueryConditions> And(NN<Conditions::BooleanObject> innerCond);
 		NN<QueryConditions> Int32Equals(Text::CStringNN fieldName, Int32 val);
+		NN<QueryConditions> Int32NotEquals(Text::CStringNN fieldName, Int32 val);
 		NN<QueryConditions> Int32GE(Text::CStringNN fieldName, Int32 val);
 		NN<QueryConditions> Int32LE(Text::CStringNN fieldName, Int32 val);
 		NN<QueryConditions> Int32GT(Text::CStringNN fieldName, Int32 val);
@@ -530,12 +550,14 @@ namespace Data
 		NN<QueryConditions> Int32In(Text::CStringNN fieldName, NN<Data::ArrayListNative<Int32>> val);
 		NN<QueryConditions> Int32Between(Text::CStringNN fieldName, Int32 val1, Int32 val2);
 		NN<QueryConditions> Int64Equals(Text::CStringNN fieldName, Int64 val);
+		NN<QueryConditions> Int64NotEquals(Text::CStringNN fieldName, Int64 val);
 		NN<QueryConditions> Int64GE(Text::CStringNN fieldName, Int64 val);
 		NN<QueryConditions> Int64LE(Text::CStringNN fieldName, Int64 val);
 		NN<QueryConditions> Int64GT(Text::CStringNN fieldName, Int64 val);
 		NN<QueryConditions> Int64LT(Text::CStringNN fieldName, Int64 val);
 		NN<QueryConditions> Int64Between(Text::CStringNN fieldName, Int64 val1, Int64 val2);
 		NN<QueryConditions> DoubleEquals(Text::CStringNN fieldName, Double val);
+		NN<QueryConditions> DoubleNotEquals(Text::CStringNN fieldName, Double val);
 		NN<QueryConditions> DoubleGE(Text::CStringNN fieldName, Double val);
 		NN<QueryConditions> DoubleLE(Text::CStringNN fieldName, Double val);
 		NN<QueryConditions> DoubleGT(Text::CStringNN fieldName, Double val);
@@ -545,6 +567,7 @@ namespace Data
 		NN<QueryConditions> StrNotIn(Text::CStringNN fieldName, NN<Data::ArrayListArr<const UTF8Char>> vals);
 		NN<QueryConditions> StrContains(Text::CStringNN fieldName, Text::CStringNN val);
 		NN<QueryConditions> StrEquals(Text::CStringNN fieldName, Text::CStringNN val);
+		NN<QueryConditions> StrNotEquals(Text::CStringNN fieldName, Text::CStringNN val);
 		NN<QueryConditions> BoolEquals(Text::CStringNN fieldName, Bool val);
 		NN<QueryConditions> IsNull(Text::CStringNN fieldName);
 		NN<QueryConditions> NotNull(Text::CStringNN fieldName);
