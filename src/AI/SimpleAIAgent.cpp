@@ -139,10 +139,6 @@ Optional<Text::String> AI::SimpleAIAgent::SendQuestion(NN<AISession> session, Te
 			return nullptr;
 		}
 
-		Text::StringBuilderUTF8 rawMessage;
-		message->ToJSONString(rawMessage);
-		chat->AddAssistantToolCallMessage(rawMessage.ToCString());
-
 		UIntOS callIndex = 0;
 		UIntOS callCount = toolCalls->GetArrayLength();
 		while (callIndex < callCount)
@@ -159,9 +155,17 @@ Optional<Text::String> AI::SimpleAIAgent::SendQuestion(NN<AISession> session, Te
 				!function->GetObjectString(CSTR("arguments")).SetTo(arguments))
 			{
 				printf("SimpleAIAgent: malformed tool call: %s\n", result->GetResponseText()->v.Ptr());
+
+				Text::StringBuilderUTF8 rawMessage;
+				message->ToJSONString(rawMessage);
+				chat->AddAssistantToolCallMessage(rawMessage.ToCString());
 				response->EndUse();
 				result.Delete();
 				return nullptr;
+			}
+			if (arguments->IndexOf('\n') != INVALID_INDEX)
+			{
+				arguments->Replace('\n', ' ');
 			}
 
 			NN<Text::JSONBase> argJSON;
@@ -169,6 +173,10 @@ Optional<Text::String> AI::SimpleAIAgent::SendQuestion(NN<AISession> session, Te
 			if (!Text::JSONBase::ParseJSONStr(arguments->ToCString()).SetTo(argJSON))
 			{
 				printf("SimpleAIAgent: invalid tool arguments: %s\n", arguments->v.Ptr());
+
+				Text::StringBuilderUTF8 rawMessage;
+				message->ToJSONString(rawMessage);
+				chat->AddAssistantToolCallMessage(rawMessage.ToCString());
 				response->EndUse();
 				result.Delete();
 				return nullptr;
@@ -176,6 +184,10 @@ Optional<Text::String> AI::SimpleAIAgent::SendQuestion(NN<AISession> session, Te
 			if (argJSON->GetType() != Text::JSONType::Object)
 			{
 				printf("SimpleAIAgent: tool arguments are not a JSON object: %s\n", arguments->v.Ptr());
+
+				Text::StringBuilderUTF8 rawMessage;
+				message->ToJSONString(rawMessage);
+				chat->AddAssistantToolCallMessage(rawMessage.ToCString());
 				argJSON->EndUse();
 				response->EndUse();
 				result.Delete();
@@ -221,6 +233,11 @@ Optional<Text::String> AI::SimpleAIAgent::SendQuestion(NN<AISession> session, Te
 			argJSON->EndUse();
 			callIndex++;
 		}
+
+		Text::StringBuilderUTF8 rawMessage;
+		message->ToJSONString(rawMessage);
+		chat->AddAssistantToolCallMessage(rawMessage.ToCString());
+
 		response->EndUse();
 		result.Delete();
 		toolRound++;
