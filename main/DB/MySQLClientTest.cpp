@@ -446,7 +446,7 @@ void TempTest(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<I
 	mysqlDB = CSTR("organism");
 	mysqlUID = CSTR("organ");
 	mysqlPWD = CSTR("organ");
-	if (Net::MySQLTCPClient::CreateDBTool(clif, ssl, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: ")).SetTo(db))
+	if (Net::MySQLTCPClient::CreateDBTool(clif, ssl, mysqlServer, 3306, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: ")).SetTo(db))
 	{
 		NN<DB::DBReader> r;
 		if (db->ExecuteReader(CSTR("select id, time1, time2 from test")).SetTo(r))
@@ -484,7 +484,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Net::TCPClientFactory clif(sockf);
 	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, false);
 	TempTest(clif, ssl, console);
-	if (Net::MySQLTCPClient::CreateDBTool(clif, ssl, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: ")).SetTo(db))
+	if (Net::MySQLTCPClient::CreateDBTool(clif, ssl, mysqlServer, 3306, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: ")).SetTo(db))
 	{
 		TestBinaryRead(db);
 		TextReadAll(db);

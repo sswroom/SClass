@@ -149,7 +149,8 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 			this->db = Net::MySQLTCPClient::CreateDBTool(this->clif,
 				ssl,
 				str,
-				Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLDB"))).Ptr(),
+				3306,
+				Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLDB"))),
 				Text::String::OrEmpty(cfg->GetValue(CSTR("UID"))),
 				Text::String::OrEmpty(cfg->GetValue(CSTR("PWD"))),
 				this->log, CSTR("DB: "));

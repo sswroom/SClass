@@ -1290,7 +1290,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 
 		if (cfg->GetValue(CSTR("MySQLServer")).SetTo(s) && cfg->GetValue(CSTR("MySQLDB")).SetTo(s2))
 		{
-			this->db = Net::MySQLTCPClient::CreateDBTool(this->clif, this->ssl, s, s2, Text::String::OrEmpty(cfg->GetValue(CSTR("UID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("PWD"))), this->log, CSTR("DB: "));
+			this->db = Net::MySQLTCPClient::CreateDBTool(this->clif, this->ssl, s, 3306, s2, Text::String::OrEmpty(cfg->GetValue(CSTR("UID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("PWD"))), this->log, CSTR("DB: "));
 			NEW_CLASSOPT(this->dbMut, Sync::Mutex());
 			if (this->db.IsNull())
 			{
