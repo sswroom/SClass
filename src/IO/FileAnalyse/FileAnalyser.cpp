@@ -18,6 +18,7 @@
 #include "IO/FileAnalyse/MDBFileAnalyse.h"
 #include "IO/FileAnalyse/MPEGFileAnalyse.h"
 #include "IO/FileAnalyse/NFDumpFileAnalyse.h"
+#include "IO/FileAnalyse/OSGBFileAnalyse.h"
 #include "IO/FileAnalyse/OSMPBFFileAnalyse.h"
 #include "IO/FileAnalyse/PCapFileAnalyse.h"
 #include "IO/FileAnalyse/PCapngFileAnalyse.h"
@@ -181,6 +182,10 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::OSMPBFFileAnalyse(fd));
 	}
+	else if (fileName->EndsWith(UTF8STRC(".osgb")))
+	{
+		NEW_CLASSNN(analyse, IO::FileAnalyse::OSGBFileAnalyse(fd));
+	}
 	else if (buffSize >= 256 && buff[0] == '!' && buff[1] == 'B' && buff[2] == 'D' && buff[3] == 'N' && buff[8] == 0x53 && buff[9] == 0x4d)
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::PSTFileAnalyse(fd));
@@ -241,4 +246,5 @@ void IO::FileAnalyse::FileAnalyser::AddFilters(NN<IO::FileSelector> selector)
 	selector->AddFilter(CSTR("*.gdbtable"), CSTR("FGDB Table file"));
 	selector->AddFilter(CSTR("*.bundle"), CSTR("Compact Cache V2 file"));
 	selector->AddFilter(CSTR("*.cfb"), CSTR("Compound File Binary"));
+	selector->AddFilter(CSTR("*.osgb"), CSTR("OpenSceneGraph Binary Scene"));
 }

@@ -2667,6 +2667,8 @@ IO/FileAnalyse/MPEGFileAnalyse.h:
 @MPEGFileAnalyse.o
 IO/FileAnalyse/NFDumpFileAnalyse.h:
 @NFDumpFileAnalyse.o
+IO/FileAnalyse/OSGBFileAnalyse.h:
+@OSGBFileAnalyse.o
 IO/FileAnalyse/OSMPBFFileAnalyse.h:
 @OSMPBFFileAnalyse.o
 IO/FileAnalyse/PCapFileAnalyse.h:

@@ -744,6 +744,7 @@ MapsforgeFileAnalyse.o: ../../src/IO/FileAnalyse/MapsforgeFileAnalyse.cpp
 MDBFileAnalyse.o: ../../src/IO/FileAnalyse/MDBFileAnalyse.cpp
 MPEGFileAnalyse.o: ../../src/IO/FileAnalyse/MPEGFileAnalyse.cpp
 NFDumpFileAnalyse.o: ../../src/IO/FileAnalyse/NFDumpFileAnalyse.cpp
+OSGBFileAnalyse.o: ../../src/IO/FileAnalyse/OSGBFileAnalyse.cpp
 OSMPBFFileAnalyse.o: ../../src/IO/FileAnalyse/OSMPBFFileAnalyse.cpp
 PCapFileAnalyse.o: ../../src/IO/FileAnalyse/PCapFileAnalyse.cpp
 PCapngFileAnalyse.o: ../../src/IO/FileAnalyse/PCapngFileAnalyse.cpp
