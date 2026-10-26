@@ -4,6 +4,7 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Mercator1SPProjectedCoordinateSystem.h"
 #include "Math/MercatorProjectedCoordinateSystem.h"
+#include "Math/PolyconicProjectedCoordinateSystem.h"
 
 //#define VERBOSE
 #if defined(VERBOSE)
@@ -485,6 +486,11 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 						i += 26;
 						cst = Math::CoordinateSystem::CoordinateSystemType::GausskrugerProjected;
 					}
+					else if (Text::StrStartsWithC(&prjBuff[i + 11], buffSize - i - 11, UTF8STRC("\"Polyconic\"]")))
+					{
+						i += 23;
+						cst = Math::CoordinateSystem::CoordinateSystemType::PolyconicProjected;
+					}
 					else
 					{
 #if defined(VERBOSE)
@@ -696,13 +702,17 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 			}
 		}
 		NN<Math::GeographicCoordinateSystem> nngcs;
-		if (cst == Math::CoordinateSystem::CoordinateSystemType::Geographic || Math::IsNAN(falseEasting) || Math::IsNAN(falseNorthing) || Math::IsNAN(centralMeridian) || Math::IsNAN(scaleFactor) || Math::IsNAN(latitudeOfOrigin) || !gcs.SetTo(nngcs))
+		if (cst == Math::CoordinateSystem::CoordinateSystemType::Geographic || Math::IsNAN(falseEasting) || Math::IsNAN(falseNorthing) || Math::IsNAN(centralMeridian) || (cst != Math::CoordinateSystem::CoordinateSystemType::PolyconicProjected && Math::IsNAN(scaleFactor)) || Math::IsNAN(latitudeOfOrigin) || !gcs.SetTo(nngcs))
 		{
 #if defined(VERBOSE)
 			printf("ArcGISPRJParser: Parameter missing in PROJCS\r\n");
 #endif
 			gcs.Delete();
 			return nullptr;
+		}
+		if (Math::IsNAN(scaleFactor))
+		{
+			scaleFactor = 1;
 		}
 		parsedSize.Set(i);
 		if (srid == 0)
@@ -717,6 +727,11 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 		else if (cst == Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected)
 		{
 			NEW_CLASSNN(csys, Math::Mercator1SPProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, nngcs, unit));
+			return csys;
+		}
+		else if (cst == Math::CoordinateSystem::CoordinateSystemType::PolyconicProjected)
+		{
+			NEW_CLASSNN(csys, Math::PolyconicProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, nngcs, unit));
 			return csys;
 		}
 		else

@@ -3147,6 +3147,8 @@ Math/NumArrayTool.h:
 @NumArrayTool.o
 Math/PointMappingCoordinateSystem.h:
 @PointMappingCoordinateSystem.o
+Math/PolyconicProjectedCoordinateSystem.h:
+@PolyconicProjectedCoordinateSystem.o
 Math/ProjectedCoordinateSystem.h:
 @ProjectedCoordinateSystem.o
 Math/Quadrilateral.h:

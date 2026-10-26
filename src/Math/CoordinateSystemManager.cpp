@@ -7,6 +7,7 @@
 #include "Math/Math_C.h"
 #include "Math/MercatorProjectedCoordinateSystem.h"
 #include "Math/Mercator1SPProjectedCoordinateSystem.h"
+#include "Math/PolyconicProjectedCoordinateSystem.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -687,6 +688,11 @@ Optional<Math::ProjectedCoordinateSystem> Math::CoordinateSystemManager::CreateP
 	else if (coord->csysType == Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected)
 	{
 		NEW_CLASSNN(csys, Math::Mercator1SPProjectedCoordinateSystem(sourceName, coord->srid, Text::CStringNN(coord->projName, coord->projNameLen), coord->falseEasting, coord->falseNorthing, coord->centralMeridian, coord->latitudeOfOrigin, coord->scaleFactor, gcs, coord->unitType));
+		return csys;
+	}
+	else if (coord->csysType == Math::CoordinateSystem::CoordinateSystemType::PolyconicProjected)
+	{
+		NEW_CLASSNN(csys, Math::PolyconicProjectedCoordinateSystem(sourceName, coord->srid, Text::CStringNN(coord->projName, coord->projNameLen), coord->falseEasting, coord->falseNorthing, coord->centralMeridian, coord->latitudeOfOrigin, coord->scaleFactor, gcs, coord->unitType));
 		return csys;
 	}
 	else if (coord->csysType == Math::CoordinateSystem::CoordinateSystemType::CassiniSoldner)

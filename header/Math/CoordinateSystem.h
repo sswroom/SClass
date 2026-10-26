@@ -29,7 +29,8 @@ namespace Math
 			Mercator1SPProjected,
 			PointMapping,
 			GausskrugerProjected,
-			CassiniSoldner
+			CassiniSoldner,
+			PolyconicProjected
 		};
 
 		typedef enum

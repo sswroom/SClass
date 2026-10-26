@@ -341,6 +341,8 @@ Text::CStringNN Math::CoordinateSystem::CoordinateSystemTypeGetName(CoordinateSy
 		return CSTR("Gauss-Kruger");
 	case CoordinateSystemType::CassiniSoldner:
 		return CSTR("Cassini_Soldner");
+	case CoordinateSystemType::PolyconicProjected:
+		return CSTR("Polyconic");
 	default:
 		return CSTR("Unknown");
 	}

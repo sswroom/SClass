@@ -1090,6 +1090,7 @@ Model3D.o: ../../src/Math/Model3D.cpp
 MSGeography.o: ../../src/Math/MSGeography.cpp
 NumArrayTool.o: ../../src/Math/NumArrayTool.cpp
 PointMappingCoordinateSystem.o: ../../src/Math/PointMappingCoordinateSystem.cpp
+PolyconicProjectedCoordinateSystem.o: ../../src/Math/PolyconicProjectedCoordinateSystem.cpp
 ProjectedCoordinateSystem.o: ../../src/Math/ProjectedCoordinateSystem.cpp
 Quadrilateral.o: ../../src/Math/Quadrilateral.cpp
 SRESRIWKTWriter.o: ../../src/Math/SRESRIWKTWriter.cpp
