@@ -2,6 +2,7 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Map/TileMapFolderWriter.h"
+#include "Map/TileMapMbtilesWriter.h"
 #include "Map/TileMapOruxWriter.h"
 #include "Map/TileMapSPKWriter.h"
 #include "Map/TileMapZipWriter.h"
@@ -165,6 +166,7 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveFileClicked(AnyType
 		dlg->AddFilter(CSTR("*.spk"), CSTR("SPackage File"));
 		dlg->AddFilter(CSTR("*.zip"), CSTR("ZIP File"));
 		dlg->AddFilter(CSTR("*.otrk2.xml"), CSTR("Orux Map Tile"));
+		dlg->AddFilter(CSTR("*.mbtiles"), CSTR("MBTiles File"));
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			me->SaveTilesFile(dlg->GetFileName()->ToCString(), dlg->GetFilterIndex(), minLevel, maxLevel);
@@ -213,6 +215,10 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileN
 	else if (fileType == 2)
 	{
 		NEW_CLASSNN(writer, Map::TileMapOruxWriter(fileName, userMinLevel, userMaxLevel, Math::RectAreaDbl(this->sel1, this->sel2)));
+	}
+	else if (fileType == 3)
+	{
+		NEW_CLASSNN(writer, Map::TileMapMbtilesWriter(fileName, tileMap->GetTileFormat(), userMinLevel, userMaxLevel, Math::RectAreaDbl(this->sel1, this->sel2)));
 	}
 	else
 	{

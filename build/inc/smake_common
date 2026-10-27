@@ -3026,6 +3026,8 @@ Map/TileMapGenerator.h:
 @TileMapGenerator.o
 Map/TileMapLayer.h:
 @TileMapLayer.o
+Map/TileMapMbtilesWriter.h:
+@TileMapMbtilesWriter.o
 Map/TileMapOruxWriter.h:
 @TileMapOruxWriter.o
 Map/TileMapServiceSource.h:

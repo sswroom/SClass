@@ -1033,6 +1033,7 @@ StmDataTileMap.o: ../../src/Map/StmDataTileMap.cpp
 TileMapFolderWriter.o: ../../src/Map/TileMapFolderWriter.cpp
 TileMapGenerator.o: ../../src/Map/TileMapGenerator.cpp
 TileMapLayer.o: ../../src/Map/TileMapLayer.cpp
+TileMapMbtilesWriter.o: ../../src/Map/TileMapMbtilesWriter.cpp
 TileMapOruxWriter.o: ../../src/Map/TileMapOruxWriter.cpp
 TileMapServiceSource.o: ../../src/Map/TileMapServiceSource.cpp
 TileMapSPKWriter.o: ../../src/Map/TileMapSPKWriter.cpp
