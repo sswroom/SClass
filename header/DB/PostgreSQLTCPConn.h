@@ -99,7 +99,7 @@ namespace DB
 		UIntOS currRow;
 
 	public:
-		PostgreSQLTCPReader(UInt32 backendPID, Int32 cancelKey, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListObj<UnsafeArrayOpt<UInt8>>> values, NN<Data::ArrayListNative<UInt32>> lengths, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods);
+		PostgreSQLTCPReader(UInt32 backendPID, Int32 cancelKey, Int8 tzQhr, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListObj<UnsafeArrayOpt<UInt8>>> values, NN<Data::ArrayListNative<UInt32>> lengths, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods);
 		virtual ~PostgreSQLTCPReader();
 
 		virtual Bool ReadNext();

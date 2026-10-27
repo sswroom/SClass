@@ -398,7 +398,7 @@ Bool DB::PostgreSQLTCPConn::ParseSCRAMSHA256(NN<Net::TCPClient> cli, UIntOS mech
 		return false;
 	}
 	UIntOS serverFinalLen = serverFinalPacketLen - 8;
-	UnsafeArray<UTF8Char> serverFinal = MemAllocArr(UTF8Char, serverFinalLen);
+	UnsafeArray<UTF8Char> serverFinal = MemAllocArr(UTF8Char, serverFinalLen + 1);
 	Bool readFinal = this->ReadPacket(cli, (UnsafeArray<UInt8>)serverFinal, serverFinalLen) == serverFinalLen;
 	if (!readFinal)
 	{
@@ -406,6 +406,7 @@ Bool DB::PostgreSQLTCPConn::ParseSCRAMSHA256(NN<Net::TCPClient> cli, UIntOS mech
 		this->log->LogMessage(CSTR("Failed to read SASL final data"), IO::LogHandler::LogLevel::Error);
 		return false;
 	}
+	serverFinal[serverFinalLen] = 0;
 	if (serverFinalLen < 3 || serverFinal[0] != 'v' || serverFinal[1] != '=')
 	{
 		MemFreeArr(serverFinal);
@@ -989,10 +990,10 @@ done_reading:
 		Data::ArrayListNative<UInt32> emptyTypes;
 		Data::ArrayListNative<Int32> emptyTypeMods;
 		
-		return NEW_CLASS_D(PostgreSQLTCPReader(backendPID, cancelKey, emptyNames, emptyValues, emptyLengths, emptyTypes, emptyTypeMods));
+		return NEW_CLASS_D(PostgreSQLTCPReader(backendPID, cancelKey, tzQhr, emptyNames, emptyValues, emptyLengths, emptyTypes, emptyTypeMods));
 	}
 	
-	return NEW_CLASS_D(PostgreSQLTCPReader(backendPID, cancelKey, colNames, values, lengths, types, typeMods));
+	return NEW_CLASS_D(PostgreSQLTCPReader(backendPID, cancelKey, tzQhr, colNames, values, lengths, types, typeMods));
 }
 
 void DB::PostgreSQLTCPConn::CloseReader(NN<DB::DBReader> r)
@@ -1263,10 +1264,11 @@ Optional<DB::DBTool> DB::PostgreSQLTCPConn::CreateDBTool(NN<Net::TCPClientFactor
 	return db;
 }
 
-DB::PostgreSQLTCPReader::PostgreSQLTCPReader(UInt32 backendPID, Int32 cancelKey, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListObj<UnsafeArrayOpt<UInt8>>> values, NN<Data::ArrayListNative<UInt32>> lengths, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods)
+DB::PostgreSQLTCPReader::PostgreSQLTCPReader(UInt32 backendPID, Int32 cancelKey, Int8 tzQhr, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListObj<UnsafeArrayOpt<UInt8>>> values, NN<Data::ArrayListNative<UInt32>> lengths, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods)
 {
 	this->backendPID = backendPID;
 	this->cancelKey = cancelKey;
+	this->tzQhr = tzQhr;
 	currRow = (UIntOS)-1;
 	
 	Data::ArrayIterator<NN<Text::String>> nameIt = colNames->Iterator();
@@ -1274,9 +1276,10 @@ DB::PostgreSQLTCPReader::PostgreSQLTCPReader(UInt32 backendPID, Int32 cancelKey,
 	{
 		columnNames.Add(nameIt.Next()->Clone());
 	}
+	colNames->FreeAll();
 	
 	colCount = (UIntOS)columnNames.GetCount();
-	rowCount = values->GetCount();
+	rowCount = colCount == 0 ? 0 : values->GetCount() / colCount;
 	
 	Data::ArrayIterator<UnsafeArrayOpt<UInt8>> valIt = values->Iterator();
 	Data::ArrayIterator<UInt32> lenIt = lengths->Iterator();
@@ -1759,4 +1762,3 @@ Bool DB::PostgreSQLTCPReader::GetVariItem(UIntOS colIndex, NN<Data::VariItem> it
 	
 	return true;
 }
-
