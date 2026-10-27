@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRPostgreSQLForm::OnOKClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Port is not valid"), CSTR("PostgreSQL Connection"), me);
 		return;
 	}
-	if (!DB::PostgreSQLUtil::OpenConn(sb.ToCString(), port, false, sb4.ToCString(), sb2.ToCString(), sb3.ToCString(), me->core->GetLog(), nullptr, false).SetTo(conn))
+	if (!DB::PostgreSQLUtil::OpenConn(me->core->GetTCPClientFactory(), sb.ToCString(), port, false, sb4.ToCString(), sb2.ToCString(), sb3.ToCString(), me->core->GetLog(), nullptr, false).SetTo(conn))
 	{
 		me->ui->ShowMsgOK(CSTR("Error in opening PostgreSQL connection"), CSTR("PostgreSQL Connection"), me);
 		return;
