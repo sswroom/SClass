@@ -7,6 +7,7 @@
 #include "DB/DBConn.h"
 #include "DB/DBReader.h"
 #include "DB/PostgreSQLConn.h"
+#include "DB/PostgreSQLTCPConn.h"
 #include "DB/ReadingDBTool.h"
 #include "DB/SQL/SQLCommand.h"
 #include "DB/SQL/SQLCreateTableCommand.h"
@@ -971,6 +972,16 @@ Bool DB::ReadingDBTool::ChangeDatabase(Text::CStringNN databaseName)
 		if (this->db->GetConnType() == DB::DBConn::ConnType::PostgreSQL)
 		{
 			if (NN<DB::PostgreSQLConn>::ConvertFrom(this->db)->ChangeDatabase(databaseName))
+			{
+				OPTSTR_DEL(this->currDBName);
+				this->currDBName = Text::String::New(databaseName);
+				return true;
+			}
+			return false;
+		}
+		else if (this->db->GetConnType() == DB::DBConn::ConnType::PostgreSQLTCP)
+		{
+			if (NN<DB::PostgreSQLTCPConn>::ConvertFrom(this->db)->ChangeDatabase(databaseName))
 			{
 				OPTSTR_DEL(this->currDBName);
 				this->currDBName = Text::String::New(databaseName);

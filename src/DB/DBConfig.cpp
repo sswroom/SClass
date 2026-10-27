@@ -2,7 +2,7 @@
 #include "DB/DBConfig.h"
 #include "DB/JavaDBUtil.h"
 #include "DB/MSSQLConn.h"
-#include "DB/PostgreSQLConn.h"
+#include "DB/PostgreSQLTCPConn.h"
 #include "DB/SQLiteFile.h"
 #include "Net/SSHManager.h"
 
@@ -154,7 +154,7 @@ Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NN<Net::TCPClientFactory> clif
 					return nullptr;
 				}
 				port = fwd->GetListenPort();
-				if (!DB::PostgreSQLConn::CreateDBTool(CSTR("127.0.0.1"), port, database->ToCString(), userName->ToCString(), password->ToCString(), log, logPrefix, continueOnConnError).SetTo(db))
+				if (!DB::PostgreSQLTCPConn::CreateDBTool(clif, CSTR("127.0.0.1"), port, database->ToCString(), userName->ToCString(), password->ToCString(), log, logPrefix, continueOnConnError).SetTo(db))
 				{
 					cli.Delete();
 					ssh.Delete();
@@ -170,7 +170,7 @@ Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NN<Net::TCPClientFactory> clif
 				return nullptr;
 			}
 		}
-		else if (!DB::PostgreSQLConn::CreateDBTool(serverHost->ToCString(), port, database->ToCString(), userName->ToCString(), password->ToCString(), log, logPrefix, continueOnConnError).SetTo(db))
+		else if (!DB::PostgreSQLTCPConn::CreateDBTool(clif, serverHost->ToCString(), port, database->ToCString(), userName->ToCString(), password->ToCString(), log, logPrefix, continueOnConnError).SetTo(db))
 		{
 			log->LogMessage(CSTR("Error in connecting to PostgreSQL database"), IO::LogHandler::LogLevel::Error);
 			return nullptr;

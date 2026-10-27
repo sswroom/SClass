@@ -773,6 +773,7 @@ DB::PostgreSQLTCPConn::PostgreSQLTCPConn(NN<Net::TCPClientFactory> clif, NN<Text
 	this->readerActive = false;
 	this->geometryOid = 0;
 	this->geographyOid = 0;
+	this->showViews = false;
 	
 	if (Connect())
 	{
@@ -794,6 +795,7 @@ DB::PostgreSQLTCPConn::PostgreSQLTCPConn(NN<Net::TCPClientFactory> clif, Text::C
 	this->readerActive = false;
 	this->geometryOid = 0;
 	this->geographyOid = 0;
+	this->showViews = false;
 	
 	if (this->Connect())
 	{
@@ -1125,6 +1127,20 @@ UIntOS DB::PostgreSQLTCPConn::QueryTableNames(Text::CString schemaName, NN<Data:
 		}
 		CloseReader(r);
 	}
+	if (this->showViews)
+	{
+		sql.Clear();
+		sql.AppendCmdC(CSTR("select viewname from pg_catalog.pg_views where schemaname = "));
+		sql.AppendStrC(nnschemaName);
+		if (this->ExecuteReader(sql.ToCString()).SetTo(r))
+		{
+			while (r->ReadNext())
+			{
+				names->Add(r->GetNewStrNN(0));
+			}
+			CloseReader(r);
+		}
+	}
 	
 	return names->GetCount() - initCnt;
 }
@@ -1241,6 +1257,11 @@ Bool DB::PostgreSQLTCPConn::ChangeDatabase(Text::CStringNN databaseName)
 	}
 }
 
+void DB::PostgreSQLTCPConn::SetShowViews(Bool showViews)
+{
+	this->showViews = showViews;
+}
+
 UInt32 DB::PostgreSQLTCPConn::GetBackendPID() const
 {
 	return this->backendPID;
@@ -1251,12 +1272,12 @@ Int32 DB::PostgreSQLTCPConn::GetCancelKey() const
 	return this->cancelKey;
 }
 
-Optional<DB::DBTool> DB::PostgreSQLTCPConn::CreateDBTool(NN<Net::TCPClientFactory> clif, NN<Text::String> serverName, UInt16 port, NN<Text::String> dbName, Optional<Text::String> uid, Optional<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::PostgreSQLTCPConn::CreateDBTool(NN<Net::TCPClientFactory> clif, NN<Text::String> serverName, UInt16 port, NN<Text::String> dbName, Optional<Text::String> uid, Optional<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix, Bool continueOnConnError)
 {
 	NN<PostgreSQLTCPConn> conn;
 	NEW_CLASSNN(conn, PostgreSQLTCPConn(clif, serverName, port, uid, pwd, dbName, log));
 	
-	if (conn->IsConnError())
+	if (!continueOnConnError && conn->IsConnError())
 	{
 		conn.Delete();
 		return nullptr;
@@ -1267,12 +1288,12 @@ Optional<DB::DBTool> DB::PostgreSQLTCPConn::CreateDBTool(NN<Net::TCPClientFactor
 	return db;
 }
 
-Optional<DB::DBTool> DB::PostgreSQLTCPConn::CreateDBTool(NN<Net::TCPClientFactory> clif, Text::CStringNN serverName, UInt16 port, Text::CStringNN dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::PostgreSQLTCPConn::CreateDBTool(NN<Net::TCPClientFactory> clif, Text::CStringNN serverName, UInt16 port, Text::CStringNN dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix, Bool continueOnConnError)
 {
 	NN<PostgreSQLTCPConn> conn;
 	NEW_CLASSNN(conn, PostgreSQLTCPConn(clif, serverName, port, uid, pwd, dbName, log));
 	
-	if (conn->IsConnError())
+	if (!continueOnConnError && conn->IsConnError())
 	{
 		conn.Delete();
 		return nullptr;

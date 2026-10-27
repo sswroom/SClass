@@ -24,6 +24,7 @@ namespace DB
 		Bool readerActive;
 		UInt32 geometryOid;
 		UInt32 geographyOid;
+		Bool showViews;
 		NN<Text::String> server;
 		UInt16 port;
 		NN<Text::String> database;
@@ -78,12 +79,13 @@ namespace DB
 		Optional<Text::String> GetConnUID() const;
 		Optional<Text::String> GetConnPWD() const;
 		Bool ChangeDatabase(Text::CStringNN databaseName);
+		void SetShowViews(Bool showViews);
 		
 		UInt32 GetBackendPID() const;
 		Int32 GetCancelKey() const;
 
-		static Optional<DBTool> CreateDBTool(NN<Net::TCPClientFactory> clif, NN<Text::String> serverName, UInt16 port, NN<Text::String> dbName, Optional<Text::String> uid, Optional<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix);
-		static Optional<DBTool> CreateDBTool(NN<Net::TCPClientFactory> clif, Text::CStringNN serverName, UInt16 port, Text::CStringNN dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(NN<Net::TCPClientFactory> clif, NN<Text::String> serverName, UInt16 port, NN<Text::String> dbName, Optional<Text::String> uid, Optional<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix, Bool continueOnConnError);
+		static Optional<DBTool> CreateDBTool(NN<Net::TCPClientFactory> clif, Text::CStringNN serverName, UInt16 port, Text::CStringNN dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix, Bool continueOnConnError);
 	};
 
 	class PostgreSQLTCPReader : public DB::DBReader

@@ -3,7 +3,7 @@
 #include "DB/DBReader.h"
 #include "DB/JavaDBUtil.h"
 #include "DB/MSSQLConn.h"
-#include "DB/PostgreSQLConn.h"
+#include "DB/PostgreSQLTCPConn.h"
 #include "Net/MySQLTCPClient.h"
 #include "Net/SocketUtil.h"
 #include "Text/JavaText.h"
@@ -345,7 +345,7 @@ Optional<DB::DBTool> DB::JavaDBUtil::OpenJDBC(NN<Text::String> url, Optional<Tex
 		{
 			dbName = Text::String::NewEmpty();
 		}
-		Optional<DB::DBTool> db = DB::PostgreSQLConn::CreateDBTool(host->ToCString(), port, dbName->ToCString(), OPTSTR_CSTR(username), OPTSTR_CSTR(password), log, LOGPREFIX);
+		Optional<DB::DBTool> db = DB::PostgreSQLTCPConn::CreateDBTool(clif, host->ToCString(), port, dbName->ToCString(), OPTSTR_CSTR(username), OPTSTR_CSTR(password), log, LOGPREFIX, false);
 		if (database.IsNull())
 		{
 			dbName->Release();

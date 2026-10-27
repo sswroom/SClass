@@ -1,13 +1,23 @@
 #include "Stdafx.h"
 #include "DB/ODBCConn.h"
 #include "DB/PostgreSQLConn.h"
+#include "DB/PostgreSQLTCPConn.h"
 #include "DB/PostgreSQLUtil.h"
 
-Optional<DB::DBConn> DB::PostgreSQLUtil::OpenConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NN<IO::LogTool> log, Optional<Text::StringBuilderUTF8> errMsg, Bool continueOnConnError)
+Optional<DB::DBConn> DB::PostgreSQLUtil::OpenConn(NN<Net::TCPClientFactory> clif, Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NN<IO::LogTool> log, Optional<Text::StringBuilderUTF8> errMsg, Bool continueOnConnError)
 {
 	Text::CStringNN nnuserName;
 	Text::CStringNN nnpassword;
-	if (PostgreSQLConn::IsSupported() && userName.SetTo(nnuserName) && password.SetTo(nnpassword))
+	if (true)
+	{
+		NN<DB::PostgreSQLTCPConn> conn;
+		NEW_CLASSNN(conn, DB::PostgreSQLTCPConn(clif, serverHost, port, userName, password, database.Or(CSTR("postgres")), log));
+		if (continueOnConnError || !conn->IsConnError())
+			return conn;
+		conn.Delete();
+		return nullptr;
+	}
+	else if (PostgreSQLConn::IsSupported() && userName.SetTo(nnuserName) && password.SetTo(nnpassword))
 	{
 		NN<DB::PostgreSQLConn> conn;
 		NEW_CLASSNN(conn, DB::PostgreSQLConn(serverHost, port, nnuserName, nnpassword, database.Or(CSTR("postgres")), log));
@@ -86,14 +96,14 @@ Optional<DB::DBConn> DB::PostgreSQLUtil::OpenConn(Text::CStringNN serverHost, UI
 	}
 }
 
-Optional<DB::DBTool> DB::PostgreSQLUtil::CreateDBTool(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NN<IO::LogTool> log, Text::CString logPrefix, Bool continueOnConnError)
+Optional<DB::DBTool> DB::PostgreSQLUtil::CreateDBTool(NN<Net::TCPClientFactory> clif, Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NN<IO::LogTool> log, Text::CString logPrefix, Bool continueOnConnError)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendOpt(logPrefix);
 	sb.AppendC(UTF8STRC("Error in connecting to database: "));
 	NN<DB::DBTool> db;
 	NN<DB::DBConn> conn;
-	if (OpenConn(serverHost, port, encrypt, database, userName, password, log, sb, continueOnConnError).SetTo(conn))
+	if (OpenConn(clif, serverHost, port, encrypt, database, userName, password, log, sb, continueOnConnError).SetTo(conn))
 	{
 		NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
 		return db;

@@ -547,6 +547,81 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 			return nndb;
 		}
 	}
+	else if (connStr.StartsWith(UTF8STRC("postgresqltcp:")))
+	{
+		Text::StringBuilderUTF8 sb;
+		Optional<Text::String> server = nullptr;
+		UInt16 port = 0;
+		Optional<Text::String> uid = nullptr;
+		Optional<Text::String> pwd = nullptr;
+		Optional<Text::String> schema = nullptr;
+		UIntOS cnt;
+		sb.Append(connStr.Substring(14));
+		Text::PString sarr[2];
+		sarr[1] = sb;
+		while (true)
+		{
+			cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
+			if (sarr[0].StartsWithICase(UTF8STRC("SERVER=")))
+			{
+				OPTSTR_DEL(server);
+				server = Text::String::New(sarr[0].v + 7, sarr[0].leng - 7);
+			}
+			else if (sarr[0].StartsWithICase(UTF8STRC("PORT=")))
+			{
+				Text::StrToUInt16(sarr[0].v + 5, port);
+			}
+			else if (sarr[0].StartsWithICase(UTF8STRC("UID=")))
+			{
+				OPTSTR_DEL(uid);
+				uid = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
+			}
+			else if (sarr[0].StartsWithICase(UTF8STRC("PWD=")))
+			{
+				OPTSTR_DEL(pwd);
+				pwd = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
+			}
+			else if (sarr[0].StartsWithICase(UTF8STRC("DATABASE=")))
+			{
+				OPTSTR_DEL(schema);
+				schema = Text::String::New(sarr[0].v + 9, sarr[0].leng - 9);
+			}
+			if (cnt != 2)
+			{
+				break;
+			}
+		}
+		Optional<DB::PostgreSQLTCPConn> cli = nullptr;
+		NN<DB::PostgreSQLTCPConn> nncli;
+		NN<Text::String> serverStr;
+		NN<Text::String> schemaStr;
+		if (server.SetTo(serverStr) && schema.SetTo(schemaStr))
+		{
+			NEW_CLASSOPT(cli, DB::PostgreSQLTCPConn(clif, serverStr, port, uid, pwd, schemaStr, log));
+		}
+		else
+		{
+			cli = nullptr;
+		}
+		OPTSTR_DEL(server);
+		OPTSTR_DEL(uid);
+		OPTSTR_DEL(pwd);
+		OPTSTR_DEL(schema);
+		if (!cli.SetTo(nncli))
+		{
+
+		}
+		else if (nncli->IsConnError())
+		{
+			nncli.Delete();
+		}
+		else
+		{
+			nncli->SetShowViews(true);
+			NEW_CLASSNN(nndb, DB::DBTool(nncli, true, log, DBPREFIX));
+			return nndb;
+		}
+	}
 	else if (connStr.StartsWith(UTF8STRC("file:")))
 	{
 		Text::CStringNN fileName = connStr.Substring(5);
