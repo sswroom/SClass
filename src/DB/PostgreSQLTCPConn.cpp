@@ -8,6 +8,8 @@
 #include "DB/DBTool.h"
 #include "DB/PostgreSQLTCPConn.h"
 #include "Crypto/Hash/MD5.h"
+#include "Math/Geometry/Point.h"
+#include "Math/WKBReader.h"
 #include "Net/SocketUtil.h"
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
@@ -523,18 +525,21 @@ Bool DB::PostgreSQLTCPConn::ParseDataRow(NN<Net::TCPClient> cli, UIntOS colCount
 		}
 		else if (valLen > 0)
 		{
-			UnsafeArray<UInt8> val = MemAllocArr(UInt8, (UIntOS)valLen);
+			UnsafeArray<UInt8> val = MemAllocArr(UInt8, (UIntOS)valLen + 1);
 			if (this->ReadPacket(cli, val, (UIntOS)valLen) != (UIntOS)valLen)
 			{
 				MemFreeArr(val);
 				return false;
 			}
+			val[valLen] = 0;
 			values->Add(val);
 			lengths->Add((UInt32)valLen);
 		}
 		else
 		{
-			values->Add(nullptr);
+			UnsafeArray<UInt8> val = MemAllocArr(UInt8, 1);
+			val[0] = 0;
+			values->Add(val);
 			lengths->Add(0);
 		}
 	}
@@ -742,6 +747,16 @@ void DB::PostgreSQLTCPConn::InitConnection()
 		}
 		CloseReader(r);
 	}
+
+	if (ExecuteReader(CSTR("SELECT COALESCE(to_regtype('geometry')::oid, 0::oid), COALESCE(to_regtype('geography')::oid, 0::oid)")).SetTo(r))
+	{
+		if (r->ReadNext())
+		{
+			this->geometryOid = (UInt32)r->GetInt32(0);
+			this->geographyOid = (UInt32)r->GetInt32(1);
+		}
+		CloseReader(r);
+	}
 }
 
 DB::PostgreSQLTCPConn::PostgreSQLTCPConn(NN<Net::TCPClientFactory> clif, NN<Text::String> server, UInt16 port, Optional<Text::String> uid, Optional<Text::String> pwd, NN<Text::String> database, NN<IO::LogTool> log) : DBConn(CSTR("PostgreSQL"))
@@ -755,6 +770,9 @@ DB::PostgreSQLTCPConn::PostgreSQLTCPConn(NN<Net::TCPClientFactory> clif, NN<Text
 	this->log = log;
 	this->connCli = nullptr;
 	this->tzQhr = 0;
+	this->readerActive = false;
+	this->geometryOid = 0;
+	this->geographyOid = 0;
 	
 	if (Connect())
 	{
@@ -773,6 +791,9 @@ DB::PostgreSQLTCPConn::PostgreSQLTCPConn(NN<Net::TCPClientFactory> clif, Text::C
 	this->log = log;
 	this->connCli = nullptr;
 	this->tzQhr = 0;
+	this->readerActive = false;
+	this->geometryOid = 0;
+	this->geographyOid = 0;
 	
 	if (this->Connect())
 	{
@@ -825,6 +846,11 @@ void DB::PostgreSQLTCPConn::Dispose()
 	IntOS DB::PostgreSQLTCPConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	this->lastDataError = DataError::NoError;
+	if (this->readerActive)
+	{
+		this->lastDataError = DataError::ConnError;
+		return -2;
+	}
 	NN<Net::TCPClient> cli;
 	if (!this->connCli.SetTo(cli))
 	{
@@ -890,6 +916,11 @@ void DB::PostgreSQLTCPConn::Dispose()
 	Optional<DB::DBReader> DB::PostgreSQLTCPConn::ExecuteReader(Text::CStringNN sql)
 {
 	this->lastDataError = DataError::NoError;
+	if (this->readerActive)
+	{
+		this->lastDataError = DataError::ConnError;
+		return nullptr;
+	}
 	NN<Net::TCPClient> cli;
 	if (!this->connCli.SetTo(cli))
 	{
@@ -909,14 +940,10 @@ void DB::PostgreSQLTCPConn::Dispose()
 	MemFreeArr(packet);
 	
 	Data::ArrayListStringNN colNames;
-	Data::ArrayListObj<UnsafeArrayOpt<UInt8>> values;
-	Data::ArrayListNative<UInt32> lengths;
 	Data::ArrayListNative<UInt32> types;
 	Data::ArrayListNative<Int32> typeMods;
-	UnsafeArray<UInt8> val;
-	
 	IntOS rowChanged = 0;
-	Bool hasResult = false;
+	Bool queryError = false;
 	while (true)
 	{
 		UInt8 buff[5];
@@ -924,7 +951,13 @@ void DB::PostgreSQLTCPConn::Dispose()
 		{
 			return nullptr;
 		}
-		UIntOS dataLen = ReadMUInt32(buff + 1) - 4;
+		UInt32 packetLen = ReadMUInt32(buff + 1);
+		if (packetLen < 4)
+		{
+			this->Close();
+			return nullptr;
+		}
+		UIntOS dataLen = packetLen - 4;
 		
 		switch (buff[0])
 		{
@@ -935,36 +968,25 @@ void DB::PostgreSQLTCPConn::Dispose()
 				}
 				break;
 			case 'T':
-				hasResult = true;
 				if (!this->ParseRowDescription(cli, dataLen, colNames, types, typeMods))
 				{
+					colNames.FreeAll();
+					this->Close();
 					return nullptr;
 				}
-				break;
-			case 'D':
-				if (!hasResult)
-				{
-					return nullptr;
-				}
-				if (!this->ParseDataRow(cli, (UIntOS)colNames.GetCount(), values, lengths))
-				{
-					Data::ArrayIterator<UnsafeArrayOpt<UInt8>> it = values.Iterator();
-					while (it.HasNext())
-					{
-						if (it.Next().SetTo(val))
-						{
-							MemFreeArr(val);
-						}
-					}
-					return nullptr;
-				}
-				break;
+				this->readerActive = true;
+				return NEW_CLASS_D(PostgreSQLTCPReader(NNTHIS, cli->GetCliId(), this->backendPID, this->cancelKey, this->tzQhr, colNames, types, typeMods, false));
 			case 'Z':
 				if (dataLen != 1 || this->ReadPacket(cli, buff, 1) != 1)
 				{
+					this->Close();
 					return nullptr;
 				}
-				goto done_reading;
+				if (queryError)
+				{
+					return nullptr;
+				}
+				return NEW_CLASS_D(PostgreSQLTCPReader(NNTHIS, cli->GetCliId(), this->backendPID, this->cancelKey, this->tzQhr, colNames, types, typeMods, true));
 			case 'E':
 				{
 					Text::StringBuilderUTF8 errMsg;
@@ -974,26 +996,23 @@ void DB::PostgreSQLTCPConn::Dispose()
 						this->log->LogMessage(errMsg.ToCString(), IO::LogHandler::LogLevel::Error);
 					}
 				}
-				return nullptr;
+				queryError = true;
+				break;
 			default:
+				while (dataLen > 0)
+				{
+					UInt8 skipBuff[256];
+					UIntOS skipSize = dataLen > sizeof(skipBuff) ? sizeof(skipBuff) : dataLen;
+					if (this->ReadPacket(cli, skipBuff, skipSize) != skipSize)
+					{
+						this->Close();
+						return nullptr;
+					}
+					dataLen -= skipSize;
+				}
 				break;
 		}
 	}
-	
-done_reading:
-	
-	if (!hasResult)
-	{
-		Data::ArrayListStringNN emptyNames;
-		Data::ArrayListObj<UnsafeArrayOpt<UInt8>> emptyValues;
-		Data::ArrayListNative<UInt32> emptyLengths;
-		Data::ArrayListNative<UInt32> emptyTypes;
-		Data::ArrayListNative<Int32> emptyTypeMods;
-		
-		return NEW_CLASS_D(PostgreSQLTCPReader(backendPID, cancelKey, tzQhr, emptyNames, emptyValues, emptyLengths, emptyTypes, emptyTypeMods));
-	}
-	
-	return NEW_CLASS_D(PostgreSQLTCPReader(backendPID, cancelKey, tzQhr, colNames, values, lengths, types, typeMods));
 }
 
 void DB::PostgreSQLTCPConn::CloseReader(NN<DB::DBReader> r)
@@ -1264,12 +1283,16 @@ Optional<DB::DBTool> DB::PostgreSQLTCPConn::CreateDBTool(NN<Net::TCPClientFactor
 	return db;
 }
 
-DB::PostgreSQLTCPReader::PostgreSQLTCPReader(UInt32 backendPID, Int32 cancelKey, Int8 tzQhr, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListObj<UnsafeArrayOpt<UInt8>>> values, NN<Data::ArrayListNative<UInt32>> lengths, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods)
+DB::PostgreSQLTCPReader::PostgreSQLTCPReader(NN<PostgreSQLTCPConn> conn, UInt64 clientId, UInt32 backendPID, Int32 cancelKey, Int8 tzQhr, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods, Bool finished)
 {
+	this->conn = conn;
+	this->clientId = clientId;
 	this->backendPID = backendPID;
 	this->cancelKey = cancelKey;
 	this->tzQhr = tzQhr;
-	currRow = (UIntOS)-1;
+	this->rowChanged = 0;
+	this->hasCurrentRow = false;
+	this->finished = finished;
 	
 	Data::ArrayIterator<NN<Text::String>> nameIt = colNames->Iterator();
 	while (nameIt.HasNext())
@@ -1279,18 +1302,6 @@ DB::PostgreSQLTCPReader::PostgreSQLTCPReader(UInt32 backendPID, Int32 cancelKey,
 	colNames->FreeAll();
 	
 	colCount = (UIntOS)columnNames.GetCount();
-	rowCount = colCount == 0 ? 0 : values->GetCount() / colCount;
-	
-	Data::ArrayIterator<UnsafeArrayOpt<UInt8>> valIt = values->Iterator();
-	Data::ArrayIterator<UInt32> lenIt = lengths->Iterator();
-	while (valIt.HasNext())
-	{
-		rowValues.Add(valIt.Next());
-	}
-	while (lenIt.HasNext())
-	{
-		valueLengths.Add(lenIt.Next());
-	}
 	
 	Data::ArrayIterator<UInt32> typeIt = types->Iterator();
 	while (typeIt.HasNext())
@@ -1306,6 +1317,15 @@ DB::PostgreSQLTCPReader::PostgreSQLTCPReader(UInt32 backendPID, Int32 cancelKey,
 
 DB::PostgreSQLTCPReader::~PostgreSQLTCPReader()
 {
+	while (this->ReadNext())
+	{
+	}
+	this->ClearCurrentRow();
+	columnNames.FreeAll();
+}
+
+void DB::PostgreSQLTCPReader::ClearCurrentRow()
+{
 	UnsafeArray<UInt8> rowVal;
 	Data::ArrayIterator<UnsafeArrayOpt<UInt8>> it = this->rowValues.Iterator();
 	while (it.HasNext())
@@ -1315,14 +1335,116 @@ DB::PostgreSQLTCPReader::~PostgreSQLTCPReader()
 			MemFreeArr(rowVal);
 		}
 	}
-	
-	columnNames.FreeAll();
+	this->rowValues.Clear();
+	this->valueLengths.Clear();
+	this->hasCurrentRow = false;
 }
 
 Bool DB::PostgreSQLTCPReader::ReadNext()
 {
-	currRow++;
-	return currRow < rowCount;
+	this->ClearCurrentRow();
+	if (this->finished)
+	{
+		return false;
+	}
+
+	NN<Net::TCPClient> cli;
+	if (!this->conn->connCli.SetTo(cli))
+	{
+		this->finished = true;
+		this->conn->readerActive = false;
+		return false;
+	}
+	if (cli->GetCliId() != this->clientId)
+	{
+		this->finished = true;
+		this->conn->readerActive = false;
+		return false;
+	}
+
+	while (true)
+	{
+		UInt8 buff[5];
+		if (this->conn->ReadPacket(cli, buff, 5) != 5)
+		{
+			this->conn->lastDataError = DB::DBConn::DataError::ConnError;
+			this->conn->Close();
+			this->finished = true;
+			this->conn->readerActive = false;
+			return false;
+		}
+		UInt32 packetLen = ReadMUInt32(buff + 1);
+		if (packetLen < 4)
+		{
+			this->conn->lastDataError = DB::DBConn::DataError::ConnError;
+			this->conn->Close();
+			this->finished = true;
+			this->conn->readerActive = false;
+			return false;
+		}
+		UIntOS dataLen = packetLen - 4;
+
+		switch (buff[0])
+		{
+		case 'D':
+			if (!this->conn->ParseDataRow(cli, this->colCount, this->rowValues, this->valueLengths))
+			{
+				this->ClearCurrentRow();
+				this->conn->lastDataError = DB::DBConn::DataError::ConnError;
+				this->conn->Close();
+				this->finished = true;
+				this->conn->readerActive = false;
+				return false;
+			}
+			this->hasCurrentRow = true;
+			return true;
+		case 'C':
+			if (!this->conn->ParseCommandComplete(cli, dataLen, this->rowChanged))
+			{
+				this->conn->lastDataError = DB::DBConn::DataError::ConnError;
+				this->conn->Close();
+				this->finished = true;
+				this->conn->readerActive = false;
+				return false;
+			}
+			break;
+		case 'E':
+			{
+				Text::StringBuilderUTF8 errMsg;
+				if (this->conn->ParseErrorResponse(cli, dataLen, errMsg))
+				{
+					this->conn->lastDataError = DB::DBConn::DataError::ExecSQLError;
+					this->conn->log->LogMessage(errMsg.ToCString(), IO::LogHandler::LogLevel::Error);
+				}
+			}
+			break;
+		case 'Z':
+			if (dataLen != 1 || this->conn->ReadPacket(cli, buff, 1) != 1)
+			{
+				this->conn->lastDataError = DB::DBConn::DataError::ConnError;
+				this->conn->Close();
+			}
+			this->finished = true;
+			this->conn->readerActive = false;
+			return false;
+		default:
+			while (dataLen > 0)
+			{
+				UInt8 skipBuff[256];
+				UIntOS skipSize = dataLen > sizeof(skipBuff) ? sizeof(skipBuff) : dataLen;
+				if (this->conn->ReadPacket(cli, skipBuff, skipSize) != skipSize)
+				{
+					this->conn->lastDataError = DB::DBConn::DataError::ConnError;
+					this->conn->Close();
+					this->finished = true;
+					this->conn->readerActive = false;
+					return false;
+				}
+				dataLen -= skipSize;
+			}
+			break;
+		}
+	}
 }
 
 UIntOS DB::PostgreSQLTCPReader::ColCount()
@@ -1332,42 +1454,39 @@ UIntOS DB::PostgreSQLTCPReader::ColCount()
 
 IntOS DB::PostgreSQLTCPReader::GetRowChanged()
 {
-	return 0;
+	return this->rowChanged;
 }
 
 Int32 DB::PostgreSQLTCPReader::GetInt32(UIntOS colIndex)
 {
-	if (colIndex >= colCount || currRow >= rowCount)
+	if (colIndex >= colCount || !this->hasCurrentRow)
 	{
 		return 0;
 	}
 	
 	UnsafeArray<UInt8> val;
-	UInt32 len = valueLengths.GetItem(colIndex + currRow * colCount);
-	
-	if (!rowValues.GetItem(colIndex + currRow * colCount).SetTo(val) || len != 4)
+	if (!rowValues.GetItem(colIndex).SetTo(val))
 	{
 		return 0;
 	}
 	
-	return ReadMInt32(&val[0]);
+	return Text::StrToInt32(val.Ptr());
 }
 
 Int64 DB::PostgreSQLTCPReader::GetInt64(UIntOS colIndex)
 {
-	if (colIndex >= colCount || currRow >= rowCount)
+	if (colIndex >= colCount || !this->hasCurrentRow)
 	{
 		return 0;
 	}
 	
 	UnsafeArray<UInt8> val;
-	UInt32 len = valueLengths.GetItem(colIndex + currRow * colCount);
-	if (!rowValues.GetItem(colIndex + currRow * colCount).SetTo(val) || len != 8)
+	if (!rowValues.GetItem(colIndex).SetTo(val))
 	{
 		return 0;
 	}
 	
-	return ReadMInt64(&val[0]);
+	return Text::StrToInt64(val.Ptr());
 }
 
 UnsafeArrayOpt<WChar> DB::PostgreSQLTCPReader::GetStr(UIntOS colIndex, UnsafeArray<WChar> buff)
@@ -1561,18 +1680,27 @@ DB::DBUtil::ColType DB::PostgreSQLTCPReader::GetColType(UIntOS colIndex, OptOut<
 	}
 	
 	UInt32 dbType = columnTypes.GetItem(colIndex);
-	DB::DBUtil::ColType colType = DBType2ColType(dbType);
+	Int32 typeMod = columnTypeMods.GetItem(colIndex);
+	DB::DBUtil::ColType colType = DBType2ColType(dbType, typeMod);
 	
 	if (colSize.IsNotNull())
 	{
-		Int32 typeMod = columnTypeMods.GetItem(colIndex);
-		if (typeMod >= 0)
+		colSize.Set(65535);
+		if ((dbType == 1042 || dbType == 1043) && typeMod >= 4)
 		{
 			colSize.Set((UInt32)typeMod - 4);
 		}
-		else
+		else if (dbType == 1700 && typeMod >= 4)
 		{
-			colSize.Set(65535);
+			colSize.Set(((UInt32)typeMod - 4) >> 16);
+		}
+		else if (dbType == 1114 || dbType == 1184)
+		{
+			colSize.Set(typeMod >= 0 ? (UIntOS)typeMod : 6);
+		}
+		else if (colType == DB::DBUtil::CT_Vector)
+		{
+			colSize.Set(0);
 		}
 	}
 	
@@ -1587,12 +1715,43 @@ Bool DB::PostgreSQLTCPReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 	}
 	
 	colDef->SetColName(columnNames.GetItemNoCheck(colIndex));
-	colDef->SetColType(DBType2ColType(columnTypes.GetItem(colIndex)));
-	
+	UInt32 dbType = columnTypes.GetItem(colIndex);
 	Int32 typeMod = columnTypeMods.GetItem(colIndex);
-	if (typeMod >= 0)
+	DB::DBUtil::ColType colType = DBType2ColType(dbType, typeMod);
+	colDef->SetColType(colType);
+	colDef->SetColDP(0);
+
+	if (dbType == 1560 && (typeMod == 1 || typeMod == 5))
+	{
+		colDef->SetColSize(1);
+	}
+	else if ((dbType == 1042 || dbType == 1043) && typeMod >= 4)
 	{
 		colDef->SetColSize((UInt32)typeMod - 4);
+	}
+	else if (dbType == 1700 && typeMod >= 4)
+	{
+		UInt32 numericMod = (UInt32)typeMod - 4;
+		Int32 scale = (Int32)(numericMod & 0x7ff);
+		if ((scale & 0x400) != 0)
+		{
+			scale -= 0x800;
+		}
+		colDef->SetColSize((numericMod >> 16) & 0xffff);
+		colDef->SetColDP(scale < 0 ? 0 : (UIntOS)scale);
+	}
+	else if ((dbType == 1114 || dbType == 1184) && typeMod >= 0)
+	{
+		colDef->SetColSize((UIntOS)typeMod);
+	}
+	else if (dbType == 1114 || dbType == 1184)
+	{
+		colDef->SetColSize(6);
+	}
+	else if (colType == DB::DBUtil::CT_Vector)
+	{
+		colDef->SetColSize(0);
+		colDef->SetColDP(0);
 	}
 	else
 	{
@@ -1602,17 +1761,63 @@ Bool DB::PostgreSQLTCPReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 	return true;
 }
 
-DB::DBUtil::ColType DB::PostgreSQLTCPReader::DBType2ColType(UInt32 dbType)
+DB::DBUtil::ColType DB::PostgreSQLTCPReader::DBType2ColType(UInt32 dbType, Int32 typeMod)
 {
+	if (dbType == this->conn->geometryOid || dbType == this->conn->geographyOid)
+	{
+		return DB::DBUtil::CT_Vector;
+	}
+
 	switch (dbType)
 	{
 	case 16:
 		return DB::DBUtil::CT_Bool;
+	case 1560:
+		return typeMod == 1 || typeMod == 5 ? DB::DBUtil::CT_Bool : DB::DBUtil::CT_VarUTF32Char;
 	case 17:
 		return DB::DBUtil::CT_Binary;
 	case 18:
 		return DB::DBUtil::CT_UTF32Char;
 	case 19:
+	case 22:
+	case 24:
+	case 25:
+	case 27:
+	case 30:
+	case 114:
+	case 142:
+	case 194:
+	case 601:
+	case 602:
+	case 603:
+	case 604:
+	case 628:
+	case 650:
+	case 829:
+	case 869:
+	case 1043:
+	case 1083:
+	case 1115:
+	case 1182:
+	case 1183:
+	case 1185:
+	case 1186:
+	case 1187:
+	case 1231:
+	case 1263:
+	case 1266:
+	case 1270:
+	case 1562:
+	case 199:
+	case 2951:
+	case 3220:
+	case 3361:
+	case 3402:
+	case 3802:
+	case 3807:
+	case 5017:
+	case 12028:
+	case 16468:
 		return DB::DBUtil::CT_VarUTF32Char;
 	case 20:
 		return DB::DBUtil::CT_Int64;
@@ -1620,32 +1825,42 @@ DB::DBUtil::ColType DB::PostgreSQLTCPReader::DBType2ColType(UInt32 dbType)
 		return DB::DBUtil::CT_Int16;
 	case 23:
 		return DB::DBUtil::CT_Int32;
-	case 25:
-		return DB::DBUtil::CT_VarUTF32Char;
+	case 26:
+	case 28:
+	case 29:
+		return DB::DBUtil::CT_UInt32;
 	case 1042:
 		return DB::DBUtil::CT_UTF32Char;
-	case 1043:
-		return DB::DBUtil::CT_VarUTF32Char;
+	case 600:
+		return DB::DBUtil::CT_Vector;
+	case 700:
+		return DB::DBUtil::CT_Float;
+	case 701:
+		return DB::DBUtil::CT_Double;
+	case 790:
+	case 1700:
+		return DB::DBUtil::CT_Decimal;
 	case 1082:
 		return DB::DBUtil::CT_Date;
 	case 1114:
-	case 1184:
 		return DB::DBUtil::CT_DateTime;
+	case 1184:
+		return DB::DBUtil::CT_DateTimeTZ;
 	case 2950:
 		return DB::DBUtil::CT_UUID;
 	default:
-		return DB::DBUtil::CT_Unknown;
+		return DB::DBUtil::CT_VarUTF32Char;
 	}
 }
 
 Bool DB::PostgreSQLTCPReader::GetVariItem(UIntOS colIndex, NN<Data::VariItem> item)
 {
-	if (currRow < 0 || currRow >= rowCount || colIndex >= colCount)
+	if (!this->hasCurrentRow || colIndex >= colCount)
 	{
 		return false;
 	}
 	
-	UIntOS idx = colIndex + currRow * colCount;
+	UIntOS idx = colIndex;
 	UnsafeArray<UInt8> val;
 	if (!rowValues.GetItem(idx).SetTo(val))
 	{
@@ -1654,81 +1869,94 @@ Bool DB::PostgreSQLTCPReader::GetVariItem(UIntOS colIndex, NN<Data::VariItem> it
 	}
 	UInt32 len = valueLengths.GetItem(idx);
 	UInt32 dbType = columnTypes.GetItem(colIndex);
+	if (dbType == this->conn->geometryOid || dbType == this->conn->geographyOid)
+	{
+		UIntOS ofst = (len >= 2 && val[0] == '\\' && val[1] == 'x') ? 2 : 0;
+		UnsafeArray<UInt8> wkb = MemAllocArr(UInt8, (len - ofst) >> 1);
+		UIntOS wkbLen = Text::StrHex2Bytes(UnsafeArray<const UTF8Char>(val + ofst), wkb);
+		Math::WKBReader reader(0);
+		NN<Math::Geometry::Vector2D> vec;
+		if (reader.ParseWKB(wkb, wkbLen, 0).SetTo(vec))
+		{
+			MemFreeArr(wkb);
+			item->SetVectorDirect(vec);
+			return true;
+		}
+		MemFreeArr(wkb);
+	}
 	
 	switch (dbType)
 	{
 	case 16:
-		if (len >= 1 && val[0] == 't')
+		item->SetBool(len > 0 && (val[0] == 't' || val[0] == '1'));
+		break;
+	case 1560:
+		if (DBType2ColType(dbType, columnTypeMods.GetItem(colIndex)) == DB::DBUtil::CT_Bool)
 		{
-			item->SetBool(true);
+			item->SetBool(len > 0 && val[0] == '1');
 		}
 		else
 		{
-			item->SetBool(false);
+			item->SetStrCopy(UnsafeArray<const UInt8>(val), len);
 		}
 		break;
 	case 17:
-		item->SetByteArr(val, len);
+		if (len >= 2 && val[0] == '\\' && val[1] == 'x')
+		{
+			UnsafeArray<UInt8> byteArr = MemAllocArr(UInt8, len / 2);
+			UIntOS byteLen = Text::StrHex2Bytes(UnsafeArray<const UTF8Char>(val + 2), byteArr);
+			item->SetByteArr(byteArr, byteLen);
+			MemFreeArr(byteArr);
+		}
+		else
+		{
+			item->SetByteArr(UnsafeArray<const UInt8>(val), len);
+		}
 		break;
 	case 18:
-	case 19:
-	case 25:
-	case 1042:
-	case 1043:
-		item->SetStrCopy(UnsafeArray<const UInt8>(val), len);
+		item->SetU8(val[0]);
 		break;
 	case 20:
-		if (len == 8)
-		{
-			item->SetI64(ReadMInt64(&val[0]));
-		}
-		else
-		{
-			item->SetI64(0);
-		}
+		item->SetI64(Text::StrToInt64(val.Ptr()));
 		break;
 	case 21:
-		if (len == 2)
-		{
-			item->SetI16(ReadMInt16(&val[0]));
-		}
-		else if (len == 4)
-		{
-			item->SetI16((Int16)ReadMInt32(&val[0]));
-		}
-		else
-		{
-			item->SetI16(0);
-		}
+		item->SetI16((Int16)Text::StrToInt32(val.Ptr()));
 		break;
 	case 23:
-		if (len == 4)
-		{
-			item->SetI32(ReadMInt32(&val[0]));
-		}
-		else
-		{
-			item->SetI32(0);
-		}
+		item->SetI32(Text::StrToInt32(val.Ptr()));
+		break;
+	case 26:
+	case 28:
+	case 29:
+		item->SetU32(Text::StrToUInt32(val.Ptr()));
 		break;
 	case 700:
-		if (len == 4)
-		{
-			item->SetF64(ReadMFloat(&val[0]));
-		}
-		else
-		{
-			item->SetF64(0.0);
-		}
+		item->SetF32((Single)Text::StrToDoubleOrNAN(val.Ptr()));
 		break;
 	case 701:
-		if (len == 8)
+	case 790:
+	case 1700:
+		item->SetF64(Text::StrToDoubleOrNAN(val.Ptr()));
+		break;
+	case 600:
 		{
-			item->SetF64(ReadMDouble(&val[0]));
-		}
-		else
-		{
-			item->SetF64(0.0);
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(val, len);
+			if (len < 5 || sb.ToString()[0] != '(' || !sb.EndsWith(')'))
+			{
+				item->SetStrCopy(UnsafeArray<const UInt8>(val), len);
+				break;
+			}
+			sb.RemoveChars(1);
+			Text::PString parts[3];
+			if (Text::StrSplitP(parts, 3, sb.Substring(1), ',') != 2)
+			{
+				item->SetStrCopy(UnsafeArray<const UInt8>(val), len);
+				break;
+			}
+			NN<Math::Geometry::Point> point;
+			NEW_CLASSNN(point, Math::Geometry::Point(0, parts[0].ToDoubleOrNAN(), parts[1].ToDoubleOrNAN()));
+			item->SetVectorDirect(point);
 		}
 		break;
 	case 1082:

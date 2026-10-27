@@ -13,6 +13,7 @@ namespace DB
 {
 	class PostgreSQLTCPConn : public DB::DBConn
 	{
+		friend class PostgreSQLTCPReader;
 	private:
 		NN<Net::TCPClientFactory> clif;
 		Optional<Net::TCPClient> connCli;
@@ -20,6 +21,9 @@ namespace DB
 		Int32 cancelKey;
 
 		Bool isTran;
+		Bool readerActive;
+		UInt32 geometryOid;
+		UInt32 geographyOid;
 		NN<Text::String> server;
 		UInt16 port;
 		NN<Text::String> database;
@@ -85,6 +89,8 @@ namespace DB
 	class PostgreSQLTCPReader : public DB::DBReader
 	{
 	private:
+		NN<PostgreSQLTCPConn> conn;
+		UInt64 clientId;
 		Int8 tzQhr;
 		UInt32 backendPID;
 		Int32 cancelKey;
@@ -95,11 +101,14 @@ namespace DB
 		Data::ArrayListNative<Int32> columnTypeMods;
 		Data::ArrayListStringNN columnNames;
 		UIntOS colCount;
-		UIntOS rowCount;
-		UIntOS currRow;
+		IntOS rowChanged;
+		Bool hasCurrentRow;
+		Bool finished;
+
+		void ClearCurrentRow();
 
 	public:
-		PostgreSQLTCPReader(UInt32 backendPID, Int32 cancelKey, Int8 tzQhr, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListObj<UnsafeArrayOpt<UInt8>>> values, NN<Data::ArrayListNative<UInt32>> lengths, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods);
+		PostgreSQLTCPReader(NN<PostgreSQLTCPConn> conn, UInt64 clientId, UInt32 backendPID, Int32 cancelKey, Int8 tzQhr, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods, Bool finished);
 		virtual ~PostgreSQLTCPReader();
 
 		virtual Bool ReadNext();
@@ -126,7 +135,7 @@ namespace DB
 		virtual DB::DBUtil::ColType GetColType(UIntOS colIndex, OptOut<UIntOS> colSize);
 		virtual Bool GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef);
 
-		DB::DBUtil::ColType DBType2ColType(UInt32 dbType);
+		DB::DBUtil::ColType DBType2ColType(UInt32 dbType, Int32 typeMod);
 	};
 }
 
