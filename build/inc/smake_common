@@ -2296,6 +2296,8 @@ IO/BitWriterLSB.h:
 @BitWriterLSB.o
 IO/BitWriterMSB.h:
 @BitWriterMSB.o
+IO/BTAdvData.h:
+@BTAdvData.o
 IO/BTCapturer.h:
 @BTCapturer.o
 IO/BTDevLog.h:

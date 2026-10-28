@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Core/ByteTool_C.h"
+#include "IO/BTAdvData.h"
 #include "IO/BTDevLog.h"
 #include "Net/MACInfo.h"
 #include "Net/PacketAnalyzerBluetooth.h"
@@ -20,10 +21,11 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStartClicked(AnyType userO
 		if (bt->IsScanOn())
 		{
 			bt->ScanOff();
+			me->lblStatus->SetText(CSTR("Idle"));
 			return;
 		}
-
 		bt->ScanOn();
+		me->lblStatus->SetText(bt->IsScanOn() ? CSTR("Scanning") : CSTR("Idle"));
 	}
 }
 
@@ -63,8 +65,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDevicesDblClick(AnyType us
 	NN<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	NN<IO::BTScanLog::ScanRecord3> dev;
-	if (me->lvDevices->GetItem(index).GetOpt<IO::BTScanLog::ScanRecord3>().SetTo(dev))
+	NN<IO::BTScanLog::ScanRecord4> dev;
+	if (me->lvDevices->GetItem(index).GetOpt<IO::BTScanLog::ScanRecord4>().SetTo(dev))
 	{
 		sptr = Text::StrHexBytes(sbuff, dev->mac, 6, ':');
 		UI::Clipboard::SetString(me->GetHandle(), CSTRP(sbuff, sptr));
@@ -83,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(NN<IO::BTScanLog::ScanRecord3> dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
+void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(NN<IO::BTScanLog::ScanRecord4> dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
 	Sync::MutexUsage mutUsage(me->devMut);
@@ -103,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(NN<IO::BTSca
 	}
 }
 
-UIntOS SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap, NN<Data::FastMapNative<UInt64, UInt32>> statusMap, UIntOS baseIndex)
+UIntOS SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord4>> devMap, NN<Data::FastMapNative<UInt64, UInt32>> statusMap, UIntOS baseIndex)
 {
 	UIntOS i;
 	UIntOS j;
@@ -113,7 +115,7 @@ UIntOS SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64
 	Data::DateTime dt;
 	NN<Text::String> s;
 	Sync::MutexUsage mutUsage;
-	NN<IO::BTScanLog::ScanRecord3> dev;
+	NN<IO::BTScanLog::ScanRecord4> dev;
 
 	j = 0;
 	k = devMap->GetCount();
@@ -186,6 +188,25 @@ UIntOS SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64
 				}
 			}
 			this->lvDevices->SetSubItem(i, 11, IO::BTScanLog::AdvTypeGetName(dev->advType));
+			if (dev->advData[0] == 0 || dev->advData[0] > 30)
+			{
+				this->lvDevices->SetSubItem(i, 12, CSTR(""));
+			}
+			else
+			{
+				Text::StringBuilderUTF8 sb;
+				if (IO::BTAdvData::ToString(dev->advData, sb))
+				{
+					this->lvDevices->SetSubItem(i, 12, sb.ToCString());
+				}
+				else
+				{
+					sb.AppendC(UTF8STRC("Unknown: "));
+					sb.AppendHexBuff(Data::ByteArrayR(dev->advData, dev->advData[0] + 1), ' ', Text::LineBreakType::None);
+					printf("AVIRBluetoothCtlForm: Unknown advData: %s\r\n", sb.v.Ptr());
+					this->lvDevices->SetSubItem(i, 12, sb.ToCString());
+				}
+			}
 			statusMap->Put(dev->mac64Int, 0);
 		}
 		j++;
@@ -211,7 +232,9 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(Optional<UI::GUIClient
 	this->btnStoreList = ui->NewButton(this->pnlControl, CSTR("Store Devices"));
 	this->btnStoreList->SetRect(84, 4, 100, 23, false);
 	this->btnStoreList->HandleButtonClick(OnStoreListClicked, this);
-	this->lvDevices = ui->NewListView(*this, UI::ListViewStyle::Table, 12);
+	this->lblStatus = ui->NewLabel(this->pnlControl, CSTR("Idle"));
+	this->lblStatus->SetRect(190, 4, 200, 23, false);
+	this->lvDevices = ui->NewListView(*this, UI::ListViewStyle::Table, 13);
 	this->lvDevices->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);
@@ -228,6 +251,7 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(Optional<UI::GUIClient
 	this->lvDevices->AddColumn(CSTR("Connect"), 60);
 	this->lvDevices->AddColumn(CSTR("Company"), 200);
 	this->lvDevices->AddColumn(CSTR("AdvType"), 80);
+	this->lvDevices->AddColumn(CSTR("AdvData"), 200);
 
 	NN<IO::BTScanner> bt;
 	if (this->bt.SetTo(bt))

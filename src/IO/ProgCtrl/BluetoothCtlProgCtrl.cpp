@@ -16,7 +16,7 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 	Text::PString sarr[2];
 	UIntOS i;
 	NN<Text::String> lastCmd;
-	NN<IO::BTScanLog::ScanRecord3> dev;
+	NN<IO::BTScanLog::ScanRecord4> dev;
 
 	{
 		Text::StringBuilderUTF8 sb;
@@ -74,10 +74,12 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 					else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("Discovery started")))
 					{
 						me->scanOn = true;
+						me->scanEvt.Set();
 					}
 					else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("Discovery stopped")))
 					{
 						me->scanOn = false;
+						me->scanEvt.Set();
 					}
 					else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[CHG] Controller ")))
 					{
@@ -141,6 +143,11 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 						
 					}
 					else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[NEW] Descriptor")))
+					{
+						
+					}
+					// [NEW] Media /org/bluez/hci0
+					else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[NEW] Media ")))
 					{
 						
 					}
@@ -330,11 +337,11 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 	}
 }
 
-void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen)
+Bool IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen)
 {
 	if (!this->thread.IsRunning())
 	{
-		return;
+		return false;
 	}
 	//printf("Sending cmd %s\r\n", cmd);
 	UInt8 sbuff[256];
@@ -352,7 +359,7 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(UnsafeArray<const UTF8Char> cmd
 		UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, cmd, cmdLen);
 		sptr[0] = '\r';
 //		sptr[1] = '\n';
-		this->prog->Write(Data::ByteArrayR(sbuff, cmdLen + 1));
+		return this->prog->Write(Data::ByteArrayR(sbuff, cmdLen + 1)) == cmdLen + 1;
 	}
 	else
 	{
@@ -360,11 +367,12 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(UnsafeArray<const UTF8Char> cmd
 		sb.AppendC(cmd, cmdLen);
 		sb.AppendUTF8Char('\r');
 //		sb.AppendUTF8Char('\n');
-		this->prog->Write(sb.ToByteArray());
+		return this->prog->Write(sb.ToByteArray()) == sb.GetLength();
 	}
+	return false;
 }
 
-Optional<IO::BTScanLog::ScanRecord3> IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceGetByStr(Text::CStringNN s)
+Optional<IO::BTScanLog::ScanRecord4> IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceGetByStr(Text::CStringNN s)
 {
 	UTF8Char sbuff[18];
 	UnsafeArray<UTF8Char> sarr[7];
@@ -387,11 +395,11 @@ Optional<IO::BTScanLog::ScanRecord3> IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceG
 	macBuff[4] = Text::StrHex2UInt8C(sarr[4]);
 	macBuff[5] = Text::StrHex2UInt8C(sarr[5]);
 	UInt64 macInt = ReadMUInt64(macBuff);
-	NN<IO::BTScanLog::ScanRecord3> dev;
+	NN<IO::BTScanLog::ScanRecord4> dev;
 	Sync::MutexUsage mutUsage(this->devMut);
 	if (this->devMap.Get(macInt).SetTo(dev))
 		return dev;
-	dev = MemAllocNN(IO::BTScanLog::ScanRecord3);
+	dev = MemAllocNN(IO::BTScanLog::ScanRecord4);
 	dev.ZeroContent();
 	dev->mac[0] = macBuff[0];
 	dev->mac[1] = macBuff[1];
@@ -404,12 +412,13 @@ Optional<IO::BTScanLog::ScanRecord3> IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceG
 	dev->radioType = IO::BTScanLog::RT_UNKNOWN;
 	dev->company = 0;
 	dev->measurePower = 0;
-	dev->advType = IO::BTScanLog::ADVT_UNKNOWN;
+	dev->advType = IO::BTScanLog::AdvType::Unknown;
+	dev->advData[0] = 0;
 	this->devMap.Put(macInt, dev);
 	return dev;
 }
 
-void IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceFree(NN<IO::BTScanLog::ScanRecord3> dev)
+void IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceFree(NN<IO::BTScanLog::ScanRecord4> dev)
 {
 	OPTSTR_DEL(dev->name);
 	MemFreeNN(dev);
@@ -451,7 +460,13 @@ Bool IO::ProgCtrl::BluetoothCtlProgCtrl::IsScanOn()
 
 void IO::ProgCtrl::BluetoothCtlProgCtrl::ScanOn()
 {
-	this->SendCmd(UTF8STRC("scan on"));
+	if (this->scanOn)
+		return;
+	this->scanEvt.Clear();
+	if (this->SendCmd(UTF8STRC("scan on")))
+	{
+		this->scanEvt.Wait(1000);
+	}
 }
 
 void IO::ProgCtrl::BluetoothCtlProgCtrl::ScanOff()
@@ -509,13 +524,13 @@ Bool IO::ProgCtrl::BluetoothCtlProgCtrl::WaitForCmdReady()
 	return this->cmdReady;
 }
 
-NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> IO::ProgCtrl::BluetoothCtlProgCtrl::GetPublicMap(NN<Sync::MutexUsage> mutUsage)
+NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord4>> IO::ProgCtrl::BluetoothCtlProgCtrl::GetPublicMap(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->devMut);
 	return this->devMap;
 }
 
-NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> IO::ProgCtrl::BluetoothCtlProgCtrl::GetRandomMap(NN<Sync::MutexUsage> mutUsage)
+NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord4>> IO::ProgCtrl::BluetoothCtlProgCtrl::GetRandomMap(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->devMut);
 	return this->devMap;

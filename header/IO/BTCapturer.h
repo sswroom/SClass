@@ -27,9 +27,9 @@ namespace IO
 		void Stop();
 
 		void StoreStatus();
-		NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> GetPublicList(NN<Sync::MutexUsage> mutUsage) const;
-		NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> GetRandomList(NN<Sync::MutexUsage> mutUsage) const;
-		void SetUpdateHandler(IO::BTScanner::RecordHandler hdlr, void *userObj);
+		NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord4>> GetPublicList(NN<Sync::MutexUsage> mutUsage) const;
+		NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord4>> GetRandomList(NN<Sync::MutexUsage> mutUsage) const;
+		void SetUpdateHandler(IO::BTScanner::RecordHandler hdlr, AnyType userObj);
 	};
 }
 #endif

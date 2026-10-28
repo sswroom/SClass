@@ -26,25 +26,26 @@ namespace IO
 			RT_LE
 		};
 
-		enum AdvType
+		enum class AdvType
 		{
-			ADVT_UNKNOWN,
-			ADVT_IBEACON,
-			ADVT_FINDMY_BROADCAST,
-			ADVT_HOMEKIT,
-			ADVT_AIRDROP,
-			ADVT_AIRPLAY_SRC,
-			ADVT_AIRPLAY_TARGET,
-			ADVT_AIRPRINT,
-			ADVT_HANDOFF,
-			ADVT_MAGIC_SWITCH,
-			ADVT_NEARBY_ACTION,
-			ADVT_NEARBY_INFO,
-			ADVT_PROXIMITY_PAIRING,
-			ADVT_TETHERING_SRC,
-			ADVT_TETHERING_TARGET,
-			ADVT_EDDYSTONE,
-			ADVT_ALTBEACON
+			Unknown,
+			Unsupported,
+			IBeacon,
+			FindMyBroadcast,
+			HomeKit,
+			AirDrop,
+			AirPlaySrc,
+			AirPlayTarget,
+			AirPrint,
+			Handoff,
+			MagicSwitch,
+			NearbyAction,
+			NearbyInfo,
+			ProximityPairing,
+			TetheringSrc,
+			TetheringTarget,
+			Eddystone,
+			AltBeacon
 		};
 
 		typedef struct
@@ -62,7 +63,8 @@ namespace IO
 			Int64 lastSeenTime;
 			UInt16 company;
 			AdvType advType;
-		} ScanRecord3;
+			UInt8 advData[31];
+		} ScanRecord4;
 
 		struct LogEntry
 		{
@@ -96,7 +98,7 @@ namespace IO
 		virtual IO::ParserType GetParserType() const;
 
 		NN<LogEntry> AddEntry64(Int64 timeTicks, UInt64 mac64Int, RadioType radioType, AddressType addrType, UInt16 company, Optional<Text::String> name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType);
-		NN<LogEntry> AddScanRec(NN<const ScanRecord3> rec);
+		NN<LogEntry> AddScanRec(NN<const ScanRecord4> rec);
 		void AddBTRAWPacket(Int64 timeTicks, Data::ByteArrayR buff);
 		void ClearList();
 		NN<const Data::ReadingListNN<IO::BTScanLog::DevEntry>> GetPublicList() const;
@@ -105,8 +107,8 @@ namespace IO
 		static Text::CStringNN RadioTypeGetName(RadioType radioType);
 		static Text::CStringNN AddressTypeGetName(AddressType addrType);
 		static Text::CStringNN AdvTypeGetName(AdvType advType);
-		static Bool ParseBTRAWPacket(NN<ScanRecord3> rec, Int64 timeTicks, Data::ByteArrayR buff);
-		static void ParseAdvisement(NN<ScanRecord3> rec, UnsafeArray<const UInt8> buff, UIntOS ofst, UIntOS endOfst);
+		static Bool ParseBTRAWPacket(NN<ScanRecord4> rec, Int64 timeTicks, Data::ByteArrayR buff);
+		static void ParseAdvisement(NN<ScanRecord4> rec, UnsafeArray<const UInt8> buff, UIntOS ofst, UIntOS endOfst);
 	};
 }
 #endif

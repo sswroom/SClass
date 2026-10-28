@@ -70,7 +70,7 @@ NN<IO::BTScanLog::LogEntry> IO::BTScanLog::AddEntry64(Int64 timeTicks, UInt64 ma
 	{
 		dev->company = company;
 	}
-	if (advType != ADVT_UNKNOWN)
+	if (advType != AdvType::Unknown)
 	{
 		dev->lastAdvType = advType;
 	}
@@ -78,14 +78,14 @@ NN<IO::BTScanLog::LogEntry> IO::BTScanLog::AddEntry64(Int64 timeTicks, UInt64 ma
 	return log;
 }
 
-NN<IO::BTScanLog::LogEntry> IO::BTScanLog::AddScanRec(NN<const IO::BTScanLog::ScanRecord3> rec)
+NN<IO::BTScanLog::LogEntry> IO::BTScanLog::AddScanRec(NN<const IO::BTScanLog::ScanRecord4> rec)
 {
 	return this->AddEntry64(rec->lastSeenTime, rec->mac64Int, rec->radioType, rec->addrType, rec->company, rec->name, rec->rssi, rec->txPower, rec->measurePower, rec->advType);
 }
 
 void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, Data::ByteArrayR buff)
 {
-	IO::BTScanLog::ScanRecord3 rec;
+	IO::BTScanLog::ScanRecord4 rec;
 	if (ParseBTRAWPacket(rec, timeTicks, buff))
 	{
 		this->AddScanRec(rec);
@@ -143,45 +143,47 @@ Text::CStringNN IO::BTScanLog::AdvTypeGetName(AdvType advType)
 {
 	switch (advType)
 	{
-	case ADVT_IBEACON:
+	case AdvType::IBeacon:
 		return CSTR("iBeacon");
-	case ADVT_FINDMY_BROADCAST:
+	case AdvType::FindMyBroadcast:
 		return CSTR("AirTag");
-	case ADVT_HOMEKIT:
+	case AdvType::HomeKit:
 		return CSTR("HomeKit");
-	case ADVT_AIRDROP:
+	case AdvType::AirDrop:
 		return CSTR("AirDrop");
-	case ADVT_AIRPLAY_TARGET:
+	case AdvType::AirPlayTarget:
 		return CSTR("Airplay Target");
-	case ADVT_AIRPLAY_SRC:
+	case AdvType::AirPlaySrc:
 		return CSTR("Airplay Source");
-	case ADVT_AIRPRINT:
+	case AdvType::AirPrint:
 		return CSTR("AirPrint");
-	case ADVT_HANDOFF:
+	case AdvType::Handoff:
 		return CSTR("Handoff");
-	case ADVT_MAGIC_SWITCH:
+	case AdvType::MagicSwitch:
 		return CSTR("Magic Switch");
-	case ADVT_NEARBY_ACTION:
+	case AdvType::NearbyAction:
 		return CSTR("Nearby Action");
-	case ADVT_NEARBY_INFO:
+	case AdvType::NearbyInfo:
 		return CSTR("Nearby Info");
-	case ADVT_PROXIMITY_PAIRING:
+	case AdvType::ProximityPairing:
 		return CSTR("Proximity Pairing");
-	case ADVT_TETHERING_SRC:
+	case AdvType::TetheringSrc:
 		return CSTR("Tethering Source");
-	case ADVT_TETHERING_TARGET:
+	case AdvType::TetheringTarget:
 		return CSTR("Teghering Target");
-	case ADVT_EDDYSTONE:
+	case AdvType::Eddystone:
 		return CSTR("Eddystone");
-	case ADVT_ALTBEACON:
+	case AdvType::AltBeacon:
 		return CSTR("AltBeacon");
-	case ADVT_UNKNOWN:
+	case AdvType::Unsupported:
+		return CSTR("Unsupported");
+	case AdvType::Unknown:
 	default:
 		return CSTR("Unknown");
 	}
 }
 
-Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord3> rec, Int64 timeTicks, Data::ByteArrayR buff)
+Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord4> rec, Int64 timeTicks, Data::ByteArrayR buff)
 {
 	if (buff.GetSize() < 19)
 	{
@@ -197,7 +199,8 @@ Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord3> rec, Int64 t
 	rec->company = 0;
 	rec->lastSeenTime = timeTicks;
 	rec->measurePower = 0;
-	rec->advType = ADVT_UNKNOWN;
+	rec->advType = AdvType::Unknown;
+	rec->advData[0] = 0;
 	UInt8 mac[8];
 	UInt8 addrType;
 	if (buff[4] == 4 && buff[5] == 0x3E) //HCI Event, LE Meta
@@ -336,7 +339,7 @@ Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord3> rec, Int64 t
 	return false;
 }
 
-void IO::BTScanLog::ParseAdvisement(NN<ScanRecord3> rec, UnsafeArray<const UInt8> buff, UIntOS ofst, UIntOS endOfst)
+void IO::BTScanLog::ParseAdvisement(NN<ScanRecord4> rec, UnsafeArray<const UInt8> buff, UIntOS ofst, UIntOS endOfst)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -352,7 +355,7 @@ void IO::BTScanLog::ParseAdvisement(NN<ScanRecord3> rec, UnsafeArray<const UInt8
 		{
 			break;
 		}
-		if (buff[i + 1] == 8 || buff[i + 1] == 9)
+		if (buff[i + 1] == 8 || buff[i + 1] == 9) // Shortened Local Name / Complete Local Name
 		{
 			sptr = Text::StrConcatC(sbuff, &buff[i + 2], (UIntOS)optLen - 1);
 		}
@@ -365,12 +368,12 @@ void IO::BTScanLog::ParseAdvisement(NN<ScanRecord3> rec, UnsafeArray<const UInt8
 				uuid = ReadLUInt16(&buff[i + j]);
 				if (uuid == 0xFEAA)
 				{
-					rec->advType = ADVT_EDDYSTONE;
+					rec->advType = AdvType::Eddystone;
 				}
 				j += 2;
 			}
 		}
-		else if (buff[i + 1] == 0xFF)
+		else if (buff[i + 1] == 0xFF) // Manufacturer-specific data
 		{
 			rec->company = ReadLUInt16(&buff[i + 2]);
 			if (rec->company == 0x4C)
@@ -378,61 +381,66 @@ void IO::BTScanLog::ParseAdvisement(NN<ScanRecord3> rec, UnsafeArray<const UInt8
 				switch (buff[i + 4])
 				{
 				case 2:
-					rec->advType = ADVT_IBEACON;
+					rec->advType = AdvType::IBeacon;
 					if (optLen == 26)
 					{
 						rec->measurePower = (Int8)buff[i + 26];
 					}
 					break;
 				case 3:
-					rec->advType = ADVT_AIRPRINT;
+					rec->advType = AdvType::AirPrint;
 					break;
 				case 5:
-					rec->advType = ADVT_AIRDROP;
+					rec->advType = AdvType::AirDrop;
 					break;
 				case 6:
-					rec->advType = ADVT_HOMEKIT;
+					rec->advType = AdvType::HomeKit;
 					break;
 				case 7:
-					rec->advType = ADVT_PROXIMITY_PAIRING;
+					rec->advType = AdvType::ProximityPairing;
 					break;
 				case 9:
-					rec->advType = ADVT_AIRPLAY_TARGET;
+					rec->advType = AdvType::AirPlayTarget;
 					break;
 				case 10:
-					rec->advType = ADVT_AIRPLAY_SRC;
+					rec->advType = AdvType::AirPlaySrc;
 					break;
 				case 11:
-					rec->advType = ADVT_MAGIC_SWITCH;
+					rec->advType = AdvType::MagicSwitch;
 					break;
 				case 12:
-					rec->advType = ADVT_HANDOFF;
+					rec->advType = AdvType::Handoff;
 					break;
 				case 13:
-					rec->advType = ADVT_TETHERING_TARGET;
+					rec->advType = AdvType::TetheringTarget;
 					break;
 				case 14:
-					rec->advType = ADVT_TETHERING_SRC;
+					rec->advType = AdvType::TetheringSrc;
 					break;
 				case 15:
-					rec->advType = ADVT_NEARBY_ACTION;
+					rec->advType = AdvType::NearbyAction;
 					break;
 				case 16:
-					rec->advType = ADVT_NEARBY_INFO;
+					rec->advType = AdvType::NearbyInfo;
 					break;
 				case 18:
-					rec->advType = ADVT_FINDMY_BROADCAST;
+					rec->advType = AdvType::FindMyBroadcast;
 					break;
 				default:
-					rec->advType = ADVT_UNKNOWN;
+					rec->advType = AdvType::Unknown;
 					break;
 				}
 			}
 			else if (optLen == 27 && ReadMUInt16(&buff[i + 4]) == 0xBEAC)
 			{
-				rec->advType = ADVT_ALTBEACON;
+				rec->advType = AdvType::AltBeacon;
 				rec->measurePower = (Int8)buff[i + 26];
 			}
+			if (rec->advType == AdvType::Unknown)
+			{
+				rec->advType = AdvType::Unsupported;
+			}
+			MemCopyNO(rec->advData, &buff[i], (UIntOS)optLen + 1);
 		}
 		i += 1 + (UIntOS)optLen;
 	}

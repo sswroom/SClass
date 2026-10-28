@@ -19,9 +19,10 @@ namespace IO
 		private:
 			NN<Manage::ProcessExecution> prog;
 			Sync::Mutex devMut;
-			Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3> devMap;
-			Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3> randDevMap;
+			Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord4> devMap;
+			Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord4> randDevMap;
 			Sync::Mutex lastCmdMut;
+			Sync::Event scanEvt;
 			Optional<Text::String> lastCmd;
 			IO::BTScanner::RecordHandler recHdlr;
 			AnyType recHdlrObj;
@@ -31,10 +32,10 @@ namespace IO
 			Bool cmdReady;
 
 			static void __stdcall ReadThread(NN<Sync::Thread> thread);
-			void SendCmd(UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen);
+			Bool SendCmd(UnsafeArray<const UTF8Char> cmd, UIntOS cmdLen);
 
-			Optional<IO::BTScanLog::ScanRecord3> DeviceGetByStr(Text::CStringNN s);
-			static void DeviceFree(NN<IO::BTScanLog::ScanRecord3> dev);
+			Optional<IO::BTScanLog::ScanRecord4> DeviceGetByStr(Text::CStringNN s);
+			static void DeviceFree(NN<IO::BTScanLog::ScanRecord4> dev);
 		public:
 			BluetoothCtlProgCtrl();
 			virtual ~BluetoothCtlProgCtrl();
@@ -47,8 +48,8 @@ namespace IO
 			virtual void Close();
 			virtual Bool SetScanMode(ScanMode scanMode);
 
-			virtual NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> GetPublicMap(NN<Sync::MutexUsage> mutUsage);
-			virtual NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> GetRandomMap(NN<Sync::MutexUsage> mutUsage);
+			virtual NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord4>> GetPublicMap(NN<Sync::MutexUsage> mutUsage);
+			virtual NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord4>> GetRandomMap(NN<Sync::MutexUsage> mutUsage);
 
 			Bool WaitForCmdReady();
 		};

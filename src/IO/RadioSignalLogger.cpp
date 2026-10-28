@@ -28,7 +28,7 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(NN<Net::WirelessLAN::BSSInfo>
 	}
 }
 
-void __stdcall IO::RadioSignalLogger::OnBTUpdate(NN<IO::BTScanLog::ScanRecord3> dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
+void __stdcall IO::RadioSignalLogger::OnBTUpdate(NN<IO::BTScanLog::ScanRecord4> dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
 {
 	NN<IO::RadioSignalLogger> me = userObj.GetNN<IO::RadioSignalLogger>();
 	NN<IO::FileStream> fs;

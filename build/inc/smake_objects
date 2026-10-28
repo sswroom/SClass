@@ -427,6 +427,7 @@ BitReaderLSB.o: ../../src/IO/BitReaderLSB.cpp
 BitReaderMSB.o: ../../src/IO/BitReaderMSB.cpp
 BitWriterLSB.o: ../../src/IO/BitWriterLSB.cpp
 BitWriterMSB.o: ../../src/IO/BitWriterMSB.cpp
+BTAdvData.o: ../../src/IO/BTAdvData.cpp
 BTCapturer.o: ../../src/IO/BTCapturer.cpp
 BTControllerL.o: ../../src/IO/BTControllerL.cpp
 !-lbluetooth
