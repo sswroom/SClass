@@ -534,6 +534,9 @@ BME280Test:
 BTListDevices:
 @BTListDevices.o
 @ConsoleStartup.o
+BTSensorTest:
+@BTSensorTest.o
+@ConsoleStartup.o
 ConsoleInputTest:
 @ConsoleInputTest.o
 @ConsoleStartup.o
@@ -1375,6 +1378,7 @@ BitWriterTest.o: ../../main/IO/BitWriterTest.cpp
 BLEScanTest.o: ../../main/IO/BLEScanTest.cpp
 BME280Test.o: ../../main/IO/BME280Test.cpp
 BTListDevices.o: ../../main/IO/BTListDevices.cpp
+BTSensorTest.o: ../../main/IO/BTSensorTest.cpp
 ConsoleInputTest.o: ../../main/IO/ConsoleInputTest.cpp
 ConsoleWriterTest.o: ../../main/IO/ConsoleWriterTest.cpp
 DHT22Capture.o: ../../main/IO/DHT22Capture.cpp

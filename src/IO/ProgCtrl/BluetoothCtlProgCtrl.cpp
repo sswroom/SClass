@@ -6,7 +6,7 @@
 #include "Text/StringBuilderC.h"
 #include "Text/StringBuilderUTF8.h"
 
-#include <stdio.h>
+//#define VERBOSE
 
 void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> thread)
 {
@@ -24,16 +24,21 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 		while (!thread->IsStopping())
 		{
 			readSize = me->prog->Read(BYTEARR(buff));
-/*			sb.ClearStr();
+#if 0
+			sb.ClearStr();
 			sb.AppendHexBuff(buff, readSize, ' ', Text::LineBreakType::CRLF);
 			printf("Read Size: %d\r\n", (Int32)readSize);
-			printf("%s\r\n", sb.ToString());*/
+			printf("%s\r\n", sb.v.Ptr());
+#endif
 
 			sbBuff.AppendC(buff, readSize);
 			sbBuff.RemoveANSIEscapes();
 			sarr[1] = sbBuff;
 			while ((i = Text::StrSplitLineP(sarr, 2, sarr[1])) == 2)
 			{
+#if defined(VERBOSE)
+				printf("Line: %s\r\n", sarr[0].v.Ptr());
+#endif
 				Sync::MutexUsage mutUsage(me->lastCmdMut);
 				if (me->lastCmd.SetTo(lastCmd) && lastCmd->Equals(sarr[0].v, sarr[0].leng))
 				{
@@ -289,6 +294,14 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 						}
 						me->cmdReady = true;
 					}
+					else if (sarr[0].v[0] == '[' && Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("]> ")) != INVALID_INDEX)
+					{
+						if (!me->cmdReady)
+						{
+							//printf("cmdReady = true\r\n");
+						}
+						me->cmdReady = true;
+					}
 					else
 					{
 						printf("Unknown Line: %s\r\n", sarr[0].v.Ptr());
@@ -297,6 +310,14 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 			}
 
 			if (sarr[0].v[0] == '[' && Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("]# ")) != INVALID_INDEX)
+			{
+				if (!me->cmdReady)
+				{
+					//printf("cmdReady = true\r\n");
+				}
+				me->cmdReady = true;
+			}
+			else if (sarr[0].v[0] == '[' && Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("]> ")) != INVALID_INDEX)
 			{
 				if (!me->cmdReady)
 				{
