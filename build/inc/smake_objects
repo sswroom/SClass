@@ -9,8 +9,8 @@ MyMemoryW.o: ../../src/MyMemoryW.cpp
 !-ldbghelp
 
 AIAgent.o: ../../src/AI/AIAgent.cpp
-AIReadDBSkill.o: ../../src/AI/AIReadDBSkill.cpp
-AISkill.o: ../../src/AI/AISkill.cpp
+AIAgentHandler.o: ../../src/AI/AIAgentHandler.cpp
+AIReadDBTool.o: ../../src/AI/AIReadDBTool.cpp
 SimpleAIAgent.o: ../../src/AI/SimpleAIAgent.cpp
 
 Core.o: ../../src/Core/Core.cpp

@@ -185,7 +185,7 @@ Optional<Text::String> AI::SimpleAIAgent::SendQuestion(NN<AISession> session, Te
 			Data::VariObject input(Data::VariObject::NameType::Field);
 			Data::VariObject output(Data::VariObject::NameType::Field);
 			Bool invoked = SimpleAIAgent::SetArgs(input, argObject) &&
-				this->InvokeSkill(functionName->ToCString(), input, output);
+				this->InvokeTool(functionName->ToCString(), input, output);
 			Text::StringBuilderUTF8 toolOutput;
 			if (!invoked)
 			{
@@ -315,11 +315,11 @@ NN<AI::AISession> AI::SimpleAIAgent::CreateSession(Text::CStringNN systemPrompt)
 	NEW_CLASSNN(session, AISession(this->modelName->ToCString(), systemPrompt));
 
 	UIntOS i = 0;
-	UIntOS skillCount = this->GetSkillCount();
-	while (i < skillCount)
+	UIntOS toolCount = this->GetToolCount();
+	while (i < toolCount)
 	{
-		NN<AI::AISkill> skill;
-		if (this->GetSkill(i).SetTo(skill))
+		NN<AI::AITool> skill;
+		if (this->GetTool(i).SetTo(skill))
 		{
 			NN<Net::OpenAIToolParameters> parameters;
 			NEW_CLASSNN(parameters, Net::OpenAIToolParameters());

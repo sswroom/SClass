@@ -1,13 +1,13 @@
-#ifndef _SM_AI_AIREADDBSKILL
-#define _SM_AI_AIREADDBSKILL
-#include "AI/AISkill.h"
+#ifndef _SM_AI_AIREADDBTOOL
+#define _SM_AI_AIREADDBTOOL
+#include "AI/AITool.h"
 #include "DB/ReadingDB.h"
 #include "Data/ArrayListStringNN.h"
 #include "Data/QueryConditions.h"
 
 namespace AI
 {
-	class AIReadDBSkill : public AISkill
+	class AIReadDBTool : public AITool
 	{
 	private:
 		NN<DB::ReadingDB> db;
@@ -16,8 +16,8 @@ namespace AI
 		static Bool GetUIntOSInput(NN<Data::VariObject> input, UnsafeArray<const UTF8Char> name, UIntOS defaultValue, OutParam<UIntOS> value);
 
 	public:
-		AIReadDBSkill(NN<DB::ReadingDB> db, Text::CStringNN schemaName);
-		virtual ~AIReadDBSkill();
+		AIReadDBTool(NN<DB::ReadingDB> db, Text::CStringNN schemaName);
+		virtual ~AIReadDBTool();
 		virtual Text::CStringNN GetName() const;
 		virtual void GetDescription(NN<Text::StringBuilderUTF8> sb) const;
 		virtual void GetParameters(NN<Net::OpenAIToolParameters> parameters) const;

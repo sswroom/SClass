@@ -1647,11 +1647,12 @@ UnsafeArrayOpt.h:
 
 AI/AIAgent.h:
 @AIAgent.o
-AI/AIReadDBSkill.h:
-@AIReadDBSkill.o
-AI/AISkill.h:
-@AISkill.o
+AI/AIAgentHandler.h:
+@AIAgentHandler.o
+AI/AIReadDBTool.h:
+@AIReadDBTool.o
 AI/AISession.h:
+AI/AITool.h:
 @SimpleAIAgent.o
 AI/SimpleAIAgent.h:
 @SimpleAIAgent.o

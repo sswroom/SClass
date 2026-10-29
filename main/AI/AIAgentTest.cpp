@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "AI/AIReadDBSkill.h"
+#include "AI/AIReadDBTool.h"
 #include "AI/SimpleAIAgent.h"
 #include "Core/Core.h"
 #include "DB/DBConfig.h"
@@ -61,8 +61,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	log.LogMessage(Text::StringBuilderUTF8().Append(CSTR("Using model: "))->Append(modelName)->ToCString(), IO::LogHandler::LogLevel::Command);
 	{
 		AI::SimpleAIAgent agent(openAI, modelName->ToCString());
-		AI::AIReadDBSkill dbSkill(db->GetDBConn(), dbSchema);
-		agent.AddSkill(dbSkill);
+		AI::AIReadDBTool dbTool(db->GetDBConn(), dbSchema);
+		agent.AddTool(dbTool);
 		NN<AI::AISession> session = agent.CreateSession(systemPrompt);
 		NN<Text::String> answer;
 		if (agent.Ask(session, question).SetTo(answer))

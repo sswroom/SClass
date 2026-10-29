@@ -5,48 +5,48 @@ AI::AIAgent::~AIAgent()
 {
 }
 
-Bool AI::AIAgent::AddSkill(NN<AISkill> skill)
+Bool AI::AIAgent::AddTool(NN<AITool> tool)
 {
-	UIntOS i = this->skills.GetCount();
+	UIntOS i = this->tools.GetCount();
 	while (i-- > 0)
 	{
-		if (this->skills.GetItemNoCheck(i)->GetName().Equals(skill->GetName()))
+		if (this->tools.GetItemNoCheck(i)->GetName().Equals(tool->GetName()))
 			return false;
 	}
-	this->skills.Add(skill);
+	this->tools.Add(tool);
 	return true;
 }
 
-Optional<AI::AISkill> AI::AIAgent::RemoveSkill(Text::CStringNN name)
+Optional<AI::AITool> AI::AIAgent::RemoveTool(Text::CStringNN name)
 {
-	UIntOS i = this->skills.GetCount();
+	UIntOS i = this->tools.GetCount();
 	while (i-- > 0)
 	{
-		if (this->skills.GetItemNoCheck(i)->GetName().Equals(name))
-			return this->skills.RemoveAt(i);
+		if (this->tools.GetItemNoCheck(i)->GetName().Equals(name))
+			return this->tools.RemoveAt(i);
 	}
 	return nullptr;
 }
 
-UIntOS AI::AIAgent::GetSkillCount() const
+UIntOS AI::AIAgent::GetToolCount() const
 {
-	return this->skills.GetCount();
+	return this->tools.GetCount();
 }
 
-Optional<AI::AISkill> AI::AIAgent::GetSkill(UIntOS index) const
+Optional<AI::AITool> AI::AIAgent::GetTool(UIntOS index) const
 {
-	return this->skills.GetItem(index);
+	return this->tools.GetItem(index);
 }
 
-Bool AI::AIAgent::InvokeSkill(Text::CStringNN name, NN<Data::VariObject> input, NN<Data::VariObject> output) const
+Bool AI::AIAgent::InvokeTool(Text::CStringNN name, NN<Data::VariObject> input, NN<Data::VariObject> output) const
 {
-	UIntOS i = this->skills.GetCount();
+	UIntOS i = this->tools.GetCount();
 	while (i-- > 0)
 	{
-		NN<AISkill> skill = this->skills.GetItemNoCheck(i);
-		if (skill->GetName().Equals(name))
-			return skill->Invoke(input, output);
+		NN<AITool> tool = this->tools.GetItemNoCheck(i);
+		if (tool->GetName().Equals(name))
+			return tool->Invoke(input, output);
 	}
-	printf("AIAgent: skill not found: %s\n", name.v.Ptr());
+	printf("AIAgent: tool not found: %s\n", name.v.Ptr());
 	return false;
 }
