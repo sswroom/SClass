@@ -122,6 +122,7 @@ namespace Text
 	FORCEINLINE Bool StrEqualsC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UnsafeArray<const UTF8Char> str2, UIntOS len2);
 	Bool StrEqualsICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
 	Bool StrEqualsICaseC(UnsafeArray<const UTF8Char> str1, UIntOS str1Len, UnsafeArray<const UTF8Char> str2, UIntOS str2Len);
+	Bool StrDBLike(UnsafeArray<const UTF8Char> str1, UIntOS str1Len, UnsafeArray<const UTF8Char> str2, UIntOS str2Len);
 
 	FORCEINLINE IntOS StrCompare(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2) { return MyString_StrCompare(str1.Ptr(), str2.Ptr()); }
 	FORCEINLINE IntOS StrCompareICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2) { return MyString_StrCompareICase(str1.Ptr(), str2.Ptr()); }

@@ -12,7 +12,64 @@
 
 void Text::JSONBuilder::AppendStr(Text::CStringNN val)
 {
-	this->AppendStrUTF8(val.v);
+	UTF8Char sbuff[256];
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<const UTF8Char> valPtr = val.v;
+	UnsafeArray<const UTF8Char> valEnd = val.v + val.leng;
+	UTF8Char c;
+	sptr = sbuff;
+	*sptr++ = '\"';
+	while (valPtr < valEnd)
+	{
+		c = *valPtr++;
+		switch (c)
+		{
+		case '\\':
+			sptr[0] = '\\';
+			sptr[1] = '\\';
+			sptr += 2;
+			break;
+		case '\"':
+			sptr[0] = '\\';
+			sptr[1] = '\"';
+			sptr += 2;
+			break;
+		case '\r':
+			sptr[0] = '\\';
+			sptr[1] = 'r';
+			sptr += 2;
+			break;
+		case '\n':
+			sptr[0] = '\\';
+			sptr[1] = 'n';
+			sptr += 2;
+			break;
+		case '\0':
+			sptr[0] = '\\';
+			sptr[1] = '0';
+			sptr += 2;
+			break;
+		default:
+			if (c < 32)
+			{
+				sptr[0] = '\\';
+				sptr[1] = 'u';
+				sptr = Text::StrHexVal16(sptr + 2, c);
+			}
+			else
+			{
+				*sptr++ = c;
+			}
+			break;
+		}
+		if (sptr - sbuff >= 254)
+		{
+			this->sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
+			sptr = sbuff;
+		}
+	}
+	*sptr++ = '\"';
+	this->sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 }
 
 void Text::JSONBuilder::AppendStrUTF8(UnsafeArray<const UTF8Char> val)

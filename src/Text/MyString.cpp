@@ -1516,6 +1516,29 @@ Bool Text::StrEqualsICaseC(UnsafeArray<const UTF8Char> str1, UIntOS str1Len, Uns
 	return true;
 }
 
+Bool Text::StrDBLike(UnsafeArray<const UTF8Char> str1, UIntOS str1Len, UnsafeArray<const UTF8Char> str2, UIntOS str2Len)
+{
+	if (str2[0] == '%')
+	{
+		if (str2[str2Len - 1] == '%')
+		{
+			return StrIndexOfC(str1, str1Len, str2 + 1, str2Len - 2) != INVALID_INDEX;
+		}
+		else
+		{
+			return StrEndsWithC(str1, str1Len, str2 + 1, str2Len - 1);
+		}
+	}
+	else if (str2[str2Len - 1] == '%')
+	{
+		return StrStartsWithC(str1, str1Len, str2, str2Len - 1);
+	}
+	else
+	{
+		return StrEqualsC(str1, str1Len, str2, str2Len);
+	}
+}
+
 IntOS Text::StrCompareFastC(UnsafeArray<const UTF8Char> str1, UIntOS len1, UnsafeArray<const UTF8Char> str2, UIntOS len2)
 {
 	IntOS defRet;

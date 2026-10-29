@@ -37,6 +37,9 @@ namespace Text
 		Bool EndsWith(UnsafeArray<const UTF8Char> s, UIntOS len) const;
 		Bool EndsWith(StringBase<const UTF8Char> s) const;
 		Bool EndsWithICase(UnsafeArray<const UTF8Char> s, UIntOS len) const;
+		Bool DBLike(NN<StringBase<UTF8Char>> s) const;
+		Bool DBLike(StringBase<const UTF8Char> s) const;
+		Bool DBLike(UnsafeArray<const UTF8Char> s, UIntOS len) const;
 		Bool HasUpperCase() const;
 		Bool ContainChars(UnsafeArray<const UTF8Char> chars) const;
 		UIntOS IndexOf(UnsafeArray<const UTF8Char> s, UIntOS len) const;
@@ -255,6 +258,21 @@ template <typename T> Bool Text::StringBase<T>::EndsWithICase(UnsafeArray<const 
 		return false;
 	}
 	return Text::StrEqualsICaseC(&this->v[len1 - len2], len2, s, len2);
+}
+
+template <typename T> Bool Text::StringBase<T>::DBLike(NN<StringBase<UTF8Char>> s) const
+{
+	return DBLike(s->v, s->leng);
+}
+
+template <typename T> Bool Text::StringBase<T>::DBLike(StringBase<const UTF8Char> s) const
+{
+	return DBLike(s.v, s.leng);
+}
+
+template <typename T> Bool Text::StringBase<T>::DBLike(UnsafeArray<const UTF8Char> s, UIntOS len) const
+{
+	return Text::StrDBLike(this->v, this->leng, s, len);
 }
 
 template <typename T> Bool Text::StringBase<T>::HasUpperCase() const

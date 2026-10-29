@@ -23,6 +23,7 @@ namespace Data
 			StringContains,
 			StringEquals,
 			StringNotEquals,
+			StringLike,
 			Boolean,
 			BooleanAnd,
 			BooleanOr,
@@ -482,6 +483,22 @@ namespace Data
 			virtual Bool TestValid(NN<Data::VariItem> item) const;
 		};
 
+		class StringLikeCondition : public FieldCondition
+		{
+		private:
+			NN<Text::String> val;
+
+		public:
+			StringLikeCondition(Text::CStringNN fieldName, Text::CStringNN val);
+			virtual ~StringLikeCondition();
+
+			virtual ObjectType GetType() const;
+			virtual NN<ConditionObject> Clone() const { NN<ConditionObject> cond; NEW_CLASSNN(cond, StringLikeCondition(this->fieldName->ToCString(), this->val->ToCString())); return cond; }
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
+			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
+			virtual Bool TestValid(NN<Data::VariItem> item) const;
+		};
+
 		class BooleanCondition : public FieldCondition
 		{
 		private:
@@ -568,6 +585,7 @@ namespace Data
 		NN<QueryConditions> StrContains(Text::CStringNN fieldName, Text::CStringNN val);
 		NN<QueryConditions> StrEquals(Text::CStringNN fieldName, Text::CStringNN val);
 		NN<QueryConditions> StrNotEquals(Text::CStringNN fieldName, Text::CStringNN val);
+		NN<QueryConditions> StrLike(Text::CStringNN fieldName, Text::CStringNN val);
 		NN<QueryConditions> BoolEquals(Text::CStringNN fieldName, Bool val);
 		NN<QueryConditions> IsNull(Text::CStringNN fieldName);
 		NN<QueryConditions> NotNull(Text::CStringNN fieldName);
