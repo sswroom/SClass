@@ -11,6 +11,8 @@ MyMemoryW.o: ../../src/MyMemoryW.cpp
 AIAgent.o: ../../src/AI/AIAgent.cpp
 AIAgentHandler.o: ../../src/AI/AIAgentHandler.cpp
 AIReadDBTool.o: ../../src/AI/AIReadDBTool.cpp
+AIReadMDTool.o: ../../src/AI/AIReadMDTool.cpp
+AITool.o: ../../src/AI/AITool.cpp
 SimpleAIAgent.o: ../../src/AI/SimpleAIAgent.cpp
 
 Core.o: ../../src/Core/Core.cpp

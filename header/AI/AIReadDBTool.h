@@ -13,8 +13,6 @@ namespace AI
 		NN<DB::ReadingDB> db;
 		NN<Text::String> schemaName;
 
-		static Bool GetUIntOSInput(NN<Data::VariObject> input, UnsafeArray<const UTF8Char> name, UIntOS defaultValue, OutParam<UIntOS> value);
-
 	public:
 		AIReadDBTool(NN<DB::ReadingDB> db, Text::CStringNN schemaName);
 		virtual ~AIReadDBTool();

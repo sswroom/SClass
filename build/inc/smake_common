@@ -1651,9 +1651,11 @@ AI/AIAgentHandler.h:
 @AIAgentHandler.o
 AI/AIReadDBTool.h:
 @AIReadDBTool.o
+AI/AIReadMDTool.h:
+@AIReadMDTool.o
 AI/AISession.h:
 AI/AITool.h:
-@SimpleAIAgent.o
+@AITool.o
 AI/SimpleAIAgent.h:
 @SimpleAIAgent.o
 

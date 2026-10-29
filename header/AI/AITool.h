@@ -9,6 +9,8 @@ namespace AI
 	class AITool
 	{
 	public:
+		static Bool GetUIntOSInput(NN<Data::VariObject> input, UnsafeArray<const UTF8Char> name, UIntOS defaultValue, OutParam<UIntOS> value);
+	public:
 		virtual ~AITool() {};
 		virtual Text::CStringNN GetName() const = 0;
 		virtual void GetDescription(NN<Text::StringBuilderUTF8> sb) const = 0;
