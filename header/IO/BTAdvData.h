@@ -7,7 +7,7 @@ namespace IO
 	class BTAdvData
 	{
 	public:
-		static Bool ToString(UnsafeArray<const UInt8> advData, NN<Text::StringBuilderUTF8> sb);
+		static Bool ToString(UInt16 serviceUUID, Data::ByteArrayR serviceData, UnsafeArray<const UInt8> advData, NN<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

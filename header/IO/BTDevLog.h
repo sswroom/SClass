@@ -32,7 +32,7 @@ namespace IO
 		~BTDevLog();
 
 		NN<DevEntry> AddEntry64(UInt64 mac64Int, Optional<Text::String> name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType);
-		void AppendList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord4>> devMap);
+		void AppendList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord5>> devMap);
 		void ClearList();
 		Bool LoadFile(Text::CStringNN fileName);
 		Bool StoreFile(Text::CStringNN fileName);

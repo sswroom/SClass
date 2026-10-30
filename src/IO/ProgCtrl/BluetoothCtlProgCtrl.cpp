@@ -16,7 +16,7 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 	Text::PString sarr[2];
 	UIntOS i;
 	NN<Text::String> lastCmd;
-	NN<IO::BTScanLog::ScanRecord4> dev;
+	NN<IO::BTScanLog::ScanRecord5> dev;
 
 	{
 		Text::StringBuilderUTF8 sb;
@@ -153,7 +153,6 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 					}
 					else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[CHG] Device ")))
 					{
-						//[CHG] Device ED:8E:0E:77:6E:15 ManufacturerData Key: 0x3512
 						sarr[0].v[30] = 0;
 						if (me->DeviceGetByStr(Text::CStringNN(&sarr[0].v[13], 30 - 13)).SetTo(dev))
 						{
@@ -201,9 +200,34 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 									dev->company = key;
 									if (me->recHdlr) me->recHdlr(dev, UT_COMPANY, me->recHdlrObj);
 								}
+								else
+								{
+									sarr[0].v[30] = ' ';
+									printf("Cannot parse key: %s\r\n", sarr[0].v.Ptr());
+								}
 							}
 							//[CHG] Device E8:50:BD:A8:07:D4 ManufacturerData Value:
 							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ManufacturerData Value:")))
+							{
+
+							}
+							//[CHG] Device ED:8E:0E:77:6E:15 ManufacturerData Key: 0x3512
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ManufacturerData.Key: ")))
+							{
+								UInt16 key;
+								if (Text::StrToUInt16(&sarr[0].v[53], key))
+								{
+									dev->company = key;
+									if (me->recHdlr) me->recHdlr(dev, UT_COMPANY, me->recHdlrObj);
+								}
+								else
+								{
+									sarr[0].v[30] = ' ';
+									printf("Cannot parse key: %s\r\n", sarr[0].v.Ptr());
+								}
+							}
+							//[CHG] Device E8:50:BD:A8:07:D4 ManufacturerData.Value:
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ManufacturerData.Value:")))
 							{
 
 							}
@@ -239,6 +263,11 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 							}
 							//[CHG] Device C9:CE:83:47:9A:0E ServiceData Value:
 							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ServiceData Value:")))
+							{
+
+							}
+							//[CHG] Device 52:C2:E8:C6:CC:E2 ServiceData.0000fdf7-0000-1000-8000-00805f9b34fb:
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ServiceData.")))
 							{
 
 							}
@@ -372,7 +401,7 @@ Bool IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(UnsafeArray<const UTF8Char> cmd
 	return false;
 }
 
-Optional<IO::BTScanLog::ScanRecord4> IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceGetByStr(Text::CStringNN s)
+Optional<IO::BTScanLog::ScanRecord5> IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceGetByStr(Text::CStringNN s)
 {
 	UTF8Char sbuff[18];
 	UnsafeArray<UTF8Char> sarr[7];
@@ -395,11 +424,11 @@ Optional<IO::BTScanLog::ScanRecord4> IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceG
 	macBuff[4] = Text::StrHex2UInt8C(sarr[4]);
 	macBuff[5] = Text::StrHex2UInt8C(sarr[5]);
 	UInt64 macInt = ReadMUInt64(macBuff);
-	NN<IO::BTScanLog::ScanRecord4> dev;
+	NN<IO::BTScanLog::ScanRecord5> dev;
 	Sync::MutexUsage mutUsage(this->devMut);
 	if (this->devMap.Get(macInt).SetTo(dev))
 		return dev;
-	dev = MemAllocNN(IO::BTScanLog::ScanRecord4);
+	dev = MemAllocNN(IO::BTScanLog::ScanRecord5);
 	dev.ZeroContent();
 	dev->mac[0] = macBuff[0];
 	dev->mac[1] = macBuff[1];
@@ -412,13 +441,15 @@ Optional<IO::BTScanLog::ScanRecord4> IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceG
 	dev->radioType = IO::BTScanLog::RT_UNKNOWN;
 	dev->company = 0;
 	dev->measurePower = 0;
+	dev->serviceUUID = 0;
+	dev->serviceDataLen = 0;
 	dev->advType = IO::BTScanLog::AdvType::Unknown;
 	dev->advData[0] = 0;
 	this->devMap.Put(macInt, dev);
 	return dev;
 }
 
-void IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceFree(NN<IO::BTScanLog::ScanRecord4> dev)
+void IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceFree(NN<IO::BTScanLog::ScanRecord5> dev)
 {
 	OPTSTR_DEL(dev->name);
 	MemFreeNN(dev);
@@ -524,13 +555,13 @@ Bool IO::ProgCtrl::BluetoothCtlProgCtrl::WaitForCmdReady()
 	return this->cmdReady;
 }
 
-NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord4>> IO::ProgCtrl::BluetoothCtlProgCtrl::GetPublicMap(NN<Sync::MutexUsage> mutUsage)
+NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord5>> IO::ProgCtrl::BluetoothCtlProgCtrl::GetPublicMap(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->devMut);
 	return this->devMap;
 }
 
-NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord4>> IO::ProgCtrl::BluetoothCtlProgCtrl::GetRandomMap(NN<Sync::MutexUsage> mutUsage)
+NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord5>> IO::ProgCtrl::BluetoothCtlProgCtrl::GetRandomMap(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->devMut);
 	return this->devMap;

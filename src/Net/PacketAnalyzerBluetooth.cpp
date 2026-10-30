@@ -1140,6 +1140,7 @@ IO::DeviceDB::VendorInfo Net::PacketAnalyzerBluetooth::vendorList[] = {
 	{0x046C, CSTR("Qingdao Realtime Technology Co., Ltd.")},
 	{0x046D, CSTR("BEGA Gantenbrink-Leuchten KG")},
 	{0x046E, CSTR("Pambor Ltd.")},
+	{0x0969, CSTR("Woan Technology (SwitchBot)")},
 	{0xFFFF, CSTR("SPECIAL USE/DEFAULT")},
 };
 

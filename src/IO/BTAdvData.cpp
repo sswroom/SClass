@@ -3,7 +3,7 @@
 #include "IO/BTAdvData.h"
 #include "IO/BTUtil.h"
 
-Bool IO::BTAdvData::ToString(UnsafeArray<const UInt8> advData, NN<Text::StringBuilderUTF8> sb)
+Bool IO::BTAdvData::ToString(UInt16 serviceUUID, Data::ByteArrayR serviceData, UnsafeArray<const UInt8> advData, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt8 len = advData[0];
 	UInt8 type = advData[1];
@@ -130,6 +130,21 @@ Bool IO::BTAdvData::ToString(UnsafeArray<const UInt8> advData, NN<Text::StringBu
 		}
 		else if (company == 0x56) //Sony
 		{
+			return false;
+		}
+		else if (company == 0x969) //Woan Technology (SwitchBot)
+		{
+			if (serviceData.GetSize() > 0 && serviceUUID == 0xfd3d)
+			{
+				UInt8 devType = serviceData[0] & 0x7F;
+				sb->Append(CSTR("Device MAC: "));
+				sb->AppendHexBuff(&advData[4], 6, ':', Text::LineBreakType::None);
+				sb->AppendC(UTF8STRC(", Device Type: 0x"));
+				sb->AppendHex8(devType);
+				sb->AppendC(UTF8STRC(", "));
+				sb->AppendHexBuff(&advData[10], len - 9, ' ', Text::LineBreakType::None);
+				return true;
+			}
 			return false;
 		}
 	}

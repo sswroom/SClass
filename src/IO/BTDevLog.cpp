@@ -109,9 +109,9 @@ NN<IO::BTDevLog::DevEntry> IO::BTDevLog::AddEntry64(UInt64 mac64Int, Optional<Te
 	return nnlog;
 }
 
-void IO::BTDevLog::AppendList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord4>> devMap)
+void IO::BTDevLog::AppendList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord5>> devMap)
 {
-	NN<IO::BTScanLog::ScanRecord4> rec;
+	NN<IO::BTScanLog::ScanRecord5> rec;
 	UIntOS i = devMap->GetCount();
 	while (i-- > 0)
 	{

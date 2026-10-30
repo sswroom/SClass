@@ -78,14 +78,14 @@ NN<IO::BTScanLog::LogEntry> IO::BTScanLog::AddEntry64(Int64 timeTicks, UInt64 ma
 	return log;
 }
 
-NN<IO::BTScanLog::LogEntry> IO::BTScanLog::AddScanRec(NN<const IO::BTScanLog::ScanRecord4> rec)
+NN<IO::BTScanLog::LogEntry> IO::BTScanLog::AddScanRec(NN<const IO::BTScanLog::ScanRecord5> rec)
 {
 	return this->AddEntry64(rec->lastSeenTime, rec->mac64Int, rec->radioType, rec->addrType, rec->company, rec->name, rec->rssi, rec->txPower, rec->measurePower, rec->advType);
 }
 
 void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, Data::ByteArrayR buff)
 {
-	IO::BTScanLog::ScanRecord4 rec;
+	IO::BTScanLog::ScanRecord5 rec;
 	if (ParseBTRAWPacket(rec, timeTicks, buff))
 	{
 		this->AddScanRec(rec);
@@ -183,7 +183,7 @@ Text::CStringNN IO::BTScanLog::AdvTypeGetName(AdvType advType)
 	}
 }
 
-Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord4> rec, Int64 timeTicks, Data::ByteArrayR buff)
+Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord5> rec, Int64 timeTicks, Data::ByteArrayR buff)
 {
 	if (buff.GetSize() < 19)
 	{
@@ -200,6 +200,8 @@ Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord4> rec, Int64 t
 	rec->lastSeenTime = timeTicks;
 	rec->measurePower = 0;
 	rec->advType = AdvType::Unknown;
+	rec->serviceUUID = 0;
+	rec->serviceDataLen = 0;
 	rec->advData[0] = 0;
 	UInt8 mac[8];
 	UInt8 addrType;
@@ -339,7 +341,7 @@ Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord4> rec, Int64 t
 	return false;
 }
 
-void IO::BTScanLog::ParseAdvisement(NN<ScanRecord4> rec, UnsafeArray<const UInt8> buff, UIntOS ofst, UIntOS endOfst)
+void IO::BTScanLog::ParseAdvisement(NN<ScanRecord5> rec, UnsafeArray<const UInt8> buff, UIntOS ofst, UIntOS endOfst)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -372,6 +374,12 @@ void IO::BTScanLog::ParseAdvisement(NN<ScanRecord4> rec, UnsafeArray<const UInt8
 				}
 				j += 2;
 			}
+		}
+		else if (buff[i + 1] == 0x16) // Service Data
+		{
+			rec->serviceUUID = ReadLUInt16(&buff[i + 2]);
+			rec->serviceDataLen = (UInt8)(optLen - 3);
+			MemCopyNO(rec->serviceData, &buff[i + 4], rec->serviceDataLen);
 		}
 		else if (buff[i + 1] == 0xFF) // Manufacturer-specific data
 		{

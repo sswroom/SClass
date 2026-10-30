@@ -480,7 +480,7 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnDashboardDblClk(AnyType userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnDeviceUpdated(NN<IO::BTScanLog::ScanRecord4> dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
+void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnDeviceUpdated(NN<IO::BTScanLog::ScanRecord5> dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRRadioScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRadioScanForm>();
 	me->btUpdated = true;
@@ -677,11 +677,11 @@ void SSWR::AVIRead::AVIRRadioScanForm::ToggleCellular()
 
 }
 
-UIntOS SSWR::AVIRead::AVIRRadioScanForm::AppendBTList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord4>> devMap, Int64 currTime, OutParam<Int64> minTime)
+UIntOS SSWR::AVIRead::AVIRRadioScanForm::AppendBTList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord5>> devMap, Int64 currTime, OutParam<Int64> minTime)
 {
 	Int64 mTime = 0;
 	UIntOS cnt = 0;
-	NN<IO::BTScanLog::ScanRecord4> rec;
+	NN<IO::BTScanLog::ScanRecord5> rec;
 	Int64 expTime = currTime - 60000;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;

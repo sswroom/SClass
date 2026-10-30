@@ -117,12 +117,12 @@ void IO::BTCapturer::StoreStatus()
 	}
 }
 
-NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord4>> IO::BTCapturer::GetPublicList(NN<Sync::MutexUsage> mutUsage) const
+NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord5>> IO::BTCapturer::GetPublicList(NN<Sync::MutexUsage> mutUsage) const
 {
 	return this->bt.OrNull()->GetPublicMap(mutUsage);
 }
 
-NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord4>> IO::BTCapturer::GetRandomList(NN<Sync::MutexUsage> mutUsage) const
+NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord5>> IO::BTCapturer::GetRandomList(NN<Sync::MutexUsage> mutUsage) const
 {
 	return this->bt.OrNull()->GetRandomMap(mutUsage);
 }

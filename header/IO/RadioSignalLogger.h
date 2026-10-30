@@ -21,7 +21,7 @@ namespace IO
 		Optional<IO::GSMCellCapturer> gsmCapturer;
 		
 		static void __stdcall OnWiFiUpdate(NN<Net::WirelessLAN::BSSInfo> bss, const Data::Timestamp &scanTime, AnyType userObj);
-		static void __stdcall OnBTUpdate(NN<IO::BTScanLog::ScanRecord4> dev, IO::BTScanner::UpdateType updateType, AnyType userObj);
+		static void __stdcall OnBTUpdate(NN<IO::BTScanLog::ScanRecord5> dev, IO::BTScanner::UpdateType updateType, AnyType userObj);
 		static void __stdcall OnGSMUpdate(NN<Data::ArrayListNN<IO::GSMModemController::CellSignal>> cells, AnyType userObj);
 	public:
 		RadioSignalLogger();

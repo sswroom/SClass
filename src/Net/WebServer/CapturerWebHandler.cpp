@@ -49,8 +49,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NN<Net::WebServer::
 	{
 		Int64 currTime = Data::DateTimeUtil::GetCurrTimeMillis();
 		Sync::MutexUsage mutUsage;
-		NN<IO::BTScanLog::ScanRecord4> entry;
-		Data::ArrayListNN<IO::BTScanLog::ScanRecord4> logList;
+		NN<IO::BTScanLog::ScanRecord5> entry;
+		Data::ArrayListNN<IO::BTScanLog::ScanRecord5> logList;
 		logList.AddAll(btCapture->GetPublicList(mutUsage));
 		sb.AppendC(UTF8STRC("<a href=\"btdetpub.html\">"));
 		sb.AppendC(UTF8STRC("BT Public count = "));
@@ -124,7 +124,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(NN<Net::WebServ
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayListNN<IO::BTScanLog::ScanRecord4> entryList;
+	Data::ArrayListNN<IO::BTScanLog::ScanRecord5> entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList.AddAll(btCapture->GetPublicList(mutUsage));
@@ -157,7 +157,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(NN<Net::WebServe
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayListNN<IO::BTScanLog::ScanRecord4> entryList;
+	Data::ArrayListNN<IO::BTScanLog::ScanRecord5> entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList.AddAll(btCapture->GetPublicList(mutUsage));
@@ -191,7 +191,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(NN<Net::WebSe
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord4>> entryList;
+	NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord5>> entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList = btCapture->GetPublicList(mutUsage);
@@ -465,7 +465,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NN<Text::StringBuilderU
 	sb->AppendC(UTF8STRC("</table>"));
 }
 
-void Net::WebServer::CapturerWebHandler::AppendBTTable(NN<Text::StringBuilderUTF8> sb, NN<Net::WebServer::WebRequest> req, NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord4>> entryList, Bool inRangeOnly)
+void Net::WebServer::CapturerWebHandler::AppendBTTable(NN<Text::StringBuilderUTF8> sb, NN<Net::WebServer::WebRequest> req, NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord5>> entryList, Bool inRangeOnly)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -474,7 +474,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NN<Text::StringBuilderUTF
 	Int64 currTime = Data::DateTimeUtil::GetCurrTimeMillis();
 	UIntOS i;
 	UIntOS j;
-	NN<IO::BTScanLog::ScanRecord4> entry;
+	NN<IO::BTScanLog::ScanRecord5> entry;
 	sptr = req->GetRequestPath(sbuff, 512);
 	sb->AppendC(UTF8STRC("<table border=\"1\">\r\n"));
 	sb->AppendC(UTF8STRC("<tr><td><a href="));
@@ -488,13 +488,13 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NN<Text::StringBuilderUTF
 	s->Release();
 	sb->AppendC(UTF8STRC(">RSSI</a></td><td>Measure Power</td><td>TX Power</td><td>In Range</td><td>Connected</td><td>last seen</td><td>Company</td><td>AdvType</td></tr>\r\n"));
 
-	Data::ArrayListNN<IO::BTScanLog::ScanRecord4> sortList;
+	Data::ArrayListNN<IO::BTScanLog::ScanRecord5> sortList;
 	req->GetQueryValueU32(CSTR("sort"), sort);
 	if (sort == 1)
 	{
 		sortList.AddAll(entryList);
 		entryList = sortList;
-		Data::Sort::ArtificialQuickSortFunc<NN<IO::BTScanLog::ScanRecord4>>::Sort(sortList, BTLogRSSICompare);
+		Data::Sort::ArtificialQuickSortFunc<NN<IO::BTScanLog::ScanRecord5>>::Sort(sortList, BTLogRSSICompare);
 	}
 
 	i = 0;
@@ -667,7 +667,7 @@ IntOS __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(NN<Net::W
 	}
 }
 
-IntOS __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(NN<IO::BTScanLog::ScanRecord4> obj1, NN<IO::BTScanLog::ScanRecord4> obj2)
+IntOS __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(NN<IO::BTScanLog::ScanRecord5> obj1, NN<IO::BTScanLog::ScanRecord5> obj2)
 {
 	NN<Text::String> name1;
 	NN<Text::String> name2;

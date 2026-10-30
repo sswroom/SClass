@@ -65,8 +65,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDevicesDblClick(AnyType us
 	NN<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	NN<IO::BTScanLog::ScanRecord4> dev;
-	if (me->lvDevices->GetItem(index).GetOpt<IO::BTScanLog::ScanRecord4>().SetTo(dev))
+	NN<IO::BTScanLog::ScanRecord5> dev;
+	if (me->lvDevices->GetItem(index).GetOpt<IO::BTScanLog::ScanRecord5>().SetTo(dev))
 	{
 		sptr = Text::StrHexBytes(sbuff, dev->mac, 6, ':');
 		UI::Clipboard::SetString(me->GetHandle(), CSTRP(sbuff, sptr));
@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(NN<IO::BTScanLog::ScanRecord4> dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
+void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(NN<IO::BTScanLog::ScanRecord5> dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
 	Sync::MutexUsage mutUsage(me->devMut);
@@ -105,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(NN<IO::BTSca
 	}
 }
 
-UIntOS SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord4>> devMap, NN<Data::FastMapNative<UInt64, UInt32>> statusMap, UIntOS baseIndex)
+UIntOS SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord5>> devMap, NN<Data::FastMapNative<UInt64, UInt32>> statusMap, UIntOS baseIndex)
 {
 	UIntOS i;
 	UIntOS j;
@@ -115,7 +115,7 @@ UIntOS SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64
 	Data::DateTime dt;
 	NN<Text::String> s;
 	Sync::MutexUsage mutUsage;
-	NN<IO::BTScanLog::ScanRecord4> dev;
+	NN<IO::BTScanLog::ScanRecord5> dev;
 
 	j = 0;
 	k = devMap->GetCount();
@@ -184,7 +184,11 @@ UIntOS SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64
 				}
 				else
 				{
-					this->lvDevices->SetSubItem(i, 10, CSTR("?"));
+					Text::StringBuilderUTF8 sb;
+					sb.Append(CSTR("? (0x"));
+					sb.AppendHex16(dev->company);
+					sb.AppendC(UTF8STRC(")"));
+					this->lvDevices->SetSubItem(i, 10, sb.ToCString());
 				}
 			}
 			this->lvDevices->SetSubItem(i, 11, IO::BTScanLog::AdvTypeGetName(dev->advType));
@@ -195,7 +199,7 @@ UIntOS SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64
 			else
 			{
 				Text::StringBuilderUTF8 sb;
-				if (IO::BTAdvData::ToString(dev->advData, sb))
+				if (IO::BTAdvData::ToString(dev->serviceUUID, Data::ByteArrayR(dev->serviceData, dev->serviceDataLen), dev->advData, sb))
 				{
 					this->lvDevices->SetSubItem(i, 12, sb.ToCString());
 				}

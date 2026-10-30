@@ -64,7 +64,10 @@ namespace IO
 			UInt16 company;
 			AdvType advType;
 			UInt8 advData[31];
-		} ScanRecord4;
+			UInt16 serviceUUID;
+			UInt8 serviceDataLen;
+			UInt8 serviceData[31];
+		} ScanRecord5;
 
 		struct LogEntry
 		{
@@ -98,7 +101,7 @@ namespace IO
 		virtual IO::ParserType GetParserType() const;
 
 		NN<LogEntry> AddEntry64(Int64 timeTicks, UInt64 mac64Int, RadioType radioType, AddressType addrType, UInt16 company, Optional<Text::String> name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType);
-		NN<LogEntry> AddScanRec(NN<const ScanRecord4> rec);
+		NN<LogEntry> AddScanRec(NN<const ScanRecord5> rec);
 		void AddBTRAWPacket(Int64 timeTicks, Data::ByteArrayR buff);
 		void ClearList();
 		NN<const Data::ReadingListNN<IO::BTScanLog::DevEntry>> GetPublicList() const;
@@ -107,8 +110,8 @@ namespace IO
 		static Text::CStringNN RadioTypeGetName(RadioType radioType);
 		static Text::CStringNN AddressTypeGetName(AddressType addrType);
 		static Text::CStringNN AdvTypeGetName(AdvType advType);
-		static Bool ParseBTRAWPacket(NN<ScanRecord4> rec, Int64 timeTicks, Data::ByteArrayR buff);
-		static void ParseAdvisement(NN<ScanRecord4> rec, UnsafeArray<const UInt8> buff, UIntOS ofst, UIntOS endOfst);
+		static Bool ParseBTRAWPacket(NN<ScanRecord5> rec, Int64 timeTicks, Data::ByteArrayR buff);
+		static void ParseAdvisement(NN<ScanRecord5> rec, UnsafeArray<const UInt8> buff, UIntOS ofst, UIntOS endOfst);
 	};
 }
 #endif

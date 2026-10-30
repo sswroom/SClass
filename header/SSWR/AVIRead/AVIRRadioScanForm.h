@@ -192,7 +192,7 @@ namespace SSWR
 			static void __stdcall OnWiFiSelChg(AnyType userObj);
 			static void __stdcall OnBluetoothClicked(AnyType userObj);
 			static void __stdcall OnDashboardDblClk(AnyType userObj, UIntOS index);
-			static void __stdcall OnDeviceUpdated(NN<IO::BTScanLog::ScanRecord4> dev, IO::BTScanner::UpdateType updateType, AnyType userObj);
+			static void __stdcall OnDeviceUpdated(NN<IO::BTScanLog::ScanRecord5> dev, IO::BTScanner::UpdateType updateType, AnyType userObj);
 			static void __stdcall OnGNSSPortClicked(AnyType userObj);
 			static void __stdcall OnGNSSClicked(AnyType userObj);
 			static void __stdcall OnGNSSLocationUpdated(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::LocationService::SateStatus> sates);
@@ -202,7 +202,7 @@ namespace SSWR
 			void ToggleBT();
 			void ToggleGNSS();
 			void ToggleCellular();
-			UIntOS AppendBTList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord4>> devMap, Int64 currTime, OutParam<Int64> minTime);
+			UIntOS AppendBTList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord5>> devMap, Int64 currTime, OutParam<Int64> minTime);
 			Bool CloseCellular();
 		public:
 			AVIRRadioScanForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);

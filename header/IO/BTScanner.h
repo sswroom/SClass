@@ -27,7 +27,7 @@ namespace IO
 			SM_PASSIVE
 		} ScanMode;
 		
-		typedef void (CALLBACKFUNC RecordHandler)(NN<IO::BTScanLog::ScanRecord4> rec, UpdateType updateType, AnyType userObj);
+		typedef void (CALLBACKFUNC RecordHandler)(NN<IO::BTScanLog::ScanRecord5> rec, UpdateType updateType, AnyType userObj);
 	public:
 		virtual ~BTScanner() {};
 
@@ -39,8 +39,8 @@ namespace IO
 		virtual void Close() = 0;
 		virtual Bool SetScanMode(ScanMode scanMode) = 0;
 
-		virtual NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord4>> GetPublicMap(NN<Sync::MutexUsage> mutUsage) = 0;
-		virtual NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord4>> GetRandomMap(NN<Sync::MutexUsage> mutUsage) = 0;
+		virtual NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord5>> GetPublicMap(NN<Sync::MutexUsage> mutUsage) = 0;
+		virtual NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord5>> GetRandomMap(NN<Sync::MutexUsage> mutUsage) = 0;
 
 		static Optional<BTScanner> CreateScanner();
 	};
