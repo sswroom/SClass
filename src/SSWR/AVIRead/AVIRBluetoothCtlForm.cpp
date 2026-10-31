@@ -161,26 +161,28 @@ UIntOS SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64
 			{
 				this->lvDevices->SetSubItem(i, 3, s);
 			}
-			sptr = Text::StrInt32(sbuff, dev->rssi);
+			sptr = Text::StrHexByte(Text::StrConcatC(sbuff, UTF8STRC("0x")), dev->flags);
 			this->lvDevices->SetSubItem(i, 5, CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, dev->rssi);
+			this->lvDevices->SetSubItem(i, 6, CSTRP(sbuff, sptr));
 			dt.SetTicks(dev->lastSeenTime);
 			dt.ToLocalTime();
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			this->lvDevices->SetSubItem(i, 6, CSTRP(sbuff, sptr));
-			sptr = Text::StrInt32(sbuff, dev->txPower);
 			this->lvDevices->SetSubItem(i, 7, CSTRP(sbuff, sptr));
-			this->lvDevices->SetSubItem(i, 8, (dev->inRange?CSTR("Y"):CSTR("N")));
-			this->lvDevices->SetSubItem(i, 9, (dev->connected?CSTR("Y"):CSTR("N")));
+			sptr = Text::StrInt32(sbuff, dev->txPower);
+			this->lvDevices->SetSubItem(i, 8, CSTRP(sbuff, sptr));
+			this->lvDevices->SetSubItem(i, 9, (dev->inRange?CSTR("Y"):CSTR("N")));
+			this->lvDevices->SetSubItem(i, 10, (dev->connected?CSTR("Y"):CSTR("N")));
 			if (dev->company == 0)
 			{
-				this->lvDevices->SetSubItem(i, 10, CSTR("-"));
+				this->lvDevices->SetSubItem(i, 11, CSTR("-"));
 			}
 			else
 			{
 				Text::CStringNN cstr;
 				if (Net::PacketAnalyzerBluetooth::CompanyGetName(dev->company).SetTo(cstr))
 				{
-					this->lvDevices->SetSubItem(i, 10, cstr);
+					this->lvDevices->SetSubItem(i, 11, cstr);
 				}
 				else
 				{
@@ -188,27 +190,27 @@ UIntOS SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64
 					sb.Append(CSTR("? (0x"));
 					sb.AppendHex16(dev->company);
 					sb.AppendC(UTF8STRC(")"));
-					this->lvDevices->SetSubItem(i, 10, sb.ToCString());
+					this->lvDevices->SetSubItem(i, 11, sb.ToCString());
 				}
 			}
-			this->lvDevices->SetSubItem(i, 11, IO::BTScanLog::AdvTypeGetName(dev->advType));
+			this->lvDevices->SetSubItem(i, 12, IO::BTScanLog::AdvTypeGetName(dev->advType));
 			if (dev->advData[0] == 0 || dev->advData[0] > 30)
 			{
-				this->lvDevices->SetSubItem(i, 12, CSTR(""));
+				this->lvDevices->SetSubItem(i, 13, CSTR(""));
 			}
 			else
 			{
 				Text::StringBuilderUTF8 sb;
 				if (IO::BTAdvData::ToString(dev->serviceUUID, Data::ByteArrayR(dev->serviceData, dev->serviceDataLen), dev->advData, sb))
 				{
-					this->lvDevices->SetSubItem(i, 12, sb.ToCString());
+					this->lvDevices->SetSubItem(i, 13, sb.ToCString());
 				}
 				else
 				{
 					sb.AppendC(UTF8STRC("Unknown: "));
 					sb.AppendHexBuff(Data::ByteArrayR(dev->advData, dev->advData[0] + 1), ' ', Text::LineBreakType::None);
 					printf("AVIRBluetoothCtlForm: Unknown advData: %s\r\n", sb.v.Ptr());
-					this->lvDevices->SetSubItem(i, 12, sb.ToCString());
+					this->lvDevices->SetSubItem(i, 13, sb.ToCString());
 				}
 			}
 			statusMap->Put(dev->mac64Int, 0);
@@ -238,7 +240,7 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(Optional<UI::GUIClient
 	this->btnStoreList->HandleButtonClick(OnStoreListClicked, this);
 	this->lblStatus = ui->NewLabel(this->pnlControl, CSTR("Idle"));
 	this->lblStatus->SetRect(190, 4, 200, 23, false);
-	this->lvDevices = ui->NewListView(*this, UI::ListViewStyle::Table, 13);
+	this->lvDevices = ui->NewListView(*this, UI::ListViewStyle::Table, 14);
 	this->lvDevices->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);
@@ -248,6 +250,7 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(Optional<UI::GUIClient
 	this->lvDevices->AddColumn(CSTR("AddrType"), 80);
 	this->lvDevices->AddColumn(CSTR("Name"), 150);
 	this->lvDevices->AddColumn(CSTR("Vendor"), 150);
+	this->lvDevices->AddColumn(CSTR("Flags"), 30);
 	this->lvDevices->AddColumn(CSTR("RSSI"), 60);
 	this->lvDevices->AddColumn(CSTR("RecvTime"), 150);
 	this->lvDevices->AddColumn(CSTR("TX Power"), 60);

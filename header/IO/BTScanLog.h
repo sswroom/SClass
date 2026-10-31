@@ -60,6 +60,7 @@ namespace IO
 			Int8 measurePower;
 			Int8 txPower;
 			Bool connected;
+			UInt8 flags;
 			Int64 lastSeenTime;
 			UInt16 company;
 			AdvType advType;

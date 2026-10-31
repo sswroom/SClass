@@ -199,6 +199,7 @@ Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord5> rec, Int64 t
 	rec->company = 0;
 	rec->lastSeenTime = timeTicks;
 	rec->measurePower = 0;
+	rec->flags = 0;
 	rec->advType = AdvType::Unknown;
 	rec->serviceUUID = 0;
 	rec->serviceDataLen = 0;
@@ -357,9 +358,14 @@ void IO::BTScanLog::ParseAdvisement(NN<ScanRecord5> rec, UnsafeArray<const UInt8
 		{
 			break;
 		}
-		if (buff[i + 1] == 8 || buff[i + 1] == 9) // Shortened Local Name / Complete Local Name
+		if (buff[i + 1] == 1) // Flags
 		{
-			sptr = Text::StrConcatC(sbuff, &buff[i + 2], (UIntOS)optLen - 1);
+			// 0 LE Limited Discoverable Mode
+			// 1 LE General Discoverable Mode
+			// 2 BR/EDR Not Supported
+			// 3 Simultaneous LE and BR/EDR to Same Device Capable (Controller)
+			// 4 Simultaneous LE and BR/EDR to Same Device Capable (Host)
+			rec->flags = buff[i + 2];
 		}
 		else if (buff[i + 1] == 3) //UUIDs
 		{
@@ -374,6 +380,10 @@ void IO::BTScanLog::ParseAdvisement(NN<ScanRecord5> rec, UnsafeArray<const UInt8
 				}
 				j += 2;
 			}
+		}
+		else if (buff[i + 1] == 8 || buff[i + 1] == 9) // Shortened Local Name / Complete Local Name
+		{
+			sptr = Text::StrConcatC(sbuff, &buff[i + 2], (UIntOS)optLen - 1);
 		}
 		else if (buff[i + 1] == 0x16) // Service Data
 		{
@@ -449,6 +459,10 @@ void IO::BTScanLog::ParseAdvisement(NN<ScanRecord5> rec, UnsafeArray<const UInt8
 				rec->advType = AdvType::Unsupported;
 			}
 			MemCopyNO(rec->advData, &buff[i], (UIntOS)optLen + 1);
+		}
+		else
+		{
+			printf("BTScanLog: Unknown AD Type 0x%02X\n", buff[i + 1]);
 		}
 		i += 1 + (UIntOS)optLen;
 	}

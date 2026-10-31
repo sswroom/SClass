@@ -439,6 +439,7 @@ Optional<IO::BTScanLog::ScanRecord5> IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceG
 	dev->mac64Int = macInt;
 	dev->addrType = IO::BTScanLog::AT_UNKNOWN;
 	dev->radioType = IO::BTScanLog::RT_UNKNOWN;
+	dev->flags = 0;
 	dev->company = 0;
 	dev->measurePower = 0;
 	dev->serviceUUID = 0;
