@@ -2,8 +2,8 @@
 #include "Core/ByteTool_C.h"
 #include "IO/BTAdvData.h"
 #include "IO/BTDevLog.h"
+#include "IO/BTUtil.h"
 #include "Net/MACInfo.h"
-#include "Net/PacketAnalyzerBluetooth.h"
 #include "SSWR/AVIRead/AVIRBluetoothCtlForm.h"
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
@@ -180,7 +180,7 @@ UIntOS SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64
 			else
 			{
 				Text::CStringNN cstr;
-				if (Net::PacketAnalyzerBluetooth::CompanyGetName(dev->company).SetTo(cstr))
+				if (IO::BTUtil::CompanyGetName(dev->company).SetTo(cstr))
 				{
 					this->lvDevices->SetSubItem(i, 11, cstr);
 				}
@@ -209,7 +209,7 @@ UIntOS SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64
 				{
 					sb.AppendC(UTF8STRC("Unknown: "));
 					sb.AppendHexBuff(Data::ByteArrayR(dev->advData, dev->advData[0] + 1), ' ', Text::LineBreakType::None);
-					printf("AVIRBluetoothCtlForm: Unknown advData: %s\r\n", sb.v.Ptr());
+					printf("AVIRBluetoothCtlForm: Company: 0x%04x advData: %s\r\n", dev->company, sb.v.Ptr());
 					this->lvDevices->SetSubItem(i, 13, sb.ToCString());
 				}
 			}

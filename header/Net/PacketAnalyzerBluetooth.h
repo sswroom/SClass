@@ -10,8 +10,6 @@ namespace Net
 	class PacketAnalyzerBluetooth
 	{
 	public:
-		static IO::DeviceDB::VendorInfo vendorList[];
-	public:
 		static void AddDirection(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt32 dir);
 		static void AddHCIPacketType(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 packetType);
 		static void AddParamLen(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 len);
@@ -43,7 +41,6 @@ namespace Net
 		static void PacketGetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, NN<Text::StringBuilderUTF8> sb);
 		static void PacketGetDetail(UnsafeArray<const UInt8> packet, UIntOS packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame);
 
-		static Text::CString CompanyGetName(UInt16 company);
 		static Text::CString CmdGetName(UInt16 cmd);
 		static Text::CString HCIPacketTypeGetName(UInt8 packetType);
 		static Text::CString HCIEventGetName(UInt8 evt);

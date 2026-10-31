@@ -130,7 +130,17 @@ Bool IO::BTAdvData::ToString(UInt16 serviceUUID, Data::ByteArrayR serviceData, U
 		}
 		else if (company == 0x56) //Sony
 		{
-			return false;
+			// D9 7A 7A CD 9D F9
+			sb->Append(CSTR("MAC: "));
+			sb->AppendHexBuff(&advData[4], len - 3, ' ', Text::LineBreakType::None);
+			return true;
+		}
+		else if (company == 0x553) //Nintendo
+		{
+			// 01 00 03 7E 05 69 20 00 01 00 69 03 51 05 48 C8 0F 00 00 00 00 00 00 00
+			sb->Append(CSTR("Nintendo: "));
+			sb->AppendHexBuff(&advData[4], len - 3, ' ', Text::LineBreakType::None);
+			return true;
 		}
 		else if (company == 0x969) //Woan Technology (SwitchBot)
 		{

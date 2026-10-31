@@ -1,11 +1,11 @@
 #include "Stdafx.h"
+#include "IO/BTUtil.h"
 #include "IO/GPSNMEA.h"
 #include "IO/Path.h"
 #include "IO/SerialPortUtil.h"
 #include "IO/Device/MTKGPSNMEA.h"
 #include "Math/Unit/Count.h"
 #include "Net/MACInfo.h"
-#include "Net/PacketAnalyzerBluetooth.h"
 #include "Net/SSLEngineFactory.h"
 #include "Net/WiFiUtil.h"
 #include "SSWR/AVIRead/AVIRRadioScanForm.h"
@@ -736,7 +736,7 @@ UIntOS SSWR::AVIRead::AVIRRadioScanForm::AppendBTList(NN<Data::FastMapNN<UInt64,
 			else
 			{
 				Text::CStringNN cstr;
-				if (Net::PacketAnalyzerBluetooth::CompanyGetName(rec->company).SetTo(cstr))
+				if (IO::BTUtil::CompanyGetName(rec->company).SetTo(cstr))
 				{
 					this->lvBluetooth->SetSubItem(k, 7, cstr);
 				}

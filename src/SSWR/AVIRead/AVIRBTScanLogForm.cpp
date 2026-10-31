@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "Core/ByteTool_C.h"
+#include "IO/BTUtil.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Net/MACInfo.h"
-#include "Net/PacketAnalyzerBluetooth.h"
 #include "SSWR/AVIRead/AVIRMACManagerEntryForm.h"
 #include "SSWR/AVIRead/AVIRBTScanLogDevForm.h"
 #include "SSWR/AVIRead/AVIRBTScanLogForm.h"
@@ -139,7 +139,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 		}
 		else
 		{
-			if (Net::PacketAnalyzerBluetooth::CompanyGetName(log->company).SetTo(cstr))
+			if (IO::BTUtil::CompanyGetName(log->company).SetTo(cstr))
 			{
 				this->lvContent->SetSubItem(l, 3, cstr);
 			}
