@@ -501,6 +501,12 @@ void Net::SocketUtil::SetAddrInfoAnyV6(NN<AddressInfo> addr)
 	MemClear(addr->addr, 20);
 }
 
+void Net::SocketUtil::SetAddrInfoMAC(NN<AddressInfo> addr, UnsafeArray<const UInt8> mac)
+{
+	addr->addrType = AddrType::MAC;
+	MemCopyNO(addr->addr, &mac[0], 6);
+}
+
 UInt32 Net::SocketUtil::CalcCliId(NN<const AddressInfo> addr)
 {
 	if (addr->addrType == AddrType::IPv4)

@@ -3975,6 +3975,8 @@ Net/MySQLTCPClient.h:
 @MySQLTCPClient.o
 Net/MySQLUtil.h:
 @MySQLUtil.o
+Net/NetAttackDetector.h:
+@NetAttackDetector.o
 Net/NetBIOSScanner.h:
 @NetBIOSScanner.o
 Net/NetBIOSUtil.h:
@@ -5061,6 +5063,8 @@ SSWR/AVIRead/AVIRMySQLConnForm.h:
 @AVIRMySQLConnForm.o
 SSWR/AVIRead/AVIRMySQLServerForm.h:
 @AVIRMySQLServerForm.o
+SSWR/AVIRead/AVIRNetAttackDetectorForm.h:
+@AVIRNetAttackDetectorForm.o
 SSWR/AVIRead/AVIRNetBIOSScannerForm.h:
 @AVIRNetBIOSScannerForm.o
 SSWR/AVIRead/AVIRNetInfoForm.h:

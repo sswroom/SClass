@@ -9,7 +9,8 @@ namespace Net
 	{
 		Unknown,
 		IPv4,
-		IPv6
+		IPv6,
+		MAC
 	};
 
 	enum class IPType
@@ -46,6 +47,7 @@ namespace Net
 		static void SetAddrInfoV6(NN<AddressInfo> addr, UnsafeArray<const UInt8> ipv6, Int32 zid);
 		static Bool SetAddrInfo(NN<AddressInfo> addr, Text::CStringNN ipName);
 		static void SetAddrInfoAnyV6(NN<AddressInfo> addr);
+		static void SetAddrInfoMAC(NN<AddressInfo> addr, UnsafeArray<const UInt8> mac);
 		static UInt32 CalcCliId(NN<const AddressInfo> addr);
 		static UInt32 IPv4ToSortable(UInt32 ipv4);
 		static Bool IPv4SubnetValid(UInt32 subnet);

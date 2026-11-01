@@ -1688,6 +1688,7 @@ MSGraphClient.o: ../../src/Net/MSGraphClient.cpp
 MySQLServer.o: ../../src/Net/MySQLServer.cpp
 MySQLTCPClient.o: ../../src/Net/MySQLTCPClient.cpp
 MySQLUtil.o: ../../src/Net/MySQLUtil.cpp
+NetAttackDetector.o: ../../src/Net/NetAttackDetector.cpp
 NetBIOSScanner.o: ../../src/Net/NetBIOSScanner.cpp
 NetBIOSUtil.o: ../../src/Net/NetBIOSUtil.cpp
 NTPClient.o: ../../src/Net/NTPClient.cpp
@@ -2318,6 +2319,7 @@ AVIRMSSQLConnForm.o: ../../src/SSWR/AVIRead/AVIRMSSQLConnForm.cpp
 AVIRMySQLClientForm.o: ../../src/SSWR/AVIRead/AVIRMySQLClientForm.cpp
 AVIRMySQLConnForm.o: ../../src/SSWR/AVIRead/AVIRMySQLConnForm.cpp
 AVIRMySQLServerForm.o: ../../src/SSWR/AVIRead/AVIRMySQLServerForm.cpp
+AVIRNetAttackDetectorForm.o: ../../src/SSWR/AVIRead/AVIRNetAttackDetectorForm.cpp
 AVIRNetBIOSScannerForm.o: ../../src/SSWR/AVIRead/AVIRNetBIOSScannerForm.cpp
 AVIRNetInfoForm.o: ../../src/SSWR/AVIRead/AVIRNetInfoForm.cpp
 AVIRNetPingForm.o: ../../src/SSWR/AVIRead/AVIRNetPingForm.cpp

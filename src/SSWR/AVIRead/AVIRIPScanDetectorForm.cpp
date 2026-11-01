@@ -53,6 +53,7 @@ SSWR::AVIRead::AVIRIPScanDetectorForm::~AVIRIPScanDetectorForm()
 {
 	this->ipScanDetect.Delete();
 	this->log.Delete();
+	this->logger.Delete();
 }
 
 void SSWR::AVIRead::AVIRIPScanDetectorForm::OnMonitorChanged()

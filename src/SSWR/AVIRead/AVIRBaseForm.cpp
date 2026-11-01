@@ -170,6 +170,7 @@
 #include "SSWR/AVIRead/AVIRMySQLConnForm.h"
 #include "SSWR/AVIRead/AVIRMySQLClientForm.h"
 #include "SSWR/AVIRead/AVIRMySQLServerForm.h"
+#include "SSWR/AVIRead/AVIRNetAttackDetectorForm.h"
 #include "SSWR/AVIRead/AVIRNetBIOSScannerForm.h"
 #include "SSWR/AVIRead/AVIRNetInfoForm.h"
 #include "SSWR/AVIRead/AVIRNetPingForm.h"
@@ -580,7 +581,8 @@ typedef enum
 	MNU_LORA_LOG,
 	MNU_OPEN_CONFIG,
 	MNU_REDIS_CONN,
-	MNU_OSM_TILE_GENERATOR
+	MNU_OSM_TILE_GENERATOR,
+	MNU_NET_ATTACK_DETECTOR
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -823,6 +825,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2->AddItem(CSTR("RAW Monitor"), MNU_RAWMONITOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("RAW Capture"), MNU_NETRAWCAPTURE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Bandwidth Logger"), MNU_NETWORK_BANDWIDTH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Net Attack Detector"), MNU_NET_ATTACK_DETECTOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu2 = mnu->AddSubMenu(CSTR("HTTP"));
 	mnu2->AddItem(CSTR("HTTP Server"), MNU_HTTP_SVR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3379,6 +3382,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIROSMTileGeneratorForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIROSMTileGeneratorForm(nullptr, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_NET_ATTACK_DETECTOR:
+		{
+			NN<SSWR::AVIRead::AVIRNetAttackDetectorForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRNetAttackDetectorForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
