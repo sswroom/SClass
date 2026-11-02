@@ -17,7 +17,7 @@ IO::SensorAccelerometerW::~SensorAccelerometerW()
 {
 }
 
-Bool IO::SensorAccelerometerW::ReadAcceleration(OutParam<Math::Vector3> acc)
+Bool IO::SensorAccelerometerW::ReadAcceleration(OutParam<Math::Vector3D> acc)
 {
 	Double retX = 0;
 	Double retY = 0;
@@ -83,7 +83,7 @@ Bool IO::SensorAccelerometerW::ReadAcceleration(OutParam<Math::Vector3> acc)
 
 		if (ret)
 		{
-			acc.Set(Math::Vector3(retX, retY, retZ));
+			acc.Set(Math::Vector3D(retX, retY, retZ));
 		}
 		pReport->Release();
 		return ret;

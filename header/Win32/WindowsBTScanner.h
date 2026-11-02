@@ -12,8 +12,8 @@ namespace Win32
 	{
 	private:
 		winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher watcher = nullptr;
-		Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3> pubDevMap;
-		Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3> randDevMap;
+		Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord5> pubDevMap;
+		Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord5> randDevMap;
 		Sync::Mutex devMut;
 		RecordHandler recHdlr;
 		AnyType recHdlrObj;
@@ -26,8 +26,8 @@ namespace Win32
 		void StoppedHandler(winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher const &sender,
 			winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcherStoppedEventArgs const &args);
 
-		NN<IO::BTScanLog::ScanRecord3> DeviceGet(UInt64 mac, IO::BTScanLog::AddressType addrType);
-		static void DeviceFree(NN<IO::BTScanLog::ScanRecord3> rec);
+		NN<IO::BTScanLog::ScanRecord5> DeviceGet(UInt64 mac, IO::BTScanLog::AddressType addrType);
+		static void DeviceFree(NN<IO::BTScanLog::ScanRecord5> rec);
 		static UInt32 __stdcall ScanThread(AnyType userObj);
 		Bool BeginScan();
 		void EndScan();
@@ -43,8 +43,8 @@ namespace Win32
 		virtual void Close();
 		virtual Bool SetScanMode(ScanMode scanMode);
 
-		virtual NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> GetPublicMap(NN<Sync::MutexUsage> mutUsage);
-		virtual NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> GetRandomMap(NN<Sync::MutexUsage> mutUsage);
+		virtual NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord5>> GetPublicMap(NN<Sync::MutexUsage> mutUsage);
+		virtual NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord5>> GetRandomMap(NN<Sync::MutexUsage> mutUsage);
 	};
 }
 #endif

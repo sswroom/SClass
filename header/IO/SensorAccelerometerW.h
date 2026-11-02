@@ -13,7 +13,7 @@ namespace IO
 		SensorAccelerometerW(void *sensor);
 		virtual ~SensorAccelerometerW();
 
-		virtual Bool ReadAcceleration(OutParam<Math::Vector3> acc);
+		virtual Bool ReadAcceleration(OutParam<Math::Vector3D> acc);
 		virtual Math::Unit::Acceleration::AccelerationUnit GetAccelerationUnit();
 		virtual Optional<SensorAccelerometer> GetSensorAccelerator();
 		virtual IO::Sensor::SensorType GetSensorType();

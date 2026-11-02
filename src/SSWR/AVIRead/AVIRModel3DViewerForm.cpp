@@ -184,8 +184,8 @@ protected:
 			Double nx = ay * bz - az * by;
 			Double ny = az * bx - ax * bz;
 			Double nz = ax * by - ay * bx;
-			Double nLen = std::sqrt(nx * nx + ny * ny + nz * nz);
-			Double dot = nLen > 1e-20 ? std::abs((nx * 0.25 - ny * 0.35 + nz * 0.9) / nLen) : 0.3;
+			Double nLen = Math_Sqrt(nx * nx + ny * ny + nz * nz);
+			Double dot = nLen > 1e-20 ? Math_Abs((nx * 0.25 - ny * 0.35 + nz * 0.9) / nLen) : 0.3;
 			viewTri->light = 0.30 + 0.65 * dot;
 			viewTris.Add(viewTri);
 			i++;
