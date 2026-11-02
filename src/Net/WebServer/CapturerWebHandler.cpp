@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/Sort/ArtificialQuickSortFunc.hpp"
+#include "IO/BTUtil.h"
 #include "Net/MACInfo.h"
-#include "Net/PacketAnalyzerBluetooth.h"
 #include "Net/WebServer/CapturerWebHandler.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -559,7 +559,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NN<Text::StringBuilderUTF
 			else
 			{
 				Text::CStringNN cstr;
-				if (Net::PacketAnalyzerBluetooth::CompanyGetName(entry->company).SetTo(cstr))
+				if (IO::BTUtil::CompanyGetName(entry->company).SetTo(cstr))
 				{
 					sb->Append(cstr);
 				}

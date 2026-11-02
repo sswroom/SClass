@@ -367,7 +367,7 @@ void IO::BTScanLog::ParseAdvisement(NN<ScanRecord5> rec, UnsafeArray<const UInt8
 			// 4 Simultaneous LE and BR/EDR to Same Device Capable (Host)
 			rec->flags = buff[i + 2];
 		}
-		else if (buff[i + 1] == 3) //UUIDs
+		else if (buff[i + 1] == 2 || buff[i + 1] == 3) // Incomplete List of 16-bit Service Class UUIDs / Complete List of 16-bit Service Class UUIDs
 		{
 			UInt16 uuid;
 			j = 2;
@@ -381,15 +381,55 @@ void IO::BTScanLog::ParseAdvisement(NN<ScanRecord5> rec, UnsafeArray<const UInt8
 				j += 2;
 			}
 		}
+		else if (buff[i + 1] == 4 || buff[i + 1] == 5) // Incomplete List of 32-bit Service Class UUIDs / Complete List of 32-bit Service Class UUIDs
+		{
+			// Currently not processed
+		}
+		else if (buff[i + 1] == 6 || buff[i + 1] == 7) // Incomplete List of 128-bit Service Class UUIDs / Complete List of 128-bit Service Class UUIDs
+		{
+			// Currently not processed
+		}
 		else if (buff[i + 1] == 8 || buff[i + 1] == 9) // Shortened Local Name / Complete Local Name
 		{
 			sptr = Text::StrConcatC(sbuff, &buff[i + 2], (UIntOS)optLen - 1);
 		}
-		else if (buff[i + 1] == 0x16) // Service Data
+		else if (buff[i + 1] == 0x0A) // Tx Power Level
+		{
+			rec->txPower = (Int8)buff[i + 2];
+		}
+		else if (buff[i + 1] == 0x16) // Service Data - 16-bit UUID
 		{
 			rec->serviceUUID = ReadLUInt16(&buff[i + 2]);
 			rec->serviceDataLen = (UInt8)(optLen - 3);
 			MemCopyNO(rec->serviceData, &buff[i + 4], rec->serviceDataLen);
+		}
+		else if (buff[i + 1] == 0x21) // Service Data - 128-bit UUID
+		{
+			// Currently not processed
+		}
+		else if (buff[i + 1] == 0x2B) // Mesh Beacon
+		{
+/*			UInt8 beaconType = buff[i + 2];
+			if (beaconType == 0) //Unprovisioned Device Beacon
+			{
+				UInt8 uuid[16];
+				MemCopyNO(uuid, &buff[i + 3], 16);
+				UInt16 oobInfo = ReadLUInt16(&buff[i + 17]);
+				if (optLen > 19)
+				{
+					UInt32 uriHash = ReadLUInt32(&buff[i + 19]);
+				}
+			}
+			else if (beaconType == 1) // Secure Network Beacon
+			{
+				UInt8 flags = buff[i + 3];
+				UInt8 networkID[8];
+				MemCopyNO(networkID, &buff[i + 4], 8);
+				UInt8 ivIndex[4];
+				MemCopyNO(ivIndex, &buff[i + 12], 4);
+				UInt8 authTag[8];
+				MemCopyNO(authTag, &buff[i + 16], 8);
+			}*/
 		}
 		else if (buff[i + 1] == 0xFF) // Manufacturer-specific data
 		{

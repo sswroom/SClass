@@ -10,7 +10,63 @@ Bool IO::BTAdvData::ToString(UInt16 serviceUUID, Data::ByteArrayR serviceData, U
 	if (type == 0xff && len >= 3)
 	{
 		UInt16 company = ReadLUInt16(&advData[2]);
-		if (company == 0x4C) //Apple
+		if (company == 0x06) //Microsoft
+		{
+			if (advData[4] == 0x01 && len == 30)
+			{
+				sb->Append(CSTR("Scenario_Type=0x01 (Bluetooth),"));
+				sb->Append(CSTR(" Version_and_Device_Type=0x"));
+				sb->AppendHex8(advData[5]);
+				sb->Append(CSTR(" ("));
+				switch (advData[5] & 31)
+				{
+				case 1:
+					sb->Append(CSTR("Xbox One"));
+					break;
+				case 6:
+					sb->Append(CSTR("Apple iPhone"));
+					break;
+				case 7:
+					sb->Append(CSTR("Apple iPad"));
+					break;
+				case 8:
+					sb->Append(CSTR("Android device"));
+					break;
+				case 9:
+					sb->Append(CSTR("Windows 10 Desktop"));
+					break;
+				case 11:
+					sb->Append(CSTR("Windows 10 Phone"));
+					break;
+				case 12:
+					sb->Append(CSTR("Linux device"));
+					break;
+				case 13:
+					sb->Append(CSTR("Windows IoT"));
+					break;
+				case 14:
+					sb->Append(CSTR("Surface Hub"));
+					break;
+				case 15:
+					sb->Append(CSTR("Windows laptop"));
+					break;
+				case 16:
+					sb->Append(CSTR("Windows tablet"));
+					break;
+				}
+				sb->Append(CSTR(")"));
+				sb->Append(CSTR(", Version_and_Flags=0x"));
+				sb->AppendHex8(advData[6]);
+				sb->Append(CSTR(", Flags_and_Device_Status=0x"));
+				sb->AppendHex8(advData[7]);
+				sb->Append(CSTR(", Salt="));
+				sb->AppendHexBuff(&advData[8], 4, ' ', Text::LineBreakType::None);
+				sb->Append(CSTR(", Device_Hash="));
+				sb->AppendHexBuff(&advData[12], 19, ' ', Text::LineBreakType::None);
+				return true;
+			}
+		}
+		else if (company == 0x4C) //Apple
 		{
 			UIntOS i = 4;
 			while (i < (UIntOS)len + 1)
@@ -132,6 +188,63 @@ Bool IO::BTAdvData::ToString(UInt16 serviceUUID, Data::ByteArrayR serviceData, U
 		{
 			// D9 7A 7A CD 9D F9
 			sb->Append(CSTR("MAC: "));
+			sb->AppendHexBuff(&advData[4], len - 3, ' ', Text::LineBreakType::None);
+			return true;
+		}
+		else if (company == 0x75) // Samsung
+		{
+			if (len >= 24 && advData[4] == 0x42) // Quick Share
+			{
+				sb->Append(CSTR("Samsung Quick Share: "));
+				sb->Append(CSTR("Device Feature & Status = "));
+				sb->AppendHexBuff(&advData[6], advData[5], ' ', Text::LineBreakType::None);
+				UIntOS i = 6 + advData[5];
+				UIntOS j = len + 1;
+				if (j - i == 18)
+				{
+					sb->Append(CSTR(", Primary ID Hash = "));
+					sb->AppendHexBuff(&advData[i], 6, ' ', Text::LineBreakType::None);
+					sb->Append(CSTR(", Secondary ID Hash = "));
+					sb->AppendHexBuff(&advData[i], 6, ' ', Text::LineBreakType::None);
+					sb->Append(CSTR(", Authentication Tag = "));
+					sb->AppendHexBuff(&advData[i], 6, ' ', Text::LineBreakType::None);
+				}
+				else
+				{
+					sb->Append(CSTR(", Unknown: "));
+					sb->AppendHexBuff(&advData[i], j - i, ' ', Text::LineBreakType::None);
+				}
+				return true;
+			}
+		}
+		else if (company == 0x312) // Ducere Technologies Pvt Ltd
+		{
+			sb->Append(CSTR("Ducere Technologies Pvt Ltd: "));
+			sb->AppendHexBuff(&advData[4], len - 3, ' ', Text::LineBreakType::None);
+			return true;
+		}
+		else if (company == 0x38F) // Ducere Technologies Pvt Ltd
+		{
+			if (len == 15)
+			{
+				sb->Append(CSTR("Xiaomi: Frame Control=0x"));
+				sb->AppendHex8(advData[4]);
+				sb->AppendC(UTF8STRC(", Version & Product=0x"));
+				sb->AppendHex8(advData[5]);
+				sb->AppendC(UTF8STRC(", PID=0x"));
+				sb->AppendHex16(ReadLUInt16(&advData[6]));
+				sb->AppendC(UTF8STRC(", Frame Counter=0x"));
+				sb->AppendHex8(advData[8]);
+				sb->AppendC(UTF8STRC(", MAC="));
+				sb->AppendHexBuff(&advData[9], 6, ':', Text::LineBreakType::None);
+				sb->Append(CSTR(", Capability / RSSI=0x"));
+				sb->AppendHex8(advData[15]);
+				return true;
+			}
+		}
+		else if (company == 0x413) // Wireless Cables Inc
+		{
+			sb->Append(CSTR("Wireless Cables Inc: "));
 			sb->AppendHexBuff(&advData[4], len - 3, ' ', Text::LineBreakType::None);
 			return true;
 		}
