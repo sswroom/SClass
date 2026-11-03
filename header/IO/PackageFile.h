@@ -39,6 +39,7 @@ namespace IO
 		virtual UnsafeArrayOpt<UTF8Char> GetItemName(UnsafeArray<UTF8Char> sbuff, UIntOS index) const = 0;
 		virtual Optional<IO::StreamData> GetItemStmDataNew(UIntOS index) const = 0;
 		Optional<IO::StreamData> GetItemStmDataNew(Text::CStringNN name) const;
+		Optional<IO::StreamData> GetItemStmDataPathNew(Text::CStringNN path) const;
 		virtual Optional<IO::PackageFile> GetItemPack(UIntOS index, OutParam<Bool> needRelease) const = 0;
 		virtual Optional<IO::ParsedObject> GetItemPObj(UIntOS index, OutParam<Bool> needRelease) const = 0;
 		Optional<IO::PackageFile> GetItemPack(Text::CStringNN path, OutParam<Bool> needRelease) const;

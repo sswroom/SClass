@@ -250,13 +250,22 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	NN<IO::FileAnalyse::ZIPFileAnalyse::ZIPRecord> rec;
 	ofst = 0;
 	dataSize = fd->GetDataSize();
-	if (fd->GetRealData(dataSize - 22, 22, BYTEARR(recHdr)) == 22)
+	if (fd->GetRealData(dataSize - 64, 64, BYTEARR(recHdr)) == 64)
 	{
-		recType = ReadMUInt32(recHdr);
+		i = 64 - 22;
+		while (ReadMUInt32(&recHdr[i]) != 0x504B0506)
+		{
+			if (i == 0)
+			{
+				break;;
+			}
+			i--;
+		}
+		recType = ReadMUInt32(&recHdr[i]);
 		if (recType == 0x504B0506)
 		{
-			UInt32 sizeOfDir = ReadLUInt32(&recHdr[12]);
-			UInt32 ofstOfDir = ReadLUInt32(&recHdr[16]);
+			UInt32 sizeOfDir = ReadLUInt32(&recHdr[i + 12]);
+			UInt32 ofstOfDir = ReadLUInt32(&recHdr[i + 16]);
 			if (sizeOfDir == 0xffffffff || ofstOfDir == 0xffffffff)
 			{
 				fd->GetRealData(dataSize - 42, 20, BYTEARR(z64eocdl));
@@ -366,10 +375,10 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 						rec->fileName = nullptr;
 						me->tags.Add(rec);
 
-						commentLen = ReadLUInt16(&recHdr[20]);
+						commentLen = ReadLUInt16(&recHdr[i + 20]);
 						rec = MemAllocNN(ZIPRecord);
 						rec->tagType = 0x504B0506;
-						rec->ofst = dataSize - 22;
+						rec->ofst = dataSize - 64 + i;
 						rec->size = 22 + (UIntOS)commentLen;
 						rec->fileName = nullptr;
 						me->tags.Add(rec);
@@ -385,10 +394,10 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 					me->ParseCentDir(fd, centDir.Arr(), sizeOfDir, 0);
 					me->AddCentDir(centDir.Arr(), sizeOfDir, ofstOfDir);
 
-					commentLen = ReadLUInt16(&recHdr[20]);
+					commentLen = ReadLUInt16(&recHdr[i + 20]);
 					rec = MemAllocNN(ZIPRecord);
 					rec->tagType = 0x504B0506;
-					rec->ofst = dataSize - 22;
+					rec->ofst = dataSize - 64 + i;
 					rec->size = 22 + (UIntOS)commentLen;
 					rec->fileName = nullptr;
 					me->tags.Add(rec);
@@ -588,12 +597,15 @@ IO::FileAnalyse::ZIPFileAnalyse::ZIPFileAnalyse(NN<IO::StreamData> fd) : thread(
 	this->fd = nullptr;
 	this->pauseParsing = false;
 	UInt64 fileLength = fd->GetDataSize();
-	fd->GetRealData(fileLength - 22, 22, BYTEARR(buff));
-	if (ReadMInt32(buff) != 0x504B0506)
+	fd->GetRealData(fileLength - 64, 64, BYTEARR(buff));
+	UIntOS i = 64 - 22;
+	while (ReadMInt32(&buff[i]) != 0x504B0506)
 	{
-		return;
+		if (i == 0)
+			return;
+		i--;
 	}
-	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
+	this->fd = fd->GetPartialData(0, fileLength);
 	this->thread.Start();
 }
 

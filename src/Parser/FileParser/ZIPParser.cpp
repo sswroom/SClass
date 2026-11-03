@@ -107,13 +107,22 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 	dt.ToLocalTime();
 	NEW_CLASSNN(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 
-	if (fd->GetRealData(fileSize - 22, 22, BYTEARR(recHdr)) == 22)
+	if (fd->GetRealData(fileSize - 64, 64, BYTEARR(recHdr)) == 64)
 	{
-		recType = ReadMUInt32(recHdr);
+		i = 64 - 22;
+		while (ReadMUInt32(&recHdr[i]) != 0x504B0506)
+		{
+			if (i == 0)
+			{
+				break;
+			}
+			i--;
+		}
+		recType = ReadMUInt32(&recHdr[i]);
 		if (recType == 0x504B0506)
 		{
-			UInt32 sizeOfDir = ReadLUInt32(&recHdr[12]);
-			UInt32 ofstOfDir = ReadLUInt32(&recHdr[16]);
+			UInt32 sizeOfDir = ReadLUInt32(&recHdr[i + 12]);
+			UInt32 ofstOfDir = ReadLUInt32(&recHdr[i + 16]);
 			if (sizeOfDir == 0xffffffff || ofstOfDir == 0xffffffff)
 			{
 				fd->GetRealData(fileSize - 42, 20, BYTEARR(z64eocdl));

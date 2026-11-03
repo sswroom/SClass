@@ -20,7 +20,8 @@ namespace IO
 				Long,
 				Boolean,
 				Enum,
-				Class
+				Class,
+				Short
 			};
 		public:
 			virtual ~JavaElementValue(){};

@@ -14,9 +14,9 @@ namespace
 #if defined(DEBUGNULL)
 #define CSTRP(str, strEnd) Text::CStringNN::FromPtrD(str, strEnd, __FILE__, __LINE__)
 #else
-#define CSTRP(str, strEnd) Text::CStringNN(str, (UIntOS)(strEnd - str))
+#define CSTRP(str, strEnd) Text::CStringNN((str), (UIntOS)((strEnd) - (str)))
 #endif
-#define CSTRPZ(str, strEnd) ((strEnd == 0)?CSTR(""):Text::CStringNN(str, (UIntOS)(strEnd - str)))
+#define CSTRPZ(str, strEnd) ((strEnd == 0)?CSTR(""):Text::CStringNN(str, (UIntOS)((strEnd) - (str))))
 
 namespace Text
 {

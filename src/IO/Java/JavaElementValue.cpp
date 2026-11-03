@@ -7,6 +7,7 @@
 #include "IO/Java/JavaEnumValue.h"
 #include "IO/Java/JavaIntegerValue.h"
 #include "IO/Java/JavaLongValue.h"
+#include "IO/Java/JavaShortValue.h"
 #include "IO/Java/JavaStringValue.h"
 
 Optional<IO::Java::JavaElementValue> IO::Java::JavaElementValue::ParseElementValue(NN<JavaClass> cls, InOutParam<UnsafeArray<const UInt8>> annoPtr, UnsafeArray<const UInt8> annoEnd)
@@ -77,6 +78,21 @@ Optional<IO::Java::JavaElementValue> IO::Java::JavaElementValue::ParseElementVal
 			{
 				NN<JavaBooleanValue> val;
 				NEW_CLASSNN(val, JavaBooleanValue(ReadMInt32(&constPtr[1]) != 0));
+				annoPtr.Set(anno + 3);
+				return val;
+			}
+		}
+		annoPtr.Set(anno + 3);
+		return nullptr;
+	}
+	else if (anno[0] == 'S') //short
+	{
+		if (cls->GetConst(ReadMUInt16(&anno[1])).SetTo(constPtr))
+		{
+			if (constPtr[0] == 3) //Integer
+			{
+				NN<JavaShortValue> val;
+				NEW_CLASSNN(val, JavaShortValue(ReadMInt16(&constPtr[3])));
 				annoPtr.Set(anno + 3);
 				return val;
 			}

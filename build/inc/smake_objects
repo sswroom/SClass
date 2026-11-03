@@ -778,6 +778,7 @@ JavaIntegerValue.o: ../../src/IO/Java/JavaIntegerValue.cpp
 JavaLongValue.o: ../../src/IO/Java/JavaLongValue.cpp
 JavaMethod.o: ../../src/IO/Java/JavaMethod.cpp
 JavaProperties.o: ../../src/IO/Java/JavaProperties.cpp
+JavaShortValue.o: ../../src/IO/Java/JavaShortValue.cpp
 JavaStringValue.o: ../../src/IO/Java/JavaStringValue.cpp
 JavaType.o: ../../src/IO/Java/JavaType.cpp
 JavaUtil.o: ../../src/IO/Java/JavaUtil.cpp

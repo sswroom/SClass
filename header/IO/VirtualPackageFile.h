@@ -135,6 +135,7 @@ namespace IO
 		virtual Optional<IO::PackageFile> GetParent(OutParam<Bool> needRelease) const;
 		virtual Bool DeleteItem(UIntOS index);
 		virtual void SetParent(Optional<IO::PackageFile> pkg);
+		void ClearItems();
 
 		void SetInfo(InfoType infoType, UnsafeArray<const UTF8Char> val);
 		void GetInfoText(NN<Text::StringBuilderUTF8> sb) const;

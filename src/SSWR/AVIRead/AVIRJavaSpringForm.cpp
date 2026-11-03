@@ -2,6 +2,8 @@
 #include "IO/DirectoryPackage.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
+#include "IO/StreamDataStream.h"
+#include "IO/YAMLParser.h"
 #include "IO/Java/JavaAnnotation.h"
 #include "IO/Java/JavaArrayValue.h"
 #include "IO/Java/JavaEnumValue.h"
@@ -57,8 +59,115 @@ void __stdcall SSWR::AVIRead::AVIRJavaSpringForm::OnDirectoryDrop(AnyType userOb
 	NN<SSWR::AVIRead::AVIRJavaSpringForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJavaSpringForm>();
 	if (files.GetCount() > 0)
 	{
-		me->LoadPath(files[0]->ToCString());
+		if (me->LoadPath(files[0]->ToCString()))
+		{
+			me->DisplayClasses();
+		}
 	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRJavaSpringForm::OnClassPackagesSelChg(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRJavaSpringForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJavaSpringForm>();
+	NN<Text::String> s;
+	me->lbClasses->ClearItems();
+	if (me->lbClassPackages->GetSelectedItemTextNew().SetTo(s))
+	{
+		NN<IO::PackageFile> pkg;
+		Bool needRelease = false;
+		pkg = me->vpf;
+		if (s->leng != 0)
+		{
+			if (!pkg->GetItemPack(s->ToCString(), needRelease).SetTo(pkg))
+			{
+				s->Release();
+				return;
+			}
+		}
+		UTF8Char sbuff[512];
+		UnsafeArray<UTF8Char> sptr;
+		UIntOS i = 0;
+		UIntOS j = pkg->GetCount();
+		while (i < j)
+		{
+			if (pkg->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData && pkg->GetItemName(sbuff, i).SetTo(sptr))
+			{
+				if (Text::StrEndsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC(".class")))
+				{
+					sptr[-6] = 0;
+					me->lbClasses->AddItem(CSTRP(sbuff, sptr - 6), 0);
+				}
+			}
+			i++;
+		}
+		if (needRelease)
+			pkg.Delete();
+		s->Release();
+	}
+}
+
+Optional<IO::ConfigFile> SSWR::AVIRead::AVIRJavaSpringForm::OpenManifest(NN<IO::PackageFile> pkg)
+{
+	NN<IO::StreamData> fd;
+	if (pkg->GetItemStmDataPathNew(CSTR("META-INF/MANIFEST.MF")).SetTo(fd))
+	{
+		IO::StreamDataStream stm(fd);
+		Optional<IO::ConfigFile> cfg = IO::YAMLParser::ParseStream(stm);
+		fd.Delete();
+		return cfg;
+	}
+	return nullptr;
+}
+
+Bool SSWR::AVIRead::AVIRJavaSpringForm::LoadJar(Text::CStringNN fileName, NN<IO::StreamData> fd)
+{
+	UIntOS index = this->lvLib->AddItem(fileName, 0);
+	NN<IO::PackageFile> pkg;
+	if (Optional<IO::PackageFile>::ConvertFrom(this->core->GetParserList()->ParseFileType(fd, IO::ParserType::PackageFile)).SetTo(pkg))
+	{
+		NN<IO::ConfigFile> cfg;
+		if (OpenManifest(pkg).SetTo(cfg))
+		{
+			NN<Text::String> s;
+			if (cfg->GetValue(CSTR("Implementation-Title")).SetTo(s))
+			{
+				this->lvLib->SetSubItem(index, 1, s);
+			}
+			if (cfg->GetValue(CSTR("Implementation-Version")).SetTo(s))
+			{
+				this->lvLib->SetSubItem(index, 2, s);
+			}
+			NN<IO::PackageFile> classPkg;
+			Bool needRelease = false;
+			if (cfg->GetValue(CSTR("Spring-Boot-Classes")).SetTo(s))
+			{
+				if (pkg->GetItemPack(s->ToCString(), needRelease).SetTo(classPkg))
+				{
+					this->vpf.MergePackage(classPkg);
+					if (needRelease)
+					{
+						classPkg.Delete();
+					}
+				}
+				else
+				{
+					this->vpf.MergePackage(pkg);
+				}
+			}
+			else
+			{
+				this->vpf.MergePackage(pkg);
+			}
+			cfg.Delete();
+		}
+		else
+		{
+			this->vpf.MergePackage(pkg);
+		}
+		pkg.Delete();
+		return true;
+	}
+	return false;
 }
 
 Bool SSWR::AVIRead::AVIRJavaSpringForm::LoadPath(Text::CStringNN path)
@@ -90,6 +199,88 @@ Bool SSWR::AVIRead::AVIRJavaSpringForm::LoadClasses(NN<IO::PackageFile> pkg)
 {
 	this->reqList.FreeAll(FreeControllerRequest);
 	this->lvController->ClearItems();
+	this->lvLib->ClearItems();
+	this->lbClassPackages->ClearItems();
+	this->lbClasses->ClearItems();
+	this->vpf.ClearItems();
+	this->txtPath->SetText(pkg->GetSourceNameObj()->ToCString());
+	NN<IO::ConfigFile> cfg;
+	if (OpenManifest(pkg).SetTo(cfg))
+	{
+		NN<Text::String> s;
+		NN<Text::String> mainClass;
+		if (cfg->GetValue(CSTR("Main-Class")).SetTo(mainClass))
+		{
+			if (mainClass->Equals(CSTR("org.springframework.boot.loader.JarLauncher")))
+			{
+				cfg->GetValue(CSTR("Start-Class")).SetTo(mainClass);
+
+				if (cfg->GetValue(CSTR("Spring-Boot-Classes")).SetTo(s))
+				{
+					NN<IO::PackageFile> classPkg;
+					Bool needRelease;
+					if (pkg->GetItemPack(s->ToCString(), needRelease).SetTo(classPkg))
+					{
+						this->vpf.MergePackage(classPkg);
+						if (needRelease)
+						{
+							classPkg.Delete();
+						}
+					}
+					else
+					{
+						printf("AVIRJavaSpringForm: Classes path not found: %s\r\n", s->v.Ptr());
+					}
+				}
+				if (cfg->GetValue(CSTR("Spring-Boot-Lib")).SetTo(s))
+				{
+					NN<IO::PackageFile> libPkg;
+					Bool needRelease;
+					if (pkg->GetItemPack(s->ToCString(), needRelease).SetTo(libPkg))
+					{
+						UTF8Char sbuff[512];
+						UnsafeArray<UTF8Char> sptr;
+						UIntOS i = 0;
+						UIntOS j = libPkg->GetCount();
+						while (i < j)
+						{
+							if (libPkg->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData && libPkg->GetItemName(sbuff, i).SetTo(sptr))
+							{
+								if (Text::StrEndsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC(".jar")))
+								{
+									NN<IO::StreamData> fd;
+									if (libPkg->GetItemStmDataNew(i).SetTo(fd))
+									{
+										this->LoadJar(CSTRP(sbuff, sptr), fd);
+										fd.Delete();
+									}
+								}
+							}
+							i++;
+						}
+						if (needRelease)
+						{
+							libPkg.Delete();
+						}
+					}
+					else
+					{
+						printf("AVIRJavaSpringForm: Lib path not found: %s\r\n", s->v.Ptr());
+					}
+				}
+			}
+			this->txtMainClass->SetText(mainClass->ToCString());
+		}
+		else
+		{
+			this->txtMainClass->SetText(CSTR(""));
+		}
+		cfg.Delete();
+	}
+	else
+	{
+		this->txtMainClass->SetText(CSTR(""));
+	}
 	return this->LoadClassesInner(pkg);
 }
 
@@ -351,13 +542,84 @@ void SSWR::AVIRead::AVIRJavaSpringForm::LoadFile(NN<IO::StreamData> fd)
 	}
 }
 
-SSWR::AVIRead::AVIRJavaSpringForm::AVIRJavaSpringForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+void SSWR::AVIRead::AVIRJavaSpringForm::DisplayClasses()
+{
+	this->lbClassPackages->ClearItems();
+	this->lbClasses->ClearItems();
+	UTF8Char sbuff[512];
+	this->DisplayClassesInner(sbuff, sbuff, this->vpf);
+}
+
+void SSWR::AVIRead::AVIRJavaSpringForm::DisplayClassesInner(UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd, NN<IO::PackageFile> pf)
+{
+	sbuffEnd[0] = 0;
+	UIntOS i;
+	UIntOS j;
+	Bool found = false;
+	i = 0;
+	j = pf->GetCount();
+	while (i < j)
+	{
+		IO::PackageFile::PackObjectType pot = pf->GetItemType(i);
+		if (pot == IO::PackageFile::PackObjectType::StreamData)
+		{
+			if (!found)
+			{
+				UnsafeArray<UTF8Char> sptr;
+				sbuffEnd[1] = 0;
+				if (pf->GetItemName(&sbuffEnd[1], i).SetTo(sptr) && Text::StrEndsWithC(&sbuffEnd[1], (UIntOS)(sptr - &sbuffEnd[1]), UTF8STRC(".class")))
+				{
+					found = true;
+					sbuffEnd[0] = 0;
+					if (sbuffEnd == sbuff)
+					{
+						this->lbClassPackages->AddItem(CSTRP(sbuff, sbuffEnd), 0);
+					}
+					else
+					{
+						this->lbClassPackages->AddItem(CSTRP(sbuff + 1, sbuffEnd), 0);
+					}
+				}
+			}
+		}
+		else if (pot == IO::PackageFile::PackObjectType::PackageFileType)
+		{
+			NN<IO::PackageFile> npf;
+			Bool needRelease = false;
+			if (pf->GetItemPack(i, needRelease).SetTo(npf))
+			{
+				sbuffEnd[0] = '/';
+				this->DisplayClassesInner(sbuff, pf->GetItemName(&sbuffEnd[1], i).Or(&sbuffEnd[1]), npf);
+				if (needRelease)
+				{
+					npf.Delete();
+				}
+			}
+		}
+		i++;
+	}
+}
+
+SSWR::AVIRead::AVIRJavaSpringForm::AVIRJavaSpringForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), vpf(CSTR("Classes"))
 {
 	this->SetFont(nullptr, 8.25, false);
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetText(CSTR("Java Spring"));
 
+	this->pnlMain = ui->NewPanel(*this);
+	this->pnlMain->SetRect(0, 0, 100, 55, false);
+	this->pnlMain->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblPath = ui->NewLabel(this->pnlMain, CSTR("Path"));
+	this->lblPath->SetRect(4, 4, 100, 23, false);
+	this->txtPath = ui->NewTextBox(this->pnlMain, CSTR(""));
+	this->txtPath->SetRect(104, 4, 600, 23, false);
+	this->txtPath->SetReadOnly(true);
+	this->lblMainClass = ui->NewLabel(this->pnlMain, CSTR("Main Class"));
+	this->lblMainClass->SetRect(4, 32, 100, 23, false);
+	this->txtMainClass = ui->NewTextBox(this->pnlMain, CSTR(""));
+	this->txtMainClass->SetRect(104, 32, 600, 23, false);
+	this->txtMainClass->SetReadOnly(true);
 	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
@@ -375,6 +637,23 @@ SSWR::AVIRead::AVIRJavaSpringForm::AVIRJavaSpringForm(Optional<UI::GUIClientCont
 	this->lvController->AddColumn(CSTR("Return Type"), 100);
 	this->lvController->AddColumn(CSTR("Source File"), 200);
 	this->lvController->AddColumn(CSTR("Declaration Name"), 200);
+
+	this->tpLib = this->tcMain->AddTabPage(CSTR("Library"));
+	this->lvLib = ui->NewListView(this->tpLib, UI::ListViewStyle::Table, 3);
+	this->lvLib->SetFullRowSelect(true);
+	this->lvLib->SetShowGrid(true);
+	this->lvLib->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvLib->AddColumn(CSTR("FileName"), 200);
+	this->lvLib->AddColumn(CSTR("Title"), 200);
+	this->lvLib->AddColumn(CSTR("Version"), 100);
+
+	this->tpClasses = this->tcMain->AddTabPage(CSTR("Classes"));
+	this->lbClassPackages = ui->NewListBox(this->tpClasses, false);
+	this->lbClassPackages->SetRect(0, 0, 200, 100, false);
+	this->lbClassPackages->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbClassPackages->HandleSelectionChange(OnClassPackagesSelChg, this);
+	this->lbClasses = ui->NewListBox(this->tpClasses, false);
+	this->lbClasses->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->HandleDropFiles(OnDirectoryDrop, this);
 }

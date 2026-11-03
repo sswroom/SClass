@@ -38,6 +38,56 @@ Optional<IO::StreamData> IO::PackageFile::GetItemStmDataNew(Text::CStringNN name
 	return this->GetItemStmDataNew(index);
 }
 
+Optional<IO::StreamData> IO::PackageFile::GetItemStmDataPathNew(Text::CStringNN path) const
+{
+	UIntOS i = path.IndexOf('\\');
+	UIntOS j = path.IndexOf('/');
+	if (i == INVALID_INDEX)
+		i = j;
+	else if (j == INVALID_INDEX)
+	{
+	}
+	else if (i > j)
+		i = j;
+	if (i == INVALID_INDEX)
+	{
+		i = GetItemIndex(path);
+		if (i == INVALID_INDEX)
+			return nullptr;
+		return this->GetItemStmDataNew(i);
+	}
+	UTF8Char sbuff[64];
+	UnsafeArray<UTF8Char> sptr;
+	if (i < 64)
+	{
+		sptr = Text::StrConcatC(sbuff, path.v, i);
+		path = path.Substring(i + 1);
+		j = GetItemIndex(CSTRP(sbuff, sptr));
+	}
+	else
+	{
+		UnsafeArray<UTF8Char> tmpBuff = MemAllocArr(UTF8Char, i + 1);
+		sptr = Text::StrConcatC(tmpBuff, path.v, i);
+		path = path.Substring(i + 1);
+		j = GetItemIndex(CSTRP(tmpBuff, sptr));
+		MemFreeArr(tmpBuff);
+	}
+	if (j == INVALID_INDEX)
+		return nullptr;
+	Bool thisNeedRelease;
+	NN<IO::PackageFile> pkg;
+	if (GetItemPack(j, thisNeedRelease).SetTo(pkg))
+	{
+		Optional<IO::StreamData> ret = pkg->GetItemStmDataPathNew(path);
+		if (thisNeedRelease)
+		{
+			pkg.Delete();
+		}
+		return ret;
+	}
+	return nullptr;
+}
+
 Optional<IO::PackageFile> IO::PackageFile::GetItemPack(Text::CStringNN path, OutParam<Bool> needRelease) const
 {
 	UIntOS i = path.IndexOf('\\');
@@ -78,6 +128,11 @@ Optional<IO::PackageFile> IO::PackageFile::GetItemPack(Text::CStringNN path, Out
 	NN<IO::PackageFile> pkg;
 	if (GetItemPack(j, thisNeedRelease).SetTo(pkg))
 	{
+		if (path.leng == 0)
+		{
+			needRelease.Set(thisNeedRelease);
+			return pkg;
+		}
 		Optional<IO::PackageFile> ret = pkg->GetItemPack(path, needRelease);
 		if (thisNeedRelease)
 		{

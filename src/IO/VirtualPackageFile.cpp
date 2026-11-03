@@ -773,8 +773,14 @@ UIntOS IO::VirtualPackageFile::GetItemIndex(Text::CStringNN name) const
 		}
 		else if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject)
 		{
-			if (item->pobj.SetTo(pobj) && pobj->GetSourceNameObj()->EqualsICase(name))
-				return i;
+			if (item->pobj.SetTo(pobj))
+			{
+				if (pobj->GetSourceNameObj()->EqualsICase(name))
+					return i;
+#if defined(VERBOSE)
+				printf("VirtualPackageFile: ParsedObject not match: %s != %s\r\n", pobj->GetSourceNameObj()->v.Ptr(), name.v.Ptr());
+#endif
+			}
 		}
 		i++;
 	}
@@ -1146,6 +1152,15 @@ void IO::VirtualPackageFile::SetParent(Optional<IO::PackageFile> pkg)
 		{
 			NN<IO::PackageFile>::ConvertFrom(pobj)->SetParent(this);
 		}
+	}
+}
+
+void IO::VirtualPackageFile::ClearItems()
+{
+	UIntOS count = this->items.GetCount();
+	while (count-- > 0)
+	{
+		this->DeleteItem(count);
 	}
 }
 

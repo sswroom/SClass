@@ -2738,6 +2738,8 @@ IO/Java/JavaMethod.h:
 @JavaMethod.o
 IO/Java/JavaProperties.h:
 @JavaProperties.o
+IO/Java/JavaShortValue.h:
+@JavaShortValue.o
 IO/Java/JavaStringValue.h:
 @JavaStringValue.o
 IO/Java/JavaType.h:
