@@ -93,6 +93,8 @@ namespace IO
 				UnsafeArray<const UInt8> codeStart;
 				UnsafeArray<const UInt8> endPtr;
 				Optional<Text::String> returnType;
+				Data::ArrayListNative<UInt32> activeExHdlrRanges;
+				Data::ArrayListNative<UInt32> decompiledExHdlrBlocks;
 
 				Optional<Data::ArrayListStringNN> importList;
 				UnsafeArrayOpt<const UTF8Char> packageName;

@@ -4509,6 +4509,34 @@ void IO::Java::JavaClass::AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UIntO
 
 			i++;
 		}
+		i = 0;
+		j = method.exHdlrList.GetCount();
+		if (j > 0)
+		{
+			NN<ExceptionHdlrInfo> exHdlr;
+			AppendIndent(sb, (lev + 1));
+			sb->AppendC(UTF8STRC("*\r\n"));
+
+			while (i < j)
+			{
+				exHdlr = method.exHdlrList.GetItemNoCheck(i);
+				AppendIndent(sb, (lev + 1));
+				sb->AppendC(UTF8STRC("* "));
+				sb->AppendC(UTF8STRC("Exception: startPC = "));
+				sb->AppendU16(exHdlr->startPC);
+				sb->AppendC(UTF8STRC(", endPC = "));
+				sb->AppendU16(exHdlr->endPC);
+				sb->AppendC(UTF8STRC(", handlerPC = "));
+				sb->AppendU16(exHdlr->handlerPC);
+				sb->AppendC(UTF8STRC(", catchType = "));
+				sb->AppendU16(exHdlr->catchType);
+				sb->AppendUTF8Char(' ');
+				this->DetailClassName(exHdlr->catchType, sb);
+				sb->AppendC(UTF8STRC("\r\n"));
+				i++;
+			}
+		}
+
 		AppendIndent(sb, (lev + 1));
 		sb->AppendC(UTF8STRC("*/\r\n"));
 	}
@@ -4552,6 +4580,8 @@ void IO::Java::JavaClass::AppendCodeMethodCodes(NN<Text::StringBuilderUTF8> sb, 
 	env.method = method;
 	env.stacks = stackVal;
 	env.stackTypes = stackTypes;
+	env.activeExHdlrRanges.Clear();
+	env.decompiledExHdlrBlocks.Clear();
 	env.importList = importList;
 	env.packageName = packageName;
 	env.returnType = nullptr;
@@ -5516,6 +5546,7 @@ IO::Java::JavaClass::EndType IO::Java::JavaClass::DecompileCode(UnsafeArray<cons
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UnsafeArrayOpt<UInt8>> constPool;
 	UnsafeArray<UInt8> constPoolVal;
+	NN<Text::String> s;
 	UTF8Char typeBuff[128];
 	while (codePtr < codeEnd)
 	{
@@ -5552,6 +5583,323 @@ IO::Java::JavaClass::EndType IO::Java::JavaClass::DecompileCode(UnsafeArray<cons
 		}
 		sb->Append(CSTR("\r\n"));
 #endif		
+		UIntOS codeOfst = (UIntOS)(codePtr - env->codeStart);
+		UIntOS codeEndOfst = (UIntOS)(codeEnd - env->codeStart);
+		UIntOS blockIdx = 0;
+		UIntOS blockCnt = env->decompiledExHdlrBlocks.GetCount();
+		Bool skippedHandlerBlock = false;
+		while (blockIdx < blockCnt)
+		{
+			UInt32 blockKey = env->decompiledExHdlrBlocks.GetItem(blockIdx);
+			if ((blockKey >> 16) == codeOfst)
+			{
+				UIntOS blockEnd = blockKey & 0xFFFF;
+				if (blockEnd > codeEndOfst)
+				{
+					blockEnd = codeEndOfst;
+				}
+				codePtr = env->codeStart + blockEnd;
+				skippedHandlerBlock = true;
+				break;
+			}
+			blockIdx++;
+		}
+		if (skippedHandlerBlock)
+		{
+			continue;
+		}
+		if (codePtr >= codeEnd)
+		{
+			env->endPtr = codePtr;
+			return EndType::CodeEnd;
+		}
+		UInt16 exEndPC = 0;
+		Bool hasExRange = false;
+		UIntOS exIdx = 0;
+		UIntOS exCnt = env->method->exHdlrList.GetCount();
+		while (exIdx < exCnt)
+		{
+			NN<ExceptionHdlrInfo> exHdlr = env->method->exHdlrList.GetItemNoCheck(exIdx);
+			if (exHdlr->startPC == codeOfst && exHdlr->endPC > codeOfst && exHdlr->endPC <= codeEndOfst)
+			{
+				UInt32 rangeKey = ((UInt32)exHdlr->startPC << 16) | exHdlr->endPC;
+				UIntOS activeIdx = 0;
+				UIntOS activeCnt = env->activeExHdlrRanges.GetCount();
+				Bool active = false;
+				while (activeIdx < activeCnt)
+				{
+					if (env->activeExHdlrRanges.GetItem(activeIdx) == rangeKey)
+					{
+						active = true;
+						break;
+					}
+					activeIdx++;
+				}
+				if (!active && (!hasExRange || exHdlr->endPC > exEndPC))
+				{
+					exEndPC = exHdlr->endPC;
+					hasExRange = true;
+				}
+			}
+			exIdx++;
+		}
+		if (hasExRange)
+		{
+			UInt32 rangeKey = ((UInt32)codeOfst << 16) | exEndPC;
+			UIntOS stackCnt = env->stacks->GetCount();
+			UnsafeArray<const UInt8> tryEnd = env->codeStart + exEndPC;
+			Text::StringBuilderUTF8 tryBody;
+			env->activeExHdlrRanges.Add(rangeKey);
+			EndType tryEt = this->DecompileCode(codePtr, tryEnd, env, lev + 1, tryBody);
+			env->activeExHdlrRanges.RemoveAt(env->activeExHdlrRanges.GetCount() - 1);
+			if (tryEt == EndType::Error)
+			{
+				sb->AppendC(tryBody.ToString(), tryBody.GetLength());
+				return tryEt;
+			}
+			if (env->stacks->GetCount() != env->stackTypes->GetCount() || env->stacks->GetCount() < stackCnt || env->stackTypes->GetCount() < stackCnt)
+			{
+				sb->AppendC(tryBody.ToString(), tryBody.GetLength());
+				AppendIndent(sb, lev);
+				sb->AppendC(UTF8STRC("// Exception handler stack mismatch\r\n"));
+				return EndType::Error;
+			}
+			while (env->stacks->GetCount() > stackCnt)
+			{
+				env->stacks->RemoveAndReleaseLast();
+			}
+			while (env->stackTypes->GetCount() > stackCnt)
+			{
+				env->stackTypes->RemoveAndReleaseLast();
+			}
+			if (env->stacks->GetCount() != stackCnt || env->stackTypes->GetCount() != stackCnt)
+			{
+				AppendIndent(sb, lev);
+				sb->AppendC(UTF8STRC("// Exception handler stack mismatch\r\n"));
+				return EndType::Error;
+			}
+
+			AppendIndent(sb, lev);
+			sb->AppendC(UTF8STRC("try\r\n"));
+			AppendIndent(sb, lev);
+			sb->AppendC(UTF8STRC("{\r\n"));
+			sb->AppendC(tryBody.ToString(), tryBody.GetLength());
+			AppendIndent(sb, lev);
+			sb->AppendC(UTF8STRC("}\r\n"));
+
+			UnsafeArray<const UInt8> tryResumePtr = env->endPtr;
+			UIntOS hdlrIdx = 0;
+			while (hdlrIdx < exCnt)
+			{
+				NN<ExceptionHdlrInfo> exHdlr = env->method->exHdlrList.GetItemNoCheck(hdlrIdx);
+				if (exHdlr->startPC == codeOfst && exHdlr->endPC == exEndPC)
+				{
+					Bool handlerSeen = false;
+					UIntOS checkIdx = 0;
+					while (checkIdx < hdlrIdx)
+					{
+						NN<ExceptionHdlrInfo> prevHdlr = env->method->exHdlrList.GetItemNoCheck(checkIdx);
+						if (prevHdlr->startPC == codeOfst && prevHdlr->endPC == exEndPC && prevHdlr->handlerPC == exHdlr->handlerPC)
+						{
+							handlerSeen = true;
+							break;
+						}
+						checkIdx++;
+					}
+					if (!handlerSeen)
+					{
+						UInt16 handlerPC = exHdlr->handlerPC;
+						if (handlerPC >= env->method->codeLen)
+						{
+							AppendIndent(sb, lev);
+							sb->AppendC(UTF8STRC("// Exception handler offset out of range\r\n"));
+							return EndType::Error;
+						}
+						UInt16 handlerEndPC = (UInt16)env->method->codeLen;
+						UIntOS nextIdx = 0;
+						while (nextIdx < exCnt)
+						{
+							NN<ExceptionHdlrInfo> nextHdlr = env->method->exHdlrList.GetItemNoCheck(nextIdx);
+							if (nextHdlr->handlerPC > handlerPC && nextHdlr->handlerPC < handlerEndPC)
+							{
+								handlerEndPC = nextHdlr->handlerPC;
+							}
+							nextIdx++;
+						}
+
+						UInt16 catchLocal = 0;
+						UIntOS storeLen = 0;
+						UnsafeArray<const UInt8> handlerStart = env->codeStart + handlerPC;
+						if (handlerPC + 1 < handlerEndPC && handlerStart[0] == 0x3A)
+						{
+							catchLocal = handlerStart[1];
+							storeLen = 2;
+						}
+						else if (handlerStart[0] >= 0x4B && handlerStart[0] <= 0x4E)
+						{
+							catchLocal = (UInt16)(handlerStart[0] - 0x4B);
+							storeLen = 1;
+						}
+
+						UTF8Char catchVar[256];
+						UnsafeArray<UTF8Char> catchVarEnd;
+						if (storeLen > 0)
+						{
+							catchVarEnd = this->GetLVName(catchVar, catchLocal, env->method, handlerPC + storeLen);
+						}
+						else
+						{
+							catchVarEnd = Text::StrConcatC(catchVar, UTF8STRC("exception"));
+						}
+
+						AppendIndent(sb, lev);
+						sb->AppendC(UTF8STRC("catch ("));
+						Text::StringBuilderUTF8 catchTypes;
+						Bool firstCatchType = true;
+						UIntOS typeIdx = 0;
+						while (typeIdx < exCnt)
+						{
+							NN<ExceptionHdlrInfo> typeHdlr = env->method->exHdlrList.GetItemNoCheck(typeIdx);
+							if (typeHdlr->startPC == codeOfst && typeHdlr->endPC == exEndPC && typeHdlr->handlerPC == handlerPC)
+							{
+								Bool typeSeen = false;
+								UIntOS prevIdx = 0;
+								while (prevIdx < typeIdx)
+								{
+									NN<ExceptionHdlrInfo> prevHdlr = env->method->exHdlrList.GetItemNoCheck(prevIdx);
+									if (prevHdlr->startPC == codeOfst && prevHdlr->endPC == exEndPC && prevHdlr->handlerPC == handlerPC && prevHdlr->catchType == typeHdlr->catchType)
+									{
+										typeSeen = true;
+										break;
+									}
+									prevIdx++;
+								}
+								if (!typeSeen)
+								{
+									Text::StringBuilderUTF8 catchType;
+									if (typeHdlr->catchType == 0)
+									{
+										catchType.AppendC(UTF8STRC("java.lang.Throwable"));
+									}
+									else if (!this->ClassNameString(typeHdlr->catchType, catchType))
+									{
+										AppendIndent(sb, lev);
+										sb->AppendC(UTF8STRC("// Invalid exception type in exception table\r\n"));
+										return EndType::Error;
+									}
+									if (!firstCatchType)
+									{
+										catchTypes.AppendC(UTF8STRC(" | "));
+									}
+									this->AppendCodeClassName(catchTypes, catchType.ToString(), env->importList, env->packageName);
+									firstCatchType = false;
+								}
+							}
+							typeIdx++;
+						}
+						sb->AppendC(catchTypes.ToString(), catchTypes.GetLength());
+						sb->AppendUTF8Char(' ');
+						sb->AppendC(catchVar, (UIntOS)(catchVarEnd - catchVar));
+						sb->AppendC(UTF8STRC(")\r\n"));
+						AppendIndent(sb, lev);
+						sb->AppendC(UTF8STRC("{\r\n"));
+
+						Optional<Text::String> oldLocalType = nullptr;
+						if (storeLen > 0 && catchLocal < env->method->maxLocals)
+						{
+							oldLocalType = env->localTypes[catchLocal];
+							Text::StringBuilderUTF8 localType;
+							UnsafeArray<UTF8Char> localTypeEnd = this->GetLVType(catchVar, catchLocal, env->method, handlerPC + storeLen, env->importList, env->packageName);
+							if (localTypeEnd == catchVar)
+							{
+								typeIdx = 0;
+								while (typeIdx < exCnt)
+								{
+									NN<ExceptionHdlrInfo> typeHdlr = env->method->exHdlrList.GetItemNoCheck(typeIdx);
+									if (typeHdlr->startPC == codeOfst && typeHdlr->endPC == exEndPC && typeHdlr->handlerPC == handlerPC)
+									{
+										if (typeHdlr->catchType == 0)
+										{
+											localType.AppendC(UTF8STRC("java.lang.Throwable"));
+										}
+										else
+										{
+											this->ClassNameString(typeHdlr->catchType, localType);
+										}
+										break;
+									}
+									typeIdx++;
+								}
+							}
+							else
+							{
+								localType.AppendC(catchVar, (UIntOS)(localTypeEnd - catchVar));
+							}
+							env->localTypes[catchLocal] = Text::String::New(localType.ToString(), localType.GetLength()).Ptr();
+						}
+						else
+						{
+							env->stacks->Add(Text::String::NewP(catchVar, catchVarEnd));
+							env->stackTypes->Add(Text::String::New(UTF8STRC("java.lang.Throwable")));
+						}
+
+						Text::StringBuilderUTF8 catchBody;
+						EndType catchEt = this->DecompileCode(handlerStart + storeLen, env->codeStart + handlerEndPC, env, lev + 1, catchBody);
+						sb->AppendC(catchBody.ToString(), catchBody.GetLength());
+						AppendIndent(sb, lev);
+						sb->AppendC(UTF8STRC("}\r\n"));
+						Bool stackMismatch = env->stacks->GetCount() != env->stackTypes->GetCount() || env->stacks->GetCount() < stackCnt || env->stackTypes->GetCount() < stackCnt;
+						if (storeLen > 0 && catchLocal < env->method->maxLocals)
+						{
+							if (env->localTypes[catchLocal].SetTo(s))
+							{
+								s->Release();
+							}
+							env->localTypes[catchLocal] = oldLocalType;
+						}
+						while (env->stacks->GetCount() > stackCnt)
+						{
+							env->stacks->RemoveAndReleaseLast();
+						}
+						while (env->stackTypes->GetCount() > stackCnt)
+						{
+							env->stackTypes->RemoveAndReleaseLast();
+						}
+						if (catchEt == EndType::Error || stackMismatch || env->stacks->GetCount() != stackCnt || env->stackTypes->GetCount() != stackCnt)
+						{
+							if (catchEt != EndType::Error)
+							{
+								AppendIndent(sb, lev);
+								sb->AppendC(UTF8STRC("// Exception handler stack mismatch\r\n"));
+							}
+							return EndType::Error;
+						}
+						env->decompiledExHdlrBlocks.Add(((UInt32)handlerPC << 16) | handlerEndPC);
+					}
+				}
+				hdlrIdx++;
+			}
+
+			if (tryEt == EndType::Goto)
+			{
+				if (tryResumePtr <= codePtr || tryResumePtr > codeEnd)
+				{
+					env->endPtr = tryResumePtr;
+					return EndType::Goto;
+				}
+				codePtr = tryResumePtr;
+			}
+			else if (tryEt == EndType::Return || tryEt == EndType::Throw)
+			{
+				env->endPtr = tryResumePtr;
+				return tryEt;
+			}
+			else
+			{
+				codePtr = tryEnd;
+			}
+			continue;
+		}
 		switch (codePtr[0])
 		{
 		case 0x00: //nop
