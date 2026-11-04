@@ -58,6 +58,7 @@ namespace SSWR
 			static void __stdcall OnControllerSaveClicked(AnyType userObj);
 			static void __stdcall OnDirectoryDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnClassPackagesSelChg(AnyType userObj);
+			static void __stdcall OnClassesDoubleClicked(AnyType userObj);
 			static Optional<IO::ConfigFile> OpenManifest(NN<IO::PackageFile> pkg);
 			Bool LoadJar(Text::CStringNN fileName, NN<IO::StreamData> fd);
 			Bool LoadPath(Text::CStringNN path);

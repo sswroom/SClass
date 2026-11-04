@@ -57,9 +57,11 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(Optional<UI::GUIClientContro
 
 	this->ctrlRest = nullptr;
 
-	UIntOS i = 0;
-	UIntOS j = this->clsFile->FieldsGetCount();
+	UIntOS i;
+	UIntOS j;
 	UIntOS k;
+	i = 0;
+	j = this->clsFile->FieldsGetCount();
 	while (i < j)
 	{
 		sb.ClearStr();

@@ -4,6 +4,7 @@
 #include "Data/ArrayListString.h"
 #include "Data/ArrayListStringNN.h"
 #include "Data/ArrayListStrUTF8.h"
+#include "Data/FastStringMapNN.hpp"
 #include "IO/ParsedObject.h"
 #include "Text/CString.h"
 #include "Text/String.h"
@@ -146,7 +147,7 @@ namespace IO
 
 			void AppendCodeClassName(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> className, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const;
 			void AppendCodeClassContent(NN<Text::StringBuilderUTF8> sb, UIntOS lev, UnsafeArray<const UTF8Char> className, NN<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName);
-			void AppendCodeField(NN<Text::StringBuilderUTF8> sb, UIntOS index, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const;
+			void AppendCodeField(NN<Text::StringBuilderUTF8> sb, UIntOS index, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName, Optional<Data::FastStringMapNN<Text::String>> fieldInitMap) const;
 			void AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UIntOS index, UIntOS lev, Bool disasm, Bool decompile, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const;
 			void AppendCodeMethodCodes(NN<Text::StringBuilderUTF8> sb, UIntOS lev, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName, UnsafeArray<const UInt8> codeAttr, UnsafeArray<const UTF8Char> typeBuff, NN<const MethodInfo> method) const;
 

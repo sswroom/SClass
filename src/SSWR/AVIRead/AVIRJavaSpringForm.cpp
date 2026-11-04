@@ -10,6 +10,7 @@
 #include "IO/Java/JavaMethod.h"
 #include "IO/Java/JavaStringValue.h"
 #include "IO/StmData/FileData.h"
+#include "Parser/FileParser/ClassParser.h"
 #include "SSWR/AVIRead/AVIRJavaSpringForm.h"
 #include "UI/GUIFileDialog.h"
 
@@ -103,6 +104,40 @@ void __stdcall SSWR::AVIRead::AVIRJavaSpringForm::OnClassPackagesSelChg(AnyType 
 		if (needRelease)
 			pkg.Delete();
 		s->Release();
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRJavaSpringForm::OnClassesDoubleClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRJavaSpringForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJavaSpringForm>();
+	NN<Text::String> className;
+	NN<Text::String> packageName;
+	if (me->lbClasses->GetSelectedItemTextNew().SetTo(className))
+	{
+		if (me->lbClassPackages->GetSelectedItemTextNew().SetTo(packageName))
+		{
+			NN<IO::StreamData> fd;
+			Text::StringBuilderUTF8 sb;
+			if (packageName->leng > 0)
+			{
+				sb.Append(packageName)->AppendUTF8Char('/');
+			}
+			sb.Append(className);
+			sb.Append(CSTR(".class"));
+
+			if (me->vpf.GetItemStmDataPathNew(sb.ToCString()).SetTo(fd))
+			{
+				Parser::FileParser::ClassParser parser;
+				NN<IO::ParsedObject> pobj;
+				if (parser.ParseFile(fd, nullptr, IO::ParserType::JavaClass).SetTo(pobj))
+				{
+					me->core->OpenObject(pobj);
+				}
+				fd.Delete();
+			}
+			packageName->Release();
+		}
+		className->Release();
 	}
 }
 
@@ -654,6 +689,7 @@ SSWR::AVIRead::AVIRJavaSpringForm::AVIRJavaSpringForm(Optional<UI::GUIClientCont
 	this->lbClassPackages->HandleSelectionChange(OnClassPackagesSelChg, this);
 	this->lbClasses = ui->NewListBox(this->tpClasses, false);
 	this->lbClasses->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbClasses->HandleDoubleClicked(OnClassesDoubleClicked, this);
 
 	this->HandleDropFiles(OnDirectoryDrop, this);
 }

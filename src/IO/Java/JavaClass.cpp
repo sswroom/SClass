@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteBuffer.h"
 #include "Core/ByteTool_C.h"
+#include "Data/ByteBuffer.h"
 #include "IO/FileStream.h"
 #include "IO/Java/JavaAnnotation.h"
 #include "IO/Java/JavaClass.h"
@@ -4120,29 +4120,104 @@ void IO::Java::JavaClass::AppendCodeClassContent(NN<Text::StringBuilderUTF8> sb,
 		}
 	}
 	sb->AppendC(UTF8STRC(" {\r\n"));
+
+	Data::FastStringMapNN<Text::String> fieldInitMap;
+	UnsafeArray<UnsafeArray<UInt8>> methods;
+	UIntOS clinitIndex = INVALID_INDEX;
+	if (this->methods.SetTo(methods))
+	{
+		UTF8Char typeBuff[256];
+		MethodInfo method;
+		i = 0;
+		j = this->MethodsGetCount();
+		while (i < j)
+		{
+			if (this->MethodParse(method, methods[i]))
+			{
+				sbTmp.ClearStr();
+				if (method.signatureIndex != 0)
+				{
+					this->DetailNameType(method.nameIndex, method.signatureIndex, this->thisClass, nullptr, sbTmp, typeBuff, &method, importList, packageName);
+				}
+				else
+				{
+					this->DetailNameType(method.nameIndex, method.descriptorIndex, this->thisClass, nullptr, sbTmp, typeBuff, &method, importList, packageName);
+				}
+				MethodFree(method);
+				if (sbTmp.Equals(CSTR("void <clinit>()")))
+				{
+					clinitIndex = i;
+					sbTmp.ClearStr();
+					this->AppendCodeMethod(sbTmp, i, 0, false, true, importList, packageName);
+					Text::PString sarr[2];
+					Bool started = false;
+					sarr[1] = sbTmp;
+					while (true)
+					{
+						i = Text::StrSplitLineP(sarr, 2, sarr[1]);
+						if (sarr[0].Equals(CSTR("{")))
+						{
+							started = true;
+						}
+						else if (sarr[0].Equals(CSTR("}")))
+						{
+							if (started)
+							{
+								break;
+							}
+						}
+						else if (started)
+						{
+							j = sarr[0].IndexOf(CSTR(" = "));
+							if (j != INVALID_INDEX)
+							{
+								UIntOS k = Text::CStringNN(sarr[0].v, j).LastIndexOf('.') + 1;
+								fieldInitMap.PutC(Text::CStringNN(sarr[0].v + k, j - k), Text::String::New(sarr[0].Substring(j).ToCString()));
+							}
+						}
+						if (i != 2)
+							break;
+					}
+					break;
+				}
+
+			}
+			i++;
+		}
+	}
+
 	i = 0;
 	j = this->FieldsGetCount();
 	while (i < j)
 	{
 		AppendIndent(sb, lev + 1);
-		this->AppendCodeField(sb, i, importList, packageName);
+		this->AppendCodeField(sb, i, importList, packageName, fieldInitMap);
 		sb->AppendC(UTF8STRC(";\r\n"));
 		i++;
 	}
+	i = fieldInitMap.GetCount();
+	while (i-- > 0)
+	{
+		fieldInitMap.GetItemNoCheck(i)->Release();
+	}
+	fieldInitMap.Clear();
 
 	i = 0;
 	j = this->MethodsGetCount();
 	while (i < j)
 	{
-		sb->AppendC(UTF8STRC("\r\n"));
-		this->AppendCodeMethod(sb, i, lev + 1, false, true, importList, packageName);
+		if (i != clinitIndex)
+		{
+			sb->AppendC(UTF8STRC("\r\n"));
+			this->AppendCodeMethod(sb, i, lev + 1, false, true, importList, packageName);
+		}
 		i++;
 	}
 	AppendIndent(sb, lev);
 	sb->AppendC(UTF8STRC("}\r\n"));
 }
 
-void IO::Java::JavaClass::AppendCodeField(NN<Text::StringBuilderUTF8> sb, UIntOS index, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
+void IO::Java::JavaClass::AppendCodeField(NN<Text::StringBuilderUTF8> sb, UIntOS index, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName, Optional<Data::FastStringMapNN<Text::String>> fieldInitMap) const
 {
 	UnsafeArray<UnsafeArray<UInt8>> fields;
 	if (!this->fields.SetTo(fields) || index >= this->fieldsCnt)
@@ -4285,7 +4360,16 @@ void IO::Java::JavaClass::AppendCodeField(NN<Text::StringBuilderUTF8> sb, UIntOS
 	sb->AppendUTF8Char(' ');
 	sptr = this->GetConstUTF8(sbuff, nameIndex).Or(sbuff);
 	sb->AppendC(sbuff, (UIntOS)(sptr - sbuff));
-	sb->AppendC(sbValue.ToString(), sbValue.GetLength());
+	NN<Data::FastStringMapNN<Text::String>> nnfieldInitMap;
+	NN<Text::String> s;
+	if (fieldInitMap.SetTo(nnfieldInitMap) && nnfieldInitMap->GetC(CSTRP(sbuff, sptr)).SetTo(s))
+	{
+		sb->Append(s);
+	}
+	else
+	{
+		sb->AppendC(sbValue.ToString(), sbValue.GetLength());
+	}
 }
 
 void IO::Java::JavaClass::AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UIntOS index, UIntOS lev, Bool disasm, Bool decompile, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
@@ -5306,7 +5390,7 @@ Bool IO::Java::JavaClass::FieldsGetDecl(UIntOS index, NN<Text::StringBuilderUTF8
 	{
 		return false;
 	}
-	this->AppendCodeField(sb, index, nullptr, nullptr);
+	this->AppendCodeField(sb, index, nullptr, nullptr, nullptr);
 	return true;
 }
 
