@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "AI/AIReadDBTool.h"
+#include "AI/AIReadMDTool.h"
 #include "AI/AIAgentHandler.h"
 #include "AI/SimpleAIAgent.h"
 #include "Core/Core.h"
@@ -21,6 +22,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	log.AddLogHandler(logHdlr, IO::LogHandler::LogLevel::Raw);
 	NN<IO::ConfigFile> cfg;
 	NN<DB::DBTool> db;
+	UIntOS maxToolCalls = 20;
 	if (!IO::Java::JavaProperties::ParseAppProp().SetTo(cfg))
 	{
 		log.LogMessage(CSTR("Failed to parse application properties."), IO::LogHandler::LogLevel::Error);
@@ -68,6 +70,16 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		cfg.Delete();
 		return 1;
 	}
+	if (cfg->GetValue(CSTR("app.ai.max-tool-calls")).SetTo(s) && s->ToUIntOS(maxToolCalls))
+	{
+		if (maxToolCalls == 0)
+		{
+			log.LogMessage(CSTR("Invalid value for max tool calls."), IO::LogHandler::LogLevel::Error);
+			db.Delete();
+			cfg.Delete();
+			return 1;
+		}
+	}
 	if (!cfg->GetValue(CSTR("server.port")).SetTo(s) || !s->ToUInt16(port))
 	{
 		log.LogMessage(CSTR("Failed to get server port from configuration."), IO::LogHandler::LogLevel::Error);
@@ -95,11 +107,19 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return 1;
 	}
 	log.LogMessage(Text::StringBuilderUTF8().Append(CSTR("Using model: "))->Append(modelName)->ToCString(), IO::LogHandler::LogLevel::Command);
+	Data::ArrayListNN<AI::AITool> tools;
 	{
 		AI::SimpleAIAgent agent(openAI, modelName->ToCString());
 		AI::AIReadDBTool readDBTool(db->GetDBConn(), schema->ToCString());
 		agent.AddTool(readDBTool);
-		agent.SetMaxToolCalls(20);
+		if (cfg->GetValue(CSTR("app.ai.md-path")).SetTo(s))
+		{
+			NN<AI::AIReadMDTool> readMDTool;
+			NEW_CLASSNN(readMDTool, AI::AIReadMDTool(s->ToCString()));
+			agent.AddTool(readMDTool);
+			tools.Add(readMDTool);
+		}
+		agent.SetMaxToolCalls(maxToolCalls);
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
@@ -117,6 +137,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 	}
 	openAI.Delete();
+	tools.DeleteAll();
 	db.Delete();
 	cfg.Delete();
 	return 0;
