@@ -320,6 +320,16 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnAssetsHistSelChg(AnyType use
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionShowAllChkChg(AnyType userObj, Bool checked)
+{
+	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
+	NN<Data::Invest::InvestmentManager> mgr;
+	if (me->mgr.SetTo(mgr))
+	{
+		me->DisplayTransactions(mgr);
+	}
+}
+
 void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionFXClicked(AnyType userObj)
 {
 	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
@@ -1458,9 +1468,11 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayTransactions(NN<Data::Invest::Inv
 	UIntOS k;
 	UInt32 fromC;
 	UInt32 toC;
+	Bool showAll = this->chkTransactionShowAll->IsChecked();
+	Data::Timestamp lastYear = Data::Timestamp::Now().AddYear(-1);
 	while (i < j)
 	{
-		if (mgr->GetTransactionEntry(i).SetTo(ent))
+		if (mgr->GetTransactionEntry(i).SetTo(ent) && (showAll || ent->fromDetail.tranBeginDate >= lastYear))
 		{
 			sptr = ent->fromDetail.tranBeginDate.ToStringNoZone(sbuff);
 			k = this->lvTransaction->AddItem(CSTRP(sbuff, sptr), ent);
@@ -2014,20 +2026,23 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->pnlTransaction = ui->NewPanel(this->tpTransaction);
 	this->pnlTransaction->SetRect(0, 0, 100, 31, false);
 	this->pnlTransaction->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->chkTransactionShowAll = ui->NewCheckBox(this->pnlTransaction, CSTR("All"), false);
+	this->chkTransactionShowAll->SetRect(4, 4, 75, 23, false);
+	this->chkTransactionShowAll->HandleCheckedChange(OnTransactionShowAllChkChg, this);
 	this->btnTransactionFX = ui->NewButton(this->pnlTransaction, CSTR("FX"));
-	this->btnTransactionFX->SetRect(4, 4, 75, 23, false);
+	this->btnTransactionFX->SetRect(84, 4, 75, 23, false);
 	this->btnTransactionFX->HandleButtonClick(OnTransactionFXClicked, this);
 	this->btnTransactionDeposit = ui->NewButton(this->pnlTransaction, CSTR("Deposit"));
-	this->btnTransactionDeposit->SetRect(84, 4, 75, 23, false);
+	this->btnTransactionDeposit->SetRect(164, 4, 75, 23, false);
 	this->btnTransactionDeposit->HandleButtonClick(OnTransactionDepositClicked, this);
 	this->btnTransactionAsset = ui->NewButton(this->pnlTransaction, CSTR("Asset"));
-	this->btnTransactionAsset->SetRect(164, 4, 75, 23, false);
+	this->btnTransactionAsset->SetRect(244, 4, 75, 23, false);
 	this->btnTransactionAsset->HandleButtonClick(OnTransactionAssetClicked, this);
 	this->btnTransactionAInterest = ui->NewButton(this->pnlTransaction, CSTR("Asset Interest"));
-	this->btnTransactionAInterest->SetRect(244, 4, 115, 23, false);
+	this->btnTransactionAInterest->SetRect(324, 4, 115, 23, false);
 	this->btnTransactionAInterest->HandleButtonClick(OnTransactionAInterestClicked, this);
 	this->btnTransactionCInterest = ui->NewButton(this->pnlTransaction, CSTR("Cash Interest"));
-	this->btnTransactionCInterest->SetRect(364, 4, 115, 23, false);
+	this->btnTransactionCInterest->SetRect(444, 4, 115, 23, false);
 	this->btnTransactionCInterest->HandleButtonClick(OnTransactionCInterestClicked, this);
 	this->lvTransaction = ui->NewListView(this->tpTransaction, UI::ListViewStyle::Table, 10);
 	this->lvTransaction->SetDockType(UI::GUIControl::DOCK_FILL);

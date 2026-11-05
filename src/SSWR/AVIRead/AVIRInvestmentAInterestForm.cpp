@@ -115,6 +115,30 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentAInterestForm::OnAssetSelChg(AnyType
 		sb.Append(CURRENCYSTR(ass->currency));
 		sb.AppendUTF8Char(')');
 		me->lblCurrencyValue->SetText(sb.ToCString());
+		if (me->ent.IsNull())
+		{
+			Data::Timestamp startTime = Data::Timestamp::UtcNow().AddDay(-185);
+			UIntOS i = ass->tsList.GetCount();
+			while (i-- > 0)
+			{
+				if (ass->tsList.GetItem(i) <= startTime)
+				{
+					break;
+				}
+				Double div = ass->divList.GetItem(i);
+				if (div != 0)
+				{
+					sb.ClearStr();
+					sb.AppendTS(ass->tsList.GetItem(i), "yyyy-MM-dd");
+					me->txtStartDate->SetText(sb.ToCString());
+					Double amount = me->mgr->AssetGetAmount(ass, ass->tsList.GetItem(i));
+					sb.ClearStr();
+					sb.AppendDouble(amount * div);
+					me->txtCurrencyValue->SetText(sb.ToCString());
+					break;
+				}
+			}
+		}
 		OnStartDateChg(me);
 		OnCurrencyValueChg(me);
 	}
@@ -183,21 +207,21 @@ SSWR::AVIRead::AVIRInvestmentAInterestForm::AVIRInvestmentAInterestForm(Optional
 	this->ent = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
+	this->lblAsset = ui->NewLabel(*this, CSTR("Asset"));
+	this->lblAsset->SetRect(4, 4, 100, 23, false);
+	this->cboAsset = ui->NewComboBox(*this, false);
+	this->cboAsset->SetRect(104, 4, 50, 23, false);
+	this->cboAsset->HandleSelectionChange(OnAssetSelChg, this);
 	this->lblStartDate = ui->NewLabel(*this, CSTR("Start Date"));
-	this->lblStartDate->SetRect(4, 4, 100, 23, false);
+	this->lblStartDate->SetRect(4, 28, 100, 23, false);
 	sptr = Data::Date::Today().ToString(sbuff);
 	this->txtStartDate = ui->NewTextBox(*this, CSTRP(sbuff, sptr));
-	this->txtStartDate->SetRect(104, 4, 150, 23, false);
+	this->txtStartDate->SetRect(104, 28, 150, 23, false);
 	this->txtStartDate->HandleTextChanged(OnStartDateChg, this);
 	this->lblEndDate = ui->NewLabel(*this, CSTR("End Date"));
-	this->lblEndDate->SetRect(4, 28, 100, 23, false);
+	this->lblEndDate->SetRect(4, 52, 100, 23, false);
 	this->txtEndDate = ui->NewTextBox(*this, CSTR(""));
-	this->txtEndDate->SetRect(104, 28, 150, 23, false);
-	this->lblAsset = ui->NewLabel(*this, CSTR("Asset"));
-	this->lblAsset->SetRect(4, 52, 100, 23, false);
-	this->cboAsset = ui->NewComboBox(*this, false);
-	this->cboAsset->SetRect(104, 52, 50, 23, false);
-	this->cboAsset->HandleSelectionChange(OnAssetSelChg, this);
+	this->txtEndDate->SetRect(104, 52, 150, 23, false);
 	this->lblAssetAmount = ui->NewLabel(*this, CSTR("Amount"));
 	this->lblAssetAmount->SetRect(4, 76, 100, 23, false);
 	this->txtAssetAmount = ui->NewTextBox(*this, CSTR(""));

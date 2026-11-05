@@ -18,12 +18,12 @@ namespace SSWR
 			NN<Data::Invest::InvestmentManager> mgr;
 			Optional<Data::Invest::TradeEntry> ent;
 
+			NN<UI::GUILabel> lblAsset;
+			NN<UI::GUIComboBox> cboAsset;
 			NN<UI::GUILabel> lblStartDate;
 			NN<UI::GUITextBox> txtStartDate;
 			NN<UI::GUILabel> lblEndDate;
 			NN<UI::GUITextBox> txtEndDate;
-			NN<UI::GUILabel> lblAsset;
-			NN<UI::GUIComboBox> cboAsset;
 			NN<UI::GUILabel> lblAssetAmount;
 			NN<UI::GUITextBox> txtAssetAmount;
 			NN<UI::GUILabel> lblCurrencyValue;

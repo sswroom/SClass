@@ -60,6 +60,7 @@ namespace SSWR
 
 			NN<UI::GUITabPage> tpTransaction;
 			NN<UI::GUIPanel> pnlTransaction;
+			NN<UI::GUICheckBox> chkTransactionShowAll;
 			NN<UI::GUIButton> btnTransactionFX;
 			NN<UI::GUIButton> btnTransactionDeposit;
 			NN<UI::GUIButton> btnTransactionAsset;
@@ -167,6 +168,7 @@ namespace SSWR
 			static void __stdcall OnAssetsImportDivClicked(AnyType userObj);
 			static void __stdcall OnAssetsHistUpdateClicked(AnyType userObj);
 			static void __stdcall OnAssetsHistSelChg(AnyType userObj);
+			static void __stdcall OnTransactionShowAllChkChg(AnyType userObj, Bool checked);
 			static void __stdcall OnTransactionFXClicked(AnyType userObj);
 			static void __stdcall OnTransactionDepositClicked(AnyType userObj);
 			static void __stdcall OnTransactionAssetClicked(AnyType userObj);

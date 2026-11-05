@@ -131,7 +131,7 @@ Optional<IO::Java::JavaElementValue> IO::Java::JavaElementValue::ParseElementVal
 		annoPtr.Set(anno + 3);
 		return nullptr;
 	}
-/*	else if (anno[0] == 's' || anno[0] == 'B' || anno[0] == 'C' || anno[0] == 'D' || anno[0] == 'F' || anno[0] == 'I' || anno[0] == 'J' || anno[0] == 'S' || anno[0] == 'Z')
+/*	else if (anno[0] == 'B' || anno[0] == 'C' || anno[0] == 'D' || anno[0] == 'F')
 	{
 		this->DetailConstVal(ReadMUInt16(&anno[1]), sb, false);
 		anno += 3;
