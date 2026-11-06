@@ -9,6 +9,7 @@
 #include "Sync/Thread.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
+#include "UI/GUIGroupBox.h"
 #include "UI/GUILabel.h"
 #include "UI/GUIListBox.h"
 #include "UI/GUIPanel.h"
@@ -37,7 +38,8 @@ namespace SSWR
 			Sync::Thread worker;
 			Optional<Text::String> pendingQuestion;
 			Optional<Text::String> answer;
-			Optional<Text::String> trace;
+			Optional<AI::AISession> pendingSession;
+			Optional<AI::AISession> displayedSession;
 			Bool completed;
 
 			NN<UI::GUITabControl> tcMain;
@@ -54,11 +56,17 @@ namespace SSWR
 			NN<UI::GUITextBox> txtPrompt;
 			NN<UI::GUIButton> btnStart;
 			NN<UI::GUIButton> btnStop;
+
 			NN<UI::GUITabPage> tpQuestion;
+			NN<UI::GUIGroupBox> grpQuestion;
 			NN<UI::GUITextBox> txtQuestion;
+			NN<UI::GUIPanel> pnlQuestion;
 			NN<UI::GUIButton> btnAsk;
 			NN<UI::GUILabel> lblStatus;
+			NN<UI::GUIGroupBox> grpAnswer;
 			NN<UI::GUITextBox> txtAnswer;
+			NN<UI::GUIGroupBox> grpSession;
+			NN<UI::GUIListBox> lbSession;
 			NN<UI::GUITextBox> txtTrace;
 			NN<UI::GUITabPage> tpLog;
 			NN<UI::GUIListBox> lbLog;
@@ -66,6 +74,8 @@ namespace SSWR
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnStopClicked(AnyType userObj);
 			static void __stdcall OnAskClicked(AnyType userObj);
+			static void __stdcall OnSessionSelChg(AnyType userObj);
+			static UI::EventState __stdcall OnQuestionKeyDown(AnyType userObj, UInt32 osKey);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall WorkerThread(NN<Sync::Thread> thread);
 			void Stop(Bool updateUI);

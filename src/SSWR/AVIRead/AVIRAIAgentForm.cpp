@@ -148,7 +148,7 @@ void SSWR::AVIRead::AVIRAIAgentForm::Stop(Bool updateUI)
 	this->worker.Stop();
 	OPTSTR_DEL(this->pendingQuestion);
 	OPTSTR_DEL(this->answer);
-	OPTSTR_DEL(this->trace);
+	this->pendingSession.Delete();
 	OPTSTR_DEL(this->systemPrompt);
 	this->completed = false;
 	this->agent.Delete();
@@ -182,11 +182,40 @@ void __stdcall SSWR::AVIRead::AVIRAIAgentForm::OnAskClicked(AnyType userObj)
 		me->pendingQuestion = Text::String::New(question.ToCString());
 	}
 	me->txtAnswer->SetText(CSTR(""));
+	me->lbSession->ClearItems();
 	me->txtTrace->SetText(CSTR(""));
+	me->displayedSession.Delete();
 	me->btnAsk->SetEnabled(false);
 	me->btnStop->SetEnabled(false);
 	me->lblStatus->SetText(CSTR("Processing..."));
 	me->worker.Notify();
+}
+
+void __stdcall SSWR::AVIRead::AVIRAIAgentForm::OnSessionSelChg(AnyType userObj)
+{
+	NN<AVIRAIAgentForm> me = userObj.GetNN<AVIRAIAgentForm>();
+	NN<Net::OpenAIMessage> message;
+	if (me->lbSession->GetSelectedItem().GetOpt<Net::OpenAIMessage>().SetTo(message))
+	{
+		NN<Text::String> raw;
+		NN<Text::String> toolCallId;
+		Text::StringBuilderUTF8 detail;
+		if (message->GetToolCallId().SetTo(toolCallId))
+		{
+			detail.Append(CSTR("Tool call ID: "));
+			detail.Append(toolCallId);
+			detail.Append(CSTR("\r\n\r\n"));
+		}
+		if (message->GetRawMessage().SetTo(raw))
+			detail.Append(raw);
+		else
+			detail.Append(message->GetContent());
+		me->txtTrace->SetText(detail.ToCString());
+	}
+	else
+	{
+		me->txtTrace->SetText(CSTR(""));
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRAIAgentForm::WorkerThread(NN<Sync::Thread> thread)
@@ -217,60 +246,77 @@ void __stdcall SSWR::AVIRead::AVIRAIAgentForm::WorkerThread(NN<Sync::Thread> thr
 		}
 		NN<AI::AISession> session = agent->CreateSession(prompt->ToCString());
 		Optional<Text::String> answer = agent->Ask(session, question->ToCString());
-		Text::StringBuilderUTF8 trace;
-		UIntOS i = 0;
-		UIntOS count = session->GetMessageCount();
-		while (i < count)
-		{
-			NN<Net::OpenAIMessage> message;
-			if (session->GetMessage(i).SetTo(message))
-			{
-				switch (message->GetRole())
-				{
-				case Net::OpenAIMessageRole::System: trace.Append(CSTR("System")); break;
-				case Net::OpenAIMessageRole::User: trace.Append(CSTR("User")); break;
-				case Net::OpenAIMessageRole::Assistant: trace.Append(CSTR("Assistant")); break;
-				case Net::OpenAIMessageRole::Tool: trace.Append(CSTR("Tool")); break;
-				}
-				trace.Append(CSTR(": "));
-				NN<Text::String> raw;
-				if (message->GetRawMessage().SetTo(raw))
-					trace.Append(raw);
-				else
-					trace.Append(message->GetContent());
-				trace.Append(CSTR("\r\n\r\n"));
-			}
-			i++;
-		}
-		session.Delete();
 		question->Release();
 		{
 			Sync::MutexUsage mutUsage(me->resultMut);
 			me->answer = answer;
-			me->trace = Text::String::New(trace.ToCString());
+			me->pendingSession = session;
 			me->completed = true;
 		}
 	}
+}
+
+UI::EventState __stdcall SSWR::AVIRead::AVIRAIAgentForm::OnQuestionKeyDown(AnyType userObj, UInt32 osKey)
+{
+	NN<AVIRAIAgentForm> me = userObj.GetNN<AVIRAIAgentForm>();
+	if (osKey == 13) // Enter key
+	{
+		if (me->completed && me->agent.NotNull())
+		{
+			OnAskClicked(me);
+			return UI::EventState::StopEvent;
+		}
+	}
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRAIAgentForm::OnTimerTick(AnyType userObj)
 {
 	NN<AVIRAIAgentForm> me = userObj.GetNN<AVIRAIAgentForm>();
 	Optional<Text::String> answer;
-	Optional<Text::String> trace;
+	Optional<AI::AISession> session;
 	{
 		Sync::MutexUsage mutUsage(me->resultMut);
 		if (!me->completed)
 			return;
 		answer = me->answer;
-		trace = me->trace;
+		session = me->pendingSession;
 		me->answer = nullptr;
-		me->trace = nullptr;
+		me->pendingSession = nullptr;
 		me->completed = false;
 	}
 	NN<Text::String> s;
-	if (trace.SetTo(s))
-		me->txtTrace->SetText(s->ToCString());
+	NN<AI::AISession> nnSession;
+	if (session.SetTo(nnSession))
+	{
+		me->displayedSession = nnSession;
+		UIntOS i = 0;
+		UIntOS count = nnSession->GetMessageCount();
+		while (i < count)
+		{
+			NN<Net::OpenAIMessage> message;
+			if (nnSession->GetMessage(i).SetTo(message))
+			{
+				Text::StringBuilderUTF8 label;
+				label.AppendUIntOS(i + 1);
+				label.Append(CSTR(". "));
+				switch (message->GetRole())
+				{
+				case Net::OpenAIMessageRole::System: label.Append(CSTR("System")); break;
+				case Net::OpenAIMessageRole::User: label.Append(CSTR("User")); break;
+				case Net::OpenAIMessageRole::Assistant: label.Append(CSTR("Assistant")); break;
+				case Net::OpenAIMessageRole::Tool: label.Append(CSTR("Tool")); break;
+				}
+				me->lbSession->AddItem(label.ToCString(), message);
+			}
+			i++;
+		}
+		if (me->lbSession->GetCount() > 0)
+		{
+			me->lbSession->SetSelectedIndex(0);
+			OnSessionSelChg(me);
+		}
+	}
 	if (answer.SetTo(s))
 	{
 		me->txtAnswer->SetText(s->ToCString());
@@ -283,7 +329,6 @@ void __stdcall SSWR::AVIRead::AVIRAIAgentForm::OnTimerTick(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Failed to get an answer from the AI agent."), CSTR("AI Agent"), me);
 	}
 	OPTSTR_DEL(answer);
-	OPTSTR_DEL(trace);
 	me->btnAsk->SetEnabled(true);
 	me->btnStop->SetEnabled(true);
 }
@@ -298,7 +343,8 @@ SSWR::AVIRead::AVIRAIAgentForm::AVIRAIAgentForm(Optional<UI::GUIClientControl> p
 	this->systemPrompt = nullptr;
 	this->pendingQuestion = nullptr;
 	this->answer = nullptr;
-	this->trace = nullptr;
+	this->pendingSession = nullptr;
+	this->displayedSession = nullptr;
 	this->completed = false;
 	this->SetText(CSTR("AI Agent"));
 	this->SetFont(nullptr, 8.25, false);
@@ -357,25 +403,35 @@ SSWR::AVIRead::AVIRAIAgentForm::AVIRAIAgentForm(Optional<UI::GUIClientControl> p
 	this->btnStop->SetEnabled(false);
 
 	this->tpQuestion = this->tcMain->AddTabPage(CSTR("Question"));
-	lbl = ui->NewLabel(this->tpQuestion, CSTR("Question"));
-	lbl->SetRect(8, 8, 100, 23, false);
-	this->txtQuestion = ui->NewTextBox(this->tpQuestion, CSTR(""), true);
-	this->txtQuestion->SetRect(8, 32, 732, 90, false);
-	this->btnAsk = ui->NewButton(this->tpQuestion, CSTR("Ask"));
-	this->btnAsk->SetRect(8, 128, 75, 23, false);
+	this->grpQuestion = ui->NewGroupBox(this->tpQuestion, CSTR("Question"));
+	this->grpQuestion->SetRect(8, 8, 736, 160, false);
+	this->grpQuestion->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlQuestion = ui->NewPanel(this->grpQuestion);
+	this->pnlQuestion->SetRect(8, 32, 720, 32, false);
+	this->pnlQuestion->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->btnAsk = ui->NewButton(this->pnlQuestion, CSTR("Ask"));
+	this->btnAsk->SetRect(8, 0, 75, 23, false);
 	this->btnAsk->HandleButtonClick(OnAskClicked, this);
 	this->btnAsk->SetEnabled(false);
-	this->lblStatus = ui->NewLabel(this->tpQuestion, CSTR("Not started"));
-	this->lblStatus->SetRect(96, 128, 400, 23, false);
-	lbl = ui->NewLabel(this->tpQuestion, CSTR("Answer"));
-	lbl->SetRect(8, 156, 100, 23, false);
-	this->txtAnswer = ui->NewTextBox(this->tpQuestion, CSTR(""), true);
-	this->txtAnswer->SetRect(8, 180, 732, 150, false);
+	this->lblStatus = ui->NewLabel(this->pnlQuestion, CSTR("Not started"));
+	this->lblStatus->SetRect(96, 0, 400, 23, false);
+	this->txtQuestion = ui->NewTextBox(this->grpQuestion, CSTR(""), true);
+	this->txtQuestion->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtQuestion->HandleKeyDown(OnQuestionKeyDown, this);
+	this->grpAnswer = ui->NewGroupBox(this->tpQuestion, CSTR("Answer"));
+	this->grpAnswer->SetRect(8, 176, 736, 160, false);
+	this->grpAnswer->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->txtAnswer = ui->NewTextBox(this->grpAnswer, CSTR(""), true);
+	this->txtAnswer->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtAnswer->SetReadOnly(true);
-	lbl = ui->NewLabel(this->tpQuestion, CSTR("Session"));
-	lbl->SetRect(8, 336, 100, 23, false);
-	this->txtTrace = ui->NewTextBox(this->tpQuestion, CSTR(""), true);
-	this->txtTrace->SetRect(8, 360, 732, 200, false);
+	this->grpSession = ui->NewGroupBox(this->tpQuestion, CSTR("Session"));
+	this->grpSession->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbSession = ui->NewListBox(this->grpSession, false);
+	this->lbSession->SetRect(8, 360, 180, 200, false);
+	this->lbSession->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbSession->HandleSelectionChange(OnSessionSelChg, this);
+	this->txtTrace = ui->NewTextBox(this->grpSession, CSTR(""), true);
+	this->txtTrace->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtTrace->SetReadOnly(true);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
@@ -389,6 +445,7 @@ SSWR::AVIRead::AVIRAIAgentForm::AVIRAIAgentForm(Optional<UI::GUIClientControl> p
 SSWR::AVIRead::AVIRAIAgentForm::~AVIRAIAgentForm()
 {
 	this->Stop(false);
+	this->displayedSession.Delete();
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
 	this->ssl.Delete();

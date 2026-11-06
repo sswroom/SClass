@@ -243,7 +243,10 @@ AI::SimpleAIAgent::~SimpleAIAgent()
 AI::AISession::AISession(Text::CStringNN modelName, Text::CStringNN systemPrompt) : modelName(Text::String::New(modelName))
 {
 	NEW_CLASSNN(this->chat, Net::OpenAIChatCompletion(this->modelName->ToCString()));
-	this->chat->AddMessage(Net::OpenAIMessageRole::System, systemPrompt);
+	if (systemPrompt.leng > 0)
+	{
+		this->chat->AddMessage(Net::OpenAIMessageRole::System, systemPrompt);
+	}
 }
 
 AI::AISession::~AISession()
