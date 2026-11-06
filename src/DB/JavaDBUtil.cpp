@@ -4,6 +4,7 @@
 #include "DB/JavaDBUtil.h"
 #include "DB/MSSQLConn.h"
 #include "DB/PostgreSQLTCPConn.h"
+#include "DB/SQLiteFile.h"
 #include "Net/MySQLTCPClient.h"
 #include "Net/SocketUtil.h"
 #include "Text/JavaText.h"
@@ -207,7 +208,11 @@ Optional<DB::DBTool> DB::JavaDBUtil::OpenJDBC(NN<Text::String> url, Optional<Tex
 	{
 		return nullptr;
 	}
-	if (url->StartsWith(5, UTF8STRC("sqlserver://")))
+	if (url->StartsWith(5, UTF8STRC("sqlite:")))
+	{
+		return DB::SQLiteFile::CreateDBTool(url->ToCString().Substring(12), log, LOGPREFIX);
+	}
+	else if (url->StartsWith(5, UTF8STRC("sqlserver://")))
 	{
 		Text::StringBuilderUTF8 sb;
 		Text::PString sarr[2];

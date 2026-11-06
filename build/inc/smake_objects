@@ -2101,6 +2101,7 @@ AVIRAccelerometerForm.o: ../../src/SSWR/AVIRead/AVIRAccelerometerForm.cpp
 AVIRAccessConnForm.o: ../../src/SSWR/AVIRead/AVIRAccessConnForm.cpp
 AVIRACMEClientForm.o: ../../src/SSWR/AVIRead/AVIRACMEClientForm.cpp
 AVIRADAMForm.o: ../../src/SSWR/AVIRead/AVIRADAMForm.cpp
+AVIRAIAgentForm.o: ../../src/SSWR/AVIRead/AVIRAIAgentForm.cpp
 AVIRANPRForm.o: ../../src/SSWR/AVIRead/AVIRANPRForm.cpp
 AVIRARPPingForm.o: ../../src/SSWR/AVIRead/AVIRARPPingForm.cpp
 AVIRARPScanForm.o: ../../src/SSWR/AVIRead/AVIRARPScanForm.cpp

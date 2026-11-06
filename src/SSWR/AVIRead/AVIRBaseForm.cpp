@@ -182,6 +182,7 @@
 #include "SSWR/AVIRead/AVIRODBCDSNForm.h"
 #include "SSWR/AVIRead/AVIRODBCStrForm.h"
 #include "SSWR/AVIRead/AVIROLEDBForm.h"
+#include "SSWR/AVIRead/AVIRAIAgentForm.h"
 #include "SSWR/AVIRead/AVIROpenAIForm.h"
 #include "SSWR/AVIRead/AVIROpenConfigForm.h"
 #include "SSWR/AVIRead/AVIROpenFileForm.h"
@@ -573,6 +574,7 @@ typedef enum
 	MNU_OSM_TILE_BOUNDS,
 	MNU_OSM_URL,
 	MNU_OPENAI,
+	MNU_AIAGENT,
 	MNU_PYTHON,
 	MNU_KEYTEST,
 	MNU_LOGZIPPER,
@@ -904,6 +906,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2->AddItem(CSTR("Google FCM"), MNU_GOOGLE_FCM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Web Push"), MNU_WEBPUSH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("OpenAI"), MNU_OPENAI, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("AI Agent"), MNU_AIAGENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu3 = mnu2->AddSubMenu(CSTR("HK Observatory"));
 	mnu3->AddItem(CSTR("9-day Weather Forecast"), MNU_HKO_FORECAST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu3->AddItem(CSTR("Local Weather Forecast"), MNU_HKO_LOCAL_FORECAST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3314,6 +3317,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIROpenAIForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIROpenAIForm(nullptr, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_AIAGENT:
+		{
+			NN<SSWR::AVIRead::AVIRAIAgentForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRAIAgentForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
