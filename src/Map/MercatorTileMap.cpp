@@ -5,7 +5,7 @@
 #include "IO/StmData/FileData.h"
 #include "Math/Math_C.h"
 #include "Map/MercatorTileMap.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Net/HTTPClient.h"
 #include "Text/MyString.h"
 
@@ -21,7 +21,7 @@ Map::MercatorTileMap::MercatorTileMap(Text::CString cacheDir, UIntOS minLevel, U
 	this->maxLevel = maxLevel;
 	this->bounds = Math::RectAreaDbl(Math::Coord2DDbl(-180, -85.051128779806592377796715521925),
 		Math::Coord2DDbl(180, 85.051128779806592377796715521925));
-	this->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
+	this->csys = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 }
 
 Map::MercatorTileMap::~MercatorTileMap()
@@ -105,7 +105,7 @@ Bool Map::MercatorTileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	return true;
 }
 
-NN<Math::CoordinateSystem> Map::MercatorTileMap::GetCoordinateSystem() const
+NN<Math::CSys::CoordinateSystem> Map::MercatorTileMap::GetCoordinateSystem() const
 {
 	return this->csys;
 }

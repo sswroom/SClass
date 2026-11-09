@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRCOORDINFOFORM
 #define _SM_SSWR_AVIREAD_AVIRCOORDINFOFORM
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
@@ -31,8 +31,8 @@ namespace SSWR
 			static void __stdcall OnSRIDClicked(AnyType userObj);
 			static void __stdcall OnSRIDPrevClicked(AnyType userObj);
 			static void __stdcall OnSRIDNextClicked(AnyType userObj);
-
-			void ShowInfo(Optional<const Math::CoordinateSystemManager::SpatialRefInfo> srinfo);
+			
+			void ShowInfo(Optional<const Math::CSys::CoordinateSystemManager::SpatialRefInfo> srinfo);
 		public:
 			AVIRCoordInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCoordInfoForm();

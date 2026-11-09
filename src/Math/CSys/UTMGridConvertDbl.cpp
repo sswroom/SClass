@@ -1,21 +1,21 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Math/Math_C.h"
-#include "Math/UTMGridConvertDbl.h"
+#include "Math/CSys/UTMGridConvertDbl.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Math::UTMGridConvertDbl::UTMGridConvertDbl()
+Math::CSys::UTMGridConvertDbl::UTMGridConvertDbl()
 {
 	this->eccentricity = 0.081819190835646865372868616717538;
 	this->radius = 6378137;
 }
 
-Math::UTMGridConvertDbl::~UTMGridConvertDbl()
+Math::CSys::UTMGridConvertDbl::~UTMGridConvertDbl()
 {
 }
 
-UnsafeArray<UTF8Char> Math::UTMGridConvertDbl::WGS84_Grid(UnsafeArray<UTF8Char> gridStr, Int32 digitCnt, OptOut<Int32> lonZone, OptOut<Char> latZone, OptOut<Double> northing, OptOut<Double> easting, Double lat, Double lon)
+UnsafeArray<UTF8Char> Math::CSys::UTMGridConvertDbl::WGS84_Grid(UnsafeArray<UTF8Char> gridStr, Int32 digitCnt, OptOut<Int32> lonZone, OptOut<Char> latZone, OptOut<Double> northing, OptOut<Double> easting, Double lat, Double lon)
 {
 	Double k0 = 0.9996;
 	Double deg2rad = Math::PI / 180.0;
@@ -151,7 +151,7 @@ UnsafeArray<UTF8Char> Math::UTMGridConvertDbl::WGS84_Grid(UnsafeArray<UTF8Char> 
 	return sptr;
 }
 
-Bool Math::UTMGridConvertDbl::Grid_WGS84(OutParam<Double> latOut, OutParam<Double> lonOut, UnsafeArray<const UTF8Char> grid)
+Bool Math::CSys::UTMGridConvertDbl::Grid_WGS84(OutParam<Double> latOut, OutParam<Double> lonOut, UnsafeArray<const UTF8Char> grid)
 {
 	Double e2 = this->eccentricity * this->eccentricity;
 	Double k0 = 0.9996;
@@ -261,7 +261,7 @@ Bool Math::UTMGridConvertDbl::Grid_WGS84(OutParam<Double> latOut, OutParam<Doubl
 	return true;
 }
 
-Bool Math::UTMGridConvertDbl::Grid_WGS84(OutParam<Double> latOut, OutParam<Double> lonOut, Int32 lonZone, Char latZone, Double northing, Double easting)
+Bool Math::CSys::UTMGridConvertDbl::Grid_WGS84(OutParam<Double> latOut, OutParam<Double> lonOut, Int32 lonZone, Char latZone, Double northing, Double easting)
 {
 	Double e2 = this->eccentricity * this->eccentricity;
 	Double k0 = 0.9996;

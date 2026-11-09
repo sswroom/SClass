@@ -8,8 +8,8 @@
 #include "Map/TileMapLayer.h"
 #include "Map/ESRI/ESRITileMap.h"
 #include "Map/OSM/OSMTileMap.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Media/DrawEngineFactory.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
@@ -39,7 +39,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 //	NEW_CLASSNN(map, Map::OSM::OSMTileMap(CSTR("http://b.tile2.opencyclemap.org/transport/"), CSTR("OSMTransport"), 0, 18, sockf));
 //	NEW_CLASSNN(map, Map::OSM::OSMTileMap(CSTR("http://otile2.mqcdn.com/tiles/1.0.0/osm/"), CSTR("OSMMapQuest"), 0, 18, sockf));
 	{
-		Map::MapEnv env(CSTR("TileMapEnv.txt"), 0xffffffff, Math::CoordinateSystemManager::CreateWGS84Csys());
+		Map::MapEnv env(CSTR("TileMapEnv.txt"), 0xffffffff, Math::CSys::CoordinateSystemManager::CreateWGS84Csys());
 		NEW_CLASSNN(lyr, Map::TileMapLayer(map, parsers));
 		env.AddLayer(nullptr, lyr, true);
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);

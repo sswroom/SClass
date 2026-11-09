@@ -1,8 +1,8 @@
 #include "Stdafx.h"
-#include "Math/ArcGISCSys.h"
+#include "Math/CSys/ArcGISCSys.h"
 
 //https://developers.arcgis.com/javascript/3/jshelp/gcs.html
-Math::ArcGISCSys::CSysInfo Math::ArcGISCSys::geogList[] = {
+Math::CSys::ArcGISCSys::CSysInfo Math::CSys::ArcGISCSys::geogList[] = {
 	{  3819, UTF8STRCPTR("GCS_HD1909"), UTF8STRCPTR("GEOGCS[\"GCS_HD1909\",DATUM[\"D_Hungarian_Datum_1909\",SPHEROID[\"Bessel_1841\",6377397.155,299.1528128]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]")},
 	{  3821, UTF8STRCPTR("GCS_TWD_1967"), UTF8STRCPTR("GEOGCS[\"GCS_TWD_1967\",DATUM[\"D_TWD_1967\",SPHEROID[\"GRS_1967_Truncated\",6378160.0,298.25]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]")},
 	{  3824, UTF8STRCPTR("GCS_TWD_1997"), UTF8STRCPTR("GEOGCS[\"GCS_TWD_1997\",DATUM[\"D_TWD_1997\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]")},
@@ -818,7 +818,7 @@ Math::ArcGISCSys::CSysInfo Math::ArcGISCSys::geogList[] = {
 };
 
 //https://developers.arcgis.com/javascript/3/jshelp/pcs.html
-Math::ArcGISCSys::CSysInfo Math::ArcGISCSys::projList[] = {
+Math::CSys::ArcGISCSys::CSysInfo Math::CSys::ArcGISCSys::projList[] = {
 	{  2000, UTF8STRCPTR("Anguilla_1957_British_West_Indies_Grid"), UTF8STRCPTR("PROJCS[\"Anguilla_1957_British_West_Indies_Grid\",GEOGCS[\"GCS_Anguilla_1957\",DATUM[\"D_Anguilla_1957\",SPHEROID[\"Clarke_1880_RGS\",6378249.145,293.465]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",400000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-62.0],PARAMETER[\"Scale_Factor\",0.9995],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]")},
 	{  2001, UTF8STRCPTR("Antigua_1943_British_West_Indies_Grid"), UTF8STRCPTR("PROJCS[\"Antigua_1943_British_West_Indies_Grid\",GEOGCS[\"GCS_Antigua_1943\",DATUM[\"D_Antigua_1943\",SPHEROID[\"Clarke_1880_RGS\",6378249.145,293.465]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",400000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-62.0],PARAMETER[\"Scale_Factor\",0.9995],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]")},
 	{  2002, UTF8STRCPTR("Dominica_1945_British_West_Indies_Grid"), UTF8STRCPTR("PROJCS[\"Dominica_1945_British_West_Indies_Grid\",GEOGCS[\"GCS_Dominica_1945\",DATUM[\"D_Dominica_1945\",SPHEROID[\"Clarke_1880_RGS\",6378249.145,293.465]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",400000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-62.0],PARAMETER[\"Scale_Factor\",0.9995],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]")},
@@ -5658,7 +5658,7 @@ Math::ArcGISCSys::CSysInfo Math::ArcGISCSys::projList[] = {
 	{103971, UTF8STRCPTR("NAD_1983_HARN_Adj_WI_Wood_Feet"), UTF8STRCPTR("PROJCS[\"NAD_1983_HARN_Adj_WI_Wood_Feet\",GEOGCS[\"GCS_NAD_1983_HARN_Adj_WI_Wood\",DATUM[\"D_NAD_1983_HARN_Adj_WI_WD\",SPHEROID[\"GRS_1980_Adj_WI_WD\",6378437.651,298.271281273316]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Lambert_Conformal_Conic\"],PARAMETER[\"False_Easting\",684000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-90.0],PARAMETER[\"Standard_Parallel_1\",44.18055555555555],PARAMETER[\"Standard_Parallel_2\",44.54444444444444],PARAMETER[\"Latitude_Of_Origin\",43.15138888888889],UNIT[\"Foot_US\",0.3048006096012192]]")},
 };
 
-Math::ArcGISCSys::ArcGISCSys()
+Math::CSys::ArcGISCSys::ArcGISCSys()
 {
 	UIntOS i = 0;
 	UIntOS j = sizeof(projList) / sizeof(projList[0]);
@@ -5678,11 +5678,11 @@ Math::ArcGISCSys::ArcGISCSys()
 	}
 }
 
-Math::ArcGISCSys::~ArcGISCSys()
+Math::CSys::ArcGISCSys::~ArcGISCSys()
 {
 }
 	
-UInt32 Math::ArcGISCSys::GuessSRIDGeog(Text::CStringNN name)
+UInt32 Math::CSys::ArcGISCSys::GuessSRIDGeog(Text::CStringNN name)
 {
 	NN<CSysInfo> csys;
 	if (this->geogMap.GetC(name).SetTo(csys))
@@ -5690,7 +5690,7 @@ UInt32 Math::ArcGISCSys::GuessSRIDGeog(Text::CStringNN name)
 	return 0;
 }
 
-UInt32 Math::ArcGISCSys::GuessSRIDProj(Text::CStringNN name)
+UInt32 Math::CSys::ArcGISCSys::GuessSRIDProj(Text::CStringNN name)
 {
 	NN<CSysInfo> csys;
 	if (this->projMap.GetC(name).SetTo(csys))

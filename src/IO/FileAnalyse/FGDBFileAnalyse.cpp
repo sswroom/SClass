@@ -3,8 +3,8 @@
 #include "Core/ByteTool_C.h"
 #include "Data/UUID.h"
 #include "IO/FileAnalyse/FGDBFileAnalyse.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XLSUtil.h"
@@ -280,7 +280,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFram
 					*sptr = 0;
 					frame->AddField(ofst + 2, srsLen, CSTR("SRS"), CSTRP(sbuff, sptr));
 					UIntOS csysLen = (UIntOS)(sptr - sbuff);
-					NN<Math::CoordinateSystem> csys;
+					NN<Math::CSys::CoordinateSystem> csys;
 					if (this->prjParser.ParsePRJBuff(fd->GetFullName()->ToCString(), sbuff, csysLen, csysLen).SetTo(csys))
 					{
 						Text::StringBuilderUTF8 sb;

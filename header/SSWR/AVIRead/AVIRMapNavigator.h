@@ -26,7 +26,7 @@ namespace SSWR
 			virtual void SetSelectedVectors(NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList) = 0;
 			virtual void RedrawMap() = 0;
 			virtual Double GetScnDPI() const = 0;
-			virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const = 0;
+			virtual NN<Math::CSys::CoordinateSystem> GetCoordinateSystem() const = 0;
 
 			virtual Math::Coord2DDbl ScnXY2MapXY(Math::Coord2D<IntOS> scnPos) = 0;
 			virtual Math::Coord2D<IntOS> MapXY2ScnXY(Math::Coord2DDbl mapPos) = 0;

@@ -2,8 +2,8 @@
 #include "Data/DateTime.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "SSWR/AVIRead/AVIRGPSSimulatorForm.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -23,7 +23,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(AnyTyp
 	}
 	else
 	{
-		pos = Math::CoordinateSystem::Convert(me->navi->GetCoordinateSystem(), me->wgs84, mapPos);
+		pos = Math::CSys::CoordinateSystem::Convert(me->navi->GetCoordinateSystem(), me->wgs84, mapPos);
 	}
 	if (me->currPos.IsZero())
 	{
@@ -281,7 +281,7 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(Optional<UI::GUIClient
 	this->currPos = Math::Coord2DDbl(0, 0);
 	this->speed = 50;
 	this->stm = nullptr;
-	this->wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
+	this->wgs84 = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 
 	this->lblStreamType = ui->NewLabel(*this, CSTR("Stream Type"));
 	this->lblStreamType->SetRect(4, 4, 100, 23, false);

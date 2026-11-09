@@ -2,7 +2,7 @@
 #define _SM_MAP_MAPSERVERHANDLER
 #include "Data/FastStringMapObj.hpp"
 #include "Map/MapDrawLayer.h"
-#include "Math/GeographicCoordinateSystem.h"
+#include "Math/CSys/GeographicCoordinateSystem.h"
 #include "Net/WebServer/WebServiceHandler.h"
 #include "Parser/ParserList.h"
 #include "Text/CString.h"
@@ -18,7 +18,7 @@ namespace Map
 		Data::FastStringMapObj<Map::MapDrawLayer*> layerMap;
 		Optional<Text::String> cesiumScenePath;
 		Double cesiumMinError;
-		NN<Math::GeographicCoordinateSystem> wgs84;
+		NN<Math::CSys::GeographicCoordinateSystem> wgs84;
 
 		static Bool __stdcall GetLayersFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
 		static Bool __stdcall GetLayerDataFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);

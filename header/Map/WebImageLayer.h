@@ -72,7 +72,7 @@ namespace Map
 		void LoadImage(NN<ImageStat> stat);
 		static UInt32 __stdcall LoadThread(AnyType userObj);
 	public:
-		WebImageLayer(NN<Net::WebBrowser> browser, NN<Parser::ParserList> parsers, Text::CStringNN sourceName, NN<Math::CoordinateSystem> csys, Text::CString layerName);
+		WebImageLayer(NN<Net::WebBrowser> browser, NN<Parser::ParserList> parsers, Text::CStringNN sourceName, NN<Math::CSys::CoordinateSystem> csys, Text::CString layerName);
 		virtual ~WebImageLayer();
 
 		virtual void SetCurrTimeTS(Int64 timeStamp);

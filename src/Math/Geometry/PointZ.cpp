@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/CoordinateSystem.h"
 #include "Math/Geometry/PointZ.h"
 
 Math::Geometry::PointZ::PointZ(UInt32 srid, Double x, Double y, Double z) : Math::Geometry::Point(srid, x, y)

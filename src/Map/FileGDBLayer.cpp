@@ -2,9 +2,9 @@
 #include "DB/ColDef.h"
 #include "DB/TableDef.h"
 #include "Map/FileGDBLayer.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"
 #include "Math/WKTWriter.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 
 Optional<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> Map::FileGDBLayer::ReadNameArr()
 {
@@ -56,7 +56,7 @@ Optional<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>
 	}
 }
 
-Map::FileGDBLayer::FileGDBLayer(NN<DB::SharedReadingDB> conn, Text::CStringNN sourceName, Text::CStringNN tableName, NN<Math::ArcGISPRJParser> prjParser) : Map::MapDrawLayer(sourceName, 0, tableName, Math::CoordinateSystemManager::CreateWGS84Csys())
+Map::FileGDBLayer::FileGDBLayer(NN<DB::SharedReadingDB> conn, Text::CStringNN sourceName, Text::CStringNN tableName, NN<Math::ArcGISPRJParser> prjParser) : Map::MapDrawLayer(sourceName, 0, tableName, Math::CSys::CoordinateSystemManager::CreateWGS84Csys())
 {
 	UInt8 *buff = 0; 
 	conn->UseObject();
@@ -90,11 +90,11 @@ Map::FileGDBLayer::FileGDBLayer(NN<DB::SharedReadingDB> conn, Text::CStringNN so
 				NN<Text::String> prj;
 				if (colDef.GetAttr().SetTo(prj) && prj->v[0])
 				{
-					Optional<Math::CoordinateSystem> csys2 = nullptr;
-					NN<Math::CoordinateSystem> nncsys2;
+					Optional<Math::CSys::CoordinateSystem> csys2 = nullptr;
+					NN<Math::CSys::CoordinateSystem> nncsys2;
 					if (prj->StartsWith(UTF8STRC("EPSG:")))
 					{
-						csys2 = Math::CoordinateSystemManager::SRCreateCSys(Text::StrToUInt32(&prj->v[5]));
+						csys2 = Math::CSys::CoordinateSystemManager::SRCreateCSys(Text::StrToUInt32(&prj->v[5]));
 					}
 					else
 					{

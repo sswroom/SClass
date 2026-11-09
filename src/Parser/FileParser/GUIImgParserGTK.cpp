@@ -10,8 +10,8 @@
 #include "IO/StreamDataStream.h"
 #include "IO/StreamReader.h"
 #include "Map/VectorLayer.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/VectorImage.h"
 #include "Media/ImageCopy_C.h"
 #include "Media/ImageList.h"
@@ -205,15 +205,15 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			NN<Math::Geometry::VectorImage> vimg;
 			NN<Media::SharedImage> simg;
 			
-			NN<Math::CoordinateSystem> csys;
+			NN<Math::CSys::CoordinateSystem> csys;
 			if (srid == 0)
 			{
-				csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl((minX + maxX) * 0.5, (minY + maxY) * 0.5));
+				csys = Math::CSys::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl((minX + maxX) * 0.5, (minY + maxY) * 0.5));
 				srid = csys->GetSRID();
 			}
 			else
 			{
-				csys = Math::CoordinateSystemManager::SRCreateCSysOrDef(srid);
+				csys = Math::CSys::CoordinateSystemManager::SRCreateCSysOrDef(srid);
 			}
 			NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, nullptr));
 			Data::ArrayListNN<Media::StaticImage> prevList;
@@ -337,7 +337,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			NN<Map::VectorLayer> lyr;
 			NN<Math::Geometry::VectorImage> vimg;
 			NN<Media::SharedImage> simg;
-			NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl(xCoord + xPxSize * UIntOS2Double(img->info.dispSize.x) * 0.5, yCoord + yPxSize * UIntOS2Double(img->info.dispSize.y) * 0.5));
+			NN<Math::CSys::CoordinateSystem> csys = Math::CSys::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl(xCoord + xPxSize * UIntOS2Double(img->info.dispSize.x) * 0.5, yCoord + yPxSize * UIntOS2Double(img->info.dispSize.y) * 0.5));
 			
 			NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, nullptr));
 			Data::ArrayListNN<Media::StaticImage> prevList;

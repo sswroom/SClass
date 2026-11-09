@@ -22,11 +22,11 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseUp(AnyType
 		if (me->downPos == scnPos)
 		{
 			Math::Coord2DDbl mapXY = me->SnapPoint(scnPos);
-			NN<Math::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
-			NN<Math::CoordinateSystem> envCSys = me->navi->GetCoordinateSystem();
+			NN<Math::CSys::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
+			NN<Math::CSys::CoordinateSystem> envCSys = me->navi->GetCoordinateSystem();
 			if (!lyrCSys->Equals(envCSys))
 			{
-				mapXY = Math::CoordinateSystem::Convert(envCSys, lyrCSys, mapXY);
+				mapXY = Math::CSys::CoordinateSystem::Convert(envCSys, lyrCSys, mapXY);
 			}
 			me->points.Add(mapXY);
 			sptr = Text::StrUIntOS(sbuff, me->points.GetCount());
@@ -56,11 +56,11 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseMove(AnyTy
 					i++;
 				}
 				Math::Coord2DDbl mapXY = me->SnapPoint(scnPos);
-				NN<Math::CoordinateSystem> envCSys = me->navi->GetCoordinateSystem();
-				NN<Math::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
+				NN<Math::CSys::CoordinateSystem> envCSys = me->navi->GetCoordinateSystem();
+				NN<Math::CSys::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
 				if (!lyrCSys->Equals(envCSys))
 				{
-					mapXY = Math::CoordinateSystem::Convert(envCSys, lyrCSys, mapXY);
+					mapXY = Math::CSys::CoordinateSystem::Convert(envCSys, lyrCSys, mapXY);
 				}
 				ptList[i] = mapXY;
 				me->navi->SetSelectedVector(ls);
@@ -281,8 +281,8 @@ Math::Coord2DDbl SSWR::AVIRead::AVIRGISEditVectorForm::SnapPoint(Math::Coord2D<I
 	Math::Coord2DDbl mapXY = this->navi->ScnXY2MapXY(scnXY);
 	Double scnDPI = this->navi->GetScnDPI();
 	Double adjDist = this->snapDist * scnDPI / 96.0;
-	NN<Math::CoordinateSystem> envCSys = this->navi->GetCoordinateSystem();
-	NN<Math::CoordinateSystem> lyrCSys;
+	NN<Math::CSys::CoordinateSystem> envCSys = this->navi->GetCoordinateSystem();
+	NN<Math::CSys::CoordinateSystem> lyrCSys;
 	if (this->snapDist > 0 && this->snapLayers.GetCount() > 0)
 	{
 		Data::ArrayListInt64 objIds;
@@ -301,8 +301,8 @@ Math::Coord2DDbl SSWR::AVIRead::AVIRGISEditVectorForm::SnapPoint(Math::Coord2D<I
 			lyrCSys = snapLayer->GetCoordinateSystem();
 			if (!lyrCSys->Equals(envCSys))
 			{
-				snapPt = Math::CoordinateSystem::Convert(envCSys, lyrCSys, mapXY);
-				lyrDist = (Math::CoordinateSystem::Convert(envCSys, lyrCSys, mapBoundXY) - snapPt).Abs();
+				snapPt = Math::CSys::CoordinateSystem::Convert(envCSys, lyrCSys, mapXY);
+				lyrDist = (Math::CSys::CoordinateSystem::Convert(envCSys, lyrCSys, mapBoundXY) - snapPt).Abs();
 			}
 			else
 			{
@@ -342,7 +342,7 @@ Math::Coord2DDbl SSWR::AVIRead::AVIRGISEditVectorForm::SnapPoint(Math::Coord2D<I
 			{
 				if (!lyrCSys->Equals(envCSys))
 				{
-					lyrNearPt = Math::CoordinateSystem::Convert(lyrCSys, envCSys, lyrNearPt);
+					lyrNearPt = Math::CSys::CoordinateSystem::Convert(lyrCSys, envCSys, lyrNearPt);
 					lyrNearDist = lyrNearPt.CalcLengTo(mapXY);
 				}
 				if (nearDist < 0 || lyrNearDist < nearDist)

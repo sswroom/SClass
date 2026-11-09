@@ -3,7 +3,7 @@
 #include "IO/StmData/MemoryDataRef.h"
 #include "Map/OWSFeatureParser.h"
 #include "Map/WebMapService.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/Point.h"
 #include "Net/HTTPClient.h"
 #include "Parser/FileParser/BMPParser.h"
@@ -323,7 +323,7 @@ void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 	}
 }
 
-Map::WebMapService::WebMapService(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN wmsURL, Version version, NN<Math::CoordinateSystem> envCsys)
+Map::WebMapService::WebMapService(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN wmsURL, Version version, NN<Math::CSys::CoordinateSystem> envCsys)
 {
 	this->clif = clif;
 	this->ssl = ssl;
@@ -335,7 +335,7 @@ Map::WebMapService::WebMapService(NN<Net::TCPClientFactory> clif, Optional<Net::
 	this->mapImageType = 0;
 	this->currCRS = nullptr;
 	this->layer = 0;
-	this->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
+	this->csys = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 	this->LoadXML(version);
 }
 
@@ -382,7 +382,7 @@ NN<Text::String> Map::WebMapService::GetName() const
 	return layer->name;
 }
 
-NN<Math::CoordinateSystem> Map::WebMapService::GetCoordinateSystem() const
+NN<Math::CSys::CoordinateSystem> Map::WebMapService::GetCoordinateSystem() const
 {
 	return this->csys;
 }
@@ -727,7 +727,7 @@ void Map::WebMapService::SetLayer(UIntOS index)
 	if (index < this->layers.GetCount())
 	{
 		this->layer = index;
-		NN<Math::CoordinateSystem> csys;
+		NN<Math::CSys::CoordinateSystem> csys;
 		NN<LayerInfo> layer = this->layers.GetItemNoCheck(index);
 		NN<LayerCRS> crs;
 		Bool found = false;
@@ -736,7 +736,7 @@ void Map::WebMapService::SetLayer(UIntOS index)
 		while (i < j)
 		{
 			crs = layer->crsList.GetItemNoCheck(i);
-			if (Math::CoordinateSystemManager::CreateFromName(Text::String::OrEmpty(crs->name)->ToCString(), nullptr).SetTo(csys))
+			if (Math::CSys::CoordinateSystemManager::CreateFromName(Text::String::OrEmpty(crs->name)->ToCString(), nullptr).SetTo(csys))
 			{
 				if (csys->Equals(this->envCsys))
 				{
@@ -763,7 +763,7 @@ void Map::WebMapService::SetLayer(UIntOS index)
 		if (this->currCRS.SetTo(crs))
 		{
 			this->csys.Delete();
-			this->csys = Math::CoordinateSystemManager::CreateFromNameOrDef(Text::String::OrEmpty(crs->name)->ToCString());
+			this->csys = Math::CSys::CoordinateSystemManager::CreateFromNameOrDef(Text::String::OrEmpty(crs->name)->ToCString());
 		}
 	}
 }
@@ -784,7 +784,7 @@ void Map::WebMapService::SetLayerCRS(UIntOS index)
 		NN<LayerCRS> crs = layer->crsList.GetItemNoCheck(index);
 		this->currCRS = crs;
 		this->csys.Delete();
-		this->csys = Math::CoordinateSystemManager::CreateFromNameOrDef(Text::String::OrEmpty(crs->name)->ToCString());
+		this->csys = Math::CSys::CoordinateSystemManager::CreateFromNameOrDef(Text::String::OrEmpty(crs->name)->ToCString());
 	}
 }
 

@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "Map/SHPUtil.h"
 #include "Map/ESRI/ESRIMDBLayer.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polyline.h"
 
@@ -187,13 +187,13 @@ void Map::ESRI::ESRIMDBLayer::Init(NN<DB::SharedReadingDB> conn, UInt32 srid, Te
 	this->currDB = nullptr;
 }
 
-Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(NN<DB::SharedReadingDB> conn, UInt32 srid, NN<Text::String> sourceName, Text::CStringNN tableName) : Map::MapDrawLayer(sourceName->ToCString(), 0, tableName, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid))
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(NN<DB::SharedReadingDB> conn, UInt32 srid, NN<Text::String> sourceName, Text::CStringNN tableName) : Map::MapDrawLayer(sourceName->ToCString(), 0, tableName, Math::CSys::CoordinateSystemManager::SRCreateCSysOrDef(srid))
 {
 	OPTSTR_DEL(this->layerName);
 	this->Init(conn, srid, tableName);
 }
 
-Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(NN<DB::SharedReadingDB> conn, UInt32 srid, Text::CStringNN sourceName, Text::CStringNN tableName) : Map::MapDrawLayer(sourceName, 0, tableName, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid))
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(NN<DB::SharedReadingDB> conn, UInt32 srid, Text::CStringNN sourceName, Text::CStringNN tableName) : Map::MapDrawLayer(sourceName, 0, tableName, Math::CSys::CoordinateSystemManager::SRCreateCSysOrDef(srid))
 {
 	this->Init(conn, srid, tableName);
 }

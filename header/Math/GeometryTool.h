@@ -4,6 +4,7 @@
 #include "Math/Coord2D.h"
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Vector2D.h"
+#include "Math/Unit/Angle.h"
 #include "Math/Unit/Distance.h"
 
 namespace Math

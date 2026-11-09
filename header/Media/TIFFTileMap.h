@@ -15,7 +15,7 @@ namespace Media
 		Data::ArrayListNN<LayerInfo> layers;
 		UIntOS tileWidth;
 		UIntOS tileHeight;
-		NN<Math::CoordinateSystem> csys;
+		NN<Math::CSys::CoordinateSystem> csys;
 
 	public:
 		TIFFTileMap(UIntOS tileWidth, UIntOS tileHeight);
@@ -30,7 +30,7 @@ namespace Media
 		virtual UIntOS GetNearestLevel(Double scale) const;
 		virtual UIntOS GetConcurrentCount() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
-		virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
+		virtual NN<Math::CSys::CoordinateSystem> GetCoordinateSystem() const;
 		virtual Bool IsMercatorProj() const;
 		virtual UIntOS GetTileSize() const;
 		virtual TileFormat GetTileFormat() const;

@@ -5,9 +5,8 @@
 #include "IO/StreamDataStream.h"
 #include "IO/StmData/FileData.h"
 #include "Map/VectorLayer.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"
-#include "Math/PointMappingCoordinateSystem.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/VectorImage.h"
 #include "Media/ImageList.h"
 #include "Media/ImagePreviewTool.h"
@@ -187,26 +186,32 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 
 			if (imgList.SetTo(nnimgList))
 			{
-				NN<Math::PointMappingCoordinateSystem> csys;
 				NN<Math::Geometry::VectorImage> vimg;
 				NN<Media::SharedImage> shimg;
-				NN<Math::GeographicCoordinateSystem> gcs;
-				if (Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84).SetTo(gcs))
+				NN<Math::CSys::GeographicCoordinateSystem> gcs;
+				if (Math::CSys::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CSys::CoordinateSystemManager::GCST_WGS84).SetTo(gcs))
 				{
-					NEW_CLASSNN(csys, Math::PointMappingCoordinateSystem(fd->GetFullName(), 4326, CSTR("PointMapping"), gcs));
+					Math::Coord2DDbl tl = Math::Coord2DDbl(0, 0);
+					Math::Coord2DDbl tr = Math::Coord2DDbl(imgW, 0);
+					Math::Coord2DDbl br = Math::Coord2DDbl(imgW, imgH);
+					Math::Coord2DDbl bl = Math::Coord2DDbl(0, imgH);
 					currPt = 0;
 					while (currPt < nPts)
 					{
-						csys->AddMappingPoint(ptXY[(currPt << 2) + 0], ptXY[(currPt << 2) + 1], ptXY[(currPt << 2) + 2], ptXY[(currPt << 2) + 3]);
+						Math::Coord2DDbl imgPt = Math::Coord2DDbl(ptXY[(currPt << 2) + 2], ptXY[(currPt << 2) + 3]);
+						Math::Coord2DDbl geoPt = Math::Coord2DDbl(ptXY[(currPt << 2) + 0], ptXY[(currPt << 2) + 1]);
+						//////////////////////////////////////
 						currPt++;
 					}
+					
 					Data::ArrayListNN<Media::StaticImage> prevList;
 					Media::ImagePreviewTool::CreatePreviews(nnimgList, prevList, 640);
 					NEW_CLASSNN(shimg, Media::SharedImage(nnimgList, prevList));
-					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), shimg, Math::Coord2DDbl(0, 0), Math::Coord2DDbl(imgW, imgH), Math::Coord2DDbl(imgW, imgH), false, CSTRP(sbuff, sptr), 0, 0));
+					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(gcs->GetSRID(), shimg, Math::Coord2DDbl(0, 0), Math::Coord2DDbl(imgW, imgH), Math::Coord2DDbl(imgW, imgH), false, CSTRP(sbuff, sptr), 0, 0));
+					vimg->SetCoordinates(tl, tr, br, bl);
 					UIntOS i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 					NN<Text::String> s = Text::String::New(&sbuff[i + 1], (UIntOS)(sptr - &sbuff[i + 1]));
-					NEW_CLASSNN(nnlyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, s));
+					NEW_CLASSNN(nnlyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), gcs, s));
 					lyr = nnlyr;
 					s->Release();
 					nnlyr->AddVector2(vimg, (Text::PString*)0);

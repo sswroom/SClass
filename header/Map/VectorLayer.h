@@ -61,13 +61,13 @@ namespace Map
 		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> CopyStrs(NN<Data::ArrayListStringNN> strs);
 		void UpdateMapRate();
 	public:
-		VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, NN<Math::CoordinateSystem> csys, Optional<Text::String> layerName);
-		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NN<Math::CoordinateSystem> csys, Text::CString layerName);
-		VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UIntOS nameCol, Optional<Text::String> layerName);
-		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UIntOS nameCol, Text::CString layerName);
-		VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UnsafeArray<DB::DBUtil::ColType> colTypes, UnsafeArray<UIntOS> colSize, UnsafeArray<UIntOS> colDP, UIntOS nameCol, Optional<Text::String> layerName);
-		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UnsafeArray<DB::DBUtil::ColType> colTypes, UnsafeArray<UIntOS> colSize, UnsafeArray<UIntOS> colDP, UIntOS nameCol, Text::CString layerName);
-		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NN<Data::ArrayListStringNN> colNames, NN<Math::CoordinateSystem> csys, NN<Data::ArrayListT<ColInfo>> colInfos, UIntOS nameCol, Text::CString layerName);
+		VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, NN<Math::CSys::CoordinateSystem> csys, Optional<Text::String> layerName);
+		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NN<Math::CSys::CoordinateSystem> csys, Text::CString layerName);
+		VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CSys::CoordinateSystem> csys, UIntOS nameCol, Optional<Text::String> layerName);
+		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CSys::CoordinateSystem> csys, UIntOS nameCol, Text::CString layerName);
+		VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CSys::CoordinateSystem> csys, UnsafeArray<DB::DBUtil::ColType> colTypes, UnsafeArray<UIntOS> colSize, UnsafeArray<UIntOS> colDP, UIntOS nameCol, Optional<Text::String> layerName);
+		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CSys::CoordinateSystem> csys, UnsafeArray<DB::DBUtil::ColType> colTypes, UnsafeArray<UIntOS> colSize, UnsafeArray<UIntOS> colDP, UIntOS nameCol, Text::CString layerName);
+		VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NN<Data::ArrayListStringNN> colNames, NN<Math::CSys::CoordinateSystem> csys, NN<Data::ArrayListT<ColInfo>> colInfos, UIntOS nameCol, Text::CString layerName);
 		virtual ~VectorLayer();
 
 		virtual DrawLayerType GetLayerType() const;
@@ -106,7 +106,7 @@ namespace Map
 		void OptimizePolylinePath();
 		void ReplaceVector(Int64 id, NN<Math::Geometry::Vector2D> vec);
 		Bool DeleteVector(Int64 id);
-		void ConvCoordinateSystem(NN<Math::CoordinateSystem> csys);
+		void ConvCoordinateSystem(NN<Math::CSys::CoordinateSystem> csys);
 		void SwapXY();
 	};
 }

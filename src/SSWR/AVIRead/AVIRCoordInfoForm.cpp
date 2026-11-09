@@ -1,6 +1,6 @@
 #include "Stdafx.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/SROGCWKTWriter.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "SSWR/AVIRead/AVIRCoordInfoForm.h"
 
 void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDClicked(AnyType userObj)
@@ -9,10 +9,10 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtSRID->GetText(sb);
 	UInt32 srid;
-	Optional<const Math::CoordinateSystemManager::SpatialRefInfo> srinfo = nullptr;
+	Optional<const Math::CSys::CoordinateSystemManager::SpatialRefInfo> srinfo = nullptr;
 	if (sb.ToUInt32(srid))
 	{
-		srinfo = Math::CoordinateSystemManager::SRGetSpatialRef(srid);
+		srinfo = Math::CSys::CoordinateSystemManager::SRGetSpatialRef(srid);
 	}
 	me->ShowInfo(srinfo);
 }
@@ -23,11 +23,11 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDPrevClicked(AnyType userO
 	Text::StringBuilderUTF8 sb;
 	me->txtSRID->GetText(sb);
 	UInt32 srid;
-	Optional<const Math::CoordinateSystemManager::SpatialRefInfo> srinfo = nullptr;
-	NN<const Math::CoordinateSystemManager::SpatialRefInfo> nnsrinfo;
+	Optional<const Math::CSys::CoordinateSystemManager::SpatialRefInfo> srinfo = nullptr;
+	NN<const Math::CSys::CoordinateSystemManager::SpatialRefInfo> nnsrinfo;
 	if (sb.ToUInt32(srid))
 	{
-		srinfo = Math::CoordinateSystemManager::SRGetSpatialRefPrev(srid);
+		srinfo = Math::CSys::CoordinateSystemManager::SRGetSpatialRefPrev(srid);
 		if (srinfo.SetTo(nnsrinfo))
 		{
 			sb.ClearStr();
@@ -44,11 +44,11 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDNextClicked(AnyType userO
 	Text::StringBuilderUTF8 sb;
 	me->txtSRID->GetText(sb);
 	UInt32 srid;
-	Optional<const Math::CoordinateSystemManager::SpatialRefInfo> srinfo = nullptr;
-	NN<const Math::CoordinateSystemManager::SpatialRefInfo> nnsrinfo;
+	Optional<const Math::CSys::CoordinateSystemManager::SpatialRefInfo> srinfo = nullptr;
+	NN<const Math::CSys::CoordinateSystemManager::SpatialRefInfo> nnsrinfo;
 	if (sb.ToUInt32(srid))
 	{
-		srinfo = Math::CoordinateSystemManager::SRGetSpatialRefNext(srid);
+		srinfo = Math::CSys::CoordinateSystemManager::SRGetSpatialRefNext(srid);
 		if (srinfo.SetTo(nnsrinfo))
 		{
 			sb.ClearStr();
@@ -59,19 +59,19 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDNextClicked(AnyType userO
 	me->ShowInfo(srinfo);
 }
 
-void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(Optional<const Math::CoordinateSystemManager::SpatialRefInfo> srinfo)
+void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(Optional<const Math::CSys::CoordinateSystemManager::SpatialRefInfo> srinfo)
 {
 	UTF8Char sbuff[1024];
 	UnsafeArray<UTF8Char> sptr;
-	NN<const Math::CoordinateSystemManager::SpatialRefInfo> nnsrinfo;
+	NN<const Math::CSys::CoordinateSystemManager::SpatialRefInfo> nnsrinfo;
 	if (!srinfo.SetTo(nnsrinfo))
 	{
 
 	}
-	else if (nnsrinfo->srType == Math::CoordinateSystemManager::SRT_GEOGCS || nnsrinfo->srType == Math::CoordinateSystemManager::SRT_PROJCS)
+	else if (nnsrinfo->srType == Math::CSys::CoordinateSystemManager::SRT_GEOGCS || nnsrinfo->srType == Math::CSys::CoordinateSystemManager::SRT_PROJCS)
 	{
-		NN<Math::CoordinateSystem> csys;
-		if (Math::CoordinateSystemManager::SRCreateCSys(nnsrinfo->srid).SetTo(csys))
+		NN<Math::CSys::CoordinateSystem> csys;
+		if (Math::CSys::CoordinateSystemManager::SRCreateCSys(nnsrinfo->srid).SetTo(csys))
 		{
 			Text::StringBuilderUTF8 sb;
 			Math::SROGCWKTWriter wkt;
@@ -83,34 +83,34 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(Optional<const Math::CoordinateS
 			return;
 		}
 	}
-	else if (nnsrinfo->srType == Math::CoordinateSystemManager::SRT_DATUM)
+	else if (nnsrinfo->srType == Math::CSys::CoordinateSystemManager::SRT_DATUM)
 	{
-		NN<const Math::CoordinateSystemManager::DatumInfo> datumInfo;
-		if (Math::CoordinateSystemManager::SRGetDatum(nnsrinfo->srid).SetTo(datumInfo))
+		NN<const Math::CSys::CoordinateSystemManager::DatumInfo> datumInfo;
+		if (Math::CSys::CoordinateSystemManager::SRGetDatum(nnsrinfo->srid).SetTo(datumInfo))
 		{
-			NN<const Math::CoordinateSystemManager::SpheroidInfo> spheroid;
-			if (Math::CoordinateSystemManager::SRGetSpheroid(datumInfo->spheroid).SetTo(spheroid))
+			NN<const Math::CSys::CoordinateSystemManager::SpheroidInfo> spheroid;
+			if (Math::CSys::CoordinateSystemManager::SRGetSpheroid(datumInfo->spheroid).SetTo(spheroid))
 			{
 				Text::StringBuilderUTF8 sb;
-				Math::CoordinateSystem::DatumData1 datum;
+				Math::CSys::CoordinateSystem::DatumData1 datum;
 				Math::EarthEllipsoid ee(spheroid->eet);
-				Math::CoordinateSystemManager::FillDatumData(datum, datumInfo, Text::CStringNN::FromPtr((const UTF8Char*)nnsrinfo->name), ee, spheroid);
+				Math::CSys::CoordinateSystemManager::FillDatumData(datum, datumInfo, Text::CStringNN::FromPtr((const UTF8Char*)nnsrinfo->name), ee, spheroid);
 				Math::SROGCWKTWriter wkt;
 				sptr = wkt.WriteDatum(datum, sbuff, 0, Text::LineBreakType::CRLF);
 				this->txtWKT->SetText(CSTRP(sbuff, sptr));
-				Math::CoordinateSystem::DatumData1ToString(datum, sb);
+				Math::CSys::CoordinateSystem::DatumData1ToString(datum, sb);
 				this->txtDisp->SetText(sb.ToCString());
 				return;
 			}
 		}
 	}
-	else if (nnsrinfo->srType == Math::CoordinateSystemManager::SRT_SPHERO)
+	else if (nnsrinfo->srType == Math::CSys::CoordinateSystemManager::SRT_SPHERO)
 	{
-		NN<const Math::CoordinateSystemManager::SpheroidInfo> spheroid;
-		if (Math::CoordinateSystemManager::SRGetSpheroid(nnsrinfo->srid).SetTo(spheroid))
+		NN<const Math::CSys::CoordinateSystemManager::SpheroidInfo> spheroid;
+		if (Math::CSys::CoordinateSystemManager::SRGetSpheroid(nnsrinfo->srid).SetTo(spheroid))
 		{
 			Text::StringBuilderUTF8 sb;
-			Math::CoordinateSystem::SpheroidData data;
+			Math::CSys::CoordinateSystem::SpheroidData data;
 			Math::EarthEllipsoid ee(spheroid->eet);
 			data.name = spheroid->name;
 			data.nameLen = spheroid->nameLen;
@@ -124,7 +124,7 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(Optional<const Math::CoordinateS
 			return;
 		}
 	}
-	else if (nnsrinfo->srType == Math::CoordinateSystemManager::SRT_PRIMEM)
+	else if (nnsrinfo->srType == Math::CSys::CoordinateSystemManager::SRT_PRIMEM)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("PRIMEM[\""));
@@ -136,7 +136,7 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(Optional<const Math::CoordinateS
 		this->txtDisp->SetText(sb.ToCString());
 		return;
 	}
-	else if (nnsrinfo->srType == Math::CoordinateSystemManager::SRT_UNIT)
+	else if (nnsrinfo->srType == Math::CSys::CoordinateSystemManager::SRT_UNIT)
 	{
 		switch (nnsrinfo->srid)
 		{

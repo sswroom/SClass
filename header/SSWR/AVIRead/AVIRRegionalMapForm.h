@@ -14,7 +14,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			NN<Math::CoordinateSystem> envCSys;
+			NN<Math::CSys::CoordinateSystem> envCSys;
 
 			NN<UI::GUITextBox> txtDesc;
 			NN<UI::GUIListView> lvMaps;
@@ -23,7 +23,7 @@ namespace SSWR
 			static void __stdcall OnMapsSelChg(AnyType userObj);
 			static void __stdcall OnMapsDblClk(AnyType userObj, UIntOS index);
 		public:
-			AVIRRegionalMapForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NN<Math::CoordinateSystem> envCSys);
+			AVIRRegionalMapForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NN<Math::CSys::CoordinateSystem> envCSys);
 			virtual ~AVIRRegionalMapForm();
 
 			virtual void OnMonitorChanged();

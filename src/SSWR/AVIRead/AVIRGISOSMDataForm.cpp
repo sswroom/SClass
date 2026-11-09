@@ -67,10 +67,10 @@ void __stdcall SSWR::AVIRead::AVIRGISOSMDataForm::OnRelationSelChg(AnyType userO
 	if (!bounds.IsZero())
 	{
 		Math::Coord2DDbl center = bounds.GetCenter();
-		NN<Math::CoordinateSystem> csys = me->nav->GetCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> csys = me->nav->GetCoordinateSystem();
 		if (csys != me->osmData->GetCoordinateSystem())
 		{
-			center = Math::CoordinateSystem::Convert(me->osmData->GetCoordinateSystem(), csys, center);
+			center = Math::CSys::CoordinateSystem::Convert(me->osmData->GetCoordinateSystem(), csys, center);
 		}
 		if (!me->nav->InMap(center))
 		{
@@ -175,10 +175,10 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISOSMDataForm::OnMouseLUp(AnyType u
 		Math::Coord2DDbl mapPos = me->nav->ScnXY2MapXY(scnPos);
 		Math::Coord2DDbl mapPos2 = me->nav->ScnXY2MapXY(Math::Coord2D<IntOS>(scnPos.x + 10, scnPos.y));
 		Double maxDist = mapPos.CalcLengTo(mapPos2);
-		NN<Math::CoordinateSystem> csys = me->nav->GetCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> csys = me->nav->GetCoordinateSystem();
 		if (csys != me->osmData->GetCoordinateSystem())
 		{
-			mapPos = Math::CoordinateSystem::Convert(csys, me->osmData->GetCoordinateSystem(), mapPos);
+			mapPos = Math::CSys::CoordinateSystem::Convert(csys, me->osmData->GetCoordinateSystem(), mapPos);
 		}
 		NN<Map::GetObjectSess> sess = me->osmData->BeginGetObject();
 		Data::ArrayListNN<Map::MapDrawLayer::ObjectInfo> objs;

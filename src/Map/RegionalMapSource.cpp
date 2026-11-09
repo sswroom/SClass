@@ -278,7 +278,7 @@ UnsafeArray<const Map::RegionalMapSource::MapInfo> Map::RegionalMapSource::GetMa
 	return maps;
 }
 
-Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> map, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Parser::ParserList> parsers, NN<Net::WebBrowser> browser, NN<Math::CoordinateSystem> envCSys)
+Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> map, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Parser::ParserList> parsers, NN<Net::WebBrowser> browser, NN<Math::CSys::CoordinateSystem> envCSys)
 {
 	NN<Map::MapDrawLayer> layer;
 	switch (map->mapType)

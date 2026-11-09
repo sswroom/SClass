@@ -22,7 +22,7 @@ namespace Map
 			Math::Coord2DDbl max;
 			UIntOS tileWidth;
 			UIntOS tileHeight;
-			NN<Math::CoordinateSystem> csys;
+			NN<Math::CSys::CoordinateSystem> csys;
 
 		public:
 			OSMLocalTileMap(NN<IO::PackageFile> pkgFile);
@@ -38,7 +38,7 @@ namespace Map
 			virtual UIntOS GetNearestLevel(Double scale) const;
 			virtual UIntOS GetConcurrentCount() const;
 			virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
-			virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
+			virtual NN<Math::CSys::CoordinateSystem> GetCoordinateSystem() const;
 			virtual Bool IsMercatorProj() const;
 			virtual UIntOS GetTileSize() const;
 			virtual TileFormat GetTileFormat() const;

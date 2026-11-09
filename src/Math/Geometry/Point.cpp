@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/DataComparer.h"
-#include "Math/CoordinateSystem.h"
 #include "Math/Geometry/Point.h"
 
 Math::Geometry::Point::Point(UInt32 srid, Double x, Double y) : Vector2D(srid)

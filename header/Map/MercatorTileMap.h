@@ -22,7 +22,7 @@ namespace Map
 
 		UIntOS tileWidth;
 		UIntOS tileHeight;
-		NN<Math::CoordinateSystem> csys;
+		NN<Math::CSys::CoordinateSystem> csys;
 
 	public:
 		MercatorTileMap(Text::CString cacheDir, UIntOS minLevel, UIntOS maxLevel, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl);
@@ -39,7 +39,7 @@ namespace Map
 		virtual Double GetLevelScale(UIntOS level) const;
 		virtual UIntOS GetNearestLevel(Double scale) const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
-		virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
+		virtual NN<Math::CSys::CoordinateSystem> GetCoordinateSystem() const;
 		virtual Bool IsMercatorProj() const;
 		virtual UIntOS GetTileSize() const;
 

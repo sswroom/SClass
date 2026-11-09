@@ -1,10 +1,10 @@
 #include "Stdafx.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/Point.h"
 #include "SSWR/OrganMgr/OrganSpImgLayer.h"
 
-SSWR::OrganMgr::OrganSpImgLayer::OrganSpImgLayer() : Map::MapDrawLayer(CSTR("ImageLayer"), 0, nullptr, Math::CoordinateSystemManager::CreateWGS84Csys())
+SSWR::OrganMgr::OrganSpImgLayer::OrganSpImgLayer() : Map::MapDrawLayer(CSTR("ImageLayer"), 0, nullptr, Math::CSys::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->ClearItems();
 }

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
-#include "Math/CoordinateSystemConverter.h"
 #include "Math/Math_C.h"
+#include "Math/CSys/CoordinateSystemConverter.h"
 #include "Math/Geometry/PointZ.h"
 #include "SSWR/AVIRead/AVIRGISEditPointForm.h"
 #include "Sync/ThreadUtil.h"
@@ -13,11 +13,11 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditPointForm::OnMouseDown(AnyTyp
 	if (me->status == 1)
 	{
 		Math::Coord2DDbl mapXY = me->navi->ScnXY2MapXY(scnPos);
-		NN<Math::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
-		NN<Math::CoordinateSystem> envCSys = me->navi->GetCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> envCSys = me->navi->GetCoordinateSystem();
 		if (!lyrCSys->Equals(envCSys))
 		{
-			mapXY = Math::CoordinateSystem::Convert(envCSys, lyrCSys, mapXY);
+			mapXY = Math::CSys::CoordinateSystem::Convert(envCSys, lyrCSys, mapXY);
 		}
 		lyrCSys->GetSRID();
 		NN<Math::Geometry::Point> pt;
@@ -77,12 +77,12 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditPointForm::OnMouseUp(AnyType 
 		{
 			Math::Coord2DDbl pos1 = me->navi->ScnXY2MapXY(Math::Coord2D<IntOS>(scnPos.x - 3, scnPos.y - 3));
 			Math::Coord2DDbl pos2 = me->navi->ScnXY2MapXY(Math::Coord2D<IntOS>(scnPos.x + 3, scnPos.y + 3));
-			NN<Math::CoordinateSystem> envCSys = me->navi->GetCoordinateSystem();
-			NN<Math::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
+			NN<Math::CSys::CoordinateSystem> envCSys = me->navi->GetCoordinateSystem();
+			NN<Math::CSys::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
 			if (!lyrCSys->Equals(envCSys))
 			{
-				pos1 = Math::CoordinateSystem::Convert(envCSys, lyrCSys, pos1);
-				pos2 = Math::CoordinateSystem::Convert(envCSys, lyrCSys, pos2);
+				pos1 = Math::CSys::CoordinateSystem::Convert(envCSys, lyrCSys, pos1);
+				pos2 = Math::CSys::CoordinateSystem::Convert(envCSys, lyrCSys, pos2);
 			}
 			Data::ArrayListInt64 ids;
 			me->lyr->GetObjectIdsMapXY(ids, 0, Math::RectAreaDbl(pos1, pos2).Reorder(), true);
@@ -128,15 +128,15 @@ void __stdcall SSWR::AVIRead::AVIRGISEditPointForm::OnObjectsDblClk(AnyType user
 		NN<Math::Geometry::Vector2D> vec;
 		if (me->lyr->GetNewVectorById(sess, objId).SetTo(vec))
 		{
-			NN<Math::CoordinateSystem> srcCSys = me->lyr->GetCoordinateSystem();
-			NN<Math::CoordinateSystem> destCSys = me->navi->GetCoordinateSystem();
+			NN<Math::CSys::CoordinateSystem> srcCSys = me->lyr->GetCoordinateSystem();
+			NN<Math::CSys::CoordinateSystem> destCSys = me->navi->GetCoordinateSystem();
 			if (srcCSys->Equals(destCSys))
 			{
 				me->navi->PanToMap(vec->GetCenter());
 			}
 			else
 			{
-				me->navi->PanToMap(Math::CoordinateSystem::Convert(srcCSys, destCSys, vec->GetCenter()));
+				me->navi->PanToMap(Math::CSys::CoordinateSystem::Convert(srcCSys, destCSys, vec->GetCenter()));
 			}
 			vec.Delete();
 		}
@@ -168,11 +168,11 @@ void __stdcall SSWR::AVIRead::AVIRGISEditPointForm::OnObjectsSelChg(AnyType user
 		NN<Math::Geometry::Vector2D> vec;
 		if (me->lyr->GetNewVectorById(sess, objId).SetTo(vec))
 		{
-			NN<Math::CoordinateSystem> srcCSys = me->lyr->GetCoordinateSystem();
-			NN<Math::CoordinateSystem> destCSys = me->navi->GetCoordinateSystem();
+			NN<Math::CSys::CoordinateSystem> srcCSys = me->lyr->GetCoordinateSystem();
+			NN<Math::CSys::CoordinateSystem> destCSys = me->navi->GetCoordinateSystem();
 			if (!srcCSys->Equals(destCSys))
 			{
-				Math::CoordinateSystemConverter conv(srcCSys, destCSys);
+				Math::CSys::CoordinateSystemConverter conv(srcCSys, destCSys);
 				vec->Convert(conv);
 			}
 			me->navi->SetSelectedVector(vec);

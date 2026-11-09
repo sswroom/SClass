@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Map/DBMapLayer.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/PointZ.h"
 
@@ -52,7 +52,7 @@ Optional<Map::NameArray> Map::DBMapLayer::InitNameArr()
 	return nullptr;
 }
 
-Map::DBMapLayer::DBMapLayer(NN<Text::String> layerName) : Map::MapDrawLayer(layerName, 0, layerName.Ptr(), Math::CoordinateSystemManager::CreateWGS84Csys())
+Map::DBMapLayer::DBMapLayer(NN<Text::String> layerName) : Map::MapDrawLayer(layerName, 0, layerName.Ptr(), Math::CSys::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->releaseDB = false;
 	this->db = nullptr;
@@ -68,7 +68,7 @@ Map::DBMapLayer::DBMapLayer(NN<Text::String> layerName) : Map::MapDrawLayer(laye
 	this->objCondition = nullptr;
 }
 
-Map::DBMapLayer::DBMapLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, layerName, Math::CoordinateSystemManager::CreateWGS84Csys())
+Map::DBMapLayer::DBMapLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, layerName, Math::CSys::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->releaseDB = false;
 	this->db = nullptr;
@@ -697,8 +697,8 @@ Bool Map::DBMapLayer::SetDatabase(NN<DB::ReadingDB> db, Text::CString schemaName
 	{
 		if (this->csys->GetSRID() != layerSrid)
 		{
-			NN<Math::CoordinateSystem> csys;
-			if (Math::CoordinateSystemManager::SRCreateCSys(layerSrid).SetTo(csys))
+			NN<Math::CSys::CoordinateSystem> csys;
+			if (Math::CSys::CoordinateSystemManager::SRCreateCSys(layerSrid).SetTo(csys))
 			{
 				this->SetCoordinateSystem(csys);
 			}

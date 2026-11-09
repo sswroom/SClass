@@ -4,10 +4,10 @@
 #include "DB/ColDef.h"
 #include "DB/DBUtil.h"
 #include "IO/MemoryStream.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"
 #include "Math/WKBWriter.h"
 #include "Math/WKTWriter.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/Point.h"
 #include "Text/CharUtil.h"
 #include "Text/MyString.h"
@@ -1685,7 +1685,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBVector(UnsafeArray<UTF8Char> sqlstr, Option
 		Math::WKTWriter writer;
 		if (axisAware)
 		{
-			if (Math::CoordinateSystemManager::SRAxisReversed(nnvec->GetSRID()))
+			if (Math::CSys::CoordinateSystemManager::SRAxisReversed(nnvec->GetSRID()))
 			{
 				writer.SetReverseAxis(true);
 			}

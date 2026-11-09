@@ -6,9 +6,9 @@
 #include "Map/MapDrawLayer.h"
 #include "Map/MapLayerCollection.h"
 #include "Map/MapServerHandler.h"
-#include "Math/CoordinateSystemConverter.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/GeoJSONWriter.h"
+#include "Math/CSys/CoordinateSystemConverter.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/Polygon.h"
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Text/JSON.h"
@@ -80,7 +80,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::WebReq
 			if (objIds.GetCount() > 0)
 			{
 				Text::StringBuilderUTF8 sbTmp;
-				NN<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
+				NN<Math::CSys::CoordinateSystem> csys = layer->GetCoordinateSystem();
 				NN<Map::GetObjectSess> sess = layer->BeginGetObject();
 				i = 0;
 				j = objIds.GetCount();
@@ -130,7 +130,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::WebReq
 							l = pg->GetCoordinates(pointList);
 							while (k < l)
 							{
-								json.ArrayAddVector3D(Math::CoordinateSystem::ConvertToCartesianCoord(csys, Math::Vector3D(pointList.GetItem(k), 0)));
+								json.ArrayAddVector3D(Math::CSys::CoordinateSystem::ConvertToCartesianCoord(csys, Math::Vector3D(pointList.GetItem(k), 0)));
 								k++;
 							}
 							json.ArrayEnd();
@@ -175,10 +175,10 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::WebReq
 			layer->GetAllObjectIds(objIds, nameArr);
 			if (objIds.GetCount() > 0)
 			{
-				NN<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
-				NN<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
+				NN<Math::CSys::CoordinateSystem> csys = layer->GetCoordinateSystem();
+				NN<Math::CSys::CoordinateSystem> wgs84 = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 				Bool needConv = !wgs84->Equals(csys);
-				Math::CoordinateSystemConverter converter(csys, wgs84);
+				Math::CSys::CoordinateSystemConverter converter(csys, wgs84);
 				Text::StringBuilderUTF8 sbTmp;
 				NN<Map::GetObjectSess> sess = layer->BeginGetObject();
 				i = 0;
@@ -563,7 +563,7 @@ Map::MapServerHandler::MapServerHandler(NN<Parser::ParserList> parsers)
 	this->parsers = parsers;
 	this->cesiumScenePath = nullptr;
 	this->cesiumMinError = 0;
-	this->wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
+	this->wgs84 = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 	this->AddService(CSTR("/getlayers"), Net::WebUtil::RequestMethod::HTTP_GET, GetLayersFunc);
 	this->AddService(CSTR("/getlayerdata"), Net::WebUtil::RequestMethod::HTTP_GET, GetLayerDataFunc);
 	this->AddService(CSTR("/cesiumdata"), Net::WebUtil::RequestMethod::HTTP_GET, CesiumDataFunc);

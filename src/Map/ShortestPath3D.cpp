@@ -2,8 +2,8 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/TableDef.h"
 #include "Map/ShortestPath3D.h"
-#include "Math/CoordinateSystemConverter.h"
 #include "Math/GeometryTool.h"
+#include "Math/CSys/CoordinateSystemConverter.h"
 #include "Math/Geometry/MultiCurve.h"
 #include "Sync/MutexUsage.h"
 
@@ -442,7 +442,7 @@ void Map::ShortestPath3D::FillNetwork(NN<NodeInfo> nodeInfo, UInt32 networkId)
 	}
 }
 
-Map::ShortestPath3D::ShortestPath3D(NN<Math::CoordinateSystem> csys, Double searchDist)
+Map::ShortestPath3D::ShortestPath3D(NN<Math::CSys::CoordinateSystem> csys, Double searchDist)
 {
 	this->csys = csys;
 	this->searchDist = searchDist;
@@ -490,7 +490,7 @@ Map::ShortestPath3D::~ShortestPath3D()
 
 void Map::ShortestPath3D::AddSimpleLayer(NN<Map::MapDrawLayer> layer)
 {
-	NN<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
+	NN<Math::CSys::CoordinateSystem> csys = layer->GetCoordinateSystem();
 	Optional<Map::NameArray> nameArr;
 	Data::ArrayListInt64 idArr;
 	NN<Math::Geometry::Vector2D> vec;
@@ -530,7 +530,7 @@ void Map::ShortestPath3D::AddSimpleLayer(NN<Map::MapDrawLayer> layer)
 			}
 			else
 			{
-				Math::CoordinateSystemConverter converter(csys, this->csys);
+				Math::CSys::CoordinateSystemConverter converter(csys, this->csys);
 				vec->Convert(converter);
 				this->AddPath(vec, Data::DataArray<Optional<Text::String>>(properties, colCnt), true, true);
 			}
@@ -549,7 +549,7 @@ void Map::ShortestPath3D::AddSimpleLayer(NN<Map::MapDrawLayer> layer)
 
 void Map::ShortestPath3D::AddOSMData(NN<Map::OSM::OSMData> osmData)
 {
-	NN<Math::CoordinateSystem> csys = osmData->GetCoordinateSystem();
+	NN<Math::CSys::CoordinateSystem> csys = osmData->GetCoordinateSystem();
 	if (this->propDef.IsNull())
 	{
 		NN<DB::TableDef> tabDef;
@@ -609,7 +609,7 @@ void Map::ShortestPath3D::AddOSMData(NN<Map::OSM::OSMData> osmData)
 				Math::Coord2DDbl pos = Math::Coord2DDbl(node->lon, node->lat);
 				if (!csys->Equals(this->csys))
 				{
-					pos = Math::CoordinateSystem::Convert(csys, this->csys, pos);
+					pos = Math::CSys::CoordinateSystem::Convert(csys, this->csys, pos);
 				}
 				pNode = this->GetNode(pos, 0);
 				pNode->id = node->id;
@@ -1574,7 +1574,7 @@ Optional<Math::Geometry::LineString> Map::ShortestPath3D::GetShortestPath(NN<Pat
 	return Math::Geometry::LineString::JoinLines(lineList);
 }
 
-NN<Math::CoordinateSystem> Map::ShortestPath3D::GetCoordinateSystem() const
+NN<Math::CSys::CoordinateSystem> Map::ShortestPath3D::GetCoordinateSystem() const
 {
 	return this->csys;
 }
@@ -1605,7 +1605,7 @@ void Map::ShortestPath3D::GetLines(Math::RectAreaDbl rect, NN<Data::ArrayListNN<
 	}
 }
 
-void Map::ShortestPath3D::ClearData(NN<Math::CoordinateSystem> csys, Double searchDist)
+void Map::ShortestPath3D::ClearData(NN<Math::CSys::CoordinateSystem> csys, Double searchDist)
 {
 	this->propDef.Delete();
 	this->areas.FreeAll(FreeAreaInfo);

@@ -2,7 +2,7 @@
 #include "Map/TileMapUtil.h"
 #include "Math/Unit/Distance.h"
 
-Double Map::TileMapUtil::CalcScaleDiv(NN<Math::CoordinateSystem> csys)
+Double Map::TileMapUtil::CalcScaleDiv(NN<Math::CSys::CoordinateSystem> csys)
 {
 	if (csys->IsProjected())
 	{

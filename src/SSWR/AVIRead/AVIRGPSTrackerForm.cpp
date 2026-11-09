@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "IO/Device/MTKGPSNMEA.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "SSWR/AVIRead/AVIRGPSTrackerForm.h"
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
@@ -290,7 +290,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientCont
 	this->nmeaUpdated = false;
 	this->nmeaBuff = MemAllocArr(Optional<Text::String>, NMEAMAXSIZE);
 	MemClear(this->nmeaBuff.Ptr(), NMEAMAXSIZE * sizeof(Optional<Text::String>));
-	this->wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
+	this->wgs84 = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 	this->dispOffClk = false;
 	this->dispOffTime = 0;
 	this->dispIsOff = false;

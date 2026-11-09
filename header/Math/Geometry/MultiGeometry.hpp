@@ -3,7 +3,6 @@
 #include "Data/ArrayListNN.hpp"
 #include "Data/Sort/ArtificialQuickSort_C.h"
 #include "Math/Coord2DDbl.h"
-#include "Math/CoordinateSystem.h"
 #include "Math/Geometry/LinearRing.h"
 #include "Math/Geometry/Vector2D.h"
 

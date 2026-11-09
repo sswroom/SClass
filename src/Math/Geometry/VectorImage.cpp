@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/CoordinateSystem.h"
 #include "Math/Math_C.h"
 #include "Math/Geometry/VectorImage.h"
 #include "Media/StaticImage.h"
@@ -64,6 +63,8 @@ Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img
 		this->tl = tl.Min(br);
 		this->br = tl.Max(br);
 	}
+	this->tr = Math::Coord2DDbl(br.x, tl.y);
+	this->bl = Math::Coord2DDbl(tl.x, br.y);
 	this->scnCoord = scnCoord;
 	this->hasHeight = false;
 	this->height = 0;
@@ -95,6 +96,8 @@ NN<Math::Geometry::Vector2D> Math::Geometry::VectorImage::Clone() const
 {
 	NN<Math::Geometry::VectorImage> vimg;
 	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, this->img, this->tl, this->br, this->size, this->scnCoord, this->srcAddr, this->timeStart, this->timeEnd));
+	vimg->tr = this->tr;
+	vimg->bl = this->bl;
 	if (this->hasHeight)
 	{
 		vimg->SetHeight(this->height);
@@ -109,7 +112,16 @@ NN<Math::Geometry::Vector2D> Math::Geometry::VectorImage::Clone() const
 
 Math::RectAreaDbl Math::Geometry::VectorImage::GetBounds() const
 {
-	return Math::RectAreaDbl(this->tl, this->br);
+ 	if (this->scnCoord)
+	{
+		return Math::RectAreaDbl(this->tl, this->br);
+	}
+	else
+	{
+		Math::Coord2DDbl min = tl.Min(br).Min(tr).Min(bl);
+		Math::Coord2DDbl max = tl.Max(br).Max(tr).Max(bl);
+		return Math::RectAreaDbl(min, max);
+	}
 }
 
 Double Math::Geometry::VectorImage::CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
@@ -262,7 +274,9 @@ void Math::Geometry::VectorImage::Convert(NN<Math::CoordinateConverter> converte
 	else
 	{
 		tl = converter->Convert2D(tl);
+		tr = converter->Convert2D(tr);
 		br = converter->Convert2D(br);
+		bl = converter->Convert2D(bl);
 		this->srid = converter->GetOutputSRID();
 	}
 }
@@ -289,9 +303,9 @@ UIntOS Math::Geometry::VectorImage::GetCoordinates(NN<Data::ArrayListA<Math::Coo
 	else
 	{
 		coordList->Add(this->tl);
-		coordList->Add(Math::Coord2DDbl(this->br.x, this->tl.y));
+		coordList->Add(this->tr);
 		coordList->Add(this->br);
-		coordList->Add(Math::Coord2DDbl(this->tl.x, this->br.y));
+		coordList->Add(this->bl);
 	}
 	return 4;
 }
@@ -450,8 +464,12 @@ void Math::Geometry::VectorImage::SetBounds(Double minX, Double minY, Double max
 {
 	this->tl.x = minX;
 	this->tl.y = minY;
+	this->tr.x = maxX;
+	this->tr.y = minY;
 	this->br.x = maxX;
 	this->br.y = maxY;
+	this->bl.x = minX;
+	this->bl.y = maxY;
 }
 
 Optional<Media::StaticImage> Math::Geometry::VectorImage::GetImage(OptOut<UInt32> imgTimeMS) const
@@ -476,6 +494,14 @@ void Math::Geometry::VectorImage::SetSrcRect(Math::RectAreaDbl srcRect)
 Math::RectAreaDbl Math::Geometry::VectorImage::GetSrcRect() const
 {
 	return this->srcRect;
+}
+
+void Math::Geometry::VectorImage::SetCoordinates(Math::Coord2DDbl tl, Math::Coord2DDbl tr, Math::Coord2DDbl br, Math::Coord2DDbl bl)
+{
+	this->tl = tl;
+	this->tr = tr;
+	this->br = br;
+	this->bl = bl;
 }
 
 NN<Math::Geometry::VectorImage> Math::Geometry::VectorImage::CreateScreenImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl size, Text::CString srcAddr)

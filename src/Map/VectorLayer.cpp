@@ -2,8 +2,8 @@
 #include "MyMemory.h"
 #include "DB/ColDef.h"
 #include "Map/VectorLayer.h"
-#include "Math/CoordinateSystemConverter.h"
 #include "Math/Math_C.h"
+#include "Math/CSys/CoordinateSystemConverter.h"
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/Polyline.h"
 #include "Text/MyString.h"
@@ -253,7 +253,7 @@ void Map::VectorLayer::UpdateMapRate()
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, NN<Math::CoordinateSystem> csys, Optional<Text::String> layerName) : Map::MapDrawLayer(sourceName, 0, layerName, csys)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, NN<Math::CSys::CoordinateSystem> csys, Optional<Text::String> layerName) : Map::MapDrawLayer(sourceName, 0, layerName, csys)
 {
 	this->layerType = layerType;
 	this->strCnt = 0;
@@ -268,7 +268,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sou
 	this->mixedData = MixedData::AllData;
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NN<Math::CoordinateSystem> csys, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName, csys)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NN<Math::CSys::CoordinateSystem> csys, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName, csys)
 {
 	this->layerType = layerType;
 	this->strCnt = 0;
@@ -283,7 +283,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	this->mixedData = MixedData::AllData;
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UIntOS nameCol, Optional<Text::String> layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CSys::CoordinateSystem> csys, UIntOS nameCol, Optional<Text::String> layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UIntOS i;
 	this->layerType = layerType;
@@ -305,7 +305,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sou
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UIntOS nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CSys::CoordinateSystem> csys, UIntOS nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UIntOS i;
 	this->layerType = layerType;
@@ -327,7 +327,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UnsafeArray<DB::DBUtil::ColType> colTypes, UnsafeArray<UIntOS> colSize, UnsafeArray<UIntOS> colDP, UIntOS nameCol, Optional<Text::String> layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CSys::CoordinateSystem> csys, UnsafeArray<DB::DBUtil::ColType> colTypes, UnsafeArray<UIntOS> colSize, UnsafeArray<UIntOS> colDP, UIntOS nameCol, Optional<Text::String> layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UIntOS i;
 	UnsafeArray<ColInfo> cols;
@@ -353,7 +353,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sou
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UnsafeArray<DB::DBUtil::ColType> colTypes, UnsafeArray<UIntOS> colSize, UnsafeArray<UIntOS> colDP, UIntOS nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UIntOS strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CSys::CoordinateSystem> csys, UnsafeArray<DB::DBUtil::ColType> colTypes, UnsafeArray<UIntOS> colSize, UnsafeArray<UIntOS> colDP, UIntOS nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UIntOS i;
 	UnsafeArray<ColInfo> cols;
@@ -379,7 +379,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NN<Data::ArrayListStringNN> colNames, NN<Math::CoordinateSystem> csys, NN<Data::ArrayListT<ColInfo>> colInfos, UIntOS nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NN<Data::ArrayListStringNN> colNames, NN<Math::CSys::CoordinateSystem> csys, NN<Data::ArrayListT<ColInfo>> colInfos, UIntOS nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UIntOS i;
 	UnsafeArray<ColInfo> cols;
@@ -1118,9 +1118,9 @@ Bool Map::VectorLayer::DeleteVector(Int64 id)
 	return false;
 }
 
-void Map::VectorLayer::ConvCoordinateSystem(NN<Math::CoordinateSystem> destCsys)
+void Map::VectorLayer::ConvCoordinateSystem(NN<Math::CSys::CoordinateSystem> destCsys)
 {
-	Math::CoordinateSystemConverter converter(this->csys, destCsys);
+	Math::CSys::CoordinateSystemConverter converter(this->csys, destCsys);
 	Data::ArrayIterator<NN<Math::Geometry::Vector2D>> it = this->vectorList.Iterator();
 	while (it.HasNext())
 	{

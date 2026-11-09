@@ -3,7 +3,7 @@
 #include "Data/ArrayListDbl.h"
 #include "IO/Stream.h"
 #include "Map/DrawMapService.h"
-#include "Math/CoordinateSystem.h"
+#include "Math/CSys/CoordinateSystem.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Text/JSON.h"
@@ -22,7 +22,7 @@ namespace Map
 			Optional<Net::SSLEngine> ssl;
 			Math::RectAreaDbl bounds;
 			Math::RectAreaDbl initBounds;
-			NN<Math::CoordinateSystem> csys;
+			NN<Math::CSys::CoordinateSystem> csys;
 			NN<Text::String> imgFormat;
 			Bool noResource;
 
@@ -58,7 +58,7 @@ namespace Map
 			Bool TileLoadToFile(Text::CStringNN fileName, UIntOS level, Int32 tileX, Int32 tileY) const;
 
 			virtual NN<Text::String> GetName() const;
-			virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
+			virtual NN<Math::CSys::CoordinateSystem> GetCoordinateSystem() const;
 			virtual Math::RectAreaDbl GetInitBounds() const;
 			virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 			virtual Bool CanQuery() const;

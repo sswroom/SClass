@@ -3,8 +3,8 @@
 #include "Data/DateTime.h"
 #include "IO/StreamDataStream.h"
 #include "Map/VectorLayer.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/PointZ.h"
 #include "Parser/FileParser/WPTParser.h"
 #include "Text/MyString.h"
@@ -74,7 +74,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WPTParser::ParseFileHdr(NN<IO::St
 		reader.ReadLine(sbuff, 1024);
 		UnsafeArray<UTF8Char> cols[2];
 
-		NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), 2, colNames, Math::CoordinateSystemManager::CreateWGS84Csys(), colTypes, colSizes, colDPs, 0, nullptr));
+		NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), 2, colNames, Math::CSys::CoordinateSystemManager::CreateWGS84Csys(), colTypes, colSizes, colDPs, 0, nullptr));
 		while (reader.ReadLine(sbuff, 1024).NotNull())
 		{
 			if (Text::StrSplitTrim(tmpArr, 16, sbuff, ',') == 16)

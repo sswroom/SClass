@@ -2,7 +2,7 @@
 #include "Data/ArrayListDbl.h"
 #include "Map/GMLXML.h"
 #include "Map/VectorLayer.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/MultiPolygon.h"
 #include "Math/Geometry/Point.h"
@@ -189,10 +189,10 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 					{
 						colCnt = nameList.GetCount();
 						ccols = UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(nameList.Arr());
-						NN<Math::CoordinateSystem> csys;
+						NN<Math::CSys::CoordinateSystem> csys;
 						if (!env.csys.SetTo(csys))
 						{
-							csys = Math::CoordinateSystemManager::CreateWGS84Csys();
+							csys = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 						}
 						NEW_CLASSNN(nnlyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, csys, 0, nullptr));
 						lyr = nnlyr;
@@ -298,7 +298,7 @@ void Map::GMLXML::AppendGeometry(NN<Text::StringBuilderUTF8> sb, NN<Math::Geomet
 	Bool invert = false;
 	if (srsType == SRSType::OGC || srsType == SRSType::XOGC)
 	{
-		invert = Math::CoordinateSystemManager::SRAxisReversed(vec->GetSRID());
+		invert = Math::CSys::CoordinateSystemManager::SRAxisReversed(vec->GetSRID());
 	}
 	if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
 	{
@@ -344,7 +344,7 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 	UIntOS i;
 	UIntOS j;
 	NN<Text::XMLAttrib> attr;
-	NN<Math::CoordinateSystem> csys;
+	NN<Math::CSys::CoordinateSystem> csys;
 	NN<Text::String> aname;
 	Bool axisInvert = false;
 	UIntOS dimension = 0;
@@ -355,7 +355,7 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 		aname = Text::String::OrEmpty(attr->name);
 		if (aname->Equals(UTF8STRC("srsName")) && env->csys.IsNull())
 		{
-			env->csys = Math::CoordinateSystemManager::CreateFromName(Text::String::OrEmpty(attr->value)->ToCString(), axisInvert);
+			env->csys = Math::CSys::CoordinateSystemManager::CreateFromName(Text::String::OrEmpty(attr->value)->ToCString(), axisInvert);
 			if (env->csys.SetTo(csys))
 			{
 				env->srid = csys->GetSRID();

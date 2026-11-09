@@ -16,7 +16,7 @@ namespace Map
 		} RouteInfo;
 	private:
 		NN<DB::DBTool> db;
-		NN<Math::CoordinateSystem> csys;
+		NN<Math::CSys::CoordinateSystem> csys;
 		Data::FastMapNN<Int32, RouteInfo> routeMap;
 
 	public:

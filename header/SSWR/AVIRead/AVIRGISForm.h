@@ -24,6 +24,12 @@ namespace SSWR
 		class AVIRGISForm : public UI::GUIForm, public SSWR::AVIRead::AVIRMapNavigator, public Media::PrintHandler
 		{
 		private:
+			enum class GridType
+			{
+				UTMGrid,
+				HKGCode
+			};
+		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			Optional<UI::GUIForm> ctrlForm;
@@ -37,8 +43,8 @@ namespace SSWR
 			NN<UI::GUIPanel> pnlControl;
 			NN<UI::GUIPanel> pnlStatus;
 			NN<UI::GUITextBox> txtScale;
-			NN<UI::GUITextBox> txtLatLon;
-			NN<UI::GUITextBox> txtUTMGrid;
+			NN<UI::GUITextBox> txtMapPos;
+			NN<UI::GUITextBox> txtGridCode;
 			NN<UI::GUITextBox> txtTimeUsed;
 			NN<UI::GUITrackBar> tbScale;
 			NN<UI::GUIMainMenu> mnuMain;
@@ -55,7 +61,8 @@ namespace SSWR
 			Bool scaleChanging;
 			Optional<UI::GUITreeView::TreeItem> popNode;
 			Text::TextAnalyzer ta;
-			NN<Math::GeographicCoordinateSystem> wgs84CSys;
+			NN<Math::CSys::GeographicCoordinateSystem> wgs84CSys;
+			GridType gridType;
 
 			Bool useTime;
 			Int64 currTime;
@@ -126,7 +133,7 @@ namespace SSWR
 			virtual void SetSelectedVectors(NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList);
 			virtual void RedrawMap();
 			virtual Double GetScnDPI() const;
-			virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
+			virtual NN<Math::CSys::CoordinateSystem> GetCoordinateSystem() const;
 
 			virtual Math::Coord2DDbl ScnXY2MapXY(Math::Coord2D<IntOS> scnPos);
 			virtual Math::Coord2D<IntOS> MapXY2ScnXY(Math::Coord2DDbl mapPos);

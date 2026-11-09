@@ -2,7 +2,7 @@
 #include "DB/TableDef.h"
 #include "Map/GMLXML.h"
 #include "Map/WFSHandler.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Text/XML.h"
 #include "Text/TextBinEnc/FormEncoding.h"
@@ -12,7 +12,7 @@ Bool __stdcall Map::WFSHandler::GetCapabilities(NN<Net::WebServer::WebRequest> r
 	NN<Text::String> s;
 	NN<GISFeature> feature;
 	Math::RectAreaDbl bbox;
-	NN<Math::CoordinateSystem> csys;
+	NN<Math::CSys::CoordinateSystem> csys;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	sptr = req->BuildURLHost(sbuff);
@@ -167,8 +167,8 @@ Bool __stdcall Map::WFSHandler::GetCapabilities(NN<Net::WebServer::WebRequest> r
 					{
 						if (csys->GetSRID() != 4326)
 						{
-							bbox.min = Math::CoordinateSystem::Convert(csys, me->wgs84, bbox.min);
-							bbox.max = Math::CoordinateSystem::Convert(csys, me->wgs84, bbox.max);
+							bbox.min = Math::CSys::CoordinateSystem::Convert(csys, me->wgs84, bbox.min);
+							bbox.max = Math::CSys::CoordinateSystem::Convert(csys, me->wgs84, bbox.max);
 							bbox = bbox.Reorder();
 						}
 						sb.Append(CSTR("<LatLongBoundingBox minx=\""))->AppendDouble(bbox.min.x)->Append(CSTR("\" miny=\""))->AppendDouble(bbox.min.y)->Append(CSTR("\" maxx=\""))->AppendDouble(bbox.max.x)->Append(CSTR("\" maxy=\""))->AppendDouble(bbox.max.y)->Append(CSTR("\"/>"));
@@ -898,8 +898,8 @@ Bool __stdcall Map::WFSHandler::GetCapabilities(NN<Net::WebServer::WebRequest> r
 			{
 				if (csys->GetSRID() != 4326)
 				{
-					bbox.min = Math::CoordinateSystem::Convert(csys, me->wgs84, bbox.min);
-					bbox.max = Math::CoordinateSystem::Convert(csys, me->wgs84, bbox.max);
+					bbox.min = Math::CSys::CoordinateSystem::Convert(csys, me->wgs84, bbox.min);
+					bbox.max = Math::CSys::CoordinateSystem::Convert(csys, me->wgs84, bbox.max);
 					bbox = bbox.Reorder();
 				}
 					sb.Append(CSTR("<ows:WGS84BoundingBox>"));
@@ -5085,7 +5085,7 @@ Bool __stdcall Map::WFSHandler::ResponseGML(NN<Net::WebServer::WebRequest> req, 
 
 Map::WFSHandler::WFSHandler()
 {
-	this->wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
+	this->wgs84 = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 	this->reqMap.PutC(CSTR("GetCapabilities"), GetCapabilities);
 	this->reqMap.PutC(CSTR("DescribeFeatureType"), DescribeFeatureType);
 	this->reqMap.PutC(CSTR("GetFeature"), GetFeature);

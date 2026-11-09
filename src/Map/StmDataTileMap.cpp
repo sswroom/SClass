@@ -2,7 +2,7 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "Map/StmDataTileMap.h"
 #include "Map/TileMapUtil.h"
-#include "Math/ProjectedCoordinateSystem.h"
+#include "Math/CSys/ProjectedCoordinateSystem.h"
 
 Optional<Map::StmDataTileMap::TileLayer> Map::StmDataTileMap::GetLayer(UIntOS level) const
 {
@@ -49,7 +49,7 @@ Optional<Map::StmDataTileMap::TileInfo> Map::StmDataTileMap::GetTile(NN<TileLaye
 	return nullptr;
 }
 
-Map::StmDataTileMap::StmDataTileMap(UIntOS tileSize, Math::Coord2DDbl tileOrigin, Math::RectAreaDbl bounds, NN<Math::CoordinateSystem> csys, TileFormat tileFormat, Text::CStringNN name)
+Map::StmDataTileMap::StmDataTileMap(UIntOS tileSize, Math::Coord2DDbl tileOrigin, Math::RectAreaDbl bounds, NN<Math::CSys::CoordinateSystem> csys, TileFormat tileFormat, Text::CStringNN name)
 {
 	this->tileSize = tileSize;
 	this->tileOrigin = tileOrigin;
@@ -148,14 +148,14 @@ Bool Map::StmDataTileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	return true;
 }
 
-NN<Math::CoordinateSystem> Map::StmDataTileMap::GetCoordinateSystem() const
+NN<Math::CSys::CoordinateSystem> Map::StmDataTileMap::GetCoordinateSystem() const
 {
 	return this->csys;
 }
 
 Bool Map::StmDataTileMap::IsMercatorProj() const
 {
-	return this->csys->IsProjected() && NN<Math::ProjectedCoordinateSystem>::ConvertFrom(this->csys)->GetCoordSysType() == Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected;
+	return this->csys->IsProjected() && NN<Math::CSys::ProjectedCoordinateSystem>::ConvertFrom(this->csys)->GetCoordSysType() == Math::CSys::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected;
 }
 
 UIntOS Map::StmDataTileMap::GetTileSize() const

@@ -4,7 +4,7 @@
 #include "IO/MemoryStream.h"
 #include "Map/HKTrafficLayer.h"
 #include "Map/VectorLayer.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/Polyline.h"
 #include "Net/HTTPClient.h"
@@ -848,7 +848,7 @@ Optional<IO::Stream> Map::HKTrafficLayer::OpenURLStream()
 	}
 }
 
-Map::HKTrafficLayer::HKTrafficLayer(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact) : Map::MapDrawLayer(CSTR("HKTraffic"), 0, CSTR("HKTraffic"), Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(Math::CoordinateSystemManager::PCST_HK80))
+Map::HKTrafficLayer::HKTrafficLayer(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact) : Map::MapDrawLayer(CSTR("HKTraffic"), 0, CSTR("HKTraffic"), Math::CSys::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(Math::CSys::CoordinateSystemManager::PCST_HK80))
 {
 	this->clif = clif;
 	this->ssl = ssl;
@@ -1281,8 +1281,8 @@ Optional<Map::MapDrawLayer> Map::HKTrafficLayer::GetNodePoints()
 	UnsafeArrayOpt<const UTF8Char> sptr = sbuff;
 	UnsafeArrayOpt<const UTF8Char> col = (const UTF8Char*)"id";
 	NN<Math::Geometry::Point> pt;
-	NN<Math::CoordinateSystem> csys;
-	if (!Optional<Math::CoordinateSystem>(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80)).SetTo(csys))
+	NN<Math::CSys::CoordinateSystem> csys;
+	if (!Optional<Math::CSys::CoordinateSystem>(Math::CSys::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CSys::CoordinateSystemManager::PCST_HK80)).SetTo(csys))
 		return nullptr;
 	NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, CSTR("HKTrafficNode"), 1, &col, csys, 0, CSTR("HKTrafficNode")));
 	IntOS i = 0;

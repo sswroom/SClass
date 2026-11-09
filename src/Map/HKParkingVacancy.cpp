@@ -4,8 +4,8 @@
 #include "IO/MemoryStream.h"
 #include "Map/HKParkingVacancy.h"
 #include "Map/MapPOI.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/WKTWriter.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/Point.h"
 #include "Net/HTTPClient.h"
 #include "Sync/MutexUsage.h"
@@ -244,7 +244,7 @@ void __stdcall Map::HKParkingVacancy::ParkingInfoFree(NN<ParkingInfo> parking)
 	MemFreeNN(parking);
 }
 
-Map::HKParkingVacancy::HKParkingVacancy(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl) : Map::MapDrawLayer(CSTR("HKParkingVacancy"), 16, CSTR("HKParkingVacancy"), Math::CoordinateSystemManager::CreateWGS84Csys())
+Map::HKParkingVacancy::HKParkingVacancy(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl) : Map::MapDrawLayer(CSTR("HKParkingVacancy"), 16, CSTR("HKParkingVacancy"), Math::CSys::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->clif = clif;
 	this->ssl = ssl;

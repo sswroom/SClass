@@ -42,7 +42,7 @@ namespace Map
 		{
 			Math::RectAreaDbl bounds;
 			NN<Text::String> id;
-			NN<Math::CoordinateSystem> csys;
+			NN<Math::CSys::CoordinateSystem> csys;
 			Data::ArrayListNN<TileMatrix> tiles;
 		};
 
@@ -61,7 +61,7 @@ namespace Map
 		struct TileMatrixDefSet
 		{
 			Optional<Text::String> id;
-			NN<Math::CoordinateSystem> csys;
+			NN<Math::CSys::CoordinateSystem> csys;
 			Data::ArrayListNN<TileMatrixDef> tiles;
 		};
 
@@ -88,7 +88,7 @@ namespace Map
 		Optional<TileMatrixDefSet> currDef;
 		Optional<ResourceURL> currResource;
 		Optional<ResourceURL> currResourceInfo;
-		NN<Math::CoordinateSystem> wgs84;
+		NN<Math::CSys::CoordinateSystem> wgs84;
 		Data::FastStringMapNN<TileMatrixDefSet> matrixDef;
 
 		void LoadXML();
@@ -115,7 +115,7 @@ namespace Map
 		virtual UIntOS GetNearestLevel(Double scale) const;
 		virtual UIntOS GetConcurrentCount() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
-		virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
+		virtual NN<Math::CSys::CoordinateSystem> GetCoordinateSystem() const;
 		virtual Bool IsMercatorProj() const;
 		virtual UIntOS GetTileSize() const;
 		virtual TileFormat GetTileFormat() const;

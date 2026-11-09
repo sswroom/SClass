@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Map/MapLayerCollection.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Sync/RWMutexUsage.h"
 
 void __stdcall Map::MapLayerCollection::InnerUpdated(AnyType userObj)
@@ -16,12 +16,12 @@ void __stdcall Map::MapLayerCollection::InnerUpdated(AnyType userObj)
 	}
 }
 
-Map::MapLayerCollection::MapLayerCollection(NN<Text::String> sourceName, Text::String *layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateWGS84Csys())
+Map::MapLayerCollection::MapLayerCollection(NN<Text::String> sourceName, Text::String *layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CSys::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->failReason = Map::MapDrawLayer::FailReason::IdNotFound;
 }
 
-Map::MapLayerCollection::MapLayerCollection(Text::CStringNN sourceName, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateWGS84Csys())
+Map::MapLayerCollection::MapLayerCollection(Text::CStringNN sourceName, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CSys::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->failReason = Map::MapDrawLayer::FailReason::IdNotFound;
 }
@@ -462,7 +462,7 @@ Map::MapDrawLayer::ObjectClass Map::MapLayerCollection::GetObjectClass() const
 	return Map::MapDrawLayer::OC_MAP_LAYER_COLL;
 }
 
-NN<Math::CoordinateSystem> Map::MapLayerCollection::GetCoordinateSystem() const
+NN<Math::CSys::CoordinateSystem> Map::MapLayerCollection::GetCoordinateSystem() const
 {
 	NN<MapDrawLayer> lyr;
 	if (this->layerList.GetItem(0).SetTo(lyr))
@@ -471,7 +471,7 @@ NN<Math::CoordinateSystem> Map::MapLayerCollection::GetCoordinateSystem() const
 		return this->csys;
 }
 
-void Map::MapLayerCollection::SetCoordinateSystem(NN<Math::CoordinateSystem> csys)
+void Map::MapLayerCollection::SetCoordinateSystem(NN<Math::CSys::CoordinateSystem> csys)
 {
 	Sync::RWMutexUsage mutUsage(this->mut, false);
 	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();

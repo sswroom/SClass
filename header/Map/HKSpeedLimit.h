@@ -18,8 +18,8 @@ namespace Map
 			Optional<Math::Geometry::Vector2D> vecOri;
 		};
 	private:
-		NN<Math::CoordinateSystem> dataCsys;
-		Optional<Math::CoordinateSystem> reqCsys;
+		NN<Math::CSys::CoordinateSystem> dataCsys;
+		Optional<Math::CSys::CoordinateSystem> reqCsys;
 		Data::FastMapNN<Int32, RouteInfo> routeMap;
 		Math::RectAreaDbl bounds;
 		Data::FastMapNN<Int64, Data::ArrayListNative<Int32>> indexMap;
@@ -34,7 +34,7 @@ namespace Map
 
 		Optional<const RouteInfo> GetNearestRoute(Math::Coord2DDbl pt);
 		Int32 GetSpeedLimit(Math::Coord2DDbl pt, Double maxDistM);
-		void SetReqCoordinateSystem(NN<Math::CoordinateSystem> csys);
+		void SetReqCoordinateSystem(NN<Math::CSys::CoordinateSystem> csys);
 	};
 }
 #endif

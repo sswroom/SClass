@@ -2,7 +2,6 @@
 #include "MyMemory.h"
 #include "Data/ArrayListDbl.h"
 #include "Data/ArrayListInt32.h"
-#include "Math/CoordinateSystem.h"
 #include "Math/Geometry/MultiPolygon.h"
 
 Math::Geometry::Polygon::Polygon(UInt32 srid) : Math::Geometry::MultiGeometry<LinearRing>(srid)

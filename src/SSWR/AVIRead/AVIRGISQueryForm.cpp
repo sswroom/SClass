@@ -2,8 +2,8 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/Registry.h"
-#include "Math/CoordinateSystemConverter.h"
 #include "Math/GeometryTool.h"
+#include "Math/CSys/CoordinateSystemConverter.h"
 #include "Math/Geometry/Ellipse.h"
 #include "Net/HTTPClient.h"
 #include "Net/SSLEngineFactory.h"
@@ -32,12 +32,12 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseLUp(AnyType use
 		UIntOS j;
 		UIntOS k;
 		Math::Coord2DDbl mapPt = me->navi->ScnXY2MapXY(scnPos);
-		NN<Math::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
-		NN<Math::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
 		NN<Math::Geometry::Vector2D> vec;
 		if (!csys->Equals(lyrCSys))
 		{
-			mapPt = Math::CoordinateSystem::Convert(csys, lyrCSys, mapPt);
+			mapPt = Math::CSys::CoordinateSystem::Convert(csys, lyrCSys, mapPt);
 		}
 		me->ClearQueryResults();
 		if (me->lyr->CanQuery())
@@ -59,7 +59,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseLUp(AnyType use
 
 				if (!csys->Equals(lyrCSys))
 				{
-					Math::CoordinateSystemConverter converter(lyrCSys, csys);
+					Math::CSys::CoordinateSystemConverter converter(lyrCSys, csys);
 					i = me->queryVecList.GetCount();
 					while (i-- > 0)
 					{
@@ -77,7 +77,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseLUp(AnyType use
 		Math::Coord2DDbl mapPt2 = me->navi->ScnXY2MapXY(scnPos);
 		if (!csys->Equals(lyrCSys))
 		{
-			mapPt2 = Math::CoordinateSystem::Convert(csys, lyrCSys, mapPt2);
+			mapPt2 = Math::CSys::CoordinateSystem::Convert(csys, lyrCSys, mapPt2);
 		}
 		sess = me->lyr->BeginGetObject();
 		Data::ArrayListNN<Map::MapDrawLayer::ObjectInfo> objList;
@@ -116,7 +116,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseLUp(AnyType use
 				{
 					if (!csys->Equals(lyrCSys))
 					{
-						Math::CoordinateSystemConverter converter(lyrCSys, csys);
+						Math::CSys::CoordinateSystemConverter converter(lyrCSys, csys);
 						me->queryVecOriList.Add(vec->Clone());
 						vec->Convert(converter);
 					}
@@ -174,12 +174,13 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseRUp(AnyType use
 	UIntOS k;
 	Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(me->rdownPos);
 	Math::Coord2DDbl pt2 = me->navi->ScnXY2MapXY(scnPos);
-	NN<Math::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
-	NN<Math::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
+	NN<Math::CSys::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
+	NN<Math::CSys::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
 	if (!csys->Equals(lyrCSys))
 	{
-		pt1 = Math::CoordinateSystem::Convert(csys, lyrCSys, pt1);
-		pt2 = Math::CoordinateSystem::Convert(csys, lyrCSys, pt2);
+		Math::CSys::CoordinateSystemConverter converter(lyrCSys, csys);
+		pt1 = Math::CSys::CoordinateSystem::Convert(csys, lyrCSys, pt1);
+		pt2 = Math::CSys::CoordinateSystem::Convert(csys, lyrCSys, pt2);
 	}
 	me->ClearQueryResults();
 	Data::ArrayListInt64 objIds;
@@ -217,7 +218,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseRUp(AnyType use
 			{
 				if (!csys->Equals(lyrCSys))
 				{
-					Math::CoordinateSystemConverter converter(lyrCSys, csys);
+					Math::CSys::CoordinateSystemConverter converter(lyrCSys, csys);
 					me->queryVecOriList.Add(vec->Clone());
 					vec->Convert(converter);
 				}
@@ -262,7 +263,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(AnyType us
 	NN<Math::Geometry::Vector2D> currVec;
 	if (me->currVec.SetTo(currVec))
 	{
-		NN<Math::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 		Math::Coord2DDbl nearPos = mapPos;
 		currVec->CalBoundarySqrDistance(mapPos, nearPos);
@@ -645,7 +646,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UIntOS index)
 	Text::StringBuilderUTF8 sb;
 	writer->ToText(sb, vec);
 	this->txtShape->SetText(sb.ToCString());
-	NN<Math::CoordinateSystem> csys = this->lyr->GetCoordinateSystem();
+	NN<Math::CSys::CoordinateSystem> csys = this->lyr->GetCoordinateSystem();
 	sb.ClearStr();
 	sb.AppendDouble(csys->CalDistance(vec, false, Math::Unit::Distance::DU_METER));
 	this->txtShapeHLength->SetText(sb.ToCString());

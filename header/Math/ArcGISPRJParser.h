@@ -1,22 +1,22 @@
 #ifndef _SM_MATH_ARCGISPRJPARSER
 #define _SM_MATH_ARCGISPRJPARSER
-#include "Math/ArcGISCSys.h"
-#include "Math/CoordinateSystem.h"
+#include "Math/CSys/ArcGISCSys.h"
+#include "Math/CSys/CoordinateSystem.h"
 
 namespace Math
 {
 	class ArcGISPRJParser
 	{
 	private:
-		Math::ArcGISCSys csys;
+		Math::CSys::ArcGISCSys csys;
 
 		static Bool ParsePRJString(UnsafeArray<UTF8Char> prjBuff, OutParam<UIntOS> strSize);
 	public:
 		ArcGISPRJParser();
 		~ArcGISPRJParser();
 
-		Optional<Math::CoordinateSystem> ParsePRJFile(Text::CStringNN fileName);
-		Optional<Math::CoordinateSystem> ParsePRJBuff(Text::CStringNN sourceName, UnsafeArray<UTF8Char> prjBuff, UIntOS buffSize, OptOut<UIntOS> parsedSize);
+		Optional<Math::CSys::CoordinateSystem> ParsePRJFile(Text::CStringNN fileName);
+		Optional<Math::CSys::CoordinateSystem> ParsePRJBuff(Text::CStringNN sourceName, UnsafeArray<UTF8Char> prjBuff, UIntOS buffSize, OptOut<UIntOS> parsedSize);
 	};
 }
 #endif

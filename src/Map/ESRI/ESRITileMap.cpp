@@ -100,7 +100,7 @@ Bool Map::ESRI::ESRITileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	return bnd.min.x != 0 || bnd.min.y != 0 || bnd.max.x != 0 || bnd.max.y != 0;
 }
 
-NN<Math::CoordinateSystem> Map::ESRI::ESRITileMap::GetCoordinateSystem() const
+NN<Math::CSys::CoordinateSystem> Map::ESRI::ESRITileMap::GetCoordinateSystem() const
 {
 	return this->esriMap->GetCoordinateSystem();
 }

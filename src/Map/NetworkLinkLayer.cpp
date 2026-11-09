@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Map/NetworkLinkLayer.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/RWMutexUsage.h"
 #include "Sync/SimpleThread.h"
@@ -188,7 +188,7 @@ void Map::NetworkLinkLayer::LoadLink(NN<LinkInfo> link)
 	}
 }
 
-Map::NetworkLinkLayer::NetworkLinkLayer(Text::CStringNN fileName, NN<Parser::ParserList> parsers, NN<Net::WebBrowser> browser, Text::CString layerName) : Map::MapDrawLayer(fileName, 0, layerName, Math::CoordinateSystemManager::CreateWGS84Csys())
+Map::NetworkLinkLayer::NetworkLinkLayer(Text::CStringNN fileName, NN<Parser::ParserList> parsers, NN<Net::WebBrowser> browser, Text::CString layerName) : Map::MapDrawLayer(fileName, 0, layerName, Math::CSys::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->parsers = parsers;
 	this->browser = browser;
@@ -732,7 +732,7 @@ Map::MapDrawLayer::ObjectClass Map::NetworkLinkLayer::GetObjectClass() const
 	return Map::MapDrawLayer::OC_NETWORKLINK_LAYER;
 }
 
-NN<Math::CoordinateSystem> Map::NetworkLinkLayer::GetCoordinateSystem() const
+NN<Math::CSys::CoordinateSystem> Map::NetworkLinkLayer::GetCoordinateSystem() const
 {
 	UIntOS i;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
@@ -750,7 +750,7 @@ NN<Math::CoordinateSystem> Map::NetworkLinkLayer::GetCoordinateSystem() const
 	return this->csys;
 }
 
-void Map::NetworkLinkLayer::SetCoordinateSystem(NN<Math::CoordinateSystem> csys)
+void Map::NetworkLinkLayer::SetCoordinateSystem(NN<Math::CSys::CoordinateSystem> csys)
 {
 	UIntOS i;
 	Sync::RWMutexUsage mutUsage(this->linkMut, true);

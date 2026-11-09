@@ -6,7 +6,7 @@
 #include "Map/HKSpeedLimit.h"
 #include "Map/HKTrafficLayer2.h"
 #include "Map/VectorLayer.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/PointZ.h"
 #include "Parser/FileParser/ZIPParser.h"
 #include "Parser/ObjParser/FileGDB2Parser.h"
@@ -53,13 +53,13 @@ Optional<DB::ReadingDB> Map::HKRoadNetwork2::GetDB()
 	return this->fgdb;
 }
 
-NN<Math::CoordinateSystem> Map::HKRoadNetwork2::CreateCoordinateSystem()
+NN<Math::CSys::CoordinateSystem> Map::HKRoadNetwork2::CreateCoordinateSystem()
 {
-	NN<Math::ProjectedCoordinateSystem> csys;
-	if (Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80).SetTo(csys))
+	NN<Math::CSys::ProjectedCoordinateSystem> csys;
+	if (Math::CSys::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CSys::CoordinateSystemManager::PCST_HK80).SetTo(csys))
 		return csys;
 	else
-		return Math::CoordinateSystemManager::CreateWGS84Csys();
+		return Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 }
 
 Optional<Map::HKSpeedLimit> Map::HKRoadNetwork2::CreateSpeedLimit()
@@ -208,7 +208,7 @@ Optional<Map::ShortestPath3D> Map::HKRoadNetwork2::CreateShortestPath()
 			if (routeIdCol != INVALID_INDEX && travelDirCol != INVALID_INDEX && shapeCol != INVALID_INDEX)
 			{
 				UnsafeArray<Optional<Text::String>> properties = MemAllocArr(Optional<Text::String>, colCount);
-				NEW_CLASSNN(shortestPath, Map::ShortestPath3D(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(Math::CoordinateSystemManager::PCST_HK80), 100));
+				NEW_CLASSNN(shortestPath, Map::ShortestPath3D(Math::CSys::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(Math::CSys::CoordinateSystemManager::PCST_HK80), 100));
 				ret = shortestPath;
 				NN<Math::Geometry::Vector2D> vec;
 				Int32 routeId;

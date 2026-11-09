@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/ProjectedCoordinateSystem.h"
 #include "Math/SRWKTWriter.h"
+#include "Math/CSys/ProjectedCoordinateSystem.h"
 #include "Text/MyStringFloat.h"
 
 Math::SRWKTWriter::SRWKTWriter()
@@ -14,29 +14,29 @@ Math::SRWKTWriter::~SRWKTWriter()
 
 }
 
-UnsafeArray<UTF8Char> Math::SRWKTWriter::WriteCSys(NN<Math::CoordinateSystem> csys, UnsafeArray<UTF8Char> buff, UIntOS lev, Text::LineBreakType lbt)
+UnsafeArray<UTF8Char> Math::SRWKTWriter::WriteCSys(NN<Math::CSys::CoordinateSystem> csys, UnsafeArray<UTF8Char> buff, UIntOS lev, Text::LineBreakType lbt)
 {
 	if (csys->IsProjected())
 	{
-		Math::ProjectedCoordinateSystem *pcsys = (Math::ProjectedCoordinateSystem*)csys.Ptr();
+		Math::CSys::ProjectedCoordinateSystem *pcsys = (Math::CSys::ProjectedCoordinateSystem*)csys.Ptr();
 		buff = Text::StrConcatC(buff, UTF8STRC("PROJCS[\""));
 		buff = pcsys->GetCSysName()->ConcatTo(buff);
 		buff = Text::StrConcatC(buff, UTF8STRC("\","));
 		buff = WriteNextLine(buff, lev + 1, lbt);
 		buff = WriteCSys(pcsys->GetGeographicCoordinateSystem(), buff, lev + 1, lbt);
-		if (pcsys->GetCoordSysType() == Math::CoordinateSystem::CoordinateSystemType::MercatorProjected)
+		if (pcsys->GetCoordSysType() == Math::CSys::CoordinateSystem::CoordinateSystemType::MercatorProjected)
 		{
 			*buff++ = ',';
 			buff = WriteNextLine(buff, lev + 1, lbt);
 			buff = Text::StrConcatC(buff, UTF8STRC("PROJECTION[\"Transverse_Mercator\"]"));
 		}
-		else if (pcsys->GetCoordSysType() == Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected)
+		else if (pcsys->GetCoordSysType() == Math::CSys::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected)
 		{
 			*buff++ = ',';
 			buff = WriteNextLine(buff, lev + 1, lbt);
 			buff = Text::StrConcatC(buff, UTF8STRC("PROJECTION[\"Mercator_1SP\"]"));
 		}
-		else if (pcsys->GetCoordSysType() == Math::CoordinateSystem::CoordinateSystemType::GausskrugerProjected)
+		else if (pcsys->GetCoordSysType() == Math::CSys::CoordinateSystem::CoordinateSystemType::GausskrugerProjected)
 		{
 			*buff++ = ',';
 			buff = WriteNextLine(buff, lev + 1, lbt);
@@ -70,12 +70,12 @@ UnsafeArray<UTF8Char> Math::SRWKTWriter::WriteCSys(NN<Math::CoordinateSystem> cs
 	}
 	else
 	{
-		Math::GeographicCoordinateSystem *gcsys = (Math::GeographicCoordinateSystem*)csys.Ptr();
+		Math::CSys::GeographicCoordinateSystem *gcsys = (Math::CSys::GeographicCoordinateSystem*)csys.Ptr();
 		buff = Text::StrConcatC(buff, UTF8STRC("GEOGCS[\""));
 		buff = gcsys->GetCSysName()->ConcatTo(buff);
 		buff = Text::StrConcatC(buff, UTF8STRC("\","));
 		buff = WriteNextLine(buff, lev + 1, lbt);
-		NN<const Math::GeographicCoordinateSystem::DatumData1> datum = gcsys->GetDatum();
+		NN<const Math::CSys::GeographicCoordinateSystem::DatumData1> datum = gcsys->GetDatum();
 		buff = WriteDatum(datum, buff, lev + 1, lbt);
 		buff = WritePrimem(buff, gcsys->GetPrimem(), lev + 1, lbt);
 		buff = WriteUnit(buff, gcsys->GetUnit(), lev + 1, lbt);
@@ -85,7 +85,7 @@ UnsafeArray<UTF8Char> Math::SRWKTWriter::WriteCSys(NN<Math::CoordinateSystem> cs
 	return buff;
 }
 
-UnsafeArray<UTF8Char> Math::SRWKTWriter::WriteDatum(NN<const Math::CoordinateSystem::DatumData1> datum, UnsafeArray<UTF8Char> buff, UIntOS lev, Text::LineBreakType lbt)
+UnsafeArray<UTF8Char> Math::SRWKTWriter::WriteDatum(NN<const Math::CSys::CoordinateSystem::DatumData1> datum, UnsafeArray<UTF8Char> buff, UIntOS lev, Text::LineBreakType lbt)
 {
 	buff = Text::StrConcatC(buff, UTF8STRC("DATUM[\""));
 	buff = Text::StrConcatC(buff, datum->name, datum->nameLen);
@@ -117,7 +117,7 @@ UnsafeArray<UTF8Char> Math::SRWKTWriter::WriteDatum(NN<const Math::CoordinateSys
 	return buff;
 }
 
-UnsafeArray<UTF8Char> Math::SRWKTWriter::WriteSpheroid(const Math::CoordinateSystem::SpheroidData *spheroid, UnsafeArray<UTF8Char> buff, UIntOS lev, Text::LineBreakType lbt)
+UnsafeArray<UTF8Char> Math::SRWKTWriter::WriteSpheroid(const Math::CSys::CoordinateSystem::SpheroidData *spheroid, UnsafeArray<UTF8Char> buff, UIntOS lev, Text::LineBreakType lbt)
 {
 	buff = Text::StrConcatC(buff, UTF8STRC("SPHEROID[\""));
 	buff = Text::StrConcatC(buff, spheroid->name, spheroid->nameLen);

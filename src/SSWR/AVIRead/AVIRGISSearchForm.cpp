@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Math/CoordinateSystemConverter.h"
+#include "Math/CSys/CoordinateSystemConverter.h"
 #include "SSWR/AVIRead/AVIRGISSearchForm.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -28,11 +28,11 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(AnyType userObj)
 		NN<Math::Geometry::Vector2D> vec;
 		if (me->layer->GetVectorByStr(me->searching, me->nameArr, sess, s->ToCString(), me->strIndex).SetTo(vec))
 		{
-			NN<Math::CoordinateSystem> csys1 = me->navi->GetCoordinateSystem();
-			NN<Math::CoordinateSystem> csys2 = me->layer->GetCoordinateSystem();
+			NN<Math::CSys::CoordinateSystem> csys1 = me->navi->GetCoordinateSystem();
+			NN<Math::CSys::CoordinateSystem> csys2 = me->layer->GetCoordinateSystem();
 			if (!csys1->Equals(csys2))
 			{
-				Math::CoordinateSystemConverter converter(csys2, csys1);
+				Math::CSys::CoordinateSystemConverter converter(csys2, csys1);
 				vec->Convert(converter);
 			}
 

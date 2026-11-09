@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Math/Math_C.h"
-#include "Math/PolyconicProjectedCoordinateSystem.h"
+#include "Math/CSys/PolyconicProjectedCoordinateSystem.h"
 
-Double Math::PolyconicProjectedCoordinateSystem::MeridionalArc(Double a, Double e2, Double lat)
+Double Math::CSys::PolyconicProjectedCoordinateSystem::MeridionalArc(Double a, Double e2, Double lat)
 {
 	Double e4 = e2 * e2;
 	Double e6 = e4 * e2;
@@ -16,31 +16,31 @@ Double Math::PolyconicProjectedCoordinateSystem::MeridionalArc(Double a, Double 
 	return a * (a0 * lat - a2 * Math_Sin(2 * lat) + a4 * Math_Sin(4 * lat) - a6 * Math_Sin(6 * lat) + a8 * Math_Sin(8 * lat));
 }
 
-Math::PolyconicProjectedCoordinateSystem::PolyconicProjectedCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CStringNN csysName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, NN<Math::GeographicCoordinateSystem> gcs, UnitType unit) : ProjectedCoordinateSystem(sourceName, srid, csysName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit)
+Math::CSys::PolyconicProjectedCoordinateSystem::PolyconicProjectedCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CStringNN csysName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, NN<GeographicCoordinateSystem> gcs, UnitType unit) : ProjectedCoordinateSystem(sourceName, srid, csysName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit)
 {
 }
 
-Math::PolyconicProjectedCoordinateSystem::PolyconicProjectedCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CStringNN csysName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, NN<Math::GeographicCoordinateSystem> gcs, UnitType unit) : ProjectedCoordinateSystem(sourceName, srid, csysName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit)
+Math::CSys::PolyconicProjectedCoordinateSystem::PolyconicProjectedCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CStringNN csysName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, NN<GeographicCoordinateSystem> gcs, UnitType unit) : ProjectedCoordinateSystem(sourceName, srid, csysName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit)
 {
 }
 
-Math::PolyconicProjectedCoordinateSystem::~PolyconicProjectedCoordinateSystem()
+Math::CSys::PolyconicProjectedCoordinateSystem::~PolyconicProjectedCoordinateSystem()
 {
 }
 
-NN<Math::CoordinateSystem> Math::PolyconicProjectedCoordinateSystem::Clone() const
+NN<Math::CSys::CoordinateSystem> Math::CSys::PolyconicProjectedCoordinateSystem::Clone() const
 {
-	NN<Math::CoordinateSystem> csys;
-	NEW_CLASSNN(csys, Math::PolyconicProjectedCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), this->falseEasting, this->falseNorthing, this->GetCentralMeridianDegree(), this->GetLatitudeOfOriginDegree(), this->scaleFactor, NN<Math::GeographicCoordinateSystem>::ConvertFrom(this->gcs->Clone()), this->unit));
+	NN<CoordinateSystem> csys;
+	NEW_CLASSNN(csys, PolyconicProjectedCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), this->falseEasting, this->falseNorthing, this->GetCentralMeridianDegree(), this->GetLatitudeOfOriginDegree(), this->scaleFactor, NN<GeographicCoordinateSystem>::ConvertFrom(this->gcs->Clone()), this->unit));
 	return csys;
 }
 
-Math::CoordinateSystem::CoordinateSystemType Math::PolyconicProjectedCoordinateSystem::GetCoordSysType() const
+Math::CSys::CoordinateSystem::CoordinateSystemType Math::CSys::PolyconicProjectedCoordinateSystem::GetCoordSysType() const
 {
-	return Math::CoordinateSystem::CoordinateSystemType::PolyconicProjected;
+	return CoordinateSystem::CoordinateSystemType::PolyconicProjected;
 }
 
-Math::Coord2DDbl Math::PolyconicProjectedCoordinateSystem::ToGeographicCoordinateRad(Math::Coord2DDbl projPos) const
+Math::Coord2DDbl Math::CSys::PolyconicProjectedCoordinateSystem::ToGeographicCoordinateRad(Math::Coord2DDbl projPos) const
 {
 	NN<Math::EarthEllipsoid> ellipsoid = this->gcs->GetEllipsoid();
 	Double a = ellipsoid->GetSemiMajorAxis() * this->scaleFactor;
@@ -124,7 +124,7 @@ Math::Coord2DDbl Math::PolyconicProjectedCoordinateSystem::ToGeographicCoordinat
 	return Math::Coord2DDbl(NAN, NAN);
 }
 
-Math::Coord2DDbl Math::PolyconicProjectedCoordinateSystem::FromGeographicCoordinateRad(Math::Coord2DDbl geoPos) const
+Math::Coord2DDbl Math::CSys::PolyconicProjectedCoordinateSystem::FromGeographicCoordinateRad(Math::Coord2DDbl geoPos) const
 {
 	NN<Math::EarthEllipsoid> ellipsoid = this->gcs->GetEllipsoid();
 	Double lat = geoPos.GetLat();

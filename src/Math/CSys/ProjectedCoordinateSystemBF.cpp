@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/ProjectedCoordinateSystemBF.h"
+#include "Math/CSys/ProjectedCoordinateSystemBF.h"
 
-Math::ProjectedCoordinateSystemBF::ProjectedCoordinateSystemBF(Text::CStringNN name, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, Double latAdj, Double lonAdj, NN<Math::GeographicCoordinateSystemBF> gcs) : Math::CoordinateSystemBF(name)
+Math::CSys::ProjectedCoordinateSystemBF::ProjectedCoordinateSystemBF(Text::CStringNN name, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, Double latAdj, Double lonAdj, NN<GeographicCoordinateSystemBF> gcs) : CoordinateSystemBF(name)
 {
 	NEW_CLASSNN(this->falseEasting, Math::BigFloat(256, falseEasting));
 	NEW_CLASSNN(this->falseNorthing, Math::BigFloat(256, falseNorthing));
@@ -14,7 +14,7 @@ Math::ProjectedCoordinateSystemBF::ProjectedCoordinateSystemBF(Text::CStringNN n
 	this->gcs = gcs;
 }
 
-Math::ProjectedCoordinateSystemBF::~ProjectedCoordinateSystemBF()
+Math::CSys::ProjectedCoordinateSystemBF::~ProjectedCoordinateSystemBF()
 {
 	this->gcs.Delete();
 	this->lonAdj.Delete();
@@ -26,7 +26,7 @@ Math::ProjectedCoordinateSystemBF::~ProjectedCoordinateSystemBF()
 	this->falseEasting.Delete();
 }
 
-void Math::ProjectedCoordinateSystemBF::CalSurfaceDistanceXY(NN<const Math::BigFloat> x1, NN<const Math::BigFloat> y1, NN<const Math::BigFloat> x2, NN<const Math::BigFloat> y2, NN<Math::BigFloat> dist, Math::Unit::Distance::DistanceUnit unit) const
+void Math::CSys::ProjectedCoordinateSystemBF::CalSurfaceDistanceXY(NN<const Math::BigFloat> x1, NN<const Math::BigFloat> y1, NN<const Math::BigFloat> x2, NN<const Math::BigFloat> y2, NN<Math::BigFloat> dist, Math::Unit::Distance::DistanceUnit unit) const
 {
 	Math::BigFloat xDiff(x2);
 	Math::BigFloat yDiff(y2);
@@ -233,7 +233,7 @@ Double Math::ProjectedCoordinateSystem::CalcM(Double rLat)
 	return m;
 }*/
 
-Bool Math::ProjectedCoordinateSystemBF::SameProjection(NN<Math::ProjectedCoordinateSystemBF> csys) const
+Bool Math::CSys::ProjectedCoordinateSystemBF::SameProjection(NN<ProjectedCoordinateSystemBF> csys) const
 {
 	if (this->falseEasting.Ptr()[0] != csys->falseEasting)
 		return false;
@@ -252,7 +252,7 @@ Bool Math::ProjectedCoordinateSystemBF::SameProjection(NN<Math::ProjectedCoordin
 	return this->gcs->Equals(csys->gcs);
 }
 
-Optional<Math::ProjectedCoordinateSystemBF> Math::ProjectedCoordinateSystemBF::CreateCoordinateSystem(Math::CoordinateSystemManager::ProjCoordSysType pcst)
+Optional<Math::CSys::ProjectedCoordinateSystemBF> Math::CSys::ProjectedCoordinateSystemBF::CreateCoordinateSystem(CoordinateSystemManager::ProjCoordSysType pcst)
 {
 //	NN<Math::ProjectedCoordinateSystemBF> csys;
 //	NN<Math::GeographicCoordinateSystemBF> gcs;

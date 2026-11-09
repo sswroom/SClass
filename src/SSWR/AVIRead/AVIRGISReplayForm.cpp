@@ -459,7 +459,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 		Double minDist = 9999999;
 		Math::Coord2DDbl mapPos = this->navi->GetMapCenter();
 		Double dist = 0;
-		NN<Math::CoordinateSystem> coord = this->track->GetCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> coord = this->track->GetCoordinateSystem();
 		NN<Math::Geometry::LineString> pl;
 		NN<Map::GetObjectSess> sess = this->track->BeginGetObject();
 		if (Optional<Math::Geometry::LineString>::ConvertFrom(this->track->GetNewVectorById(sess, (Int64)this->currTrackId)).SetTo(pl))

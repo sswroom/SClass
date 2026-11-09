@@ -1,0 +1,44 @@
+#ifndef _SM_MATH_CSYS_GEOGRAPHICCOORDINATESYSTEM
+#define _SM_MATH_CSYS_GEOGRAPHICCOORDINATESYSTEM
+#include "Math/Unit/Angle.h"
+#include "Math/EarthEllipsoid.h"
+#include "Math/CSys/CoordinateSystem.h"
+#include "Text/CString.h"
+
+namespace Math
+{
+	namespace CSys
+	{
+		class GeographicCoordinateSystem : public CoordinateSystem
+		{
+		private:
+			DatumData1 datum;
+			PrimemType primem;
+			UnitType unit;
+
+		public:
+			GeographicCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CStringNN csysName, const DatumData1 *datum, PrimemType primem, UnitType unit);
+			GeographicCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CStringNN csysName, const DatumData1 *datum, PrimemType primem, UnitType unit);
+			virtual ~GeographicCoordinateSystem();
+
+			virtual Double CalSurfaceDistance(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const;
+			virtual Double CalLineStringDistance(NN<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const;
+			virtual NN<CoordinateSystem> Clone() const;
+			virtual CoordinateSystemType GetCoordSysType() const;
+			virtual Bool IsProjected() const;
+			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+
+			NN<Math::EarthEllipsoid> GetEllipsoid() const { return this->datum.spheroid.ellipsoid; }
+			Text::CString GetDatumName() const { return Text::CString(this->datum.name, this->datum.nameLen); }
+			NN<const DatumData1> GetDatum() const { return this->datum; }
+			PrimemType GetPrimem() const { return this->primem; }
+			UnitType GetUnit() const { return this->unit; }
+
+			Math::Vector3D ToCartesianCoordRad(Math::Vector3D lonLatH) const;
+			Math::Vector3D FromCartesianCoordRad(Math::Vector3D coord) const;
+			Math::Vector3D ToCartesianCoordDeg(Math::Vector3D lonLatH) const { return ToCartesianCoordRad(lonLatH.MulXY(Math::PI / 180.0)); }
+			Math::Vector3D FromCartesianCoordDeg(Math::Vector3D coord) const { return FromCartesianCoordRad(coord).MulXY(180.0 / Math::PI); }
+		};
+	}
+}
+#endif

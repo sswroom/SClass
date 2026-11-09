@@ -3,8 +3,8 @@
 #include "Data/ArrayListInt64.h"
 #include "Data/ArrayListNN.hpp"
 #include "Map/MapDrawLayer.h"
-#include "Math/CoordinateSystemConverter.h"
 #include "Math/Math_C.h"
+#include "Math/CSys/CoordinateSystemConverter.h"
 
 static Media::Engine3D::SceneObjectType Map3DView_MapVecTypeToSceneObjType(Math::Geometry::Vector2D::VectorType vecType)
 {
@@ -50,7 +50,7 @@ static void Map3DView_MapSceneObjectsFree(NN<Data::ArrayListNN<Media::Engine3D::
 	sceneObjs->Clear();
 }
 
-static Double Map3DView_MapUnitPerPixelToScale(NN<Math::CoordinateSystem> envCSys, Double mapUnitPerPixel)
+static Double Map3DView_MapUnitPerPixelToScale(NN<Math::CSys::CoordinateSystem> envCSys, Double mapUnitPerPixel)
 {
 	if (envCSys->IsProjected())
 	{
@@ -63,7 +63,7 @@ static Double Map3DView_MapUnitPerPixelToScale(NN<Math::CoordinateSystem> envCSy
 }
 
 static Double Map3DView_CalcLayerScale(
-	NN<Math::CoordinateSystem> envCSys,
+	NN<Math::CSys::CoordinateSystem> envCSys,
 	Math::Size2DDbl scnSize,
 	Double fovDeg,
 	Math::Vector3D camPos,
@@ -90,26 +90,26 @@ static Double Map3DView_CalcLayerScale(
 }
 
 static Math::RectAreaDbl Map3DView_MapSceneConvertRect(
-	NN<Math::CoordinateSystem> srcCSys,
-	NN<Math::CoordinateSystem> destCSys,
+	NN<Math::CSys::CoordinateSystem> srcCSys,
+	NN<Math::CSys::CoordinateSystem> destCSys,
 	Math::RectAreaDbl srcRect)
 {
 	Math::Coord2DDbl corners[4];
-	corners[0] = Math::CoordinateSystem::Convert(srcCSys, destCSys, srcRect.min);
-	corners[1] = Math::CoordinateSystem::Convert(srcCSys, destCSys, Math::Coord2DDbl(srcRect.max.x, srcRect.min.y));
-	corners[2] = Math::CoordinateSystem::Convert(srcCSys, destCSys, srcRect.max);
-	corners[3] = Math::CoordinateSystem::Convert(srcCSys, destCSys, Math::Coord2DDbl(srcRect.min.x, srcRect.max.y));
+	corners[0] = Math::CSys::CoordinateSystem::Convert(srcCSys, destCSys, srcRect.min);
+	corners[1] = Math::CSys::CoordinateSystem::Convert(srcCSys, destCSys, Math::Coord2DDbl(srcRect.max.x, srcRect.min.y));
+	corners[2] = Math::CSys::CoordinateSystem::Convert(srcCSys, destCSys, srcRect.max);
+	corners[3] = Math::CSys::CoordinateSystem::Convert(srcCSys, destCSys, Math::Coord2DDbl(srcRect.min.x, srcRect.max.y));
 	return Math::RectAreaDbl::GetRectArea(corners, 4);
 }
 
 static void Map3DView_MapSceneObjectsAddLayer(
 	NN<Map::MapDrawLayer> layer,
-	NN<Math::CoordinateSystem> envCSys,
+	NN<Math::CSys::CoordinateSystem> envCSys,
 	Math::Size2DDbl scnSize,
 	Math::RectAreaDbl searchRect,
 	NN<Data::ArrayListNN<Media::Engine3D::SceneObject>> sceneObjs)
 {
-	NN<Math::CoordinateSystem> layerCSys = layer->GetCoordinateSystem();
+	NN<Math::CSys::CoordinateSystem> layerCSys = layer->GetCoordinateSystem();
 	Math::RectAreaDbl layerRect = searchRect;
 	if (!layerCSys->Equals(envCSys))
 	{
@@ -123,7 +123,7 @@ static void Map3DView_MapSceneObjectsAddLayer(
 
 	NN<Map::GetObjectSess> sess = layer->BeginGetObject();
 	Bool needConv = !layerCSys->Equals(envCSys);
-	Math::CoordinateSystemConverter converter(layerCSys, envCSys);
+	Math::CSys::CoordinateSystemConverter converter(layerCSys, envCSys);
 	Int64 lastId = -1;
 	UIntOS i = objIds.GetCount();
 	while (i-- > 0)
@@ -179,7 +179,7 @@ static void Map3DView_MapSceneObjectsAddLayer(
 static void Map3DView_MapSceneObjectsAddGroup(
 	NN<Map::MapEnv> env,
 	Optional<Map::MapEnv::GroupItem> group,
-	NN<Math::CoordinateSystem> envCSys,
+	NN<Math::CSys::CoordinateSystem> envCSys,
 	Math::Size2DDbl scnSize,
 	const Media::Engine3D::CameraState &camera,
 	Math::RectAreaDbl searchRect,
@@ -205,7 +205,7 @@ static void Map3DView_MapSceneObjectsAddGroup(
 					Math::RectAreaDbl layerBounds;
 					if ((layerProp.flags & Map::MapEnv::SFLG_HIDELAYER) == 0 && layerProp.layer->GetBounds(layerBounds))
 					{
-						NN<Math::CoordinateSystem> layerCSys = layerProp.layer->GetCoordinateSystem();
+						NN<Math::CSys::CoordinateSystem> layerCSys = layerProp.layer->GetCoordinateSystem();
 						Math::RectAreaDbl layerEnvBounds = layerBounds;
 						if (!layerCSys->Equals(envCSys))
 						{
@@ -359,7 +359,7 @@ Bool Map::Map3DView::Render(NN<Media::Engine3DScene> scene3d, Math::Size2D<UInt3
 		this->mapCenter.y - this->camDistance,
 		this->camDistance * 2,
 		this->camDistance * 2);
-	NN<Math::CoordinateSystem> envCSys = this->env->GetCoordinateSystem();
+	NN<Math::CSys::CoordinateSystem> envCSys = this->env->GetCoordinateSystem();
 	Map3DView_MapSceneObjectsAddGroup(this->env, nullptr, envCSys, this->scnSize, camera, searchRect, sceneObjs);
 
 	if (!this->eng3d->BeginFrame(scene3d, frameSize))

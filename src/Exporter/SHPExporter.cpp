@@ -437,7 +437,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	}
 
 	sptr = IO::Path::ReplaceExt(fileName2, UTF8STRC("prj"));
-	NN<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
+	NN<Math::CSys::CoordinateSystem> csys = layer->GetCoordinateSystem();
 	UTF8Char projArr[1024];
 	Math::SRESRIWKTWriter wkt;
 	UnsafeArray<UTF8Char> cptr = wkt.WriteCSys(csys, projArr, 0, Text::LineBreakType::None);

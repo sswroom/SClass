@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "DB/TableDef.h"
-#include "Math/CoordinateSystemManager.h"
-#include "Math/CoordinateSystemConverter.h"
+#include "Math/CSys/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemConverter.h"
 #include "SSWR/AVIRead/AVIRGISShortestPathForm.h"
 
 void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnNetworkClicked(AnyType userObj)
@@ -32,10 +32,10 @@ void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnNetworkClicked(AnyType 
 			Math::Coord2DDbl center = rect.GetCenter();
 			if (vec->GetSRID() != me->navi->GetSRID())
 			{
-				NN<Math::CoordinateSystem> srcCsys = Math::CoordinateSystemManager::SRCreateCSysOrDef(vec->GetSRID());
-				NN<Math::CoordinateSystem> mapCsys = me->navi->GetCoordinateSystem();
-				center = Math::CoordinateSystem::Convert(srcCsys, mapCsys, center);
-				Math::CoordinateSystemConverter converter(srcCsys, mapCsys);
+				NN<Math::CSys::CoordinateSystem> srcCsys = Math::CSys::CoordinateSystemManager::SRCreateCSysOrDef(vec->GetSRID());
+				NN<Math::CSys::CoordinateSystem> mapCsys = me->navi->GetCoordinateSystem();
+				center = Math::CSys::CoordinateSystem::Convert(srcCsys, mapCsys, center);
+				Math::CSys::CoordinateSystemConverter converter(srcCsys, mapCsys);
 				i = 0;
 				while (i < j)
 				{
@@ -66,8 +66,8 @@ void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnSearchClicked(AnyType u
 	NN<SSWR::AVIRead::AVIRGISShortestPathForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISShortestPathForm>();
 	if (!me->startPos.IsZero() && !me->endPos.IsZero())
 	{
-		NN<Math::CoordinateSystem> mapCsys = me->navi->GetCoordinateSystem();
-		NN<Math::CoordinateSystem> pathCsys = me->spath.GetCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> mapCsys = me->navi->GetCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> pathCsys = me->spath.GetCoordinateSystem();
 		Math::Coord2DDbl startPos = me->startPos;
 		Math::Coord2DDbl endPos = me->endPos;
 		Data::ArrayListNN<Math::Geometry::LineString> lineList;
@@ -78,11 +78,11 @@ void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnSearchClicked(AnyType u
 		UIntOS j;
 		if (!pathCsys->Equals(mapCsys))
 		{
-			startPos = Math::CoordinateSystem::Convert(mapCsys, pathCsys, startPos);
-			endPos = Math::CoordinateSystem::Convert(mapCsys, pathCsys, endPos);
+			startPos = Math::CSys::CoordinateSystem::Convert(mapCsys, pathCsys, startPos);
+			endPos = Math::CSys::CoordinateSystem::Convert(mapCsys, pathCsys, endPos);
 			if (me->spath.GetShortestPathDetail(me->sess, startPos, endPos, lineList, propList))
 			{
-				Math::CoordinateSystemConverter converter(pathCsys, mapCsys);
+				Math::CSys::CoordinateSystemConverter converter(pathCsys, mapCsys);
 				i = 0;
 				j = lineList.GetCount();
 				while (i < j)
@@ -159,11 +159,11 @@ void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnPathsSelChg(AnyType use
 	NN<Math::Geometry::Vector2D> vec;
 	if (me->lvPaths->GetSelectedItem().GetOpt<Math::Geometry::LineString>().SetTo(line))
 	{
-		NN<Math::CoordinateSystem> mapCsys = me->navi->GetCoordinateSystem();
-		NN<Math::CoordinateSystem> pathCsys = me->spath.GetCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> mapCsys = me->navi->GetCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> pathCsys = me->spath.GetCoordinateSystem();
 		if (!pathCsys->Equals(mapCsys))
 		{
-			Math::CoordinateSystemConverter converter(pathCsys, mapCsys);
+			Math::CSys::CoordinateSystemConverter converter(pathCsys, mapCsys);
 			vec = line->Clone();
 			vec->Convert(converter);
 			me->navi->SetSelectedVector(vec);

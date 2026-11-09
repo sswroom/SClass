@@ -18,8 +18,9 @@
 #include "Map/OSM/OSMData.h"
 #include "Map/OSM/OSMTileMap.h"
 #include "Math/Math_C.h"
-#include "Math/CoordinateSystemManager.h"
-#include "Math/UTMGridConvertDbl.h"
+#include "Math/CSys/CoordinateSystemManager.h"
+#include "Math/CSys/HKGCode.h"
+#include "Math/CSys/UTMGridConvertDbl.h"
 #include "Math/Geometry/VectorImage.h"
 #include "Media/ImagePreviewTool.h"
 #include "Media/SharedImage.h"
@@ -74,7 +75,8 @@
 typedef enum
 {
 	MNU_SAVE = 101,
-	MNU_COPY_LATLON,
+	MNU_COPY_MAPPOS,
+	MNU_COPY_GRIDCODE,
 	MNU_PRINT,
 	MNU_EXPORT_IMAGE,
 	MNU_EXPORT_VECTOR,
@@ -208,7 +210,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 				NN<Media::Image> stimg;
 				if (NN<Media::ImageList>::ConvertFrom(nnpobj)->GetImage2(0, 0).SetTo(stimg))
 				{
-					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), Math::CoordinateSystemManager::CreateWGS84Csys(), nullptr));
+					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), Math::CSys::CoordinateSystemManager::CreateWGS84Csys(), nullptr));
 					if (stimg->GetImageType() == Media::ImageType::Raster)
 					{
 						NN<Media::RasterImage> rimg = NN<Media::RasterImage>::ConvertFrom(stimg);
@@ -313,14 +315,24 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(AnyType userObj, Math:
 	Math::Coord2DDbl mapPos = me->mapCtrl->ScnXY2MapXY(scnPos);
 
 	sptr = Text::StrDouble(Text::StrConcatC(Text::StrDouble(sbuff, mapPos.x), UTF8STRC(", ")), mapPos.y);
-	me->txtLatLon->SetText(CSTRP(sbuff, sptr));
+	me->txtMapPos->SetText(CSTRP(sbuff, sptr));
 	
-	NN<Math::CoordinateSystem> csys = me->env->GetCoordinateSystem();
-	latLon = Math::CoordinateSystem::Convert(csys, me->wgs84CSys, mapPos);
+	NN<Math::CSys::CoordinateSystem> csys = me->env->GetCoordinateSystem();
+	latLon = Math::CSys::CoordinateSystem::Convert(csys, me->wgs84CSys, mapPos);
 
-	Math::UTMGridConvertDbl conv;
-	sptr = conv.WGS84_Grid(sbuff, 5, 0, 0, 0, 0, latLon.GetLat(), latLon.GetLon());
-	me->txtUTMGrid->SetText(CSTRP(sbuff, sptr));
+	if (me->gridType == GridType::HKGCode)
+	{
+		Math::CSys::HKGCode hkgCode;
+		sptr = hkgCode.WGS84_Grid(sbuff, latLon.GetLat(), latLon.GetLon());
+		me->txtGridCode->SetText(CSTRP(sbuff, sptr));
+		return;
+	}
+	else
+	{
+		Math::CSys::UTMGridConvertDbl conv;
+		sptr = conv.WGS84_Grid(sbuff, 5, 0, 0, 0, 0, latLon.GetLat(), latLon.GetLon());
+		me->txtGridCode->SetText(CSTRP(sbuff, sptr));
+	}
 
 	UIntOS i;
 	i = me->mouseMoveHdlrs.GetCount();
@@ -720,7 +732,7 @@ void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CStringNN url, UInt32 codePage, T
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
 		NN<Map::MapDrawLayer> lyr;
-		if (Map::CSVMapParser::ParseAsPoint(cli, codePage, name, nameCol, latCol, lonCol, Math::CoordinateSystemManager::CreateWGS84Csys()).SetTo(lyr))
+		if (Map::CSVMapParser::ParseAsPoint(cli, codePage, name, nameCol, latCol, lonCol, Math::CSys::CoordinateSystemManager::CreateWGS84Csys()).SetTo(lyr))
 		{
 			this->AddLayer(lyr);
 		}
@@ -742,13 +754,14 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	this->useTime = false;
 	this->currTime = 0;
 	this->printer = nullptr;
+	this->gridType = GridType::UTMGrid;
 	this->currCursor = UI::GUIControl::CT_ARROW;
 	this->mapUpdTChanged = false;
 	this->mapUpdT = 0;
 	this->pauseUpdate = false;
 	this->mapLyrUpdated = false;
 
-	this->wgs84CSys = Math::CoordinateSystemManager::CreateWGS84Csys();
+	this->wgs84CSys = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 	this->UpdateTitle();
 	this->SetFont(nullptr, 8.25, false);
 
@@ -762,14 +775,14 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	this->txtScale->SetRect(0, 0, 100, 19, false);
 	this->txtScale->SetReadOnly(true);
 	this->txtScale->SetDockType(UI::GUIControl::DOCK_RIGHT);
-	this->txtLatLon = ui->NewTextBox(pnlStatus, CSTR(""));
-	this->txtLatLon->SetRect(0, 0, 250, 19, false);
-	this->txtLatLon->SetReadOnly(true);
-	this->txtLatLon->SetDockType(UI::GUIControl::DOCK_RIGHT);
-	this->txtUTMGrid = ui->NewTextBox(pnlStatus, CSTR(""));
-	this->txtUTMGrid->SetRect(0, 0, 150, 19, false);
-	this->txtUTMGrid->SetReadOnly(true);
-	this->txtUTMGrid->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->txtMapPos = ui->NewTextBox(pnlStatus, CSTR(""));
+	this->txtMapPos->SetRect(0, 0, 250, 19, false);
+	this->txtMapPos->SetReadOnly(true);
+	this->txtMapPos->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->txtGridCode = ui->NewTextBox(pnlStatus, CSTR(""));
+	this->txtGridCode->SetRect(0, 0, 150, 19, false);
+	this->txtGridCode->SetReadOnly(true);
+	this->txtGridCode->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	this->txtTimeUsed = ui->NewTextBox(pnlStatus, CSTR(""));
 	this->txtTimeUsed->SetRect(0, 0, 100, 19, false);
 	this->txtTimeUsed->SetReadOnly(true);
@@ -817,7 +830,8 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	NN<UI::GUIMenu> mnu = this->mnuMain->AddSubMenu(CSTR("&Map"));
 	mnu->AddItem(CSTR("&Save"), MNU_SAVE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
-	mnu->AddItem(CSTR("&Copy Lat/Lon"), MNU_COPY_LATLON, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_L);
+	mnu->AddItem(CSTR("&Copy Map Position"), MNU_COPY_MAPPOS, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_L);
+	mnu->AddItem(CSTR("Copy &Grid Code"), MNU_COPY_GRIDCODE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_G);
 	mnu->AddItem(CSTR("&Print..."), MNU_PRINT, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_P);
 	mnu->AddItem(CSTR("Export &Image..."), MNU_EXPORT_IMAGE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_E);
 	mnu->AddItem(CSTR("Export &Vector..."), MNU_EXPORT_VECTOR, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_V);
@@ -954,16 +968,21 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	UTF8Char sbuff2[32];
 	UnsafeArray<UTF8Char> sptr2;
 	NN<UI::GUIForm> frm;
-	NN<Math::CoordinateSystem> csys;
+	NN<Math::CSys::CoordinateSystem> csys;
 	NN<UI::GUITreeView::TreeItem> item;
 	switch (cmdId)
 	{
 	case MNU_SAVE:
 		this->core->SaveData(*this, this->env, L"SaveMapEnv");
 		break;
-	case MNU_COPY_LATLON:
+	case MNU_COPY_MAPPOS:
 		sbuff[0] = 0;
-		sptr = this->txtUTMGrid->GetText(sbuff).Or(sbuff);
+		sptr = this->txtMapPos->GetText(sbuff).Or(sbuff);
+		UI::Clipboard::SetString(this->hwnd, CSTRP(sbuff, sptr));
+		break;
+	case MNU_COPY_GRIDCODE:
+		sbuff[0] = 0;
+		sptr = this->txtGridCode->GetText(sbuff).Or(sbuff);
 		UI::Clipboard::SetString(this->hwnd, CSTRP(sbuff, sptr));
 		break;
 	case MNU_PRINT:
@@ -1091,8 +1110,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		if (this->popNode.SetTo(item))
 		{
 			Math::RectAreaDbl bounds;
-			NN<Math::CoordinateSystem> envCSys;
-			NN<Math::CoordinateSystem> lyrCSys;
+			NN<Math::CSys::CoordinateSystem> envCSys;
+			NN<Math::CSys::CoordinateSystem> lyrCSys;
 			NN<UI::GUIMapTreeView::ItemIndex> ind = item->GetItemObj().GetNN<UI::GUIMapTreeView::ItemIndex>();
 			NN<Map::MapEnv::LayerItem> lyr;
 			if (Optional<Map::MapEnv::LayerItem>::ConvertFrom(this->env->GetItem(ind->group, ind->index)).SetTo(lyr))
@@ -1104,7 +1123,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					lyrCSys = lyr->layer->GetCoordinateSystem();
 					if (!envCSys->Equals(lyrCSys))
 					{
-						center = Math::CoordinateSystem::Convert(lyrCSys, envCSys, center);
+						center = Math::CSys::CoordinateSystem::Convert(lyrCSys, envCSys, center);
 					}
 					this->mapCtrl->PanToMapXY(center);
 				}
@@ -1115,8 +1134,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		if (this->popNode.SetTo(item))
 		{
 			Math::RectAreaDbl bounds;
-			NN<Math::CoordinateSystem> envCSys;
-			NN<Math::CoordinateSystem> lyrCSys;
+			NN<Math::CSys::CoordinateSystem> envCSys;
+			NN<Math::CSys::CoordinateSystem> lyrCSys;
 			NN<UI::GUIMapTreeView::ItemIndex> ind = item->GetItemObj().GetNN<UI::GUIMapTreeView::ItemIndex>();
 			NN<Map::MapEnv::LayerItem> lyr;
 			if (Optional<Map::MapEnv::LayerItem>::ConvertFrom(this->env->GetItem(ind->group, ind->index)).SetTo(lyr))
@@ -1127,8 +1146,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					lyrCSys = lyr->layer->GetCoordinateSystem();
 					if (!envCSys->Equals(lyrCSys))
 					{
-						bounds.min = Math::CoordinateSystem::Convert(lyrCSys, envCSys, bounds.min);
-						bounds.max = Math::CoordinateSystem::Convert(lyrCSys, envCSys, bounds.max);
+						bounds.min = Math::CSys::CoordinateSystem::Convert(lyrCSys, envCSys, bounds.min);
+						bounds.max = Math::CSys::CoordinateSystem::Convert(lyrCSys, envCSys, bounds.max);
 					}
 					this->mapCtrl->ZoomToRect(bounds);
 				}
@@ -1641,7 +1660,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.GetPolyline().SetTo(pl))
 			{
 				NN<Map::VectorLayer> lyr;
-				NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Google Polyline"), Math::CoordinateSystemManager::CreateWGS84Csys(), nullptr));
+				NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Google Polyline"), Math::CSys::CoordinateSystemManager::CreateWGS84Csys(), nullptr));
 				lyr->AddVector2(pl, (Optional<Text::String>*)0);
 				this->AddLayer(lyr);
 			}
@@ -2209,7 +2228,7 @@ Double SSWR::AVIRead::AVIRGISForm::GetScnDPI() const
 	return this->mapCtrl->GetHDPI() / this->mapCtrl->GetDDPI() * 96.0;
 }
 
-NN<Math::CoordinateSystem> SSWR::AVIRead::AVIRGISForm::GetCoordinateSystem() const
+NN<Math::CSys::CoordinateSystem> SSWR::AVIRead::AVIRGISForm::GetCoordinateSystem() const
 {
 	return this->env->GetCoordinateSystem();
 }

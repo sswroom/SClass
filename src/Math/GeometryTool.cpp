@@ -3,10 +3,10 @@
 #include "Data/ArrayListInt32.h"
 #include "Data/ArrayListDbl.h"
 #include "Data/Comparable.h"
-#include "Math/CoordinateSystemConverter.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/GeometryTool.h"
 #include "Math/Math_C.h"
+#include "Math/CSys/CoordinateSystemConverter.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 
 void Math::GeometryTool::RotateACW(UnsafeArray<Int32> ptOut, UnsafeArray<const Int32> ptIn, UIntOS nPoint, Double centX, Double centY, Double angleRad)
 {
@@ -970,8 +970,8 @@ Double Math::GeometryTool::CalcMaxDistanceFromPoint(Math::Coord2DDbl pt, NN<cons
 			maxPt = coords.GetItem(i);
 		}
 	}
-	NN<Math::CoordinateSystem> csys;
-	if (Math::CoordinateSystemManager::SRCreateCSys(vec->GetSRID()).SetTo(csys))
+	NN<Math::CSys::CoordinateSystem> csys;
+	if (Math::CSys::CoordinateSystemManager::SRCreateCSys(vec->GetSRID()).SetTo(csys))
 	{
 		thisDist = csys->CalSurfaceDistance(pt, maxPt, unit);
 		csys.Delete();
@@ -1029,14 +1029,14 @@ Optional<Math::Geometry::Polygon> Math::GeometryTool::CreateCircularPolygonWGS84
 {
 	Optional<Math::Geometry::Polygon> pg = nullptr;
 	NN<Math::Geometry::Polygon> nnpg;
-	NN<Math::CoordinateSystem> csys4326;
-	NN<Math::CoordinateSystem> csys3857;
-	if (Math::CoordinateSystemManager::SRCreateCSys(4326).SetTo(csys4326))
+	NN<Math::CSys::CoordinateSystem> csys4326;
+	NN<Math::CSys::CoordinateSystem> csys3857;
+	if (Math::CSys::CoordinateSystemManager::SRCreateCSys(4326).SetTo(csys4326))
 	{
-		if (Math::CoordinateSystemManager::SRCreateCSys(3857).SetTo(csys3857))
+		if (Math::CSys::CoordinateSystemManager::SRCreateCSys(3857).SetTo(csys3857))
 		{
-			Math::CoordinateSystemConverter converter(csys3857, csys4326);
-			Math::Coord2DDbl outPos = CoordinateSystem::Convert(csys4326, csys3857, pt);
+			Math::CSys::CoordinateSystemConverter converter(csys3857, csys4326);
+			Math::Coord2DDbl outPos = Math::CSys::CoordinateSystem::Convert(csys4326, csys3857, pt);
 			NN<Math::Geometry::LinearRing> lr;
 			NEW_CLASSNN(lr, Math::Geometry::LinearRing(3857, nPoints + 1, false, false));
 			UIntOS pgNPt;

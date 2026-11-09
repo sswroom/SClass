@@ -5,8 +5,8 @@
 #include "DB/ColDef.h"
 #include "DB/TableDef.h"
 #include "Map/GPSTrack.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/LineString.h"
 #include "Sync/MutexUsage.h"
@@ -14,7 +14,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-Map::GPSTrack::GPSTrack(NN<Text::String> sourceName, Bool hasAltitude, UInt32 codePage, Optional<Text::String> layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateWGS84Csys())
+Map::GPSTrack::GPSTrack(NN<Text::String> sourceName, Bool hasAltitude, UInt32 codePage, Optional<Text::String> layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CSys::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->codePage = codePage;
 	this->currTrackName = nullptr;
@@ -25,7 +25,7 @@ Map::GPSTrack::GPSTrack(NN<Text::String> sourceName, Bool hasAltitude, UInt32 co
 	this->currUnsorted = false;
 }
 
-Map::GPSTrack::GPSTrack(Text::CStringNN sourceName, Bool hasAltitude, UInt32 codePage, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateWGS84Csys())
+Map::GPSTrack::GPSTrack(Text::CStringNN sourceName, Bool hasAltitude, UInt32 codePage, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CSys::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->codePage = codePage;
 	this->currTrackName = nullptr;

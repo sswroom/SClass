@@ -5,7 +5,7 @@
 #include "Map/HKRoadNetwork2.h"
 #include "Map/HKTrafficLayer2.h"
 #include "Map/VectorLayer.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/Polyline.h"
 #include "Net/HTTPClient.h"
@@ -100,7 +100,7 @@ Optional<IO::Stream> Map::HKTrafficLayer2::OpenURLStream()
 	}
 }
 
-Map::HKTrafficLayer2::HKTrafficLayer2(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<HKRoadNetwork2> rn2) : Map::MapDrawLayer(CSTR("HKTraffic2"), 0, CSTR("HKTraffic2"), Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(Math::CoordinateSystemManager::PCST_HK80))
+Map::HKTrafficLayer2::HKTrafficLayer2(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<HKRoadNetwork2> rn2) : Map::MapDrawLayer(CSTR("HKTraffic2"), 0, CSTR("HKTraffic2"), Math::CSys::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(Math::CSys::CoordinateSystemManager::PCST_HK80))
 {
 	this->clif = clif;
 	this->ssl = ssl;

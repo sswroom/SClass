@@ -3,7 +3,7 @@
 #include "Data/ArrayListA.hpp"
 #include "IO/Stream.h"
 #include "Map/TileMapLayer.h"
-#include "Math/GeographicCoordinateSystem.h"
+#include "Math/CSys/GeographicCoordinateSystem.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "SSWR/AVIRead/AVIRMapNavigator.h"
 #include "UI/GUIButton.h"
@@ -37,7 +37,7 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<AVIRMapNavigator> navi;
-			NN<Math::GeographicCoordinateSystem> wgs84;
+			NN<Math::CSys::GeographicCoordinateSystem> wgs84;
 			Optional<IO::Stream> stm;
 			Data::ArrayListA<Math::Coord2DDbl> points;
 			Math::Coord2DDbl currPos;

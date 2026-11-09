@@ -243,7 +243,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::CoordinateSystem:
 		{
 			NN<SSWR::AVIRead::AVIRCoordSysForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCoordSysForm(nullptr, this->ui, *this, NN<Math::CoordinateSystem>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCoordSysForm(nullptr, this->ui, *this, NN<Math::CSys::CoordinateSystem>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}

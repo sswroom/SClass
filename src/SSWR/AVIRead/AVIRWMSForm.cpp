@@ -129,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnInfoTypeSelChg(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRWMSForm::AVIRWMSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NN<Math::CoordinateSystem> envCsys) : UI::GUIForm(parent, 640, 240, ui)
+SSWR::AVIRead::AVIRWMSForm::AVIRWMSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NN<Math::CSys::CoordinateSystem> envCsys) : UI::GUIForm(parent, 640, 240, ui)
 {
 	this->core = core;
 	this->ssl = ssl;

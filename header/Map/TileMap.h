@@ -2,8 +2,8 @@
 #define _SM_MAP_TILEMAP
 #include "Data/ArrayListNative.hpp"
 #include "Data/ArrayListT.hpp"
-#include "Math/CoordinateSystem.h"
 #include "Math/Size2D.h"
+#include "Math/CSys/CoordinateSystem.h"
 #include "Math/Geometry/Vector2D.h"
 #include "Media/ImageList.h"
 #include "Parser/ParserList.h"
@@ -48,7 +48,7 @@ namespace Map
 		virtual UIntOS GetNearestLevel(Double scale) const = 0;
 		virtual UIntOS GetConcurrentCount() const = 0;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const = 0;
-		virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const = 0;
+		virtual NN<Math::CSys::CoordinateSystem> GetCoordinateSystem() const = 0;
 		virtual Bool IsMercatorProj() const = 0;
 		virtual UIntOS GetTileSize() const = 0;
 		virtual TileFormat GetTileFormat() const = 0;

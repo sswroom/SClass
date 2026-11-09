@@ -35,7 +35,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			Optional<Map::WebMapService> wms;
-			NN<Math::CoordinateSystem> envCsys;
+			NN<Math::CSys::CoordinateSystem> envCsys;
 
 			static void __stdcall OnLoadClicked(AnyType userObj);
 			static void __stdcall OnOKClicked(AnyType userObj);
@@ -44,7 +44,7 @@ namespace SSWR
 			static void __stdcall OnMapImageTypeSelChg(AnyType userObj);
 			static void __stdcall OnInfoTypeSelChg(AnyType userObj);
 		public:
-			AVIRWMSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NN<Math::CoordinateSystem> envCsys);
+			AVIRWMSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NN<Math::CSys::CoordinateSystem> envCsys);
 			virtual ~AVIRWMSForm();
 
 			virtual void OnMonitorChanged();

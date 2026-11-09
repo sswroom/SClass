@@ -45,7 +45,7 @@ namespace Map
 		Math::Coord2DDbl tileOrigin;
 		Math::RectAreaDbl bounds;
 		UIntOS tileSize;
-		NN<Math::CoordinateSystem> csys;
+		NN<Math::CSys::CoordinateSystem> csys;
 		TileFormat tileFormat;
 		NN<Text::String> name;
 		Data::ArrayListNN<TileLayer> layers; 
@@ -53,7 +53,7 @@ namespace Map
 		Optional<TileLayer> GetLayer(UIntOS level) const;
 		Optional<TileInfo> GetTile(NN<TileLayer> layer, Math::Coord2D<Int32> tileId) const;
 	public:
-		StmDataTileMap(UIntOS tileSize, Math::Coord2DDbl tileOrigin, Math::RectAreaDbl bounds, NN<Math::CoordinateSystem> csys, TileFormat tileFormat, Text::CStringNN name);
+		StmDataTileMap(UIntOS tileSize, Math::Coord2DDbl tileOrigin, Math::RectAreaDbl bounds, NN<Math::CSys::CoordinateSystem> csys, TileFormat tileFormat, Text::CStringNN name);
 		virtual ~StmDataTileMap();
 
 		virtual Text::CStringNN GetName() const;
@@ -65,7 +65,7 @@ namespace Map
 		virtual UIntOS GetNearestLevel(Double scale) const;
 		virtual UIntOS GetConcurrentCount() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
-		virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
+		virtual NN<Math::CSys::CoordinateSystem> GetCoordinateSystem() const;
 		virtual Bool IsMercatorProj() const;
 		virtual UIntOS GetTileSize() const;
 		virtual TileFormat GetTileFormat() const;

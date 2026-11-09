@@ -3,7 +3,7 @@
 #include "Data/ArrayListNN.hpp"
 #include "Data/ByteArray.h"
 #include "Math/ArcGISPRJParser.h"
-#include "Math/CoordinateSystem.h"
+#include "Math/CSys/CoordinateSystem.h"
 #include "Math/Geometry/Vector2D.h"
 #include "Text/CString.h"
 #include "Text/String.h"
@@ -33,7 +33,7 @@ namespace Map
 			UInt8 geometryFlags;
 			NN<Data::ArrayListNN<FileGDBFieldInfo>> fields;
 
-			Optional<Math::CoordinateSystem> csys;
+			Optional<Math::CSys::CoordinateSystem> csys;
 			Double xOrigin;
 			Double yOrigin;
 			Double xyScale;

@@ -6,7 +6,7 @@
 #include "IO/StreamDataStream.h"
 #include "Map/MapEnv.h"
 #include "Map/MapManager.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Parser/FileParser/MEVParser.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
@@ -92,7 +92,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 	fd->GetRealData(currPos, initSize, BYTEARR(buff));
 	currPos += initSize;
 	NN<Map::MapEnv> env;
-	NEW_CLASSNN(env, Map::MapEnv(fd->GetFullName()->ToCString(), ReadLUInt32(&buff[0]), Math::CoordinateSystemManager::CreateWGS84Csys()));
+	NEW_CLASSNN(env, Map::MapEnv(fd->GetFullName()->ToCString(), ReadLUInt32(&buff[0]), Math::CSys::CoordinateSystemManager::CreateWGS84Csys()));
 	env->SetNString(ReadLUInt32(&buff[4]));
 	dirCnt = ReadLUInt32(&buff[16]);
 	imgFileCnt = ReadLUInt32(&buff[20]);

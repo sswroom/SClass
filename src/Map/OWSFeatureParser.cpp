@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/MemoryReadingStream.h"
 #include "Map/OWSFeatureParser.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/PointZM.h"
 #include "Parser/FileParser/JSONParser.h"
@@ -91,8 +91,8 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, NN<Data:
 			NN<Text::String> crsName;
 			if (json->GetValueString(CSTR("crs.properties.name")).SetTo(crsName))
 			{
-				NN<Math::CoordinateSystem> csys;
-				if (Math::CoordinateSystemManager::CreateFromName(crsName->ToCString(), nullptr).SetTo(csys))
+				NN<Math::CSys::CoordinateSystem> csys;
+				if (Math::CSys::CoordinateSystemManager::CreateFromName(crsName->ToCString(), nullptr).SetTo(csys))
 				{
 					srid = csys->GetSRID();
 					csys.Delete();

@@ -6,9 +6,9 @@
 #include "IO/StmData/BufferedStreamData.h"
 #include "Map/SHPData.h"
 #include "Math/ArcGISPRJParser.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"
 #include "Math/WKTWriter.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/Polyline.h"
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Point.h"
@@ -16,7 +16,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, UInt32 codePage, NN<Math::ArcGISPRJParser> prjParser) : Map::MapDrawLayer(data->GetFullName(), 0, nullptr, Math::CoordinateSystemManager::CreateWGS84Csys())
+Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, UInt32 codePage, NN<Math::ArcGISPRJParser> prjParser) : Map::MapDrawLayer(data->GetFullName(), 0, nullptr, Math::CSys::CoordinateSystemManager::CreateWGS84Csys())
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -59,7 +59,7 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 		this->SetLayerName(CSTRP(&sbuff[i + 1], sptr));
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".prj"));
 	}
-	NN<Math::CoordinateSystem> csys;
+	NN<Math::CSys::CoordinateSystem> csys;
 	if (prjParser->ParsePRJFile(CSTRP(sbuff, sptr)).SetTo(csys))
 	{
 		this->SetCoordinateSystem(csys);	

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "DB/TableDef.h"
 #include "Map/GeoPackageLayer.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 
 NN<Map::GeoPackageLayer::StringSession> Map::GeoPackageLayer::StringSessCreate()
 {
@@ -57,7 +57,7 @@ Bool Map::GeoPackageLayer::StringSessGoRow(NN<StringSession> sess, UIntOS index)
 	}
 }
 
-Map::GeoPackageLayer::GeoPackageLayer(NN<Map::GeoPackage> gpkg, NN<Map::GeoPackage::ContentInfo> layerContent) : Map::MapDrawLayer(gpkg->GetSourceNameObj(), 0, layerContent->tableName.Ptr(), Math::CoordinateSystemManager::SRCreateCSysOrDef((UInt32)layerContent->srsId))
+Map::GeoPackageLayer::GeoPackageLayer(NN<Map::GeoPackage> gpkg, NN<Map::GeoPackage::ContentInfo> layerContent) : Map::MapDrawLayer(gpkg->GetSourceNameObj(), 0, layerContent->tableName.Ptr(), Math::CSys::CoordinateSystemManager::SRCreateCSysOrDef((UInt32)layerContent->srsId))
 {
 	this->gpkg = gpkg;
 	this->layerContent = layerContent;

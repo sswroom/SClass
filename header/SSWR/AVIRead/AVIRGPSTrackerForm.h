@@ -34,7 +34,7 @@ namespace SSWR
 			UIntOS recSateCnt;
 			Map::LocationService::SateStatus recSates[32];
 			Optional<SSWR::AVIRead::AVIRMapNavigator> mapNavi;
-			NN<Math::GeographicCoordinateSystem> wgs84;
+			NN<Math::CSys::GeographicCoordinateSystem> wgs84;
 			Math::Coord2DDbl lastPos;
 			Double dist;
 			Bool lastDown;

@@ -7,7 +7,7 @@
 #include "IO/StmData/MemoryDataRef.h"
 #include "Map/GPSTrack.h"
 #include "Map/MapDrawLayer.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Media/AudioSource.h"
 #include "Media/MediaFile.h"
 #include "Media/PhotoInfo.h"
@@ -1544,10 +1544,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcUnfinPeak(NN<Net::WebSe
 	me->env->PeakGetUnfin(mutUsage, peaks);
 	if (peaks.GetCount() > 0)
 	{
-		Optional<Math::CoordinateSystem> csysHK = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80);
-		Optional<Math::CoordinateSystem> csysMO = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_MACAU_GRID);
-		NN<Math::CoordinateSystem> csysWGS84 = Math::CoordinateSystemManager::CreateWGS84Csys();
-		NN<Math::CoordinateSystem> csys;
+		Optional<Math::CSys::CoordinateSystem> csysHK = Math::CSys::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CSys::CoordinateSystemManager::PCST_HK80);
+		Optional<Math::CSys::CoordinateSystem> csysMO = Math::CSys::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CSys::CoordinateSystemManager::PCST_MACAU_GRID);
+		NN<Math::CSys::CoordinateSystem> csysWGS84 = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
+		NN<Math::CSys::CoordinateSystem> csys;
 		Data::ArrayIterator<NN<PeakInfo>> it = peaks.Iterator();
 		while (it.HasNext())
 		{
@@ -1558,11 +1558,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebAPIController::SvcUnfinPeak(NN<Net::WebSe
 			json.ObjectAddStr(CSTR("district"), peak->district);
 			if (peak->csys == 1 && csysHK.SetTo(csys))
 			{
-				pt = Math::CoordinateSystem::Convert3D(csys, csysWGS84, Math::Vector3D(peak->mapX, peak->mapY, peak->markedHeight));
+				pt = Math::CSys::CoordinateSystem::Convert3D(csys, csysWGS84, Math::Vector3D(peak->mapX, peak->mapY, peak->markedHeight));
 			}
 			else if (peak->csys == 2 && csysMO.SetTo(csys))
 			{
-				pt = Math::CoordinateSystem::Convert3D(csys, csysWGS84, Math::Vector3D(peak->mapX, peak->mapY, peak->markedHeight));
+				pt = Math::CSys::CoordinateSystem::Convert3D(csys, csysWGS84, Math::Vector3D(peak->mapX, peak->mapY, peak->markedHeight));
 			}
 			else
 			{

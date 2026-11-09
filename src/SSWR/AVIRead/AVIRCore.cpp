@@ -8,8 +8,8 @@
 #include "IO/ModemController.h"
 #include "IO/Path.h"
 #include "IO/Registry.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
 #include "Net/WebBrowser.h"
@@ -181,7 +181,7 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 		NN<AVIRead::AVIRGISForm> gisForm;
 		NN<Map::MapEnv> env;
 		NN<Map::MapView> view;
-		NN<Math::CoordinateSystem> csys;
+		NN<Math::CSys::CoordinateSystem> csys;
 		if (batchLyrs->GetCount() > 0)
 		{
 			csys = batchLyrs->GetItemNoCheck(0)->GetCoordinateSystem();
@@ -190,7 +190,7 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 		}
 		else
 		{
-			csys = Math::CoordinateSystemManager::CreateWGS84Csys();
+			csys = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 			NEW_CLASSNN(env, Map::MapEnv(CSTR("Untitled"), 0xffc0c0ff, csys->Clone()));
 			view = env->CreateMapView(Math::Size2DDbl(320, 240));
 		}

@@ -39,7 +39,7 @@ namespace Map
 		NN<Text::String> wmsURL;
 		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
-		NN<Math::CoordinateSystem> envCsys;
+		NN<Math::CSys::CoordinateSystem> envCsys;
 
 		Optional<Text::String> version;
 		Data::ArrayListNN<LayerInfo> layers;
@@ -50,18 +50,18 @@ namespace Map
 		UIntOS infoType;
 
 		Optional<LayerCRS> currCRS;
-		NN<Math::CoordinateSystem> csys;
+		NN<Math::CSys::CoordinateSystem> csys;
 
 		void LoadXML(Version version);
 		void LoadXMLRequest(NN<Text::XMLReader> reader);
 		void LoadXMLLayers(NN<Text::XMLReader> reader);
 
 	public:
-		WebMapService(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN wmsURL, Version version, NN<Math::CoordinateSystem> envCsys);
+		WebMapService(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN wmsURL, Version version, NN<Math::CSys::CoordinateSystem> envCsys);
 		virtual ~WebMapService();
 
 		virtual NN<Text::String> GetName() const;
-		virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
+		virtual NN<Math::CSys::CoordinateSystem> GetCoordinateSystem() const;
 		virtual Math::RectAreaDbl GetInitBounds() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 		virtual Bool CanQuery() const;

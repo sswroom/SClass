@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/CoordinateSystem.h"
 #include "Math/Math_C.h"
 #include "Math/Geometry/Polyline.h"
 #include "Data/ArrayListDbl.h"

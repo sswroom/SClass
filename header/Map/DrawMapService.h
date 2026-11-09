@@ -2,8 +2,8 @@
 #define _SM_MAP_DRAWMAPSERVICE
 #include "Data/ArrayListNative.hpp"
 #include "Data/ArrayListNN.hpp"
-#include "Math/CoordinateSystem.h"
 #include "Math/RectAreaDbl.h"
+#include "Math/CSys/CoordinateSystem.h"
 #include "Math/Geometry/Vector2D.h"
 #include "Media/ImageList.h"
 #include "Text/StringBuilderUTF8.h"
@@ -16,7 +16,7 @@ namespace Map
 		virtual ~DrawMapService() {};
 
 		virtual NN<Text::String> GetName() const = 0;
-		virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const = 0;
+		virtual NN<Math::CSys::CoordinateSystem> GetCoordinateSystem() const = 0;
 		virtual Math::RectAreaDbl GetInitBounds() const = 0;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const = 0;
 		virtual Bool CanQuery() const = 0;

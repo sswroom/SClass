@@ -1,13 +1,13 @@
 #ifndef _SM_MAP_TILEMAPUTIL
 #define _SM_MAP_TILEMAPUTIL
-#include "Math/CoordinateSystem.h"
+#include "Math/CSys/CoordinateSystem.h"
 
 namespace Map
 {
 	class TileMapUtil
 	{
 	public:
-		static Double CalcScaleDiv(NN<Math::CoordinateSystem> csys);
+		static Double CalcScaleDiv(NN<Math::CSys::CoordinateSystem> csys);
 	};
 }
 #endif

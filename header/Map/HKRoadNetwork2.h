@@ -3,7 +3,7 @@
 #include "DB/ReadingDB.h"
 #include "Map/MapDrawLayer.h"
 #include "Math/ArcGISPRJParser.h"
-#include "Math/CoordinateSystem.h"
+#include "Math/CSys/CoordinateSystem.h"
 #include "Map/ShortestPath3D.h"
 #include "Net/SSLEngine.h"
 #include "Text/CString.h"
@@ -25,7 +25,7 @@ namespace Map
 
 		Bool IsError();
 		Optional<DB::ReadingDB> GetDB();
-		NN<Math::CoordinateSystem> CreateCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> CreateCoordinateSystem();
 		Optional<Map::HKSpeedLimit> CreateSpeedLimit();
 		Optional<Map::MapDrawLayer> CreateTonnesSignLayer();
 		Optional<Map::HKTrafficLayer2> CreateTrafficLayer(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact);

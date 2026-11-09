@@ -14,7 +14,9 @@ namespace Math
 			Optional<Text::String> srcAddr;
 			Math::RectAreaDbl srcRect;
 			Math::Coord2DDbl tl;
+			Math::Coord2DDbl tr;
 			Math::Coord2DDbl br;
+			Math::Coord2DDbl bl;
 			Math::Coord2DDbl size;
 			Bool scnCoord;
 			Bool hasHeight;
@@ -71,6 +73,7 @@ namespace Math
 			Optional<Media::StaticImage> GetImage(Double width, Double height, OptOut<UInt32> imgTimeMS) const;
 			void SetSrcRect(Math::RectAreaDbl srcRect);
 			Math::RectAreaDbl GetSrcRect() const;
+			void SetCoordinates(Math::Coord2DDbl tl, Math::Coord2DDbl tr, Math::Coord2DDbl br, Math::Coord2DDbl bl);
 
 			static NN<Math::Geometry::VectorImage> CreateScreenImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl size, Text::CString srcAddr);
 		};

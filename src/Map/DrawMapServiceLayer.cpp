@@ -3,7 +3,7 @@
 #include "DB/ColDef.h"
 #include "Map/DrawMapServiceLayer.h"
 #include "Map/ScaledMapView.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/VectorImage.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"

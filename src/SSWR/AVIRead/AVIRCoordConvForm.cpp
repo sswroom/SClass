@@ -3,8 +3,8 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
-#include "Math/CoordinateSystemManager.h"
-#include "Math/ProjectedCoordinateSystem.h"
+#include "Math/CSys/CoordinateSystemManager.h"
+#include "Math/CSys/ProjectedCoordinateSystem.h"
 #include "Media/ImageList.h"
 #include "SSWR/AVIRead/AVIRCoordConvForm.h"
 #include "Text/MyString.h"
@@ -143,10 +143,10 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	NN<Parser::ParserList> parsers = me->core->GetParserList();
-	Optional<Math::CoordinateSystem> srcCoord;
-	Optional<Math::CoordinateSystem> destCoord;
-	NN<Math::CoordinateSystem> srcCsys;
-	NN<Math::CoordinateSystem> destCsys;
+	Optional<Math::CSys::CoordinateSystem> srcCoord;
+	Optional<Math::CSys::CoordinateSystem> destCoord;
+	NN<Math::CSys::CoordinateSystem> srcCsys;
+	NN<Math::CSys::CoordinateSystem> destCsys;
 	UIntOS i;
 
 	i = me->cboSrc->GetSelectedIndex();
@@ -256,24 +256,24 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 
 	if (me->radSrcGeo->IsSelected())
 	{
-		Math::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CoordinateSystemManager::GeoCoordSysType)me->cboSrc->GetItem(i).GetIntOS();
-		srcCoord = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
+		Math::CSys::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CSys::CoordinateSystemManager::GeoCoordSysType)me->cboSrc->GetItem(i).GetIntOS();
+		srcCoord = Math::CSys::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
 	}
 	else
 	{
-		Math::CoordinateSystemManager::ProjCoordSysType pcst = (Math::CoordinateSystemManager::ProjCoordSysType)me->cboSrc->GetItem(i).GetIntOS();
-		srcCoord = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(pcst);
+		Math::CSys::CoordinateSystemManager::ProjCoordSysType pcst = (Math::CSys::CoordinateSystemManager::ProjCoordSysType)me->cboSrc->GetItem(i).GetIntOS();
+		srcCoord = Math::CSys::CoordinateSystemManager::CreateProjCoordinateSystemDefName(pcst);
 	}
 
 	if (me->radDestGeo->IsSelected())
 	{
-		Math::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CoordinateSystemManager::GeoCoordSysType)me->cboDest->GetItem(i).GetIntOS();
-		destCoord = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
+		Math::CSys::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CSys::CoordinateSystemManager::GeoCoordSysType)me->cboDest->GetItem(i).GetIntOS();
+		destCoord = Math::CSys::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
 	}
 	else
 	{
-		Math::CoordinateSystemManager::ProjCoordSysType pcst = (Math::CoordinateSystemManager::ProjCoordSysType)me->cboDest->GetItem(i).GetIntOS();
-		destCoord = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(pcst);
+		Math::CSys::CoordinateSystemManager::ProjCoordSysType pcst = (Math::CSys::CoordinateSystemManager::ProjCoordSysType)me->cboDest->GetItem(i).GetIntOS();
+		destCoord = Math::CSys::CoordinateSystemManager::CreateProjCoordinateSystemDefName(pcst);
 	}
 
 	strBuff = MemAlloc(UTF8Char, 16384);
@@ -322,7 +322,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 
 		if (srcCoord.SetTo(srcCsys) && destCoord.SetTo(destCsys) && Text::StrToDouble(sarr[xCol].Ptr(), inX) && Text::StrToDouble(sarr[yCol].Ptr(), inY))
 		{
-			outPos = Math::CoordinateSystem::Convert(srcCsys, destCsys, Math::Coord2DDbl(inX, inY));
+			outPos = Math::CSys::CoordinateSystem::Convert(srcCsys, destCsys, Math::Coord2DDbl(inX, inY));
 			sarr[colCnt] = UnsafeArray<const UTF8Char>(sptr);
 			sptr = Text::StrDouble(sptr, outPos.x) + 1;
 			sarr[colCnt + 1] = UnsafeArray<const UTF8Char>(sptr);
@@ -446,10 +446,10 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 	Double y;
 	Double z;
 	Math::Vector3D destPos;
-	Optional<Math::CoordinateSystem> srcCoord;
-	Optional<Math::CoordinateSystem> destCoord;
-	NN<Math::CoordinateSystem> srcCsys;
-	NN<Math::CoordinateSystem> destCsys;
+	Optional<Math::CSys::CoordinateSystem> srcCoord;
+	Optional<Math::CSys::CoordinateSystem> destCoord;
+	NN<Math::CSys::CoordinateSystem> srcCsys;
+	NN<Math::CSys::CoordinateSystem> destCsys;
 
 	i = this->cboSrc->GetSelectedIndex();
 	if (i == INVALID_INDEX)
@@ -460,13 +460,13 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 	{
 		if (this->radSrcGeo->IsSelected())
 		{
-			Math::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CoordinateSystemManager::GeoCoordSysType)this->cboSrc->GetItem(i).GetIntOS();
-			srcCoord = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
+			Math::CSys::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CSys::CoordinateSystemManager::GeoCoordSysType)this->cboSrc->GetItem(i).GetIntOS();
+			srcCoord = Math::CSys::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
 		}
 		else
 		{
-			Math::CoordinateSystemManager::ProjCoordSysType pcst = (Math::CoordinateSystemManager::ProjCoordSysType)this->cboSrc->GetItem(i).GetIntOS();
-			srcCoord = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(pcst);
+			Math::CSys::CoordinateSystemManager::ProjCoordSysType pcst = (Math::CSys::CoordinateSystemManager::ProjCoordSysType)this->cboSrc->GetItem(i).GetIntOS();
+			srcCoord = Math::CSys::CoordinateSystemManager::CreateProjCoordinateSystemDefName(pcst);
 		}
 		if (srcCoord.IsNull())
 		{
@@ -483,13 +483,13 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 	{
 		if (this->radDestGeo->IsSelected())
 		{
-			Math::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CoordinateSystemManager::GeoCoordSysType)this->cboDest->GetItem(i).GetIntOS();
-			destCoord = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
+			Math::CSys::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CSys::CoordinateSystemManager::GeoCoordSysType)this->cboDest->GetItem(i).GetIntOS();
+			destCoord = Math::CSys::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
 		}
 		else
 		{
-			Math::CoordinateSystemManager::ProjCoordSysType pcst = (Math::CoordinateSystemManager::ProjCoordSysType)this->cboDest->GetItem(i).GetIntOS();
-			destCoord = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(pcst);
+			Math::CSys::CoordinateSystemManager::ProjCoordSysType pcst = (Math::CSys::CoordinateSystemManager::ProjCoordSysType)this->cboDest->GetItem(i).GetIntOS();
+			destCoord = Math::CSys::CoordinateSystemManager::CreateProjCoordinateSystemDefName(pcst);
 		}
 		if (destCoord.IsNull())
 		{
@@ -514,7 +514,7 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 		this->lvCoord->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 		if (srcCoord.SetTo(srcCsys) && destCoord.SetTo(destCsys))
 		{
-			destPos = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(x, y, z));
+			destPos = Math::CSys::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(x, y, z));
 			sptr = Text::StrDouble(sbuff, destPos.GetX());
 			this->lvCoord->SetSubItem(k, 4, CSTRP(sbuff, sptr));
 			sptr = Text::StrDouble(sbuff, destPos.GetY());
@@ -531,22 +531,22 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 void SSWR::AVIRead::AVIRCoordConvForm::FillCoordGeo(NN<UI::GUIComboBox> cbo)
 {
 	cbo->ClearItems();
-	Math::CoordinateSystemManager::GeoCoordSysType gcst = Math::CoordinateSystemManager::GCST_FIRST;
-	while (gcst <= Math::CoordinateSystemManager::GCST_LAST)
+	Math::CSys::CoordinateSystemManager::GeoCoordSysType gcst = Math::CSys::CoordinateSystemManager::GCST_FIRST;
+	while (gcst <= Math::CSys::CoordinateSystemManager::GCST_LAST)
 	{
-		cbo->AddItem(Math::CoordinateSystemManager::GeoCoordSysTypeGetName(gcst), (void*)(IntOS)gcst);
-		gcst = (Math::CoordinateSystemManager::GeoCoordSysType)(gcst + 1);
+		cbo->AddItem(Math::CSys::CoordinateSystemManager::GeoCoordSysTypeGetName(gcst), (void*)(IntOS)gcst);
+		gcst = (Math::CSys::CoordinateSystemManager::GeoCoordSysType)(gcst + 1);
 	}
 }
 
 void SSWR::AVIRead::AVIRCoordConvForm::FillCoordProj(NN<UI::GUIComboBox> cbo)
 {
 	cbo->ClearItems();
-	Math::CoordinateSystemManager::ProjCoordSysType pcst = Math::CoordinateSystemManager::PCST_FIRST;
-	while (pcst <= Math::CoordinateSystemManager::PCST_LAST)
+	Math::CSys::CoordinateSystemManager::ProjCoordSysType pcst = Math::CSys::CoordinateSystemManager::PCST_FIRST;
+	while (pcst <= Math::CSys::CoordinateSystemManager::PCST_LAST)
 	{
-		cbo->AddItem(Math::CoordinateSystemManager::ProjCoordSysTypeGetName(pcst).OrEmpty(), (void*)(IntOS)pcst);
-		pcst = (Math::CoordinateSystemManager::ProjCoordSysType)(pcst + 1);
+		cbo->AddItem(Math::CSys::CoordinateSystemManager::ProjCoordSysTypeGetName(pcst).OrEmpty(), (void*)(IntOS)pcst);
+		pcst = (Math::CSys::CoordinateSystemManager::ProjCoordSysType)(pcst + 1);
 	}
 }
 

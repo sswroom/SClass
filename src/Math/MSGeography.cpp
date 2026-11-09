@@ -8,6 +8,7 @@
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Polyline.h"
+#include "Text/StringBuilderUTF8.h"
 
 #define VERBOSE
 #include <stdio.h>

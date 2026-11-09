@@ -13,8 +13,8 @@
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
 #include "Map/BaseMapLayer.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRAccessConnForm.h"
 #include "SSWR/AVIRead/AVIRDBCheckChgForm.h"
@@ -224,11 +224,11 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapTableSelChg(AnyType userOb
 			Math::Coord2DDbl center = rect.GetCenter();
 			if (center.x != 0 || center.y != 0)
 			{
-				NN<Math::CoordinateSystem> csysLayer = me->dbLayer->GetCoordinateSystem();
-				NN<Math::CoordinateSystem> csysEnv = me->mapEnv->GetCoordinateSystem();
+				NN<Math::CSys::CoordinateSystem> csysLayer = me->dbLayer->GetCoordinateSystem();
+				NN<Math::CSys::CoordinateSystem> csysEnv = me->mapEnv->GetCoordinateSystem();
 				if (!csysLayer->Equals(csysEnv))
 				{
-					center = Math::CoordinateSystem::Convert(csysLayer, csysEnv, center);
+					center = Math::CSys::CoordinateSystem::Convert(csysLayer, csysEnv, center);
 				}
 				me->mapMain->PanToMapXY(center);
 			}
@@ -261,12 +261,12 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(AnyType 
 			UIntOS k;
 			UIntOS l;
 			Math::Coord2DDbl mapPt = me->mapMain->ScnXY2MapXY(scnPos);
-			NN<Math::CoordinateSystem> csys = me->mapEnv->GetCoordinateSystem();
-			NN<Math::CoordinateSystem> lyrCSys = me->dbLayer->GetCoordinateSystem();
+			NN<Math::CSys::CoordinateSystem> csys = me->mapEnv->GetCoordinateSystem();
+			NN<Math::CSys::CoordinateSystem> lyrCSys = me->dbLayer->GetCoordinateSystem();
 			Data::ArrayListNative<Int64> ids;
 			if (!csys->Equals(lyrCSys))
 			{
-				mapPt = Math::CoordinateSystem::Convert(csys, lyrCSys, mapPt);
+				mapPt = Math::CSys::CoordinateSystem::Convert(csys, lyrCSys, mapPt);
 			}
 			sess = me->dbLayer->BeginGetObject();
 			me->dbLayer->GetNearestObjectIds(sess, mapPt, ids, mapPt);
@@ -1392,7 +1392,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(Optional<UI::GUIClientContro
 	this->currCond = nullptr;
 	this->sqlFileMode = false;
 	this->mapItemPt = Math::Coord2DDbl(0, 0);
-	NEW_CLASSNN(this->mapEnv, Map::MapEnv(CSTR("DB"), 0xffc0c0ff, Math::CoordinateSystemManager::CreateWGS84Csys()));
+	NEW_CLASSNN(this->mapEnv, Map::MapEnv(CSTR("DB"), 0xffc0c0ff, Math::CSys::CoordinateSystemManager::CreateWGS84Csys()));
 	NN<Map::MapDrawLayer> layer;
 	if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetTCPClientFactory(), this->ssl, this->core->GetParserList()).SetTo(layer))
 	{

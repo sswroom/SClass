@@ -25,12 +25,12 @@
 #include "Map/HKRoadNetwork2.h"
 #include "Map/ESRI/ESRIFeatureServer.h"
 #include "Map/ESRI/FileGDBDir.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/GeometryTool.h"
 #include "Math/Triangle.h"
 #include "Math/WKBReader.h"
 #include "Math/WKBWriter.h"
 #include "Math/WKTReader.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Media/DrawEngineFactory.h"
 #include "Media/MonitorSurfaceMgrFactory.h"
 #include "Media/PaperSize.h"
@@ -919,11 +919,11 @@ Int32 BezierCurveTest()
 
 Int32 CSysTest()
 {
-	NN<Math::CoordinateSystem> csys;
-	if (Math::CoordinateSystemManager::SRCreateCSys(3407).SetTo(csys))
+	NN<Math::CSys::CoordinateSystem> csys;
+	if (Math::CSys::CoordinateSystemManager::SRCreateCSys(3407).SetTo(csys))
 	{
-		NN<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
-		Math::Coord2DDbl newPos = Math::CoordinateSystem::Convert(csys, wgs84, Math::Coord2DDbl(116194.35, 72762.37));
+		NN<Math::CSys::CoordinateSystem> wgs84 = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
+		Math::Coord2DDbl newPos = Math::CSys::CoordinateSystem::Convert(csys, wgs84, Math::Coord2DDbl(116194.35, 72762.37));
 		printf("%lf, %lf\r\n", newPos.x, newPos.y);
 		wgs84.Delete();
 		csys.Delete();
@@ -1366,8 +1366,8 @@ Int32 SVGTest()
 
 Int32 PCSTTest()
 {
-	NN<Math::ProjectedCoordinateSystem> csys;
-	if (Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_WEB_MERCATOR).SetTo(csys))
+	NN<Math::CSys::ProjectedCoordinateSystem> csys;
+	if (Math::CSys::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CSys::CoordinateSystemManager::PCST_WEB_MERCATOR).SetTo(csys))
 	{
 		csys.Delete();
 	}

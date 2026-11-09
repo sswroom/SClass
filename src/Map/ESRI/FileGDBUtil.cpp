@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "Core/ByteTool_C.h"
 #include "Map/ESRI/FileGDBUtil.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/Point.h"
 #include "Text/MyString.h"
@@ -246,7 +246,7 @@ NN<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::TableInfoClone(NN<FileGD
 {
 	NN<FileGDBTableInfo> newTable = MemAllocNN(FileGDBTableInfo);
 	MemCopyNO(newTable.Ptr(), tableInfo.Ptr(), sizeof(FileGDBTableInfo));
-	NN<Math::CoordinateSystem> csys;
+	NN<Math::CSys::CoordinateSystem> csys;
 	if (tableInfo->csys.SetTo(csys))
 	{
 		newTable->csys = csys->Clone();

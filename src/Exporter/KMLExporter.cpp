@@ -5,9 +5,9 @@
 #include "IO/Path.h"
 #include "IO/StreamWriter.h"
 #include "Map/MapDrawLayer.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"
-#include "Math/ProjectedCoordinateSystem.h"
+#include "Math/CSys/CoordinateSystemManager.h"
+#include "Math/CSys/ProjectedCoordinateSystem.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polyline.h"
@@ -113,8 +113,8 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	Text::Encoding enc(this->codePage);
 	Text::StringBuilderUTF8 sb;
 	NN<Text::String> s;
-	NN<Math::CoordinateSystem> srcCsys = layer->GetCoordinateSystem();
-	NN<Math::CoordinateSystem> destCsys = Math::CoordinateSystemManager::CreateWGS84Csys();
+	NN<Math::CSys::CoordinateSystem> srcCsys = layer->GetCoordinateSystem();
+	NN<Math::CSys::CoordinateSystem> destCsys = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 	Bool needConv = false;
 	if (!destCsys->Equals(srcCsys))
 	{
@@ -214,7 +214,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 					}
 					if (needConv)
 					{
-						Math::Vector3D vec = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(coord, z));
+						Math::Vector3D vec = Math::CSys::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(coord, z));
 						coord = vec.GetXY();
 						z = vec.GetZ();
 					}
@@ -259,7 +259,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 							k = 0;
 							while (k < nPoints)
 							{
-								v = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(points[k], alts[k]));
+								v = Math::CSys::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(points[k], alts[k]));
 
 								sptr = sbuff2;
 								sptr = Text::StrDouble(sptr, v.GetX());
@@ -279,7 +279,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 							k = 0;
 							while (k < nPoints)
 							{
-								v = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(points[k], defHeight));
+								v = Math::CSys::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(points[k], defHeight));
 								sptr = sbuff2;
 								sptr = Text::StrDouble(sptr, v.GetX());
 								*sptr++ = ',';
@@ -368,7 +368,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 								k = 0;
 								while (k < nPoints)
 								{
-									v = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(points[k], alts[k]));
+									v = Math::CSys::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(points[k], alts[k]));
 
 									sptr = sbuff2;
 									sptr = Text::StrDouble(sptr, v.GetX());
@@ -388,7 +388,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 								k = 0;
 								while (k < nPoints)
 								{
-									v = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(points[k], defHeight));
+									v = Math::CSys::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(points[k], defHeight));
 									sptr = sbuff2;
 									sptr = Text::StrDouble(sptr, v.GetX());
 									*sptr++ = ',';
@@ -481,7 +481,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 							points = lr->GetPointList(nPoints);
 							while (k < nPoints)
 							{
-								v = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(points[k], defHeight));
+								v = Math::CSys::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(points[k], defHeight));
 								sptr = Text::StrDouble(sbuff2, v.GetX());
 								sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 								sptr = Text::StrDouble(sptr, v.GetY());
@@ -672,8 +672,8 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 						bounds = img->GetBounds();
 						if (needConv)
 						{
-							bounds.min = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(bounds.min, defHeight)).GetXY();
-							bounds.max = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(bounds.max, defHeight)).GetXY();
+							bounds.min = Math::CSys::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(bounds.min, defHeight)).GetXY();
+							bounds.max = Math::CSys::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3D(bounds.max, defHeight)).GetXY();
 						}
 						sb.AppendC(UTF8STRC("<north>"));
 						sb.AppendDouble(bounds.max.y);

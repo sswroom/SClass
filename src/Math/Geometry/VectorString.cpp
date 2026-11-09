@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/CoordinateSystem.h"
 #include "Math/Geometry/VectorString.h"
 #include "Text/MyString.h"
 

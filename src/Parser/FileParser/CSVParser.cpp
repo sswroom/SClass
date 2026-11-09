@@ -6,7 +6,7 @@
 #include "IO/StreamReader.h"
 #include "Map/GPSTrack.h"
 #include "Map/VectorLayer.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/Point.h"
 #include "Parser/FileParser/CSVParser.h"
 #include "Text/MyString.h"
@@ -384,8 +384,8 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 				nameCol = i;
 			}
 		}
-		NN<Math::CoordinateSystem> csys;
-		NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), currCol, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(tmpcArr2), csys = Math::CoordinateSystemManager::CreateWGS84Csys(), nameCol, nullptr));
+		NN<Math::CSys::CoordinateSystem> csys;
+		NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), currCol, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(tmpcArr2), csys = Math::CSys::CoordinateSystemManager::CreateWGS84Csys(), nameCol, nullptr));
 		
 		UnsafeArray<UnsafeArray<UTF8Char>> tmpUArr2 = UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(tmpcArr2);
 		while (reader.ReadLine(sbuff, 1024).NotNull())

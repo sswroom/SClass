@@ -3,7 +3,7 @@
 #include "Map/MapLayerCollection.h"
 #include "Map/VectorLayer.h"
 #include "Map/OSM/OSMParser.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/Polygon.h"
@@ -658,7 +658,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 							{
 								colCnt = 2;
 							}
-							NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, fileName, colCnt, colName, Math::CoordinateSystemManager::CreateWGS84Csys(), 0, layerNames[elemType - 1]));
+							NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, fileName, colCnt, colName, Math::CSys::CoordinateSystemManager::CreateWGS84Csys(), 0, layerNames[elemType - 1]));
 							layers[elemType - 1] = layer;
 						}
 						NN<Math::Geometry::Point> pt;
@@ -1317,7 +1317,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 						{
 							colCnt = 2;
 						}
-						NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateWGS84Csys(), 0, layerNames[elemType - 1]));
+						NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, fileName, colCnt, pgName, Math::CSys::CoordinateSystemManager::CreateWGS84Csys(), 0, layerNames[elemType - 1]));
 						layers[elemType - 1] = layer;
 					}
 					NN<Math::Geometry::Polygon> pg;
@@ -1342,7 +1342,7 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 						{
 							colCnt = 2;
 						}
-						NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateWGS84Csys(), 0, layerNames[elemType - 1]));
+						NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, fileName, colCnt, pgName, Math::CSys::CoordinateSystemManager::CreateWGS84Csys(), 0, layerNames[elemType - 1]));
 						layers[elemType - 1] = layer;
 					}
 					NN<Math::Geometry::LineString> pl;

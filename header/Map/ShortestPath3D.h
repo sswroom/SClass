@@ -131,7 +131,7 @@ namespace Map
 			virtual IntOS Compare(NN<NodeSession> a, NN<NodeSession> b) const;
 		};
 
-		NN<Math::CoordinateSystem> csys;
+		NN<Math::CSys::CoordinateSystem> csys;
 		Double searchDist;
 		Data::ArrayListNN<LineInfo> lines;
 		Data::ArrayListNN<AreaInfo> areas;
@@ -156,7 +156,7 @@ namespace Map
 		NN<NodeSession> GetNodeSess(NN<PathSession> sess, Math::Coord2DDbl pos, Double z) const;
 		void FillNetwork(NN<NodeInfo> nodeInfo, UInt32 networkId);
 	public:
-		ShortestPath3D(NN<Math::CoordinateSystem> csys, Double searchDist);
+		ShortestPath3D(NN<Math::CSys::CoordinateSystem> csys, Double searchDist);
 		ShortestPath3D(NN<Map::MapDrawLayer> layer, Double searchDist);
 		~ShortestPath3D();
 
@@ -172,11 +172,11 @@ namespace Map
 		void FreeSession(NN<PathSession> sess) const;
 		Bool GetShortestPathDetail(NN<PathSession> sess, Math::Coord2DDbl posStart, Math::Coord2DDbl posEnd, NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayListT<Data::DataArray<Optional<Text::String>>>> propList) const;
 		Optional<Math::Geometry::LineString> GetShortestPath(NN<PathSession> sess, Math::Coord2DDbl posStart, Math::Coord2DDbl posEnd) const;
-		NN<Math::CoordinateSystem> GetCoordinateSystem() const;
+		NN<Math::CSys::CoordinateSystem> GetCoordinateSystem() const;
 		Optional<DB::TableDef> GetPropDef() const;
 		UInt32 GetNetworkCnt() const;
 		void GetLines(Math::RectAreaDbl rect, NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList) const;
-		void ClearData(NN<Math::CoordinateSystem> csys, Double searchDist);
+		void ClearData(NN<Math::CSys::CoordinateSystem> csys, Double searchDist);
 
 		static void CalcDirReverse(NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayListNative<Double>> dirList, NN<Data::ArrayListNative<Bool>> reverseList);
 	};

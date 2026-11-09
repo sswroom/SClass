@@ -8,8 +8,8 @@
 #include "IO/FileStream.h"
 #include "Map/MapDrawLayer.h"
 #include "Map/SPDLayer.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Polyline.h"
@@ -19,7 +19,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, nullptr, Math::CoordinateSystemManager::CreateWGS84Csys())
+Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, nullptr, Math::CSys::CoordinateSystemManager::CreateWGS84Csys())
 {
 	UTF8Char fname[256];
 	UnsafeArray<UTF8Char> sptr;

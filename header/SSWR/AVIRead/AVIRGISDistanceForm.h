@@ -30,7 +30,7 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<AVIRMapNavigator> navi;
-			NN<Math::CoordinateSystem> csys;
+			NN<Math::CSys::CoordinateSystem> csys;
 
 			Data::ArrayListNative<Double> ptList;
 			Math::Coord2DDbl lastMapPos;

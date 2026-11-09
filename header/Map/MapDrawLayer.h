@@ -10,8 +10,8 @@
 #include "IO/ParsedObject.h"
 #include "Map/MapSearchLayer.h"
 #include "Map/MapView.h"
-#include "Math/GeographicCoordinateSystem.h"
 #include "Math/RectArea.hpp"
+#include "Math/CSys/GeographicCoordinateSystem.h"
 #include "Math/Geometry/Vector2D.h"
 #include "Media/SharedImage.h"
 #include "Text/SearchIndexer.h"
@@ -46,7 +46,7 @@ namespace Map
 		};
 	protected:
 		UIntOS nameCol;
-		NN<Math::CoordinateSystem> csys;
+		NN<Math::CSys::CoordinateSystem> csys;
 		Optional<Text::String> layerName;
 
 		UInt32 pgColor;
@@ -97,8 +97,8 @@ namespace Map
 
 		typedef void (CALLBACKFUNC UpdatedHandler)(AnyType userObj);
 
-		MapDrawLayer(NN<Text::String> sourceName, UIntOS nameCol, Optional<Text::String> layerName, NN<Math::CoordinateSystem> csys);
-		MapDrawLayer(Text::CStringNN sourceName, UIntOS nameCol, Text::CString layerName, NN<Math::CoordinateSystem> csys);
+		MapDrawLayer(NN<Text::String> sourceName, UIntOS nameCol, Optional<Text::String> layerName, NN<Math::CSys::CoordinateSystem> csys);
+		MapDrawLayer(Text::CStringNN sourceName, UIntOS nameCol, Text::CString layerName, NN<Math::CSys::CoordinateSystem> csys);
 		virtual ~MapDrawLayer();
 
 		virtual void SetCurrScale(Double scale);
@@ -150,8 +150,8 @@ namespace Map
 		virtual ObjectClass GetObjectClass() const = 0;
 		NN<Text::String> GetName() const;
 		virtual IO::ParserType GetParserType() const;
-		virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
-		virtual void SetCoordinateSystem(NN<Math::CoordinateSystem> csys);
+		virtual NN<Math::CSys::CoordinateSystem> GetCoordinateSystem() const;
+		virtual void SetCoordinateSystem(NN<Math::CSys::CoordinateSystem> csys);
 
 		Int32 CalBlockSize();
 		void SetLayerName(Text::CString name);

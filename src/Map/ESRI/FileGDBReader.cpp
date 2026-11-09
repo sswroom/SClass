@@ -751,7 +751,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UIntOS co
 	Double m = 0;
 	UInt64 v;
 	UInt32 srid;
-	NN<Math::CoordinateSystem> csys;
+	NN<Math::CSys::CoordinateSystem> csys;
 /*
 #define SHPT_MULTIPOINT    8
 #define SHPT_MULTIPOINTM  28
@@ -1591,7 +1591,7 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 	}
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	NN<Math::CoordinateSystem> csys;
+	NN<Math::CSys::CoordinateSystem> csys;
 	UIntOS colSize;
 	colDef->SetColName(field->name);
 	colDef->SetColSize(field->fieldSize);

@@ -20,7 +20,7 @@ namespace Map
 
 	private:
 		typedef Bool (CALLBACKFUNC RequestFunc)(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc);
-		NN<Math::CoordinateSystem> wgs84;
+		NN<Math::CSys::CoordinateSystem> wgs84;
 		Data::FastStringMapObj<RequestFunc> reqMap;
 
 		static Bool __stdcall GetCapabilities(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc);

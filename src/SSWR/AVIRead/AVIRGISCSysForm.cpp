@@ -1,7 +1,7 @@
 #include "Stdafx.h"
-#include "Math/CoordinateSystemManager.h"
-#include "Math/GeographicCoordinateSystem.h"
-#include "Math/ProjectedCoordinateSystem.h"
+#include "Math/CSys/CoordinateSystemManager.h"
+#include "Math/CSys/GeographicCoordinateSystem.h"
+#include "Math/CSys/ProjectedCoordinateSystem.h"
 #include "SSWR/AVIRead/AVIRGISCSysForm.h"
 
 void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(AnyType userObj)
@@ -12,8 +12,8 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(AnyType userObj)
 		UIntOS i = me->cboGeo->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
-			Math::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CoordinateSystemManager::GeoCoordSysType)me->cboGeo->GetItem(i).GetIntOS();
-			me->outCSys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
+			Math::CSys::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CSys::CoordinateSystemManager::GeoCoordSysType)me->cboGeo->GetItem(i).GetIntOS();
+			me->outCSys = Math::CSys::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
 			me->SetDialogResult(UI::GUIForm::DR_OK);
 		}
 	}
@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(AnyType userObj)
 		UnsafeArray<const UTF8Char> projName;
 		if (i != INVALID_INDEX && me->cboProj->GetItem(i).GetArrayOpt<const UTF8Char>().SetTo(projName))
 		{
-			me->outCSys = Math::CoordinateSystemManager::CreateProjCoordinateSystem({projName, Text::StrCharCnt(projName)}, projName);
+			me->outCSys = Math::CSys::CoordinateSystemManager::CreateProjCoordinateSystem({projName, Text::StrCharCnt(projName)}, projName);
 			if (me->outCSys.NotNull())
 			{
 				me->SetDialogResult(UI::GUIForm::DR_OK);
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnProjSelChg(AnyType userObj)
 	me->radProj->Select();
 }
 
-SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Math::RectAreaDbl bounds, Optional<Math::CoordinateSystem> csys) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Math::RectAreaDbl bounds, Optional<Math::CSys::CoordinateSystem> csys) : UI::GUIForm(parent, 640, 480, ui)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
@@ -117,17 +117,17 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> p
 	this->SetCancelButton(this->btnCancel);
 	UIntOS i;
 	UIntOS j;
-	Data::ArrayListNative<Math::CoordinateSystemManager::GeoCoordSysType> gcsysList;
+	Data::ArrayListNative<Math::CSys::CoordinateSystemManager::GeoCoordSysType> gcsysList;
 	Data::ArrayListArr<const UTF8Char> pcsysList;
-	Math::CoordinateSystemManager::GetGeogCoordinateSystems(gcsysList);
-	Math::CoordinateSystemManager::GetProjCoordinateSystemNames(pcsysList);
+	Math::CSys::CoordinateSystemManager::GetGeogCoordinateSystems(gcsysList);
+	Math::CSys::CoordinateSystemManager::GetProjCoordinateSystemNames(pcsysList);
 
 	Text::StringBuilderUTF8 sb;
 	i = 0;
 	j = gcsysList.GetCount();
 	while (i < j)
 	{
-		this->cboGeo->AddItem(Math::CoordinateSystemManager::GeoCoordSysTypeGetName(gcsysList.GetItem(i)), (void*)(IntOS)gcsysList.GetItem(i));
+		this->cboGeo->AddItem(Math::CSys::CoordinateSystemManager::GeoCoordSysTypeGetName(gcsysList.GetItem(i)), (void*)(IntOS)gcsysList.GetItem(i));
 		i++;
 	}
 	if (j > 0)
@@ -149,7 +149,7 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> p
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Current Coordinate System:\r\n"));
-	NN<Math::CoordinateSystem> oriCSys;
+	NN<Math::CSys::CoordinateSystem> oriCSys;
 	if (!this->oriCSys.SetTo(oriCSys))
 	{
 		sb.AppendC(UTF8STRC("Unknown"));
@@ -170,7 +170,7 @@ void SSWR::AVIRead::AVIRGISCSysForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Optional<Math::CoordinateSystem> SSWR::AVIRead::AVIRGISCSysForm::GetCSys()
+Optional<Math::CSys::CoordinateSystem> SSWR::AVIRead::AVIRGISCSysForm::GetCSys()
 {
 	return this->outCSys;
 }

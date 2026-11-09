@@ -8,7 +8,7 @@
 #include "Map/TileMapLayer.h"
 #include "Map/VectorLayer.h"
 #include "Map/OSM/OSMLocalTileMap.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/MultiPolygon.h"
 #include "Math/Geometry/PointZ.h"
@@ -123,8 +123,8 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseGeoJSON(NN<Text:
 		}
 		else if (jbase->Equals(CSTR("FeatureCollection")))
 		{
-			Optional<Math::CoordinateSystem> csys = nullptr;
-			NN<Math::CoordinateSystem> nncsys;
+			Optional<Math::CSys::CoordinateSystem> csys = nullptr;
+			NN<Math::CSys::CoordinateSystem> nncsys;
 			NN<Text::JSONBase> crs;
 			if (jobj->GetObjectValue(CSTR("crs")).SetTo(crs) && crs->GetType() == Text::JSONType::Object)
 			{
@@ -134,7 +134,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseGeoJSON(NN<Text:
 					NN<Text::String> crsName;
 					if (NN<Text::JSONObject>::ConvertFrom(crsProp)->GetObjectString(CSTR("name")).SetTo(crsName))
 					{
-						csys = Math::CoordinateSystemManager::CreateFromName(crsName->ToCString(), nullptr);
+						csys = Math::CSys::CoordinateSystemManager::CreateFromName(crsName->ToCString(), nullptr);
 						if (csys.SetTo(nncsys))
 						{
 							srid = nncsys->GetSRID();
@@ -144,7 +144,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseGeoJSON(NN<Text:
 			}
 			if (!csys.SetTo(nncsys))
 			{
-				nncsys = Math::CoordinateSystemManager::CreateWGS84Csys();
+				nncsys = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 			}
 
 			if (jobj->GetObjectValue(CSTR("features")).SetTo(jbase) && jbase->GetType() == Text::JSONType::Array)

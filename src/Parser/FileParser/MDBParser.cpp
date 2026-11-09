@@ -9,7 +9,7 @@
 #include "Map/ESRI/ESRIMDBLayer.h"
 #include "Map/MapLayerCollection.h"
 #include "Math/ArcGISPRJParser.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Parser/FileParser/MDBParser.h"
 #include "Text/Encoding.h"
 
@@ -147,8 +147,8 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 	if (shpTables.GetCount())
 	{
 		NN<Map::MapLayerCollection> lyrColl;
-		Optional<Math::CoordinateSystem> csys = nullptr;
-		NN<Math::CoordinateSystem> nncsys;
+		Optional<Math::CSys::CoordinateSystem> csys = nullptr;
+		NN<Math::CSys::CoordinateSystem> nncsys;
 		NN<DB::SharedReadingDB> conn;
 		NN<Map::ESRI::ESRIMDBLayer> lyr;
 		NN<Math::ArcGISPRJParser> prjParser;

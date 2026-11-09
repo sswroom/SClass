@@ -1,10 +1,10 @@
 #include "Stdafx.h"
 #include "IO/FileStream.h"
 #include "Math/ArcGISPRJParser.h"
-#include "Math/CoordinateSystemManager.h"
-#include "Math/Mercator1SPProjectedCoordinateSystem.h"
-#include "Math/MercatorProjectedCoordinateSystem.h"
-#include "Math/PolyconicProjectedCoordinateSystem.h"
+#include "Math/CSys/CoordinateSystemManager.h"
+#include "Math/CSys/Mercator1SPProjectedCoordinateSystem.h"
+#include "Math/CSys/MercatorProjectedCoordinateSystem.h"
+#include "Math/CSys/PolyconicProjectedCoordinateSystem.h"
 
 //#define VERBOSE
 #if defined(VERBOSE)
@@ -43,7 +43,7 @@ Math::ArcGISPRJParser::~ArcGISPRJParser()
 
 }
 
-Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJFile(Text::CStringNN fileName)
+Optional<Math::CSys::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJFile(Text::CStringNN fileName)
 {
 	UInt8 buff[1024];
 	UIntOS buffSize;
@@ -70,7 +70,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJFile(Text::CStri
 	return ParsePRJBuff(fileName, UARR(buff), buffSize, buffSize);
 }
 
-Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sourceName, UnsafeArray<UTF8Char> prjBuff, UIntOS buffSize, OptOut<UIntOS> parsedSize)
+Optional<Math::CSys::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sourceName, UnsafeArray<UTF8Char> prjBuff, UIntOS buffSize, OptOut<UIntOS> parsedSize)
 {
 	UIntOS i;
 	UIntOS j;
@@ -82,11 +82,11 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 	UIntOS spIndex = 0;
 	Double a = 0;
 	Double f_1 = 0;
-	NN<Math::CoordinateSystem> csys;
+	NN<Math::CSys::CoordinateSystem> csys;
 	Math::EarthEllipsoid::EarthEllipsoidType eet;
-	Optional<Math::GeographicCoordinateSystem> gcs = nullptr;
-	Math::GeographicCoordinateSystem::PrimemType primem = Math::GeographicCoordinateSystem::PT_GREENWICH;
-	Math::GeographicCoordinateSystem::UnitType unit = Math::GeographicCoordinateSystem::UT_DEGREE;
+	Optional<Math::CSys::GeographicCoordinateSystem> gcs = nullptr;
+	Math::CSys::GeographicCoordinateSystem::PrimemType primem = Math::CSys::GeographicCoordinateSystem::PT_GREENWICH;
+	Math::CSys::GeographicCoordinateSystem::UnitType unit = Math::CSys::GeographicCoordinateSystem::UT_DEGREE;
 	UTF8Char c;
 	UInt32 srid = 0;
 	if (Text::StrStartsWithC(prjBuff, buffSize, UTF8STRC("GEOGCS[")))
@@ -388,10 +388,10 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 		if (eet != Math::EarthEllipsoid::EET_OTHER)
 		{
 			Math::EarthEllipsoid ellipsoid(eet);
-			Optional<const Math::CoordinateSystemManager::DatumInfo> datum = Math::CoordinateSystemManager::GetDatumInfoByName((const UTF8Char*)&prjBuff[datumOfst]);
+			Optional<const Math::CSys::CoordinateSystemManager::DatumInfo> datum = Math::CSys::CoordinateSystemManager::GetDatumInfoByName((const UTF8Char*)&prjBuff[datumOfst]);
 
-			Math::GeographicCoordinateSystem::DatumData1 data;
-			Math::CoordinateSystemManager::FillDatumData(data, datum, {&prjBuff[datumOfst], datumLen - 2}, ellipsoid, nullptr);
+			Math::CSys::GeographicCoordinateSystem::DatumData1 data;
+			Math::CSys::CoordinateSystemManager::FillDatumData(data, datum, {&prjBuff[datumOfst], datumLen - 2}, ellipsoid, nullptr);
 			if (hasToWGS84)
 			{
 				data.cX = cX;
@@ -403,15 +403,15 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 				data.scale = scale;
 				data.aunit = Math::Unit::Angle::AU_ARCSECOND;
 			}
-			NEW_CLASSNN(csys, Math::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, &data, primem, unit));
+			NEW_CLASSNN(csys, Math::CSys::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, &data, primem, unit));
 			return csys;
 		}
 		else
 		{
 			Math::EarthEllipsoid ellipsoid(a, f_1, eet);
-			Optional<const Math::CoordinateSystemManager::DatumInfo> datum = Math::CoordinateSystemManager::GetDatumInfoByName((const UTF8Char*)&prjBuff[datumOfst]);
-			Math::GeographicCoordinateSystem::DatumData1 data;
-			Math::CoordinateSystemManager::FillDatumData(data, datum, {&prjBuff[datumOfst], datumLen - 2}, ellipsoid, nullptr);
+			Optional<const Math::CSys::CoordinateSystemManager::DatumInfo> datum = Math::CSys::CoordinateSystemManager::GetDatumInfoByName((const UTF8Char*)&prjBuff[datumOfst]);
+			Math::CSys::GeographicCoordinateSystem::DatumData1 data;
+			Math::CSys::CoordinateSystemManager::FillDatumData(data, datum, {&prjBuff[datumOfst], datumLen - 2}, ellipsoid, nullptr);
 			if (hasToWGS84)
 			{
 				data.cX = cX;
@@ -423,13 +423,13 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 				data.scale = scale;
 				data.aunit = Math::Unit::Angle::AU_ARCSECOND;
 			}
-			NEW_CLASSNN(csys, Math::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, &data, primem, unit));
+			NEW_CLASSNN(csys, Math::CSys::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, &data, primem, unit));
 			return csys;
 		}
 	}
 	else if (Text::StrStartsWithC(prjBuff, buffSize, UTF8STRC("PROJCS[")))
 	{
-		Math::CoordinateSystem::CoordinateSystemType cst = Math::CoordinateSystem::CoordinateSystemType::Geographic;
+		Math::CSys::CoordinateSystem::CoordinateSystemType cst = Math::CSys::CoordinateSystem::CoordinateSystemType::Geographic;
 		Double falseEasting = NAN;
 		Double falseNorthing = NAN;
 		Double centralMeridian = NAN;
@@ -464,7 +464,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 				i++;
 				if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("GEOGCS[")))
 				{
-					gcs = Optional<Math::GeographicCoordinateSystem>::ConvertFrom(ParsePRJBuff(sourceName, &prjBuff[i], buffSize - i, j));
+					gcs = Optional<Math::CSys::GeographicCoordinateSystem>::ConvertFrom(ParsePRJBuff(sourceName, &prjBuff[i], buffSize - i, j));
 					if (gcs.IsNull())
 						return nullptr;
 					i += j;
@@ -474,22 +474,22 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 					if (Text::StrStartsWithC(&prjBuff[i + 11], buffSize - i - 11, UTF8STRC("\"Transverse_Mercator\"]")))
 					{
 						i += 33;
-						cst = Math::CoordinateSystem::CoordinateSystemType::MercatorProjected;
+						cst = Math::CSys::CoordinateSystem::CoordinateSystemType::MercatorProjected;
 					}
 					else if (Text::StrStartsWithC(&prjBuff[i + 11], buffSize - i - 11, UTF8STRC("\"Mercator_1SP\"]")))
 					{
 						i += 26;
-						cst = Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected;
+						cst = Math::CSys::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected;
 					}
 					else if (Text::StrStartsWithC(&prjBuff[i + 11], buffSize - i - 11, UTF8STRC("\"Gauss_Kruger\"]")))
 					{
 						i += 26;
-						cst = Math::CoordinateSystem::CoordinateSystemType::GausskrugerProjected;
+						cst = Math::CSys::CoordinateSystem::CoordinateSystemType::GausskrugerProjected;
 					}
 					else if (Text::StrStartsWithC(&prjBuff[i + 11], buffSize - i - 11, UTF8STRC("\"Polyconic\"]")))
 					{
 						i += 23;
-						cst = Math::CoordinateSystem::CoordinateSystemType::PolyconicProjected;
+						cst = Math::CSys::CoordinateSystem::CoordinateSystemType::PolyconicProjected;
 					}
 					else
 					{
@@ -701,8 +701,8 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 				return nullptr;
 			}
 		}
-		NN<Math::GeographicCoordinateSystem> nngcs;
-		if (cst == Math::CoordinateSystem::CoordinateSystemType::Geographic || Math::IsNAN(falseEasting) || Math::IsNAN(falseNorthing) || Math::IsNAN(centralMeridian) || (cst != Math::CoordinateSystem::CoordinateSystemType::PolyconicProjected && Math::IsNAN(scaleFactor)) || Math::IsNAN(latitudeOfOrigin) || !gcs.SetTo(nngcs))
+		NN<Math::CSys::GeographicCoordinateSystem> nngcs;
+		if (cst == Math::CSys::CoordinateSystem::CoordinateSystemType::Geographic || Math::IsNAN(falseEasting) || Math::IsNAN(falseNorthing) || Math::IsNAN(centralMeridian) || (cst != Math::CSys::CoordinateSystem::CoordinateSystemType::PolyconicProjected && Math::IsNAN(scaleFactor)) || Math::IsNAN(latitudeOfOrigin) || !gcs.SetTo(nngcs))
 		{
 #if defined(VERBOSE)
 			printf("ArcGISPRJParser: Parameter missing in PROJCS\r\n");
@@ -719,19 +719,19 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 		{
 			srid = this->csys.GuessSRIDProj(Text::CStringNN(&prjBuff[nameOfst], nameLen - 2));
 		}
-		if (cst == Math::CoordinateSystem::CoordinateSystemType::MercatorProjected || cst == Math::CoordinateSystem::CoordinateSystemType::GausskrugerProjected)
+		if (cst == Math::CSys::CoordinateSystem::CoordinateSystemType::MercatorProjected || cst == Math::CSys::CoordinateSystem::CoordinateSystemType::GausskrugerProjected)
 		{
-			NEW_CLASSNN(csys, Math::MercatorProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, nngcs, unit));
+			NEW_CLASSNN(csys, Math::CSys::MercatorProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, nngcs, unit));
 			return csys;
 		}
-		else if (cst == Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected)
+		else if (cst == Math::CSys::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected)
 		{
-			NEW_CLASSNN(csys, Math::Mercator1SPProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, nngcs, unit));
+			NEW_CLASSNN(csys, Math::CSys::Mercator1SPProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, nngcs, unit));
 			return csys;
 		}
-		else if (cst == Math::CoordinateSystem::CoordinateSystemType::PolyconicProjected)
+		else if (cst == Math::CSys::CoordinateSystem::CoordinateSystemType::PolyconicProjected)
 		{
-			NEW_CLASSNN(csys, Math::PolyconicProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, nngcs, unit));
+			NEW_CLASSNN(csys, Math::CSys::PolyconicProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, nngcs, unit));
 			return csys;
 		}
 		else

@@ -3,8 +3,8 @@
 #include "Data/Sort/ArtificialQuickSort_C.h"
 #include "DB/ColDef.h"
 #include "Map/OSM/OSMData.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/WKTWriter.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/Point.h"
 
 IntOS Map::OSM::ElementComparator::Compare(NN<ElementInfo> a, NN<ElementInfo> b) const
@@ -444,12 +444,12 @@ void Map::OSM::OSMData::Init()
 	this->SetStyleDefault();
 }
 
-Map::OSM::OSMData::OSMData(Text::CStringNN sourceName) : Map::MapDrawLayer(sourceName, 0, CSTR("OSM"), Math::CoordinateSystemManager::CreateWGS84Csys())
+Map::OSM::OSMData::OSMData(Text::CStringNN sourceName) : Map::MapDrawLayer(sourceName, 0, CSTR("OSM"), Math::CSys::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->Init();
 }
 
-Map::OSM::OSMData::OSMData(NN<Text::String> sourceName) : Map::MapDrawLayer(sourceName, 0, nullptr, Math::CoordinateSystemManager::CreateWGS84Csys())
+Map::OSM::OSMData::OSMData(NN<Text::String> sourceName) : Map::MapDrawLayer(sourceName, 0, nullptr, Math::CSys::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->Init();
 }

@@ -1,12 +1,12 @@
 #include "Stdafx.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Media/TIFFTileMap.h"
 
 Media::TIFFTileMap::TIFFTileMap(UIntOS tileWidth, UIntOS tileHeight)
 {
 	this->tileWidth = tileWidth;
 	this->tileHeight = tileHeight;
-	this->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
+	this->csys = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 }
 
 Media::TIFFTileMap::~TIFFTileMap()
@@ -66,7 +66,7 @@ Bool Media::TIFFTileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	return false;
 }
 
-NN<Math::CoordinateSystem> Media::TIFFTileMap::GetCoordinateSystem() const
+NN<Math::CSys::CoordinateSystem> Media::TIFFTileMap::GetCoordinateSystem() const
 {
 	return this->csys;
 }

@@ -7,7 +7,7 @@
 #include "IO/StmData/FileData.h"
 #include "Map/OSM/OSMLocalTileMap.h"
 #include "Map/OSM/OSMTileMap.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 
 Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NN<IO::PackageFile> pkgFile)
 {
@@ -21,7 +21,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NN<IO::PackageFile> pkgFile)
 	this->fmt = Text::String::New(CSTR("png"));
 	this->min = Math::Coord2DDbl(0, 0);
 	this->max = Math::Coord2DDbl(0, 0);
-	this->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
+	this->csys = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 
 	UInt32 minXBlk;
 	UInt32 maxXBlk;
@@ -174,7 +174,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NN<IO::PackageFile> pkgFile, NN<Text:
 	this->fmt = format->Clone();
 	this->min = minCoord;
 	this->max = maxCoord;
-	this->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
+	this->csys = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 }
 
 Map::OSM::OSMLocalTileMap::~OSMLocalTileMap()
@@ -248,7 +248,7 @@ Bool Map::OSM::OSMLocalTileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) co
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
-NN<Math::CoordinateSystem> Map::OSM::OSMLocalTileMap::GetCoordinateSystem() const
+NN<Math::CSys::CoordinateSystem> Map::OSM::OSMLocalTileMap::GetCoordinateSystem() const
 {
 	return this->csys;
 }

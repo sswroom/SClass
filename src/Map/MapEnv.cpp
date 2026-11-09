@@ -5,7 +5,7 @@
 #include "IO/StmData/FileData.h"
 #include "Map/MapEnv.h"
 #include "Map/ScaledMapView.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Media/ImageUtil_C.h"
 #include "Text/MyString.h"
 
@@ -146,7 +146,7 @@ void Map::MapEnv::WaitForGroupLoad(Optional<GroupItem> group, Data::Duration max
 	}
 }
 
-Map::MapEnv::MapEnv(Text::CStringNN fileName, UInt32 bgColor, NN<Math::CoordinateSystem> csys) : IO::ParsedObject(fileName)
+Map::MapEnv::MapEnv(Text::CStringNN fileName, UInt32 bgColor, NN<Math::CSys::CoordinateSystem> csys) : IO::ParsedObject(fileName)
 {
 	this->bgColor = bgColor;
 	this->nStr = 1000;
@@ -1528,7 +1528,7 @@ Bool Map::MapEnv::GetBounds(Optional<Map::MapEnv::GroupItem> group, OutParam<Mat
 	this->GetLayersInGroup(group, layers);
 	Math::RectAreaDbl minMax = Math::RectAreaDbl(0, 0, 0, 0);
 	Math::RectAreaDbl thisBounds;
-	NN<Math::CoordinateSystem> lyrCSys;
+	NN<Math::CSys::CoordinateSystem> lyrCSys;
 	Bool isFirst = true;
 	Data::ArrayIterator<NN<Map::MapDrawLayer>> it = layers.Iterator();
 	while (it.HasNext())
@@ -1539,8 +1539,8 @@ Bool Map::MapEnv::GetBounds(Optional<Map::MapEnv::GroupItem> group, OutParam<Mat
 			lyrCSys = lyr->GetCoordinateSystem();
 			if (!this->csys->Equals(lyrCSys))
 			{
-				thisBounds.min = Math::CoordinateSystem::Convert(lyrCSys, this->csys, thisBounds.min);
-				thisBounds.max = Math::CoordinateSystem::Convert(lyrCSys, this->csys, thisBounds.max);
+				thisBounds.min = Math::CSys::CoordinateSystem::Convert(lyrCSys, this->csys, thisBounds.min);
+				thisBounds.max = Math::CSys::CoordinateSystem::Convert(lyrCSys, this->csys, thisBounds.max);
 			}
 			if (isFirst)
 			{
@@ -1606,7 +1606,7 @@ NN<Map::MapView> Map::MapEnv::CreateMapView(Math::Size2DDbl scnSize) const
 	}
 }
 
-NN<Math::CoordinateSystem> Map::MapEnv::GetCoordinateSystem() const
+NN<Math::CSys::CoordinateSystem> Map::MapEnv::GetCoordinateSystem() const
 {
 	return this->csys;
 }

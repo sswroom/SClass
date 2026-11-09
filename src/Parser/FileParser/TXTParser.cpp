@@ -10,7 +10,7 @@
 #include "Map/MapEnv.h"
 #include "Map/MapManager.h"
 #include "Map/VectorLayer.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polygon.h"
@@ -99,7 +99,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 			return nullptr;
 		}
 
-		NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateWGS84Csys();
+		NN<Math::CSys::CoordinateSystem> csys = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 		NEW_CLASSNN(env, Map::MapEnv(fd->GetFullName()->ToCString(), ToColor(Text::StrHex2UInt32C(sarr[1].v)), csys));
 		env->SetNString(Text::StrToUInt32(sarr[4].v));
 		fileName = baseDir;
@@ -527,7 +527,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 		{
 			csarr[i] = UnsafeArray<const UTF8Char>(sarr[i].v);
 		}
-		NEW_CLASSNN(lyr, Map::VectorLayer(lyrType, fd->GetFullFileName(), j, csarr, Math::CoordinateSystemManager::CreateWGS84Csys(), 2, nullptr));
+		NEW_CLASSNN(lyr, Map::VectorLayer(lyrType, fd->GetFullFileName(), j, csarr, Math::CSys::CoordinateSystemManager::CreateWGS84Csys(), 2, nullptr));
 		while (reader.ReadLine(sbuff, 512).SetTo(sptr))
 		{
 			i = Text::StrSplitP(sarr, 20, {sbuff, (UIntOS)(sptr - sbuff)}, ',');

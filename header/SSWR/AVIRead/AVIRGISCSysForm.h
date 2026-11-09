@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGISCSYSFORM
 #define _SM_SSWR_AVIREAD_AVIRGISCSYSFORM
-#include "Math/CoordinateSystem.h"
+#include "Math/CSys/CoordinateSystem.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIComboBox.h"
@@ -18,8 +18,8 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Optional<Math::CoordinateSystem> oriCSys;
-			Optional<Math::CoordinateSystem> outCSys;
+			Optional<Math::CSys::CoordinateSystem> oriCSys;
+			Optional<Math::CSys::CoordinateSystem> outCSys;
 
 			NN<UI::GUIPanel> pnlBounds;
 			NN<UI::GUILabel> lblBounds;
@@ -44,12 +44,12 @@ namespace SSWR
 			static void __stdcall OnGeoSelChg(AnyType userObj);
 			static void __stdcall OnProjSelChg(AnyType userObj);
 		public:
-			AVIRGISCSysForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Math::RectAreaDbl bounds, Optional<Math::CoordinateSystem> csys);
+			AVIRGISCSysForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Math::RectAreaDbl bounds, Optional<Math::CSys::CoordinateSystem> csys);
 			virtual ~AVIRGISCSysForm();
 
 			virtual void OnMonitorChanged();
 
-			Optional<Math::CoordinateSystem> GetCSys();
+			Optional<Math::CSys::CoordinateSystem> GetCSys();
 		};
 	}
 }

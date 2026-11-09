@@ -5,7 +5,7 @@
 #include "Math/Geometry/Point.h"
 #include "Text/UTF8Reader.h"
 
-Optional<Map::MapDrawLayer> Map::CSVMapParser::ParseAsPoint(NN<IO::Stream> stm, UInt32 codePage, Text::CStringNN layerName, Text::CStringNN nameCol, Text::CStringNN latCol, Text::CStringNN lonCol, NN<Math::CoordinateSystem> csys)
+Optional<Map::MapDrawLayer> Map::CSVMapParser::ParseAsPoint(NN<IO::Stream> stm, UInt32 codePage, Text::CStringNN layerName, Text::CStringNN nameCol, Text::CStringNN latCol, Text::CStringNN lonCol, NN<Math::CSys::CoordinateSystem> csys)
 {
 	Text::PString tmpArr[2];
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> tmpcArr2;

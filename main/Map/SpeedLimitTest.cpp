@@ -2,7 +2,7 @@
 #include "Core/Core.h"
 #include "Map/HKRoadNetwork2.h"
 #include "Map/HKSpeedLimit.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 
 #include <stdio.h>
 
@@ -14,7 +14,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NN<Map::HKSpeedLimit> spdLimit;
 	if (roadNetwork.CreateSpeedLimit().SetTo(spdLimit))
 	{
-		NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateWGS84Csys();
+		NN<Math::CSys::CoordinateSystem> csys = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 		spdLimit->SetReqCoordinateSystem(csys);
 		csys.Delete();
 		Int32 speedLimit = spdLimit->GetSpeedLimit(Math::Coord2DDbl(114.230057, 22.308962), 20);

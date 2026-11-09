@@ -1,0 +1,38 @@
+#ifndef _SM_MATH_CSYS_ARCGISCSYS
+#define _SM_MATH_CSYS_ARCGISCSYS
+#include "Data/FastStringMapNN.hpp"
+#include "Text/CString.h"
+
+namespace Math
+{
+	namespace CSys
+	{
+		class ArcGISCSys
+		{
+		public:
+			typedef struct
+			{
+				UInt32 srid;
+				UnsafeArray<const UTF8Char> name;
+				UIntOS nameLen;
+				UnsafeArray<const UTF8Char> projWKT;
+				UIntOS projWKTLen;
+			} CSysInfo;
+
+		private:
+			static CSysInfo geogList[];
+			static CSysInfo projList[];
+
+			Data::FastStringMapNN<CSysInfo> geogMap;
+			Data::FastStringMapNN<CSysInfo> projMap;
+
+		public:
+			ArcGISCSys();
+			~ArcGISCSys();
+
+			UInt32 GuessSRIDGeog(Text::CStringNN name);
+			UInt32 GuessSRIDProj(Text::CStringNN name);
+		};
+	}
+}
+#endif

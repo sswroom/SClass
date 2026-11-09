@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/FileStream.h"
 #include "Math/Math_C.h"
-#include "Math/GeographicCoordinateSystem.h"
+#include "Math/CSys/GeographicCoordinateSystem.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
@@ -15,7 +15,7 @@ Earth�fs gravitational constant: GM=3.986004418 * 10^14 m^3/s^2
 Angular velocity of the Earth: ��=7.292115 * 10^-5 rad/s
 */
 
-Math::GeographicCoordinateSystem::GeographicCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CStringNN csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::CSys::GeographicCoordinateSystem::GeographicCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CStringNN csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : CoordinateSystem(sourceName, srid, csysName)
 {
 	this->datum.spheroid.srid = datum->spheroid.srid;
 	this->datum.spheroid.ellipsoid = datum->spheroid.ellipsoid->Clone();
@@ -40,7 +40,7 @@ Math::GeographicCoordinateSystem::GeographicCoordinateSystem(NN<Text::String> so
 	this->unit = unit;
 }
 
-Math::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CStringNN csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::CSys::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CStringNN csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : CoordinateSystem(sourceName, srid, csysName)
 {
 	this->datum.spheroid.srid = datum->spheroid.srid;
 	this->datum.spheroid.ellipsoid = datum->spheroid.ellipsoid->Clone();
@@ -65,41 +65,41 @@ Math::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::CStringNN sou
 	this->unit = unit;
 }
 
-Math::GeographicCoordinateSystem::~GeographicCoordinateSystem()
+Math::CSys::GeographicCoordinateSystem::~GeographicCoordinateSystem()
 {
 	Text::StrDelNew(this->datum.name);
 	Text::StrDelNew(this->datum.spheroid.name);
 	this->datum.spheroid.ellipsoid.Delete();
 }
 
-Double Math::GeographicCoordinateSystem::CalSurfaceDistance(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::CSys::GeographicCoordinateSystem::CalSurfaceDistance(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const
 {
 	return this->datum.spheroid.ellipsoid->CalSurfaceDistance(pos1.GetLat(), pos1.GetLon(), pos2.GetLat(), pos2.GetLon(), unit);
 }
 
-Double Math::GeographicCoordinateSystem::CalLineStringDistance(NN<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::CSys::GeographicCoordinateSystem::CalLineStringDistance(NN<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
 {
 	return this->datum.spheroid.ellipsoid->CalLineStringDistance(lineString, include3D, unit);
 }
 
-NN<Math::CoordinateSystem> Math::GeographicCoordinateSystem::Clone() const
+NN<Math::CSys::CoordinateSystem> Math::CSys::GeographicCoordinateSystem::Clone() const
 {
-	NN<Math::CoordinateSystem> csys;
-	NEW_CLASSNN(csys, Math::GeographicCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), &this->datum, this->primem, this->unit));
+	NN<CoordinateSystem> csys;
+	NEW_CLASSNN(csys, GeographicCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), &this->datum, this->primem, this->unit));
 	return csys;
 }
 
-Math::CoordinateSystem::CoordinateSystemType Math::GeographicCoordinateSystem::GetCoordSysType() const
+Math::CSys::CoordinateSystem::CoordinateSystemType Math::CSys::GeographicCoordinateSystem::GetCoordSysType() const
 {
-	return Math::CoordinateSystem::CoordinateSystemType::Geographic;
+	return CoordinateSystem::CoordinateSystemType::Geographic;
 }
 
-Bool Math::GeographicCoordinateSystem::IsProjected() const
+Bool Math::CSys::GeographicCoordinateSystem::IsProjected() const
 {
 	return false;
 }
 
-void Math::GeographicCoordinateSystem::ToString(NN<Text::StringBuilderUTF8> sb) const
+void Math::CSys::GeographicCoordinateSystem::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->AppendC(UTF8STRC("Geographic File Name: "));
 	sb->Append(this->sourceName);
@@ -111,7 +111,7 @@ void Math::GeographicCoordinateSystem::ToString(NN<Text::StringBuilderUTF8> sb) 
 	DatumData1ToString(this->datum, sb);
 }
 
-Math::Vector3D Math::GeographicCoordinateSystem::ToCartesianCoordRad(Math::Vector3D lonLatH) const
+Math::Vector3D Math::CSys::GeographicCoordinateSystem::ToCartesianCoordRad(Math::Vector3D lonLatH) const
 {
 	Math::Vector3D tmpPos = this->datum.spheroid.ellipsoid->ToCartesianCoordRad(lonLatH);
 	if (this->datum.scale == 0 && this->datum.xAngle == 0 && this->datum.yAngle == 0 && this->datum.zAngle == 0)
@@ -134,7 +134,7 @@ Math::Vector3D Math::GeographicCoordinateSystem::ToCartesianCoordRad(Math::Vecto
 	}
 }
 
-Math::Vector3D Math::GeographicCoordinateSystem::FromCartesianCoordRad(Math::Vector3D coord) const
+Math::Vector3D Math::CSys::GeographicCoordinateSystem::FromCartesianCoordRad(Math::Vector3D coord) const
 {
 	Math::Vector3D tmpPos;
 	if (this->datum.scale == 0 && this->datum.xAngle == 0 && this->datum.yAngle == 0 && this->datum.zAngle == 0)

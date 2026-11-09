@@ -1,14 +1,14 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Math/Math_C.h"
-#include "Math/MercatorProjectedCoordinateSystem.h"
-#include "Math/Mercator1SPProjectedCoordinateSystem.h"
+#include "Math/CSys/MercatorProjectedCoordinateSystem.h"
+#include "Math/CSys/Mercator1SPProjectedCoordinateSystem.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/Polyline.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CStringNN projName, Double falseEasting, Double falseNorthing, Double dcentralMeridian, Double dlatitudeOfOrigin, Double scaleFactor, NN<Math::GeographicCoordinateSystem> gcs, Math::CoordinateSystem::UnitType unit) : Math::CoordinateSystem(sourceName, srid, projName)
+Math::CSys::ProjectedCoordinateSystem::ProjectedCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CStringNN projName, Double falseEasting, Double falseNorthing, Double dcentralMeridian, Double dlatitudeOfOrigin, Double scaleFactor, NN<GeographicCoordinateSystem> gcs, CoordinateSystem::UnitType unit) : CoordinateSystem(sourceName, srid, projName)
 {
 	this->falseEasting = falseEasting;
 	this->falseNorthing = falseNorthing;
@@ -19,7 +19,7 @@ Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(NN<Text::String> sour
 	this->unit = unit;
 }
 
-Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CStringNN projName, Double falseEasting, Double falseNorthing, Double dcentralMeridian, Double dlatitudeOfOrigin, Double scaleFactor, NN<Math::GeographicCoordinateSystem> gcs, Math::CoordinateSystem::UnitType unit) : Math::CoordinateSystem(sourceName, srid, projName)
+Math::CSys::ProjectedCoordinateSystem::ProjectedCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CStringNN projName, Double falseEasting, Double falseNorthing, Double dcentralMeridian, Double dlatitudeOfOrigin, Double scaleFactor, NN<GeographicCoordinateSystem> gcs, CoordinateSystem::UnitType unit) : CoordinateSystem(sourceName, srid, projName)
 {
 	this->falseEasting = falseEasting;
 	this->falseNorthing = falseNorthing;
@@ -30,12 +30,12 @@ Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(Text::CStringNN sourc
 	this->unit = unit;
 }
 
-Math::ProjectedCoordinateSystem::~ProjectedCoordinateSystem()
+Math::CSys::ProjectedCoordinateSystem::~ProjectedCoordinateSystem()
 {
 	this->gcs.Delete();
 }
 
-Double Math::ProjectedCoordinateSystem::CalSurfaceDistance(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::CSys::ProjectedCoordinateSystem::CalSurfaceDistance(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const
 {
 	Math::Coord2DDbl diff = pos2 - pos1;
 	diff = diff * diff;
@@ -48,7 +48,7 @@ Double Math::ProjectedCoordinateSystem::CalSurfaceDistance(Math::Coord2DDbl pos1
 	return d;
 }
 
-Double Math::ProjectedCoordinateSystem::CalLineStringDistance(NN<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::CSys::ProjectedCoordinateSystem::CalLineStringDistance(NN<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UIntOS nPoint;
 	UIntOS nAlts;
@@ -105,12 +105,12 @@ Double Math::ProjectedCoordinateSystem::CalLineStringDistance(NN<Math::Geometry:
 	}
 }
 
-Bool Math::ProjectedCoordinateSystem::IsProjected() const
+Bool Math::CSys::ProjectedCoordinateSystem::IsProjected() const
 {
 	return true;
 }
 
-void Math::ProjectedCoordinateSystem::ToString(NN<Text::StringBuilderUTF8> sb) const
+void Math::CSys::ProjectedCoordinateSystem::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->AppendC(UTF8STRC("Projected File Name: "));
 	sb->Append(this->sourceName);
@@ -134,7 +134,7 @@ void Math::ProjectedCoordinateSystem::ToString(NN<Text::StringBuilderUTF8> sb) c
 	this->gcs->ToString(sb);
 }
 
-Math::Unit::Distance::DistanceUnit Math::ProjectedCoordinateSystem::GetDistanceUnit() const
+Math::Unit::Distance::DistanceUnit Math::CSys::ProjectedCoordinateSystem::GetDistanceUnit() const
 {
 	switch (this->unit)
 	{
@@ -147,7 +147,7 @@ Math::Unit::Distance::DistanceUnit Math::ProjectedCoordinateSystem::GetDistanceU
 	}
 }
 
-Double Math::ProjectedCoordinateSystem::GetDistanceRatio() const
+Double Math::CSys::ProjectedCoordinateSystem::GetDistanceRatio() const
 {
 	switch (this->unit)
 	{
@@ -161,7 +161,7 @@ Double Math::ProjectedCoordinateSystem::GetDistanceRatio() const
 	}
 }
 
-Bool Math::ProjectedCoordinateSystem::SameProjection(NN<const Math::ProjectedCoordinateSystem> csys) const
+Bool Math::CSys::ProjectedCoordinateSystem::SameProjection(NN<const ProjectedCoordinateSystem> csys) const
 {
 	if (this->falseEasting != csys->falseEasting)
 		return false;
@@ -176,7 +176,7 @@ Bool Math::ProjectedCoordinateSystem::SameProjection(NN<const Math::ProjectedCoo
 	return this->gcs->Equals(csys->gcs);
 }
 
-Double Math::ProjectedCoordinateSystem::CalcM(Double rLat) const
+Double Math::CSys::ProjectedCoordinateSystem::CalcM(Double rLat) const
 {
 	NN<Math::EarthEllipsoid> ellipsoid = this->gcs->GetEllipsoid();
 	Double a = ellipsoid->GetSemiMajorAxis();

@@ -15,11 +15,11 @@ void __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnImageChg(AnyType userObj)
 	if (me->chkAutoPan->IsChecked())
 	{
 		Math::Coord2DDbl pt = (me->imgMin + me->imgMax) * 0.5;
-		NN<Math::CoordinateSystem> lyrCsys = me->lyr->GetCoordinateSystem();
-		NN<Math::CoordinateSystem> envCsys = me->navi->GetCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> lyrCsys = me->lyr->GetCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> envCsys = me->navi->GetCoordinateSystem();
 		if (!lyrCsys->Equals(envCsys))
 		{
-			pt = Math::CoordinateSystem::Convert(lyrCsys, envCsys, pt);
+			pt = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, pt);
 		}
 		me->navi->PanToMap(pt);
 	}
@@ -92,14 +92,14 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseDown(AnyTyp
 		NEW_CLASSNN(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
 		ptList = lr->GetPointList(nPoints);
-		NN<Math::CoordinateSystem> lyrCsys = me->lyr->GetCoordinateSystem();
-		NN<Math::CoordinateSystem> envCsys = me->navi->GetCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> lyrCsys = me->lyr->GetCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> envCsys = me->navi->GetCoordinateSystem();
 		if (!lyrCsys->Equals(envCsys))
 		{
-			ptList[0] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, me->imgMax.y));
-			ptList[1] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, me->imgMax.y));
-			ptList[2] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, me->imgMin.y));
-			ptList[3] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, me->imgMin.y));
+			ptList[0] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, me->imgMax.y));
+			ptList[1] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, me->imgMax.y));
+			ptList[2] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, me->imgMin.y));
+			ptList[3] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, me->imgMin.y));
 			ptList[4] = ptList[0];
 		}
 		else
@@ -134,8 +134,8 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType 
 	{
 		return UI::EventState::ContinueEvent;
 	}
-	NN<Math::CoordinateSystem> lyrCsys = me->lyr->GetCoordinateSystem();
-	NN<Math::CoordinateSystem> envCsys = me->navi->GetCoordinateSystem();
+	NN<Math::CSys::CoordinateSystem> lyrCsys = me->lyr->GetCoordinateSystem();
+	NN<Math::CSys::CoordinateSystem> envCsys = me->navi->GetCoordinateSystem();
 	if (me->downType == 1)
 	{
 		Bool changed = false;
@@ -144,7 +144,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType 
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			pt1 = Math::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
+			pt1 = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
 		}
 
 		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
@@ -181,7 +181,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType 
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			pt1 = Math::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
+			pt1 = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
 		}
 
 		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
@@ -225,7 +225,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType 
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			pt1 = Math::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
+			pt1 = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
 		}
 
 		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
@@ -262,7 +262,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType 
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			pt1 = Math::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
+			pt1 = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
 		}
 
 		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
@@ -306,7 +306,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType 
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			pt1 = Math::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
+			pt1 = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
 		}
 
 		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
@@ -343,7 +343,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType 
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			pt1 = Math::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
+			pt1 = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
 		}
 
 		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
@@ -387,7 +387,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType 
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			pt1 = Math::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
+			pt1 = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
 		}
 
 		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
@@ -424,7 +424,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType 
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			pt1 = Math::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
+			pt1 = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
 		}
 
 		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
@@ -467,8 +467,8 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType 
 		Math::Coord2DDbl pt2 = me->navi->ScnXY2MapXY(scnPos - me->downPos);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			pt1 = Math::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
-			pt2 = Math::CoordinateSystem::Convert(envCsys, lyrCsys, pt2);
+			pt1 = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
+			pt2 = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, pt2);
 		}
 
 		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
@@ -496,14 +496,14 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 	NN<SSWR::AVIRead::AVIRGISEditImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditImageForm>();
 	if (me->currImage == -1)
 		return UI::EventState::ContinueEvent;
-	NN<Math::CoordinateSystem> lyrCsys = me->lyr->GetCoordinateSystem();
-	NN<Math::CoordinateSystem> envCsys = me->navi->GetCoordinateSystem();
+	NN<Math::CSys::CoordinateSystem> lyrCsys = me->lyr->GetCoordinateSystem();
+	NN<Math::CSys::CoordinateSystem> envCsys = me->navi->GetCoordinateSystem();
 	if (me->downType == 1)
 	{
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			mapPos = Math::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
+			mapPos = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
 		}
 
 		NN<Math::Geometry::Polygon> pg;
@@ -515,10 +515,10 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 		ptList = lr->GetPointList(nPoints);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			ptList[0] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, mapPos.y));
-			ptList[1] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, mapPos.y));
-			ptList[2] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, me->imgMin.y));
-			ptList[3] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, me->imgMin.y));
+			ptList[0] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, mapPos.y));
+			ptList[1] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, mapPos.y));
+			ptList[2] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, me->imgMin.y));
+			ptList[3] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, me->imgMin.y));
 			ptList[4] = ptList[0];
 		}
 		else
@@ -543,7 +543,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			mapPos = Math::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
+			mapPos = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
 		}
 
 		NN<Math::Geometry::Polygon> pg;
@@ -555,10 +555,10 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 		ptList = lr->GetPointList(nPoints);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			ptList[0] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, mapPos.y));
-			ptList[1] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, mapPos);
-			ptList[2] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(mapPos.x, me->imgMin.y));
-			ptList[3] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, me->imgMin.y));
+			ptList[0] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, mapPos.y));
+			ptList[1] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, mapPos);
+			ptList[2] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(mapPos.x, me->imgMin.y));
+			ptList[3] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, me->imgMin.y));
 			ptList[4] = ptList[0];
 		}
 		else
@@ -582,7 +582,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			mapPos = Math::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
+			mapPos = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
 		}
 
 		NN<Math::Geometry::Polygon> pg;
@@ -594,10 +594,10 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 		ptList = lr->GetPointList(nPoints);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			ptList[0] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, me->imgMax.y));
-			ptList[1] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(mapPos.x, me->imgMax.y));
-			ptList[2] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(mapPos.x, me->imgMin.y));
-			ptList[3] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, me->imgMin.y));
+			ptList[0] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, me->imgMax.y));
+			ptList[1] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(mapPos.x, me->imgMax.y));
+			ptList[2] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(mapPos.x, me->imgMin.y));
+			ptList[3] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, me->imgMin.y));
 			ptList[4] = ptList[0];
 		}
 		else
@@ -622,7 +622,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			mapPos = Math::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
+			mapPos = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
 		}
 
 		NN<Math::Geometry::Polygon> pg;
@@ -634,10 +634,10 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 		ptList = lr->GetPointList(nPoints);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			ptList[0] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, me->imgMax.y));
-			ptList[1] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(mapPos.x, me->imgMax.y));
-			ptList[2] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, mapPos);
-			ptList[3] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, mapPos.y));
+			ptList[0] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, me->imgMax.y));
+			ptList[1] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(mapPos.x, me->imgMax.y));
+			ptList[2] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, mapPos);
+			ptList[3] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, mapPos.y));
 			ptList[4] = ptList[0];
 		}
 		else
@@ -661,7 +661,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			mapPos = Math::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
+			mapPos = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
 		}
 
 		NN<Math::Geometry::Polygon> pg;
@@ -673,10 +673,10 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 		ptList = lr->GetPointList(nPoints);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			ptList[0] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, me->imgMax.y));
-			ptList[1] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, me->imgMax.y));
-			ptList[2] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, mapPos.y));
-			ptList[3] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, mapPos.y));
+			ptList[0] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, me->imgMax.y));
+			ptList[1] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, me->imgMax.y));
+			ptList[2] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, mapPos.y));
+			ptList[3] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x, mapPos.y));
 			ptList[4] = ptList[0];
 		}
 		else
@@ -701,7 +701,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			mapPos = Math::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
+			mapPos = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
 		}
 
 		NN<Math::Geometry::Polygon> pg;
@@ -713,10 +713,10 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 		ptList = lr->GetPointList(nPoints);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			ptList[0] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(mapPos.x, me->imgMax.y));
-			ptList[1] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, me->imgMax.y));
-			ptList[2] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, mapPos.y));
-			ptList[3] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, mapPos);
+			ptList[0] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(mapPos.x, me->imgMax.y));
+			ptList[1] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, me->imgMax.y));
+			ptList[2] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, mapPos.y));
+			ptList[3] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, mapPos);
 			ptList[4] = ptList[0];
 		}
 		else
@@ -740,7 +740,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			mapPos = Math::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
+			mapPos = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
 		}
 
 		NN<Math::Geometry::Polygon> pg;
@@ -752,10 +752,10 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 		ptList = lr->GetPointList(nPoints);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			ptList[0] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(mapPos.x, me->imgMax.y));
-			ptList[1] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, me->imgMax.y));
-			ptList[2] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, me->imgMin.y));
-			ptList[3] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(mapPos.x, me->imgMin.y));
+			ptList[0] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(mapPos.x, me->imgMax.y));
+			ptList[1] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, me->imgMax.y));
+			ptList[2] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, me->imgMin.y));
+			ptList[3] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(mapPos.x, me->imgMin.y));
 			ptList[4] = ptList[0];
 		}
 		else
@@ -780,7 +780,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			mapPos = Math::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
+			mapPos = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, mapPos);
 		}
 
 		NN<Math::Geometry::Polygon> pg;
@@ -792,10 +792,10 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 		ptList = lr->GetPointList(nPoints);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			ptList[0] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, mapPos);
-			ptList[1] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, mapPos.y));
-			ptList[2] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, me->imgMin.y));
-			ptList[3] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(mapPos.x, me->imgMin.y));
+			ptList[0] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, mapPos);
+			ptList[1] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, mapPos.y));
+			ptList[2] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x, me->imgMin.y));
+			ptList[3] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(mapPos.x, me->imgMin.y));
 			ptList[4] = ptList[0];
 		}
 		else
@@ -819,8 +819,8 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 		Math::Coord2DDbl pt2 = me->navi->ScnXY2MapXY(scnPos - me->downPos);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			pt1 = Math::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
-			pt2 = Math::CoordinateSystem::Convert(envCsys, lyrCsys, pt2);
+			pt1 = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, pt1);
+			pt2 = Math::CSys::CoordinateSystem::Convert(envCsys, lyrCsys, pt2);
 		}
 
 		NN<Math::Geometry::Polygon> pg;
@@ -832,10 +832,10 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 		ptList = lr->GetPointList(nPoints);
 		if (!lyrCsys->Equals(envCsys))
 		{
-			ptList[0] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x + pt2.x - pt1.x, me->imgMax.y + pt2.y - pt1.y));
-			ptList[1] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x + pt2.x - pt1.x, me->imgMax.y + pt2.y - pt1.y));
-			ptList[2] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x + pt2.x - pt1.x, me->imgMin.y + pt2.y - pt1.y));
-			ptList[3] = Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x + pt2.x - pt1.x, me->imgMin.y + pt2.y - pt1.y));
+			ptList[0] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x + pt2.x - pt1.x, me->imgMax.y + pt2.y - pt1.y));
+			ptList[1] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x + pt2.x - pt1.x, me->imgMax.y + pt2.y - pt1.y));
+			ptList[2] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMax.x + pt2.x - pt1.x, me->imgMin.y + pt2.y - pt1.y));
+			ptList[3] = Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(me->imgMin.x + pt2.x - pt1.x, me->imgMin.y + pt2.y - pt1.y));
 			ptList[4] = ptList[0];
 		}
 		else
@@ -927,12 +927,12 @@ Int32 SSWR::AVIRead::AVIRGISEditImageForm::CalcDownType(Math::Coord2D<IntOS> scn
 	Int32 vPos = 0;
 	Math::Coord2D<IntOS> tl;
 	Math::Coord2D<IntOS> br;
-	NN<Math::CoordinateSystem> lyrCsys = this->lyr->GetCoordinateSystem();
-	NN<Math::CoordinateSystem> envCsys = this->navi->GetCoordinateSystem();
+	NN<Math::CSys::CoordinateSystem> lyrCsys = this->lyr->GetCoordinateSystem();
+	NN<Math::CSys::CoordinateSystem> envCsys = this->navi->GetCoordinateSystem();
 	if (!lyrCsys->Equals(envCsys))
 	{
-		tl = this->navi->MapXY2ScnXY(Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(this->imgMin.x, this->imgMax.y)));
-		br = this->navi->MapXY2ScnXY(Math::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(this->imgMax.x, this->imgMin.y)));
+		tl = this->navi->MapXY2ScnXY(Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(this->imgMin.x, this->imgMax.y)));
+		br = this->navi->MapXY2ScnXY(Math::CSys::CoordinateSystem::Convert(lyrCsys, envCsys, Math::Coord2DDbl(this->imgMax.x, this->imgMin.y)));
 	}
 	else
 	{

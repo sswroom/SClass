@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Math/CoordinateSystemConverter.h"
+#include "Math/CSys/CoordinateSystemConverter.h"
 #include "SSWR/AVIRead/AVIRGISGroupQueryForm.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -29,8 +29,8 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType
 		UnsafeArray<UTF8Char> sptr;
 		Data::ArrayListNN<Map::MapDrawLayer> layers;
 		NN<Map::MapDrawLayer> lyr;
-		NN<Math::CoordinateSystem> csysEnv = me->navi->GetCoordinateSystem();
-		NN<Math::CoordinateSystem> csysLyr;
+		NN<Math::CSys::CoordinateSystem> csysEnv = me->navi->GetCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> csysLyr;
 		Data::ArrayListNN<Math::Geometry::Vector2D> vecList;
 		NN<Math::Geometry::Vector2D> vec;
 		Text::StringBuilderUTF8 sb;
@@ -48,7 +48,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType
 				csysLyr = lyr->GetCoordinateSystem();
 				if (!csysEnv->Equals(csysLyr))
 				{
-					mapLyrPos = Math::CoordinateSystem::Convert(csysEnv, csysLyr, mapEnvPos);
+					mapLyrPos = Math::CSys::CoordinateSystem::Convert(csysEnv, csysLyr, mapEnvPos);
 				}
 				else
 				{
@@ -70,7 +70,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType
 
 						if (!csysEnv->Equals(csysLyr))
 						{
-							Math::CoordinateSystemConverter converter(csysLyr, csysEnv);
+							Math::CSys::CoordinateSystemConverter converter(csysLyr, csysEnv);
 							vec->Convert(converter);
 							me->queryVecList.Add(vec);
 						}
@@ -87,7 +87,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType
 					Math::Coord2DDbl mapLyrPos2 = me->navi->ScnXY2MapXY(scnPos + Math::Coord2D<IntOS>(5, 0));
 					if (!csysEnv->Equals(csysLyr))
 					{
-						mapLyrPos2 = Math::CoordinateSystem::Convert(csysEnv, csysLyr, mapLyrPos2);
+						mapLyrPos2 = Math::CSys::CoordinateSystem::Convert(csysEnv, csysLyr, mapLyrPos2);
 					}
 					Data::ArrayListNN<Map::MapDrawLayer::ObjectInfo> objList;
 					NN<Map::MapDrawLayer::ObjectInfo> obj;
@@ -110,7 +110,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType
 								Math::Coord2DDbl ptNear;
 								if (!csysEnv->Equals(csysLyr))
 								{
-									ptNear = Math::CoordinateSystem::Convert(csysLyr, csysEnv, obj->objPos);
+									ptNear = Math::CSys::CoordinateSystem::Convert(csysLyr, csysEnv, obj->objPos);
 								}
 								else
 								{
@@ -155,7 +155,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType
 								csysLyr = lyr->GetCoordinateSystem();
 								if (!csysEnv->Equals(csysLyr))
 								{
-									mapLyrPos = Math::CoordinateSystem::Convert(csysEnv, csysLyr, mapEnvPos);
+									mapLyrPos = Math::CSys::CoordinateSystem::Convert(csysEnv, csysLyr, mapEnvPos);
 								}
 								else
 								{
@@ -176,7 +176,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType
 								me->queryVecOriList.Add(vec->Clone());
 								if (!csysEnv->Equals(csysLyr))
 								{
-									Math::CoordinateSystemConverter converter(csysLyr, csysEnv);
+									Math::CSys::CoordinateSystemConverter converter(csysLyr, csysEnv);
 									vec->Convert(converter);
 								}
 								me->queryVecList.Add(vec);

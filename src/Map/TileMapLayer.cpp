@@ -5,7 +5,7 @@
 #include "Map/MercatorMapView.h"
 #include "Map/ScaledMapView.h"
 #include "Map/TileMapLayer.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Geometry/VectorImage.h"
 #include "Media/ImageList.h"
 #include "Sync/MutexUsage.h"
@@ -305,7 +305,7 @@ NN<Map::MapView> Map::TileMapLayer::CreateMapView(Math::Size2DDbl scnSize)
 		}
 		Math::RectAreaDbl bounds;
 		this->tileMap->GetBounds(bounds);
-		NN<Math::CoordinateSystem> csys = this->tileMap->GetCoordinateSystem();
+		NN<Math::CSys::CoordinateSystem> csys = this->tileMap->GetCoordinateSystem();
 		NEW_CLASSNN(view, Map::LeveledMapView(csys->IsProjected(), scnSize, bounds.GetCenter(), scales));
 		return view;
 	}

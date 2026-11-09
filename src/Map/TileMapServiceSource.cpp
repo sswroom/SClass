@@ -4,7 +4,7 @@
 #include "IO/StmData/FileData.h"
 #include "Map/TileMapServiceSource.h"
 #include "Map/TileMapUtil.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Math/Unit/Distance.h"
 #include "Net/HTTPClient.h"
 #include "Text/XMLReader.h"
@@ -57,19 +57,19 @@ void Map::TileMapServiceSource::LoadXML()
 					sb.ClearStr();
 					if (reader.ReadNodeText(sb))
 					{
-						NN<Math::CoordinateSystem> csys;
-						if (Math::CoordinateSystemManager::CreateFromName(sb.ToCString(), nullptr).SetTo(csys))
+						NN<Math::CSys::CoordinateSystem> csys;
+						if (Math::CSys::CoordinateSystemManager::CreateFromName(sb.ToCString(), nullptr).SetTo(csys))
 						{
 							this->csys.Delete();
 							this->csys = csys;
 #if defined(VERBOSE)
 							printf("SRID = %d\r\n", this->csys->GetSRID());
 #endif
-							NN<const Math::CoordinateSystemManager::SpatialRefInfo> srInfo;
-							if (Math::CoordinateSystemManager::SRGetSpatialRef(this->csys->GetSRID()).SetTo(srInfo))
+							NN<const Math::CSys::CoordinateSystemManager::SpatialRefInfo> srInfo;
+							if (Math::CSys::CoordinateSystemManager::SRGetSpatialRef(this->csys->GetSRID()).SetTo(srInfo))
 							{
-								NN<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
-								this->csysOrigin = Math::CoordinateSystem::Convert(wgs84, this->csys, Math::Coord2DDbl(srInfo->minXGeo, srInfo->minYGeo));
+								NN<Math::CSys::CoordinateSystem> wgs84 = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
+								this->csysOrigin = Math::CSys::CoordinateSystem::Convert(wgs84, this->csys, Math::Coord2DDbl(srInfo->minXGeo, srInfo->minYGeo));
 								wgs84.Delete();
 #if defined(VERBOSE)
 								printf("SR Origin = (%lf, %lf)\r\n", this->csysOrigin.x, this->csysOrigin.y);
@@ -290,7 +290,7 @@ Map::TileMapServiceSource::TileMapServiceSource(NN<Net::TCPClientFactory> clif, 
 	this->csysOrigin = Math::Coord2DDbl(0, 0);
 	this->title = nullptr;
 	this->tileExt = nullptr;
-	this->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
+	this->csys = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 	this->tileWidth = 256;
 	this->tileHeight = 256;
 	this->concurrCnt = 2;
@@ -398,7 +398,7 @@ Bool Map::TileMapServiceSource::GetBounds(OutParam<Math::RectAreaDbl> bounds) co
 	return true;
 }
 
-NN<Math::CoordinateSystem> Map::TileMapServiceSource::GetCoordinateSystem() const
+NN<Math::CSys::CoordinateSystem> Map::TileMapServiceSource::GetCoordinateSystem() const
 {
 	return this->csys;
 }

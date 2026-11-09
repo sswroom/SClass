@@ -42,7 +42,7 @@ IntOS __stdcall Map::MapDrawLayer::ObjectCompare(NN<ObjectInfo> obj1, NN<ObjectI
 	}
 }
 
-Map::MapDrawLayer::MapDrawLayer(NN<Text::String> sourceName, UIntOS nameCol, Optional<Text::String> layerName, NN<Math::CoordinateSystem> csys) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
+Map::MapDrawLayer::MapDrawLayer(NN<Text::String> sourceName, UIntOS nameCol, Optional<Text::String> layerName, NN<Math::CSys::CoordinateSystem> csys) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
 	this->layerName = Text::String::CopyOrNull(layerName);
@@ -58,7 +58,7 @@ Map::MapDrawLayer::MapDrawLayer(NN<Text::String> sourceName, UIntOS nameCol, Opt
 	this->tzQhr = Data::DateTimeUtil::GetLocalTzQhr();
 }
 
-Map::MapDrawLayer::MapDrawLayer(Text::CStringNN sourceName, UIntOS nameCol, Text::CString layerName, NN<Math::CoordinateSystem> csys) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
+Map::MapDrawLayer::MapDrawLayer(Text::CStringNN sourceName, UIntOS nameCol, Text::CString layerName, NN<Math::CSys::CoordinateSystem> csys) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
 	this->layerName = Text::String::NewOrNull(layerName);
@@ -244,12 +244,12 @@ IO::ParserType Map::MapDrawLayer::GetParserType() const
 	return IO::ParserType::MapLayer;
 }
 
-NN<Math::CoordinateSystem> Map::MapDrawLayer::GetCoordinateSystem() const
+NN<Math::CSys::CoordinateSystem> Map::MapDrawLayer::GetCoordinateSystem() const
 {
 	return this->csys;
 }
 
-void Map::MapDrawLayer::SetCoordinateSystem(NN<Math::CoordinateSystem> csys)
+void Map::MapDrawLayer::SetCoordinateSystem(NN<Math::CSys::CoordinateSystem> csys)
 {
 	this->csys.Delete();
 	this->csys = csys;
@@ -662,7 +662,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 	{
 		l--;
 	}
-	NN<Math::CoordinateSystem> csys = this->csys->Clone();
+	NN<Math::CSys::CoordinateSystem> csys = this->csys->Clone();
 	NEW_CLASSNN(lyr, Map::VectorLayer(this->GetLayerType(), this->sourceName, l, sptrs, csys, this->GetNameCol(), this->layerName));
 
 	sess = this->BeginGetObject();
@@ -1260,7 +1260,7 @@ Bool Map::MapLayerReader::GetColDef(UIntOS colIndex, NN<DB::ColDef> colDef)
 
 void Map::MapLayerReader::GetShapeColDef(NN<DB::ColDef> colDef, NN<const Map::MapDrawLayer> layer)
 {
-	NN<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
+	NN<Math::CSys::CoordinateSystem> csys = layer->GetCoordinateSystem();
 	colDef->SetColType(DB::DBUtil::CT_Vector);
 	colDef->SetColName(CSTR("Shape"));
 	colDef->SetColSize(GetShapeColSize(layer->GetLayerType()));

@@ -11,7 +11,7 @@
 #include "Map/DrawMapRenderer.h"
 #include "Map/MercatorMapView.h"
 #include "Map/MercatorTileMap.h"
-#include "Math/CoordinateSystemManager.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
 #include "SSWR/AVIRead/AVIROSMTileGeneratorForm.h"
@@ -394,7 +394,7 @@ SSWR::AVIRead::AVIROSMTileGeneratorForm::AVIROSMTileGeneratorForm(Optional<UI::G
 {
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateWGS84Csys();
+	NN<Math::CSys::CoordinateSystem> csys = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
 	NEW_CLASSNN(this->env, Map::MapEnv(CSTR("OSM Tile Generator"), 0xffffffff, csys));
 
 	this->SetText(CSTR("OSM Tile Generator"));

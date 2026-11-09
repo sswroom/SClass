@@ -17,11 +17,11 @@ UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WriteSRID(UnsafeArray<UTF8Char> buf
 	return buff;
 }
 
-UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WritePrimem(UnsafeArray<UTF8Char> buff, Math::CoordinateSystem::PrimemType primem, UIntOS lev, Text::LineBreakType lbt)
+UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WritePrimem(UnsafeArray<UTF8Char> buff, Math::CSys::CoordinateSystem::PrimemType primem, UIntOS lev, Text::LineBreakType lbt)
 {
 	switch (primem)
 	{
-	case Math::CoordinateSystem::PT_GREENWICH:
+	case Math::CSys::CoordinateSystem::PT_GREENWICH:
 		*buff++ = ',';
 		buff = WriteNextLine(buff, lev, lbt);
 		buff = Text::StrConcatC(buff, UTF8STRC("PRIMEM[\"Greenwich\",0]"));
@@ -30,21 +30,21 @@ UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WritePrimem(UnsafeArray<UTF8Char> b
 	return buff;
 }
 
-UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WriteUnit(UnsafeArray<UTF8Char> buff, Math::CoordinateSystem::UnitType unit, UIntOS lev, Text::LineBreakType lbt)
+UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WriteUnit(UnsafeArray<UTF8Char> buff, Math::CSys::CoordinateSystem::UnitType unit, UIntOS lev, Text::LineBreakType lbt)
 {
 	switch (unit)
 	{
-	case Math::CoordinateSystem::UT_DEGREE:
+	case Math::CSys::CoordinateSystem::UT_DEGREE:
 		*buff++ = ',';
 		buff = WriteNextLine(buff, lev, lbt);
 		buff = Text::StrConcatC(buff, UTF8STRC("UNIT[\"Degree\",0.017453292519943295]"));
 		return buff;
-	case Math::CoordinateSystem::UT_CLARKE_FOOT:
+	case Math::CSys::CoordinateSystem::UT_CLARKE_FOOT:
 		*buff++ = ',';
 		buff = WriteNextLine(buff, lev, lbt);
 		buff = Text::StrConcatC(buff, UTF8STRC("UNIT[\"Clarke's foot\",0.3047972654]"));
 		return buff;
-	case Math::CoordinateSystem::UT_METRE:
+	case Math::CSys::CoordinateSystem::UT_METRE:
 		*buff++ = ',';
 		buff = WriteNextLine(buff, lev, lbt);
 		buff = Text::StrConcatC(buff, UTF8STRC("UNIT[\"Meter\",1]"));
@@ -53,7 +53,7 @@ UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WriteUnit(UnsafeArray<UTF8Char> buf
 	return buff;
 }
 
-UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WriteProjExtra(UnsafeArray<UTF8Char> buff, NN<Math::CoordinateSystem> pcsys, UIntOS lev, Text::LineBreakType lbt)
+UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WriteProjExtra(UnsafeArray<UTF8Char> buff, NN<Math::CSys::CoordinateSystem> pcsys, UIntOS lev, Text::LineBreakType lbt)
 {
 	return buff;
 }

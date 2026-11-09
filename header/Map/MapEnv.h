@@ -135,7 +135,7 @@ namespace Map
 		UIntOS nStr;
 		UIntOS defLineStyle;
 		UIntOS defFontStyle;
-		NN<Math::CoordinateSystem> csys;
+		NN<Math::CSys::CoordinateSystem> csys;
 		Double maxScale;
 		Double minScale;
 
@@ -146,7 +146,7 @@ namespace Map
 		void RemoveGroupUpdatedHandler(Optional<GroupItem> group, Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj);
 		void WaitForGroupLoad(Optional<GroupItem> group, Data::Duration maxWaitTime);
 	public:
-		MapEnv(Text::CStringNN fileName, UInt32 bgColor, NN<Math::CoordinateSystem> csys);
+		MapEnv(Text::CStringNN fileName, UInt32 bgColor, NN<Math::CSys::CoordinateSystem> csys);
 		virtual ~MapEnv();
 
 		virtual IO::ParserType GetParserType() const;
@@ -222,7 +222,7 @@ namespace Map
 		Bool GetBounds(Optional<Map::MapEnv::GroupItem> group, OutParam<Math::RectAreaDbl> bounds) const;
 		Bool GetLayerBounds(Optional<Map::MapEnv::GroupItem> group, UIntOS index, OutParam<Math::RectAreaDbl> bounds) const;
 		NN<Map::MapView> CreateMapView(Math::Size2DDbl scnSize) const;
-		NN<Math::CoordinateSystem> GetCoordinateSystem() const;
+		NN<Math::CSys::CoordinateSystem> GetCoordinateSystem() const;
 		UInt32 GetSRID() const;
 
 		void BeginUse(NN<Sync::MutexUsage> mutUsage) const;

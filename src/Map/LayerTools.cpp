@@ -23,7 +23,7 @@ Optional<Map::VectorLayer> Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<M
 
 	Map::DrawLayerType lyrType = lyr->GetLayerType();
 	sourceName = lyr->GetSourceNameObj();
-	NN<Math::CoordinateSystem> csys = lyr->GetCoordinateSystem();
+	NN<Math::CSys::CoordinateSystem> csys = lyr->GetCoordinateSystem();
 	i = layerCnt;
 	while (i-- > 0)
 	{

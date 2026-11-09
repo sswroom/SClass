@@ -60,8 +60,8 @@ namespace Map
 		virtual UIntOS GetGeomCol() const;
 
 		virtual ObjectClass GetObjectClass() const;
-		virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
-		virtual void SetCoordinateSystem(NN<Math::CoordinateSystem> csys);
+		virtual NN<Math::CSys::CoordinateSystem> GetCoordinateSystem() const;
+		virtual void SetCoordinateSystem(NN<Math::CSys::CoordinateSystem> csys);
 
 		void ReleaseAll();
 		void ReorderLayers();

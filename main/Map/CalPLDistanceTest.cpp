@@ -32,7 +32,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			NN<Map::GetObjectSess> sess = layer->BeginGetObject();
 			Optional<Map::NameArray> nameArr;
 			NN<Math::Geometry::Vector2D> vec;
-			NN<Math::CoordinateSystem> coord;
+			NN<Math::CSys::CoordinateSystem> coord;
 			UIntOS i;
 
 			NEW_CLASSNN(objIds, Data::ArrayListInt64());

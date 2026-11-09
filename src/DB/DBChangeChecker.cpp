@@ -6,12 +6,12 @@
 #include "DB/ReadingDBTool.h"
 #include "DB/TableDef.h"
 #include "Map/ESRI/FileGDBUtil.h"
-#include "Math/CoordinateSystemConverter.h"
-#include "Math/CoordinateSystemManager.h"
 #include "Math/MSGeography.h"
 #include "Math/WKBReader.h"
 #include "Math/WKTReader.h"
 #include "Math/WKTWriter.h"
+#include "Math/CSys/CoordinateSystemConverter.h"
+#include "Math/CSys/CoordinateSystemManager.h"
 
 Bool DB::DBChangeChecker::IsColIndexValid(NN<Data::ArrayListNative<UIntOS>> colInd, NN<DB::TableDef> destTable)
 {
@@ -423,10 +423,10 @@ Bool DB::DBChangeChecker::CheckChange()
 		this->SetLastError(CSTR("Error in getting table structure"));
 		return false;
 	}
-	Optional<Math::CoordinateSystem> csysDB = nullptr;
-	Optional<Math::CoordinateSystem> csysSrc = nullptr;
-	NN<Math::CoordinateSystem> nncsysDB;
-	NN<Math::CoordinateSystem> nncsysSrc;
+	Optional<Math::CSys::CoordinateSystem> csysDB = nullptr;
+	Optional<Math::CSys::CoordinateSystem> csysSrc = nullptr;
+	NN<Math::CSys::CoordinateSystem> nncsysDB;
+	NN<Math::CSys::CoordinateSystem> nncsysSrc;
 	Text::StringBuilderUTF8 sb;
 	UIntOS keyCol1 = this->keyCol1;
 	UIntOS keyDCol1;
@@ -631,7 +631,7 @@ Bool DB::DBChangeChecker::CheckChange()
 												{
 													if (!csysDB.SetTo(nncsysDB))
 													{
-														nncsysDB = Math::CoordinateSystemManager::SRCreateCSysOrDef(destSRID);
+														nncsysDB = Math::CSys::CoordinateSystemManager::SRCreateCSysOrDef(destSRID);
 														csysDB = nncsysDB;
 													}
 													if (csysSrc.SetTo(nncsysSrc))
@@ -639,16 +639,16 @@ Bool DB::DBChangeChecker::CheckChange()
 														if (nncsysSrc->GetSRID() != srcSRID)
 														{
 															nncsysSrc.Delete();
-															nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
+															nncsysSrc = Math::CSys::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
 															csysSrc = nncsysSrc;
 														}
 													}
 													else
 													{
-														nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
+														nncsysSrc = Math::CSys::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
 														csysSrc = nncsysSrc;
 													}
-													Math::CoordinateSystemConverter csysConv(nncsysSrc, nncsysDB);
+													Math::CSys::CoordinateSystemConverter csysConv(nncsysSrc, nncsysDB);
 													vec->Convert(csysConv);
 													updated = true;
 												}
@@ -1023,10 +1023,10 @@ Bool DB::DBChangeChecker::GenerateSQL(DB::SQLType sqlType, Bool axisAware, SQLHa
 	NN<DB::TableDef> table;
 	NN<DB::ColDef> col;
 	UInt32 dbSrid = 0;
-	Optional<Math::CoordinateSystem> csysDB = nullptr;
-	Optional<Math::CoordinateSystem> csysSrc = nullptr;
-	NN<Math::CoordinateSystem> nncsysDB;
-	NN<Math::CoordinateSystem> nncsysSrc;
+	Optional<Math::CSys::CoordinateSystem> csysDB = nullptr;
+	Optional<Math::CSys::CoordinateSystem> csysSrc = nullptr;
+	NN<Math::CSys::CoordinateSystem> nncsysDB;
+	NN<Math::CSys::CoordinateSystem> nncsysSrc;
 	Text::StringBuilderUTF8 sb;
 	if (dataConn->GetTableDef(dataSchema, dataTable).SetTo(table))
 	{
@@ -1299,7 +1299,7 @@ Bool DB::DBChangeChecker::GenerateSQL(DB::SQLType sqlType, Bool axisAware, SQLHa
 												{
 													if (!csysDB.SetTo(nncsysDB))
 													{
-														nncsysDB = Math::CoordinateSystemManager::SRCreateCSysOrDef(destSRID);
+														nncsysDB = Math::CSys::CoordinateSystemManager::SRCreateCSysOrDef(destSRID);
 														csysDB = nncsysDB;
 													}
 													if (csysSrc.SetTo(nncsysSrc))
@@ -1307,16 +1307,16 @@ Bool DB::DBChangeChecker::GenerateSQL(DB::SQLType sqlType, Bool axisAware, SQLHa
 														if (nncsysSrc->GetSRID() != srcSRID)
 														{
 															nncsysSrc.Delete();
-															nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
+															nncsysSrc = Math::CSys::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
 															csysSrc = nncsysSrc;
 														}
 													}
 													else
 													{
-														nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
+														nncsysSrc = Math::CSys::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
 														csysSrc = nncsysSrc;
 													}
-													Math::CoordinateSystemConverter csysConv(nncsysSrc, nncsysDB);
+													Math::CSys::CoordinateSystemConverter csysConv(nncsysSrc, nncsysDB);
 													vec->Convert(csysConv);
 													updated = true;
 												}
@@ -1429,7 +1429,7 @@ Bool DB::DBChangeChecker::GenerateSQL(DB::SQLType sqlType, Bool axisAware, SQLHa
 									{
 										if (!csysDB.SetTo(nncsysDB))
 										{
-											nncsysDB = Math::CoordinateSystemManager::SRCreateCSysOrDef(destSRID);
+											nncsysDB = Math::CSys::CoordinateSystemManager::SRCreateCSysOrDef(destSRID);
 											csysDB = nncsysDB;
 										}
 										if (csysSrc.SetTo(nncsysSrc))
@@ -1437,16 +1437,16 @@ Bool DB::DBChangeChecker::GenerateSQL(DB::SQLType sqlType, Bool axisAware, SQLHa
 											if (nncsysSrc->GetSRID() != srcSRID)
 											{
 												nncsysSrc.Delete();
-												nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
+												nncsysSrc = Math::CSys::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
 												csysSrc = nncsysSrc;
 											}
 										}
 										else
 										{
-											nncsysSrc = Math::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
+											nncsysSrc = Math::CSys::CoordinateSystemManager::SRCreateCSysOrDef(srcSRID);
 											csysSrc = nncsysSrc;
 										}
-										Math::CoordinateSystemConverter csysConv(nncsysSrc, nncsysDB);
+										Math::CSys::CoordinateSystemConverter csysConv(nncsysSrc, nncsysDB);
 										vec->Convert(csysConv);
 									}
 								}
