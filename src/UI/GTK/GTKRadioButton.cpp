@@ -3,12 +3,21 @@
 #include "Text/MyString.h"
 #include "UI/GTK/GTKRadioButton.h"
 
+#if GTK_CHECK_VERSION(4, 0, 0)
+void UI::GTK::GTKRadioButton::SignalToggled(GtkCheckButton *btn, gpointer data)
+{
+	UI::GTK::GTKRadioButton *me = (UI::GTK::GTKRadioButton *)data;
+	Bool sel = gtk_check_button_get_active((GtkCheckButton*)me->GetHandle().OrNull());
+	me->ChangeSelected(sel);
+}
+#else
 void UI::GTK::GTKRadioButton::SignalToggled(GtkRadioButton *btn, gpointer data)
 {
 	UI::GTK::GTKRadioButton *me = (UI::GTK::GTKRadioButton *)data;
 	Bool sel = gtk_toggle_button_get_active((GtkToggleButton*)me->GetHandle().OrNull());
 	me->ChangeSelected(sel);
 }
+#endif
 
 void UI::GTK::GTKRadioButton::ChangeSelected(Bool selVal)
 {
@@ -45,6 +54,13 @@ UI::GTK::GTKRadioButton::GTKRadioButton(NN<UI::GUICore> ui, NN<UI::GUIClientCont
 		i++;
 	}
 	
+#if GTK_CHECK_VERSION(4, 0, 0)
+	this->hwnd = (ControlHandle*)gtk_check_button_new_with_label((const Char*)initText.v.Ptr());
+	if (radioBtn)
+	{
+		gtk_check_button_set_group(GTK_CHECK_BUTTON(this->hwnd.OrNull()), GTK_CHECK_BUTTON(radioBtn->GetHandle().OrNull()));
+	}
+#else
 	if (radioBtn)
 	{
 		this->hwnd = (ControlHandle*)gtk_radio_button_new_with_label_from_widget((GtkRadioButton*)radioBtn->GetHandle().OrNull(), (const Char*)initText.v.Ptr());
@@ -53,6 +69,7 @@ UI::GTK::GTKRadioButton::GTKRadioButton(NN<UI::GUICore> ui, NN<UI::GUIClientCont
 	{
 		this->hwnd = (ControlHandle*)gtk_radio_button_new_with_label(0, (const Char*)initText.v.Ptr());
 	}
+#endif
 	parent->AddChild(*this);
 	this->Show();
 
@@ -77,5 +94,9 @@ Bool UI::GTK::GTKRadioButton::IsSelected()
 
 void UI::GTK::GTKRadioButton::Select()
 {
+#if GTK_CHECK_VERSION(4, 0, 0)
+	gtk_check_button_set_active((GtkCheckButton*)this->hwnd.OrNull(), true);
+#else
 	gtk_toggle_button_set_active((GtkToggleButton*)this->hwnd.OrNull(), true);
+#endif
 }
