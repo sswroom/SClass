@@ -289,6 +289,25 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 					}
 				}
 			}
+			else if (str1.StartsWith(UTF8STRC("@!(")))
+			{
+				i = str1.IndexOf(')');
+				if (i != INVALID_INDEX && i > 1)
+				{
+					Text::StringBuilderUTF8 sbCmd;
+					AppendCfgItem(sbCmd, Text::CStringNN(&str1.v[3], (UIntOS)i - 3));
+					Text::StringBuilderUTF8 result;
+					Int32 ret;
+					if ((ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), result)) == 0)
+					{
+						valid = false;
+					}
+					else
+					{
+						str1 = str1.Substring(i + 1);
+					}
+				}
+			}
 			if (prog.SetTo(nnprog) && valid)
 			{
 				Text::CStringNN ccfg = str1.ToCString();
@@ -622,6 +641,25 @@ Text::PString IO::SMake::ParseCond(Text::PString str1, OutParam<Bool> valid)
 			AppendCfgItem(sbCmd, Text::CStringNN(&str1.v[2], i - 2));
 			Int32 ret;
 			if ((ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), result)) != 0)
+			{
+				valid.Set(false);
+			}
+			else
+			{
+				str1 = str1.Substring(i + 1);
+			}
+		}
+	}
+	else if (str1.StartsWith(UTF8STRC("@!(")))
+	{
+		i = str1.BranketSearch(3, ')');
+		if (i != INVALID_INDEX)
+		{
+			Text::StringBuilderUTF8 sbCmd;
+			Text::StringBuilderUTF8 result;
+			AppendCfgItem(sbCmd, Text::CStringNN(&str1.v[2], i - 2));
+			Int32 ret;
+			if ((ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), result)) == 0)
 			{
 				valid.Set(false);
 			}

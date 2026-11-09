@@ -359,24 +359,36 @@ ExporterList.o: ../../src/Exporter/ExporterList.cpp
 GIFExporter.o: ../../src/Exporter/GIFExporter.cpp
 GPXExporter.o: ../../src/Exporter/GPXExporter.cpp
 GUIExporterGTK.o: ../../src/Exporter/GUIExporterGTK.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
+#!@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --libs gtk4`
+#!@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --libs gtk+-3.0`
 !`$(PKG-CONFIG) --libs gtk+-3.0`
 GUIExporterNull.o: ../../src/Exporter/GUIExporterNull.cpp
 GUIExporterW.o: ../../src/Exporter/GUIExporterW.cpp
 !-lgdiplus
 GUIGIFExporterGTK.o: ../../src/Exporter/GUIGIFExporterGTK.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIGIFExporterNull.o: ../../src/Exporter/GUIGIFExporterNull.cpp
 GUIGIFExporterW.o: ../../src/Exporter/GUIGIFExporterW.cpp
 GUIJPGExporterGTK.o: ../../src/Exporter/GUIJPGExporterGTK.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIJPGExporterNull.o: ../../src/Exporter/GUIJPGExporterNull.cpp
 GUIJPGExporterW.o: ../../src/Exporter/GUIJPGExporterW.cpp
 GUIPNGExporterGTK.o: ../../src/Exporter/GUIPNGExporterGTK.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIPNGExporterNull.o: ../../src/Exporter/GUIPNGExporterNull.cpp
 GUIPNGExporterW.o: ../../src/Exporter/GUIPNGExporterW.cpp
 GUITIFExporterGTK.o: ../../src/Exporter/GUITIFExporterGTK.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUITIFExporterNull.o: ../../src/Exporter/GUITIFExporterNull.cpp
 GUITIFExporterW.o: ../../src/Exporter/GUITIFExporterW.cpp
@@ -1260,6 +1272,8 @@ GDIEngine.o: ../../src/Media/GDIEngine.cpp
 !-lmsimg32
 GRFilter.o: ../../src/Media/GRFilter.cpp
 GTKDrawEngine.o: ../../src/Media/GTKDrawEngine.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKDrawEngineNoGDK.o: ../../src/Media/GTKDrawEngine.cpp
 !-lcairo
@@ -1306,7 +1320,11 @@ $-I/opt/vc/include/interface -I/opt/vc/include
 !-lmmal_core -lmmal -lmmal_util
 !-L/opt/vc/lib
 MonitorInfoGTK.o: ../../src/Media/MonitorInfoGTK.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
+#@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --libs gtk4`
+#!@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --libs gtk+-3.0`
 !`$(PKG-CONFIG) --libs gtk+-3.0`
 MonitorInfoJava.o: ../../src/Media/MonitorInfoJava.cpp
 MonitorInfoNul.o: ../../src/Media/MonitorInfoNul.cpp
@@ -1384,6 +1402,8 @@ VideoSourceBase.o: ../../src/Media/VideoSourceBase.cpp
 VOBAC3StreamSource.o: ../../src/Media/VOBAC3StreamSource.cpp
 VOBLPCMStreamSource.o: ../../src/Media/VOBLPCMStreamSource.cpp
 VulkanEngine.o: ../../src/Media/VulkanEngine.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 !-lvulkan
 !`$(PKG-CONFIG) --libs shaderc`
@@ -1930,7 +1950,11 @@ GamedatPac2Parser.o: ../../src/Parser/FileParser/GamedatPac2Parser.cpp
 GIFParser.o: ../../src/Parser/FileParser/GIFParser.cpp
 GLOCParser.o: ../../src/Parser/FileParser/GLOCParser.cpp
 GUIImgParserGTK.o: ../../src/Parser/FileParser/GUIImgParserGTK.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
+#!@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --libs gtk4`
+#!@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --libs gtk+-3.0`
 !`$(PKG-CONFIG) --libs gtk+-3.0`
 GUIImgParserNul.o: ../../src/Parser/FileParser/GUIImgParserNul.cpp
 GUIImgParserW.o: ../../src/Parser/FileParser/GUIImgParserW.cpp
@@ -2728,83 +2752,161 @@ SizedOverlayDObj.o: ../../src/UI/DObj/SizedOverlayDObj.cpp
 TextDObj.o: ../../src/UI/DObj/TextDObj.cpp
 VideoDObjHandler.o: ../../src/UI/DObj/VideoDObjHandler.cpp
 ClipboardGTK.o: ../../src/UI/GTK/ClipboardGTK.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKButton.o: ../../src/UI/GTK/GTKButton.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKCheckBox.o: ../../src/UI/GTK/GTKCheckBox.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKCheckedListBox.o: ../../src/UI/GTK/GTKCheckedListBox.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKComboBox.o: ../../src/UI/GTK/GTKComboBox.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKCore.o: ../../src/UI/GTK/GTKCore.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 !-lX11
 GTKDateTimePicker.o: ../../src/UI/GTK/GTKDateTimePicker.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKDragDrop.o: ../../src/UI/GTK/GTKDragDrop.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKFileDialog.o: ../../src/UI/GTK/GTKFileDialog.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKFolderDialog.o: ../../src/UI/GTK/GTKFolderDialog.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKFontDialog.o: ../../src/UI/GTK/GTKFontDialog.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKGroupBox.o: ../../src/UI/GTK/GTKGroupBox.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKHScrollBar.o: ../../src/UI/GTK/GTKHScrollBar.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKHSplitter.o: ../../src/UI/GTK/GTKHSplitter.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKLabel.o: ../../src/UI/GTK/GTKLabel.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKListBox.o: ../../src/UI/GTK/GTKListBox.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKMessageDialog.o: ../../src/UI/GTK/GTKMessageDialog.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKPanelBase.o: ../../src/UI/GTK/GTKPanelBase.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKPictureBox.o: ../../src/UI/GTK/GTKPictureBox.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKPictureBoxSimple.o: ../../src/UI/GTK/GTKPictureBoxSimple.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKProgressBar.o: ../../src/UI/GTK/GTKProgressBar.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKRadioButton.o: ../../src/UI/GTK/GTKRadioButton.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKRealtimeLineChart.o: ../../src/UI/GTK/GTKRealtimeLineChart.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKTabControl.o: ../../src/UI/GTK/GTKTabControl.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKTextBox.o: ../../src/UI/GTK/GTKTextBox.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKTimer.o: ../../src/UI/GTK/GTKTimer.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKTrackBar.o: ../../src/UI/GTK/GTKTrackBar.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GTKVSplitter.o: ../../src/UI/GTK/GTKVSplitter.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIClientControlGTK.o: ../../src/UI/GTK/GUIClientControlGTK.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIControlGTK.o: ../../src/UI/GTK/GUIControlGTK.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUICustomDrawGTK.o: ../../src/UI/GTK/GUICustomDrawGTK.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUICustomDrawVScrollGTK.o: ../../src/UI/GTK/GUICustomDrawVScrollGTK.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIDDrawControlGtk.o: ../../src/UI/GTK/GUIDDrawControlGtk.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIFormGTK.o: ../../src/UI/GTK/GUIFormGTK.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIListViewGTK.o: ../../src/UI/GTK/GUIListViewGTK.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIMenuGTK.o: ../../src/UI/GTK/GUIMenuGTK.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUIPopupMenuGTK.o: ../../src/UI/GTK/GUIPopupMenuGTK.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUITextViewGTK.o: ../../src/UI/GTK/GUITextViewGTK.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 GUITreeViewGTK.o: ../../src/UI/GTK/GUITreeViewGTK.cpp
+#$@($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk4`
+#$@!($(PKG-CONFIG) --exists gtk4) `$(PKG-CONFIG) --cflags gtk+-3.0`
 $`$(PKG-CONFIG) --cflags gtk+-3.0`
 ClipboardJava.o: ../../src/UI/JavaUI/ClipboardJava.cpp
 $-I$(JAVA_HOME)/include

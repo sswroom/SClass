@@ -10,6 +10,7 @@ namespace Parser
 		{
 		private:
 			Optional<Parser::ParserList> parsers;
+			static Bool __stdcall FitCorners(UnsafeArray<Double> ptXY, UInt32 nPts, Double imgW, Double imgH, Math::Coord2DDbl &tl, Math::Coord2DDbl &tr, Math::Coord2DDbl &br, Math::Coord2DDbl &bl);
 		public:
 			OziMapParser();
 			virtual ~OziMapParser();

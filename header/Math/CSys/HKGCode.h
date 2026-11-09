@@ -9,6 +9,7 @@ namespace Math
 		class HKGCode
 		{
 		private:
+			static UnsafeArray<const UTF8Char> listCode;
 			NN<Math::CSys::CoordinateSystem> csysHK80;
 			NN<Math::CSys::CoordinateSystem> csysWGS84;
 

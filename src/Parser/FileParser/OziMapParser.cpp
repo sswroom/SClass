@@ -16,6 +16,98 @@
 #include "Text/MyStringFloat.h"
 #include "Text/UTF8Reader.h"
 
+Bool Parser::FileParser::OziMapParser::FitCorners(UnsafeArray<Double> ptXY, UInt32 nPts, Double imgW, Double imgH, Math::Coord2DDbl &tl, Math::Coord2DDbl &tr, Math::Coord2DDbl &br, Math::Coord2DDbl &bl)
+{
+	Double m[3][5] = {};
+	UInt32 i = 0;
+	while (i < nPts)
+	{
+		Double x = (ptXY[(i << 2)] - imgW * 0.5) / imgW;
+		Double y = (ptXY[(i << 2) + 1] - imgH * 0.5) / imgH;
+		Double values[3] = {x, y, 1};
+		Double lon = ptXY[(i << 2) + 2];
+		Double lat = ptXY[(i << 2) + 3];
+		if (Math::IsNAN(x) || Math::IsNAN(y) || Math::IsNAN(lon) || Math::IsNAN(lat))
+			return false;
+		UInt32 row = 0;
+		while (row < 3)
+		{
+			UInt32 col = 0;
+			while (col < 3)
+			{
+				m[row][col] += values[row] * values[col];
+				col++;
+			}
+			m[row][3] += values[row] * lon;
+			m[row][4] += values[row] * lat;
+			row++;
+		}
+		i++;
+	}
+
+	i = 0;
+	while (i < 3)
+	{
+		UInt32 maxRow = i;
+		UInt32 row = i + 1;
+		while (row < 3)
+		{
+			if (fabs(m[row][i]) > fabs(m[maxRow][i]))
+				maxRow = row;
+			row++;
+		}
+		if (fabs(m[maxRow][i]) < 1e-12)
+			return false;
+		if (maxRow != i)
+		{
+			UInt32 col = 0;
+			while (col < 5)
+			{
+				Double tmp = m[i][col];
+				m[i][col] = m[maxRow][col];
+				m[maxRow][col] = tmp;
+				col++;
+			}
+		}
+		Double pivot = m[i][i];
+		UInt32 col = i;
+		while (col < 5)
+		{
+			m[i][col] /= pivot;
+			col++;
+		}
+		row = 0;
+		while (row < 3)
+		{
+			if (row != i)
+			{
+				Double factor = m[row][i];
+				col = i;
+				while (col < 5)
+				{
+					m[row][col] -= factor * m[i][col];
+					col++;
+				}
+			}
+			row++;
+		}
+		i++;
+	}
+
+	Double lonCoef[3] = {m[0][3], m[1][3], m[2][3]};
+	Double latCoef[3] = {m[0][4], m[1][4], m[2][4]};
+	Double x = -0.5;
+	Double y = -0.5;
+	tl = Math::Coord2DDbl(lonCoef[0] * x + lonCoef[1] * y + lonCoef[2], latCoef[0] * x + latCoef[1] * y + latCoef[2]);
+	x = 0.5;
+	tr = Math::Coord2DDbl(lonCoef[0] * x + lonCoef[1] * y + lonCoef[2], latCoef[0] * x + latCoef[1] * y + latCoef[2]);
+	y = 0.5;
+	br = Math::Coord2DDbl(lonCoef[0] * x + lonCoef[1] * y + lonCoef[2], latCoef[0] * x + latCoef[1] * y + latCoef[2]);
+	x = -0.5;
+	bl = Math::Coord2DDbl(lonCoef[0] * x + lonCoef[1] * y + lonCoef[2], latCoef[0] * x + latCoef[1] * y + latCoef[2]);
+	return !Math::IsNAN(tl.x) && !Math::IsNAN(tl.y) && !Math::IsNAN(tr.x) && !Math::IsNAN(tr.y) && !Math::IsNAN(br.x) && !Math::IsNAN(br.y) && !Math::IsNAN(bl.x) && !Math::IsNAN(bl.y);
+}
+
 Parser::FileParser::OziMapParser::OziMapParser()
 {
 	this->parsers = nullptr;
@@ -100,6 +192,10 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 		Int32 *ptStatus = 0;
 		Double imgW = 0;
 		Double imgH = 0;
+		Math::Coord2DDbl tl;
+		Math::Coord2DDbl tr;
+		Math::Coord2DDbl br;
+		Math::Coord2DDbl bl;
 		while (reader.ReadLine(sbuff, 1024).SetTo(sptr))
 		{
 			if (Text::StrStartsWithC(sbuff, (UIntOS)(sptr - sbuff), UTF8STRC("MMPNUM,")))
@@ -165,10 +261,13 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 			{
 				if (ptStatus[currPt] != 3)
 					valid = false;
-				break;
 			}
 		}
 		if (imgW == 0 || imgH == 0)
+		{
+			valid = false;
+		}
+		if (valid && !FitCorners(ptXY, nPts, imgW, imgH, tl, tr, br, bl))
 		{
 			valid = false;
 		}
@@ -191,19 +290,6 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 				NN<Math::CSys::GeographicCoordinateSystem> gcs;
 				if (Math::CSys::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CSys::CoordinateSystemManager::GCST_WGS84).SetTo(gcs))
 				{
-					Math::Coord2DDbl tl = Math::Coord2DDbl(0, 0);
-					Math::Coord2DDbl tr = Math::Coord2DDbl(imgW, 0);
-					Math::Coord2DDbl br = Math::Coord2DDbl(imgW, imgH);
-					Math::Coord2DDbl bl = Math::Coord2DDbl(0, imgH);
-					currPt = 0;
-					while (currPt < nPts)
-					{
-						Math::Coord2DDbl imgPt = Math::Coord2DDbl(ptXY[(currPt << 2) + 2], ptXY[(currPt << 2) + 3]);
-						Math::Coord2DDbl geoPt = Math::Coord2DDbl(ptXY[(currPt << 2) + 0], ptXY[(currPt << 2) + 1]);
-						//////////////////////////////////////
-						currPt++;
-					}
-					
 					Data::ArrayListNN<Media::StaticImage> prevList;
 					Media::ImagePreviewTool::CreatePreviews(nnimgList, prevList, 640);
 					NEW_CLASSNN(shimg, Media::SharedImage(nnimgList, prevList));

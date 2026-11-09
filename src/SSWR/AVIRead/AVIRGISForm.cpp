@@ -146,7 +146,9 @@ typedef enum
 	MNU_HK_HKE_EV_CHARGING_EN,
 	MNU_HK_PARKING_VACANCY,
 	MNU_HK_GEODATA_WMS,
-	MNU_OSM_URL
+	MNU_OSM_URL,
+	MNU_GRID_UTMGRID,
+	MNU_GRID_HKGCODE
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -881,6 +883,9 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	mnu->AddItem(CSTR("GPS Simulator"), MNU_GPS_SIMULATOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Distance Tool"), MNU_DISTANCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Random Loc"), MNU_RANDOMLOC, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuMain->AddSubMenu(CSTR("&Grid"));
+	mnu->AddItem(CSTR("UTM Grid"), MNU_GRID_UTMGRID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("HKG Code"), MNU_GRID_HKGCODE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnuMain);
 
 	NEW_CLASSNN(this->mnuLayer, UI::GUIPopupMenu());
@@ -1990,6 +1995,12 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			}
 			break;
 		}
+	case MNU_GRID_UTMGRID:
+		this->gridType = GridType::UTMGrid;
+		break;
+	case MNU_GRID_HKGCODE:
+		this->gridType = GridType::HKGCode;
+		break;
 	}
 }
 

@@ -165,7 +165,6 @@ Math::Vector3D Math::CSys::CoordinateSystem::Convert3D(NN<const Math::CSys::Coor
 	}
 	srcPos = NN<GeographicCoordinateSystem>::ConvertFrom(srcCoord)->ToCartesianCoordDeg(srcPos);
 
-	NN<const CoordinateSystem> destCoordRAW = destCoord;
 	if (destCoord->IsProjected())
 	{
 		NN<ProjectedCoordinateSystem> pcs = NN<ProjectedCoordinateSystem>::ConvertFrom(destCoord);
