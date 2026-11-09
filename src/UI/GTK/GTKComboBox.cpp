@@ -41,7 +41,11 @@ UI::GTK::GTKComboBox::GTKComboBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> p
 	g_signal_connect(this->hwnd.OrNull(), "changed", G_CALLBACK(GUIComboBox_EventChanged), this);
 	if (allowEdit)
 	{
+#if GTK_CHECK_VERSION(4, 0, 0)
+		GtkWidget *entry = gtk_combo_box_get_child(GTK_COMBO_BOX(this->hwnd.OrNull()));
+#else
 		GtkWidget *entry = gtk_bin_get_child((GtkBin *)this->hwnd.OrNull());
+#endif
 		g_signal_connect(entry, "changed", G_CALLBACK(GUIComboBox_TextChanged), this);
 	}
 }
@@ -54,8 +58,13 @@ void UI::GTK::GTKComboBox::SetText(Text::CStringNN text)
 {
 	if (this->allowEdit)
 	{
+#if GTK_CHECK_VERSION(4, 0, 0)
+		GtkWidget *entry = gtk_combo_box_get_child(GTK_COMBO_BOX(this->hwnd.OrNull()));
+		gtk_editable_set_text(GTK_EDITABLE(entry), (const gchar *)text.v.Ptr());
+#else
 		GtkWidget *entry = gtk_bin_get_child((GtkBin*)this->hwnd.OrNull());
 		gtk_entry_set_text((GtkEntry*)entry, (const gchar *)text.v.Ptr());
+#endif
 	}
 	else
 	{
@@ -248,7 +257,11 @@ void UI::GTK::GTKComboBox::SetTextSelection(UIntOS startPos, UIntOS endPos)
 {
 	if (this->allowEdit)
 	{
+#if GTK_CHECK_VERSION(4, 0, 0)
+		GtkWidget *entry = gtk_combo_box_get_child(GTK_COMBO_BOX(this->hwnd.OrNull()));
+#else
 		GtkWidget *entry = gtk_bin_get_child((GtkBin*)this->hwnd.OrNull());
+#endif
 		gtk_editable_select_region((GtkEditable*)entry, (gint)startPos, (gint)endPos);
 	}
 }

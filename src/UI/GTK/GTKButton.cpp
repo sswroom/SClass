@@ -87,7 +87,11 @@ void UI::GTK::GTKButton::SetText(Text::CStringNN text)
 
 void UI::GTK::GTKButton::SetFont(Text::CString fontName, Double fontHeightPt, Bool isBold)
 {
+#if GTK_CHECK_VERSION(4, 0, 0)
+	GtkWidget *widget = gtk_button_get_child(GTK_BUTTON(this->hwnd.OrNull()));
+#else
 	GtkWidget *widget = gtk_bin_get_child((GtkBin*)this->hwnd.OrNull());
+#endif
 #if GDK_VERSION_AFTER(3, 16)
 	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
 	builder.NewStyle(CSTR("label"), nullptr);
@@ -98,9 +102,16 @@ void UI::GTK::GTKButton::SetFont(Text::CString fontName, Double fontHeightPt, Bo
 
 	GtkStyleContext *style = gtk_widget_get_style_context(widget);
 	GtkCssProvider *styleProvider = gtk_css_provider_new();
+#if GTK_CHECK_VERSION(4, 0, 0)
+	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString().Ptr(), -1);
+#else
 	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString().Ptr(), -1, 0);
+#endif
 	gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+#if GTK_CHECK_VERSION(4, 0, 0)
+#else
 	gtk_widget_reset_style(widget);
+#endif
 #else
 	PangoFontDescription *font = pango_font_description_new();
 	UnsafeArray<const UTF8Char> nnname;

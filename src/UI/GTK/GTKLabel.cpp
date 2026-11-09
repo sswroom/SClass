@@ -58,7 +58,11 @@ void UI::GTK::GTKLabel::SetTextColor(UInt32 textColor)
 	builder.AddColorRGBA(textColor);
 	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd.OrNull());
 	GtkCssProvider *styleProvider = gtk_css_provider_new();
+#if GTK_CHECK_VERSION(4, 0, 0)
+	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString().Ptr(), -1);
+#else
 	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString().Ptr(), -1, 0);
+#endif
 	gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 #else
 	GdkRGBA c;

@@ -4,14 +4,14 @@
 #include "UI/GTK/GTKRadioButton.h"
 
 #if GTK_CHECK_VERSION(4, 0, 0)
-void UI::GTK::GTKRadioButton::SignalToggled(GtkCheckButton *btn, gpointer data)
+void UI::GTK::GTKRadioButton::SignalToggled(void *btn, gpointer data)
 {
 	UI::GTK::GTKRadioButton *me = (UI::GTK::GTKRadioButton *)data;
 	Bool sel = gtk_check_button_get_active((GtkCheckButton*)me->GetHandle().OrNull());
 	me->ChangeSelected(sel);
 }
 #else
-void UI::GTK::GTKRadioButton::SignalToggled(GtkRadioButton *btn, gpointer data)
+void UI::GTK::GTKRadioButton::SignalToggled(void *btn, gpointer data)
 {
 	UI::GTK::GTKRadioButton *me = (UI::GTK::GTKRadioButton *)data;
 	Bool sel = gtk_toggle_button_get_active((GtkToggleButton*)me->GetHandle().OrNull());
