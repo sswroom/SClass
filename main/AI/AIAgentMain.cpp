@@ -1,7 +1,8 @@
 #include "Stdafx.h"
+#include "AI/AIAgentHandler.h"
+#include "AI/AINowTool.h"
 #include "AI/AIReadDBTool.h"
 #include "AI/AIReadMDTool.h"
-#include "AI/AIAgentHandler.h"
 #include "AI/SimpleAIAgent.h"
 #include "Core/Core.h"
 #include "DB/DBConfig.h"
@@ -119,6 +120,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			agent.AddTool(readMDTool);
 			tools.Add(readMDTool);
 		}
+		AI::AINowTool nowTool;
+		agent.AddTool(nowTool);
 		agent.SetMaxToolCalls(maxToolCalls);
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
