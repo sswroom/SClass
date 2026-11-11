@@ -777,6 +777,7 @@ SPKFileAnalyse.o: ../../src/IO/FileAnalyse/SPKFileAnalyse.cpp
 SSLFileAnalyse.o: ../../src/IO/FileAnalyse/SSLFileAnalyse.cpp
 TIFFFileAnalyse.o: ../../src/IO/FileAnalyse/TIFFFileAnalyse.cpp
 TSFileAnalyse.o: ../../src/IO/FileAnalyse/TSFileAnalyse.cpp
+TTFFileAnalyse.o: ../../src/IO/FileAnalyse/TTFFileAnalyse.cpp
 TXTFileAnalyse.o: ../../src/IO/FileAnalyse/TXTFileAnalyse.cpp
 ZIPFileAnalyse.o: ../../src/IO/FileAnalyse/ZIPFileAnalyse.cpp
 JavaAnnotation.o: ../../src/IO/Java/JavaAnnotation.cpp

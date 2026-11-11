@@ -32,6 +32,7 @@
 #include "IO/FileAnalyse/SMTCFileAnalyse.h"
 #include "IO/FileAnalyse/TIFFFileAnalyse.h"
 #include "IO/FileAnalyse/TSFileAnalyse.h"
+#include "IO/FileAnalyse/TTFFileAnalyse.h"
 #include "IO/FileAnalyse/TXTFileAnalyse.h"
 #include "IO/FileAnalyse/ZIPFileAnalyse.h"
 
@@ -174,6 +175,10 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::TIFFFileAnalyse(fd));
 	}
+	else if (buffSize >= 12 && ((ReadMUInt32(buff) == 0x00010000 && fileName->EndsWith(CSTR(".ttf"))) || ReadMUInt32(buff) == 0x4f54544f || ReadMUInt32(buff) == 0x74727565 || ReadMUInt32(buff) == 0x74797031))
+	{
+		NEW_CLASSNN(analyse, IO::FileAnalyse::TTFFileAnalyse(fd));
+	}
 	else if (buffSize >= 25 && *(Int32*)&buff[0] == *(Int32*)"SmTC" && buff[24] == 0)
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::SMTCFileAnalyse(fd));
@@ -243,6 +248,8 @@ void IO::FileAnalyse::FileAnalyser::AddFilters(NN<IO::FileSelector> selector)
 	selector->AddFilter(CSTR("*.tif"), CSTR("TIFF file"));
 	selector->AddFilter(CSTR("*.tf8"), CSTR("TIFF file"));
 	selector->AddFilter(CSTR("*.btf"), CSTR("TIFF file"));
+	selector->AddFilter(CSTR("*.ttf"), CSTR("TrueType font"));
+	selector->AddFilter(CSTR("*.otf"), CSTR("OpenType font"));
 	selector->AddFilter(CSTR("*.gdbtable"), CSTR("FGDB Table file"));
 	selector->AddFilter(CSTR("*.bundle"), CSTR("Compact Cache V2 file"));
 	selector->AddFilter(CSTR("*.cfb"), CSTR("Compound File Binary"));

@@ -2712,6 +2712,8 @@ IO/FileAnalyse/TIFFFileAnalyse.h:
 @TIFFFileAnalyse.o
 IO/FileAnalyse/TSFileAnalyse.h:
 @TSFileAnalyse.o
+IO/FileAnalyse/TTFFileAnalyse.h:
+@TTFFileAnalyse.o
 IO/FileAnalyse/TXTFileAnalyse.h:
 @TXTFileAnalyse.o
 IO/FileAnalyse/ZIPFileAnalyse.h:
