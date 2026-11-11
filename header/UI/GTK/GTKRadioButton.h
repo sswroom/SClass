@@ -12,7 +12,7 @@ namespace UI
 		private:
 			Bool selected;
 
-			static void SignalToggled(GtkRadioButton *btn, gpointer data);
+			static void SignalToggled(void *btn, gpointer data);
 			void ChangeSelected(Bool selVal);
 		public:
 			GTKRadioButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected);

@@ -1649,6 +1649,8 @@ AI/AIAgent.h:
 @AIAgent.o
 AI/AIAgentHandler.h:
 @AIAgentHandler.o
+AI/AINowTool.h:
+@AINowTool.o
 AI/AIReadDBTool.h:
 @AIReadDBTool.o
 AI/AIReadMDTool.h:

@@ -4,5 +4,5 @@ build/*/smake.exe
 build/*/DBConn.dat
 build/*/optional*.cfg
 
-doc/
+cppdoc/
 node_modules/

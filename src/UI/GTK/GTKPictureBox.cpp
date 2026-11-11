@@ -7,8 +7,68 @@
 #include "UI/GUIClientControl.h"
 #include "UI/GTK/GTKPictureBox.h"
 
+#if GTK_CHECK_VERSION(4, 0, 0)
+void GTKPictureBox_SignalButtonPress(GtkGestureClick *gesture, int n_press, double x, double y, gpointer user_data)
+{
+	UI::GTK::GTKPictureBox *me = (UI::GTK::GTKPictureBox*)user_data;
+	UI::GUIControl::MouseButton btn = UI::GUIControl::MBTN_LEFT;
+	guint button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
+	switch (button)
+	{
+		default:
+		case GDK_BUTTON_PRIMARY:
+			btn = UI::GUIControl::MBTN_LEFT;
+			break;
+		case GDK_BUTTON_MIDDLE:
+			btn = UI::GUIControl::MBTN_MIDDLE;
+			break;
+		case GDK_BUTTON_SECONDARY:
+			btn = UI::GUIControl::MBTN_RIGHT;
+			break;
+		case 4:
+			btn = UI::GUIControl::MBTN_X1;
+			break;
+		case 5:
+			btn = UI::GUIControl::MBTN_X2;
+			break;
+	}
+	me->EventButtonDown(Math::Coord2D<IntOS>(Double2IntOS(x), Double2IntOS(y)), btn);
+}
 
-gboolean UI::GTK::GTKPictureBox::SignalButtonPress(GtkWidget *widget, GdkEvent  *event, gpointer user_data)
+void GTKPictureBox_SignalButtonRelease(GtkGestureClick *gesture, int n_press, double x, double y, gpointer user_data)
+{
+	UI::GTK::GTKPictureBox *me = (UI::GTK::GTKPictureBox*)user_data;
+	UI::GUIControl::MouseButton btn = UI::GUIControl::MBTN_LEFT;
+	guint button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
+	switch (button)
+	{
+		default:
+		case GDK_BUTTON_PRIMARY:
+			btn = UI::GUIControl::MBTN_LEFT;
+			break;
+		case GDK_BUTTON_MIDDLE:
+			btn = UI::GUIControl::MBTN_MIDDLE;
+			break;
+		case GDK_BUTTON_SECONDARY:
+			btn = UI::GUIControl::MBTN_RIGHT;
+			break;
+		case 4:
+			btn = UI::GUIControl::MBTN_X1;
+			break;
+		case 5:
+			btn = UI::GUIControl::MBTN_X2;
+			break;
+	}
+	me->EventButtonUp(Math::Coord2D<IntOS>(Double2IntOS(x), Double2IntOS(y)), btn);
+}
+
+void GTKPictureBox_SignalMotion(GtkEventControllerMotion *motion_ctrl, double x, double y, gpointer user_data)
+{
+	UI::GTK::GTKPictureBox *me = (UI::GTK::GTKPictureBox*)user_data;
+	me->EventMouseMove(Math::Coord2D<IntOS>(Double2IntOS(x), Double2IntOS(y)));
+}
+#else
+gboolean GTKPictureBox_SignalButtonPress(GtkWidget *widget, GdkEvent  *event, gpointer user_data)
 {
 	UI::GTK::GTKPictureBox *me = (UI::GTK::GTKPictureBox*)user_data;
 	GdkEventButton *evt = (GdkEventButton*)event;
@@ -39,7 +99,7 @@ gboolean UI::GTK::GTKPictureBox::SignalButtonPress(GtkWidget *widget, GdkEvent  
 	return false;
 }
 
-gboolean UI::GTK::GTKPictureBox::SignalButtonRelease(GtkWidget *widget, GdkEvent  *event, gpointer user_data)
+gboolean GTKPictureBox_SignalButtonRelease(GtkWidget *widget, GdkEvent  *event, gpointer user_data)
 {
 	UI::GTK::GTKPictureBox *me = (UI::GTK::GTKPictureBox*)user_data;
 	GdkEventButton *evt = (GdkEventButton*)event;
@@ -70,13 +130,14 @@ gboolean UI::GTK::GTKPictureBox::SignalButtonRelease(GtkWidget *widget, GdkEvent
 	return false;
 }
 
-gboolean UI::GTK::GTKPictureBox::SignalMotionNotify(GtkWidget *widget, GdkEvent *event, gpointer data)
+gboolean GTKPictureBox_SignalMotionNotify(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
 	UI::GUIPictureBox *me = (UI::GUIPictureBox*)data;
 	GdkEventMotion *evt = (GdkEventMotion*)event;
 	me->EventMouseMove(Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)));
 	return false;
 }
+#endif
 
 void UI::GTK::GTKPictureBox::UpdatePreview()
 {
@@ -128,14 +189,29 @@ UI::GTK::GTKPictureBox::GTKPictureBox(NN<UI::GUICore> ui, NN<UI::GUIClientContro
 	this->pixbuf = 0;
 	this->tmpImage = nullptr;
 	this->gtkImage = gtk_image_new_from_pixbuf(0);
+#if GTK_CHECK_VERSION(4, 0, 0)
+    gtk_widget_set_can_target (this->gtkImage, TRUE);
+    gtk_widget_set_focusable (this->gtkImage, TRUE);
+	this->eventBox = gtk_gesture_click_new();
+	gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (this->eventBox), 0);
+	g_signal_connect (this->eventBox, "pressed", G_CALLBACK (GTKPictureBox_SignalButtonPress), this);
+	g_signal_connect (this->eventBox, "released", G_CALLBACK (GTKPictureBox_SignalButtonRelease), this);
+	gtk_widget_add_controller (this->gtkImage, GTK_EVENT_CONTROLLER (this->eventBox));
+
+	this->eventBox2 = gtk_event_controller_motion_new ();
+	g_signal_connect (this->eventBox2, "motion", G_CALLBACK (GTKPictureBox_SignalMotion), this);
+	gtk_widget_add_controller (this->gtkImage, GTK_EVENT_CONTROLLER (this->eventBox2));
+
+#else
 	this->eventBox = gtk_event_box_new ();
 	gtk_container_add(GTK_CONTAINER(this->eventBox), this->gtkImage);
 
-	g_signal_connect(G_OBJECT(this->eventBox), "button-press-event", G_CALLBACK(SignalButtonPress), this);
-	g_signal_connect(G_OBJECT(this->eventBox), "button-release-event", G_CALLBACK(SignalButtonRelease), this);
-	g_signal_connect(G_OBJECT(this->eventBox), "motion-notify-event", G_CALLBACK(SignalMotionNotify), this);
+	g_signal_connect(G_OBJECT(this->eventBox), "button-press-event", G_CALLBACK(GTKPictureBox_SignalButtonPress), this);
+	g_signal_connect(G_OBJECT(this->eventBox), "button-release-event", G_CALLBACK(GTKPictureBox_SignalButtonRelease), this);
+	g_signal_connect(G_OBJECT(this->eventBox), "motion-notify-event", G_CALLBACK(GTKPictureBox_SignalMotionNotify), this);
 
 	this->hwnd = (ControlHandle*)this->eventBox;
+#endif
 	parent->AddChild(*this);
 	gtk_widget_show((GtkWidget*)this->gtkImage);
 	this->Show();

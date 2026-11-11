@@ -10,6 +10,7 @@ MyMemoryW.o: ../../src/MyMemoryW.cpp
 
 AIAgent.o: ../../src/AI/AIAgent.cpp
 AIAgentHandler.o: ../../src/AI/AIAgentHandler.cpp
+AINowTool.o: ../../src/AI/AINowTool.cpp
 AIReadDBTool.o: ../../src/AI/AIReadDBTool.cpp
 AIReadMDTool.o: ../../src/AI/AIReadMDTool.cpp
 AITool.o: ../../src/AI/AITool.cpp

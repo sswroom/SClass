@@ -19,9 +19,30 @@ void UI::GUIClientControl::InitContainer()
 	data->scrolledWin = gtk_scrolled_window_new(0, 0);
 	data->vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	this->container = data;
+#if GTK_CHECK_VERSION(4, 0, 0)
+	gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(data->scrolledWin), gtk_viewport_new(NULL, NULL));
+	GtkWidget *viewport = gtk_scrolled_window_get_child(GTK_SCROLLED_WINDOW(data->scrolledWin));
+	gtk_viewport_set_child(GTK_VIEWPORT(viewport), data->container);
+	gtk_widget_set_hexpand(data->scrolledWin, TRUE);
+	gtk_widget_set_vexpand(data->scrolledWin, TRUE);
+	gtk_box_append(GTK_BOX(data->vbox), data->scrolledWin);
+	if (GTK_IS_WINDOW(this->hwnd.OrNull()))
+	{
+		gtk_window_set_child(GTK_WINDOW(this->hwnd.OrNull()), data->vbox);
+	}
+	else if (GTK_IS_FIXED(this->hwnd.OrNull()))
+	{
+		gtk_fixed_put(GTK_FIXED(this->hwnd.OrNull()), data->vbox, 0, 0);
+	}
+	else if (GTK_IS_BOX(this->hwnd.OrNull()))
+	{
+		gtk_box_append(GTK_BOX(this->hwnd.OrNull()), data->vbox);
+	}
+#else
 	gtk_container_add(GTK_CONTAINER(data->scrolledWin), data->container);
 	gtk_box_pack_start(GTK_BOX(data->vbox), data->scrolledWin, true, true, 0);
 	gtk_container_add(GTK_CONTAINER(this->hwnd.OrNull()), data->vbox);
+#endif
 
 	Math::Size2DDbl outSz = this->GetClientSize();
 	if (outSz.x < 0)

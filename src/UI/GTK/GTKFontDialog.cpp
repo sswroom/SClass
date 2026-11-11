@@ -43,6 +43,10 @@ Bool UI::GTK::GTKFontDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 			ret = true;
 		}
 	}
+#if GTK_CHECK_VERSION(4, 0, 0)
+	g_object_unref(dlg);
+#else
 	gtk_widget_destroy(dlg);
+#endif
 	return ret;
 }
