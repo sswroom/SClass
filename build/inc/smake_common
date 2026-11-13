@@ -240,6 +240,7 @@ console:
 @ServerMonitor
 @SMTPTest
 @TCPClientTest
+@WebConnectionTest
 @WebSocketTest
 @WiFiCapture
 @WiFiScan
@@ -914,6 +915,9 @@ SMTPTest:
 TCPClientTest:
 @TCPClientTest.o
 @ConsoleStartup.o
+WebConnectionTest:
+@WebConnectionTest.o
+@ConsoleStartup.o
 WebSocketTest:
 @WebSocketTest.o
 @ConsoleStartup.o
@@ -1501,6 +1505,7 @@ PushServerMain.o: ../../main/NetTest/PushServerMain.cpp
 ServerMonitorMain.o: ../../main/NetTest/ServerMonitorMain.cpp
 SMTPTest.o: ../../main/NetTest/SMTPTest.cpp
 TCPClientTest.o: ../../main/NetTest/TCPClientTest.cpp
+WebConnectionTest.o: ../../main/NetTest/WebConnectionTest.cpp
 WebSocketTest.o: ../../main/NetTest/WebSocketTest.cpp
 WiFiCaptureMain.o: ../../main/NetTest/WiFiCaptureMain.cpp
 WiFiScanMain.o: ../../main/NetTest/WiFiScanMain.cpp

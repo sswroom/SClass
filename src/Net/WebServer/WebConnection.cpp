@@ -140,6 +140,10 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 		MemCopyNO(&this->dataBuff[this->buffSize], buff.Arr().Ptr(), buff.GetSize());
 		this->buffSize += buff.GetSize();
 
+		if (this->buffSize == 0)
+		{
+			return;
+		}
 		j = this->buffSize - 1;
 		i = 0;
 		lineStart = 0;
@@ -157,7 +161,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 				}
 
 				this->ProcessResponse();
-				lineStart = this->buffSize; //i
+				lineStart = i;
 			}
 		}
 
@@ -186,7 +190,8 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 #if defined(VERBOSE)
 								printf("WebConn: Post not data full\r\n");
 #endif		
-								break;
+								this->buffSize = 0;
+								return;
 							}
 						}
 

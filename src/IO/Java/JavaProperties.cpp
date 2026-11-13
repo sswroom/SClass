@@ -12,7 +12,26 @@ Optional<IO::ConfigFile> IO::Java::JavaProperties::ParseAppProp()
 	UnsafeArray<UTF8Char> sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("application.properties"));
-	return Parse(CSTRP(sbuff, sptr));
+	NN<IO::ConfigFile> cfg;
+	if (Parse(CSTRP(sbuff, sptr)).SetTo(cfg))
+	{
+		NN<Text::String> profile;
+		if (cfg->GetValue(CSTR("spring.profiles.active")).SetTo(profile) && profile->IndexOf('/') == INVALID_INDEX && profile->IndexOf('\\') == INVALID_INDEX)
+		{
+			sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
+			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("application-"));
+			sptr = profile->ConcatTo(sptr);
+			sptr = Text::StrConcatC(sptr, UTF8STRC(".properties"));
+			NN<IO::ConfigFile> profileCfg;
+			if (Parse(CSTRP(sbuff, sptr)).SetTo(profileCfg))
+			{
+				cfg->MergeConfig(profileCfg);
+				profileCfg.Delete();
+			}
+		}
+		return cfg;
+	}
+	return nullptr;
 }
 
 Optional<IO::ConfigFile> IO::Java::JavaProperties::Parse(Text::CStringNN fileName)
