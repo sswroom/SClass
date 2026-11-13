@@ -20,7 +20,7 @@
 #include "UI/GUIVideoBoxDD.h"
 
 //DeinterlaceResizer
-//#define _DEBUG
+#define VERBOSE
 
 /*void UI::GUIVideoBoxDD::UpdateFromBuff(VideoBuff *vbuff)
 {
@@ -72,12 +72,18 @@ void UI::GUIVideoBoxDD::DrawFromSurface(NN<Media::MonitorSurface> surface, Math:
 
 void UI::GUIVideoBoxDD::BeginUpdateSize()
 {
+#if defined(VERBOSE)
+	printf("GUIVideoBoxDD: BeginUpdateSize\n");
+#endif
 	this->updatingSize = true;
 	this->switching = true;
 }
 
 void UI::GUIVideoBoxDD::EndUpdateSize()
 {
+#if defined(VERBOSE)
+	printf("GUIVideoBoxDD: EndUpdateSize\n");
+#endif
 	this->updatingSize = false;
 	this->switching = false;
 }

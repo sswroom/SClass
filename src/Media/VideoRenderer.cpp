@@ -909,7 +909,7 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(Data::Duration frameTime, UInt
 		frameTime = MulDivU32(frameNum, me->frameRateDenorm * 1000, me->frameRateNorm);
 	}
 #if defined(VERBOSE)
-	printf("OnVideoFrame, frameTime = %d\r\n", frameTime);
+	printf("VideoRenderer: OnVideoFrame, frameTime = %lld\r\n", frameTime.GetTotalMS());
 #endif
 
 	UnsafeArray<UInt8> srcBuff;
@@ -994,6 +994,9 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(Data::Duration frameTime, UInt
 		mutUsage.EndUse();
 		return;
 	}
+#if defined(VERBOSE)
+	printf("VideoRenderer: OnVideoFrame, Found available buff: %d/%d, frameTime = %lld\r\n", (UInt32)frameIndex, (UInt32)me->buffCnt, frameTime.GetTotalMS());
+#endif
 
 	i = 0;
 	j = me->imgFilters.GetCount();
@@ -1574,8 +1577,14 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(AnyType userObj)
 							Data::Duration startTime = dispClk->GetCurrTime();
 							me->videoDelay = (startTime - frameTime);
 							me->dispMut.UnlockRead();
+#if defined(VERBOSE)
+							printf("VideoRenderer: Begin drawing frame, frameTime = %lld\n", frameTime.GetTotalMS());
+#endif
 							clk.Start();
 							me->VideoBeginProc();
+#if defined(VERBOSE)
+							printf("VideoRenderer: Begin drawing frame 2, frameTime = %lld\n", frameTime.GetTotalMS());
+#endif
 							Sync::MutexUsage mutUsage;
 							me->LockUpdateSize(mutUsage);
 
@@ -1588,6 +1597,9 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(AnyType userObj)
 							}
 							me->CalDisplayRect(vwidth, vheight, &rect);
 							toClear = false;
+#if defined(VERBOSE)
+							printf("VideoRenderer: Begin drawing frame 3, frameTime = %lld\n", frameTime.GetTotalMS());
+#endif
 							if (rect.size == me->buffs[minIndex].destSize)
 							{
 								if (rect.size.x != lastW || rect.size.y != lastH || me->toClear)
@@ -1601,13 +1613,22 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(AnyType userObj)
 								if (me->buffs[minIndex].destSurface.SetTo(surface))
 									me->DrawFromSurface(surface, rect.tl, rect.size, toClear);
 							}
+#if defined(VERBOSE)
+							printf("VideoRenderer: Begin drawing frame 4, frameTime = %lld\n", frameTime.GetTotalMS());
+#endif
 							me->buffs[minIndex].isEmpty = true;
 							me->buffEvt.Set();
 
 							me->dispFrameTime = frameTime;
 							me->dispFrameNum = frameNum;
 							mutUsage.EndUse();
+#if defined(VERBOSE)
+							printf("VideoRenderer: Begin drawing frame 5, frameTime = %lld\n", frameTime.GetTotalMS());
+#endif
 							me->VideoEndProc();
+#if defined(VERBOSE)
+							printf("VideoRenderer: End drawing frame, frameTime = %lld\n", frameTime.GetTotalMS());
+#endif
 							dispT = clk.GetTimeDiff();
 							me->dispDelayMut.LockWrite();
 							me->dispDelayBuff[me->dispCnt & (DISPDELAYBUFF - 1)] = dispT;
@@ -1881,11 +1902,7 @@ Media::VideoRenderer::VideoRenderer(NN<Media::ColorManagerSess> colorSess, NN<Me
 	this->playing = false;
 	this->captureFrame = false;
 	this->threadCnt = threadCnt;
-	this->buffCnt = buffCnt - threadCnt;
-	if (this->buffCnt <= 0)
-	{
-		this->buffCnt = 1;
-	}
+	this->buffCnt = buffCnt;
 	this->allBuffCnt = buffCnt;
 	this->threadToStop = false;
 	this->timeDelay = 0;

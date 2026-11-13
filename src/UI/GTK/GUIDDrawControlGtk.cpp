@@ -14,33 +14,7 @@
 #include "UI/GUIForm.h"
 #include <gtk/gtk.h>
 
-/**
-// 1. 確保你的 X11 Visual 申請的是原生 30-bit (Depth 30) 視窗
-XVisualInfo vinfo;
-XMatchVisualInfo(display, screen, 30, TrueColor, &vinfo);
-
-// 2. 申請 Linux 系統共用記憶體
-XShmSegmentInfo shminfo;
-shminfo.shmid = shmget(IPC_PRIVATE, 3840 * 2160 * 4, IPC_CREAT | 0777);
-shminfo.shmaddr = (char *)shmat(shminfo.shmid, 0, 0);
-
-// 你的 30-bit 終極視窗畫布指針！直接交給你的組合語言引擎寫入
-uint32_t *window_vram_ptr = (uint32_t *)shminfo.shmaddr;
-
-// 3. 註冊給 XServer
-shminfo.readOnly = False;
-XShmAttach(display, &shminfo);
-
-// 4. 建立 XShmImage 結構
-XImage *ximage = XShmCreateImage(display, vinfo.visual, 30, ZPixmap, 
-                                 shminfo.shmaddr, &shminfo, 3840, 2160);
-
-// 你的組合語言核心瘋狂向 window_vram_ptr 寫入 30-bit 數據...
-
-// 一條指令秒殺，透過記憶體共用直接觸發硬體合成，速度比 GdkPixbuf 快上數倍
-XShmPutImage(display, window, gc, ximage, 0, 0, 0, 0, 3840, 2160, False);
-XFlush(display);
- */
+//#define VERBOSE
 
 struct UI::GUIDDrawControl::ClassData
 {
@@ -572,10 +546,6 @@ void UI::GUIDDrawControl::DrawToScreen()
 			{
 				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->clsData->imgCtrl);
 			}
-			while (gtk_events_pending())
-			{
-				gtk_main_iteration();
-			}
 		}
 //		printf("Draw to screen 2\r\n");
 	}
@@ -583,7 +553,6 @@ void UI::GUIDDrawControl::DrawToScreen()
 
 void UI::GUIDDrawControl::DisplayFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<IntOS> tl, Math::Size2D<UIntOS> drawSize, Bool clearScn)
 {
-	Sync::MutexUsage mutUsage(this->surfaceMut);
 	NN<Media::MonitorSurface> primarySurface;
 	if (this->primarySurface.SetTo(primarySurface))
 	{
@@ -593,7 +562,13 @@ void UI::GUIDDrawControl::DisplayFromSurface(NN<Media::MonitorSurface> surface, 
 		}
 		else
 		{
+#if defined(VERBOSE)
+			printf("GUIDDrawControl: DisplayFromSurface begin, drawPause = %d\n", (UInt32)this->clsData->drawPause);
+#endif
 			primarySurface->DrawFromSurface(surface, tl, drawSize, clearScn, true);
+#if defined(VERBOSE)
+			printf("GUIDDrawControl: DisplayFromSurface end, drawPause = %d\n", (UInt32)this->clsData->drawPause);
+#endif
 //			this->clsData->drawPause = 0;
 //			Data::DateTime dt;
 //			dt.SetCurrTimeUTC();
@@ -603,12 +578,11 @@ void UI::GUIDDrawControl::DisplayFromSurface(NN<Media::MonitorSurface> surface, 
 			if (this->clsData->pSurfaceUpdated)
 			{
 				this->clsData->pSurfaceUpdated = false;
-				gdk_threads_add_idle(GUIDDrawControl_ToGenDrawSignal, this->clsData->imgCtrl);
-//				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->clsData->imgCtrl);
+				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->clsData->imgCtrl);
 			}
 			else
 			{
-				gdk_threads_add_idle(GUIDDrawControl_ToGenDrawSignal, this->clsData->imgCtrl);
+				g_idle_add(GUIDDrawControl_ToGenDrawSignal, this->clsData->imgCtrl);
 			}
 //			printf("Draw from buff 2 %lld\r\n", t);
 		}
