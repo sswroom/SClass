@@ -3095,7 +3095,7 @@ void SSWR::OrganWeb::OrganWebAPIController::AppendGroupDispInfo(NN<Text::JSONBui
 		while (true)
 		{
 			i = Text::StrSplitLineP(sarr, 2, sarr[1]);
-			if (sarr[0].StartsWith(group->engName) && sarr[0].v[len] == ' ' && (sarr[0].v[len + 1] == '(' || Text::CharUtil::IsUpperCase(sarr[0].v[len + 1])))
+			if (sarr[0].StartsWith(group->engName) && sarr[0].v[len] == ' ' && (sarr[0].v[len + 1] == '(' || Text::CharUtil::IsUpperCase(sarr[0].v[len + 1]) || sarr[0].Substring(len + 1).StartsWith(CSTR("de ")) || sarr[0].Substring(len + 1).StartsWith(CSTR("d'"))))
 			{
 				json->ObjectAddStr(CSTR("fullName"), sarr[0].ToCString());
 				break;
@@ -3183,7 +3183,7 @@ void SSWR::OrganWeb::OrganWebAPIController::AppendSpeciesDispInfo(NN<Text::JSONB
 		while (true)
 		{
 			i = Text::StrSplitLineP(sarr, 2, sarr[1]);
-			if (sarr[0].StartsWith(species->sciName) && sarr[0].v[len] == ' ' && (sarr[0].v[len + 1] == '(' || Text::CharUtil::IsUpperCase(sarr[0].v[len + 1])))
+			if (sarr[0].StartsWith(species->sciName) && sarr[0].v[len] == ' ' && (sarr[0].v[len + 1] == '(' || Text::CharUtil::IsUpperCase(sarr[0].v[len + 1]) || sarr[0].Substring(len + 1).StartsWith(CSTR("de ")) || sarr[0].Substring(len + 1).StartsWith(CSTR("d'"))))
 			{
 				json->ObjectAddStr(CSTR("fullName"), sarr[0].ToCString());
 				break;
