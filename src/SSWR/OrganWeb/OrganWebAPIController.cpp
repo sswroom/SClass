@@ -3084,6 +3084,26 @@ void SSWR::OrganWeb::OrganWebAPIController::AppendGroupDispInfo(NN<Text::JSONBui
 			json->ObjectAddStr(CSTR("photo"), s);
 		}
 	}
+	UIntOS i;
+	if (group->descript->leng > group->engName->leng)
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.Append(group->descript);
+		Text::PString sarr[2];
+		sarr[1] = sb;
+		UIntOS len = group->engName->leng;
+		while (true)
+		{
+			i = Text::StrSplitLineP(sarr, 2, sarr[1]);
+			if (sarr[0].StartsWith(group->engName) && sarr[0].v[len] == ' ' && (sarr[0].v[len + 1] == '(' || Text::CharUtil::IsUpperCase(sarr[0].v[len + 1])))
+			{
+				json->ObjectAddStr(CSTR("fullName"), sarr[0].ToCString());
+				break;
+			}
+			if (i != 2)
+				break;
+		}
+	}
 }
 
 void SSWR::OrganWeb::OrganWebAPIController::AppendGroupInfo(NN<Text::JSONBuilder> json, NN<GroupInfo> group)
