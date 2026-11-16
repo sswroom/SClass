@@ -16,13 +16,13 @@
 #include "Text/XML.h"
 #include "Text/UTF8Writer.h"
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::OnSessDeleted(NN<Net::WebServer::WebSession> sess, AnyType userObj)
+Net::WebServer::WebSessionManager::SessionState __stdcall SSWR::SMonitor::SMonitorWebHandler::OnSessDeleted(NN<Net::WebServer::WebSession> sess, AnyType userObj)
 {
 //	SSWR::SMonitor::SMonitorWebHandler *me = (SSWR::SMonitor::SMonitorWebHandler*)userObj;
-	return false;
+	return Net::WebServer::WebSessionManager::SessionState::Active;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::OnSessCheck(NN<Net::WebServer::WebSession> sess, AnyType userObj)
+Net::WebServer::WebSessionManager::SessionState __stdcall SSWR::SMonitor::SMonitorWebHandler::OnSessCheck(NN<Net::WebServer::WebSession> sess, AnyType userObj)
 {
 //	SSWR::SMonitor::SMonitorWebHandler *me = (SSWR::SMonitor::SMonitorWebHandler*)userObj;
 	Data::DateTime dt;
@@ -30,9 +30,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::OnSessCheck(NN<Net::WebServer
 	Int64 t = dt.ToTicks() - sess->GetValueInt64(CSTR("LastSessTime"));
 	if (t > 900000)
 	{
-		return true;
+		return Net::WebServer::WebSessionManager::SessionState::Expired;
 	}
-	return false;
+	return Net::WebServer::WebSessionManager::SessionState::Active;
 }
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DefaultReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)

@@ -24,7 +24,7 @@ namespace SSWR
 				void SetUserRole(UserRole userRole);
 
 				static ServerMonitorSession CreateSession(NN<Net::WebServer::WebSessionManager> sessMgr, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, UserRole userRole);
-				static Bool DeleteSession(NN<Net::WebServer::WebSession> sess);
+				static Net::WebServer::WebSessionManager::SessionState DeleteSession(NN<Net::WebServer::WebSession> sess);
 		};
 	}
 }

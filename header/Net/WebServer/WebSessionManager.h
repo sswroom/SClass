@@ -12,7 +12,12 @@ namespace Net
 		class WebSessionManager
 		{
 		public:
-			typedef Bool (CALLBACKFUNC SessionHandler)(NN<WebSession> sess, AnyType userObj);
+			enum class SessionState
+			{
+				Active,
+				Expired
+			};
+			typedef SessionState (CALLBACKFUNC SessionHandler)(NN<WebSession> sess, AnyType userObj);
 
 		protected:
 			SessionHandler delHdlr;

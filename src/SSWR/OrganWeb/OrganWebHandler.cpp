@@ -4,7 +4,7 @@
 #include "SSWR/OrganWeb/OrganWebMainController.h"
 #include "SSWR/OrganWeb/OrganWebPhotoController.h"
 
-Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionDel(NN<Net::WebServer::WebSession> sess, AnyType userObj)
+Net::WebServer::WebSessionManager::SessionState __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionDel(NN<Net::WebServer::WebSession> sess, AnyType userObj)
 {
 	NN<Data::DateTime> t;
 	NN<Data::ArrayListInt32> pickObjs;
@@ -12,10 +12,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionDel(NN<Net::WebServer::
 	pickObjs = sess->GetValuePtr(CSTR("PickObjs")).GetNN<Data::ArrayListInt32>();
 	t.Delete();
 	pickObjs.Delete();
-	return false;
+	return Net::WebServer::WebSessionManager::SessionState::Active;
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionCheck(NN<Net::WebServer::WebSession> sess, AnyType userObj)
+Net::WebServer::WebSessionManager::SessionState __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionCheck(NN<Net::WebServer::WebSession> sess, AnyType userObj)
 {
 	NN<Data::DateTime> t;
 	Data::DateTime currTime;
@@ -23,9 +23,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionCheck(NN<Net::WebServer
 	{
 		currTime.SetCurrTimeUTC();
 		if (currTime.DiffMS(t) >= 1800000)
-			return true;
+			return Net::WebServer::WebSessionManager::SessionState::Expired;
 	}
-	return false;
+	return Net::WebServer::WebSessionManager::SessionState::Active;
 }
 
 #define AddCtrl(class) NEW_CLASSNN(ctrl, class); this->AddController(ctrl);

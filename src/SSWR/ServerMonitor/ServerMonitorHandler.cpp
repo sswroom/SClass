@@ -318,12 +318,12 @@ Bool __stdcall SSWR::ServerMonitor::ServerMonitorHandler::LogoutFunc(NN<Net::Web
 	return me->ResponseJSONStr(req, resp, 0, CSTR("{\"status\":\"ok\"}"));
 }
 
-Bool __stdcall SSWR::ServerMonitor::ServerMonitorHandler::OnSessionCheck(NN<Net::WebServer::WebSession> sess, AnyType userObj)
+Net::WebServer::WebSessionManager::SessionState __stdcall SSWR::ServerMonitor::ServerMonitorHandler::OnSessionCheck(NN<Net::WebServer::WebSession> sess, AnyType userObj)
 {
-	return false;
+	return Net::WebServer::WebSessionManager::SessionState::Active;
 }
 
-Bool __stdcall SSWR::ServerMonitor::ServerMonitorHandler::OnSessionDel(NN<Net::WebServer::WebSession> sess, AnyType userObj)
+Net::WebServer::WebSessionManager::SessionState __stdcall SSWR::ServerMonitor::ServerMonitorHandler::OnSessionDel(NN<Net::WebServer::WebSession> sess, AnyType userObj)
 {
 	//NN<ServerMonitorHandler> me = userObj.GetNN<ServerMonitorHandler>();
 	return ServerMonitorSession::DeleteSession(sess);

@@ -28,8 +28,8 @@ namespace SSWR
 			static Bool __stdcall DeleteAlertFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
 			static Bool __stdcall LogoutFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
 		
-			static Bool __stdcall OnSessionCheck(NN<Net::WebServer::WebSession> sess, AnyType userObj);
-			static Bool __stdcall OnSessionDel(NN<Net::WebServer::WebSession> sess, AnyType userObj);
+			static Net::WebServer::WebSessionManager::SessionState __stdcall OnSessionCheck(NN<Net::WebServer::WebSession> sess, AnyType userObj);
+			static Net::WebServer::WebSessionManager::SessionState __stdcall OnSessionDel(NN<Net::WebServer::WebSession> sess, AnyType userObj);
 			void AppendServerInfo(NN<Text::JSONBuilder> json, NN<ServerInfo> serverInfo);
 			void AppendAlertInfo(NN<Text::JSONBuilder> json, NN<AlertInfo> alertInfo);
 		public:

@@ -52,7 +52,7 @@ SSWR::ServerMonitor::ServerMonitorSession SSWR::ServerMonitor::ServerMonitorSess
 	return sess;
 }
 
-Bool SSWR::ServerMonitor::ServerMonitorSession::DeleteSession(NN<Net::WebServer::WebSession> sess)
+Net::WebServer::WebSessionManager::SessionState SSWR::ServerMonitor::ServerMonitorSession::DeleteSession(NN<Net::WebServer::WebSession> sess)
 {
-	return true;
+	return Net::WebServer::WebSessionManager::SessionState::Active;
 }

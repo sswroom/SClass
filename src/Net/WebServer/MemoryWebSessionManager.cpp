@@ -41,11 +41,11 @@ UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(AnyType us
 					mutUsage.EndUse();
 					if (sess.SetTo(nnsess))
 					{
-						Bool toDel;
+						SessionState state;
 						nnsess->BeginUse();
-						toDel = me->chkHdlr(nnsess, me->chkHdlrObj);
+						state = me->chkHdlr(nnsess, me->chkHdlrObj);
 						nnsess->EndUse();
-						if (toDel)
+						if (state == SessionState::Expired)
 						{
 							mutUsage.BeginUse();
 							j = me->sessIds.SortedIndexOf(sessId);
