@@ -46,11 +46,11 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(Optional<UI::GUIClientControl> p
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	this->lvInfo = ui->NewListView(this->tpInfo, UI::ListViewStyle::Table, 2);
-	this->lvInfo->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvInfo->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvInfo->SetFullRowSelect(true);
 	this->lvInfo->SetShowGrid(true);
 	this->lvInfo->AddColumn(CSTR("Name"), 150);
@@ -59,14 +59,14 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(Optional<UI::GUIClientControl> p
 	this->tpImage = this->tcMain->AddTabPage(CSTR("Image"));
 	this->cboImage = ui->NewComboBox(this->tpImage, false);
 	this->cboImage->SetRect(0, 0, 100, 23, false);
-	this->cboImage->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->cboImage->SetDockType(UI::GUIControl::DockType::Top);
 	this->cboImage->HandleSelectionChange(OnImageSelChg, this);
 	this->pbImage = ui->NewPictureBoxSimple(this->tpImage, this->core->GetDrawEngine(), false);
-	this->pbImage->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbImage->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpText = this->tcMain->AddTabPage(CSTR("Items"));
 	this->txtText = ui->NewTextBox(this->tpText, CSTR(""), true);
-	this->txtText->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtText->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtText->SetReadOnly(true);
 	NN<Text::String> s;
 	NN<Text::String> s2;

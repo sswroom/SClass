@@ -195,7 +195,7 @@ SSWR::AVIRead::AVIREDIDViewerForm::AVIREDIDViewerForm(Optional<UI::GUIClientCont
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnSave = ui->NewButton(this->pnlCtrl, CSTR("Save"));
 	this->btnSave->SetRect(4, 4, 75, 23, false);
 	this->btnSave->HandleButtonClick(OnSaveClicked, this);
@@ -203,7 +203,7 @@ SSWR::AVIRead::AVIREDIDViewerForm::AVIREDIDViewerForm(Optional<UI::GUIClientCont
 	this->btnHex->SetRect(84, 4, 75, 23, false);
 	this->btnHex->HandleButtonClick(OnHexClicked, this);
 	this->txtEDID = ui->NewTextBox(*this, CSTR(""), true);
-	this->txtEDID->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtEDID->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtEDID->SetReadOnly(true);
 
 	this->HandleDropFiles(OnFileDrop, this);

@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(AnyType userO
 UI::EventState __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton mouseBtn)
 {
 	NN<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
-	if (mouseBtn == UI::GUIControl::MBTN_LEFT)
+	if (mouseBtn == UI::GUIControl::MouseButton::Left)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 		UtilUI::ColorDialog dlg(nullptr, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferSizeChanged(AnyType use
 UI::EventState __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferColorClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton mouseBtn)
 {
 	NN<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
-	if (mouseBtn == UI::GUIControl::MBTN_LEFT)
+	if (mouseBtn == UI::GUIControl::MouseButton::Left)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 		UtilUI::ColorDialog dlg(nullptr, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
@@ -204,7 +204,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(Optional<UI::GUIClientCo
 
 	this->pbFontPreview = ui->NewPictureBox(*this, eng, false, false);
 	this->pbFontPreview->SetRect(0, 0, 288, 64, false);
-	this->pbFontPreview->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pbFontPreview->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblStyleName = ui->NewLabel(*this, CSTR("Style Name"));
 	this->lblStyleName->SetRect(0, 68, 100, 23, false);
 	this->txtStyleName = ui->NewTextBox(*this, CSTR(""));

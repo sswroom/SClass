@@ -83,7 +83,7 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(Optional<UI::GUIClientControl>
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpAlgorithm = this->tcMain->AddTabPage(CSTR("Algorithm"));
 	this->lblAlgorithm = ui->NewLabel(this->tpAlgorithm, CSTR("Function"));
@@ -102,12 +102,12 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(Optional<UI::GUIClientControl>
 	this->tpCompare = this->tcMain->AddTabPage(CSTR("Compare"));
 	this->pnlCompare = ui->NewPanel(this->tpCompare);
 	this->pnlCompare->SetRect(0, 0, 100, 31, false);
-	this->pnlCompare->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCompare->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnCompare = ui->NewButton(this->pnlCompare, CSTR("Compare"));
 	this->btnCompare->SetRect(4, 4, 75, 23, false);
 	this->btnCompare->HandleButtonClick(OnCompareClicked, this);
 	this->lvCompare = ui->NewListView(this->tpCompare, UI::ListViewStyle::Table, 2);
-	this->lvCompare->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvCompare->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvCompare->AddColumn(CSTR("Hash Function"), 200);
 	this->lvCompare->AddColumn(CSTR("Speed (Byte/s)"), 200);
 	this->lvCompare->SetShowGrid(true);

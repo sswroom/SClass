@@ -148,7 +148,7 @@ SSWR::MapReplay::MapReplayForm::MapReplayForm(NN<UI::GUICore> ui, Optional<UI::G
 
 	this->lbLayers = ui->NewListBox(*this, false);
 	this->lbLayers->SetRect(0, 0, 200, 100, false);
-	this->lbLayers->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbLayers->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbLayers->HandleDoubleClicked(OnLayerDblClicked, this);
 	this->splitter = ui->NewHSplitter(*this, 2, false);
 
@@ -165,7 +165,7 @@ SSWR::MapReplay::MapReplayForm::MapReplayForm(NN<UI::GUICore> ui, Optional<UI::G
 
 	this->mapView = this->env->CreateMapView(Math::Size2DDbl(1024, 768));
 	NEW_CLASSNN(this->map, UI::GUIMapControl(ui, *this, eng, 0xffffffff, this->envRenderer, this->mapView, this->colorSess));
-	this->map->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->map->SetDockType(UI::GUIControl::DockType::Fill);
 }
 
 SSWR::MapReplay::MapReplayForm::~MapReplayForm()

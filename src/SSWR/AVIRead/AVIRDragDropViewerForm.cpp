@@ -36,26 +36,26 @@ SSWR::AVIRead::AVIRDragDropViewerForm::AVIRDragDropViewerForm(Optional<UI::GUICl
 
 	this->lbType = ui->NewListBox(*this, false);
 	this->lbType->SetRect(0, 0, 200, 23, false);
-	this->lbType->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbType->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbType->HandleSelectionChange(OnTypeSelChg, this);
 	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	this->txtMain = ui->NewTextBox(*this, CSTR(""), true);
-	this->txtMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtMain->SetReadOnly(true);
 
 	UI::GUIControl::DragErrorType errType = this->HandleDropEvents(*this);
-	if (errType == UI::GUIControl::DET_NOERROR)
+	if (errType == UI::GUIControl::DragErrorType::NoError)
 	{
 	}
-	else if (errType == UI::GUIControl::DET_INVALIDCONTROL)
+	else if (errType == UI::GUIControl::DragErrorType::InvalidControl)
 	{
 		this->ui->ShowMsgOK(CSTR("Error in registering Drag Drop, Invalid HWND"), CSTR("Error"), this);
 	}
-	else if (errType == UI::GUIControl::DET_ALREADYREGISTER)
+	else if (errType == UI::GUIControl::DragErrorType::AlreadyRegister)
 	{
 		this->ui->ShowMsgOK(CSTR("Error in registering Drag Drop, Already Registered"), CSTR("Error"), this);
 	}
-	else if (errType == UI::GUIControl::DET_OUTOFMEMORY)
+	else if (errType == UI::GUIControl::DragErrorType::OutOfMemory)
 	{
 		this->ui->ShowMsgOK(CSTR("Error in registering Drag Drop, Out of Memory"), CSTR("Error"), this);
 	}

@@ -118,7 +118,7 @@ SSWR::AVIRead::AVIRStreamEchoForm::AVIRStreamEchoForm(Optional<UI::GUIClientCont
 
 	this->grpStream = ui->NewGroupBox(*this, CSTR("Stream"));
 	this->grpStream->SetRect(0, 0, 100, 48, false);
-	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpStream->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblStream = ui->NewLabel(this->grpStream, CSTR("Stream Type"));
 	this->lblStream->SetRect(4, 4, 100, 23, false);
 	this->txtStream = ui->NewTextBox(this->grpStream, CSTR("-"));
@@ -129,7 +129,7 @@ SSWR::AVIRead::AVIRStreamEchoForm::AVIRStreamEchoForm(Optional<UI::GUIClientCont
 	this->btnStream->HandleButtonClick(OnStreamClicked, this);
 	
 	this->grpStatus = ui->NewGroupBox(*this, CSTR("Status"));
-	this->grpStatus->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpStatus->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblDataSize = ui->NewLabel(this->grpStatus, CSTR("Data Size"));
 	this->lblDataSize->SetRect(0, 0, 100, 23, false);
 	this->txtDataSize = ui->NewTextBox(this->grpStatus, CSTR("0"));

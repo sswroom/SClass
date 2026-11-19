@@ -233,12 +233,12 @@ SSWR::AVIRead::AVIREdgeAnalyseForm::AVIREdgeAnalyseForm(Optional<UI::GUIClientCo
 	this->OnMonitorChanged();
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpWebHook = this->tcMain->AddTabPage(CSTR("Web Hook"));
 	this->pnlWebHook = ui->NewPanel(this->tpWebHook);
 	this->pnlWebHook->SetRect(0, 0, 100, 55, false);
-	this->pnlWebHook->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlWebHook->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblWebHookPort = ui->NewLabel(this->pnlWebHook, CSTR("Port"));
 	this->lblWebHookPort->SetRect(4, 4, 100, 23, false);
 	this->txtWebHookPort = ui->NewTextBox(this->pnlWebHook, CSTR("8080"));
@@ -249,9 +249,9 @@ SSWR::AVIRead::AVIREdgeAnalyseForm::AVIREdgeAnalyseForm(Optional<UI::GUIClientCo
 	this->txtWebHookData = ui->NewTextBox(this->tpWebHook, CSTR(""), true);
 	this->txtWebHookData->SetRect(0, 0, 100, 120, false);
 	this->txtWebHookData->SetReadOnly(true);
-	this->txtWebHookData->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtWebHookData->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lvWebHookData = ui->NewListView(this->tpWebHook, UI::ListViewStyle::Table, 5);
-	this->lvWebHookData->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvWebHookData->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvWebHookData->SetFullRowSelect(true);
 	this->lvWebHookData->SetShowGrid(true);
 	this->lvWebHookData->AddColumn(CSTR("Time"), 120);
@@ -264,10 +264,10 @@ SSWR::AVIRead::AVIREdgeAnalyseForm::AVIREdgeAnalyseForm(Optional<UI::GUIClientCo
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->txtLog->SetReadOnly(true);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 	
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 300, false));

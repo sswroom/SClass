@@ -80,7 +80,7 @@ SSWR::AVIRead::AVIRHKOForecastForm::AVIRHKOForecastForm(Optional<UI::GUIClientCo
 
 	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetRect(0, 0, 100, 248, false);
-	this->pnlMain->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlMain->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblLang = ui->NewLabel(this->pnlMain, CSTR("Language"));
 	this->lblLang->SetRect(4, 4, 100, 23, false);
 	this->cboLang = ui->NewComboBox(this->pnlMain, false);
@@ -126,7 +126,7 @@ SSWR::AVIRead::AVIRHKOForecastForm::AVIRHKOForecastForm(Optional<UI::GUIClientCo
 	this->txtGeneralSituation->SetWordWrap(true);
 
 	this->lvForecast = ui->NewListView(*this, UI::ListViewStyle::Table, 8);
-	this->lvForecast->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvForecast->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvForecast->SetFullRowSelect(true);
 	this->lvForecast->SetShowGrid(true);
 	this->lvForecast->AddColumn(CSTR("Date"), 80);

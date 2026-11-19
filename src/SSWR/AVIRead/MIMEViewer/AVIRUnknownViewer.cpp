@@ -11,7 +11,7 @@ SSWR::AVIRead::MIMEViewer::AVIRUnknownViewer::AVIRUnknownViewer(NN<SSWR::AVIRead
 
 	this->lblMessage = ui->NewLabel(ctrl, sb.ToCString());
 	this->lblMessage->SetRect(4, 4, 500, 23, false);
-	this->lblMessage->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lblMessage->SetDockType(UI::GUIControl::DockType::Fill);
 }
 
 SSWR::AVIRead::MIMEViewer::AVIRUnknownViewer::~AVIRUnknownViewer()

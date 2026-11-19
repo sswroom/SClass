@@ -26,11 +26,11 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(Optional<UI::GUIClientContro
 	this->SetText(sb.ToCString());
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpFileStruct = this->tcMain->AddTabPage(CSTR("File Structure"));
 	this->txtFileStruct = ui->NewTextBox(this->tpFileStruct, CSTR(""), true);
-	this->txtFileStruct->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtFileStruct->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtFileStruct->SetReadOnly(true);
 	sb.ClearStr();
 	this->clsFile->FileStructDetail(sb);
@@ -38,21 +38,21 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(Optional<UI::GUIClientContro
 
 	this->tpFields = this->tcMain->AddTabPage(CSTR("Fields"));
 	this->lbFields = ui->NewListBox(this->tpFields, false);
-	this->lbFields->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbFields->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpMethods = this->tcMain->AddTabPage(CSTR("Methods"));
 	this->lbMethods = ui->NewListBox(this->tpMethods, false);
 	this->lbMethods->SetRect(0, 0, 100, 300, false);
-	this->lbMethods->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lbMethods->SetDockType(UI::GUIControl::DockType::Top);
 	this->lbMethods->HandleSelectionChange(OnMethodsSelChg, this);
 	this->vspMethods = ui->NewVSplitter(this->tpMethods, 3, false);
 	this->txtMethods = ui->NewTextBox(this->tpMethods, CSTR(""), true);
-	this->txtMethods->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtMethods->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtMethods->SetReadOnly(true);
 
 	this->tpDecompile = this->tcMain->AddTabPage(CSTR("Decompile"));
 	this->txtDecompile = ui->NewTextBox(this->tpDecompile, CSTR(""), true);
-	this->txtDecompile->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtDecompile->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtDecompile->SetReadOnly(true);
 
 	this->ctrlRest = nullptr;
@@ -138,14 +138,14 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(Optional<UI::GUIClientContro
 			ctrl->tp = this->tcMain->AddTabPage(CSTR("Controller"));
 			ctrl->pnlPath = ui->NewPanel(ctrl->tp);
 			ctrl->pnlPath->SetRect(0, 0, 100, 31, false);
-			ctrl->pnlPath->SetDockType(UI::GUIControl::DOCK_TOP);
+			ctrl->pnlPath->SetDockType(UI::GUIControl::DockType::Top);
 			ctrl->lblPath = ui->NewLabel(ctrl->pnlPath, CSTR("Path:"));
 			ctrl->lblPath->SetRect(4, 4, 100, 23, false);
 			ctrl->txtPath = ui->NewTextBox(ctrl->pnlPath, CSTR(""));
 			ctrl->txtPath->SetRect(104, 4, 400, 23, false);
 			ctrl->txtPath->SetReadOnly(true);
 			ctrl->lvMain = ui->NewListView(ctrl->tp, UI::ListViewStyle::Table, 4);
-			ctrl->lvMain->SetDockType(UI::GUIControl::DOCK_FILL);
+			ctrl->lvMain->SetDockType(UI::GUIControl::DockType::Fill);
 			ctrl->lvMain->AddColumn(CSTR("Path"), 200);
 			ctrl->lvMain->AddColumn(CSTR("Method"), 80);
 			ctrl->lvMain->AddColumn(CSTR("Return Type"), 200);

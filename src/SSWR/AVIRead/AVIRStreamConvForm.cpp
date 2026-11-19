@@ -235,10 +235,10 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(Optional<UI::GUIClientCont
 
 	this->grpStream1 = ui->NewGroupBox(*this, CSTR("Stream 1"));
 	this->grpStream1->SetRect(0, 0, 250, 48, false);
-	this->grpStream1->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->grpStream1->SetDockType(UI::GUIControl::DockType::Left);
 	this->pnlStream1 = ui->NewPanel(this->grpStream1);
 	this->pnlStream1->SetRect(0, 0, 100, 104, false);
-	this->pnlStream1->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlStream1->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblStream1 = ui->NewLabel(this->pnlStream1, CSTR("Stream Type"));
 	this->lblStream1->SetRect(4, 4, 100, 23, false);
 	this->txtStream1 = ui->NewTextBox(this->pnlStream1, CSTR("-"));
@@ -250,14 +250,14 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(Optional<UI::GUIClientCont
 	this->btnStream1->SetRect(4, 76, 75, 23, false);
 	this->btnStream1->HandleButtonClick(OnStream1Clicked, this);
 	this->rlcStream1 = ui->NewRealtimeLineChart(this->grpStream1, this->core->GetDrawEngine(), 1, 120, 1000, nullptr);
-	this->rlcStream1->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->rlcStream1->SetDockType(UI::GUIControl::DockType::Fill);
 	this->hspStream = ui->NewHSplitter(*this, 3, false);
 
 	this->grpStream2 = ui->NewGroupBox(*this, CSTR("Stream 2"));
-	this->grpStream2->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpStream2->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pnlStream2 = ui->NewPanel(this->grpStream2);
 	this->pnlStream2->SetRect(0, 0, 100, 104, false);
-	this->pnlStream2->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlStream2->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblStream2 = ui->NewLabel(this->pnlStream2, CSTR("Stream Type"));
 	this->lblStream2->SetRect(4, 4, 100, 23, false);
 	this->txtStream2 = ui->NewTextBox(this->pnlStream2, CSTR("-"));
@@ -269,7 +269,7 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(Optional<UI::GUIClientCont
 	this->btnStream2->SetRect(4, 76, 75, 23, false);
 	this->btnStream2->HandleButtonClick(OnStream2Clicked, this);
 	this->rlcStream2 = ui->NewRealtimeLineChart(this->grpStream2, this->core->GetDrawEngine(), 1, 120, 1000, nullptr);
-	this->rlcStream2->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->rlcStream2->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->AddTimer(1000, OnTimerTick, this);
 }

@@ -99,7 +99,7 @@ SSWR::AVIRead::AVIRSNMPClientForm::AVIRSNMPClientForm(Optional<UI::GUIClientCont
 
 	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 127, false);
-	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRequest->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblAgent = ui->NewLabel(this->pnlRequest, CSTR("Agent"));
 	this->lblAgent->SetRect(4, 4, 100, 23, false);
 	this->txtAgent = ui->NewTextBox(this->pnlRequest, CSTR("127.0.0.1"));
@@ -125,7 +125,7 @@ SSWR::AVIRead::AVIRSNMPClientForm::AVIRSNMPClientForm(Optional<UI::GUIClientCont
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 
 	this->lvResults = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
-	this->lvResults->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvResults->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvResults->SetFullRowSelect(true);
 	this->lvResults->SetShowGrid(true);
 	this->lvResults->AddColumn(CSTR("OID"), 150);

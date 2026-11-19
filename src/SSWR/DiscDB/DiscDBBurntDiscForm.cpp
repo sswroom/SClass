@@ -1329,10 +1329,10 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(Optional<UI::GUIClientCon
 
 	this->pnlTop = ui->NewPanel(*this);
 	this->pnlTop->SetRect(0, 0, 624, 121, false);
-	this->pnlTop->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlTop->SetDockType(UI::GUIControl::DockType::Top);
 	this->pnlBurntDisc = ui->NewPanel(this->pnlTop);
 	this->pnlBurntDisc->SetRect(0, 0, 472, 121, false);
-	this->pnlBurntDisc->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->pnlBurntDisc->SetDockType(UI::GUIControl::DockType::Left);
 	this->btnBrowse = ui->NewButton(this->pnlBurntDisc, CSTR("&Browse"));
 	this->btnBrowse->SetRect(8, 8, 83, 25, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
@@ -1358,15 +1358,15 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(Optional<UI::GUIClientCon
 	this->lbDiscId->SetRect(256, 0, 80, 121, false);
 	this->lbBrand = ui->NewListBox(this->pnlBurntDisc, false);
 	this->lbBrand->SetRect(336, 0, 136, 121, false);
-	this->lbBrand->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->lbBrand->SetDockType(UI::GUIControl::DockType::Right);
 	this->lbBrand->HandleSelectionChange(OnBrandSelChg, this);
 	this->lbDVDName = ui->NewListBox(this->pnlTop, false);
-	this->lbDVDName->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbDVDName->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbDVDName->HandleSelectionChange(OnDVDNameSelChg, this);
 
 	this->pnlFile = ui->NewPanel(*this);
 	this->pnlFile->SetRect(416, 121, 208, 335, false);
-	this->pnlFile->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->pnlFile->SetDockType(UI::GUIControl::DockType::Right);
 	this->lblCategory = ui->NewLabel(this->pnlFile, CSTR("Category"));
 	this->lblCategory->SetRect(8, 17, 72, 25, false);
 	this->cboCategory = ui->NewComboBox(this->pnlFile, false);
@@ -1413,7 +1413,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(Optional<UI::GUIClientCon
 	this->btnSectorSize->SetRect(120, 303, 75, 25, false);
 	this->btnSectorSize->HandleButtonClick(OnSectorSizeClicked, this);
 	this->lbFileName = ui->NewListBox(*this, false);
-	this->lbFileName->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbFileName->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbFileName->HandleSelectionChange(OnFileNameSelChg, this);
 
 	this->pnlFile->SetEnabled(false);

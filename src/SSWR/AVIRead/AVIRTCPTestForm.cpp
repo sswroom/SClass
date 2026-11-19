@@ -178,7 +178,7 @@ SSWR::AVIRead::AVIRTCPTestForm::AVIRTCPTestForm(Optional<UI::GUIClientControl> p
 
 	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 127, false);
-	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRequest->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblIP = ui->NewLabel(this->pnlRequest, CSTR("IP"));
 	this->lblIP->SetRect(4, 4, 100, 23, false);
 	this->txtIP = ui->NewTextBox(this->pnlRequest, CSTR("127.0.0.1"));
@@ -199,7 +199,7 @@ SSWR::AVIRead::AVIRTCPTestForm::AVIRTCPTestForm(Optional<UI::GUIClientControl> p
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	this->grpStatus = ui->NewGroupBox(*this, CSTR("Status"));
-	this->grpStatus->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpStatus->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblConnLeftCnt = ui->NewLabel(this->grpStatus, CSTR("Conn Left"));
 	this->lblConnLeftCnt->SetRect(4, 4, 100, 23, false);
 	this->txtConnLeftCnt = ui->NewTextBox(this->grpStatus, CSTR(""));

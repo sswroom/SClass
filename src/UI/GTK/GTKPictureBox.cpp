@@ -79,19 +79,19 @@ gboolean GTKPictureBox_SignalButtonPress(GtkWidget *widget, GdkEvent  *event, gp
 		{
 			default:
 			case 1:
-				btn = UI::GUIControl::MBTN_LEFT;
+				btn = UI::GUIControl::MouseButton::Left;
 				break;
 			case 2:
-				btn = UI::GUIControl::MBTN_MIDDLE;
+				btn = UI::GUIControl::MouseButton::Middle;
 				break;
 			case 3:
-				btn = UI::GUIControl::MBTN_RIGHT;
+				btn = UI::GUIControl::MouseButton::Right;
 				break;
 			case 4:
-				btn = UI::GUIControl::MBTN_X1;
+				btn = UI::GUIControl::MouseButton::X1;
 				break;
 			case 5:
-				btn = UI::GUIControl::MBTN_X2;
+				btn = UI::GUIControl::MouseButton::X2;
 				break;
 		}
 		me->EventButtonDown(Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)), btn);
@@ -110,19 +110,19 @@ gboolean GTKPictureBox_SignalButtonRelease(GtkWidget *widget, GdkEvent  *event, 
 		{
 			default:
 			case 1:
-				btn = UI::GUIControl::MBTN_LEFT;
+				btn = UI::GUIControl::MouseButton::Left;
 				break;
 			case 2:
-				btn = UI::GUIControl::MBTN_MIDDLE;
+				btn = UI::GUIControl::MouseButton::Middle;
 				break;
 			case 3:
-				btn = UI::GUIControl::MBTN_RIGHT;
+				btn = UI::GUIControl::MouseButton::Right;
 				break;
 			case 4:
-				btn = UI::GUIControl::MBTN_X1;
+				btn = UI::GUIControl::MouseButton::X1;
 				break;
 			case 5:
-				btn = UI::GUIControl::MBTN_X2;
+				btn = UI::GUIControl::MouseButton::X2;
 				break;
 		}
 		me->EventButtonUp(Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)), btn);

@@ -605,7 +605,7 @@ SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(Optional<UI::GUIClientCo
 
 	this->pnlButtons = ui->NewPanel(*this);
 	this->pnlButtons->SetRect(0, 0, 100, 55, false);
-	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlButtons->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblStatus = ui->NewLabel(this->pnlButtons, CSTR("Status"));
 	this->lblStatus->SetRect(4, 4, 100, 23, false);
 	this->txtStatus = ui->NewTextBox(this->pnlButtons, CSTR("Idle"));
@@ -635,7 +635,7 @@ SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(Optional<UI::GUIClientCo
 	this->btn30Minutes->HandleButtonClick(On30MinutesClicked, this);
 
 	this->lvFiles = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
-	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvFiles->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvFiles->AddColumn(CSTR("Id"), 60);
 	this->lvFiles->AddColumn(CSTR("File Name"), 240);
 	this->lvFiles->SetFullRowSelect(true);

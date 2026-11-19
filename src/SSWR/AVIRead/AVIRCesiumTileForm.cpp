@@ -302,7 +302,7 @@ SSWR::AVIRead::AVIRCesiumTileForm::AVIRCesiumTileForm(Optional<UI::GUIClientCont
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 80, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblPort = ui->NewLabel(this->pnlCtrl, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	this->txtPort = ui->NewTextBox(this->pnlCtrl, CSTR(""));
@@ -320,7 +320,7 @@ SSWR::AVIRead::AVIRCesiumTileForm::AVIRCesiumTileForm(Optional<UI::GUIClientCont
 	this->chkLightLevel->SetRect(104, 52, 100, 23, false);
 	this->chkLightLevel->HandleCheckedChange(OnLightLevelChkChg, this);
 	this->lbTiles = ui->NewListBox(*this, false);
-	this->lbTiles->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbTiles->SetDockType(UI::GUIControl::DockType::Fill);
 	UIntOS i = 0;
 	UIntOS j = tiles->GetCount();
 	while (i < j)

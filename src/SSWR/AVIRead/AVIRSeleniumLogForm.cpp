@@ -195,7 +195,7 @@ SSWR::AVIRead::AVIRSeleniumLogForm::AVIRSeleniumLogForm(Optional<UI::GUIClientCo
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnBrowse = ui->NewButton(this->pnlControl, CSTR("Browse"));
 	this->btnBrowse->SetRect(4, 4, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClick, this);
@@ -203,7 +203,7 @@ SSWR::AVIRead::AVIRSeleniumLogForm::AVIRSeleniumLogForm(Optional<UI::GUIClientCo
 	this->btnCSV->SetRect(84, 4, 75, 23, false);
 	this->btnCSV->HandleButtonClick(OnCSVClick, this);
 	this->lvContent = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
-	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvContent->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvContent->AddColumn(CSTR("StartTime"), 150);
 	this->lvContent->AddColumn(CSTR("EndTime"), 150);
 	this->lvContent->AddColumn(CSTR("Status"), 100);

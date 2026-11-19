@@ -153,7 +153,7 @@ SSWR::AVIRead::AVIRJTT808ServerForm::AVIRJTT808ServerForm(Optional<UI::GUIClient
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	this->lblPort = ui->NewLabel(this->tpStatus, CSTR("Port"));
@@ -167,10 +167,10 @@ SSWR::AVIRead::AVIRJTT808ServerForm::AVIRJTT808ServerForm(Optional<UI::GUIClient
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->txtLog->SetReadOnly(true);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
 	NEW_CLASSNN(this->protoHdlr, IO::ProtoHdlr::ProtoJTT808Handler(*this, 0));

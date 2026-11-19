@@ -170,9 +170,9 @@ SSWR::AVIRead::AVIRInvestmentImportForm::AVIRInvestmentImportForm(Optional<UI::G
 
 	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetRect(0, 0, 100, 127, false);
-	this->pnlMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlMain->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lvMain = ui->NewListView(*this, UI::ListViewStyle::Table, 1);
-	this->lvMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvMain->SetFullRowSelect(true);
 	this->lvMain->SetShowGrid(true);
 	this->lvMain->AddColumn(CSTR(""), 100);

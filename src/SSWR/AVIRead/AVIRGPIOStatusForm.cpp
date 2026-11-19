@@ -41,7 +41,7 @@ SSWR::AVIRead::AVIRGPIOStatusForm::AVIRGPIOStatusForm(Optional<UI::GUIClientCont
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lvStatus = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
-	this->lvStatus->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvStatus->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvStatus->SetFullRowSelect(true);
 	this->lvStatus->SetShowGrid(true);
 	this->lvStatus->AddColumn(CSTR("Name"), 200);

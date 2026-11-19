@@ -96,12 +96,12 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(Optional<UI::GUIClientControl> p
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpCPU = this->tcMain->AddTabPage(CSTR("CPU"));
 	this->pnlMain = ui->NewPanel(this->tpCPU);
 	this->pnlMain->SetRect(0, 0, 100, 31, false);
-	this->pnlMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlMain->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnUpload = ui->NewButton(this->pnlMain, CSTR("Upload Info"));
 	this->btnUpload->SetRect(4, 4, 100, 23, false);
 	this->btnUpload->HandleButtonClick(OnUploadClick, this);
@@ -109,7 +109,7 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(Optional<UI::GUIClientControl> p
 	this->btnCopyInfo->SetRect(108, 4, 100, 23, false);
 	this->btnCopyInfo->HandleButtonClick(OnCopyInfoClick, this);
 	this->lvMain = ui->NewListView(this->tpCPU, UI::ListViewStyle::Table, 2);
-	this->lvMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvMain->SetFullRowSelect(true);
 	this->lvMain->SetShowGrid(true);
 	this->lvMain->AddColumn(CSTR("Name"), 200);
@@ -117,11 +117,11 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(Optional<UI::GUIClientControl> p
 
 	this->tpCache = this->tcMain->AddTabPage(CSTR("Cache"));
 	this->lbCache = ui->NewListBox(this->tpCache, false);
-	this->lbCache->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbCache->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpFeature = this->tcMain->AddTabPage(CSTR("Feature"));
 	this->lvFeature = ui->NewListView(this->tpFeature, UI::ListViewStyle::Table, 4);
-	this->lvFeature->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvFeature->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvFeature->SetFullRowSelect(true);
 	this->lvFeature->SetShowGrid(true);
 	this->lvFeature->AddColumn(CSTR("Short Name"), 100);

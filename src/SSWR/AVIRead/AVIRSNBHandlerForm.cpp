@@ -55,7 +55,7 @@ SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(Optional<UI::GUIClientCont
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 200, 100, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Left);
 	this->lblType = ui->NewLabel(this->pnlControl, CSTR("Type"));
 	this->lblType->SetRect(0, 0, 100, 23, false);
 	this->cboType = ui->NewComboBox(this->pnlControl, false);
@@ -68,7 +68,7 @@ SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(Optional<UI::GUIClientCont
 	this->btnOk->SetRect(100, 64, 75, 23, false);
 	this->btnOk->HandleButtonClick(OnOkClicked, this);
 	this->pbImage = ui->NewPictureBox(*this, this->core->GetDrawEngine(), false, true);
-	this->pbImage->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbImage->SetDockType(UI::GUIControl::DockType::Fill);
 
 	UIntOS i = 0;
 	UIntOS j = IO::SNBDongle::HT_LAST;

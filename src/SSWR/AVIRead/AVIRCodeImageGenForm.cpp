@@ -69,9 +69,9 @@ SSWR::AVIRead::AVIRCodeImageGenForm::AVIRCodeImageGenForm(Optional<UI::GUIClient
 
 	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetRect(0, 0, 100, 84, false);
-	this->pnlMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlMain->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->pbMain = ui->NewPictureBoxDD(*this, this->colorSess, true, false);
-	this->pbMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblCodeType = ui->NewLabel(this->pnlMain, CSTR("Code Type"));
 	this->lblCodeType->SetRect(4, 4, 100, 23, false);
 	this->cboCodeType = ui->NewComboBox(this->pnlMain, false);

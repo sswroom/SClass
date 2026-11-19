@@ -232,17 +232,17 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(Optional<UI::GUIClientControl> p
 
 	this->pnlLayers = ui->NewPanel(*this);
 	this->pnlLayers->SetRect(0, 0, 200, 23, false);
-	this->pnlLayers->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->pnlLayers->SetDockType(UI::GUIControl::DockType::Left);
 	this->btnAddLayer = ui->NewButton(this->pnlLayers, CSTR("New Layer"));
 	this->btnAddLayer->SetRect(0, 0, 100, 23, false);
-	this->btnAddLayer->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->btnAddLayer->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnAddLayer->HandleButtonClick(OnAddLayerClicked, this);
 	this->lbLayers = ui->NewListBox(this->pnlLayers, false);
-	this->lbLayers->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLayers->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLayers->HandleSelectionChange(OnLayersChanged, this);
 	this->hspLayers = ui->NewHSplitter(*this, 3, false);
 	this->pnlSetting = ui->NewPanel(*this);
-	this->pnlSetting->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlSetting->SetDockType(UI::GUIControl::DockType::Fill);
 	this->btnRemoveLayer = ui->NewButton(this->pnlSetting, CSTR("Remove Layer"));
 	this->btnRemoveLayer->SetRect(4, 4, 75, 23, false);
 	this->btnRemoveLayer->HandleButtonClick(OnRemoveLayerClicked, this);

@@ -190,9 +190,9 @@ NN<UI::ListBoxLogger> UI::ListBoxLogger::CreateUI(NN<UI::GUIForm> frm, NN<UI::GU
 	txt = ui->NewTextBox(ctrl, CSTR(""));
 	txt->SetReadOnly(true);
 	txt->SetRect(0, 0, 100, 23, false);
-	txt->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	txt->SetDockType(UI::GUIControl::DockType::Bottom);
 	lb = ui->NewListBox(ctrl, false);
-	lb->SetDockType(UI::GUIControl::DOCK_FILL);
+	lb->SetDockType(UI::GUIControl::DockType::Fill);
 	NEW_CLASSNN(logger, UI::ListBoxLogger(frm, lb, maxLog, reverse));
 	logger->txt = txt;
 	lb->HandleSelectionChange(OnListBoxSelChg, logger.Ptr());

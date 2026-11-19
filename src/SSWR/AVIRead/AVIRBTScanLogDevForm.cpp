@@ -68,7 +68,7 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(Optional<UI::GUIClient
 
 	this->pnlDevInfo = ui->NewPanel(*this);
 	this->pnlDevInfo->SetRect(0, 0, 100, 56, false);
-	this->pnlDevInfo->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlDevInfo->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblMAC = ui->NewLabel(this->pnlDevInfo, CSTR("MAC"));
 	this->lblMAC->SetRect(4, 4, 100, 23, false);
 	WriteMUInt64(mac, entry->mac64Int);
@@ -93,7 +93,7 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(Optional<UI::GUIClient
 	this->btnCSV->SetRect(304, 28, 75, 23, false);
 	this->btnCSV->HandleButtonClick(OnCSVClicked, this);
 	this->lvContent = ui->NewListView(*this, UI::ListViewStyle::Table, 5);
-	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvContent->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvContent->SetShowGrid(true);
 	this->lvContent->SetFullRowSelect(true);
 	this->lvContent->AddColumn(CSTR("Time"), 180);

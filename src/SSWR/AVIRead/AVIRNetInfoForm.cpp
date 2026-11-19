@@ -705,16 +705,16 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(Optional<UI::GUIClientControl> p
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpAdaptor = this->tcMain->AddTabPage(CSTR("Adaptor"));
 	this->lbAdaptors = ui->NewListBox(this->tpAdaptor, false);
 	this->lbAdaptors->SetRect(0, 0, 200, 100, false);
-	this->lbAdaptors->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbAdaptors->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbAdaptors->HandleSelectionChange(OnAdaptorSelChg, this);
 	this->hSplitter = ui->NewHSplitter(this->tpAdaptor, 3, false);
 	this->pnlAdaptor = ui->NewPanel(this->tpAdaptor);
-	this->pnlAdaptor->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlAdaptor->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->lblAdaptorName = ui->NewLabel(this->pnlAdaptor, CSTR("Name"));
 	this->lblAdaptorName->SetRect(4, 4, 100, 23, false);
@@ -1014,7 +1014,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(Optional<UI::GUIClientControl> p
 
 	this->tpARPInfo = this->tcMain->AddTabPage(CSTR("ARP Info"));
 	this->lvARPInfo = ui->NewListView(this->tpARPInfo, UI::ListViewStyle::Table, 4);
-	this->lvARPInfo->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvARPInfo->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvARPInfo->AddColumn(CSTR("IP Address"), 150);
 	this->lvARPInfo->AddColumn(CSTR("Physical Address"), 250);
 	this->lvARPInfo->AddColumn(CSTR("Adaptor"), 100);
@@ -1023,14 +1023,14 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(Optional<UI::GUIClientControl> p
 	this->tpPortInfo = this->tcMain->AddTabPage(CSTR("Port Info"));
 	this->pnlPortInfo = ui->NewPanel(this->tpPortInfo);
 	this->pnlPortInfo->SetRect(0, 0, 100, 40, false);
-	this->pnlPortInfo->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlPortInfo->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnPortRefresh = ui->NewButton(this->pnlPortInfo, CSTR("&Refresh"));
 	this->btnPortRefresh->SetRect(8, 8, 75, 23, false);
 	this->btnPortRefresh->HandleButtonClick(OnPortClicked, this);
 	this->chkPortAuto = ui->NewCheckBox(this->pnlPortInfo, CSTR("Auto Refresh"), false);
 	this->chkPortAuto->SetRect(100, 8, 100, 23, false);
 	this->lvPortInfo = ui->NewListView(this->tpPortInfo, UI::ListViewStyle::Table, 6);
-	this->lvPortInfo->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvPortInfo->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvPortInfo->AddColumn(CSTR("Proto"), 50);
 	this->lvPortInfo->AddColumn(CSTR("Local Addr"), 150);
 	this->lvPortInfo->AddColumn(CSTR("Foreign Addr"), 150);
@@ -1044,20 +1044,20 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(Optional<UI::GUIClientControl> p
 		this->tpWIFIInfo = this->tcMain->AddTabPage(CSTR("Wireless"));
 		this->lbWIFIIFs = ui->NewListBox(this->tpWIFIInfo, false);
 		this->lbWIFIIFs->SetRect(0, 0, 200, 100, false);
-		this->lbWIFIIFs->SetDockType(UI::GUIControl::DOCK_LEFT);
+		this->lbWIFIIFs->SetDockType(UI::GUIControl::DockType::Left);
 		this->hspWIFI = ui->NewHSplitter(this->tpWIFIInfo, 3, false);
 		this->tcWIFI = ui->NewTabControl(this->tpWIFIInfo);
-		this->tcWIFI->SetDockType(UI::GUIControl::DOCK_FILL);
+		this->tcWIFI->SetDockType(UI::GUIControl::DockType::Fill);
 		this->tpWIFIAP = this->tcWIFI->AddTabPage(CSTR("AP"));
 		this->lvWIFINetwork = ui->NewListView(this->tpWIFIAP, UI::ListViewStyle::Table, 2);
-		this->lvWIFINetwork->SetDockType(UI::GUIControl::DOCK_FILL);
+		this->lvWIFINetwork->SetDockType(UI::GUIControl::DockType::Fill);
 		this->lvWIFINetwork->SetShowGrid(true);
 		this->lvWIFINetwork->SetFullRowSelect(true);
 		this->lvWIFINetwork->AddColumn(CSTR("SSID"), 200);
 		this->lvWIFINetwork->AddColumn(CSTR("RSSI"), 100);
 		this->tpWIFIBSS = this->tcWIFI->AddTabPage(CSTR("BSS"));
 		this->lvWIFIBSS = ui->NewListView(this->tpWIFIBSS, UI::ListViewStyle::Table, 10);
-		this->lvWIFIBSS->SetDockType(UI::GUIControl::DOCK_FILL);
+		this->lvWIFIBSS->SetDockType(UI::GUIControl::DockType::Fill);
 		this->lvWIFIBSS->SetShowGrid(true);
 		this->lvWIFIBSS->SetFullRowSelect(true);
 		this->lvWIFIBSS->AddColumn(CSTR("SSID"), 200);

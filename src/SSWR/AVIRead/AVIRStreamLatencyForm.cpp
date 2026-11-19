@@ -193,7 +193,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(Optional<UI::GUIClie
 
 	this->grpStream = ui->NewGroupBox(*this, CSTR("Stream"));
 	this->grpStream->SetRect(0, 0, 100, 48, false);
-	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpStream->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblStream = ui->NewLabel(this->grpStream, CSTR("Stream Type"));
 	this->lblStream->SetRect(4, 4, 100, 23, false);
 	this->txtStream = ui->NewTextBox(this->grpStream, CSTR("-"));
@@ -205,7 +205,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(Optional<UI::GUIClie
 	
 	this->grpControl = ui->NewGroupBox(*this, CSTR("Control"));
 	this->grpControl->SetRect(0, 0, 100, 48, false);
-	this->grpControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblReqInterval = ui->NewLabel(this->grpControl, CSTR("Req Interval"));
 	this->lblReqInterval->SetRect(4, 4, 100, 23, false);
 	this->cboReqInterval = ui->NewComboBox(this->grpControl, false);
@@ -225,19 +225,19 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(Optional<UI::GUIClie
 	this->cboReqInterval->SetSelectedIndex(8);
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpLatency = this->tcMain->AddTabPage(CSTR("Latency (ms)"));
 	this->rlcLatency = ui->NewRealtimeLineChart(this->tpLatency, this->core->GetDrawEngine(), 1, 256, 1000, nullptr);
-	this->rlcLatency->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->rlcLatency->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	this->lblSentCnt = ui->NewLabel(this->tpStatus, CSTR("Sent Cnt"));

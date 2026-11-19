@@ -189,21 +189,21 @@ SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(Optional<UI::GUIClientCo
 	
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 23, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblConfig = ui->NewLabel(this->pnlCtrl, CSTR("Config"));
 	this->lblConfig->SetRect(100, 0, 100, 23, false);
 	this->cboConfig = ui->NewComboBox(this->pnlCtrl, false);
 	this->cboConfig->SetRect(200, 0, 200, 23, false);
 	NEW_CLASSNN(this->tvMain, UI::GUITreeView(ui, *this));
 	this->tvMain->SetRect(0, 0, 200, 23, false);
-	this->tvMain->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->tvMain->SetDockType(UI::GUIControl::DockType::Left);
 	this->tvMain->SetHasLines(true);
 	this->tvMain->SetHasButtons(true);
 	this->tvMain->HandleSelectionChange(OnItemSelected, this);
 	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	this->txtMessage = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtMessage->SetReadOnly(true);
-	this->txtMessage->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtMessage->SetDockType(UI::GUIControl::DockType::Fill);
 
 	NN<UI::GUITreeView::TreeItem> tvi;
 	if (this->tvMain->InsertItem(nullptr, nullptr, proj->GetContainerName(), proj).SetTo(tvi))

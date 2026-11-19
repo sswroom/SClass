@@ -265,29 +265,29 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(Optional<UI::GUIClientCont
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 24, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnFolder = ui->NewButton(this->pnlCtrl, CSTR("Folder..."));
 	this->btnFolder->SetRect(0, 0, 75, 23, false);
-	this->btnFolder->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->btnFolder->SetDockType(UI::GUIControl::DockType::Left);
 	this->btnFolder->HandleButtonClick(OnFolderClicked, this);
 	this->lblFolder = ui->NewLabel(this->pnlCtrl, CSTR(""));
 	this->lblFolder->SetRect(0, 0, 480, 23, false);
-	this->lblFolder->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lblFolder->SetDockType(UI::GUIControl::DockType::Left);
 	this->prgMain = ui->NewProgressBar(this->pnlCtrl, 1);
-	this->prgMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->prgMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	NEW_CLASSNN(this->icMain, SSWR::AVIRead::AVIRImageControl(ui, *this, this->core, *this, this->colorSess));
 	this->icMain->SetRect(0, 0, 200, 100, false);
-	this->icMain->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->icMain->SetDockType(UI::GUIControl::DockType::Left);
 	this->icMain->SetDispImageHandler(OnImageChanged, this);
 	this->icMain->SetProgressHandler(OnProgressUpdated, this);
 	this->icMain->HandleKeyDown(OnKeyDown, this);
 //	this->hspLeft = ui->NewHSplitter(*this, 3, false);
 	this->pnlImage = ui->NewPanel(*this);
 	this->pnlImage->SetRect(0, 0, 200, 100, false);
-	this->pnlImage->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlImage->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->pbMain = ui->NewPictureBoxDD(*this, this->colorSess, true, false);
-	this->pbMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->lblBright = ui->NewLabel(this->pnlImage, CSTR("Brightness"));
 	this->lblBright->SetRect(0, 0, 100, 23, false);

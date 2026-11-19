@@ -60,7 +60,7 @@ SSWR::AVIRead::AVIRProxyServerForm::AVIRProxyServerForm(Optional<UI::GUIClientCo
 
 	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 55, false);
-	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRequest->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblPort = ui->NewLabel(this->pnlRequest, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	this->txtPort = ui->NewTextBox(this->pnlRequest, CSTR("8080"));
@@ -71,9 +71,9 @@ SSWR::AVIRead::AVIRProxyServerForm::AVIRProxyServerForm(Optional<UI::GUIClientCo
 	this->txtLog = ui->NewTextBox(*this, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbLog = ui->NewListBox(*this, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 	
 	this->SetDefaultButton(this->btnStart);

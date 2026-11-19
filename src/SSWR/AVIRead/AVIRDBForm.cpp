@@ -570,26 +570,26 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(Optional<UI::GUIClientControl> parent, NN<
 
 	this->tcDB = ui->NewTabControl(*this);
 	this->tcDB->SetRect(0, 0, 100, 400, false);
-	this->tcDB->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->tcDB->SetDockType(UI::GUIControl::DockType::Top);
 	this->vspDB = ui->NewVSplitter(*this, 3, false);
 	this->lvResult = ui->NewListView(*this, UI::ListViewStyle::Table, 1);
-	this->lvResult->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvResult->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvResult->SetFullRowSelect(true);
 	this->lvResult->SetShowGrid(true);
 
 	this->tpTable = this->tcDB->AddTabPage(CSTR("Tables"));
 	this->lbSchema = ui->NewListBox(this->tpTable, false);
 	this->lbSchema->SetRect(0, 0, 150, 100, false);
-	this->lbSchema->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbSchema->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbSchema->HandleSelectionChange(OnSchemaSelChg, this);
 	this->hspSchema = ui->NewHSplitter(this->tpTable, 3, false);
 	this->lbTable = ui->NewListBox(this->tpTable, false);
 	this->lbTable->SetRect(0, 0, 150, 100, false);
-	this->lbTable->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbTable->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbTable->HandleSelectionChange(OnTableSelChg, this);
 	this->hspTable = ui->NewHSplitter(this->tpTable, 3, false);
 	this->lvTable = ui->NewListView(this->tpTable, UI::ListViewStyle::Table, 8);
-	this->lvTable->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvTable->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvTable->SetFullRowSelect(true);
 	this->lvTable->AddColumn(CSTR("Name"), 200);
 	this->lvTable->AddColumn(CSTR("Type"), 100);
@@ -605,12 +605,12 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(Optional<UI::GUIClientControl> parent, NN<
 		this->tpSQL = this->tcDB->AddTabPage(CSTR("SQL"));
 		this->pnlSQLCtrl = ui->NewPanel(this->tpSQL);
 		this->pnlSQLCtrl->SetRect(0, 0, 100, 31, false);
-		this->pnlSQLCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+		this->pnlSQLCtrl->SetDockType(UI::GUIControl::DockType::Bottom);
 		this->btnSQL = ui->NewButton(this->pnlSQLCtrl, CSTR("Execute"));
 		this->btnSQL->SetRect(4, 4, 75, 23, false);
 		this->btnSQL->HandleButtonClick(OnSQLClicked, this);
 		this->txtSQL = ui->NewTextBox(this->tpSQL, CSTR(""), true);
-		this->txtSQL->SetDockType(UI::GUIControl::DOCK_FILL);
+		this->txtSQL->SetDockType(UI::GUIControl::DockType::Fill);
 
 		this->tpLog = this->tcDB->AddTabPage(CSTR("Log"));
 		this->logger = UI::ListBoxLogger::CreateUI(*this, ui, this->tpLog, 200, false);

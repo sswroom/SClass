@@ -54,19 +54,19 @@ gboolean GUITextView_OnMouseDown(GtkWidget *widget, GdkEvent *event, gpointer da
 		{
 			default:
 			case 1:
-				btn = UI::GUIControl::MBTN_LEFT;
+				btn = UI::GUIControl::MouseButton::Left;
 				break;
 			case 2:
-				btn = UI::GUIControl::MBTN_MIDDLE;
+				btn = UI::GUIControl::MouseButton::Middle;
 				break;
 			case 3:
-				btn = UI::GUIControl::MBTN_RIGHT;
+				btn = UI::GUIControl::MouseButton::Right;
 				break;
 			case 4:
-				btn = UI::GUIControl::MBTN_X1;
+				btn = UI::GUIControl::MouseButton::X1;
 				break;
 			case 5:
-				btn = UI::GUIControl::MBTN_X2;
+				btn = UI::GUIControl::MouseButton::X2;
 				break;
 		}
 		me->OnMouseDown(Double2IntOS(evt->x), Double2IntOS(evt->y), btn);
@@ -87,19 +87,19 @@ gboolean GUITextView_OnMouseUp(GtkWidget *widget, GdkEvent *event, gpointer data
 		{
 			default:
 			case 1:
-				btn = UI::GUIControl::MBTN_LEFT;
+				btn = UI::GUIControl::MouseButton::Left;
 				break;
 			case 2:
-				btn = UI::GUIControl::MBTN_MIDDLE;
+				btn = UI::GUIControl::MouseButton::Middle;
 				break;
 			case 3:
-				btn = UI::GUIControl::MBTN_RIGHT;
+				btn = UI::GUIControl::MouseButton::Right;
 				break;
 			case 4:
-				btn = UI::GUIControl::MBTN_X1;
+				btn = UI::GUIControl::MouseButton::X1;
 				break;
 			case 5:
-				btn = UI::GUIControl::MBTN_X2;
+				btn = UI::GUIControl::MouseButton::X2;
 				break;
 		}
 		me->OnMouseUp(Double2IntOS(evt->x), Double2IntOS(evt->y), btn);
@@ -612,7 +612,7 @@ void UI::GUITextView::OnMouseDown(IntOS scnX, IntOS scnY, MouseButton btn)
 	Math::Size2D<UIntOS> sz = this->GetSizeP();
 	if ((clsData->scrVMax - clsData->scrVMin) > clsData->scrVPage && scnX >= (IntOS)(sz.x - clsData->scrSize))
 	{
-		if (btn == UI::GUIControl::MBTN_LEFT)
+		if (btn == UI::GUIControl::MouseButton::Left)
 		{
 			UIntOS btnSize = sz.y * clsData->scrVPage / (clsData->scrVMax - clsData->scrVMin);
 			if (btnSize  < clsData->scrSize)
@@ -647,7 +647,7 @@ void UI::GUITextView::OnMouseDown(IntOS scnX, IntOS scnY, MouseButton btn)
 	}
 	else if ((clsData->scrHMax - clsData->scrHMin) > clsData->scrHPage && scnY >= (IntOS)(sz.y - clsData->scrSize))
 	{
-		if (btn == UI::GUIControl::MBTN_LEFT)
+		if (btn == UI::GUIControl::MouseButton::Left)
 		{
 			UIntOS btnSize = sz.x * clsData->scrHPage / (clsData->scrHMax - clsData->scrHMin);
 			if (btnSize  < clsData->scrSize)
@@ -689,11 +689,11 @@ void UI::GUITextView::OnMouseDown(IntOS scnX, IntOS scnY, MouseButton btn)
 
 void UI::GUITextView::OnMouseUp(IntOS scnX, IntOS scnY, MouseButton btn)
 {
-	if (this->clsData->scrVDown && btn == UI::GUIControl::MBTN_LEFT)
+	if (this->clsData->scrVDown && btn == UI::GUIControl::MouseButton::Left)
 	{
 		this->clsData->scrVDown = false;
 	}
-	else if (this->clsData->scrHDown && btn == UI::GUIControl::MBTN_LEFT)
+	else if (this->clsData->scrHDown && btn == UI::GUIControl::MouseButton::Left)
 	{
 		this->clsData->scrHDown = false;
 	}

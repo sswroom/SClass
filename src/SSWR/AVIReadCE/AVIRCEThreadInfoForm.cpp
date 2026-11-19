@@ -93,7 +93,7 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 	this->symbol = symbol;
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	this->tpContext = this->tcMain->AddTabPage(CSTR("Context"));
 	this->tpStack = this->tcMain->AddTabPage(CSTR("Stack"));
@@ -116,14 +116,14 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 	this->txtStartName->SetReadOnly(true);
 
 	this->lvContext = ui->NewListView(this->tpContext, UI::ListViewStyle::Table, 2);
-	this->lvContext->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvContext->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvContext->SetFullRowSelect(true);
 	this->lvContext->SetShowGrid(true);
 	this->lvContext->AddColumn(CSTR("Name"), 100);
 	this->lvContext->AddColumn(CSTR("Value"), 300);
 
 	this->lvStack = ui->NewListView(this->tpStack, UI::ListViewStyle::Table, 2);
-	this->lvStack->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvStack->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvStack->SetFullRowSelect(true);
 	this->lvStack->SetShowGrid(true);
 	this->lvStack->AddColumn(CSTR("Address"), 120);
@@ -131,14 +131,14 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 
 	this->lbMyStack = ui->NewListBox(this->tpMyStack, false);
 	this->lbMyStack->SetRect(0, 0, 300, 23, false);
-	this->lbMyStack->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbMyStack->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbMyStack->HandleSelectionChange(OnMyStackChg, this);
 	this->hspMyStack = ui->NewHSplitter(this->tpMyStack, 3, false);
 	this->pnlMyStack = ui->NewPanel(this->tpMyStack);
-	this->pnlMyStack->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlMyStack->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtMyStackMem = ui->NewTextBox(this->pnlMyStack, CSTR(""), true);
 	this->txtMyStackMem->SetRect(0, 0, 100, 200, false);
-	this->txtMyStackMem->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->txtMyStackMem->SetDockType(UI::GUIControl::DockType::Top);
 	this->txtMyStackMem->SetReadOnly(true);
 	this->vspMyStack = ui->NewVSplitter(this->pnlMyStack, 3, false);
 	this->lvMyStack = ui->NewListView(this->pnlMyStack, UI::ListViewStyle::Table, 10);
@@ -154,7 +154,7 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 	this->lvMyStack->AddColumn(CSTR("Ebx"), 70);
 	this->lvMyStack->AddColumn(CSTR("Esi"), 70);
 	this->lvMyStack->AddColumn(CSTR("Edi"), 70);
-	this->lvMyStack->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvMyStack->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvMyStack->HandleDblClk(OnMyStackDblClk, this);
 
 	NN<Manage::ThreadInfo> thread;

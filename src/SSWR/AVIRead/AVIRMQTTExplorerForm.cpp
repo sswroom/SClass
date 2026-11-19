@@ -560,7 +560,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(Optional<UI::GUIClient
 
 	this->pnlConnect = ui->NewPanel(*this);
 	this->pnlConnect->SetRect(0, 0, 100, 103, false);
-	this->pnlConnect->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlConnect->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblHost = ui->NewLabel(this->pnlConnect, CSTR("Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	this->txtHost = ui->NewTextBox(this->pnlConnect, CSTR("127.0.0.1"));
@@ -597,15 +597,15 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(Optional<UI::GUIClient
 	this->lblStatus = ui->NewLabel(this->pnlConnect, CSTR("Not Connected"));
 	this->lblStatus->SetRect(4, 80, 150, 23, false);
 	this->tcDetail = ui->NewTabControl(*this);
-	this->tcDetail->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcDetail->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpRecv = this->tcDetail->AddTabPage(CSTR("Recv"));
 	this->pbRecvTopic = ui->NewPictureBoxSimple(this->tpRecv, this->core->GetDrawEngine(), false);
 	this->pbRecvTopic->SetRect(0, 0, 100, 300, false);
-	this->pbRecvTopic->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pbRecvTopic->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->vspRecvTopic = ui->NewVSplitter(this->tpRecv, 3, true);
 	this->lvRecvTopic = ui->NewListView(this->tpRecv, UI::ListViewStyle::Table, 4);
-	this->lvRecvTopic->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvRecvTopic->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvRecvTopic->SetShowGrid(true);
 	this->lvRecvTopic->SetFullRowSelect(true);
 	this->lvRecvTopic->AddColumn(CSTR("Topic"), 200);
@@ -617,7 +617,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(Optional<UI::GUIClient
 	this->tpPublish = this->tcDetail->AddTabPage(CSTR("Publish"));
 	this->pnlPubTopic = ui->NewPanel(this->tpPublish);
 	this->pnlPubTopic->SetRect(0, 0, 100, 103, false);
-	this->pnlPubTopic->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlPubTopic->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblPubTopic = ui->NewLabel(this->pnlPubTopic, CSTR("Topic"));
 	this->lblPubTopic->SetRect(4, 4, 100, 23, false);
 	this->txtPubTopic = ui->NewTextBox(this->pnlPubTopic, CSTR(""));
@@ -636,12 +636,12 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(Optional<UI::GUIClient
 	this->cboPubQoS->SetSelectedIndex(0);
 	this->pnlPubCtrl = ui->NewPanel(this->tpPublish);
 	this->pnlPubCtrl->SetRect(0, 0, 100, 31, false);
-	this->pnlPubCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlPubCtrl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnPublish = ui->NewButton(this->pnlPubCtrl, CSTR("Publish"));
 	this->btnPublish->SetRect(4, 4, 75, 23, false);
 	this->btnPublish->HandleButtonClick(OnPublishClicked, this);
 	this->txtPubContent = ui->NewTextBox(this->tpPublish, CSTR(""), true);
-	this->txtPubContent->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtPubContent->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpLog = this->tcDetail->AddTabPage(CSTR("Log"));
 	this->logger = UI::ListBoxLogger::CreateUI(*this, this->ui, this->tpLog, 500, false);

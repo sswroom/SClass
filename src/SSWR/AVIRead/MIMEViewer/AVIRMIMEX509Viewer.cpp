@@ -8,15 +8,15 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEX509Viewer::AVIRMIMEX509Viewer(NN<SSWR::AVIRe
 	this->obj = obj;
 
 	this->tcMain = ui->NewTabControl(ctrl);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 	
 	this->tpDesc = this->tcMain->AddTabPage(CSTR("Desc"));
 	this->txtDesc = ui->NewTextBox(this->tpDesc, CSTR(""), true);
-	this->txtDesc->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtDesc->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpASN1 = this->tcMain->AddTabPage(CSTR("ASN1"));
 	this->txtASN1 = ui->NewTextBox(this->tpASN1, CSTR(""), true);
-	this->txtASN1->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtASN1->SetDockType(UI::GUIControl::DockType::Fill);
 
 	UIntOS dataSize;
 	UnsafeArray<const UInt8> data = this->obj->GetRAWData(dataSize);

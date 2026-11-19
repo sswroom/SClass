@@ -230,7 +230,7 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(Optional<UI::GUI
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpMain = this->tcMain->AddTabPage(CSTR("Main"));
 	this->tpProfile = this->tcMain->AddTabPage(CSTR("Edit Profiles"));
 
@@ -252,16 +252,16 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(Optional<UI::GUI
 	
 	this->pnlProfile1 = ui->NewPanel(this->tpProfile);
 	this->pnlProfile1->SetRect(0, 0, 100, 100, false);
-	this->pnlProfile1->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->pnlProfile1->SetDockType(UI::GUIControl::DockType::Left);
 	this->btnProfileDel = ui->NewButton(this->pnlProfile1, CSTR("&Delete"));
 	this->btnProfileDel->SetRect(0, 0, 100, 22, false);
-	this->btnProfileDel->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->btnProfileDel->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnProfileDel->HandleButtonClick(OnClickedDelProfile, this);
 	this->lbProfile = ui->NewListBox(this->pnlProfile1, false);
-	this->lbProfile->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbProfile->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->pnlProfile2 = ui->NewPanel(this->tpProfile);
-	this->pnlProfile2->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlProfile2->SetDockType(UI::GUIControl::DockType::Fill);
 	lbl = ui->NewLabel(this->pnlProfile2, CSTR("Name"));
 	lbl->SetRect(0, 0, 60, 19, false);
 	this->txtProfileName = ui->NewTextBox(this->pnlProfile2, CSTR(""));

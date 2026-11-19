@@ -966,17 +966,17 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> p
 	
 /*	NEW_CLASSNN(this->pnlCtrl = ui->NewPanel(*this));
 	this->pnlCtrl->SetRect(0, 0, 100, 28, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);*/
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);*/
 	this->prgStatus = ui->NewProgressBar(*this, 1);
 	this->prgStatus->SetRect(0, 0, 100, 23, false);
-	this->prgStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->prgStatus->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 
 	this->tpFiles = this->tcMain->AddTabPage(CSTR("Files"));
 	this->lvFiles = ui->NewListView(this->tpFiles, UI::ListViewStyle::Table, 6);
-	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvFiles->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvFiles->AddColumn(CSTR("Item Name"), 150);
 	this->lvFiles->AddColumn(CSTR("Type"), 80);
 	this->lvFiles->AddColumn(CSTR("Store Size"), 100);
@@ -1016,7 +1016,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> p
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	this->pnlStatus = ui->NewPanel(this->tpStatus);
 	this->pnlStatus->SetRect(0, 0, 100, 48, false);
-	this->pnlStatus->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlStatus->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblStatusFile = ui->NewLabel(this->pnlStatus, CSTR("Copy From"));
 	this->lblStatusFile->SetRect(0, 0, 100, 23, false);
 	this->txtStatusFile = ui->NewTextBox(this->pnlStatus, CSTR(""));
@@ -1047,10 +1047,10 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> p
 	this->txtStatusTimeLeft->SetReadOnly(true);
 	this->rlcStatus = ui->NewRealtimeLineChart(this->tpStatus, this->core->GetDrawEngine(), 1, 720, 1000, nullptr);
 	this->rlcStatus->SetRect(0, 0, 100, 360, false);
-	this->rlcStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->rlcStatus->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->vspStatus = ui->NewVSplitter(this->tpStatus, 3, true);
 	this->lvStatus = ui->NewListView(this->tpStatus, UI::ListViewStyle::Table, 2);
-	this->lvStatus->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvStatus->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvStatus->SetFullRowSelect(true);
 	this->lvStatus->AddColumn(CSTR("Source File"), 200);
 	this->lvStatus->AddColumn(CSTR("Status"), 200);
@@ -1064,7 +1064,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> p
 		this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 		this->txtInfo = ui->NewTextBox(this->tpInfo, CSTR(""), true);
 		this->txtInfo->SetReadOnly(true);
-		this->txtInfo->SetDockType(UI::GUIControl::DOCK_FILL);
+		this->txtInfo->SetDockType(UI::GUIControl::DockType::Fill);
 		Text::StringBuilderUTF8 sb;
 		NN<IO::VirtualPackageFile>::ConvertFrom(this->packFile)->GetInfoText(sb);
 		this->txtInfo->SetText(sb.ToCString());
@@ -1073,7 +1073,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> p
 	this->tpTest = this->tcMain->AddTabPage(CSTR("Test Result"));
 	this->txtTest = ui->NewTextBox(this->tpTest, CSTR(""), true);
 	this->txtTest->SetReadOnly(true);
-	this->txtTest->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtTest->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->SetMenu(mnuMain);
 	this->HandleDropFiles(OnFiles, this);

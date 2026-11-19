@@ -24,7 +24,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		NEW_CLASSNN(frm, UI::GUIForm(nullptr, 640, 480, core));
 		frm->SetText(CSTR("Test 6 - TreeView"));
 		NEW_CLASSNN(tv, UI::GUITreeView(core, frm));
-		tv->SetDockType(UI::GUIControl::DOCK_FILL);
+		tv->SetDockType(UI::GUIControl::DockType::Fill);
 		tv->SetHasLines(true);
 		tv->SetHasCheckBox(true);
 		if (tv->InsertItem(nullptr, nullptr, CSTR("Root Item"), 0).SetTo(item1))

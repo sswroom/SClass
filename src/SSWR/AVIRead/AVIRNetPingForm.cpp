@@ -105,7 +105,7 @@ SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(Optional<UI::GUIClientControl> p
 
 	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 80, false);
-	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRequest->SetDockType(UI::GUIControl::DockType::Top);
 	this->vspRequest = ui->NewVSplitter(*this, 3, false);
 	this->lblTarget = ui->NewLabel(this->pnlRequest, CSTR("Target"));
 	this->lblTarget->SetRect(4, 4, 100, 23, false);
@@ -120,11 +120,11 @@ SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(Optional<UI::GUIClientControl> p
 	this->btnPing->HandleButtonClick(OnPingClicked, this);
 	this->rlcPing = ui->NewRealtimeLineChart(*this, this->core->GetDrawEngine(), 2, 600, 1000, nullptr);
 	this->rlcPing->SetRect(0, 0, 100, 100, false);
-	this->rlcPing->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->rlcPing->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->rlcPing->SetUnit(CSTR("ms"));
 	this->vspPing = ui->NewVSplitter(*this, 3, true);
 	this->lbLog = ui->NewListBox(*this, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 500, true));
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);

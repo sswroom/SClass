@@ -549,14 +549,14 @@ IntOS UI::GUIListView::OnNotify(UInt32 code, IntOS lParam)
 
 			NMITEMACTIVATE *ia;
 			ia = (NMITEMACTIVATE*)lParam;
-			this->EventMouseClick(Math::Coord2DDbl(ia->ptAction.x, ia->ptAction.y), MouseButton::MBTN_LEFT);
+			this->EventMouseClick(Math::Coord2DDbl(ia->ptAction.x, ia->ptAction.y), MouseButton::Left);
 		}
 		break;
 	case NM_RCLICK:
 		{
 			NMITEMACTIVATE *ia;
 			ia = (NMITEMACTIVATE*)lParam;
-			this->EventMouseClick(Math::Coord2DDbl(ia->ptAction.x, ia->ptAction.y), MouseButton::MBTN_RIGHT);
+			this->EventMouseClick(Math::Coord2DDbl(ia->ptAction.x, ia->ptAction.y), MouseButton::Right);
 		}
 		break;
 	case NM_DBLCLK:
@@ -619,7 +619,7 @@ void UI::GUIListView::EventDblClk(UIntOS itemIndex)
 
 void UI::GUIListView::EventMouseClick(Math::Coord2DDbl coord, MouseButton btn)
 {
-	if (btn == MouseButton::MBTN_RIGHT)
+	if (btn == MouseButton::Right)
 	{
 		UIntOS i;
 		i = this->rClkHdlrs.GetCount();

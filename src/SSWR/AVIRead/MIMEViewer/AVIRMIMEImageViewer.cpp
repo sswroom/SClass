@@ -14,7 +14,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer::AVIRMIMEImageViewer(NN<SSWR::AVI
 	}
 
 	this->pbContent = ui->NewPictureBoxDD(ctrl, sess, true, false);
-	this->pbContent->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbContent->SetDockType(UI::GUIControl::DockType::Fill);
 	NN<Media::ImageList> imgList;
 	if (this->imgList.SetTo(imgList))
 	{

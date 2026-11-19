@@ -123,7 +123,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnMouseDown(IntOS scrollY, Math::Coord2D<I
 			this->Redraw();
 		}
 		NN<UI::GUIPopupMenu> mnu;
-		if (btn == UI::GUIClientControl::MBTN_RIGHT && this->mnuLayers.SetTo(mnu))
+		if (btn == UI::GUIClientControl::MouseButton::Right && this->mnuLayers.SetTo(mnu))
 		{
 			Math::Coord2D<IntOS> scnPos = this->GetScreenPosP();
 			mnu->ShowMenu(*this, scnPos + pos);

@@ -238,7 +238,7 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientContro
 
 	pnl = ui->NewPanel(*this);
 	pnl->SetRect(0, 0, 408, 24, false);
-	pnl->SetDockType(UI::GUIControl::DOCK_TOP);
+	pnl->SetDockType(UI::GUIControl::DockType::Top);
 	lbl = ui->NewLabel(pnl, CSTR("Name"));
 	lbl->SetRect(0, 0, 100, 23, false);
 	this->cboName = ui->NewComboBox(pnl, false);
@@ -249,15 +249,15 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientContro
 
 	this->lbRecord = ui->NewListBox(*this, false);
 	this->lbRecord->SetRect(0, 24, 150, 152, false);
-	this->lbRecord->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbRecord->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbRecord->HandleSelectionChange(OnLbRecordChg, this);
 	this->lbRecord->HandleRightClicked(OnLbRecordRClick, this);
 	splitter = ui->NewHSplitter(*this, 3, false);
 	pnl2 = ui->NewPanel(*this);
-	pnl2->SetDockType(UI::GUIControl::DOCK_FILL);
+	pnl2->SetDockType(UI::GUIControl::DockType::Fill);
 	pnl = ui->NewPanel(pnl2);
 	pnl->SetRect(0, 0, 100, 348, false);
-	pnl->SetDockType(UI::GUIControl::DOCK_TOP);
+	pnl->SetDockType(UI::GUIControl::DockType::Top);
 
 	lbl = ui->NewLabel(pnl, CSTR("Start Mark"));
 	lbl->SetRect(0, 0, 100, 23, false);
@@ -328,7 +328,7 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientContro
 	this->txtAddress->SetVisible(false);
 
 	this->lvExtra = ui->NewListView(pnl2, UI::ListViewStyle::Table, 2);
-	this->lvExtra->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvExtra->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvExtra->SetShowGrid(true);
 	this->lvExtra->SetFullRowSelect(true);
 	this->lvExtra->AddColumn(CSTR("Name"), 100);

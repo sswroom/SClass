@@ -1096,7 +1096,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 
 	this->pnlDevice = ui->NewPanel(*this);
 	this->pnlDevice->SetRect(0, 0, 100, 48, false);
-	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlDevice->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblDeviceSerial = ui->NewLabel(this->pnlDevice, CSTR("Serial Port"));
 	this->lblDeviceSerial->SetRect(0, 0, 100, 23, false);
 	this->cboDeviceSerial = ui->NewComboBox(this->pnlDevice, false);
@@ -1113,14 +1113,14 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	this->btnDeviceOther->SetRect(250, 24, 75, 23, false);
 	this->btnDeviceOther->HandleButtonClick(OnDeviceOtherClk, this);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	this->rlcRSSI = ui->NewRealtimeLineChart(this->tpInfo, this->core->GetDrawEngine(), 5, 360, 10000, nullptr);
 	this->rlcRSSI->SetRect(0, 0, 100, 100, false);
-	this->rlcRSSI->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->rlcRSSI->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->pnlInfo = ui->NewPanel(this->tpInfo);
-	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlInfo->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblModemManu = ui->NewLabel(this->pnlInfo, CSTR("Manufacture"));
 	this->lblModemManu->SetRect(8, 8, 100, 23, false);
 	this->txtModemManu = ui->NewTextBox(this->pnlInfo, CSTR(""));
@@ -1185,7 +1185,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	this->tpPhoneBook = this->tcMain->AddTabPage(CSTR("PhoneBook"));
 	this->pnlPhone = ui->NewPanel(this->tpPhoneBook);
 	this->pnlPhone->SetRect(0, 0, 100, 32, false);
-	this->pnlPhone->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlPhone->SetDockType(UI::GUIControl::DockType::Top);
 	this->cboPhoneStorage = ui->NewComboBox(this->pnlPhone, false);
 	this->cboPhoneStorage->SetRect(0, 4, 100, 23, false);
 	this->cboPhoneStorage->AddItem(CSTR("SIM"), (void*)(IntOS)IO::GSMModemController::PBSTORE_SIM);
@@ -1205,7 +1205,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	this->lblPhoneStatus = ui->NewLabel(this->pnlPhone, CSTR(""));
 	this->lblPhoneStatus->SetRect(188, 4, 200, 23, false);
 	this->lvPhone = ui->NewListView(this->tpPhoneBook, UI::ListViewStyle::Table, 2);
-	this->lvPhone->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvPhone->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvPhone->AddColumn(CSTR("Name"), 200);
 	this->lvPhone->AddColumn(CSTR("Phone"), 200);
 	this->lvPhone->SetFullRowSelect(true);
@@ -1214,7 +1214,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	this->tpSMS = this->tcMain->AddTabPage(CSTR("SMS"));
 	this->pnlSMS = ui->NewPanel(this->tpSMS);
 	this->pnlSMS->SetRect(0, 0, 100, 32, false);
-	this->pnlSMS->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlSMS->SetDockType(UI::GUIControl::DockType::Top);
 	this->cboSMSStorage = ui->NewComboBox(this->pnlSMS, false);
 	this->cboSMSStorage->SetRect(0, 4, 100, 23, false);
 	this->cboSMSStorage->AddItem(CSTR("SIM"), (void*)(IntOS)IO::GSMModemController::SMSSTORE_SIM);
@@ -1240,7 +1240,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	this->btnSMSSaveAll->SetRect(528, 4, 75, 23, false);
 	this->btnSMSSaveAll->HandleButtonClick(OnSMSSaveAllClick, this);
 	this->lvSMS = ui->NewListView(this->tpSMS, UI::ListViewStyle::Table, 4);
-	this->lvSMS->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvSMS->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvSMS->AddColumn(CSTR("From"), 100);
 	this->lvSMS->AddColumn(CSTR("Time"), 180);
 	this->lvSMS->AddColumn(CSTR("Index"), 50);
@@ -1250,7 +1250,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	this->tpPDPContext = this->tcMain->AddTabPage(CSTR("PDP Context(APN)"));
 	this->pnlPDPContext = ui->NewPanel(this->tpPDPContext);
 	this->pnlPDPContext->SetRect(0, 0, 100, 72, false);
-	this->pnlPDPContext->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlPDPContext->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnPDPContextLoad = ui->NewButton(this->pnlPDPContext, CSTR("Load"));
 	this->btnPDPContextLoad->SetRect(0, 0, 75, 23, false);
 	this->btnPDPContextLoad->HandleButtonClick(OnPDPContextLoadClicked, this);
@@ -1293,7 +1293,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	this->btnPDPContextDeactiveSelected->SetRect(240, 48, 75, 23, false);
 	this->btnPDPContextDeactiveSelected->HandleButtonClick(OnPDPContextDeactiveSelectedClicked, this);
 	this->lvPDPContext = ui->NewListView(this->tpPDPContext, UI::ListViewStyle::Table, 4);
-	this->lvPDPContext->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvPDPContext->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvPDPContext->SetFullRowSelect(true);
 	this->lvPDPContext->SetShowGrid(true);
 	this->lvPDPContext->AddColumn(CSTR("Index(cid)"), 60);
@@ -1304,28 +1304,28 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	this->tpATCommand = this->tcMain->AddTabPage(CSTR("AT Command"));
 	this->pnlATCommand = ui->NewPanel(this->tpATCommand);
 	this->pnlATCommand->SetRect(0, 0, 100, 24, false);
-	this->pnlATCommand->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlATCommand->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblATCommand = ui->NewLabel(this->pnlATCommand, CSTR("AT Command"));
 	this->lblATCommand->SetRect(0, 0, 100, 23, false);
-	this->lblATCommand->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lblATCommand->SetDockType(UI::GUIControl::DockType::Left);
 	this->btnATCommand = ui->NewButton(this->pnlATCommand, CSTR("Send"));
 	this->btnATCommand->SetRect(0, 0, 75, 23, false);
-	this->btnATCommand->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->btnATCommand->SetDockType(UI::GUIControl::DockType::Right);
 	this->btnATCommand->HandleButtonClick(OnATCommandClicked, this);
 	this->txtATCommand = ui->NewTextBox(this->pnlATCommand, CSTR("ATZ"));
-	this->txtATCommand->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtATCommand->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtATCommand->HandleKeyDown(OnATCommandKeyDown, this);
 	this->txtATCommandRep = ui->NewTextBox(this->tpATCommand, CSTR(""), true);
-	this->txtATCommandRep->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtATCommandRep->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtATCommandRep->SetReadOnly(true);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 	
 	this->tpHuawei = this->tcMain->AddTabPage(CSTR("Huawei"));

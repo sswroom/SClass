@@ -112,21 +112,21 @@ SSWR::AVIRead::AVIRGLBViewerForm::AVIRGLBViewerForm(Optional<UI::GUIClientContro
 
 	this->pnlBinBuff = ui->NewPanel(*this);
 	this->pnlBinBuff->SetRect(0, 0, 100, 200, false);
-	this->pnlBinBuff->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlBinBuff->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->vspMain = ui->NewVSplitter(*this, 3, true);
 	this->pnlJSON = ui->NewPanel(*this);
-	this->pnlJSON->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlJSON->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblJSON = ui->NewLabel(this->pnlJSON, CSTR("JSON"));
 	this->lblJSON->SetRect(0, 0, 100, 23, false);
-	this->lblJSON->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lblJSON->SetDockType(UI::GUIControl::DockType::Left);
 	this->txtJSON = ui->NewTextBox(this->pnlJSON, CSTR(""), true);
-	this->txtJSON->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtJSON->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtJSON->SetReadOnly(true);
 	this->lblBinBuff = ui->NewLabel(this->pnlBinBuff, CSTR("Binary Buffer"));
 	this->lblBinBuff->SetRect(0, 0, 100, 23, false);
-	this->lblBinBuff->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lblBinBuff->SetDockType(UI::GUIControl::DockType::Left);
 	NEW_CLASSNN(this->hfvBinBuff, UI::GUIHexFileView(ui, this->pnlBinBuff, this->core->GetDrawEngine(), nullptr));
-	this->hfvBinBuff->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->hfvBinBuff->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->HandleDropFiles(OnFileDrop, this);
 }

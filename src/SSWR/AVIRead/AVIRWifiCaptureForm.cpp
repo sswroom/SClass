@@ -812,7 +812,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(Optional<UI::GUIClientCo
 	this->wlanScan = 0;
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 	
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	this->lblMotion = ui->NewLabel(this->tpStatus, CSTR("Motion"));
@@ -874,7 +874,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(Optional<UI::GUIClientCo
 
 	this->tpCurr = this->tcMain->AddTabPage(CSTR("Current"));
 	this->lvCurrWifi = ui->NewListView(this->tpCurr, UI::ListViewStyle::Table, 12);
-	this->lvCurrWifi->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvCurrWifi->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvCurrWifi->SetShowGrid(true);
 	this->lvCurrWifi->SetFullRowSelect(true);
 	this->lvCurrWifi->AddColumn(CSTR("SSID"), 200);
@@ -893,7 +893,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(Optional<UI::GUIClientCo
 	this->tpLogWifi = this->tcMain->AddTabPage(CSTR("Wifi Log"));
 	this->pnlLogWifi = ui->NewPanel(this->tpLogWifi);
 	this->pnlLogWifi->SetRect(0, 0, 100, 31, false);
-	this->pnlLogWifi->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlLogWifi->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnLogWifiSave = ui->NewButton(this->pnlLogWifi, CSTR("Save"));
 	this->btnLogWifiSave->SetRect(4, 4, 75, 23, false);
 	this->btnLogWifiSave->HandleButtonClick(OnLogWifiSaveClicked, this);
@@ -901,7 +901,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(Optional<UI::GUIClientCo
 	this->btnLogWifiSaveF->SetRect(84, 4, 75, 23, false);
 	this->btnLogWifiSaveF->HandleButtonClick(OnLogWifiSaveFClicked, this);
 	this->lvLogWifi = ui->NewListView(this->tpLogWifi, UI::ListViewStyle::Table, 12);
-	this->lvLogWifi->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvLogWifi->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvLogWifi->SetShowGrid(true);
 	this->lvLogWifi->SetFullRowSelect(true);
 	this->lvLogWifi->HandleDblClk(OnLogWifiDblClicked, this);

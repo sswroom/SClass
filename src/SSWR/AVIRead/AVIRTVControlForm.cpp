@@ -212,7 +212,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(Optional<UI::GUIClientContro
 
 	this->pnlPort = ui->NewPanel(*this);
 	this->pnlPort->SetRect(0, 0, 100, 64, false);
-	this->pnlPort->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlPort->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblTVType = ui->NewLabel(this->pnlPort, CSTR("TV Type"));
 	this->lblTVType->SetRect(8, 8, 100, 23, false);
 	this->cboTVType = ui->NewComboBox(this->pnlPort, false);
@@ -262,16 +262,16 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(Optional<UI::GUIClientContro
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->lblCommand = ui->NewLabel(this->tpControl, CSTR("Command"));
 	this->lblCommand->SetRect(8, 8, 100, 23, false);

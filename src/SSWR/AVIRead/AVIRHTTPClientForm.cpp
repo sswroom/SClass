@@ -1243,12 +1243,12 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(Optional<UI::GUIClientCont
 	this->respSvrAddr.addrType = Net::AddrType::Unknown;
 	
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpRequest = this->tcMain->AddTabPage(CSTR("Request"));
 	this->pnlRequest = ui->NewPanel(this->tpRequest);
 	this->pnlRequest->SetRect(0, 0, 100, 316, false);
-	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRequest->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblURL = ui->NewLabel(this->pnlRequest, CSTR("URL"));
 	this->lblURL->SetRect(4, 4, 100, 23, false);
 	this->txtURL = ui->NewTextBox(this->pnlRequest, CSTR("http://"));
@@ -1326,14 +1326,14 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(Optional<UI::GUIClientCont
 	this->btnRequest->SetRect(104, 292, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	this->lvReqData = ui->NewListView(this->tpRequest, UI::ListViewStyle::Table, 2);
-	this->lvReqData->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvReqData->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvReqData->AddColumn(CSTR("Name"), 150);
 	this->lvReqData->AddColumn(CSTR("Value"), 400);
 
 	this->tpResponse = this->tcMain->AddTabPage(CSTR("Response"));
 	this->pnlResponse = ui->NewPanel(this->tpResponse);
 	this->pnlResponse->SetRect(0, 0, 100, 343, false);
-	this->pnlResponse->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlResponse->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblReqMethod = ui->NewLabel(this->pnlResponse, CSTR("Method"));
 	this->lblReqMethod->SetRect(4, 4, 100, 23, false);
 	this->txtReqMethod = ui->NewTextBox(this->pnlResponse, CSTR(""));
@@ -1406,7 +1406,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(Optional<UI::GUIClientCont
 	this->txtRespContSize->SetReadOnly(true);
 	this->pnlControl = ui->NewPanel(this->tpResponse);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnSave = ui->NewButton(this->pnlControl, CSTR("Save"));
 	this->btnSave->SetRect(4, 4, 75, 23, false);
 	this->btnSave->HandleButtonClick(OnSaveClicked, this);
@@ -1414,7 +1414,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(Optional<UI::GUIClientCont
 	this->btnView->SetRect(84, 4, 75, 23, false);
 	this->btnView->HandleButtonClick(OnViewClicked, this);
 	this->lvHeaders = ui->NewListView(this->tpResponse, UI::ListViewStyle::Table, 1);
-	this->lvHeaders->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvHeaders->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvHeaders->SetShowGrid(true);
 	this->lvHeaders->SetFullRowSelect(true);
 	this->lvHeaders->AddColumn(CSTR("Header"), 1000);
@@ -1422,18 +1422,18 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(Optional<UI::GUIClientCont
 	this->tpCert = this->tcMain->AddTabPage(CSTR("Cert"));
 	this->pnlCert = ui->NewPanel(this->tpCert);
 	this->pnlCert->SetRect(0, 0, 100, 31, false);
-	this->pnlCert->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlCert->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnCert = ui->NewButton(this->pnlCert, CSTR("Open"));
 	this->btnCert->SetRect(4, 4, 75, 23, false);
 	this->btnCert->HandleButtonClick(OnCertClicked, this);
 	this->btnCert->SetEnabled(false);
 	this->txtCert = ui->NewTextBox(this->tpCert, CSTR(""), true);
-	this->txtCert->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtCert->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtCert->SetReadOnly(true);
 
 	this->tpCookie = this->tcMain->AddTabPage(CSTR("Cookie"));
 	this->lvCookie = ui->NewListView(this->tpCookie, UI::ListViewStyle::Table, 4);
-	this->lvCookie->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvCookie->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvCookie->SetShowGrid(true);
 	this->lvCookie->SetFullRowSelect(true);
 	this->lvCookie->AddColumn(CSTR("Domain"), 150);

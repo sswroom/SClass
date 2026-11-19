@@ -264,7 +264,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl>
 
 	this->grpStatus = ui->NewGroupBox(*this, CSTR("Status"));
 	this->grpStatus->SetRect(0, 0, 100, 208, false);
-	this->grpStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->grpStatus->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lblConnLeftCnt = ui->NewLabel(this->grpStatus, CSTR("Conn Left"));
 	this->lblConnLeftCnt->SetRect(4, 4, 100, 23, false);
 	this->txtConnLeftCnt = ui->NewTextBox(this->grpStatus, CSTR(""));
@@ -308,7 +308,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl>
 
 	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 80, false);
-	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlRequest->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lblConcurrCnt = ui->NewLabel(this->pnlRequest, CSTR("Concurrent Count"));
 	this->lblConcurrCnt->SetRect(4, 4, 100, 23, false);
 	this->txtConcurrCnt = ui->NewTextBox(this->pnlRequest, CSTR("10"));
@@ -322,13 +322,13 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl>
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	
 	this->grpURL = ui->NewGroupBox(*this, CSTR("URL"));
-	this->grpURL->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpURL->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pnlURL = ui->NewPanel(this->grpURL);
 	this->pnlURL->SetRect(0, 0, 100, 71, false);
-	this->pnlURL->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlURL->SetDockType(UI::GUIControl::DockType::Top);
 	this->pnlURLCtrl = ui->NewPanel(this->grpURL);
 	this->pnlURLCtrl->SetRect(0, 0, 100, 31, false);
-	this->pnlURLCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlURLCtrl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->cboMethod = ui->NewComboBox(this->pnlURL, false);
 	this->cboMethod->SetRect(4, 0, 100, 23, false);
 	this->cboMethod->AddItem(CSTR("GET"), (void*)(IntOS)Net::WebUtil::RequestMethod::HTTP_GET);
@@ -356,7 +356,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl>
 	this->btnURLClear->SetRect(4, 4, 75, 23, false);
 	this->btnURLClear->HandleButtonClick(OnURLClearClicked, this);
 	this->lbURL = ui->NewListBox(this->grpURL, false);
-	this->lbURL->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbURL->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->SetDefaultButton(this->btnURLAdd);
 	this->txtURL->Focus();

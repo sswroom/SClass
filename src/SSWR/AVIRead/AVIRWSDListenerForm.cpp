@@ -90,7 +90,7 @@ SSWR::AVIRead::AVIRWSDListenerForm::AVIRWSDListenerForm(Optional<UI::GUIClientCo
 
 	this->lvPackets = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
 	this->lvPackets->SetRect(0, 0, 200, 23, false);
-	this->lvPackets->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lvPackets->SetDockType(UI::GUIControl::DockType::Left);
 	this->lvPackets->SetFullRowSelect(true);
 	this->lvPackets->SetShowGrid(true);
 	this->lvPackets->AddColumn(CSTR("Time"), 80);
@@ -98,7 +98,7 @@ SSWR::AVIRead::AVIRWSDListenerForm::AVIRWSDListenerForm(Optional<UI::GUIClientCo
 	this->lvPackets->HandleSelChg(OnPacketsSelChg, this);
 	this->hspPackets = ui->NewHSplitter(*this, 3, false);
 	this->txtRAW = ui->NewTextBox(*this, CSTR(""), true);
-	this->txtRAW->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtRAW->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtRAW->SetReadOnly(true);
 
 	NEW_CLASSNN(this->listener, Net::UDPServer(core->GetSocketFactory(), nullptr, 3702, nullptr, OnUDPPacket, this, this->log, CSTR("UDP: "), 3, true));

@@ -524,7 +524,7 @@ SSWR::AVIRead::AVIRBandwidthLogForm::AVIRBandwidthLogForm(Optional<UI::GUIClient
 
 	this->grpFile = ui->NewGroupBox(*this, CSTR("File"));
 	this->grpFile->SetRect(0, 0, 100, 91, false);
-	this->grpFile->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpFile->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblBandwidthLog = ui->NewLabel(this->grpFile, CSTR("Bandwidth Log"));
 	this->lblBandwidthLog->SetRect(0, 0, 100, 23, false);
 	this->txtBandwidthLog = ui->NewTextBox(this->grpFile, CSTR(""));
@@ -542,7 +542,7 @@ SSWR::AVIRead::AVIRBandwidthLogForm::AVIRBandwidthLogForm(Optional<UI::GUIClient
 	this->txtSIDELog->SetReadOnly(true);
 
 	this->grpDetail = ui->NewGroupBox(*this, CSTR("Detail"));
-	this->grpDetail->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpDetail->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblStartTime = ui->NewLabel(this->grpDetail, CSTR("Start Time"));
 	this->lblStartTime->SetRect(0, 0, 100, 23, false);
 	this->txtStartTime = ui->NewTextBox(this->grpDetail, CSTR(""));

@@ -136,7 +136,7 @@ void UI::GUIHexFileView::EventCopy()
 
 void UI::GUIHexFileView::EventMouseDown(IntOS scnX, IntOS scnY, MouseButton btn)
 {
-	if (btn == MBTN_LEFT)
+	if (btn == MouseButton::Left)
 	{
 		UInt64 ofst;
 		this->GetTextPos(IntOS2Double(scnX), IntOS2Double(scnY), &ofst);

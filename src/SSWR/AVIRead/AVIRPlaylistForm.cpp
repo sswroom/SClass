@@ -110,14 +110,14 @@ SSWR::AVIRead::AVIRPlaylistForm::AVIRPlaylistForm(Optional<UI::GUIClientControl>
 
 	this->lvPlaylist = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
 	this->lvPlaylist->SetRect(0, 0, 160, 100, false);
-	this->lvPlaylist->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lvPlaylist->SetDockType(UI::GUIControl::DockType::Left);
 	this->lvPlaylist->AddColumn(CSTR("Title"), 100);
 	this->lvPlaylist->AddColumn(CSTR("Artist"), 60);
 	this->lvPlaylist->HandleDblClk(OnPlaylistDblClk, this);
 	this->hsplit = ui->NewHSplitter(*this, 3, false);
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 56, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnStart = ui->NewButton(this->pnlCtrl, CSTR("&Start"));
 	this->btnStart->SetRect(16, 16, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
@@ -128,7 +128,7 @@ SSWR::AVIRead::AVIRPlaylistForm::AVIRPlaylistForm(Optional<UI::GUIClientControl>
 	this->btnFS->SetRect(176, 16, 75, 23, false);
 	this->btnFS->HandleButtonClick(OnFSClicked, this);
 	NEW_CLASSNN(this->vbdMain, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 5, Sync::ThreadUtil::GetThreadCnt()));
-	this->vbdMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->vbdMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->vbdMain->SetUserFSMode(UI::GUIDDrawControl::SM_VFS);
 
 	this->HandleDropFiles(OnFileDrop, this);

@@ -56,11 +56,11 @@ SSWR::AVIRead::AVIRConfigForm::AVIRConfigForm(Optional<UI::GUIClientControl> par
 
 	this->lbCategory = ui->NewListBox(*this, false);
 	this->lbCategory->SetRect(0, 0, 150, 23, false);
-	this->lbCategory->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbCategory->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbCategory->HandleSelectionChange(OnCategorySelChg, this);
 	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	this->lvKeyValues = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
-	this->lvKeyValues->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvKeyValues->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvKeyValues->AddColumn(CSTR("Key"), 200);
 	this->lvKeyValues->AddColumn(CSTR("Value"), 400);
 	this->lvKeyValues->SetShowGrid(true);

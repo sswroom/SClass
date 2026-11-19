@@ -83,9 +83,9 @@ SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUICl
 
 	this->pnlButtons = ui->NewPanel(*this);
 	this->pnlButtons->SetRect(0, 0, 100, 31, false);
-	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlButtons->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->pnlColumns = ui->NewPanel(*this);
-	this->pnlColumns->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlColumns->SetDockType(UI::GUIControl::DockType::Fill);
 	this->btnCancel = ui->NewButton(this->pnlButtons, CSTR("Cancel"));
 	this->btnCancel->SetRect(100, 4, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);

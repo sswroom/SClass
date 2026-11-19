@@ -16,22 +16,22 @@ gboolean UI::GTK::GTKHSplitter::SignalMouseDown(GtkWidget *widget, GdkEvent *eve
 		{
 			default:
 			case 1:
-				btn = UI::GUIControl::MBTN_LEFT;
+				btn = UI::GUIControl::MouseButton::Left;
 				break;
 			case 2:
-				btn = UI::GUIControl::MBTN_MIDDLE;
+				btn = UI::GUIControl::MouseButton::Middle;
 				break;
 			case 3:
-				btn = UI::GUIControl::MBTN_RIGHT;
+				btn = UI::GUIControl::MouseButton::Right;
 				break;
 			case 4:
-				btn = UI::GUIControl::MBTN_X1;
+				btn = UI::GUIControl::MouseButton::X1;
 				break;
 			case 5:
-				btn = UI::GUIControl::MBTN_X2;
+				btn = UI::GUIControl::MouseButton::X2;
 				break;
 		}
-		if (btn == UI::GUIControl::MBTN_LEFT)
+		if (btn == UI::GUIControl::MouseButton::Left)
 		{
 			me->EventMouseDown(btn, Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)));
 		}
@@ -50,22 +50,22 @@ gboolean UI::GTK::GTKHSplitter::SignalMouseUp(GtkWidget *widget, GdkEvent *event
 		{
 			default:
 			case 1:
-				btn = UI::GUIControl::MBTN_LEFT;
+				btn = UI::GUIControl::MouseButton::Left;
 				break;
 			case 2:
-				btn = UI::GUIControl::MBTN_MIDDLE;
+				btn = UI::GUIControl::MouseButton::Middle;
 				break;
 			case 3:
-				btn = UI::GUIControl::MBTN_RIGHT;
+				btn = UI::GUIControl::MouseButton::Right;
 				break;
 			case 4:
-				btn = UI::GUIControl::MBTN_X1;
+				btn = UI::GUIControl::MouseButton::X1;
 				break;
 			case 5:
-				btn = UI::GUIControl::MBTN_X2;
+				btn = UI::GUIControl::MouseButton::X2;
 				break;
 		}
-		if (btn == UI::GUIControl::MBTN_LEFT)
+		if (btn == UI::GUIControl::MouseButton::Left)
 		{
 			me->EventMouseUp(btn, Math::Coord2D<IntOS>(Double2IntOS(evt->x), Double2IntOS(evt->y)));
 		}
@@ -84,9 +84,9 @@ UI::GTK::GTKHSplitter::GTKHSplitter(NN<UI::GUICore> ui, NN<UI::GUIClientControl>
 	parent->AddChild(*this);
 	this->Show();
 
-	this->SetCursor(UI::GUIControl::CT_SIZEH);
+	this->SetCursor(UI::GUIControl::CursorType::SizeH);
 	this->SetRect(0, 0, width, 100, false);
-	this->SetDockType(isRight?DOCK_RIGHT:DOCK_LEFT);
+	this->SetDockType(isRight?DockType::Right:DockType::Left);
 }
 
 UI::GTK::GTKHSplitter::~GTKHSplitter()
@@ -100,7 +100,7 @@ IntOS UI::GTK::GTKHSplitter::OnNotify(UInt32 code, IntOS lParam)
 
 void UI::GTK::GTKHSplitter::EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<IntOS> pos)
 {
-	if (btn == UI::GUIControl::MBTN_LEFT)
+	if (btn == UI::GUIControl::MouseButton::Left)
 	{
 		this->dragMode = true;
 		this->dragX = pos.x;
@@ -111,7 +111,7 @@ void UI::GTK::GTKHSplitter::EventMouseDown(UI::GUIControl::MouseButton btn, Math
 
 void UI::GTK::GTKHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::Coord2D<IntOS> pos)
 {
-	if (btn == UI::GUIControl::MBTN_LEFT)
+	if (btn == UI::GUIControl::MouseButton::Left)
 	{
 		NN<GUIClientControl> nnparent;
 		if (this->dragMode && this->parent.SetTo(nnparent))
@@ -134,7 +134,7 @@ void UI::GTK::GTKHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::
 					else if (foundThis)
 					{
 						dockType = ctrl->GetDockType();
-						if (dockType == UI::GUIControl::DOCK_RIGHT && this->isRight)
+						if (dockType == UI::GUIControl::DockType::Right && this->isRight)
 						{
 							pos = ctrl->GetPositionP();
 							sz = ctrl->GetSizeP();
@@ -142,7 +142,7 @@ void UI::GTK::GTKHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::
 							nnparent->UpdateChildrenSize(true);
 							break;
 						}
-						else if (dockType == UI::GUIControl::DOCK_LEFT && !this->isRight)
+						else if (dockType == UI::GUIControl::DockType::Left && !this->isRight)
 						{
 							pos = ctrl->GetPositionP();
 							sz = ctrl->GetSizeP();

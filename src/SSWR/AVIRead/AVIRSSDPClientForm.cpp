@@ -163,16 +163,16 @@ SSWR::AVIRead::AVIRSSDPClientForm::AVIRSSDPClientForm(Optional<UI::GUIClientCont
 
 	this->lbDevice = ui->NewListBox(*this, false);
 	this->lbDevice->SetRect(0, 0, 120, 23, false);
-	this->lbDevice->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbDevice->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbDevice->HandleSelectionChange(OnDeviceSelChg, this);
 	this->hspDevice = ui->NewHSplitter(*this, 3, false);
 	this->lbService = ui->NewListBox(*this, false);
 	this->lbService->SetRect(0, 0, 200, 23, false);
-	this->lbService->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbService->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbService->HandleSelectionChange(OnServiceSelChg, this);
 	this->hspService = ui->NewHSplitter(*this, 3, false);
 	this->pnlService = ui->NewPanel(*this);
-	this->pnlService->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlService->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblLocation = ui->NewLabel(this->pnlService, CSTR("Location"));
 	this->lblLocation->SetRect(4, 4, 100, 23, false);
 	this->txtLocation = ui->NewTextBox(this->pnlService, CSTR(""));

@@ -114,7 +114,7 @@ SSWR::AVIRead::AVIRTimestampForm::AVIRTimestampForm(Optional<UI::GUIClientContro
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 	
 	this->tpValue = this->tcMain->AddTabPage(CSTR("Value"));
 	this->lblValue = ui->NewLabel(this->tpValue, CSTR("Value"));

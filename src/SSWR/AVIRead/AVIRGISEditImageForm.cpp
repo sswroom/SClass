@@ -864,31 +864,31 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyTyp
 			{
 			case 1:
 			case 5:
-				me->navi->SetMapCursor(UI::GUIControl::CT_SIZEV);
+				me->navi->SetMapCursor(UI::GUIControl::CursorType::SizeV);
 				break;
 			case 3:
 			case 7:
-				me->navi->SetMapCursor(UI::GUIControl::CT_SIZEH);
+				me->navi->SetMapCursor(UI::GUIControl::CursorType::SizeH);
 				break;
 			case 2:
 			case 6:
-				me->navi->SetMapCursor(UI::GUIControl::CT_SIZENE);
+				me->navi->SetMapCursor(UI::GUIControl::CursorType::SizeNE);
 				break;
 			case 4:
 			case 8:
-				me->navi->SetMapCursor(UI::GUIControl::CT_SIZENW);
+				me->navi->SetMapCursor(UI::GUIControl::CursorType::SizeNW);
 				break;
 			case 9:
-				me->navi->SetMapCursor(UI::GUIControl::CT_HAND);
+				me->navi->SetMapCursor(UI::GUIControl::CursorType::Hand);
 				break;
 			default:
-				me->navi->SetMapCursor(UI::GUIControl::CT_ARROW);
+				me->navi->SetMapCursor(UI::GUIControl::CursorType::Arrow);
 				break;
 			}
 		}
 		else
 		{
-			me->navi->SetMapCursor(UI::GUIControl::CT_ARROW);
+			me->navi->SetMapCursor(UI::GUIControl::CursorType::Arrow);
 		}
 	}
 	return UI::EventState::ContinueEvent;
@@ -1031,18 +1031,18 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(Optional<UI::GUIClient
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 23, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->chkAutoPan = ui->NewCheckBox(this->pnlCtrl, CSTR("Auto Pan"), true);
 	this->chkAutoPan->SetRect(0, 0, 100, 23, false);
 	this->chkEdit = ui->NewCheckBox(this->pnlCtrl, CSTR("Edit Mode"), true);
 	this->chkEdit->SetRect(120, 0, 100, 23, false);
 	this->lbImages = ui->NewListBox(*this, false);
 	this->lbImages->SetRect(0, 0, 200, 10, false);
-	this->lbImages->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbImages->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbImages->HandleSelectionChange(OnImageChg, this);
 	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	this->pnlMain = ui->NewPanel(*this);
-	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblLeft = ui->NewLabel(this->pnlMain, CSTR("Left"));
 	this->lblLeft->SetRect(0, 0, 100, 23, false);
 	this->txtLeft = ui->NewTextBox(this->pnlMain, CSTR(""));

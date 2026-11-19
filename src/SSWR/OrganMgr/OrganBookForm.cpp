@@ -288,13 +288,13 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(Optional<UI::GUIClientControl> pare
 
 	this->pnlBook = ui->NewPanel(*this);
 	this->pnlBook->SetRect(0, 0, 168, 500, false);
-	this->pnlBook->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->pnlBook->SetDockType(UI::GUIControl::DockType::Right);
 	this->pnlBookDet = ui->NewPanel(this->pnlBook);
 	this->pnlBookDet->SetRect(0, 0, 168, 320, false);
-	this->pnlBookDet->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlBookDet->SetDockType(UI::GUIControl::DockType::Top);
 	this->hspBook = ui->NewHSplitter(*this, 3, true);
 	this->lvBook = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
-	this->lvBook->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvBook->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvBook->SetShowGrid(true);
 	this->lvBook->SetFullRowSelect(true);
 	this->lvBook->AddColumn(this->env->GetLang(CSTR("BookFormColDate")), 60);
@@ -334,7 +334,7 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(Optional<UI::GUIClientControl> pare
 	this->btnBookAdd->SetRect(16, 288, 75, 23, false);
 	this->btnBookAdd->HandleButtonClick(OnBookAddClicked, this);
 	this->tcBook = ui->NewTabControl(this->pnlBook);
-	this->tcBook->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcBook->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpBookRef = this->tcBook->AddTabPage(this->env->GetLang(CSTR("BookFormTabRef")));
 	this->tpBookAuthor = this->tcBook->AddTabPage(this->env->GetLang(CSTR("BookFormTabAuthor")));
 

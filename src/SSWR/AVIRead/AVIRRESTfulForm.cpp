@@ -209,12 +209,12 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(Optional<UI::GUIClientControl> p
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	this->grpParam = ui->NewGroupBox(this->tpControl, CSTR("Parameters"));
 	this->grpParam->SetRect(0, 0, 620, 176, false);
-	this->grpParam->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpParam->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblPort = ui->NewLabel(this->grpParam, CSTR("Port"));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
 	this->txtPort = ui->NewTextBox(this->grpParam, CSTR("12345"));
@@ -259,7 +259,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(Optional<UI::GUIClientControl> p
 
 	this->tpTable = this->tcMain->AddTabPage(CSTR("Table"));
 	this->lvTable = ui->NewListView(this->tpTable, UI::ListViewStyle::Table, 2);
-	this->lvTable->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvTable->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvTable->SetFullRowSelect(true);
 	this->lvTable->SetShowGrid(true);
 	this->lvTable->AddColumn(CSTR("TableName"), 150);
@@ -269,9 +269,9 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(Optional<UI::GUIClientControl> p
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogSel, this);
 }
 

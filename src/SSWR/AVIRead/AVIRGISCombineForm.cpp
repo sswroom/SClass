@@ -71,7 +71,7 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(Optional<UI::GUIClientCont
 	NN<UI::GUIPanel> pnl;
 	pnl = ui->NewPanel(*this);
 	pnl->SetRect(0, 0, 448, 48, false);
-	pnl->SetDockType(UI::GUIControl::DOCK_TOP);
+	pnl->SetDockType(UI::GUIControl::DockType::Top);
 	lbl = ui->NewLabel(pnl, CSTR("Select layers to combine"));
 	lbl->SetRect(0, 0, 280, 23, false);
 	this->btnCheckAll = ui->NewButton(pnl, CSTR("Check All"));
@@ -83,7 +83,7 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(Optional<UI::GUIClientCont
 
 	pnl = ui->NewPanel(*this);
 	pnl->SetRect(0, 0, 448, 40, false);
-	pnl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	pnl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnCombine = ui->NewButton(pnl, CSTR("Combine"));
 	this->btnCombine->SetRect(64, 8, 75, 23, false);
 	this->btnCombine->HandleButtonClick(OnCombineClick, this);
@@ -92,7 +92,7 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(Optional<UI::GUIClientCont
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 	
 	this->lbLayers = ui->NewCheckedListBox(*this);
-	this->lbLayers->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLayers->SetDockType(UI::GUIControl::DockType::Fill);
 
 
 	UIntOS j;

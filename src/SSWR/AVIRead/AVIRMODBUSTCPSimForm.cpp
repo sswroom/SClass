@@ -203,7 +203,7 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(Optional<UI::GUIClient
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 120, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblPort = ui->NewLabel(this->pnlCtrl, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	this->txtPort = ui->NewTextBox(this->pnlCtrl, CSTR("502"));
@@ -231,10 +231,10 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(Optional<UI::GUIClient
 	this->btnDelay->HandleButtonClick(OnDelayClicked, this);
 	this->lbDevice = ui->NewListBox(*this, false);
 	this->lbDevice->SetRect(0, 0, 100, 23, false);
-	this->lbDevice->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbDevice->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbDevice->HandleSelectionChange(OnDeviceChanged, this);
 	this->lvDeviceValues = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
-	this->lvDeviceValues->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDeviceValues->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDeviceValues->SetFullRowSelect(true);
 	this->lvDeviceValues->SetShowGrid(true);
 	this->lvDeviceValues->AddColumn(CSTR("Name"), 150);

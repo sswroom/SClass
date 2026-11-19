@@ -114,7 +114,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnMouseDown(IntOS scrollY, Math::Coord2D<I
 			this->EventSelChg();
 			this->Redraw();
 		}
-		if (btn == UI::GUIClientControl::MBTN_RIGHT && this->mnuLayers.SetTo(mnuLayers))
+		if (btn == UI::GUIClientControl::MouseButton::Right && this->mnuLayers.SetTo(mnuLayers))
 		{
 			mnuLayers->ShowMenu(*this, this->GetScreenPosP() + pos);
 		}

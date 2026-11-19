@@ -64,7 +64,7 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> p
 
 	this->pnlBounds = ui->NewPanel(*this);
 	this->pnlBounds->SetRect(0, 0, 100, 51, false);
-	this->pnlBounds->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlBounds->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblBounds = ui->NewLabel(this->pnlBounds, CSTR("Bounds"));
 	this->lblBounds->SetRect(4, 4, 100, 23, false);
 	this->lblMin = ui->NewLabel(this->pnlBounds, CSTR("Min"));
@@ -89,11 +89,11 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> p
 	this->txtMaxY->SetReadOnly(true);
 	this->txtCurrCSys = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtCurrCSys->SetRect(0, 0, 100, 240, false);
-	this->txtCurrCSys->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->txtCurrCSys->SetDockType(UI::GUIControl::DockType::Top);
 	this->txtCurrCSys->SetReadOnly(true);
 	this->pnlSel = ui->NewPanel(*this);
 	this->pnlSel->SetRect(0, 0, 300, 23, false);
-	this->pnlSel->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->pnlSel->SetDockType(UI::GUIControl::DockType::Left);
 	this->radGeo = ui->NewRadioButton(this->pnlSel, CSTR("Geographic CS"), true);
 	this->radGeo->SetRect(0, 4, 100, 23, false);
 	this->cboGeo = ui->NewComboBox(this->pnlSel, false);
@@ -111,7 +111,7 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> p
 	this->btnCancel->SetRect(150, 52, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->pnlInfo = ui->NewPanel(*this);
-	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlInfo->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);

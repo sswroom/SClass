@@ -343,15 +343,15 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(Optional<UI::GUIClientControl> paren
 
 	this->lbFiles = ui->NewListBox(*this, false);
 	this->lbFiles->SetRect(0, 0, 160, 100, false);
-	this->lbFiles->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbFiles->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbFiles->HandleRightClicked(OnFileRClicked, this);
 	this->lbFiles->HandleDoubleClicked(OnFileDblClicked, this);
 	this->hsplit = ui->NewHSplitter(*this, 3, false);
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 56, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Bottom);
 	NEW_CLASSNN(this->vbdMain, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 5, Sync::ThreadUtil::GetThreadCnt()));
-	this->vbdMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->vbdMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	NN<UI::GUIMenu> mnu;
 	NN<UI::GUIMenu> mnu2;

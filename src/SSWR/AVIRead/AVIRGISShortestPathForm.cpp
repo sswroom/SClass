@@ -267,7 +267,7 @@ SSWR::AVIRead::AVIRGISShortestPathForm::AVIRGISShortestPathForm(Optional<UI::GUI
 
 	this->grpNetwork = ui->NewGroupBox(*this, CSTR("Network"));
 	this->grpNetwork->SetRect(4, 4, 100, 31, false);
-	this->grpNetwork->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpNetwork->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblNetwork = ui->NewLabel(this->grpNetwork, CSTR("Network"));
 	this->lblNetwork->SetRect(4, 4, 100, 23, false);
 	this->cboNetwork = ui->NewComboBox(this->grpNetwork, false);
@@ -276,10 +276,10 @@ SSWR::AVIRead::AVIRGISShortestPathForm::AVIRGISShortestPathForm(Optional<UI::GUI
 	this->btnNetwork->SetRect(254, 4, 75, 23, false);
 	this->btnNetwork->HandleButtonClick(OnNetworkClicked, this);
 	this->grpPath = ui->NewGroupBox(*this, CSTR("Path"));
-	this->grpPath->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpPath->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pnlPath = ui->NewPanel(this->grpPath);
 	this->pnlPath->SetRect(0, 0, 100, 83, false);
-	this->pnlPath->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlPath->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblStartPos = ui->NewLabel(this->pnlPath, CSTR("Start Pos"));
 	this->lblStartPos->SetRect(4, 4, 100, 23, false);
 	this->txtStartPos = ui->NewTextBox(this->pnlPath, CSTR(""), false);
@@ -300,7 +300,7 @@ SSWR::AVIRead::AVIRGISShortestPathForm::AVIRGISShortestPathForm(Optional<UI::GUI
 	this->btnSearch->SetRect(104, 52, 75, 23, false);
 	this->btnSearch->HandleButtonClick(OnSearchClicked, this);
 	this->lvPaths = ui->NewListView(this->grpPath, UI::ListViewStyle::Table, 5);
-	this->lvPaths->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvPaths->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvPaths->AddColumn(CSTR("Dist"), 100);
 	this->lvPaths->AddColumn(CSTR("Dir"), 100);
 	this->lvPaths->AddColumn(CSTR("CName"), 60);

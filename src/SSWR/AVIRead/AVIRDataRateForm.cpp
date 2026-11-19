@@ -57,12 +57,12 @@ SSWR::AVIRead::AVIRDataRateForm::AVIRDataRateForm(Optional<UI::GUIClientControl>
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnSave = ui->NewButton(this->pnlControl, CSTR("Save"));
 	this->btnSave->SetRect(4, 4, 75, 23, false);
 	this->btnSave->HandleButtonClick(OnSaveClicked, this);
 	this->lvDataRates = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
-	this->lvDataRates->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDataRates->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDataRates->AddColumn(CSTR("Time"), 150);
 	this->lvDataRates->AddColumn(CSTR("Data Rate"), 150);
 	this->lvDataRates->SetFullRowSelect(true);

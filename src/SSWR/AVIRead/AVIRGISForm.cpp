@@ -350,7 +350,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseDown(AnyType user
 	NN<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	UI::EventState ret = UI::EventState::ContinueEvent;
 	UIntOS i;
-	if (button == MouseButton::MBTN_LEFT)
+	if (button == MouseButton::Left)
 	{
 		i = me->mouseLDownHdlrs.GetCount();
 		while (i-- > 0)
@@ -361,7 +361,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseDown(AnyType user
 				return ret;
 		}
 	}
-	else if (button == MouseButton::MBTN_RIGHT)
+	else if (button == MouseButton::Right)
 	{
 		i = me->mouseRDownHdlrs.GetCount();
 		while (i-- > 0)
@@ -380,7 +380,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseUp(AnyType userOb
 	NN<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	UI::EventState ret = UI::EventState::ContinueEvent;
 	UIntOS i;
-	if (button == MouseButton::MBTN_LEFT)
+	if (button == MouseButton::Left)
 	{
 		i = me->mouseLUpHdlrs.GetCount();
 		while (i-- > 0)
@@ -391,7 +391,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseUp(AnyType userOb
 				return ret;
 		}
 	}
-	else if (button == MouseButton::MBTN_RIGHT)
+	else if (button == MouseButton::Right)
 	{
 		i = me->mouseRUpHdlrs.GetCount();
 		while (i-- > 0)
@@ -757,7 +757,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	this->currTime = 0;
 	this->printer = nullptr;
 	this->gridType = GridType::UTMGrid;
-	this->currCursor = UI::GUIControl::CT_ARROW;
+	this->currCursor = UI::GUIControl::CursorType::Arrow;
 	this->mapUpdTChanged = false;
 	this->mapUpdT = 0;
 	this->pauseUpdate = false;
@@ -769,30 +769,30 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetArea(0, 0, 100, 24, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->pnlStatus = ui->NewPanel(*this);
 	this->pnlStatus->SetArea(0, 0, 100, 19, false);
-	this->pnlStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlStatus->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->txtScale = ui->NewTextBox(pnlStatus, CSTR(""));
 	this->txtScale->SetRect(0, 0, 100, 19, false);
 	this->txtScale->SetReadOnly(true);
-	this->txtScale->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->txtScale->SetDockType(UI::GUIControl::DockType::Right);
 	this->txtMapPos = ui->NewTextBox(pnlStatus, CSTR(""));
 	this->txtMapPos->SetRect(0, 0, 250, 19, false);
 	this->txtMapPos->SetReadOnly(true);
-	this->txtMapPos->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->txtMapPos->SetDockType(UI::GUIControl::DockType::Right);
 	this->txtGridCode = ui->NewTextBox(pnlStatus, CSTR(""));
 	this->txtGridCode->SetRect(0, 0, 150, 19, false);
 	this->txtGridCode->SetReadOnly(true);
-	this->txtGridCode->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->txtGridCode->SetDockType(UI::GUIControl::DockType::Right);
 	this->txtTimeUsed = ui->NewTextBox(pnlStatus, CSTR(""));
 	this->txtTimeUsed->SetRect(0, 0, 100, 19, false);
 	this->txtTimeUsed->SetReadOnly(true);
-	this->txtTimeUsed->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->txtTimeUsed->SetDockType(UI::GUIControl::DockType::Right);
 
 	this->tbScale = ui->NewTrackBar(this->pnlControl, 0, 65535, 0);
 	this->tbScale->SetRect(0, 0, 192, 24, false);
-	this->tbScale->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->tbScale->SetDockType(UI::GUIControl::DockType::Right);
 	this->tbScale->HandleScrolled(OnScaleScrolled, this);
 	this->tbTimeRange = ui->NewTrackBar(this->pnlControl, 0, 0, 0);
 	this->tbTimeRange->SetRect(150, 0, 100, 24, false);
@@ -814,7 +814,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 
 	NEW_CLASSNN(this->mapTree, UI::GUIMapTreeView(ui, *this, env));
 	this->mapTree->SetRect(0, 0, 200, 10, false);
-	this->mapTree->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->mapTree->SetDockType(UI::GUIControl::DockType::Left);
 	this->mapTree->HandleRightClick(OnTreeRightClick, this);
 	this->mapTree->SetDragHandler(OnTreeDrag, this);
 	this->mapTree->HandleItemCheckedChg(OnMapTreeItemCheckedChg, this);
@@ -822,7 +822,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
 	NEW_CLASSNN(this->envRenderer, Map::DrawMapRenderer(core->GetDrawEngine(), env, color, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
 	NEW_CLASSNN(this->mapCtrl, UI::GUIMapControl(ui, *this, this->core->GetDrawEngine(), env->GetBGColor(), this->envRenderer, view, this->colorSess));
-	this->mapCtrl->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->mapCtrl->SetDockType(UI::GUIControl::DockType::Fill);
 	this->mapCtrl->HandleScaleChanged(OnMapScaleChanged, this);
 	this->mapCtrl->HandleMouseMove(OnMapMouseMove, this);
 	this->mapCtrl->HandleMouseDown(OnMapMouseDown, this);
@@ -2336,9 +2336,9 @@ void SSWR::AVIRead::AVIRGISForm::UnhandleMapMouse(AnyType userObj)
 			this->mouseMoveHdlrs.RemoveAt(i);
 		}
 	}
-	if (this->currCursor != UI::GUIControl::CT_ARROW)
+	if (this->currCursor != UI::GUIControl::CursorType::Arrow)
 	{
-		this->currCursor = UI::GUIControl::CT_ARROW;
+		this->currCursor = UI::GUIControl::CursorType::Arrow;
 		this->mapCtrl->SetCursor(this->currCursor);
 	}
 }

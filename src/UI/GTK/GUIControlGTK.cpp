@@ -40,7 +40,7 @@ UI::GUIControl::GUIControl(NN<UI::GUICore> ui, Optional<GUIClientControl> parent
 	this->ui = ui;
 	this->parent = parent;
 	this->selfResize = false;
-	this->dockType = UI::GUIControl::DOCK_NONE;
+	this->dockType = UI::GUIControl::DockType::None;
 	NN<GUIClientControl> nnparent;
 	if (parent.SetTo(nnparent))
 	{
@@ -1652,7 +1652,7 @@ UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(NN<UI::GUIDropHan
 		NEW_CLASSNN(dragDrop, UI::GTK::GTKDragDrop(this->hwnd, hdlr));
 		this->dropHdlr = dragDrop.Ptr();
 	}
-	return UI::GUIControl::DET_NOERROR;
+	return UI::GUIControl::DragErrorType::NoError;
 }
 
 void UI::GUIControl::DestroyObject()

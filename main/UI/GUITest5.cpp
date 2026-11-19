@@ -31,7 +31,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		NEW_CLASSNN(frm, UI::GUIForm(nullptr, 640, 480, core));
 		frm->SetText(CSTR("Test 5 - ListBox"));
 		lb = core->NewListBox(frm, false);
-		lb->SetDockType(UI::GUIControl::DOCK_FILL);
+		lb->SetDockType(UI::GUIControl::DockType::Fill);
 		lb->AddItem(CSTR("Item 1"), 0);
 		lb->AddItem(CSTR("Item 2"), 0);
 		lb->AddItem(CSTR("Item 3"), 0);

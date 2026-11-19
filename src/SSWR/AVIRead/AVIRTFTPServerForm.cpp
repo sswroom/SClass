@@ -71,7 +71,7 @@ SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(Optional<UI::GUIClientCont
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	this->lblPort = ui->NewLabel(this->tpControl, CSTR("Port"));
@@ -97,9 +97,9 @@ SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(Optional<UI::GUIClientCont
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogSel, this);
 
 	this->AddTimer(1000, OnTimerTick, this);

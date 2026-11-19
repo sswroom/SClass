@@ -10,7 +10,7 @@ SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(Optional<UI::GUIClientCont
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 	
 	this->lvDBF = ui->NewListView(*this, UI::ListViewStyle::Table, dbf->GetColCount() + 1);
-	this->lvDBF->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDBF->SetDockType(UI::GUIControl::DockType::Fill);
 
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;

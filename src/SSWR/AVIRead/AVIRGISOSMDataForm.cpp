@@ -478,7 +478,7 @@ SSWR::AVIRead::AVIRGISOSMDataForm::AVIRGISOSMDataForm(Optional<UI::GUIClientCont
 
 	this->pnlControl = this->ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->chkShowUnknown = this->ui->NewCheckBox(this->pnlControl, CSTR("Show Unknown"), osmData->IsShowUnknown());
 	this->chkShowUnknown->SetRect(4, 4, 150, 23, false);
 	this->chkShowUnknown->HandleCheckedChange(OnShowUnknownChg, this);
@@ -489,12 +489,12 @@ SSWR::AVIRead::AVIRGISOSMDataForm::AVIRGISOSMDataForm(Optional<UI::GUIClientCont
 	this->btnCenterline->SetRect(264, 4, 100, 23, false);
 	this->btnCenterline->HandleButtonClick(OnCenterlineClicked, this);
 	this->tcMain = this->ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpRelation = this->tcMain->AddTabPage(CSTR("Relations"));
 	this->pnlRelation = this->ui->NewPanel(this->tpRelation);
 	this->pnlRelation->SetRect(0, 0, 100, 31, false);
-	this->pnlRelation->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRelation->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblRelationType = this->ui->NewLabel(this->pnlRelation, CSTR("Type"));
 	this->lblRelationType->SetRect(4, 4, 100, 23, false);
 	this->cboRelationType = this->ui->NewComboBox(this->pnlRelation, false);
@@ -502,28 +502,28 @@ SSWR::AVIRead::AVIRGISOSMDataForm::AVIRGISOSMDataForm(Optional<UI::GUIClientCont
 	this->cboRelationType->HandleSelectionChange(OnRelationTypeSelChg, this);
 	this->lbRelation = this->ui->NewListBox(this->tpRelation, false);
 	this->lbRelation->SetRect(0, 0, 100, 100, false);
-	this->lbRelation->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbRelation->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbRelation->HandleSelectionChange(OnRelationSelChg, this);
 	this->lvRelationMember = this->ui->NewListView(this->tpRelation, UI::ListViewStyle::Table, 3);
 	this->lvRelationMember->SetRect(0, 0, 100, 100, false);
-	this->lvRelationMember->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lvRelationMember->SetDockType(UI::GUIControl::DockType::Top);
 	this->lvRelationMember->AddColumn(CSTR("Type"), 100);
 	this->lvRelationMember->AddColumn(CSTR("RefId"), 100);
 	this->lvRelationMember->AddColumn(CSTR("Role"), 100);
 	this->lvRelationMember->HandleDblClk(OnRelationMemberDblClk, this);
 	this->lvRelationTags = this->ui->NewListView(this->tpRelation, UI::ListViewStyle::Table, 2);
-	this->lvRelationTags->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvRelationTags->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvRelationTags->AddColumn(CSTR("k"), 100);
 	this->lvRelationTags->AddColumn(CSTR("v"), 200);
 
 	this->tpQuery = this->tcMain->AddTabPage(CSTR("Query"));
 	this->lbQueryResult = this->ui->NewListBox(this->tpQuery, false);
 	this->lbQueryResult->SetRect(0, 0, 100, 100, false);
-	this->lbQueryResult->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbQueryResult->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbQueryResult->HandleSelectionChange(OnQueryResultSelChg, this);
 	this->pnlQuery = this->ui->NewPanel(this->tpQuery);
 	this->pnlQuery->SetRect(0, 0, 100, 31, false);
-	this->pnlQuery->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlQuery->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblQueryType = this->ui->NewLabel(this->pnlQuery, CSTR("Type"));
 	this->lblQueryType->SetRect(4, 4, 100, 23, false);
 	this->txtQueryType = this->ui->NewTextBox(this->pnlQuery, CSTR(""));
@@ -531,15 +531,15 @@ SSWR::AVIRead::AVIRGISOSMDataForm::AVIRGISOSMDataForm(Optional<UI::GUIClientCont
 	this->txtQueryType->SetReadOnly(true);
 	this->lbQueryItems = this->ui->NewListBox(this->tpQuery, false);
 	this->lbQueryItems->SetRect(0, 0, 100, 100, false);
-	this->lbQueryItems->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->lbQueryItems->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lvQueryTags = this->ui->NewListView(this->tpQuery, UI::ListViewStyle::Table, 2);
-	this->lvQueryTags->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvQueryTags->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvQueryTags->AddColumn(CSTR("k"), 100);
 	this->lvQueryTags->AddColumn(CSTR("v"), 200);
 
 	this->tpRestriction = this->tcMain->AddTabPage(CSTR("Restriction"));
 	this->lvRestriction = this->ui->NewListView(this->tpRestriction, UI::ListViewStyle::Table, 3);
-	this->lvRestriction->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvRestriction->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvRestriction->SetFullRowSelect(true);
 	this->lvRestriction->SetShowGrid(true);
 	this->lvRestriction->AddColumn(CSTR("From"), 100);

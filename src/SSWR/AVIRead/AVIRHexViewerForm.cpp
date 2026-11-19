@@ -476,9 +476,9 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(Optional<UI::GUIClientContro
 
 	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetRect(0, 0, 100, 232, false);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Bottom);
 	NEW_CLASSNN(this->hexView, UI::GUIHexFileView(ui, *this, this->core->GetDrawEngine(), nullptr));
-	this->hexView->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->hexView->SetDockType(UI::GUIControl::DockType::Fill);
 	this->hexView->HandleOffsetChg(OnOffsetChg, this);
 	
 	this->tpValues = this->tcMain->AddTabPage(CSTR("Values"));

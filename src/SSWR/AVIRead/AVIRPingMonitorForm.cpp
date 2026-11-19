@@ -224,7 +224,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(Optional<UI::GUIClientCo
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 55, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblInfo = ui->NewLabel(this->pnlControl, CSTR("Info Port"));
 	this->lblInfo->SetRect(4, 4, 100, 23, false);
 	this->txtInfo = ui->NewTextBox(this->pnlControl, CSTR("8089"));
@@ -240,16 +240,16 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(Optional<UI::GUIClientCo
 	this->btnStart->SetRect(254, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 	
 	this->tpIP = this->tcMain->AddTabPage(CSTR("IP"));
 	this->lbIP = ui->NewListBox(this->tpIP, false);
 	this->lbIP->SetRect(0, 0, 150, 23, false);
-	this->lbIP->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbIP->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbIP->HandleSelectionChange(OnIPSelChg, this);
 	this->hspIP = ui->NewHSplitter(this->tpIP, 3, false);
 	this->tcIP = ui->NewTabControl(this->tpIP);
-	this->tcIP->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcIP->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpIPInfo = this->tcIP->AddTabPage(CSTR("Info"));
 	this->lblIPCount = ui->NewLabel(this->tpIPInfo, CSTR("Count"));
 	this->lblIPCount->SetRect(4, 4, 100, 23, false);
@@ -268,16 +268,16 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(Optional<UI::GUIClientCo
 	this->txtIPCountry->SetReadOnly(true);
 	this->tpIPWhois = this->tcIP->AddTabPage(CSTR("Whois"));
 	this->txtIPWhois = ui->NewTextBox(this->tpIPWhois, CSTR(""), true);
-	this->txtIPWhois->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtIPWhois->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtIPWhois->SetReadOnly(true);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 500, true));

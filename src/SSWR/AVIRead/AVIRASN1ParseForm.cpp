@@ -65,7 +65,7 @@ SSWR::AVIRead::AVIRASN1ParseForm::AVIRASN1ParseForm(Optional<UI::GUIClientContro
 
 	this->pnlOptions = ui->NewPanel(*this);
 	this->pnlOptions->SetRect(0, 0, 100, 51, false);
-	this->pnlOptions->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlOptions->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblType = ui->NewLabel(this->pnlOptions, CSTR("Type"));
 	this->lblType->SetRect(4, 4, 100, 23, false);
 	this->cboType = ui->NewComboBox(this->pnlOptions, false);
@@ -76,12 +76,12 @@ SSWR::AVIRead::AVIRASN1ParseForm::AVIRASN1ParseForm(Optional<UI::GUIClientContro
 	this->lblData->SetRect(4, 28, 100, 23, false);
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnParse = ui->NewButton(this->pnlControl, CSTR("Parse"));
 	this->btnParse->SetRect(4, 4, 75, 23, false);
 	this->btnParse->HandleButtonClick(OnParseClicked, this);
 	this->txtData = ui->NewTextBox(*this, CSTR(""), true);
-	this->txtData->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtData->SetDockType(UI::GUIControl::DockType::Fill);
 }
 
 SSWR::AVIRead::AVIRASN1ParseForm::~AVIRASN1ParseForm()

@@ -541,7 +541,7 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(Optional<UI::GUIClientCo
 	NEW_CLASSNN(this->store, Net::Email::FileEmailStore());
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpSMTP = this->tcMain->AddTabPage(CSTR("SMTP"));
 	this->btnSMTPCertKey = ui->NewButton(this->tpSMTP, CSTR("Cert/Key"));
@@ -610,7 +610,7 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(Optional<UI::GUIClientCo
 
 	this->tpEmail = this->tcMain->AddTabPage(CSTR("Email"));
 	this->lvEmail = ui->NewListView(this->tpEmail, UI::ListViewStyle::Table, 5);
-	this->lvEmail->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvEmail->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvEmail->SetShowGrid(true);
 	this->lvEmail->SetFullRowSelect(true);
 	this->lvEmail->AddColumn(CSTR("Id"), 100);
@@ -624,9 +624,9 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(Optional<UI::GUIClientCo
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 500, true));
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Command);

@@ -46,14 +46,14 @@ SSWR::AVIRead::AVIRHKOWarningSummaryForm::AVIRHKOWarningSummaryForm(Optional<UI:
 
 	this->pnlReqTime = ui->NewPanel(*this);
 	this->pnlReqTime->SetRect(0, 0, 100, 31, false);
-	this->pnlReqTime->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlReqTime->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblReqTime = ui->NewLabel(this->pnlReqTime, CSTR("Request Time"));
 	this->lblReqTime->SetRect(4, 4, 100, 23, false);
 	this->txtReqTime = ui->NewTextBox(*this, CSTR(""));
 	this->txtReqTime->SetRect(104, 4, 160, 23, false);
 	this->txtReqTime->SetReadOnly(true);
 	this->lvWarning = ui->NewListView(*this, UI::ListViewStyle::Table, 6);
-	this->lvWarning->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvWarning->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvWarning->SetFullRowSelect(true);
 	this->lvWarning->SetShowGrid(true);
 	this->lvWarning->AddColumn(CSTR("Code"), 50);

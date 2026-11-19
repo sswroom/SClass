@@ -11,7 +11,7 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(Optional<UI::GUIClie
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpSystem = this->tcMain->AddTabPage(CSTR("System"));
 	this->lblOSName = ui->NewLabel(this->tpSystem, CSTR("OS Name"));
@@ -42,7 +42,7 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(Optional<UI::GUIClie
 
 	this->tpDevices = this->tcMain->AddTabPage(CSTR("Devices"));
 	this->lvDevices = ui->NewListView(this->tpDevices, UI::ListViewStyle::Table, 4);
-	this->lvDevices->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDevices->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);
 	this->lvDevices->AddColumn(CSTR("Description"), 300);
@@ -52,7 +52,7 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(Optional<UI::GUIClie
 
 	this->tpDrivers = this->tcMain->AddTabPage(CSTR("Devices"));
 	this->lvDrivers = ui->NewListView(this->tpDrivers, UI::ListViewStyle::Table, 8);
-	this->lvDrivers->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDrivers->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDrivers->SetShowGrid(true);
 	this->lvDrivers->SetFullRowSelect(true);
 	this->lvDrivers->AddColumn(CSTR("File Name"), 120);

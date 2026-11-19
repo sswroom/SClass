@@ -61,34 +61,34 @@ IntOS __stdcall UI::GUIDDrawControl::FormWndProc(void *hWnd, UInt32 msg, UIntOS 
 	case WM_ERASEBKGND:
 		return 1;
 	case WM_LBUTTONDOWN:
-		me->OnMouseDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
+		me->OnMouseDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MouseButton::Left);
 		return 0;
 	case WM_LBUTTONUP:
-		me->OnMouseUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
+		me->OnMouseUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MouseButton::Left);
 		return 0;
 	case WM_LBUTTONDBLCLK:
-		me->OnMouseDblClick(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
+		me->OnMouseDblClick(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MouseButton::Left);
 		return 0;
 	case WM_RBUTTONDOWN:
-		me->OnMouseDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
+		me->OnMouseDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MouseButton::Right);
 		return 0;
 	case WM_RBUTTONUP:
-		me->OnMouseUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
+		me->OnMouseUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MouseButton::Right);
 		return 0;
 	case WM_RBUTTONDBLCLK:
-		me->OnMouseDblClick(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
+		me->OnMouseDblClick(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MouseButton::Right);
 		return 0;
 	case WM_MBUTTONDOWN:
-		me->OnMouseDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
+		me->OnMouseDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MouseButton::Middle);
 		return 0;
 	case WM_MBUTTONUP:
-		me->OnMouseUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
+		me->OnMouseUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MouseButton::Middle);
 		return 0;
 	case WM_XBUTTONDOWN:
-		me->OnMouseDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_X1);
+		me->OnMouseDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MouseButton::X1);
 		return 0;
 	case WM_XBUTTONUP:
-		me->OnMouseUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_X1);
+		me->OnMouseUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MouseButton::X1);
 		return 0;
 	case WM_MOUSEMOVE:
 		me->OnMouseMove(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)));
@@ -891,7 +891,7 @@ void UI::GUIDDrawControl::OnMouseUp(Math::Coord2D<IntOS> scnPos, MouseButton but
 
 void UI::GUIDDrawControl::OnMouseDblClick(Math::Coord2D<IntOS> scnPos, MouseButton button)
 {
-	if (button == MBTN_LEFT)
+	if (button == MouseButton::Left)
 	{
 		if (this->fullScnMode == SM_WINDOWED || this->fullScnMode == SM_WINDOWED_DIR)
 		{

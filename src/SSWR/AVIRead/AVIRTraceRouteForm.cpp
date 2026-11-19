@@ -83,7 +83,7 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(Optional<UI::GUIClientCont
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 55, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblSelfIP = ui->NewLabel(this->pnlControl, CSTR("Self IP"));
 	this->lblSelfIP->SetRect(4, 4, 100, 23, false);
 	this->cboSelfIP = ui->NewComboBox(this->pnlControl, false);
@@ -98,11 +98,11 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(Optional<UI::GUIClientCont
 	
 	this->lbIP = ui->NewListBox(*this, false);
 	this->lbIP->SetRect(0, 0, 150, 23, false);
-	this->lbIP->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbIP->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbIP->HandleSelectionChange(OnIPSelChg, this);
 	this->hspIP = ui->NewHSplitter(*this, 3, false);
 	this->txtIPWhois = ui->NewTextBox(*this, CSTR(""), true);
-	this->txtIPWhois->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtIPWhois->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtIPWhois->SetReadOnly(true);
 
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;

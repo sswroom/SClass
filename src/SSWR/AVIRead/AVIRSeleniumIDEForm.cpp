@@ -207,7 +207,7 @@ SSWR::AVIRead::AVIRSeleniumIDEForm::AVIRSeleniumIDEForm(Optional<UI::GUIClientCo
 
 	this->pnlSIDE = ui->NewPanel(*this);
 	this->pnlSIDE->SetRect(0, 0, 100, 71, false);
-	this->pnlSIDE->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlSIDE->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblSIDEName = ui->NewLabel(this->pnlSIDE, CSTR("Name"));
 	this->lblSIDEName->SetRect(0, 0, 100, 23, false);
 	this->txtSIDEName = ui->NewTextBox(this->pnlSIDE, Text::String::OrEmpty(side->GetName())->ToCString());
@@ -225,10 +225,10 @@ SSWR::AVIRead::AVIRSeleniumIDEForm::AVIRSeleniumIDEForm(Optional<UI::GUIClientCo
 	this->txtSIDEURL->SetReadOnly(true);
 	this->lbTest = ui->NewListBox(*this, false);
 	this->lbTest->SetRect(0, 0, 150, 23, false);
-	this->lbTest->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbTest->SetDockType(UI::GUIControl::DockType::Left);
 	this->pnlTestCtrl = ui->NewPanel(*this);
 	this->pnlTestCtrl->SetRect(0, 0, 100, 151, false);
-	this->pnlTestCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlTestCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblTestPort = ui->NewLabel(this->pnlTestCtrl, CSTR("Port"));
 	this->lblTestPort->SetRect(4, 4, 100, 23, false);
 	this->txtTestPort = ui->NewTextBox(this->pnlTestCtrl, CSTR("4444"));
@@ -272,13 +272,13 @@ SSWR::AVIRead::AVIRSeleniumIDEForm::AVIRSeleniumIDEForm(Optional<UI::GUIClientCo
 	this->chkTestNoPause = ui->NewCheckBox(this->pnlTestCtrl, CSTR("No Pause"), false);
 	this->chkTestNoPause->SetRect(4, 124, 120, 23, false);
 	this->tcTest = ui->NewTabControl(*this);
-	this->tcTest->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcTest->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpCommand = this->tcTest->AddTabPage(CSTR("Commands"));
 	this->pnlCommand = ui->NewPanel(this->tpCommand);
 	this->pnlCommand->SetRect(0, 0, 100, 103, false);
-	this->pnlCommand->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlCommand->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lvCommand = ui->NewListView(this->tpCommand, UI::ListViewStyle::Table, 4);
-	this->lvCommand->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvCommand->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvCommand->SetShowGrid(true);
 	this->lvCommand->SetFullRowSelect(true);
 	this->lvCommand->AddColumn(CSTR("Index"), 30);
@@ -308,7 +308,7 @@ SSWR::AVIRead::AVIRSeleniumIDEForm::AVIRSeleniumIDEForm(Optional<UI::GUIClientCo
 	this->txtCommandComment->SetReadOnly(true);
 	this->tpRunLog = this->tcTest->AddTabPage(CSTR("Run Log"));
 	this->lvRunLog = ui->NewListView(this->tpRunLog, UI::ListViewStyle::Table, 3);
-	this->lvRunLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvRunLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvRunLog->SetShowGrid(true);
 	this->lvRunLog->SetFullRowSelect(true);
 	this->lvRunLog->AddColumn(CSTR("Time"), 150);

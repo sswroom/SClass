@@ -1946,7 +1946,7 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	
 	this->pnlDir = ui->NewPanel(*this);
 	this->pnlDir->SetRect(0, 0, 100, 31, false);
-	this->pnlDir->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlDir->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblDir = ui->NewLabel(this->pnlDir, CSTR("Directory"));
 	this->lblDir->SetRect(4, 4, 100, 23, false);
 	this->txtDir = ui->NewTextBox(this->pnlDir, CSTR(""));
@@ -1955,12 +1955,12 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->btnDir->SetRect(504, 4, 75, 23, false);
 	this->btnDir->HandleButtonClick(OnDirClicked, this);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpYearly = this->tcMain->AddTabPage(CSTR("Yearly"));
 	this->pnlYearly = ui->NewPanel(this->tpYearly);
 	this->pnlYearly->SetRect(0, 0, 100, 31, false);
-	this->pnlYearly->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlYearly->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblYearly = ui->NewLabel(this->pnlYearly, CSTR("Year"));
 	this->lblYearly->SetRect(4, 4, 100, 23, false);
 	this->cboYearlyYear = ui->NewComboBox(this->pnlYearly, false);
@@ -1973,7 +1973,7 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->txtYearlyAvgInvestment->SetReadOnly(true);
 	this->lvYearly = ui->NewListView(this->tpYearly, UI::ListViewStyle::Table, 3);
 	this->lvYearly->SetRect(0, 0, 100, 300, false);
-	this->lvYearly->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lvYearly->SetDockType(UI::GUIControl::DockType::Top);
 	this->lvYearly->SetShowGrid(true);
 	this->lvYearly->SetFullRowSelect(true);
 	this->lvYearly->AddColumn(CSTR("Date"), 100);
@@ -1982,7 +1982,7 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->vspYearly = ui->NewVSplitter(this->tpYearly, 3, false);
 	this->pnlYearlyGraph = ui->NewPanel(this->tpYearly);
 	this->pnlYearlyGraph->SetRect(0, 0, 100, 31, false);
-	this->pnlYearlyGraph->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlYearlyGraph->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblYearlyGrid = ui->NewLabel(this->pnlYearlyGraph, CSTR("Grid Lines"));
 	this->lblYearlyGrid->SetRect(4, 4, 100, 23, false);
 	this->cboYearlyGrid = ui->NewComboBox(this->pnlYearlyGraph, false);
@@ -1994,13 +1994,13 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->cboYearlyGrid->SetSelectedIndex(1);
 	this->cboYearlyGrid->HandleSelectionChange(OnYearlyGridSelChg, this);
 	this->pbYearly = ui->NewPictureBox(this->tpYearly, this->deng, false, false);
-	this->pbYearly->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbYearly->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pbYearly->HandleSizeChanged(OnYearlySizeChg, this);
 
 	this->tpMonthly = this->tcMain->AddTabPage(CSTR("Monthly"));
 	this->pnlMonthly = ui->NewPanel(this->tpMonthly);
 	this->pnlMonthly->SetRect(0, 0, 100, 31, false);
-	this->pnlMonthly->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlMonthly->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblMonthly = ui->NewLabel(this->pnlMonthly, CSTR("Month"));
 	this->lblMonthly->SetRect(4, 4, 100, 23, false);
 	this->cboMonthlyYear = ui->NewComboBox(this->pnlMonthly, false);
@@ -2011,7 +2011,7 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->cboMonthlyMonth->HandleSelectionChange(OnMonthlySelChg, this);
 	this->lvMonthly = ui->NewListView(this->tpMonthly, UI::ListViewStyle::Table, 3);
 	this->lvMonthly->SetRect(0, 0, 100, 300, false);
-	this->lvMonthly->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lvMonthly->SetDockType(UI::GUIControl::DockType::Top);
 	this->lvMonthly->SetShowGrid(true);
 	this->lvMonthly->SetFullRowSelect(true);
 	this->lvMonthly->AddColumn(CSTR("Date"), 100);
@@ -2019,13 +2019,13 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->lvMonthly->AddColumn(CSTR("Total Gain"), 100);
 	this->vspMonthly = ui->NewVSplitter(this->tpMonthly, 3, false);
 	this->pbMonthly = ui->NewPictureBox(this->tpMonthly, this->deng, false, false);
-	this->pbMonthly->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbMonthly->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pbMonthly->HandleSizeChanged(OnMonthlySizeChg, this);
 
 	this->tpTransaction = this->tcMain->AddTabPage(CSTR("Transaction"));
 	this->pnlTransaction = ui->NewPanel(this->tpTransaction);
 	this->pnlTransaction->SetRect(0, 0, 100, 31, false);
-	this->pnlTransaction->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlTransaction->SetDockType(UI::GUIControl::DockType::Top);
 	this->chkTransactionShowAll = ui->NewCheckBox(this->pnlTransaction, CSTR("All"), false);
 	this->chkTransactionShowAll->SetRect(4, 4, 75, 23, false);
 	this->chkTransactionShowAll->HandleCheckedChange(OnTransactionShowAllChkChg, this);
@@ -2045,7 +2045,7 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->btnTransactionCInterest->SetRect(444, 4, 115, 23, false);
 	this->btnTransactionCInterest->HandleButtonClick(OnTransactionCInterestClicked, this);
 	this->lvTransaction = ui->NewListView(this->tpTransaction, UI::ListViewStyle::Table, 10);
-	this->lvTransaction->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvTransaction->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvTransaction->SetShowGrid(true);
 	this->lvTransaction->SetFullRowSelect(true);
 	this->lvTransaction->AddColumn(CSTR("Begin Date"), 70);
@@ -2063,14 +2063,14 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->tpCurrency = this->tcMain->AddTabPage(CSTR("Currency"));
 	this->lbCurrency = ui->NewListBox(this->tpCurrency, false);
 	this->lbCurrency->SetRect(0, 0, 75, 23, false);
-	this->lbCurrency->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbCurrency->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbCurrency->HandleSelectionChange(OnCurrencySelChg, this);
 	this->tcCurrency = ui->NewTabControl(this->tpCurrency);
-	this->tcCurrency->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcCurrency->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpCurrencySummary = this->tcCurrency->AddTabPage(CSTR("Summary"));
 	this->pnlCurrency = ui->NewPanel(this->tpCurrencySummary);
 	this->pnlCurrency->SetRect(0, 0, 100, 127, false);
-	this->pnlCurrency->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCurrency->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblCurrencyCurr = ui->NewLabel(this->pnlCurrency, CSTR("Current Rate"));
 	this->lblCurrencyCurr->SetRect(4, 4, 100, 23, false);
 	this->txtCurrencyCurr = ui->NewTextBox(this->pnlCurrency, CSTR("-"));
@@ -2102,12 +2102,12 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->cboCurrencyRange->SetSelectedIndex(0);
 	this->cboCurrencyRange->HandleSelectionChange(OnCurrencySizeChg, this);
 	this->pbCurrency = ui->NewPictureBox(this->tpCurrencySummary, this->deng, false, false);
-	this->pbCurrency->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbCurrency->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pbCurrency->HandleSizeChanged(OnCurrencySizeChg, this);
 	this->tpCurrencyHist = this->tcCurrency->AddTabPage(CSTR("History"));
 	this->pnlCurrencyHist = ui->NewPanel(this->tpCurrencyHist);
 	this->pnlCurrencyHist->SetRect(0, 0, 100, 31, false);
-	this->pnlCurrencyHist->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCurrencyHist->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblCurrencyHistDate = ui->NewLabel(this->pnlCurrencyHist, CSTR("Date"));
 	this->lblCurrencyHistDate->SetRect(4, 4, 100, 23, false);
 	this->txtCurrencyHistDate = ui->NewTextBox(this->pnlCurrencyHist, CSTR(""));
@@ -2120,7 +2120,7 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->btnCurrencyHistUpdate->SetRect(404, 4, 75, 23, false);
 	this->btnCurrencyHistUpdate->HandleButtonClick(OnCurrencyHistUpdateClicked, this);
 	this->lvCurrencyHist = ui->NewListView(this->tpCurrencyHist, UI::ListViewStyle::Table, 2);
-	this->lvCurrencyHist->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvCurrencyHist->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvCurrencyHist->AddColumn(CSTR("Date"), 100);
 	this->lvCurrencyHist->AddColumn(CSTR("Value"), 100);
 	this->lvCurrencyHist->SetFullRowSelect(true);
@@ -2128,7 +2128,7 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->lvCurrencyHist->HandleSelChg(OnCurrencyHistSelChg, this);
 	this->tpCurrencyTrade = this->tcCurrency->AddTabPage(CSTR("Trade"));
 	this->lvCurrencyTrade = ui->NewListView(this->tpCurrencyTrade, UI::ListViewStyle::Table, 4);
-	this->lvCurrencyTrade->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvCurrencyTrade->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvCurrencyTrade->SetFullRowSelect(true);
 	this->lvCurrencyTrade->SetShowGrid(true);
 	this->lvCurrencyTrade->AddColumn(CSTR("Date"), 70);
@@ -2138,14 +2138,14 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->tpCurrencyTotal = this->tcCurrency->AddTabPage(CSTR("Total"));
 	this->pnlCurrencyTotal = ui->NewPanel(this->tpCurrencyTotal);
 	this->pnlCurrencyTotal->SetRect(0, 0, 100, 31, false);
-	this->pnlCurrencyTotal->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCurrencyTotal->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblCurrencyTotalValue = ui->NewLabel(this->pnlCurrencyTotal, CSTR("Total"));
 	this->lblCurrencyTotalValue->SetRect(4, 4, 100, 23, false);
 	this->txtCurrencyTotalValue = ui->NewTextBox(this->pnlCurrencyTotal, CSTR(""));
 	this->txtCurrencyTotalValue->SetRect(104, 4, 100, 23, false);
 	this->txtCurrencyTotalValue->SetReadOnly(true);
 	this->lvCurrencyTotal = ui->NewListView(this->tpCurrencyTotal, UI::ListViewStyle::Table, 2);
-	this->lvCurrencyTotal->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvCurrencyTotal->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvCurrencyTotal->SetFullRowSelect(true);
 	this->lvCurrencyTotal->SetShowGrid(true);
 	this->lvCurrencyTotal->AddColumn(CSTR("Asset"), 150);
@@ -2154,20 +2154,20 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->tpAssets = this->tcMain->AddTabPage(CSTR("Assets"));
 	this->pnlAssets = ui->NewPanel(this->tpAssets);
 	this->pnlAssets->SetRect(0, 0, 150, 23, false);
-	this->pnlAssets->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->pnlAssets->SetDockType(UI::GUIControl::DockType::Left);
 	this->btnAssetsAdd = ui->NewButton(this->pnlAssets, CSTR("New"));
 	this->btnAssetsAdd->SetRect(0, 0, 100, 23, false);
-	this->btnAssetsAdd->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->btnAssetsAdd->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnAssetsAdd->HandleButtonClick(OnAssetsAddClicked, this);
 	this->lbAssets = ui->NewListBox(this->pnlAssets, false);
-	this->lbAssets->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbAssets->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbAssets->HandleSelectionChange(OnAssetsSelChg, this);
 	this->tcAssets = ui->NewTabControl(this->tpAssets);
-	this->tcAssets->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcAssets->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpAssetsSummary = this->tcAssets->AddTabPage(CSTR("Summary"));
 	this->pnlAssetsDetail = ui->NewPanel(this->tpAssetsSummary);
 	this->pnlAssetsDetail->SetRect(0, 0, 100, 199, false);
-	this->pnlAssetsDetail->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlAssetsDetail->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblAssetsShortName = ui->NewLabel(this->pnlAssetsDetail, CSTR("Short Name"));
 	this->lblAssetsShortName->SetRect(4, 4, 100, 23, false);
 	this->txtAssetsShortName = ui->NewTextBox(this->pnlAssetsDetail, CSTR(""));
@@ -2217,12 +2217,12 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->cboAssetsRange->SetSelectedIndex(0);
 	this->cboAssetsRange->HandleSelectionChange(OnAssetsSizeChg, this);
 	this->pbAssets = ui->NewPictureBox(this->tpAssetsSummary, this->deng, false, false);
-	this->pbAssets->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbAssets->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pbAssets->HandleSizeChanged(OnAssetsSizeChg, this);
 	this->tpAssetsHist = this->tcAssets->AddTabPage(CSTR("History"));
 	this->pnlAssetsHist = ui->NewPanel(this->tpAssetsHist);
 	this->pnlAssetsHist->SetRect(0, 0, 100, 47, false);
-	this->pnlAssetsHist->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlAssetsHist->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblAssetsHistDate = ui->NewLabel(this->pnlAssetsHist, CSTR("Date"));
 	this->lblAssetsHistDate->SetRect(0, 0, 100, 23, false);
 	this->txtAssetsHistDate = ui->NewTextBox(this->pnlAssetsHist, CSTR(""));
@@ -2239,7 +2239,7 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->btnAssetsHistUpdate->SetRect(200, 24, 75, 23, false);
 	this->btnAssetsHistUpdate->HandleButtonClick(OnAssetsHistUpdateClicked, this);
 	this->lvAssetsHist = ui->NewListView(this->tpAssetsHist, UI::ListViewStyle::Table, 3);
-	this->lvAssetsHist->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvAssetsHist->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvAssetsHist->AddColumn(CSTR("Date"), 100);
 	this->lvAssetsHist->AddColumn(CSTR("Value"), 100);
 	this->lvAssetsHist->AddColumn(CSTR("Div"), 100);
@@ -2248,7 +2248,7 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->lvAssetsHist->HandleSelChg(OnAssetsHistSelChg, this);
 	this->tpAssetsTrade = this->tcAssets->AddTabPage(CSTR("Trade"));
 	this->lvAssetsTrade = ui->NewListView(this->tpAssetsTrade, UI::ListViewStyle::Table, 1);
-	this->lvAssetsTrade->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvAssetsTrade->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvAssetsTrade->SetShowGrid(true);
 	this->lvAssetsTrade->SetFullRowSelect(true);
 
@@ -2267,7 +2267,7 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->tpPrice = this->tcMain->AddTabPage(CSTR("Price"));
 	this->pnlPrice = ui->NewPanel(this->tpPrice);
 	this->pnlPrice->SetRect(0, 0, 100, 31, false);
-	this->pnlPrice->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlPrice->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblPriceItem = ui->NewLabel(this->pnlPrice, CSTR("Item"));
 	this->lblPriceItem->SetRect(4, 4, 50, 23, false);
 	this->txtPriceItem = ui->NewTextBox(this->pnlPrice, CSTR(""));
@@ -2291,7 +2291,7 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->btnPriceUpdate->SetRect(764, 4, 75, 23, false);
 	this->btnPriceUpdate->HandleButtonClick(OnPriceUpdateClicked, this);
 	this->lvPrice = ui->NewListView(this->tpPrice, UI::ListViewStyle::Table, 6);
-	this->lvPrice->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvPrice->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvPrice->SetShowGrid(true);
 	this->lvPrice->SetFullRowSelect(true);
 	this->lvPrice->HandleSelChg(OnPriceSelChg, this);

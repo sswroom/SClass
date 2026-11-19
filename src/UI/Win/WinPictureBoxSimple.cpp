@@ -27,22 +27,22 @@ IntOS __stdcall UI::Win::WinPictureBoxSimple::PBWndProc(void *hWnd, UInt32 msg, 
 		me->OnPaint();
 		return 0;
 	case WM_LBUTTONDOWN:
-		me->EventButtonDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
+		me->EventButtonDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MouseButton::Left);
 		return 0;
 	case WM_RBUTTONDOWN:
-		me->EventButtonDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
+		me->EventButtonDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MouseButton::Right);
 		return 0;
 	case WM_MBUTTONDOWN:
-		me->EventButtonDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
+		me->EventButtonDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MouseButton::Middle);
 		return 0;
 	case WM_LBUTTONUP:
-		me->EventButtonUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_LEFT);
+		me->EventButtonUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MouseButton::Left);
 		return 0;
 	case WM_RBUTTONUP:
-		me->EventButtonUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_RIGHT);
+		me->EventButtonUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MouseButton::Right);
 		return 0;
 	case WM_MBUTTONUP:
-		me->EventButtonUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), MBTN_MIDDLE);
+		me->EventButtonUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MouseButton::Middle);
 		return 0;
 	case WM_MOUSEMOVE:
 		me->EventMouseMove(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)));

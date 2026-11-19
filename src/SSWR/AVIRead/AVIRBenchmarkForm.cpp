@@ -342,7 +342,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(Optional<UI::GUIClientContro
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 32, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnStart = ui->NewButton(this->pnlCtrl, CSTR("Start"));
 	this->btnStart->SetRect(4, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
@@ -354,13 +354,13 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(Optional<UI::GUIClientContro
 	this->btnSave->HandleButtonClick(OnSaveClicked, this);
 	this->pbMain = ui->NewProgressBar(*this, 100);
 	this->pbMain->SetRect(0, 0, 100, 24, false);
-	this->pbMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pbMain->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpCopy = this->tcMain->AddTabPage(CSTR("Copy"));
 	this->lvCopy = ui->NewListView(this->tpCopy, UI::ListViewStyle::Table, 2);
-	this->lvCopy->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvCopy->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvCopy->SetShowGrid(true);
 	this->lvCopy->SetFullRowSelect(true);
 	this->lvCopy->AddColumn(CSTR("Buffer Size"), 200);
@@ -368,7 +368,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(Optional<UI::GUIClientContro
 
 	this->tpRead = this->tcMain->AddTabPage(CSTR("Read"));
 	this->lvRead = ui->NewListView(this->tpRead, UI::ListViewStyle::Table, 2);
-	this->lvRead->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvRead->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvRead->SetShowGrid(true);
 	this->lvRead->SetFullRowSelect(true);
 	this->lvRead->AddColumn(CSTR("Buffer Size"), 200);
@@ -376,7 +376,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(Optional<UI::GUIClientContro
 
 	this->tpWrite = this->tcMain->AddTabPage(CSTR("Write"));
 	this->lvWrite = ui->NewListView(this->tpWrite, UI::ListViewStyle::Table, 2);
-	this->lvWrite->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvWrite->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvWrite->SetShowGrid(true);
 	this->lvWrite->SetFullRowSelect(true);
 	this->lvWrite->AddColumn(CSTR("Buffer Size"), 200);
@@ -385,7 +385,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(Optional<UI::GUIClientContro
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	this->pnlInfo = ui->NewPanel(this->tpInfo);
 	this->pnlInfo->SetRect(0, 0, 100, 52, false);
-	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlInfo->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblPlatform = ui->NewLabel(this->pnlInfo, CSTR("Platform"));
 	this->lblPlatform->SetRect(4, 4, 100, 23, false);
 	this->txtPlatform = ui->NewTextBox(this->pnlInfo, CSTR(""));
@@ -397,7 +397,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(Optional<UI::GUIClientContro
 	this->txtCPU->SetRect(104, 28, 300, 23, false);
 	this->txtCPU->SetReadOnly(true);
 	this->lvRAM = ui->NewListView(this->tpInfo, UI::ListViewStyle::Table, 9);
-	this->lvRAM->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvRAM->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvRAM->SetFullRowSelect(true);
 	this->lvRAM->SetShowGrid(true);
 	this->lvRAM->AddColumn(CSTR("Locator"), 100);

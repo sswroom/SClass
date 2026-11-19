@@ -468,7 +468,7 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(Optional<UI::GUIClient
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpSource = this->tcMain->AddTabPage(CSTR("Source"));
 	this->lblSourceConn = ui->NewLabel(this->tpSource, CSTR("Connection"));
@@ -497,7 +497,7 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(Optional<UI::GUIClient
 	this->tpData = this->tcMain->AddTabPage(CSTR("Data"));
 	this->pnlData = ui->NewPanel(this->tpData);
 	this->pnlData->SetRect(0, 0, 100, 31, false);
-	this->pnlData->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlData->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnDataSelectNone = ui->NewButton(this->pnlData, CSTR("Select None"));
 	this->btnDataSelectNone->SetRect(4, 4, 75, 23, false);
 	this->btnDataSelectNone->HandleButtonClick(OnDataSelectNoneClicked, this);
@@ -506,9 +506,9 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(Optional<UI::GUIClient
 	this->btnDataSelectAll->HandleButtonClick(OnDataSelectAllClicked, this);
 	this->grpDest = ui->NewGroupBox(this->tpData, CSTR("Destination"));
 	this->grpDest->SetRect(0, 0, 100, 154, false);
-	this->grpDest->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->grpDest->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lvData = ui->NewListView(this->tpData, UI::ListViewStyle::Table, 3);
-	this->lvData->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvData->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvData->SetFullRowSelect(true);
 	this->lvData->SetShowGrid(true);
 	this->lvData->AddColumn(CSTR("Select"), 100);

@@ -183,11 +183,11 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(Optional<UI::GUIClientContro
 
 	this->lbCtrl = ui->NewListBox(*this, false);
 	this->lbCtrl->SetRect(0, 0, 200, 23, false);
-	this->lbCtrl->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbCtrl->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbCtrl->HandleSelectionChange(OnCtrlChanged, this);
 	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	this->lblRadioName = ui->NewLabel(this->tpInfo, CSTR("Radio Name"));
@@ -219,7 +219,7 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(Optional<UI::GUIClientContro
 	this->tpDevice = this->tcMain->AddTabPage(CSTR("Device"));
 	this->pnlDevice = ui->NewPanel(this->tpDevice);
 	this->pnlDevice->SetRect(0, 0, 100, 31, false);
-	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlDevice->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnDeviceSrch = ui->NewButton(this->pnlDevice, CSTR("Search"));
 	this->btnDeviceSrch->SetRect(4, 4, 75, 23, false);
 	this->btnDeviceSrch->HandleButtonClick(OnDeviceSrchClicked, this);
@@ -228,11 +228,11 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(Optional<UI::GUIClientContro
 	this->btnDeviceUpdate->HandleButtonClick(OnDeviceUpdateClicked, this);
 	this->pnlDevDetail = ui->NewPanel(this->tpDevice);
 	this->pnlDevDetail->SetRect(0, 0, 100, 360, false);
-	this->pnlDevDetail->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlDevDetail->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->vspDevice = ui->NewVSplitter(this->tpDevice, 3, true);
 	this->pnlDevCtrl = ui->NewPanel(this->pnlDevDetail);
 	this->pnlDevCtrl->SetRect(0, 0, 100, 31, false);
-	this->pnlDevCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlDevCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnDevAuthen = ui->NewButton(this->pnlDevCtrl, CSTR("Pair"));
 	this->btnDevAuthen->SetRect(4, 4, 75, 23, false);
 	this->btnDevAuthen->HandleButtonClick(OnDevAuthenClicked, this);
@@ -240,9 +240,9 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(Optional<UI::GUIClientContro
 	this->btnDevUnauthen->SetRect(84, 4, 75, 23, false);
 	this->btnDevUnauthen->HandleButtonClick(OnDevUnauthenClicked, this);
 	this->lbDevServices = ui->NewListBox(this->pnlDevDetail, false);
-	this->lbDevServices->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbDevServices->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDevice = ui->NewListView(this->tpDevice, UI::ListViewStyle::Table, 6);
-	this->lvDevice->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDevice->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDevice->HandleSelChg(OnDeviceSelChg, this);
 	this->lvDevice->AddColumn(CSTR("Name"), 150);
 	this->lvDevice->AddColumn(CSTR("Address"), 150);

@@ -274,7 +274,7 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(Optional<UI::GUIClientCo
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), false);
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	this->lblHost = ui->NewLabel(this->tpControl, CSTR("Host"));
@@ -337,20 +337,20 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(Optional<UI::GUIClientCo
 	tpQuery = this->tcMain->AddTabPage(CSTR("Query"));
 	this->pnlQuery = ui->NewPanel(this->tpQuery);
 	this->pnlQuery->SetRect(0, 0, 100, 31, false);
-	this->pnlQuery->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlQuery->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnQuery = ui->NewButton(this->pnlQuery, CSTR("Query"));
 	this->btnQuery->SetRect(4, 4, 75, 23, false);
 	this->btnQuery->HandleButtonClick(OnQueryClicked, this);
 	this->txtQuery = ui->NewTextBox(this->tpQuery, CSTR(""), true);
 	this->txtQuery->SetRect(0, 0, 100, 160, false);
-	this->txtQuery->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->txtQuery->SetDockType(UI::GUIControl::DockType::Top);
 	this->txtQueryStatus = ui->NewTextBox(this->tpQuery, CSTR(""));
 	this->txtQueryStatus->SetRect(0, 0, 100, 23, false);
-	this->txtQueryStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtQueryStatus->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->txtQueryStatus->SetReadOnly(true);
 	this->vspQuery = ui->NewVSplitter(this->tpQuery, 3, false);
 	this->lvQueryResult = ui->NewListView(this->tpQuery, UI::ListViewStyle::Table, 2);
-	this->lvQueryResult->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvQueryResult->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvQueryResult->SetFullRowSelect(true);
 	this->lvQueryResult->SetShowGrid(true);
 

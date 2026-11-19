@@ -175,9 +175,9 @@ SSWR::AVIRead::AVIRDataModelForm::AVIRDataModelForm(Optional<UI::GUIClientContro
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 55, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lvColumns = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
-	this->lvColumns->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvColumns->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvColumns->AddColumn(CSTR("Data Type"), 200);
 	this->lvColumns->AddColumn(CSTR("SubType"), 70);
 	this->lvColumns->AddColumn(CSTR("Name"), 300);

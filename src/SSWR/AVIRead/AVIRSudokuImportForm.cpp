@@ -348,7 +348,7 @@ SSWR::AVIRead::AVIRSudokuImportForm::AVIRSudokuImportForm(Optional<UI::GUIClient
 
 	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetRect(0, 0, 100, 31, false);
-	this->pnlMain->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlMain->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnClipboard = ui->NewButton(this->pnlMain, CSTR("Import from Clipboard"));
 	this->btnClipboard->SetRect(4, 4, 150, 23, false);
 	this->btnClipboard->HandleButtonClick(OnClipboardClicked, this);
@@ -357,7 +357,7 @@ SSWR::AVIRead::AVIRSudokuImportForm::AVIRSudokuImportForm(Optional<UI::GUIClient
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnCancel = ui->NewButton(this->pnlCtrl, CSTR("Cancel"));
 	this->btnCancel->SetRect(4, 4, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
@@ -365,15 +365,15 @@ SSWR::AVIRead::AVIRSudokuImportForm::AVIRSudokuImportForm(Optional<UI::GUIClient
 	this->btnOK->SetRect(84, 4, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpImage = this->tcMain->AddTabPage(CSTR("Image"));
 	this->pbImage = ui->NewPictureBoxDD(this->tpImage, this->colorSess, true, false);
-	this->pbImage->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbImage->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpBoard = this->tcMain->AddTabPage(CSTR("Board"));
 	NEW_CLASSNN(this->svMain, UI::GUISudokuViewer(ui, this->tpBoard, this->core->GetDrawEngine(), this->colorSess, this->board));
-	this->svMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->svMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->svMain->HandleNumberInput(OnNumberInput, this);
 	this->HandleDropFiles(OnFiles, this);
 }

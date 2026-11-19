@@ -159,7 +159,7 @@ SSWR::AVIRead::AVIRNetworkBandwidthForm::AVIRNetworkBandwidthForm(Optional<UI::G
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnLog = ui->NewButton(this->pnlControl, CSTR("Log"));
 	this->btnLog->SetRect(4, 4, 75, 23, false);
 	this->btnLog->HandleButtonClick(OnLogClicked, this);
@@ -167,7 +167,7 @@ SSWR::AVIRead::AVIRNetworkBandwidthForm::AVIRNetworkBandwidthForm(Optional<UI::G
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(84, 4, 200, 23, false);
 	this->lvDetail = ui->NewListView(*this, UI::ListViewStyle::Table, 6);
-	this->lvDetail->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDetail->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDetail->SetFullRowSelect(true);
 	this->lvDetail->SetShowGrid(true);
 	this->lvDetail->AddColumn(CSTR("IP"), 120);

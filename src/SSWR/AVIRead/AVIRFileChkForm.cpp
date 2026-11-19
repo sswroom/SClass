@@ -27,7 +27,7 @@ SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(Optional<UI::GUIClientControl> p
 
 	this->pnlStatus = ui->NewPanel(*this);
 	this->pnlStatus->SetRect(0, 0, 100, 31, false);
-	this->pnlStatus->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlStatus->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblStatus = ui->NewLabel(this->pnlStatus, CSTR("Status"));
 	this->lblStatus->SetRect(4, 4, 100, 23, false);
 	this->txtStatus = ui->NewTextBox(this->pnlStatus, CSTR(""));
@@ -44,7 +44,7 @@ SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(Optional<UI::GUIClientControl> p
 	this->txtValidFiles->SetRect(554, 4, 100, 23, false);
 	this->txtValidFiles->SetReadOnly(true);
 	this->lvFileChk = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
-	this->lvFileChk->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvFileChk->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvFileChk->AddColumn(CSTR("File Name"), 600);
 	this->lvFileChk->AddColumn(CSTR("Check Value"), 250);
 	this->lvFileChk->AddColumn(CSTR("Current Value"), 250);

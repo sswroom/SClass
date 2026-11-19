@@ -18,7 +18,7 @@ UI::GUISudokuViewer::~GUISudokuViewer()
 
 UI::EventState UI::GUISudokuViewer::OnMouseDown(Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
-	if (btn == UI::GUIControl::MBTN_LEFT)
+	if (btn == UI::GUIControl::MouseButton::Left)
 	{
 		this->Focus();
 

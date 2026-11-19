@@ -858,31 +858,31 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(Optional<UI::GUIClientControl> paren
 	
 	this->lbImages = ui->NewListBox(*this, false);
 	this->lbImages->SetRect(0, 0, 160, 10, false);
-	this->lbImages->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbImages->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbImages->HandleSelectionChange(ImagesSelChg, this);
 	this->hSplitter = ui->NewHSplitter(*this, 3, false);
 	this->tcImage = ui->NewTabControl(*this);
-	this->tcImage->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcImage->SetDockType(UI::GUIControl::DockType::Fill);
 	
 	this->tpImage = this->tcImage->AddTabPage(CSTR("Image"));
 	this->txtImageStatus = ui->NewTextBox(this->tpImage, CSTR(""));
 	this->txtImageStatus->SetRect(0, 0, 100, 23, false);
 	this->txtImageStatus->SetReadOnly(true);
-	this->txtImageStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtImageStatus->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->pbImage = ui->NewPictureBoxDD(this->tpImage, this->colorSess, this->allowEnlarge, false);
-	this->pbImage->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbImage->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pbImage->HandleMouseMove(OnImageMouseMove, this);
 
 	this->tpInfo = this->tcImage->AddTabPage(CSTR("Info"));
 	this->pnlInfo = ui->NewPanel(this->tpInfo);
 	this->pnlInfo->SetRect(0, 0, 100, 31, false);
-	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlInfo->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnInfoICC = ui->NewButton(this->pnlInfo, CSTR("ICC Profile"));
 	this->btnInfoICC->SetRect(4, 4, 100, 23, false);
 	this->btnInfoICC->SetEnabled(false);
 	this->btnInfoICC->HandleButtonClick(OnInfoICCClicked, this);
 	this->txtInfo = ui->NewTextBox(this->tpInfo, CSTR(""), true);
-	this->txtInfo->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtInfo->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtInfo->SetReadOnly(true);
 	
 	NN<UI::GUIMenu> mnu;

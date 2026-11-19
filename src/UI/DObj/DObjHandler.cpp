@@ -93,7 +93,7 @@ void UI::DObj::DObjHandler::EndUpdate()
 
 void UI::DObj::DObjHandler::OnMouseDown(Math::Coord2D<IntOS> scnPos, UI::GUIControl::MouseButton button)
 {
-	if (button == UI::GUIControl::MBTN_LEFT)
+	if (button == UI::GUIControl::MouseButton::Left)
 	{
 		UIntOS i;
 		NN<DirectObject> obj;
@@ -113,7 +113,7 @@ void UI::DObj::DObjHandler::OnMouseDown(Math::Coord2D<IntOS> scnPos, UI::GUICont
 
 void UI::DObj::DObjHandler::OnMouseUp(Math::Coord2D<IntOS> scnPos, UI::GUIControl::MouseButton button)
 {
-	if (button == UI::GUIControl::MBTN_LEFT)
+	if (button == UI::GUIControl::MouseButton::Left)
 	{
 		Sync::MutexUsage mutUsage(this->objMut);
 		if (this->downObj != 0)

@@ -125,7 +125,7 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(Optional<UI::GUIClientControl> p
 
 	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
-	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRequest->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblFile = ui->NewLabel(this->pnlRequest, CSTR("MIB File"));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	this->txtFile = ui->NewTextBox(this->pnlRequest, CSTR(""));
@@ -135,19 +135,19 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(Optional<UI::GUIClientControl> p
 	this->btnBrowse->SetRect(604, 4, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpObjects = this->tcMain->AddTabPage(CSTR("Objects"));
 	this->lvObjectsVal = ui->NewListView(this->tpObjects, UI::ListViewStyle::Table, 2);
 	this->lvObjectsVal->SetRect(0, 0, 100, 150, false);
-	this->lvObjectsVal->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->lvObjectsVal->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lvObjectsVal->SetShowGrid(true);
 	this->lvObjectsVal->SetFullRowSelect(true);
 	this->lvObjectsVal->AddColumn(CSTR("Name"), 200);
 	this->lvObjectsVal->AddColumn(CSTR("Value"), 600);
 	this->vspObjects = ui->NewVSplitter(this->tpObjects, 3, true);
 	this->lvObjects = ui->NewListView(this->tpObjects, UI::ListViewStyle::Table, 4);
-	this->lvObjects->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvObjects->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvObjects->SetShowGrid(true);
 	this->lvObjects->SetFullRowSelect(true);
 	this->lvObjects->AddColumn(CSTR("Name"), 200);
@@ -158,7 +158,7 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(Optional<UI::GUIClientControl> p
 
 	this->tpOID = this->tcMain->AddTabPage(CSTR("OID"));
 	this->lvOID = ui->NewListView(this->tpOID, UI::ListViewStyle::Table, 3);
-	this->lvOID->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvOID->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvOID->SetShowGrid(true);
 	this->lvOID->SetFullRowSelect(true);
 	this->lvOID->AddColumn(CSTR("OID"), 200);
@@ -167,7 +167,7 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(Optional<UI::GUIClientControl> p
 
 	this->tpOIDText = this->tcMain->AddTabPage(CSTR("OIDText"));
 	this->txtOIDText = ui->NewTextBox(this->tpOIDText, CSTR(""), true);
-	this->txtOIDText->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtOIDText->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtOIDText->SetReadOnly(true);
 
 	this->HandleDropFiles(OnFileDroped, this);

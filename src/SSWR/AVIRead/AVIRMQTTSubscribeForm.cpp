@@ -400,7 +400,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(Optional<UI::GUIClie
 	this->dispImg = nullptr;
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	this->lblHost = ui->NewLabel(this->tpStatus, CSTR("Host"));
@@ -454,10 +454,10 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(Optional<UI::GUIClie
 	this->tpTopic = this->tcMain->AddTabPage(CSTR("Topics"));
 	this->pbTopic = ui->NewPictureBoxSimple(this->tpTopic, this->core->GetDrawEngine(), false);
 	this->pbTopic->SetRect(0, 0, 100, 300, false);
-	this->pbTopic->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pbTopic->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->vspTopic = ui->NewVSplitter(this->tpTopic, 3, true);
 	this->lvTopic = ui->NewListView(this->tpTopic, UI::ListViewStyle::Table, 4);
-	this->lvTopic->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvTopic->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvTopic->SetShowGrid(true);
 	this->lvTopic->SetFullRowSelect(true);
 	this->lvTopic->AddColumn(CSTR("Topic"), 200);
@@ -469,10 +469,10 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(Optional<UI::GUIClie
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->txtLog->SetReadOnly(true);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 100, false));

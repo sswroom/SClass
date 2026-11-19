@@ -145,12 +145,12 @@ SSWR::AVIRead::AVIRJWTParserForm::AVIRJWTParserForm(Optional<UI::GUIClientContro
 
 	this->txtJWT = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtJWT->SetRect(0, 0, 300, 23, false);
-	this->txtJWT->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->txtJWT->SetDockType(UI::GUIControl::DockType::Left);
 	this->hspJWT = ui->NewHSplitter(*this, 3, false);
 	this->pnlMain = ui->NewPanel(*this);
-	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pnlResult = ui->NewPanel(this->pnlMain);
-	this->pnlResult->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlResult->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnParse = ui->NewButton(this->pnlResult, CSTR("Parse"));
 	this->btnParse->SetRect(4, 4, 75, 23, false);
 	this->btnParse->HandleButtonClick(OnParseClicked, this);
@@ -218,7 +218,7 @@ SSWR::AVIRead::AVIRJWTParserForm::AVIRJWTParserForm(Optional<UI::GUIClientContro
 	this->lvPayload = ui->NewListView(this->pnlMain, UI::ListViewStyle::Table, 3);
 	this->lvPayload->SetFullRowSelect(true);
 	this->lvPayload->SetShowGrid(true);
-	this->lvPayload->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvPayload->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvPayload->AddColumn(CSTR("Name"), 120);
 	this->lvPayload->AddColumn(CSTR("Desc"), 120);
 	this->lvPayload->AddColumn(CSTR("Value"), 300);

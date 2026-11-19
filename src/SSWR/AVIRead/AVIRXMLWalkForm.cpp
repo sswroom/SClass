@@ -77,7 +77,7 @@ SSWR::AVIRead::AVIRXMLWalkForm::AVIRXMLWalkForm(Optional<UI::GUIClientControl> p
 
 	this->pnlFile = ui->NewPanel(*this);
 	this->pnlFile->SetRect(0, 0, 100, 31, false);
-	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlFile->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblFile = ui->NewLabel(this->pnlFile, CSTR("XML File"));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	this->txtFile = ui->NewTextBox(this->pnlFile, CSTR(""));
@@ -87,7 +87,7 @@ SSWR::AVIRead::AVIRXMLWalkForm::AVIRXMLWalkForm(Optional<UI::GUIClientControl> p
 	this->btnBrowse->SetRect(604, 4, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClick, this);
 	this->lvXML = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
-	this->lvXML->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvXML->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvXML->SetShowGrid(true);
 	this->lvXML->SetFullRowSelect(true);
 	this->lvXML->AddColumn(CSTR("Path"), 300);

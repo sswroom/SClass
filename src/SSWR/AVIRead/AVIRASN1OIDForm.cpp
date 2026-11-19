@@ -70,21 +70,21 @@ SSWR::AVIRead::AVIRASN1OIDForm::AVIRASN1OIDForm(Optional<UI::GUIClientControl> p
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 		
 	this->tpSource = this->tcMain->AddTabPage(CSTR("Source"));
 	this->pnlSource = ui->NewPanel(this->tpSource);
 	this->pnlSource->SetRect(0, 0, 100, 31, false);
-	this->pnlSource->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlSource->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnConvert = ui->NewButton(this->pnlSource, CSTR("Convert"));
 	this->btnConvert->SetRect(4, 4, 75, 23, false);
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);
 	this->txtSource = ui->NewTextBox(this->tpSource, CSTR(""), true);
-	this->txtSource->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtSource->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpCPP = this->tcMain->AddTabPage(CSTR("CPP"));
 	this->txtCPP = ui->NewTextBox(this->tpCPP, CSTR(""), true);
-	this->txtCPP->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtCPP->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtCPP->SetReadOnly(true);
 }
 

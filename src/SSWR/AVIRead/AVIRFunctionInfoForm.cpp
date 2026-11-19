@@ -23,7 +23,7 @@ SSWR::AVIRead::AVIRFunctionInfoForm::AVIRFunctionInfoForm(Optional<UI::GUIClient
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lvMyStack = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
-	this->lvMyStack->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvMyStack->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvMyStack->HandleDblClk(OnMyStackDblClk, this);
 	this->lvMyStack->SetFullRowSelect(true);
 	this->lvMyStack->SetShowGrid(true);

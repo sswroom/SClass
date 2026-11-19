@@ -204,12 +204,12 @@ SSWR::AVIRead::AVIRUserAgentBatchForm::AVIRUserAgentBatchForm(Optional<UI::GUICl
 
 	this->pnlSource = ui->NewPanel(*this);
 	this->pnlSource->SetRect(0, 0, 100, 256, false);
-	this->pnlSource->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlSource->SetDockType(UI::GUIControl::DockType::Top);
 	this->pnlControl = ui->NewPanel(this->pnlSource);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->txtSource = ui->NewTextBox(this->pnlSource, CSTR(""), true);
-	this->txtSource->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtSource->SetDockType(UI::GUIControl::DockType::Fill);
 	this->btnParse = ui->NewButton(this->pnlControl, CSTR("Parse"));
 	this->btnParse->SetRect(4, 4, 75, 23, false);
 	this->btnParse->HandleButtonClick(OnParseClicked, this);
@@ -221,7 +221,7 @@ SSWR::AVIRead::AVIRUserAgentBatchForm::AVIRUserAgentBatchForm(Optional<UI::GUICl
 	this->btnUpdateCB->HandleButtonClick(OnUpdateCBClicked, this);
 	this->vspControl = ui->NewVSplitter(*this, 3, false);
 	this->txtOutput = ui->NewTextBox(*this, CSTR(""), true);
-	this->txtOutput->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtOutput->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtOutput->SetReadOnly(true);
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

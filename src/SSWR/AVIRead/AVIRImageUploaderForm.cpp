@@ -64,7 +64,7 @@ SSWR::AVIRead::AVIRImageUploaderForm::AVIRImageUploaderForm(Optional<UI::GUIClie
 	
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 55, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lblUsername = ui->NewLabel(this->pnlCtrl, CSTR("Username"));
 	this->lblUsername->SetRect(4, 4, 100, 23, false);
 	this->txtUsername = ui->NewTextBox(this->pnlCtrl, CSTR(""));
@@ -80,7 +80,7 @@ SSWR::AVIRead::AVIRImageUploaderForm::AVIRImageUploaderForm(Optional<UI::GUIClie
 	this->btnUpload->SetRect(204, 28, 75, 23, false);
 	this->btnUpload->HandleButtonClick(OnUploadClicked, this);
 	this->lvStatus = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
-	this->lvStatus->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvStatus->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvStatus->AddColumn(CSTR("File Name"), 300);
 	this->lvStatus->AddColumn(CSTR("File Size"), 100);
 	this->lvStatus->AddColumn(CSTR("Status"), 100);

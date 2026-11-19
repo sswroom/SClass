@@ -135,7 +135,7 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(Optional<UI::GUIClientContro
 
 	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 104, false);
-	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRequest->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblServer = ui->NewLabel(this->pnlRequest, CSTR("DNS Server"));
 	this->lblServer->SetRect(4, 4, 120, 23, false);
 	this->txtServer = ui->NewTextBox(this->pnlRequest, CSTR(""));
@@ -167,11 +167,11 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(Optional<UI::GUIClientContro
 	this->txtRequestTime->SetReadOnly(true);
 	this->lbAnswer = ui->NewListBox(*this, false);
 	this->lbAnswer->SetRect(0, 0, 200, 23, false);
-	this->lbAnswer->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbAnswer->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbAnswer->HandleSelectionChange(OnAnswerSelChg, this);
 	this->hspAnswer = ui->NewHSplitter(*this, 3, false);
 	this->pnlAnswer = ui->NewPanel(*this);
-	this->pnlAnswer->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlAnswer->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblAnsName = ui->NewLabel(this->pnlAnswer, CSTR("Name"));
 	this->lblAnsName->SetRect(4, 4, 100, 23, false);
 	this->txtAnsName = ui->NewTextBox(this->pnlAnswer, CSTR(""));

@@ -330,11 +330,11 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(Optional<UI::GUIClientControl> parent, N
 	UIntOS i;
 	UIntOS j;
 	this->tcEXE = ui->NewTabControl(*this);
-	this->tcEXE->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcEXE->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpProp = this->tcEXE->AddTabPage(CSTR("Properties"));
 	this->lvProp = ui->NewListView(this->tpProp, UI::ListViewStyle::Table, 2);
-	this->lvProp->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvProp->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvProp->SetShowGrid(true);
 	this->lvProp->SetFullRowSelect(true);
 	this->lvProp->AddColumn(CSTR("Name"), 250);
@@ -354,11 +354,11 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(Optional<UI::GUIClientControl> parent, N
 	this->tpImport = this->tcEXE->AddTabPage(CSTR("Import"));
 	this->lbImport = ui->NewListBox(this->tpImport, false);
 	this->lbImport->SetRect(0, 0, 150, 23, false);
-	this->lbImport->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbImport->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbImport->HandleSelectionChange(OnImportSelChg, this);
 	this->hspImport = ui->NewHSplitter(this->tpImport, 3, false);
 	this->lvImport = ui->NewListView(this->tpImport, UI::ListViewStyle::Table, 1);
-	this->lvImport->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvImport->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvImport->SetShowGrid(true);
 	this->lvImport->SetFullRowSelect(true);
 	this->lvImport->AddColumn(CSTR("Func Name"), 200);
@@ -372,7 +372,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(Optional<UI::GUIClientControl> parent, N
 
 	this->tpExport = this->tcEXE->AddTabPage(CSTR("Export"));
 	this->lbExport = ui->NewListBox(this->tpExport, false);
-	this->lbExport->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbExport->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbExport->HandleDoubleClicked(OnExportDblClk, this);
 	i = 0;
 	j = this->exeFile->GetExportCount();
@@ -385,13 +385,13 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(Optional<UI::GUIClientControl> parent, N
 	this->tpResource = this->tcEXE->AddTabPage(CSTR("Resource"));
 	this->lbResource = ui->NewListBox(this->tpResource, false);
 	this->lbResource->SetRect(0, 0, 200, 100, false);
-	this->lbResource->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbResource->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbResource->HandleSelectionChange(OnResourceSelChg, this);
 	this->lbResource->HandleDoubleClicked(OnResourceDblClk, this);
 	this->hspResource = ui->NewHSplitter(this->tpResource, 3, false);
 	this->txtResource = ui->NewTextBox(this->tpResource, CSTR(""), true);
 	this->txtResource->SetReadOnly(true);
-	this->txtResource->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtResource->SetDockType(UI::GUIControl::DockType::Fill);
 	i = 0;
 	j = this->exeFile->GetResourceCount();
 	while (i < j)
@@ -409,14 +409,14 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(Optional<UI::GUIClientControl> parent, N
 		this->tp16Bit = this->tcEXE->AddTabPage(CSTR("16 Bit"));
 		this->pnl16BitInfo = ui->NewPanel(this->tp16Bit);
 		this->pnl16BitInfo->SetRect(0, 0, 100, 40, false);
-		this->pnl16BitInfo->SetDockType(UI::GUIControl::DOCK_TOP);
+		this->pnl16BitInfo->SetDockType(UI::GUIControl::DockType::Top);
 		this->lb16BitFuncs = ui->NewListBox(this->tp16Bit, false);
 		this->lb16BitFuncs->SetRect(0, 0, 120, 208, false);
-		this->lb16BitFuncs->SetDockType(UI::GUIControl::DOCK_LEFT);
+		this->lb16BitFuncs->SetDockType(UI::GUIControl::DockType::Left);
 		this->lb16BitFuncs->HandleSelectionChange(On16BitFuncsChg, this);
 		this->hsp16Bit = ui->NewHSplitter(this->tp16Bit, 3, false);
 		this->lb16BitCont = ui->NewListBox(this->tp16Bit, false);
-		this->lb16BitCont->SetDockType(UI::GUIControl::DOCK_FILL);
+		this->lb16BitCont->SetDockType(UI::GUIControl::DockType::Fill);
 
 		this->InitSess16();
 	}

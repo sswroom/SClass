@@ -42,7 +42,7 @@ SSWR::AVIRead::AVIRMap3DForm::AVIRMap3DForm(Optional<UI::GUIClientControl> paren
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlCtrl = ui->NewPanel(*this);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->pnlCtrl->SetRect(0, 0, 100, 28, false);
 
 	this->txtCenter = ui->NewTextBox(this->pnlCtrl, CSTR(""));
@@ -62,7 +62,7 @@ SSWR::AVIRead::AVIRMap3DForm::AVIRMap3DForm(Optional<UI::GUIClientControl> paren
 	this->tbHAngle->HandleScrolled(OnHAngleScrolled, this);
 
 	NEW_CLASSNN(this->mapCtrl, UI::GUIMap3DControl(ui, *this, this->core->GetDrawEngine(), this->env, this->colorSess));
-	this->mapCtrl->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->mapCtrl->SetDockType(UI::GUIControl::DockType::Fill);
 	this->mapCtrl->HandleMapUpdated(OnMapUpdated, this);
 	this->UpdateCenterText(this->mapCtrl->GetMapCenter());
 }

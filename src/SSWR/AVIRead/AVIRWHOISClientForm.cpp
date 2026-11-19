@@ -51,7 +51,7 @@ SSWR::AVIRead::AVIRWHOISClientForm::AVIRWHOISClientForm(Optional<UI::GUIClientCo
 
 	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 55, false);
-	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRequest->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblIP = ui->NewLabel(this->pnlRequest, CSTR("IP"));
 	this->lblIP->SetRect(4, 4, 100, 23, false);
 	this->txtIP = ui->NewTextBox(this->pnlRequest, CSTR(""));
@@ -65,7 +65,7 @@ SSWR::AVIRead::AVIRWHOISClientForm::AVIRWHOISClientForm(Optional<UI::GUIClientCo
 	this->txtRespTime->SetRect(104, 28, 400, 23, false);
 	this->txtRespTime->SetReadOnly(true);
 	this->lbResponse = ui->NewListBox(*this, false);
-	this->lbResponse->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbResponse->SetDockType(UI::GUIControl::DockType::Fill);
 	
 	this->SetDefaultButton(this->btnRequest);
 	this->txtIP->Focus();

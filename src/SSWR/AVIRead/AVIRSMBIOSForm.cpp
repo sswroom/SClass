@@ -34,13 +34,13 @@ SSWR::AVIRead::AVIRSMBIOSForm::AVIRSMBIOSForm(Optional<UI::GUIClientControl> par
 	}
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnHex = ui->NewButton(this->pnlControl, CSTR("Hex"));
 	this->btnHex->SetRect(4, 4, 75, 23, false);
 	this->btnHex->SetEnabled(this->smbios.NotNull());
 	this->btnHex->HandleButtonClick(OnHexClicked, this);
 	this->txtSMBIOS = ui->NewTextBox(*this, sb.ToCString(), true);
-	this->txtSMBIOS->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtSMBIOS->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtSMBIOS->SetReadOnly(true);
 }
 

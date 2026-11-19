@@ -98,7 +98,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(Optional<UI::GUIClientControl>
 
 	this->pnlPinType = ui->NewPanel(*this);
 	this->pnlPinType->SetRect(0, 0, 100, 31, false);
-	this->pnlPinType->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlPinType->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblPinType = ui->NewLabel(this->pnlPinType, CSTR("Pin Type"));
 	this->lblPinType->SetRect(4, 4, 100, 23, false);
 	this->cboPinType = ui->NewComboBox(this->pnlPinType, false);
@@ -109,7 +109,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(Optional<UI::GUIClientControl>
 
 	this->pnlButtons = ui->NewPanel(*this);
 	this->pnlButtons->SetRect(0, 0, 100, 31, false);
-	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlButtons->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnOK = ui->NewButton(this->pnlButtons, CSTR("&OK"));
 	this->btnOK->SetRect(49, 4, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClick, this);
@@ -118,7 +118,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(Optional<UI::GUIClientControl>
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 
 	this->tcConfig = ui->NewTabControl(*this);
-	this->tcConfig->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcConfig->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpGPIO = this->tcConfig->AddTabPage(CSTR("GPIO"));
 	this->lblGPIO = ui->NewLabel(this->tpGPIO, CSTR("GPIO Pin"));

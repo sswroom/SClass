@@ -344,7 +344,7 @@ SSWR::AVIRead::AVIRMSGraphEmailForm::AVIRMSGraphEmailForm(Optional<UI::GUIClient
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 128, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblTenantId = ui->NewLabel(this->pnlCtrl, CSTR("Tenant Id"));
 	this->lblTenantId->SetRect(4, 4, 100, 23, false);
 	this->txtTenantId = ui->NewTextBox(this->pnlCtrl, CSTR(""));
@@ -363,17 +363,17 @@ SSWR::AVIRead::AVIRMSGraphEmailForm::AVIRMSGraphEmailForm(Optional<UI::GUIClient
 	this->txtUserName = ui->NewTextBox(this->pnlCtrl, CSTR(""));
 	this->txtUserName->SetRect(104, 76, 300, 23, false);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpRead = this->tcMain->AddTabPage(CSTR("Read"));
 	this->pnlRead = ui->NewPanel(this->tpRead);
 	this->pnlRead->SetRect(0, 0, 100, 31, false);
-	this->pnlRead->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRead->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnRead = ui->NewButton(this->pnlRead, CSTR("Read"));
 	this->btnRead->SetRect(4, 4, 75, 23, false);
 	this->btnRead->HandleButtonClick(OnReadClicked, this);
 	this->lvRead = ui->NewListView(this->tpRead, UI::ListViewStyle::Table, 3);
-	this->lvRead->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvRead->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvRead->AddColumn(CSTR("To"), 100);
 	this->lvRead->AddColumn(CSTR("Subject"), 300);
 	this->lvRead->AddColumn(CSTR("Sent Date"), 100);
@@ -383,10 +383,10 @@ SSWR::AVIRead::AVIRMSGraphEmailForm::AVIRMSGraphEmailForm(Optional<UI::GUIClient
 	this->tpSend = this->tcMain->AddTabPage(CSTR("Send"));
 	this->pnlSendPre = ui->NewPanel(this->tpSend);
 	this->pnlSendPre->SetRect(0, 0, 100, 120, false);
-	this->pnlSendPre->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlSendPre->SetDockType(UI::GUIControl::DockType::Top);
 	this->pnlSendPost = ui->NewPanel(this->tpSend);
 	this->pnlSendPost->SetRect(0, 0, 100, 48, false);
-	this->pnlSendPost->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlSendPost->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lblSendTo = ui->NewLabel(this->pnlSendPre, CSTR("To"));
 	this->lblSendTo->SetRect(0, 0, 100, 23, false);
 	this->txtSendTo = ui->NewTextBox(this->pnlSendPre, CSTR(""));
@@ -406,7 +406,7 @@ SSWR::AVIRead::AVIRMSGraphEmailForm::AVIRMSGraphEmailForm(Optional<UI::GUIClient
 	this->chkSendHTML = ui->NewCheckBox(this->pnlSendPre, CSTR("HTML"), false);
 	this->chkSendHTML->SetRect(100, 96, 200, 23, false);
 	this->txtSendContent = ui->NewTextBox(this->tpSend, CSTR(""), true);
-	this->txtSendContent->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtSendContent->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblSendAtt = ui->NewLabel(this->pnlSendPost, CSTR("Attachment"));
 	this->lblSendAtt->SetRect(0, 0, 100, 23, false);
 	this->txtSendAtt = ui->NewTextBox(this->pnlSendPost, CSTR("0 attachments"));
@@ -425,10 +425,10 @@ SSWR::AVIRead::AVIRMSGraphEmailForm::AVIRMSGraphEmailForm(Optional<UI::GUIClient
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->txtLog->SetReadOnly(true);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
 	this->core = core;

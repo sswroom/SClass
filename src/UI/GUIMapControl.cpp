@@ -31,7 +31,7 @@ void __stdcall UI::GUIMapControl::ImageUpdated(AnyType userObj)
 
 UI::EventState UI::GUIMapControl::OnMouseDown(Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
-	if (btn == UI::GUIControl::MBTN_LEFT)
+	if (btn == UI::GUIControl::MouseButton::Left)
 	{
 		this->SetCapture();
 		if (this->mouseDownHdlr.func)
@@ -59,7 +59,7 @@ UI::EventState UI::GUIMapControl::OnMouseDown(Math::Coord2D<IntOS> scnPos, Mouse
 		this->mouseDown = true;
 		this->Focus();
 	}
-	else if (btn == UI::GUIControl::MBTN_RIGHT)
+	else if (btn == UI::GUIControl::MouseButton::Right)
 	{
 		this->SetCapture();
 		if (this->mouseDownHdlr.func)
@@ -89,7 +89,7 @@ UI::EventState UI::GUIMapControl::OnMouseDown(Math::Coord2D<IntOS> scnPos, Mouse
 
 UI::EventState UI::GUIMapControl::OnMouseUp(Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
-	if (btn == UI::GUIControl::MBTN_LEFT)
+	if (btn == UI::GUIControl::MouseButton::Left)
 	{
 		this->ReleaseCapture();
 		if (this->mouseUpHdlr.func)
@@ -111,7 +111,7 @@ UI::EventState UI::GUIMapControl::OnMouseUp(Math::Coord2D<IntOS> scnPos, MouseBu
 		}
 		this->Redraw();
 	}
-	else if (btn == UI::GUIControl::MBTN_RIGHT)
+	else if (btn == UI::GUIControl::MouseButton::Right)
 	{
 		this->ReleaseCapture();
 		if (this->mouseUpHdlr.func)

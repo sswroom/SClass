@@ -229,10 +229,10 @@ SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(Optional<UI::GUI
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 80, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->grpStream = ui->NewGroupBox(this->pnlCtrl, CSTR("Stream"));
 	this->grpStream->SetRect(0, 0, 100, 48, false);
-	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpStream->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblStream = ui->NewLabel(this->grpStream, CSTR("Stream Type"));
 	this->lblStream->SetRect(4, 4, 100, 23, false);
 	this->txtStream = ui->NewTextBox(this->grpStream, CSTR("-"));
@@ -247,15 +247,15 @@ SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(Optional<UI::GUI
 	this->txtWeight->SetRect(104, 52, 150, 23, false);
 	this->txtWeight->SetReadOnly(true);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpDisplay = this->tcMain->AddTabPage(CSTR("Display"));
 	this->pbsDisplay = ui->NewPictureBoxSimple(this->tpDisplay, this->eng, false);
-	this->pbsDisplay->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbsDisplay->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpHistory = this->tcMain->AddTabPage(CSTR("History"));
 	this->rlcHistory = ui->NewRealtimeLineChart(this->tpHistory, this->core->GetDrawEngine(), 1, 500, 100, nullptr);
-	this->rlcHistory->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->rlcHistory->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->AddTimer(100, OnTimerTick, this);
 }

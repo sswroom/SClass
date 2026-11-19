@@ -23,7 +23,7 @@ void __stdcall UtilUI::ColorDialog::OnCancelClicked(AnyType userObj)
 UI::EventState __stdcall UtilUI::ColorDialog::OnSubDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
-	if (btn == UI::GUIPictureBox::MBTN_LEFT)
+	if (btn == UI::GUIPictureBox::MouseButton::Left)
 	{
 		Math::Size2D<UIntOS> sz;
 		Double newV;
@@ -79,7 +79,7 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnSubMove(AnyType userObj, Math::C
 UI::EventState __stdcall UtilUI::ColorDialog::OnSubUp(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
-	if (btn == UI::GUIPictureBox::MBTN_LEFT)
+	if (btn == UI::GUIPictureBox::MouseButton::Left)
 	{
 		me->pbSub->ReleaseCapture();
 		if (me->subDowned)
@@ -111,7 +111,7 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnSubUp(AnyType userObj, Math::Coo
 UI::EventState __stdcall UtilUI::ColorDialog::OnMainDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
-	if (btn == UI::GUIPictureBox::MBTN_LEFT)
+	if (btn == UI::GUIPictureBox::MouseButton::Left)
 	{
 		me->subDowned = true;
 		me->pbMain->SetCapture();
@@ -190,7 +190,7 @@ UI::EventState __stdcall UtilUI::ColorDialog::OnMainMove(AnyType userObj, Math::
 UI::EventState __stdcall UtilUI::ColorDialog::OnMainUp(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
-	if (btn == UI::GUIPictureBox::MBTN_LEFT)
+	if (btn == UI::GUIPictureBox::MouseButton::Left)
 	{
 		me->pbMain->ReleaseCapture();
 		if (me->subDowned)

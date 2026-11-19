@@ -181,7 +181,7 @@ SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(Optional<UI::GUIClientControl> p
 
 	this->pnlMQTT = ui->NewPanel(*this);
 	this->pnlMQTT->SetRect(0, 0, 100, 31, false);
-	this->pnlMQTT->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlMQTT->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblServer = ui->NewLabel(this->pnlMQTT, CSTR("MQTT Server"));
 	this->lblServer->SetRect(4, 4, 100, 23, false);
 	this->txtServer = ui->NewTextBox(this->pnlMQTT, CSTR("127.0.0.1"));
@@ -197,7 +197,7 @@ SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(Optional<UI::GUIClientControl> p
 	this->lvDevices = ui->NewListView(*this, UI::ListViewStyle::Table, 5);
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);
-	this->lvDevices->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDevices->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDevices->AddColumn(CSTR("MAC"), 100);
 	this->lvDevices->AddColumn(CSTR("Name"), 100);
 	this->lvDevices->AddColumn(CSTR("Vendor"), 200);

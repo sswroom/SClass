@@ -287,26 +287,26 @@ SSWR::ProcMonForm::ProcMonForm(Optional<UI::GUIClientControl> parent, NN<UI::GUI
 	this->SetFont(nullptr, 8.25, false);
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->txtLog->SetReadOnly(true);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
 	this->tpProg = this->tcMain->AddTabPage(CSTR("Prog"));
 	this->lbProg = ui->NewListBox(this->tpProg, false);
 	this->lbProg->SetRect(0, 0, 150, 100, false);
-	this->lbProg->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbProg->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbProg->HandleSelectionChange(OnProgSelChange, this);
 	this->pnlProg = ui->NewPanel(this->tpProg);
-	this->pnlProg->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlProg->SetDockType(UI::GUIControl::DockType::Fill);
 	this->grpProgAdd = ui->NewGroupBox(this->pnlProg, CSTR("Add Prog"));
 	this->grpProgAdd->SetRect(0, 0, 100, 64, false);
-	this->grpProgAdd->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpProgAdd->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblProgAddName = ui->NewLabel(this->grpProgAdd, CSTR("Prog Name"));
 	this->lblProgAddName->SetRect(0, 0, 100, 23, false);
 	this->txtProgAddName = ui->NewTextBox(this->grpProgAdd, CSTR(""));

@@ -588,7 +588,7 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(Optional<UI::GUIClientControl> p
 	this->pbChar->HandleMouseDown(OnCharMouseDown, this);
 	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetRect(0, 0, 640, 448, false);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Bottom);
 
 	this->tpBaseInfo = this->tcMain->AddTabPage(CSTR("Base Info"));
 	this->lblCurrChar = ui->NewLabel(this->tpBaseInfo, CSTR("Character"));

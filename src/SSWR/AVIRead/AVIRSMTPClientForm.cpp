@@ -109,7 +109,7 @@ SSWR::AVIRead::AVIRSMTPClientForm::AVIRSMTPClientForm(Optional<UI::GUIClientCont
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 300, 23, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Left);
 	this->lblHost = ui->NewLabel(this->pnlControl, CSTR("Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	this->txtHost = ui->NewTextBox(this->pnlControl, CSTR("127.0.0.1"));
@@ -163,7 +163,7 @@ SSWR::AVIRead::AVIRSMTPClientForm::AVIRSMTPClientForm(Optional<UI::GUIClientCont
 	this->btnSend->SetRect(4, 364, 75, 23, false);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
 	this->txtLog = ui->NewTextBox(*this, CSTR(""), true);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtLog->SetReadOnly(true);
 }
 

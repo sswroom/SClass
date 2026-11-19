@@ -316,10 +316,10 @@ SSWR::AVIRead::AVIRGISGroupQueryForm::AVIRGISGroupQueryForm(Optional<UI::GUIClie
 
 	this->cboItem = ui->NewComboBox(*this, false);
 	this->cboItem->SetRect(0, 0, 100, 23, false);
-	this->cboItem->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->cboItem->SetDockType(UI::GUIControl::DockType::Top);
 	this->cboItem->HandleSelectionChange(OnItemSelChg, this);
 	this->lvInfo = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
-	this->lvInfo->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvInfo->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvInfo->AddColumn(CSTR("Name"), 100);
 	this->lvInfo->AddColumn(CSTR("Value"), 300);
 	this->lvInfo->SetShowGrid(true);

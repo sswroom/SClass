@@ -248,7 +248,7 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(Optional<UI::GUIClientCo
 
 	this->pnlConfig = ui->NewPanel(*this);
 	this->pnlConfig->SetRect(0, 0, 100, 268, false);
-	this->pnlConfig->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlConfig->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblPath = ui->NewLabel(this->pnlConfig, CSTR("Path"));
 	this->lblPath->SetRect(4, 4, 100, 23, false);
 	this->txtPath = ui->NewTextBox(this->pnlConfig, CSTR(""));
@@ -293,7 +293,7 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(Optional<UI::GUIClientCo
 	this->btnResultSave->HandleButtonClick(OnResultSaveClicked, this);
 
 	this->lvResult = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
-	this->lvResult->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvResult->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvResult->SetShowGrid(true);
 	this->lvResult->SetFullRowSelect(true);
 	this->lvResult->AddColumn(CSTR("Total"), 60);

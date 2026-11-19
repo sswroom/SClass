@@ -8,7 +8,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEJSONViewer::AVIRMIMEJSONViewer(NN<SSWR::AVIRe
 	this->obj = obj;
 
 	this->txtJSON = ui->NewTextBox(ctrl, CSTR(""), true);
-	this->txtJSON->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtJSON->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtJSON->SetReadOnly(true);
 
 	UIntOS size;

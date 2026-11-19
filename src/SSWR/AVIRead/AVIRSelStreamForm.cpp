@@ -429,7 +429,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 
 	this->pnlStreamType = ui->NewPanel(*this);
 	this->pnlStreamType->SetRect(0, 0, 100, 31, false);
-	this->pnlStreamType->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlStreamType->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblStreamType = ui->NewLabel(this->pnlStreamType, CSTR("Stream Type"));
 	this->lblStreamType->SetRect(4, 4, 100, 23, false);
 	this->cboStreamType = ui->NewComboBox(this->pnlStreamType, false);
@@ -456,7 +456,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 
 	this->pnlButtons = ui->NewPanel(*this);
 	this->pnlButtons->SetRect(0, 0, 100, 31, false);
-	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlButtons->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnOK = ui->NewButton(this->pnlButtons, CSTR("&OK"));
 	this->btnOK->SetRect(49, 4, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClick, this);
@@ -465,7 +465,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 
 	this->tcConfig = ui->NewTabControl(*this);
-	this->tcConfig->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcConfig->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpSerialPort = this->tcConfig->AddTabPage(CSTR("Serial Port"));
 	this->lblSerialPort = ui->NewLabel(this->tpSerialPort, CSTR("Port"));
@@ -492,7 +492,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 		this->tpSiLabPort = this->tcConfig->AddTabPage(CSTR("SiLab"));
 		this->pnlSLInfo = ui->NewPanel(this->tpSiLabPort);
 		this->pnlSLInfo->SetRect(0, 0, 100, 55, false);
-		this->pnlSLInfo->SetDockType(UI::GUIControl::DOCK_TOP);
+		this->pnlSLInfo->SetDockType(UI::GUIControl::DockType::Top);
 		this->lblDLLVer = ui->NewLabel(this->pnlSLInfo, CSTR("DLL Version"));
 		this->lblDLLVer->SetRect(4, 4, 100, 23, false);
 		this->txtDLLVer = ui->NewTextBox(this->pnlSLInfo, CSTR(""));
@@ -506,14 +506,14 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 
 		this->pnlSLControl = ui->NewPanel(this->tpSiLabPort);
 		this->pnlSLControl->SetRect(0, 0, 100, 67, false);
-		this->pnlSLControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+		this->pnlSLControl->SetDockType(UI::GUIControl::DockType::Bottom);
 		this->lblSLBaudRate = ui->NewLabel(this->pnlSLControl, CSTR("Baud Rate"));
 		this->lblSLBaudRate->SetRect(4, 4, 100, 23, false);
 		this->txtSLBaudRate = ui->NewTextBox(this->pnlSLControl, CSTR("115200"));
 		this->txtSLBaudRate->SetRect(104, 4, 100, 23, false);
 
 		this->lvSLPort = ui->NewListView(this->tpSiLabPort, UI::ListViewStyle::Table, 5);
-		this->lvSLPort->SetDockType(UI::GUIControl::DOCK_FILL);
+		this->lvSLPort->SetDockType(UI::GUIControl::DockType::Fill);
 		this->lvSLPort->AddColumn(CSTR("Num"), 40);
 		this->lvSLPort->AddColumn(CSTR("VID"), 60);
 		this->lvSLPort->AddColumn(CSTR("PID"), 60);
@@ -649,7 +649,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 
 	this->tpHID = tcConfig->AddTabPage(CSTR("HID"));
 	this->lbHIDDevice = ui->NewListBox(this->tpHID, false);
-	this->lbHIDDevice->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbHIDDevice->SetDockType(UI::GUIControl::DockType::Fill);
 	NN<IO::DeviceInfo> dev;
 	j = this->devMgr.QueryHIDDevices(this->devList);
 	i = 0;

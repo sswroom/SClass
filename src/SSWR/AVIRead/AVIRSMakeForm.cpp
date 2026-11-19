@@ -95,55 +95,55 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(Optional<UI::GUIClientControl> paren
 	this->SetText(CSTR("SMake Form"));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->pnlFile = ui->NewPanel(*this);
 	this->pnlFile->SetRect(0, 0, 100, 31, false);
-	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlFile->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblFile = ui->NewLabel(this->pnlFile, CSTR("File"));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	this->txtFile = ui->NewTextBox(this->pnlFile, this->smake->GetSourceNameObj()->ToCString());
 	this->txtFile->SetReadOnly(true);
 	this->txtFile->SetRect(104, 4, 600, 23, false);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpProgGroup = this->tcMain->AddTabPage(CSTR("Program Group"));
 	this->lbProgGroup = ui->NewListBox(this->tpProgGroup, false);
 	this->lbProgGroup->SetRect(0, 0, 150, 23, false);
-	this->lbProgGroup->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbProgGroup->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbProgGroup->HandleSelectionChange(OnProgGroupSelChg, this);
 	this->hspProgGroup = ui->NewHSplitter(this->tpProgGroup, 3, false);
 	this->lbProgGroupItems = ui->NewListBox(this->tpProgGroup, false);
-	this->lbProgGroupItems->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbProgGroupItems->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpProg = this->tcMain->AddTabPage(CSTR("Program"));
 	this->lbProg = ui->NewListBox(this->tpProg, false);
 	this->lbProg->SetRect(0, 0, 150, 23, false);
-	this->lbProg->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbProg->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbProg->HandleSelectionChange(OnProgSelChg, this);
 	this->hspProg = ui->NewHSplitter(this->tpProg, 3, false);
 	this->pnlProg = ui->NewPanel(this->tpProg);
 	this->pnlProg->SetRect(0, 0, 100, 31, false);
-	this->pnlProg->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlProg->SetDockType(UI::GUIControl::DockType::Top);
 	this->tcProg = ui->NewTabControl(this->tpProg);
-	this->tcProg->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcProg->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpProgObject = this->tcProg->AddTabPage(CSTR("Object"));
 	this->lbProgObject = ui->NewListBox(this->tpProgObject, false);
-	this->lbProgObject->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbProgObject->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpProgHeader = this->tcProg->AddTabPage(CSTR("Header"));
 	this->lbProgHeader = ui->NewListBox(this->tpProgHeader, false);
-	this->lbProgHeader->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbProgHeader->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpProgSource = this->tcProg->AddTabPage(CSTR("Source"));
 	this->lbProgSource = ui->NewListBox(this->tpProgSource, false);
-	this->lbProgSource->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbProgSource->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpConfig = this->tcMain->AddTabPage(CSTR("Config"));
 	this->lvConfig = ui->NewListView(this->tpConfig, UI::ListViewStyle::Table, 2);
-	this->lvConfig->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvConfig->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvConfig->SetShowGrid(true);
 	this->lvConfig->SetFullRowSelect(true);
 	this->lvConfig->AddColumn(CSTR("Name"), 150);

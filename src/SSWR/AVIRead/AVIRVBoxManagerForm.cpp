@@ -51,7 +51,7 @@ SSWR::AVIRead::AVIRVBoxManagerForm::AVIRVBoxManagerForm(Optional<UI::GUIClientCo
 
 	this->pnlVersion = ui->NewPanel(*this);
 	this->pnlVersion->SetRect(0, 0, 100, 31, false);
-	this->pnlVersion->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlVersion->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblVersion = ui->NewLabel(this->pnlVersion, CSTR("Version"));
 	this->lblVersion->SetRect(4, 4, 100, 23, false);
 	this->txtVersion = ui->NewTextBox(this->pnlVersion, CSTR(""));
@@ -59,11 +59,11 @@ SSWR::AVIRead::AVIRVBoxManagerForm::AVIRVBoxManagerForm(Optional<UI::GUIClientCo
 	this->txtVersion->SetRect(104, 4, 200, 23, false);
 	this->lbVMS = ui->NewListBox(*this, false);
 	this->lbVMS->SetRect(0, 0, 150, 23, false);
-	this->lbVMS->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbVMS->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbVMS->HandleSelectionChange(OnVMSSelChg, this);
 	this->hspVM = ui->NewHSplitter(*this, 3, false);
 	this->tcVM = ui->NewTabControl(*this);
-	this->tcVM->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcVM->SetDockType(UI::GUIControl::DockType::Fill);
 	
 	this->tpControl = this->tcVM->AddTabPage(CSTR("Control"));
 	this->lblState = ui->NewLabel(this->tpControl, CSTR("State"));

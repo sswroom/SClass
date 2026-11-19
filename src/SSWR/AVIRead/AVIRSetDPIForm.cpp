@@ -178,21 +178,21 @@ SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(Optional<UI::GUIClientControl> par
 
 	this->pnlBtn = ui->NewPanel(*this);
 	this->pnlBtn->SetRect(0, 0, 100, 56, false);
-	this->pnlBtn->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlBtn->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->pnlDPI = ui->NewPanel(*this);
 	this->pnlDPI->SetRect(0, 0, 100, ui->GetScrollBarSize() + 1, false);
-	this->pnlDPI->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlDPI->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->pbPreview = ui->NewPictureBoxSimple(*this, core->GetDrawEngine(), false);
-	this->pbPreview->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbPreview->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pbPreview->HandleSizeChanged(OnPreviewChanged, this);
 	this->lblDPI = ui->NewLabel(this->pnlDPI, CSTR("Monitor DPI"));
 	this->lblDPI->SetRect(0, 0, 100, 23, false);
-	this->lblDPI->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lblDPI->SetDockType(UI::GUIControl::DockType::Left);
 	this->lblDPIV = ui->NewLabel(this->pnlDPI, CSTR(""));
 	this->lblDPIV->SetRect(0, 0, 60, 23, false);
-	this->lblDPIV->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->lblDPIV->SetDockType(UI::GUIControl::DockType::Right);
 	this->hsbDPI = ui->NewHScrollBar(this->pnlDPI, ui->GetScrollBarSize());
-	this->hsbDPI->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->hsbDPI->SetDockType(UI::GUIControl::DockType::Fill);
 	this->hsbDPI->InitScrollBar(100, 4010, (UIntOS)Double2IntOS(this->core->GetMonitorHDPI(this->GetHMonitor()) * 10), 10);
 	this->hsbDPI->HandlePosChanged(OnDPIChanged, this);
 	this->lblMagnifyRatio = ui->NewLabel(this->pnlBtn, CSTR("OS Magnify Ratio"));

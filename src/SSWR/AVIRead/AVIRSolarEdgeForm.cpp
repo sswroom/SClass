@@ -377,7 +377,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(Optional<UI::GUIClientContro
 
 	this->pnlAPIKey = ui->NewPanel(*this);
 	this->pnlAPIKey->SetRect(0, 0, 100, 31, false);
-	this->pnlAPIKey->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlAPIKey->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblAPIKey = ui->NewLabel(this->pnlAPIKey, CSTR("API Key"));
 	this->lblAPIKey->SetRect(4, 4, 100, 23, false);
 	this->txtAPIKey = ui->NewTextBox(this->pnlAPIKey, CSTR(""));
@@ -386,7 +386,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(Optional<UI::GUIClientContro
 	this->btnAPIKey->SetRect(404, 4, 75, 23, false);
 	this->btnAPIKey->HandleButtonClick(OnAPIKeyClicked, this);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpVersion = this->tcMain->AddTabPage(CSTR("Version"));
 	this->lblCurrVer = ui->NewLabel(this->tpVersion, CSTR("Current Version"));
@@ -403,9 +403,9 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(Optional<UI::GUIClientContro
 	this->tpSiteList = this->tcMain->AddTabPage(CSTR("Site List"));
 	this->pnlSiteList = ui->NewPanel(this->tpSiteList);
 	this->pnlSiteList->SetRect(0, 0, 100, 216, false);
-	this->pnlSiteList->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlSiteList->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lvSiteList = ui->NewListView(this->tpSiteList, UI::ListViewStyle::Table, 11);
-	this->lvSiteList->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvSiteList->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvSiteList->SetFullRowSelect(true);
 	this->lvSiteList->SetShowGrid(true);
 	this->lvSiteList->AddColumn(CSTR("Id"), 60);
@@ -499,7 +499,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(Optional<UI::GUIClientContro
 	this->tpSiteEnergy = this->tcMain->AddTabPage(CSTR("Site Energy"));
 	this->pnlSiteEnergy = ui->NewPanel(this->tpSiteEnergy);
 	this->pnlSiteEnergy->SetRect(0, 0, 100, 103, false);
-	this->pnlSiteEnergy->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlSiteEnergy->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblSiteEnergySite = ui->NewLabel(this->pnlSiteEnergy, CSTR("Site"));
 	this->lblSiteEnergySite->SetRect(4, 4, 100, 23, false);
 	this->cboSiteEnergySite = ui->NewComboBox(this->pnlSiteEnergy, false);
@@ -527,13 +527,13 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(Optional<UI::GUIClientContro
 	this->btnSiteEnergy->SetRect(104, 76, 75, 23, false);
 	this->btnSiteEnergy->HandleButtonClick(OnSiteEnergyClicked, this);
 	this->pbSiteEnergy = ui->NewPictureBox(this->tpSiteEnergy, this->core->GetDrawEngine(), true, false);
-	this->pbSiteEnergy->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbSiteEnergy->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pbSiteEnergy->HandleSizeChanged(OnSiteEnergySizeChg, this);
 
 	this->tpSitePower = this->tcMain->AddTabPage(CSTR("Site Power"));
 	this->pnlSitePower = ui->NewPanel(this->tpSitePower);
 	this->pnlSitePower->SetRect(0, 0, 100, 79, false);
-	this->pnlSitePower->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlSitePower->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblSitePowerSite = ui->NewLabel(this->pnlSitePower, CSTR("Site"));
 	this->lblSitePowerSite->SetRect(4, 4, 100, 23, false);
 	this->cboSitePowerSite = ui->NewComboBox(this->pnlSitePower, false);
@@ -553,7 +553,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(Optional<UI::GUIClientContro
 	this->btnSitePower->SetRect(104, 52, 75, 23, false);
 	this->btnSitePower->HandleButtonClick(OnSitePowerClicked, this);
 	this->pbSitePower = ui->NewPictureBox(this->tpSitePower, this->core->GetDrawEngine(), true, false);
-	this->pbSitePower->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbSitePower->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pbSitePower->HandleSizeChanged(OnSitePowerSizeChg, this);
 }
 

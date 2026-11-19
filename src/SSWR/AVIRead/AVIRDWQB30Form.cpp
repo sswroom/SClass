@@ -305,7 +305,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(Optional<UI::GUIClientControl> par
 
 	this->grpConn = ui->NewGroupBox(*this, CSTR("Connect"));
 	this->grpConn->SetRect(0, 0, 100, 68, false);
-	this->grpConn->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpConn->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblDevType = ui->NewLabel(this->grpConn, CSTR("Type"));
 	this->lblDevType->SetRect(160, 0, 100, 23, false);
 	this->cboDevType = ui->NewComboBox(this->grpConn, false);
@@ -323,7 +323,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(Optional<UI::GUIClientControl> par
 	this->btnPort->HandleButtonClick(OnPortClicked, this);
 	this->grpCtrl = ui->NewGroupBox(*this, CSTR("Control"));
 	this->grpCtrl->SetRect(0, 0, 100, 68, false);
-	this->grpCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblMode = ui->NewLabel(this->grpCtrl, CSTR("Mode"));
 	this->lblMode->SetRect(160, 0, 100, 23, false);
 	this->txtMode = ui->NewTextBox(this->grpCtrl, CSTR(""));
@@ -346,19 +346,19 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(Optional<UI::GUIClientControl> par
 	this->btnDefault->HandleButtonClick(OnDefaultClicked, this);	
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpScan = this->tcMain->AddTabPage(CSTR("Scan"));
 	this->pnlScan = ui->NewPanel(this->tpScan);
 	this->pnlScan->SetRect(0, 0, 100, 32, false);
-	this->pnlScan->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlScan->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblScan = ui->NewLabel(this->pnlScan, CSTR("Last Result"));
 	this->lblScan->SetRect(4, 4, 100, 23, false);
 	this->txtScan = ui->NewTextBox(this->pnlScan, CSTR(""), false);
 	this->txtScan->SetReadOnly(true);
 	this->txtScan->SetRect(104, 4, 400, 23, false);
 	this->lbScan = ui->NewListBox(this->tpScan, false);
-	this->lbScan->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbScan->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpSetting = this->tcMain->AddTabPage(CSTR("Setting"));
 	this->lblSetCmd = ui->NewLabel(this->tpSetting, CSTR("Command"));

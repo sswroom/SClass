@@ -433,15 +433,15 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(Optional<UI::GUIClientCo
 	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpSummary = this->tcMain->AddTabPage(CSTR("Summary"));
 	this->tpDetail = this->tcMain->AddTabPage(CSTR("Detail"));
 
 	this->pnlSummary = ui->NewPanel(this->tpSummary);
 	this->pnlSummary->SetRect(0, 0, 100, 48, false);
-	this->pnlSummary->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlSummary->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lvSummary = ui->NewListView(this->tpSummary, UI::ListViewStyle::Table, 10);
-	this->lvSummary->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvSummary->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvSummary->SetFullRowSelect(true);
 	this->lvSummary->SetShowGrid(true);
 	this->lvSummary->HandleDblClk(OnSumDblClicked, this);
@@ -458,11 +458,11 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(Optional<UI::GUIClientCo
 
 	this->lbDetail = ui->NewListBox(this->tpDetail, false);
 	this->lbDetail->SetRect(0, 0, 80, 100, false);
-	this->lbDetail->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbDetail->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbDetail->HandleSelectionChange(OnProcSelChg, this);
 	this->hspDetail = ui->NewHSplitter(this->tpDetail, 3, false);
 	this->tcDetail = ui->NewTabControl(this->tpDetail);
-	this->tcDetail->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcDetail->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpDetInfo = this->tcDetail->AddTabPage(CSTR("Info"));
 	this->tpDetModule = this->tcDetail->AddTabPage(CSTR("Module"));
 	this->tpDetThread = this->tcDetail->AddTabPage(CSTR("Thread"));
@@ -497,12 +497,12 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(Optional<UI::GUIClientCo
 
 	this->pnlDetModule = ui->NewPanel(this->tpDetModule);
 	this->pnlDetModule->SetRect(0, 0, 100, 31, false);
-	this->pnlDetModule->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlDetModule->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnDetModule = ui->NewButton(this->pnlDetModule, CSTR("Refresh"));
 	this->btnDetModule->SetRect(4, 4, 75, 23, false);
 	this->btnDetModule->HandleButtonClick(OnDetModuleRefClicked, this);
 	this->lvDetModule = ui->NewListView(this->tpDetModule, UI::ListViewStyle::Table, 3);
-	this->lvDetModule->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDetModule->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDetModule->SetFullRowSelect(true);
 	this->lvDetModule->SetShowGrid(true);
 	this->lvDetModule->AddColumn(CSTR("Name"), 600);
@@ -511,12 +511,12 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(Optional<UI::GUIClientCo
 
 	this->pnlDetThread = ui->NewPanel(this->tpDetThread);
 	this->pnlDetThread->SetRect(0, 0, 100, 31, false);
-	this->pnlDetThread->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlDetThread->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnDetThread = ui->NewButton(this->pnlDetThread, CSTR("Refresh"));
 	this->btnDetThread->SetRect(4, 4, 75, 23, false);
 	this->btnDetThread->HandleButtonClick(OnDetThreadRefClicked, this);
 	this->lvDetThread = ui->NewListView(this->tpDetThread, UI::ListViewStyle::Table, 3);
-	this->lvDetThread->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDetThread->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDetThread->HandleDblClk(OnDetThreadDblClicked, this);
 	this->lvDetThread->SetFullRowSelect(true);
 	this->lvDetThread->SetShowGrid(true);
@@ -526,17 +526,17 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(Optional<UI::GUIClientCo
 
 	this->pnlDetHeap = ui->NewPanel(this->tpDetHeap);
 	this->pnlDetHeap->SetRect(0, 0, 100, 31, false);
-	this->pnlDetHeap->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlDetHeap->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnDetHeap = ui->NewButton(this->pnlDetHeap, CSTR("Refresh"));
 	this->btnDetHeap->SetRect(4, 4, 75, 23, false);
 	this->btnDetHeap->HandleButtonClick(OnDetHeapRefClicked, this);
 	this->lbDetHeap = ui->NewListBox(this->tpDetHeap, false);
 	this->lbDetHeap->SetRect(0, 0, 100, 23, false);
-	this->lbDetHeap->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbDetHeap->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbDetHeap->HandleSelectionChange(OnDetHeapSelChg, this);
 	this->hspDetHeap = ui->NewHSplitter(this->tpDetHeap, 3, false);
 	this->lvDetHeap = ui->NewListView(this->tpDetHeap, UI::ListViewStyle::Table, 3);
-	this->lvDetHeap->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDetHeap->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDetHeap->SetFullRowSelect(true);
 	this->lvDetHeap->SetShowGrid(true);
 	this->lvDetHeap->AddColumn(CSTR("Start Address"), 80);
@@ -545,28 +545,28 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(Optional<UI::GUIClientCo
 
 	this->grpDetChartCPU = ui->NewGroupBox(this->tpDetChart, CSTR("CPU"));
 	this->grpDetChartCPU->SetRect(0, 0, 100, 200, false);
-	this->grpDetChartCPU->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpDetChartCPU->SetDockType(UI::GUIControl::DockType::Top);
 	this->rlcDetChartCPU = ui->NewRealtimeLineChart(this->grpDetChartCPU, this->core->GetDrawEngine(), 1, 600, 300);
-	this->rlcDetChartCPU->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->rlcDetChartCPU->SetDockType(UI::GUIControl::DockType::Fill);
 	this->rlcDetChartCPU->SetUnit(CSTR("%"));
 	this->vspDetChartCPU = ui->NewVSplitter(this->tpDetChart, 3, false);
 	this->grpDetChartPage = ui->NewGroupBox(this->tpDetChart, CSTR("Paged(R)/Non-Paged(B) Pool"));
 	this->grpDetChartPage->SetRect(0, 0, 100, 200, false);
-	this->grpDetChartPage->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpDetChartPage->SetDockType(UI::GUIControl::DockType::Top);
 	this->rlcDetChartPage = ui->NewRealtimeLineChart(this->grpDetChartPage, this->core->GetDrawEngine(), 2, 600, 300);
-	this->rlcDetChartPage->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->rlcDetChartPage->SetDockType(UI::GUIControl::DockType::Fill);
 	this->vspDetChartPage = ui->NewVSplitter(this->tpDetChart, 3, false);
 	this->grpDetChartCount = ui->NewGroupBox(this->tpDetChart, CSTR("GDI(R)/User(B)/Handle(G) Count"));
 	this->grpDetChartCount->SetRect(0, 0, 100, 200, false);
-	this->grpDetChartCount->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpDetChartCount->SetDockType(UI::GUIControl::DockType::Top);
 	this->rlcDetChartCount = ui->NewRealtimeLineChart(this->grpDetChartCount, this->core->GetDrawEngine(), 3, 600, 300);
-	this->rlcDetChartCount->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->rlcDetChartCount->SetDockType(UI::GUIControl::DockType::Fill);
 	this->vspDetChartCount = ui->NewVSplitter(this->tpDetChart, 3, false);
 	this->grpDetChartWS = ui->NewGroupBox(this->tpDetChart, CSTR("WS(R)/Page File(B)"));
 	this->grpDetChartWS->SetRect(0, 0, 100, 200, false);
-	this->grpDetChartWS->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpDetChartWS->SetDockType(UI::GUIControl::DockType::Fill);
 	this->rlcDetChartWS = ui->NewRealtimeLineChart(this->grpDetChartWS, this->core->GetDrawEngine(), 2, 600, 300);
-	this->rlcDetChartWS->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->rlcDetChartWS->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->AddTimer(1000, OnTimerTick, this);
 	this->AddTimer(300, OnTimerCPUTick, this);

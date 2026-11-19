@@ -760,7 +760,7 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(NN<Media::DrawImage> dimg)
 
 void SSWR::AVIRead::AVIRImageControl::OnMouseDown(IntOS scrollY, Math::Coord2D<IntOS> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
 {
-	if (btn == UI::GUIClientControl::MBTN_LEFT)
+	if (btn == UI::GUIClientControl::MouseButton::Left)
 	{
 		UIntOS i;
 		UIntOS j;

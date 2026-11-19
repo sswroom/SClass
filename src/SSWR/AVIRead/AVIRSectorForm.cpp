@@ -25,7 +25,7 @@ SSWR::AVIRead::AVIRSectorForm::AVIRSectorForm(Optional<UI::GUIClientControl> par
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 72, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnParse = ui->NewButton(this->pnlCtrl, CSTR("Parse File"));
 	this->btnParse->SetRect(4, 4, 75, 23, false);
 	this->btnParse->HandleButtonClick(OnParseClicked, this);

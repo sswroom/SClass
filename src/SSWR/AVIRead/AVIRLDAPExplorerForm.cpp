@@ -298,7 +298,7 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(Optional<UI::GUIClient
 
 	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 151, false);
-	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRequest->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblHost = ui->NewLabel(this->pnlRequest, CSTR("Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	this->txtHost = ui->NewTextBox(this->pnlRequest, CSTR(""));
@@ -329,17 +329,17 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(Optional<UI::GUIClient
 
 	this->lbPath = ui->NewListBox(*this, false);
 	this->lbPath->SetRect(0, 0, 150, 23, false);
-	this->lbPath->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbPath->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbPath->HandleSelectionChange(OnPathSelChg, this);
 	this->hspPath = ui->NewHSplitter(*this, 3, false);
 	this->lbObjects = ui->NewListBox(*this, false);
 	this->lbObjects->SetRect(0, 0, 150, 23, false);
-	this->lbObjects->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbObjects->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbObjects->HandleSelectionChange(OnObjectsSelChg, this);
 	this->lbObjects->HandleDoubleClicked(OnObjectsDblClk, this);
 	this->hspObjects = ui->NewHSplitter(*this, 3, false);
 	this->lvValues = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
-	this->lvValues->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvValues->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvValues->SetFullRowSelect(true);
 	this->lvValues->SetShowGrid(true);
 	this->lvValues->AddColumn(CSTR("Type"), 200);

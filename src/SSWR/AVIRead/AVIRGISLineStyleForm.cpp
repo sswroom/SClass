@@ -87,16 +87,16 @@ SSWR::AVIRead::AVIRGISLineStyleForm::AVIRGISLineStyleForm(Optional<UI::GUIClient
 
 	this->pnlButtons = ui->NewPanel(*this);
 	this->pnlButtons->SetRect(0, 0, 456, 32, false);
-	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlButtons->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->grpStyle = ui->NewGroupBox(*this, CSTR("Style"));
 	this->grpStyle->SetRect(0, 0, 456, 160, false);
-	this->grpStyle->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpStyle->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pnlStyle = ui->NewPanel(this->grpStyle);
 	this->pnlStyle->SetRect(0, 0, 456, 32, false);
-	this->pnlStyle->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlStyle->SetDockType(UI::GUIControl::DockType::Bottom);
 	NEW_CLASSNN(this->lineSelector, SSWR::AVIRead::AVIRLineSelector(ui, this->grpStyle, this->core, this->env, this->lineStyle, this->colorSess));
 	this->lineSelector->SetRect(0, 0, 456, 120, false);
-	this->lineSelector->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lineSelector->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lineSelector->HandleSelChg(LineSelChanged, this);
 	this->lineSelector->HandleDblClk(LineDblClicked, this);
 	this->btnAddStyle = ui->NewButton(this->pnlStyle, CSTR("New Style"));

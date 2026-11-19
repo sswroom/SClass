@@ -672,24 +672,24 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(Optional<UI::GUIClientControl>
 
 	this->pnlStatus = ui->NewPanel(*this);
 	this->pnlStatus->SetRect(0, 0, 100, 31, false);
-	this->pnlStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlStatus->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lblStatus = ui->NewLabel(this->pnlStatus, CSTR("Valid Status"));
 	this->lblStatus->SetRect(4, 4, 100, 23, false);
 	this->txtStatus = ui->NewTextBox(this->pnlStatus, CSTR(""));
 	this->txtStatus->SetRect(104, 4, 200, 23, false);
 	this->txtStatus->SetReadOnly(true);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 	
 	this->tpDesc = this->tcMain->AddTabPage(CSTR("Desc"));
 	this->txtDesc = ui->NewTextBox(this->tpDesc, CSTR(""), true);
 	this->txtDesc->SetReadOnly(true);
-	this->txtDesc->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtDesc->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpASN1 = this->tcMain->AddTabPage(CSTR("ASN1"));
 	this->txtASN1 = ui->NewTextBox(this->tpASN1, CSTR(""), true);
 	this->txtASN1->SetReadOnly(true);
-	this->txtASN1->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtASN1->SetDockType(UI::GUIControl::DockType::Fill);
 
 	sb.ClearStr();
 	this->asn1->ToString(sb);
@@ -750,7 +750,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(Optional<UI::GUIClientControl>
 					sb.ClearStr();
 					file->ToASN1String(sb);
 					txt = ui->NewTextBox(tp, sb.ToCString(), true);
-					txt->SetDockType(UI::GUIControl::DOCK_FILL);
+					txt->SetDockType(UI::GUIControl::DockType::Fill);
 				}
 				i++;
 			}

@@ -246,7 +246,7 @@ SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(Optional<UI::GUIClientControl> p
 
 	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
-	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRequest->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnFile = ui->NewButton(this->pnlRequest, CSTR("&Load File"));
 	this->btnFile->SetRect(4, 4, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
@@ -255,11 +255,11 @@ SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(Optional<UI::GUIClientControl> p
 	this->btnDownload->HandleButtonClick(OnDownloadClicked, this);
 	this->pbNewCases = ui->NewPictureBoxSimple(*this, this->core->GetDrawEngine(), false);
 	this->pbNewCases->SetRect(0, 0, 100, 150, false);
-	this->pbNewCases->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pbNewCases->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->pbNewCases->HandleSizeChanged(OnNewCasesSizeChanged, this);
 	this->vspNewCases = ui->NewVSplitter(*this, 3, true);
 	this->lvCountry = ui->NewListView(*this, UI::ListViewStyle::Table, 5);
-	this->lvCountry->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvCountry->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvCountry->SetShowGrid(true);
 	this->lvCountry->SetFullRowSelect(true);
 	this->lvCountry->HandleSelChg(OnCountrySelChg, this);

@@ -51,7 +51,7 @@ SSWR::AVIRead::AVIRSelCANForm::AVIRSelCANForm(Optional<UI::GUIClientControl> par
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpAXCAN = this->tcMain->AddTabPage(CSTR("AXCAN"));
 	this->lblAXCANBitRate = ui->NewLabel(this->tpAXCAN, CSTR("BitRate"));

@@ -577,7 +577,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(Optional<UI::GUIClient
 
 	this->grpStream = ui->NewGroupBox(*this, CSTR("Stream"));
 	this->grpStream->SetRect(0, 0, 100, 96, false);
-	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpStream->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblStream = ui->NewLabel(this->grpStream, CSTR("Stream Type"));
 	this->lblStream->SetRect(4, 4, 100, 23, false);
 	this->txtStream = ui->NewTextBox(this->grpStream, CSTR("-"));
@@ -598,7 +598,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(Optional<UI::GUIClient
 	this->btnTimeout->SetRect(204, 52, 75, 23, false);
 	this->btnTimeout->HandleButtonClick(OnTimeoutClicked, this);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 	
 	this->tpGetValue = this->tcMain->AddTabPage(CSTR("GetValue"));
 	this->lblDevAddr = ui->NewLabel(this->tpGetValue, CSTR("Dev Addr"));
@@ -683,7 +683,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(Optional<UI::GUIClient
 	this->tpDevice = this->tcMain->AddTabPage(CSTR("Device"));
 	this->pnlDevice = ui->NewPanel(this->tpDevice);
 	this->pnlDevice->SetRect(0, 0, 100, 31, false);
-	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlDevice->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblDeviceAddr = ui->NewLabel(this->pnlDevice, CSTR("Addr"));
 	this->lblDeviceAddr->SetRect(4, 4, 100, 23, false);
 	this->txtDeviceAddr = ui->NewTextBox(this->pnlDevice, CSTR("1"));
@@ -703,7 +703,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(Optional<UI::GUIClient
 	this->btnDeviceAdd->SetRect(404, 4, 75, 23, false);
 	this->btnDeviceAdd->HandleButtonClick(OnDeviceAddClicked, this);
 	this->lvDevice = ui->NewListView(this->tpDevice, UI::ListViewStyle::Table, 4);
-	this->lvDevice->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDevice->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDevice->SetFullRowSelect(true);
 	this->lvDevice->SetShowGrid(true);
 	this->lvDevice->AddColumn(CSTR("DevAddr"), 60);
@@ -713,21 +713,21 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(Optional<UI::GUIClient
 
 	this->tpRAWSend = this->tcMain->AddTabPage(CSTR("RAW Send"));
 	this->txtRAWSend = ui->NewTextBox(this->tpRAWSend, CSTR(""), true);
-	this->txtRAWSend->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtRAWSend->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtRAWSend->SetReadOnly(true);
 	
 	this->tpRAWRecv = this->tcMain->AddTabPage(CSTR("RAW Recv"));
 	this->txtRAWRecv = ui->NewTextBox(this->tpRAWRecv, CSTR(""), true);
-	this->txtRAWRecv->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtRAWRecv->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtRAWRecv->SetReadOnly(true);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 500, false));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fffffff");

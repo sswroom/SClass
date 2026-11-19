@@ -99,12 +99,12 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(Optional<UI::G
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpUser = this->tcMain->AddTabPage(CSTR("User"));
 	this->pnlRequest = ui->NewPanel(this->tpUser);
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
-	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRequest->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblChannelId = ui->NewLabel(this->pnlRequest, CSTR("ChannelId"));
 	this->lblChannelId->SetRect(4, 4, 100, 23, false);
 	this->txtChannelId = ui->NewTextBox(this->pnlRequest, CSTR(""));
@@ -113,7 +113,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(Optional<UI::G
 	this->btnRequestUser->SetRect(254, 4, 75, 23, false);
 	this->btnRequestUser->HandleButtonClick(OnRequestUserClicked, this);
 	this->lvItems = ui->NewListView(this->tpUser, UI::ListViewStyle::Table, 5);
-	this->lvItems->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvItems->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvItems->SetFullRowSelect(true);
 	this->lvItems->SetShowGrid(true);
 	this->lvItems->AddColumn(CSTR("Id"), 100);
@@ -125,7 +125,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(Optional<UI::G
 	this->tpPage = this->tcMain->AddTabPage(CSTR("Page"));
 	this->pnlPage = ui->NewPanel(this->tpPage);
 	this->pnlPage->SetRect(0, 0, 100, 31, false);
-	this->pnlPage->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlPage->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblShortCode = ui->NewLabel(this->pnlPage, CSTR("ShortCode"));
 	this->lblShortCode->SetRect(4, 4, 100, 23, false);
 	this->txtShortCode = ui->NewTextBox(this->pnlPage, CSTR(""));
@@ -134,7 +134,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(Optional<UI::G
 	this->btnPage->SetRect(254, 4, 75, 23, false);
 	this->btnPage->HandleButtonClick(OnPageClicked, this);
 	this->lbImageURL = ui->NewListBox(this->tpPage, false);
-	this->lbImageURL->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbImageURL->SetDockType(UI::GUIControl::DockType::Fill);
 }
 
 SSWR::AVIRead::AVIRWebSiteInstagramForm::~AVIRWebSiteInstagramForm()

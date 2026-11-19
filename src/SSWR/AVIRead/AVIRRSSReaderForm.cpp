@@ -202,7 +202,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(Optional<UI::GUIClientContro
 
 	this->pnlURL = ui->NewPanel(*this);
 	this->pnlURL->SetRect(0, 0, 100, 55, false);
-	this->pnlURL->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlURL->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblRecent = ui->NewLabel(this->pnlURL, CSTR("Recent"));
 	this->lblRecent->SetRect(4, 4, 100, 23, false);
 	this->cboRecent = ui->NewComboBox(this->pnlURL, false);
@@ -216,11 +216,11 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(Optional<UI::GUIClientContro
 	this->btnRequest->SetRect(704, 28, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	this->tcRSS = ui->NewTabControl(*this);
-	this->tcRSS->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcRSS->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpInfo = this->tcRSS->AddTabPage(CSTR("Info"));
 	this->lvInfo = ui->NewListView(this->tpInfo, UI::ListViewStyle::Table, 2);
-	this->lvInfo->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvInfo->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvInfo->SetFullRowSelect(true);
 	this->lvInfo->SetShowGrid(true);
 	this->lvInfo->AddColumn(CSTR("Name"), 150);
@@ -228,7 +228,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(Optional<UI::GUIClientContro
 
 	this->tpItems = this->tcRSS->AddTabPage(CSTR("Items"));
 	this->lvItems = ui->NewListView(this->tpItems, UI::ListViewStyle::Table, 3);
-	this->lvItems->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvItems->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvItems->SetFullRowSelect(true);
 	this->lvItems->SetShowGrid(true);
 	this->lvItems->AddColumn(CSTR("Title"), 150);

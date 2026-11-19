@@ -129,14 +129,14 @@ SSWR::AVIRead::AVIROCRForm::AVIROCRForm(Optional<UI::GUIClientControl> parent, N
 
 	this->pnlResult = ui->NewPanel(*this);
 	this->pnlResult->SetRect(0, 0, 250, 100, false);
-	this->pnlResult->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->pnlResult->SetDockType(UI::GUIControl::DockType::Right);
 	this->cboLang = ui->NewComboBox(this->pnlResult, false);
 	this->cboLang->SetRect(0, 0, 100, 23, false);
-	this->cboLang->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->cboLang->SetDockType(UI::GUIControl::DockType::Top);
 	this->cboLang->HandleSelectionChange(OnLangSelChg, this);
 	this->cboCharSet = ui->NewComboBox(this->pnlResult, false);
 	this->cboCharSet->SetRect(0, 0, 100, 23, false);
-	this->cboCharSet->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->cboCharSet->SetDockType(UI::GUIControl::DockType::Top);
 	this->cboCharSet->HandleSelectionChange(OnCharSetSelChg, this);
 	this->cboCharSet->AddItem(CSTR("All chars"), 0);
 	this->cboCharSet->AddItem(CSTR("License Chars"), (void*)"0123456789ABCDEFGHIJKLMNPQRSTUVWXYZ");
@@ -144,10 +144,10 @@ SSWR::AVIRead::AVIROCRForm::AVIROCRForm(Optional<UI::GUIClientControl> parent, N
 	this->cboCharSet->SetSelectedIndex(0);
 	this->pbResult = ui->NewPictureBoxSimple(this->pnlResult, this->core->GetDrawEngine(), false);
 	this->pbResult->SetRect(0, 0, 100, 80, false);
-	this->pbResult->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pbResult->SetDockType(UI::GUIControl::DockType::Top);
 	this->lvText = ui->NewListView(this->pnlResult, UI::ListViewStyle::Table, 4);
 	this->lvText->SetRect(0, 0, 250, 100, false);
-	this->lvText->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvText->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvText->AddColumn(CSTR("Result"), 100);
 	this->lvText->AddColumn(CSTR("Area"), 50);
 	this->lvText->AddColumn(CSTR("Color Rate"), 50);
@@ -155,7 +155,7 @@ SSWR::AVIRead::AVIROCRForm::AVIROCRForm(Optional<UI::GUIClientControl> parent, N
 	this->lvText->HandleSelChg(OnTextSelChg, this);
 	this->hspText = ui->NewHSplitter(*this, 3, true);
 	this->pbImg = ui->NewPictureBoxDD(*this, this->colorSess, true, false);
-	this->pbImg->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbImg->SetDockType(UI::GUIControl::DockType::Fill);
 
 	UIntOS k = 0;
 	i = 0;

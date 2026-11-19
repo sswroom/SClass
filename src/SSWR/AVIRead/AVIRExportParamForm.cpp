@@ -133,7 +133,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientCo
 	NN<UI::GUIButton> btn;
 	pnl = ui->NewPanel(*this);
 	pnl->SetRect(0, 0, 292, 48, false);
-	pnl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	pnl->SetDockType(UI::GUIControl::DockType::Bottom);
 	btn = ui->NewButton(pnl, CSTR("OK"));
 	btn->SetRect(48, 8, 75, 23, false);
 	btn->HandleButtonClick(OnOKClicked, this);

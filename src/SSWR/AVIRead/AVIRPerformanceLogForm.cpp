@@ -111,7 +111,7 @@ SSWR::AVIRead::AVIRPerformanceLogForm::AVIRPerformanceLogForm(Optional<UI::GUICl
 	
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 52, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnStart = ui->NewButton(this->pnlCtrl, CSTR("Start"));
 	this->btnStart->SetRect(104, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
@@ -121,7 +121,7 @@ SSWR::AVIRead::AVIRPerformanceLogForm::AVIRPerformanceLogForm(Optional<UI::GUICl
 	this->txtCurrWRate->SetRect(104, 28, 150, 23, false);
 	this->txtCurrWRate->SetReadOnly(true);
 	this->rlcWRate = ui->NewRealtimeLineChart(*this, this->core->GetDrawEngine(), 1, 144, 1000, nullptr);
-	this->rlcWRate->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->rlcWRate->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->AddTimer(1000, OnTimerTick, this);
 }

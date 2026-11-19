@@ -56,7 +56,7 @@ SSWR::AVIRead::AVIRBCryptForm::AVIRBCryptForm(Optional<UI::GUIClientControl> par
 
 	this->grpGenerate = ui->NewGroupBox(*this, CSTR("Generate"));
 	this->grpGenerate->SetRect(0, 0, 100, 120, false);
-	this->grpGenerate->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpGenerate->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblCost = ui->NewLabel(this->grpGenerate, CSTR("Cost"));
 	this->lblCost->SetRect(4, 4, 100, 23, false);
 	this->txtCost = ui->NewTextBox(this->grpGenerate, CSTR("10"));
@@ -75,7 +75,7 @@ SSWR::AVIRead::AVIRBCryptForm::AVIRBCryptForm(Optional<UI::GUIClientControl> par
 	this->txtGenHash->SetReadOnly(true);
 
 	this->grpCheck = ui->NewGroupBox(*this, CSTR("Check"));
-	this->grpCheck->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpCheck->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblCheckHash = ui->NewLabel(this->grpCheck, CSTR("Hash"));
 	this->lblCheckHash->SetRect(4, 4, 100, 23, false);
 	this->txtCheckHash = ui->NewTextBox(this->grpCheck, CSTR(""));

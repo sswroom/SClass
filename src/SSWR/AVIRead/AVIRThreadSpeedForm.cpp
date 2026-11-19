@@ -117,12 +117,12 @@ SSWR::AVIRead::AVIRThreadSpeedForm::AVIRThreadSpeedForm(Optional<UI::GUIClientCo
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnTest = ui->NewButton(this->pnlCtrl, CSTR("Test"));
 	this->btnTest->SetRect(4, 4, 75, 23, false);
 	this->btnTest->HandleButtonClick(OnTestClicked, this);
 	this->lvResult = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
-	this->lvResult->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvResult->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvResult->AddColumn(CSTR("Thread Function"), 200);
 	this->lvResult->AddColumn(CSTR("Time (sec)"), 200);
 	this->lvResult->SetShowGrid(true);

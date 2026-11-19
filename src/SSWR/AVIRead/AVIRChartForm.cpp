@@ -35,7 +35,7 @@ SSWR::AVIRead::AVIRChartForm::AVIRChartForm(Optional<UI::GUIClientControl> paren
 
 	this->pbMain = ui->NewPictureBoxSimple(*this, core->GetDrawEngine(), false);
 	this->pbMain->SetNoBGColor(true);
-	this->pbMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pbMain->HandleSizeChanged(SizeChanged, this);
 	SizeChanged(this);
 }

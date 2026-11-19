@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnThickChanged(AnyType userObj, U
 UI::EventState __stdcall SSWR::AVIRead::AVIRGISLineForm::OnColorDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRGISLineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineForm>();
-	if (btn == UI::GUIControl::MBTN_LEFT)
+	if (btn == UI::GUIControl::MouseButton::Left)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 		UtilUI::ColorDialog dlg(nullptr, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
@@ -87,9 +87,9 @@ SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(Optional<UI::GUIClientControl> p
 
 	this->pbPreview = ui->NewPictureBox(*this, this->eng, true, false);
 	this->pbPreview->SetRect(0, 0, 100, 60, false);
-	this->pbPreview->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pbPreview->SetDockType(UI::GUIControl::DockType::Top);
 	this->pnlMain = ui->NewPanel(*this);
-	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblThick = ui->NewLabel(this->pnlMain, CSTR("Thick"));
 	this->lblThick->SetRect(4, 4, 100, 23, false);
 	this->hsbThick = ui->NewHScrollBar(this->pnlMain, 16);

@@ -326,7 +326,7 @@ SSWR::AVIRead::AVIRVideoInfoForm::AVIRVideoInfoForm(Optional<UI::GUIClientContro
 
 	this->pnlFile = ui->NewPanel(*this);
 	this->pnlFile->SetRect(0, 0, 100, 55, false);
-	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlFile->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblFile = ui->NewLabel(this->pnlFile, CSTR("File Name"));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	this->txtFile = ui->NewTextBox(this->pnlFile, CSTR(""));
@@ -339,11 +339,11 @@ SSWR::AVIRead::AVIRVideoInfoForm::AVIRVideoInfoForm(Optional<UI::GUIClientContro
 	this->lblDecode->SetRect(254, 28, 100, 23, false);
 	this->lbStream = ui->NewListBox(*this, false);
 	this->lbStream->SetRect(0, 0, 150, 23, false);
-	this->lbStream->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbStream->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbStream->HandleSelectionChange(OnStreamChg, this);
 	this->hspStream = ui->NewHSplitter(*this, 3, false);
 	this->txtStream = ui->NewTextBox(*this, CSTR(""), true);
-	this->txtStream->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtStream->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtStream->SetReadOnly(true);
 
 	this->HandleDropFiles(OnFileHandler, this);

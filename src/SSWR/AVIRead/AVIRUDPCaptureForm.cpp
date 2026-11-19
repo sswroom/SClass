@@ -214,7 +214,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(Optional<UI::GUIClientCont
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 32, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblPort = ui->NewLabel(this->pnlControl, CSTR("UDP Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	this->txtPort = ui->NewTextBox(this->pnlControl, CSTR(""));
@@ -225,30 +225,30 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(Optional<UI::GUIClientCont
 	this->btnStart->SetRect(244, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpData = this->tcMain->AddTabPage(CSTR("Data"));
 	this->lbData = ui->NewListBox(this->tpData, false);
 	this->lbData->SetRect(0, 0, 200, 100, false);
-	this->lbData->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbData->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbData->HandleSelectionChange(OnDataSelChg, this);
 	this->hspData = ui->NewHSplitter(this->tpData, 3, false);
 	this->txtData = ui->NewTextBox(this->tpData, CSTR(""), true);
 	this->txtData->SetReadOnly(true);
-	this->txtData->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtData->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
 	this->tpPorts = this->tcMain->AddTabPage(CSTR("Common Ports"));
 	this->lvPorts = ui->NewListView(this->tpPorts, UI::ListViewStyle::Table, 2);
-	this->lvPorts->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvPorts->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvPorts->SetFullRowSelect(true);
 	this->lvPorts->SetShowGrid(true);
 	this->lvPorts->HandleDblClk(OnPortsDblClk, this);
@@ -282,19 +282,19 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(Optional<UI::GUIClientCont
 	this->tpMulticast = this->tcMain->AddTabPage(CSTR("Multicast"));
 	this->pnlMulticastCommon = ui->NewPanel(this->tpMulticast);
 	this->pnlMulticastCommon->SetRect(0, 0, 100, 23, false);
-	this->pnlMulticastCommon->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->pnlMulticastCommon->SetDockType(UI::GUIControl::DockType::Left);
 	this->lblMulticastCommon = ui->NewLabel(this->pnlMulticastCommon, CSTR("Common IP"));
 	this->lblMulticastCommon->SetRect(0, 0, 100, 23, false);
-	this->lblMulticastCommon->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblMulticastCommon->SetDockType(UI::GUIControl::DockType::Top);
 	this->lbMulticastCommon = ui->NewListBox(this->pnlMulticastCommon, false);
-	this->lbMulticastCommon->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbMulticastCommon->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbMulticastCommon->HandleDoubleClicked(OnMulticastDoubleClk, this);
 	this->hspMulticast = ui->NewHSplitter(this->tpMulticast, 3, false);
 	this->pnlMulticast = ui->NewPanel(this->tpMulticast);
-	this->pnlMulticast->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlMulticast->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pnlMulticastCtrl = ui->NewPanel(this->pnlMulticast);
 	this->pnlMulticastCtrl->SetRect(0, 0, 100, 23, false);
-	this->pnlMulticastCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlMulticastCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblMulticastCurr = ui->NewLabel(this->pnlMulticastCtrl, CSTR("Multicast IP"));
 	this->lblMulticastCurr->SetRect(0, 0, 100, 23, false);
 	this->txtMulticastCurr = ui->NewTextBox(this->pnlMulticastCtrl, CSTR(""));
@@ -303,7 +303,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(Optional<UI::GUIClientCont
 	this->btnMulticastAdd->SetRect(200, 0, 75, 23, false);
 	this->btnMulticastAdd->HandleButtonClick(OnMulticastClicked, this);
 	this->lbMulticastCurr = ui->NewListBox(this->pnlMulticast, false);
-	this->lbMulticastCurr->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbMulticastCurr->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbMulticastCommon->AddItem(CSTR("239.255.255.250"), (void*)"239.255.255.250");
 
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 500, true));

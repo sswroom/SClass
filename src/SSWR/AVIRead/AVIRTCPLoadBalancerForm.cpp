@@ -306,7 +306,7 @@ SSWR::AVIRead::AVIRTCPLoadBalancerForm::AVIRTCPLoadBalancerForm(Optional<UI::GUI
 
 	this->pnlListener = ui->NewPanel(*this);
 	this->pnlListener->SetRect(0, 0, 100, 79, false);
-	this->pnlListener->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlListener->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblListenerPort = ui->NewLabel(this->pnlListener, CSTR("Port"));
 	this->lblListenerPort->SetRect(4, 4, 100, 23, false);
 	this->txtListenerPort = ui->NewTextBox(this->pnlListener, CSTR(""));
@@ -319,14 +319,14 @@ SSWR::AVIRead::AVIRTCPLoadBalancerForm::AVIRTCPLoadBalancerForm(Optional<UI::GUI
 	this->btnStart->SetRect(104, 52, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpTarget = this->tcMain->AddTabPage(CSTR("Target"));
 	this->pnlTarget = ui->NewPanel(this->tpTarget);
 	this->pnlTarget->SetRect(0, 0, 100, 31, false);
-	this->pnlTarget->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlTarget->SetDockType(UI::GUIControl::DockType::Top);
 	this->lvTarget = ui->NewListView(this->tpTarget, UI::ListViewStyle::Table, 4);
-	this->lvTarget->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvTarget->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvTarget->SetFullRowSelect(true);
 	this->lvTarget->SetShowGrid(true);
 	this->lvTarget->AddColumn(CSTR("IP"), 150);
@@ -350,7 +350,7 @@ SSWR::AVIRead::AVIRTCPLoadBalancerForm::AVIRTCPLoadBalancerForm(Optional<UI::GUI
 
 	this->tpSession = this->tcMain->AddTabPage(CSTR("Session"));
 	this->lvSession = ui->NewListView(this->tpSession, UI::ListViewStyle::Table, 5);
-	this->lvSession->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvSession->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvSession->SetFullRowSelect(true);
 	this->lvSession->SetShowGrid(true);
 	this->lvSession->AddColumn(CSTR("Source"), 150);

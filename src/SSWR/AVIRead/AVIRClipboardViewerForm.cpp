@@ -23,11 +23,11 @@ SSWR::AVIRead::AVIRClipboardViewerForm::AVIRClipboardViewerForm(Optional<UI::GUI
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lbType = ui->NewListBox(*this, false);
 	this->lbType->SetRect(0, 0, 200, 23, false);
-	this->lbType->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbType->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbType->HandleSelectionChange(OnTypeSelChg, this);
 	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	this->txtMain = ui->NewTextBox(*this, CSTR(""), true);
-	this->txtMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtMain->SetReadOnly(true);
 
 	NEW_CLASSNN(this->clipboard, UI::Clipboard(this->hwnd));

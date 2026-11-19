@@ -488,7 +488,7 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(Optional<UI::GUIClientControl>
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	this->lblPort = ui->NewLabel(this->tpControl, CSTR("Port"));
@@ -620,26 +620,26 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(Optional<UI::GUIClientControl>
 
 	this->tpSAMLResp = this->tcMain->AddTabPage(CSTR("SAML Resp"));
 	this->txtSAMLResp = ui->NewTextBox(this->tpSAMLResp, CSTR(""), true);
-	this->txtSAMLResp->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtSAMLResp->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtSAMLResp->SetReadOnly(true);
 
 	this->tpSAMLRespWF = this->tcMain->AddTabPage(CSTR("Resp WF"));
 	this->txtSAMLRespWF = ui->NewTextBox(this->tpSAMLRespWF, CSTR(""), true);
-	this->txtSAMLRespWF->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtSAMLRespWF->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtSAMLRespWF->SetReadOnly(true);
 
 	this->tpSAMLDecrypt = this->tcMain->AddTabPage(CSTR("SAML Decrypt"));
 	this->txtSAMLDecrypt = ui->NewTextBox(this->tpSAMLDecrypt, CSTR(""), true);
-	this->txtSAMLDecrypt->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtSAMLDecrypt->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtSAMLDecrypt->SetReadOnly(true);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogSel, this);
 
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 500, true));

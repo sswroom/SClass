@@ -46,7 +46,7 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(Optional<UI::GUIClientCont
 	this->lvTrustCert = ui->NewListView(*this, UI::ListViewStyle::Table, 5);
 	this->lvTrustCert->SetShowGrid(true);
 	this->lvTrustCert->SetFullRowSelect(true);
-	this->lvTrustCert->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvTrustCert->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvTrustCert->HandleDblClk(OnTrustCertDblClicked, this);
 	this->lvTrustCert->AddColumn(CSTR("SubjectCN"), 200);
 	this->lvTrustCert->AddColumn(CSTR("IssuerCN"), 200);

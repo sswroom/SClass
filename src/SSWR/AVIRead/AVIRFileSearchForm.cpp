@@ -186,7 +186,7 @@ SSWR::AVIRead::AVIRFileSearchForm::AVIRFileSearchForm(Optional<UI::GUIClientCont
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 103, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblDir = ui->NewLabel(this->pnlControl, CSTR("Directory"));
 	this->lblDir->SetRect(4, 4, 100, 23, false);
 	this->txtDir = ui->NewTextBox(this->pnlControl, CSTR(""));
@@ -223,7 +223,7 @@ SSWR::AVIRead::AVIRFileSearchForm::AVIRFileSearchForm(Optional<UI::GUIClientCont
 	this->btnSearch->SetRect(104, 76, 75, 23, false);
 	this->btnSearch->HandleButtonClick(OnSearchClicked, this);
 	this->lvFiles = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
-	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvFiles->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvFiles->AddColumn(CSTR("File Name"), 400);
 	this->lvFiles->AddColumn(CSTR("Match Count"), 200);
 	this->lvFiles->HandleDblClk(OnFilesDblClk, this);

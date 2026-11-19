@@ -481,7 +481,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(Optional<UI::GUIClientControl> p
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	this->tpAccess = this->tcMain->AddTabPage(CSTR("Access"));
@@ -489,7 +489,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(Optional<UI::GUIClientControl> p
 
 	this->grpParam = ui->NewGroupBox(this->tpControl, CSTR("Parameters"));
 	this->grpParam->SetRect(0, 0, 620, 344, false);
-	this->grpParam->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpParam->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblPort = ui->NewLabel(this->grpParam, CSTR("Port"));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
 	this->txtPort = ui->NewTextBox(this->grpParam, CSTR("12345"));
@@ -615,18 +615,18 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(Optional<UI::GUIClientControl> p
 
 	this->lbAccess = ui->NewListBox(this->tpAccess, false);
 	this->lbAccess->SetRect(0, 0, 200, 100, false);
-	this->lbAccess->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbAccess->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbAccess->HandleSelectionChange(OnAccessSelChg, this);
 	this->hspAccess = ui->NewHSplitter(this->tpAccess, 3, false);
 	this->txtAccess = ui->NewTextBox(this->tpAccess, CSTR(""), true);
 	this->txtAccess->SetReadOnly(true);
-	this->txtAccess->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtAccess->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogSel, this);
 
 	this->AddTimer(1000, OnTimerTick, this);

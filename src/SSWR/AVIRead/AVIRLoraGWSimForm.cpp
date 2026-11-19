@@ -194,12 +194,12 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(Optional<UI::GUIClientContro
 	this->lora = nullptr;
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	this->pnlControl = ui->NewPanel(this->tpControl);
 	this->pnlControl->SetRect(0, 0, 100, 103, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblServerIP = ui->NewLabel(this->pnlControl, CSTR("Server IP"));
 	this->lblServerIP->SetRect(4, 4, 100, 23, false);
 	this->txtServerIP = ui->NewTextBox(this->pnlControl, CSTR("127.0.0.1"));
@@ -216,7 +216,7 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(Optional<UI::GUIClientContro
 	this->btnStart->SetRect(104, 76, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 	this->pnlDevice = ui->NewPanel(this->tpControl);
-	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlDevice->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblDevAddr = ui->NewLabel(this->pnlDevice, CSTR("DevAddr"));
 	this->lblDevAddr->SetRect(4, 4, 100, 23, false);
 	this->txtDevAddr = ui->NewTextBox(this->pnlDevice, CSTR("00e94cc2"));
@@ -264,9 +264,9 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(Optional<UI::GUIClientContro
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 100, true));

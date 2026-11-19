@@ -208,7 +208,7 @@ SSWR::AVIRead::AVIRBluetoothLogForm::AVIRBluetoothLogForm(Optional<UI::GUIClient
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnFile = ui->NewButton(this->pnlControl, CSTR("Open Log"));
 	this->btnFile->SetRect(4, 4, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
@@ -221,7 +221,7 @@ SSWR::AVIRead::AVIRBluetoothLogForm::AVIRBluetoothLogForm(Optional<UI::GUIClient
 	this->lblInfo = ui->NewLabel(this->pnlControl, CSTR(""));
 	this->lblInfo->SetRect(264, 4, 200, 23, false);
 	this->lvContent = ui->NewListView(*this, UI::ListViewStyle::Table, 8);
-	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvContent->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvContent->SetShowGrid(true);
 	this->lvContent->SetFullRowSelect(true);
 	this->lvContent->HandleDblClk(OnContentDblClicked, this);

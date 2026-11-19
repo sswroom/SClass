@@ -96,7 +96,7 @@ SSWR::AVIRead::AVIRSudokuForm::AVIRSudokuForm(Optional<UI::GUIClientControl> par
 
 	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetRect(0, 0, 100, 31, false);
-	this->pnlMain->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlMain->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblMode = ui->NewLabel(this->pnlMain, CSTR("Mode"));
 	this->lblMode->SetRect(4, 4, 100, 23, false);
 	this->cboMode = ui->NewComboBox(this->pnlMain, false);
@@ -115,7 +115,7 @@ SSWR::AVIRead::AVIRSudokuForm::AVIRSudokuForm(Optional<UI::GUIClientControl> par
 	this->btnClear->SetRect(420, 4, 75, 23, false);
 	this->btnClear->HandleButtonClick(OnClearClicked, this);
 	NEW_CLASSNN(this->svMain, UI::GUISudokuViewer(ui, *this, this->core->GetDrawEngine(), nullptr, board));
-	this->svMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->svMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->svMain->HandleNumberInput(EventNumInput, this);
 	NN<UI::GUIMenu> mnu;
 	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());

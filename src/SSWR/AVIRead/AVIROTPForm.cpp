@@ -123,7 +123,7 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(Optional<UI::GUIClientControl> parent, N
 
 	this->grpNew = ui->NewGroupBox(*this, CSTR("New Entry"));
 	this->grpNew->SetRect(0, 0, 100, 112, false);
-	this->grpNew->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpNew->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblName = ui->NewLabel(this->grpNew, CSTR("Name"));
 	this->lblName->SetRect(4, 4, 100, 23, false);
 	this->txtName = ui->NewTextBox(this->grpNew, CSTR(""));
@@ -149,7 +149,7 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(Optional<UI::GUIClientControl> parent, N
 	this->btnNew->SetRect(104, 76, 75, 23, false);
 	this->btnNew->HandleButtonClick(OnNewClicked, this);
 	this->lvEntry = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
-	this->lvEntry->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvEntry->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvEntry->AddColumn(CSTR("Name"), 150);
 	this->lvEntry->AddColumn(CSTR("Code"), 100);
 	this->lvEntry->HandleDblClk(OnEntryDblClicked, this);

@@ -170,7 +170,7 @@ SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(Optional<UI::GUIClient
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnCancel = ui->NewButton(this->pnlCtrl, CSTR("Cancel"));
 	this->btnCancel->SetRect(4, 4, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
@@ -178,7 +178,7 @@ SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(Optional<UI::GUIClient
 	this->chkAllowTimeSkip->SetRect(84, 4, 120, 23, false);
 	this->chkAllowTimeSkip->HandleCheckedChange(OnAllowTimeSkipChange, this);
 	this->lvFiles = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
-	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvFiles->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvFiles->AddColumn(CSTR("File Name"), 400);
 	this->lvFiles->AddColumn(CSTR("Status"), 300);
 	this->lvFiles->SetFullRowSelect(true);

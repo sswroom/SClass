@@ -183,7 +183,7 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(Optional<UI::GUIClie
 
 	this->lvInfo = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
 	this->lvInfo->SetRect(0, 0, 100, 96, false);
-	this->lvInfo->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lvInfo->SetDockType(UI::GUIControl::DockType::Top);
 	this->lvInfo->SetFullRowSelect(true);
 	this->lvInfo->SetShowGrid(true);
 	this->lvInfo->AddColumn(CSTR("Name"), 200);
@@ -191,14 +191,14 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(Optional<UI::GUIClie
 	this->vspInfo = ui->NewVSplitter(*this, 3, false);
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 160, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->pbPreview = ui->NewPictureBoxSimple(this->pnlControl, this->core->GetDrawEngine(), false);
 	this->pbPreview->SetRect(0, 0, 160, 160, false);
 	this->btnDownload = ui->NewButton(this->pnlControl, CSTR("Download"));
 	this->btnDownload->SetRect(164, 4, 75, 23, false);
 	this->btnDownload->HandleButtonClick(OnDownloadClicked, this);
 	this->lvFiles = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
-	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvFiles->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvFiles->SetFullRowSelect(true);
 	this->lvFiles->SetShowGrid(true);
 	this->lvFiles->AddColumn(CSTR("File Name"), 200);

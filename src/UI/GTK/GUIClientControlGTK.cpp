@@ -172,11 +172,11 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 	{
 		ctrl = it.Next();
 		dt = ctrl->GetDockType();
-		if (dt == UI::GUIControl::DOCK_NONE)
+		if (dt == UI::GUIControl::DockType::None)
 		{
 			ctrl->UpdatePos(false);
 		}
-		else if (dt == UI::GUIControl::DOCK_FILL)
+		else if (dt == UI::GUIControl::DockType::Fill)
 		{
 //			printf("UpdateChildrenSize: %s Fill: %lf, %lf, %lf, %lf\r\n", ctrl->GetObjectClass(), left, top, right, bottom);
 			ctrl->SetArea(left, top, br.x, br.y, false);
@@ -188,7 +188,7 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 		else
 		{
 			ctrlSz = ctrl->GetSize();
-			if (dt == UI::GUIControl::DOCK_LEFT)
+			if (dt == UI::GUIControl::DockType::Left)
 			{
 //				printf("UpdateChildrenSize: %s Left: %lf, %lf, %lf, %lf\r\n", ctrl->GetObjectClass(), left, top, left + ctrlW, bottom);
 				ctrl->SetArea(left, top, left + ctrlSz.x, br.y, false);
@@ -196,7 +196,7 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 //				printf("UpdateChildrenSize: %s Size: %lf, %lf\r\n", ctrl->GetObjectClass(), ctrlW, ctrlH);
 				left += ctrlSz.x;
 			}
-			else if (dt == UI::GUIControl::DOCK_TOP)
+			else if (dt == UI::GUIControl::DockType::Top)
 			{
 //				printf("UpdateChildrenSize: %s Top: %lf, %lf, %lf, %lf\r\n", ctrl->GetObjectClass(), left, top, right, top + ctrlH);
 				ctrl->SetArea(left, top, br.x, top + ctrlSz.y, false);
@@ -204,7 +204,7 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 //				printf("UpdateChildrenSize: %s Size: %lf, %lf\r\n", ctrl->GetObjectClass(), ctrlW, ctrlH);
 				top += ctrlSz.y;
 			}
-			else if (dt == UI::GUIControl::DOCK_RIGHT)
+			else if (dt == UI::GUIControl::DockType::Right)
 			{
 //				printf("UpdateChildrenSize: %s Right: %lf, %lf, %lf, %lf\r\n", ctrl->GetObjectClass(), right - ctrlW, top, right, bottom);
 				ctrl->SetArea(br.x - ctrlSz.x, top, br.x, br.y, false);
@@ -212,7 +212,7 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 //				printf("UpdateChildrenSize: %s Size: %lf, %lf\r\n", ctrl->GetObjectClass(), ctrlW, ctrlH);
 				br.x -= ctrlSz.x;
 			}
-			else if (dt == UI::GUIControl::DOCK_BOTTOM)
+			else if (dt == UI::GUIControl::DockType::Bottom)
 			{
 //				printf("UpdateChildrenSize: %s Bottom: %lf, %lf, %lf, %lf\r\n", ctrl->GetObjectClass(), left, bottom - ctrlH, right, bottom);
 				ctrl->SetArea(left, br.y - ctrlSz.y, br.x, br.y , false);

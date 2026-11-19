@@ -105,7 +105,7 @@ UI::GUIControl::GUIControl(NN<GUICore> ui, Optional<UI::GUIClientControl> parent
 	this->hbrBackground = 0;
 	this->parent = parent;
 	this->ui = ui;
-	this->dockType = UI::GUIControl::DOCK_NONE;
+	this->dockType = UI::GUIControl::DockType::None;
 	this->fontName = nullptr;
 	this->fontHeightPt = 0;
 	this->fontIsBold = false;
@@ -388,7 +388,7 @@ void UI::GUIControl::SetVisible(Bool isVisible)
 			changed = true;
 		}
 	}
-	if (changed && this->dockType != UI::GUIControl::DOCK_NONE)
+	if (changed && this->dockType != UI::GUIControl::DockType::None)
 	{
 		NN<GUIClientControl> nnparent;
 		if (this->parent.SetTo(nnparent))
@@ -638,22 +638,22 @@ void UI::GUIControl::SetCursor(CursorType curType)
 	HCURSOR cur;
 	switch (curType)
 	{
-	case CT_ARROW:
+	case CursorType::Arrow:
 		cur = LoadCursor(NULL, IDC_ARROW);
 		break;
-	case CT_HAND:
+	case CursorType::Hand:
 		cur = LoadCursor(NULL, IDC_HAND);
 		break;
-	case CT_SIZEH:
+	case CursorType::SizeH:
 		cur = LoadCursor(NULL, IDC_SIZEWE);
 		break;
-	case CT_SIZEV:
+	case CursorType::SizeV:
 		cur = LoadCursor(NULL, IDC_SIZENS);
 		break;
-	case CT_SIZENW:
+	case CursorType::SizeNW:
 		cur = LoadCursor(NULL, IDC_SIZENWSE);
 		break;
-	case CT_SIZENE:
+	case CursorType::SizeNE:
 		cur = LoadCursor(NULL, IDC_SIZENESW);
 		break;
 	default:
@@ -1608,7 +1608,7 @@ UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(NN<UI::GUIDropHan
 	{
 		UI::Win::WinDragDrop *dragDrop = (UI::Win::WinDragDrop *)this->dropHdlr;
 		dragDrop->SetHandler(hdlr);
-		return UI::GUIControl::DET_NOERROR;
+		return UI::GUIControl::DragErrorType::NoError;
 	}
 	else
 	{
@@ -1621,7 +1621,7 @@ UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(NN<UI::GUIDropHan
 		HRESULT hRes = RegisterDragDrop((HWND)this->GetHandle().OrNull(), dragDrop.Ptr());
 		if (hRes == S_OK)
 		{
-			errType = UI::GUIControl::DET_NOERROR;
+			errType = UI::GUIControl::DragErrorType::NoError;
 			this->dropHdlr = dragDrop.Ptr();
 		}
 		else
@@ -1629,24 +1629,24 @@ UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(NN<UI::GUIDropHan
 			dragDrop.Delete();
 			if (hRes == DRAGDROP_E_INVALIDHWND)
 			{
-				errType = UI::GUIControl::DET_INVALIDCONTROL;
+				errType = UI::GUIControl::DragErrorType::InvalidControl;
 			}
 			else if (hRes == DRAGDROP_E_ALREADYREGISTERED)
 			{
-				errType = UI::GUIControl::DET_ALREADYREGISTER;
+				errType = UI::GUIControl::DragErrorType::AlreadyRegister;
 			}
 			else if (hRes == E_OUTOFMEMORY)
 			{
-				errType = UI::GUIControl::DET_OUTOFMEMORY;
+				errType = UI::GUIControl::DragErrorType::OutOfMemory;
 			}
 			else
 			{
-				errType = UI::GUIControl::DET_UNKNOWN;
+				errType = UI::GUIControl::DragErrorType::Unknown;
 			}
 			OleUninitialize();
 		}
 #else
-		errType = UI::GUIControl::DET_NOERROR;
+		errType = UI::GUIControl::DragErrorType::NoError;
 #endif
 		return errType;
 	}

@@ -66,7 +66,7 @@ SSWR::AVIRead::AVIRWebSite7gogoForm::AVIRWebSite7gogoForm(Optional<UI::GUIClient
 
 	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
-	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRequest->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblChannelId = ui->NewLabel(this->pnlRequest, CSTR("ChannelId"));
 	this->lblChannelId->SetRect(4, 4, 100, 23, false);
 	this->txtChannelId = ui->NewTextBox(this->pnlRequest, CSTR(""));
@@ -75,7 +75,7 @@ SSWR::AVIRead::AVIRWebSite7gogoForm::AVIRWebSite7gogoForm(Optional<UI::GUIClient
 	this->btnRequestPage->SetRect(254, 4, 75, 23, false);
 	this->btnRequestPage->HandleButtonClick(OnRequestPageClicked, this);
 	this->lvItems = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
-	this->lvItems->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvItems->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvItems->SetFullRowSelect(true);
 	this->lvItems->SetShowGrid(true);
 	this->lvItems->AddColumn(CSTR("Id"), 100);

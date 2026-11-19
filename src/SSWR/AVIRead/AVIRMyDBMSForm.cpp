@@ -70,7 +70,7 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(Optional<UI::GUIClientControl> par
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblPort = ui->NewLabel(this->pnlCtrl, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	this->txtPort = ui->NewTextBox(this->pnlCtrl, CSTR("3306"));
@@ -79,15 +79,15 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(Optional<UI::GUIClientControl> par
 	this->btnStart->SetRect(184, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpUser = this->tcMain->AddTabPage(CSTR("User"));
 	this->lbUser = ui->NewListBox(this->tpUser, false);
 	this->lbUser->SetRect(0, 0, 100, 23, false);
-	this->lbUser->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbUser->SetDockType(UI::GUIControl::DockType::Left);
 	this->hspUser = ui->NewHSplitter(this->tpUser, 3, false);
 	this->pnlUser = ui->NewPanel(this->tpUser);
-	this->pnlUser->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlUser->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblUserName = ui->NewLabel(this->pnlUser, CSTR("User Name"));
 	this->lblUserName->SetRect(8, 8, 100, 23, false);
 	this->txtUserName = ui->NewTextBox(this->pnlUser, CSTR("root"));
@@ -105,9 +105,9 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(Optional<UI::GUIClientControl> par
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogSel, this);
 
 	this->AddTimer(1000, OnTimerTick, this);

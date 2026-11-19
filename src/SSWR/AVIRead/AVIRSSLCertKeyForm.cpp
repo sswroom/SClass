@@ -216,7 +216,7 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(Optional<UI::GUIClientCont
 
 	this->pnlCurr = ui->NewPanel(*this);
 	this->pnlCurr->SetRect(0, 0, 100, 55, false);
-	this->pnlCurr->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCurr->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblCurrCert = ui->NewLabel(this->pnlCurr, CSTR("Curr Cert"));
 	this->lblCurrCert->SetRect(4, 4, 100, 23, false);
 	this->txtCurrCert = ui->NewTextBox(this->pnlCurr, CSTR(""));
@@ -228,7 +228,7 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(Optional<UI::GUIClientCont
 	this->txtCurrKey->SetRect(104, 28, 200, 23, false);
 	this->txtCurrKey->SetReadOnly(true);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpFile = this->tcMain->AddTabPage(CSTR("File"));
 	this->btnFileCert = ui->NewButton(this->tpFile, CSTR("Cert"));

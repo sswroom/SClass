@@ -252,14 +252,14 @@ SSWR::AVIRead::AVIRModel3DViewerForm::AVIRModel3DViewerForm(Optional<UI::GUIClie
 	this->SetFont(nullptr, 8.25, false);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lblInfo = ui->NewLabel(*this, CSTR(""));
-	this->lblInfo->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblInfo->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblInfo->SetRect(0, 0, 100, 26, false);
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr = Text::StrUIntOS(sbuff, model->GetCount());
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" triangles"));
 	this->lblInfo->SetText(CSTRP(sbuff, sptr));
 	NEW_CLASSNN(this->modelCtrl, ModelControl(ui, *this, this->core->GetDrawEngine(), this->colorSess, this->engine3d, model));
-	this->modelCtrl->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->modelCtrl->SetDockType(UI::GUIControl::DockType::Fill);
 }
 
 SSWR::AVIRead::AVIRModel3DViewerForm::~AVIRModel3DViewerForm()

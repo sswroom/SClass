@@ -89,6 +89,6 @@ void UI::GUIPictureBox::EventMouseMove(Math::Coord2D<IntOS> pos)
 	UIntOS i = this->mouseMoveHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->mouseMoveHdlrs.GetItem(i)(this->mouseMoveObjs.GetItem(i), pos, MBTN_MIDDLE);
+		this->mouseMoveHdlrs.GetItem(i)(this->mouseMoveObjs.GetItem(i), pos, UI::GUIControl::MouseButton::Middle);
 	}
 }

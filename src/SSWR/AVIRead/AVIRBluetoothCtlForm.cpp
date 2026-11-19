@@ -231,7 +231,7 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(Optional<UI::GUIClient
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnStart = ui->NewButton(this->pnlControl, CSTR("Scan/Stop"));
 	this->btnStart->SetRect(4, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
@@ -241,7 +241,7 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(Optional<UI::GUIClient
 	this->lblStatus = ui->NewLabel(this->pnlControl, CSTR("Idle"));
 	this->lblStatus->SetRect(190, 4, 200, 23, false);
 	this->lvDevices = ui->NewListView(*this, UI::ListViewStyle::Table, 14);
-	this->lvDevices->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDevices->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);
 	this->lvDevices->HandleDblClk(OnDevicesDblClick, this);

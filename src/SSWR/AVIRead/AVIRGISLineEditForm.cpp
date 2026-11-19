@@ -174,7 +174,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(AnyTyp
 {
 	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	NN<LineLayer> currLayer;
-	if (btn == UI::GUIPictureBox::MBTN_LEFT && me->currLayer.SetTo(currLayer))
+	if (btn == UI::GUIPictureBox::MouseButton::Left && me->currLayer.SetTo(currLayer))
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 		UtilUI::ColorDialog dlg(nullptr, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
@@ -298,25 +298,25 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(Optional<UI::GUIClientCo
 
 	this->pnlButtons = ui->NewPanel(*this);
 	this->pnlButtons->SetRect(0, 0, 456, 32, false);
-	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlButtons->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->pnlStyle = ui->NewPanel(*this);
 	this->pnlStyle->SetRect(0, 0, 456, 56, false);
-	this->pnlStyle->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlStyle->SetDockType(UI::GUIControl::DockType::Top);
 	this->grpLayer = ui->NewGroupBox(*this, CSTR("Layers"));
-	this->grpLayer->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpLayer->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pnlLayers = ui->NewPanel(this->grpLayer);
 	this->pnlLayers->SetRect(0, 0, 152, 157, false);
-	this->pnlLayers->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->pnlLayers->SetDockType(UI::GUIControl::DockType::Left);
 	this->pnlLayersButton = ui->NewPanel(this->pnlLayers);
 	this->pnlLayersButton->SetRect(0, 0, 152, 32, false);
-	this->pnlLayersButton->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlLayersButton->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->pnlLayer = ui->NewPanel(this->grpLayer);
-	this->pnlLayer->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlLayer->SetDockType(UI::GUIControl::DockType::Fill);
 
 	Math::Size2D<UIntOS> sz;
 	this->pbPreview = ui->NewPictureBox(this->pnlStyle, this->eng, false, false);
 	this->pbPreview->SetRect(0, 0, 100, 24, false);
-	this->pbPreview->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pbPreview->SetDockType(UI::GUIControl::DockType::Top);
 	sz = this->pbPreview->GetSizeP();
 	this->prevImage = this->eng->CreateImage32(sz, Media::AT_ALPHA_ALL_FF);
 	NN<Media::DrawImage> img;
@@ -330,7 +330,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(Optional<UI::GUIClientCo
 	this->txtName->SetRect(100, 32, 112, 23, false);
 
 	this->lbLayer = ui->NewListBox(this->pnlLayers, false);
-	this->lbLayer->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLayer->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLayer->HandleSelectionChange(LayerSelChanged, this);
 	this->btnNewLayer = ui->NewButton(this->pnlLayersButton, CSTR("&Add"));
 	this->btnNewLayer->SetRect(8, 8, 64, 23, false);

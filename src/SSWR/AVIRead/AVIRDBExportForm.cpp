@@ -90,9 +90,9 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(Optional<UI::GUIClientControl>
 
 	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetRect(0, 0, 100, 96, false);
-	this->pnlMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlMain->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lvTables = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
-	this->lvTables->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvTables->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvTables->SetFullRowSelect(true);
 	this->lvTables->SetShowGrid(true);
 	this->lvTables->AddColumn(CSTR("Name"), 150);

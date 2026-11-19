@@ -312,7 +312,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(Optional<UI::GUIClientContro
 
 	this->pnlStrCols = ui->NewPanel(*this);
 	this->pnlStrCols->SetRect(0, 0, 100, 128, false);
-	this->pnlStrCols->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlStrCols->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblStrCols = ui->NewLabel(this->pnlStrCols, CSTR("String Columns"));
 	this->lblStrCols->SetRect(0, 4, 100, 23, false);
 	this->lbStrCols = ui->NewListBox(this->pnlStrCols, false);
@@ -325,14 +325,14 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(Optional<UI::GUIClientContro
 	this->btnStrColsInt32->HandleButtonClick(OnStrColsInt32Clicked, this);
 	this->pnlXAxis = ui->NewPanel(*this);
 	this->pnlXAxis->SetRect(0, 0 , 100, 32, false);
-	this->pnlXAxis->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlXAxis->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblXAxis = ui->NewLabel(this->pnlXAxis, CSTR("X-Axis"));
 	this->lblXAxis->SetRect(4, 4, 100, 23, false);
 	this->cboXAxis = ui->NewComboBox(this->pnlXAxis, false);
 	this->cboXAxis->SetRect(104, 4, 200, 23, false);
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 32, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnPlot = ui->NewButton(this->pnlControl, CSTR("Plot"));
 	this->btnPlot->SetRect(4, 4, 75, 23, false);
 	this->btnPlot->HandleButtonClick(OnPlotClicked, this);
@@ -340,10 +340,10 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(Optional<UI::GUIClientContro
 	this->btnCancel->SetRect(84, 4, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->grpYAxis = ui->NewGroupBox(*this, CSTR("Y-Axis"));
-	this->grpYAxis->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpYAxis->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pnlYAxis = ui->NewPanel(this->grpYAxis);
 	this->pnlYAxis->SetRect(0, 0, 100, 32, false);
-	this->pnlYAxis->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlYAxis->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblYAxis = ui->NewLabel(this->pnlYAxis, CSTR("Column"));
 	this->lblYAxis->SetRect(4, 4, 100, 23, false);
 	this->cboYAxis = ui->NewComboBox(this->pnlYAxis, false);
@@ -352,7 +352,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(Optional<UI::GUIClientContro
 	this->btnYAxis->SetRect(304, 4, 75, 23, false);
 	this->btnYAxis->HandleButtonClick(OnYAxisClicked, this);
 	this->lbYAxis = ui->NewListBox(this->grpYAxis, false);
-	this->lbYAxis->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbYAxis->SetDockType(UI::GUIControl::DockType::Fill);
 
 	NN<DB::DBReader> reader;
 	if (!this->db->QueryTableData(OPTSTR_CSTR(this->schemaName), tableName, nullptr, 0, 0, nullptr, nullptr).SetTo(reader))

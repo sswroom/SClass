@@ -263,15 +263,15 @@ SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(Optional<UI::GUIClientCo
 	this->SetMenu(this->mnu);
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpSample = this->tcMain->AddTabPage(CSTR("Sample"));
 	this->pbsSample = ui->NewPictureBoxSimple(this->tpSample, this->eng, false);
 	this->pbsSample->SetNoBGColor(true);
-	this->pbsSample->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbsSample->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpFreq = this->tcMain->AddTabPage(CSTR("Frequency"));
 	this->pbsFreq = ui->NewPictureBoxSimple(this->tpFreq, this->eng, false);
 	this->pbsFreq->SetNoBGColor(true);
-	this->pbsFreq->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbsFreq->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->currSample = 0;
 	this->totalSample = (UInt64)this->audSrc->GetSampleCount();

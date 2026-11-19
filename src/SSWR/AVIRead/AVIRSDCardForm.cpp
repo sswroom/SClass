@@ -90,11 +90,11 @@ SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(Optional<UI::GUIClientControl> par
 
 	this->lbDevices = ui->NewListBox(*this, false);
 	this->lbDevices->SetRect(0, 0, 100, 23, false);
-	this->lbDevices->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbDevices->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbDevices->HandleSelectionChange(OnDevicesSelChg, this);
 	this->hspDevices = ui->NewHSplitter(*this, 3, false);
 	this->pnlDevices = ui->NewPanel(*this);
-	this->pnlDevices->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlDevices->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblName = ui->NewLabel(this->pnlDevices, CSTR("Name"));
 	this->lblName->SetRect(4, 4, 100, 23, false);
 	this->txtName = ui->NewTextBox(this->pnlDevices, CSTR(""));

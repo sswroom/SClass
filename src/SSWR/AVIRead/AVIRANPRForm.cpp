@@ -168,7 +168,7 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(Optional<UI::GUIClientControl> parent,
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnSelPlate = ui->NewButton(this->pnlCtrl, CSTR("Sel Plate"));
 	this->btnSelPlate->SetRect(4, 4, 75, 23, false);
 	this->btnSelPlate->HandleButtonClick(OnSelPlateClicked, this);
@@ -179,13 +179,13 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(Optional<UI::GUIClientControl> parent,
 	this->lblSelStatus->SetRect(164, 4, 200, 23, false);
 	this->pnlPlate = ui->NewPanel(*this);
 	this->pnlPlate->SetRect(0, 0, 250, 100, false);
-	this->pnlPlate->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->pnlPlate->SetDockType(UI::GUIControl::DockType::Right);
 	this->pbPlate = ui->NewPictureBoxSimple(this->pnlPlate, this->core->GetDrawEngine(), false);
 	this->pbPlate->SetRect(0, 0, 100, 80, false);
-	this->pbPlate->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pbPlate->SetDockType(UI::GUIControl::DockType::Top);
 	this->lvPlate = ui->NewListView(this->pnlPlate, UI::ListViewStyle::Table, 4);
 	this->lvPlate->SetRect(0, 0, 250, 100, false);
-	this->lvPlate->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvPlate->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvPlate->AddColumn(CSTR("Result"), 100);
 	this->lvPlate->AddColumn(CSTR("Tilt"), 50);
 	this->lvPlate->AddColumn(CSTR("Area"), 50);
@@ -193,7 +193,7 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(Optional<UI::GUIClientControl> parent,
 	this->lvPlate->HandleSelChg(OnPlateSelChg, this);
 	this->hspPlate = ui->NewHSplitter(*this, 3, true);
 	this->pbImg = ui->NewPictureBoxDD(*this, this->colorSess, true, false);
-	this->pbImg->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbImg->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pbImg->HandleMouseDown(OnImgDown, this);
 
 	this->HandleDropFiles(OnFileHandler, this);

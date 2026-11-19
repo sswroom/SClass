@@ -107,7 +107,7 @@ SSWR::AVIRead::AVIRTCPPortScanForm::AVIRTCPPortScanForm(Optional<UI::GUIClientCo
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 79, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblIP = ui->NewLabel(this->pnlControl, CSTR("IP"));
 	this->lblIP->SetRect(4, 4, 100, 23, false);
 	this->txtIP = ui->NewTextBox(this->pnlControl, CSTR("127.0.0.1"));
@@ -124,7 +124,7 @@ SSWR::AVIRead::AVIRTCPPortScanForm::AVIRTCPPortScanForm(Optional<UI::GUIClientCo
 	this->btnStart->SetRect(204, 52, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	this->lvPort = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
-	this->lvPort->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvPort->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvPort->SetFullRowSelect(true);
 	this->lvPort->SetShowGrid(true);
 	this->lvPort->AddColumn(CSTR("Port"), 80);

@@ -43,34 +43,34 @@ namespace UI
 	class GUIControl
 	{
 	public:
-		typedef enum
+		enum class DockType
 		{
-			DOCK_NONE,
-			DOCK_LEFT,
-			DOCK_TOP,
-			DOCK_RIGHT,
-			DOCK_BOTTOM,
-			DOCK_FILL
-		} DockType;
+			None,
+			Left,
+			Top,
+			Right,
+			Bottom,
+			Fill
+		};
 
-		typedef enum
+		enum class MouseButton
 		{
-			MBTN_LEFT,
-			MBTN_RIGHT,
-			MBTN_MIDDLE,
-			MBTN_X1,
-			MBTN_X2
-		} MouseButton;
+			Left,
+			Right,
+			Middle,
+			X1,
+			X2
+		};
 
-		typedef enum
+		enum class CursorType
 		{
-			CT_ARROW,
-			CT_HAND,
-			CT_SIZEH,
-			CT_SIZEV,
-			CT_SIZENW,
-			CT_SIZENE
-		} CursorType;
+			Arrow,
+			Hand,
+			SizeH,
+			SizeV,
+			SizeNW,
+			SizeNE
+		};
 
 		typedef enum
 		{
@@ -205,14 +205,14 @@ namespace UI
 			GK_NUMPAD_ENTER
 		} GUIKey;
 
-		typedef enum
+		enum class DragErrorType
 		{
-			DET_NOERROR,
-			DET_UNKNOWN,
-			DET_OUTOFMEMORY,
-			DET_INVALIDCONTROL,
-			DET_ALREADYREGISTER
-		} DragErrorType;
+			NoError,
+			Unknown,
+			OutOfMemory,
+			InvalidControl,
+			AlreadyRegister
+		};
 
 		typedef EventState (CALLBACKFUNC MouseEventHandler)(AnyType userObj, Math::Coord2D<IntOS> scnCoord, MouseButton btn);
 

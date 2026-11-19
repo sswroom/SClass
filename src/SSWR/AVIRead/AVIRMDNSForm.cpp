@@ -271,12 +271,12 @@ SSWR::AVIRead::AVIRMDNSForm::AVIRMDNSForm(Optional<UI::GUIClientControl> parent,
 
 	this->lbDev = ui->NewListBox(*this, false);
 	this->lbDev->SetRect(0, 0, 150, 23, false);
-	this->lbDev->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbDev->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbDev->HandleSelectionChange(OnDevSelChg, this);
 	this->hspDev = ui->NewHSplitter(*this, 3, false);
 	this->lvServices = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
 	this->lvServices->SetRect(0, 0, 100, 100, false);
-	this->lvServices->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lvServices->SetDockType(UI::GUIControl::DockType::Top);
 	this->lvServices->SetShowGrid(true);
 	this->lvServices->HandleSelChg(OnServicesSelChg, this);
 	this->lvServices->AddColumn(CSTR("Instance"), 300);
@@ -286,7 +286,7 @@ SSWR::AVIRead::AVIRMDNSForm::AVIRMDNSForm(Optional<UI::GUIClientControl> parent,
 	this->vspServices = ui->NewVSplitter(*this, 3, false);
 	this->txtServices = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtServices->SetReadOnly(true);
-	this->txtServices->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtServices->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->devUpdated = false;
 	this->svcUpdated = false;

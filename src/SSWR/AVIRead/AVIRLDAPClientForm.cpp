@@ -148,7 +148,7 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(Optional<UI::GUIClientCont
 
 	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 151, false);
-	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRequest->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblHost = ui->NewLabel(this->pnlRequest, CSTR("Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	this->txtHost = ui->NewTextBox(this->pnlRequest, CSTR(""));
@@ -178,10 +178,10 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(Optional<UI::GUIClientCont
 	this->btnConnect->HandleButtonClick(OnConnectClicked, this);
 
 	this->grpSearch = ui->NewGroupBox(*this, CSTR("Search"));
-	this->grpSearch->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpSearch->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pnlSearchRequest = ui->NewPanel(this->grpSearch);
 	this->pnlSearchRequest->SetRect(0, 0, 100, 124, false);
-	this->pnlSearchRequest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlSearchRequest->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblSearchBase = ui->NewLabel(this->pnlSearchRequest, CSTR("Base Object"));
 	this->lblSearchBase->SetRect(4, 4, 100, 23, false);
 	this->txtSearchBase = ui->NewTextBox(this->pnlSearchRequest, CSTR("dc=simon,dc=local"));
@@ -212,10 +212,10 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(Optional<UI::GUIClientCont
 	this->btnSearch->HandleButtonClick(OnSearchClicked, this);
 	this->cboSearchResult = ui->NewComboBox(this->grpSearch, false);
 	this->cboSearchResult->SetRect(0, 0, 100, 23, false);
-	this->cboSearchResult->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->cboSearchResult->SetDockType(UI::GUIControl::DockType::Top);
 	this->cboSearchResult->HandleSelectionChange(OnSearchResultSelChg, this);
 	this->lvSearch = ui->NewListView(this->grpSearch, UI::ListViewStyle::Table, 2);
-	this->lvSearch->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvSearch->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvSearch->SetFullRowSelect(true);
 	this->lvSearch->SetShowGrid(true);
 	this->lvSearch->AddColumn(CSTR("Type"), 200);

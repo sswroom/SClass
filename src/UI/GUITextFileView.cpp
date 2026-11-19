@@ -1084,7 +1084,7 @@ void UI::GUITextFileView::EventMouseDown(IntOS scnX, IntOS scnY, MouseButton btn
 {
 	UInt32 textXPos;
 	UIntOS textYPos;
-	if (btn == MBTN_LEFT)
+	if (btn == MouseButton::Left)
 	{
 		this->GetTextPos(scnX, scnY, textXPos, textYPos);
 		this->caretX = textXPos;
@@ -1107,7 +1107,7 @@ void UI::GUITextFileView::EventMouseDown(IntOS scnX, IntOS scnY, MouseButton btn
 
 void UI::GUITextFileView::EventMouseUp(IntOS scnX, IntOS scnY, MouseButton btn)
 {
-	if (btn == MBTN_LEFT)
+	if (btn == MouseButton::Left)
 	{
 		this->mouseDown = false;
 	}

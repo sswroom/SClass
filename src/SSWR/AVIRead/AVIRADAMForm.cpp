@@ -170,10 +170,10 @@ SSWR::AVIRead::AVIRADAMForm::AVIRADAMForm(Optional<UI::GUIClientControl> parent,
 
 	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetRect(0, 0, 100, 316, false);
-	this->pnlMain->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlMain->SetDockType(UI::GUIControl::DockType::Top);
 	this->grpStream = ui->NewGroupBox(this->pnlMain, CSTR("Stream"));
 	this->grpStream->SetRect(0, 0, 100, 72, false);
-	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpStream->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblAddress = ui->NewLabel(this->grpStream, CSTR("Address"));
 	this->lblAddress->SetRect(4, 4, 100, 23, false);
 	this->txtAddress = ui->NewTextBox(this->grpStream, CSTR("6"));
@@ -238,7 +238,7 @@ SSWR::AVIRead::AVIRADAMForm::AVIRADAMForm(Optional<UI::GUIClientControl> parent,
 	this->txtSlewRate->SetReadOnly(true);
 
 	this->lvData = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
-	this->lvData->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvData->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvData->SetFullRowSelect(true);
 	this->lvData->SetShowGrid(true);
 	this->lvData->AddColumn(CSTR("Name"), 100);

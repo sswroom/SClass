@@ -169,7 +169,7 @@ SSWR::AVIRead::AVIRCoordInfoForm::AVIRCoordInfoForm(Optional<UI::GUIClientContro
 
 	this->pnlCoord = ui->NewPanel(*this);
 	this->pnlCoord->SetRect(0, 0, 100, 31, false);
-	this->pnlCoord->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCoord->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblSRID = ui->NewLabel(this->pnlCoord, CSTR("SRID"));
 	this->lblSRID->SetRect(4, 4, 100, 23, false);
 	this->txtSRID = ui->NewTextBox(this->pnlCoord, CSTR("4326"));
@@ -185,11 +185,11 @@ SSWR::AVIRead::AVIRCoordInfoForm::AVIRCoordInfoForm(Optional<UI::GUIClientContro
 	this->btnSRIDNext->HandleButtonClick(OnSRIDNextClicked, this);
 	this->txtWKT = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtWKT->SetRect(0, 0, 300, 23, false);
-	this->txtWKT->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->txtWKT->SetDockType(UI::GUIControl::DockType::Left);
 	this->txtWKT->SetReadOnly(true);
 	this->hspWKT = ui->NewHSplitter(*this, 3, false);
 	this->txtDisp = ui->NewTextBox(*this, CSTR(""), true);
-	this->txtDisp->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtDisp->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtDisp->SetReadOnly(true);
 
 	OnSRIDClicked(this);

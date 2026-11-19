@@ -235,7 +235,7 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(Optional<UI::GUI
 
 	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 107, false);
-	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRequest->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblURL = ui->NewLabel(this->pnlRequest, CSTR("URL"));
 	this->lblURL->SetRect(4, 4, 100, 23, false);
 	this->txtURL = ui->NewTextBox(this->pnlRequest, CSTR("http://"));
@@ -261,10 +261,10 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(Optional<UI::GUI
 	this->btnRequest->SetRect(104, 84, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	this->grpResponse = ui->NewGroupBox(*this, CSTR("Response"));
-	this->grpResponse->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpResponse->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pnlResponse = ui->NewPanel(this->grpResponse);
 	this->pnlResponse->SetRect(0, 0, 100, 199, false);
-	this->pnlResponse->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlResponse->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblSvrIP = ui->NewLabel(this->pnlResponse, CSTR("Server IP"));
 	this->lblSvrIP->SetRect(4, 4, 100, 23, false);
 	this->txtSvrIP = ui->NewTextBox(this->pnlResponse, CSTR(""));
@@ -306,7 +306,7 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(Optional<UI::GUI
 	this->txtDownSize->SetRect(104, 172, 150, 23, false);
 	this->txtDownSize->SetReadOnly(true);
 	this->lvHeaders = ui->NewListView(this->grpResponse, UI::ListViewStyle::Table, 1);
-	this->lvHeaders->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvHeaders->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvHeaders->SetShowGrid(true);
 	this->lvHeaders->SetFullRowSelect(true);
 	this->lvHeaders->AddColumn(CSTR("Header"), 1000);

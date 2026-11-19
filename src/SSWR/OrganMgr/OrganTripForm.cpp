@@ -200,10 +200,10 @@ SSWR::OrganMgr::OrganTripForm::OrganTripForm(Optional<UI::GUIClientControl> pare
 
 	this->lbTrips = ui->NewListBox(*this, false);
 	this->lbTrips->SetRect(0, 0, 320, 268, false);
-	this->lbTrips->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbTrips->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbTrips->HandleSelectionChange(OnTripSelChg, this);
 	this->pnlDetail = ui->NewPanel(*this);
-	this->pnlDetail->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlDetail->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblFrom = ui->NewLabel(this->pnlDetail, this->env->GetLang(CSTR("TripFormFrom")));
 	this->lblFrom->SetRect(0, 24, 72, 23, false);
 	this->dtpFrom = ui->NewDateTimePicker(this->pnlDetail, false);

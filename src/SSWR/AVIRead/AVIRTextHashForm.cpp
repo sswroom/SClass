@@ -66,12 +66,12 @@ SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(Optional<UI::GUIClientControl>
 
 	this->lblText = ui->NewLabel(*this, CSTR("Text"));
 	this->lblText->SetRect(4, 4, 100, 23, false);
-	this->lblText->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblText->SetDockType(UI::GUIControl::DockType::Top);
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 104, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->txtText = ui->NewTextBox(*this, CSTR(""), true);
-	this->txtText->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtText->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblEncrypt = ui->NewLabel(this->pnlControl, CSTR("Text Encrypt"));
 	this->lblEncrypt->SetRect(4, 4, 100, 23, false);
 	this->cboEncrypt = ui->NewComboBox(this->pnlControl, false);

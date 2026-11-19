@@ -150,7 +150,7 @@ SSWR::AVIRead::AVIRLogServerForm::AVIRLogServerForm(Optional<UI::GUIClientContro
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblPort = ui->NewLabel(this->pnlControl, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	this->txtPort = ui->NewTextBox(this->pnlControl, CSTR("1234"));
@@ -160,15 +160,15 @@ SSWR::AVIRead::AVIRLogServerForm::AVIRLogServerForm(Optional<UI::GUIClientContro
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 	this->lbClient = ui->NewListBox(*this, false);
 	this->lbClient->SetRect(0, 0, 150, 23, false);
-	this->lbClient->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbClient->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbClient->HandleSelectionChange(OnClientSelChg, this);
 	this->hspClient = ui->NewHSplitter(*this, 3, false);
 	this->txtLog = ui->NewTextBox(*this, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbLog = ui->NewListBox(*this, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
 	this->AddTimer(1000, OnTimerTick, this);

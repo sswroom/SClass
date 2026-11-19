@@ -1030,13 +1030,13 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(Optional<UI::GUIClientCo
 
 	this->pnlInput = ui->NewPanel(*this);
 	this->pnlInput->SetRect(0, 0, 100, 168, false);
-	this->pnlInput->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlInput->SetDockType(UI::GUIControl::DockType::Top);
 	this->pbsFFT = ui->NewPictureBoxSimple(*this, this->eng, false);
-	this->pbsFFT->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pbsFFT->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->pbsFFT->SetNoBGColor(true);
 	this->vspSample = ui->NewVSplitter(*this, 3, true);
 	this->tcFilter = ui->NewTabControl(*this);
-	this->tcFilter->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcFilter->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->pnlAudioSource = ui->NewPanel(this->pnlInput);
 	this->pnlAudioSource->SetRect(0, 0, 400, 23, false);
@@ -1077,22 +1077,22 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(Optional<UI::GUIClientCo
 	this->tpVolLevel = this->tcFilter->AddTabPage(CSTR("VolLevel"));
 	this->rlcVolLevel = ui->NewRealtimeLineChart(this->tpVolLevel, this->core->GetDrawEngine(), 2, 600, 100, nullptr);
 	this->rlcVolLevel->SetRect(0, 0, 100, 200, false);
-	this->rlcVolLevel->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->rlcVolLevel->SetDockType(UI::GUIControl::DockType::Top);
 	this->rlcVolLevel->SetUnit(CSTR("dB"));
 	this->vspVolLevel = ui->NewVSplitter(this->tpVolLevel, 3, false);
 	this->pbsSample = ui->NewPictureBoxSimple(this->tpVolLevel, this->eng, false);
 	this->pbsSample->SetRect(0, 0, 100, 200, false);
 	this->pbsSample->SetNoBGColor(true);
-	this->pbsSample->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbsSample->SetDockType(UI::GUIControl::DockType::Fill);
 /*	this->vspSample = ui->NewVSplitter(this->tpVolLevel, 3, false);
 	this->pbsFFT = ui->NewPictureBoxSimple(this->tpVolLevel, this->eng, false);
-	this->pbsFFT->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbsFFT->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pbsFFT->SetNoBGColor(true);*/
 
 	this->tpDTMF = this->tcFilter->AddTabPage(CSTR("DTMF"));
 	this->pnlDTMF = ui->NewPanel(this->tpDTMF);
 	this->pnlDTMF->SetRect(0, 0, 100, 56, false);
-	this->pnlDTMF->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlDTMF->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblDTMFInterval = ui->NewLabel(this->pnlDTMF, CSTR("Decode Interval"));
 	this->lblDTMFInterval->SetRect(4, 4, 100, 23, false);
 	this->txtDTMFInterval = ui->NewTextBox(this->pnlDTMF, CSTR("20"));
@@ -1108,7 +1108,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(Optional<UI::GUIClientCo
 	this->btnDTMFClear->SetRect(604, 28, 75, 23, false);
 	this->btnDTMFClear->HandleButtonClick(OnDTMFClearClicked, this);
 	this->tcDTMF = ui->NewTabControl(this->tpDTMF);
-	this->tcDTMF->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcDTMF->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpDTMFGen = this->tcDTMF->AddTabPage(CSTR("Generate"));
 	this->btnDTMF1 = ui->NewButton(this->tpDTMFGen, CSTR("1"));
 	this->btnDTMF1->SetRect(4, 4, 150, 47, false);

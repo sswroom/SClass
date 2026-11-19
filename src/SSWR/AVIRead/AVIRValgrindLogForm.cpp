@@ -245,7 +245,7 @@ SSWR::AVIRead::AVIRValgrindLogForm::AVIRValgrindLogForm(Optional<UI::GUIClientCo
 
 	this->pnlFile = ui->NewPanel(*this);
 	this->pnlFile->SetRect(0, 0, 100, 31, false);
-	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlFile->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblFile = ui->NewLabel(this->pnlFile, CSTR("Version"));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	this->txtFile = ui->NewTextBox(this->pnlFile, CSTR(""));
@@ -255,7 +255,7 @@ SSWR::AVIRead::AVIRValgrindLogForm::AVIRValgrindLogForm(Optional<UI::GUIClientCo
 	this->btnFile->SetRect(504, 0, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	this->lblPPID = ui->NewLabel(this->tpInfo, CSTR("PPID"));
@@ -307,13 +307,13 @@ SSWR::AVIRead::AVIRValgrindLogForm::AVIRValgrindLogForm(Optional<UI::GUIClientCo
 	this->tpError = this->tcMain->AddTabPage(CSTR("Error"));
 	this->lvErrorDetail = ui->NewListView(this->tpError, UI::ListViewStyle::Table, 3);
 	this->lvErrorDetail->SetRect(0, 0, 120, 200, false);
-	this->lvErrorDetail->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->lvErrorDetail->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lvErrorDetail->AddColumn(CSTR("Address"), 80);
 	this->lvErrorDetail->AddColumn(CSTR("Function"), 400);
 	this->lvErrorDetail->AddColumn(CSTR("Source"), 200);
 	this->vspError = ui->NewVSplitter(this->tpError, 3, true);
 	this->lvError = ui->NewListView(this->tpError, UI::ListViewStyle::Table, 3);
-	this->lvError->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvError->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvError->AddColumn(CSTR("Description"), 200);
 	this->lvError->AddColumn(CSTR("Function"), 400);
 	this->lvError->AddColumn(CSTR("Source"), 200);
@@ -322,13 +322,13 @@ SSWR::AVIRead::AVIRValgrindLogForm::AVIRValgrindLogForm(Optional<UI::GUIClientCo
 	this->tpLeak = this->tcMain->AddTabPage(CSTR("Leak"));
 	this->lvLeakDetail = ui->NewListView(this->tpLeak, UI::ListViewStyle::Table, 3);
 	this->lvLeakDetail->SetRect(0, 0, 120, 200, false);
-	this->lvLeakDetail->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->lvLeakDetail->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lvLeakDetail->AddColumn(CSTR("Address"), 80);
 	this->lvLeakDetail->AddColumn(CSTR("Function"), 400);
 	this->lvLeakDetail->AddColumn(CSTR("Source"), 200);
 	this->vspLeak = ui->NewVSplitter(this->tpLeak, 3, true);
 	this->lvLeak = ui->NewListView(this->tpLeak, UI::ListViewStyle::Table, 3);
-	this->lvLeak->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvLeak->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvLeak->AddColumn(CSTR("Description"), 200);
 	this->lvLeak->AddColumn(CSTR("Function"), 400);
 	this->lvLeak->AddColumn(CSTR("Source"), 200);

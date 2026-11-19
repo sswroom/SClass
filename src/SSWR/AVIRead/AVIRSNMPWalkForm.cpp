@@ -18,7 +18,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(Optional<UI::GUIClientControl>
 
 	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
-	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRequest->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblAgent = ui->NewLabel(this->pnlRequest, CSTR("Agent"));
 	this->lblAgent->SetRect(4, 4, 100, 23, false);
 	sbuff[0] = 0;
@@ -27,7 +27,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(Optional<UI::GUIClientControl>
 	this->txtAgent->SetRect(104, 4, 150, 23, false);
 	this->txtAgent->SetReadOnly(true);
 	this->lvResults = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
-	this->lvResults->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvResults->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvResults->SetFullRowSelect(true);
 	this->lvResults->SetShowGrid(true);
 	this->lvResults->AddColumn(CSTR("OID"), 150);

@@ -88,10 +88,10 @@ SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(Optional<UI::GUIClientContro
 
 	this->txtSearchStr = ui->NewTextBox(*this, CSTR(""));
 	this->txtSearchStr->SetRect(0, 0, 100, 21, false);
-	this->txtSearchStr->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->txtSearchStr->SetDockType(UI::GUIControl::DockType::Top);
 	this->txtSearchStr->HandleTextChanged(OnTextChg, this);
 	this->lbResults = ui->NewListBox(*this, false);
-	this->lbResults->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbResults->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbResults->HandleSelectionChange(OnResultSelChg, this);
 
 	Optional<Map::NameArray> nameArr;

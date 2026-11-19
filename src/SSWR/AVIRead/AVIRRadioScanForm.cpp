@@ -792,11 +792,11 @@ SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientContro
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpDashboard = this->tcMain->AddTabPage(CSTR("Dashboard"));
 	this->lvDashboard = ui->NewListView(this->tpDashboard, UI::ListViewStyle::Table, 3);
-	this->lvDashboard->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDashboard->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDashboard->SetFullRowSelect(true);
 	this->lvDashboard->SetShowGrid(true);
 	this->lvDashboard->AddColumn(CSTR("Type"), 80);
@@ -807,16 +807,16 @@ SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientContro
 	this->tpWiFi = this->tcMain->AddTabPage(CSTR("WiFi"));
 	this->pnlWiFi = ui->NewPanel(this->tpWiFi);
 	this->pnlWiFi->SetRect(0, 0, 100, 31, false);
-	this->pnlWiFi->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlWiFi->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnWiFi = ui->NewButton(this->pnlWiFi, CSTR("Start"));
 	this->btnWiFi->SetRect(4, 4, 75, 23, false);
 	this->btnWiFi->HandleButtonClick(OnWiFiClicked, this);
 	this->txtWiFiDetail = ui->NewTextBox(this->tpWiFi, CSTR(""), true);
 	this->txtWiFiDetail->SetReadOnly(true);
 	this->txtWiFiDetail->SetRect(0, 0, 100, 100, false);
-	this->txtWiFiDetail->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtWiFiDetail->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lvWiFi = ui->NewListView(this->tpWiFi, UI::ListViewStyle::Table, 10);
-	this->lvWiFi->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvWiFi->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvWiFi->SetShowGrid(true);
 	this->lvWiFi->SetFullRowSelect(true);
 	this->lvWiFi->AddColumn(CSTR("MAC Address"), 120);
@@ -837,12 +837,12 @@ SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientContro
 	this->tpBluetooth = this->tcMain->AddTabPage(CSTR("Bluetooth"));
 	this->pnlBluetooth = ui->NewPanel(this->tpBluetooth);
 	this->pnlBluetooth->SetRect(0, 0, 100, 31, false);
-	this->pnlBluetooth->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlBluetooth->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnBluetooth = ui->NewButton(this->pnlBluetooth, CSTR("Start"));
 	this->btnBluetooth->SetRect(4, 4, 75, 23, false);
 	this->btnBluetooth->HandleButtonClick(OnBluetoothClicked, this);
 	this->lvBluetooth = ui->NewListView(this->tpBluetooth, UI::ListViewStyle::Table, 9);
-	this->lvBluetooth->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvBluetooth->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvBluetooth->SetShowGrid(true);
 	this->lvBluetooth->SetFullRowSelect(true);
 	this->lvBluetooth->AddColumn(CSTR("MAC Address"), 120);
@@ -861,7 +861,7 @@ SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientContro
 	this->tpGNSS = this->tcMain->AddTabPage(CSTR("GNSS"));
 	this->pnlGNSS = ui->NewPanel(this->tpGNSS);
 	this->pnlGNSS->SetRect(0, 0, 100, 127, false);
-	this->pnlGNSS->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlGNSS->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblGNSSPort = ui->NewLabel(this->pnlGNSS, CSTR("Port"));
 	this->lblGNSSPort->SetRect(4, 4, 100, 23, false);
 	this->cboGNSSPort = ui->NewComboBox(this->pnlGNSS, false);
@@ -888,10 +888,10 @@ SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientContro
 	this->btnGNSS->SetRect(104, 100, 75, 23, false);
 	this->btnGNSS->HandleButtonClick(OnGNSSClicked, this);
 	this->tcGNSS = ui->NewTabControl(this->tpGNSS);
-	this->tcGNSS->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcGNSS->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpGNSSSatellite = this->tcGNSS->AddTabPage(CSTR("Satellite"));
 	this->lvGNSSSatellite = ui->NewListView(this->tpGNSSSatellite, UI::ListViewStyle::Table, 5);
-	this->lvGNSSSatellite->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvGNSSSatellite->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvGNSSSatellite->AddColumn(CSTR("Type"), 80);
 	this->lvGNSSSatellite->AddColumn(CSTR("PRN"), 60);
 	this->lvGNSSSatellite->AddColumn(CSTR("Elevation"), 60);
@@ -987,7 +987,7 @@ SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientContro
 	this->tpCellular = this->tcMain->AddTabPage(CSTR("Cellular"));
 	this->pnlCellular = ui->NewPanel(this->tpCellular);
 	this->pnlCellular->SetRect(0, 0, 100, 127, false);
-	this->pnlCellular->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCellular->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblCellularPort = ui->NewLabel(this->pnlCellular, CSTR("Port"));
 	this->lblCellularPort->SetRect(4, 4, 100, 23, false);
 	this->cboCellularPort = ui->NewComboBox(this->pnlCellular, false);
@@ -1014,7 +1014,7 @@ SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientContro
 	this->btnCellular->SetRect(104, 100, 75, 23, false);
 	this->btnCellular->HandleButtonClick(OnCellularClicked, this);
 	this->tcCellular = ui->NewTabControl(this->tpCellular);
-	this->tcCellular->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcCellular->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpCellularInfo = this->tcCellular->AddTabPage(CSTR("Info"));
 	this->lblCellularManu = ui->NewLabel(this->tpCellularInfo, CSTR("Manufacture"));
 	this->lblCellularManu->SetRect(4, 4, 100, 23, false);
@@ -1086,7 +1086,7 @@ SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientContro
 	this->txtCellularSignalQuality->SetRect(104, 292, 150, 23, false);
 	this->tpCellularCells = this->tcCellular->AddTabPage(CSTR("Cells"));
 	this->lvCellularCells = ui->NewListView(this->tpCellularCells, UI::ListViewStyle::Table, 15);
-	this->lvCellularCells->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvCellularCells->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvCellularCells->SetFullRowSelect(true);
 	this->lvCellularCells->SetShowGrid(true);
 	this->lvCellularCells->AddColumn(CSTR(" "), 10);

@@ -9,7 +9,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(NN<SSWR::AVIRead
 	this->obj = obj;
 
 	this->lvXML = ui->NewListView(ctrl, UI::ListViewStyle::Table, 3);
-	this->lvXML->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvXML->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvXML->SetShowGrid(true);
 	this->lvXML->SetFullRowSelect(true);
 	this->lvXML->AddColumn(CSTR("Path"), 300);

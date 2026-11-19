@@ -129,14 +129,14 @@ SSWR::AVIRead::AVIRSNMPTrapMonitorForm::AVIRSNMPTrapMonitorForm(Optional<UI::GUI
 
 	this->lbResults = ui->NewListBox(*this, false);
 	this->lbResults->SetRect(0, 0, 140, 23, false);
-	this->lbResults->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbResults->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbResults->HandleSelectionChange(OnResultSelChg, this);
 	this->hspResults = ui->NewHSplitter(*this, 3, false);
 	this->pnlResults = ui->NewPanel(*this);
-	this->pnlResults->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlResults->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pnlTrap = ui->NewPanel(this->pnlResults);
 	this->pnlTrap->SetRect(0, 0, 100, 248, false);
-	this->pnlTrap->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlTrap->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblCommunity = ui->NewLabel(this->pnlTrap, CSTR("Community"));
 	this->lblCommunity->SetRect(4, 4, 100, 23, false);
 	this->txtCommunity = ui->NewTextBox(this->pnlTrap, CSTR(""));
@@ -188,7 +188,7 @@ SSWR::AVIRead::AVIRSNMPTrapMonitorForm::AVIRSNMPTrapMonitorForm(Optional<UI::GUI
 	this->txtTrapTime->SetRect(104, 220, 200, 23, false);
 	this->txtTrapTime->SetReadOnly(true);
 	this->lvResults = ui->NewListView(this->pnlResults, UI::ListViewStyle::Table, 4);
-	this->lvResults->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvResults->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvResults->SetFullRowSelect(true);
 	this->lvResults->SetShowGrid(true);
 	this->lvResults->AddColumn(CSTR("OID"), 150);

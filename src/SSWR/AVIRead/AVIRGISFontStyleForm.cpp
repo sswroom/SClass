@@ -90,7 +90,7 @@ SSWR::AVIRead::AVIRGISFontStyleForm::AVIRGISFontStyleForm(Optional<UI::GUIClient
 
 	this->pnlBtn = ui->NewPanel(*this);
 	this->pnlBtn->SetRect(0, 0, 100, 48, false);
-	this->pnlBtn->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlBtn->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnOK = ui->NewButton(this->pnlBtn, CSTR("OK"));
 	this->btnOK->SetRect(130, 12, 100, 23, false);
 	this->btnOK->HandleButtonClick(OKClicked, this);
@@ -101,10 +101,10 @@ SSWR::AVIRead::AVIRGISFontStyleForm::AVIRGISFontStyleForm(Optional<UI::GUIClient
 	this->SetCancelButton(this->btnCancel);
 
 	this->grpStyle = ui->NewGroupBox(*this, CSTR("Style"));
-	this->grpStyle->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpStyle->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pnlStyle = ui->NewPanel(this->grpStyle);
 	this->pnlStyle->SetRect(0, 0, 100, 32, false);
-	this->pnlStyle->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlStyle->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnAddStyle = ui->NewButton(this->pnlStyle, CSTR("New Style"));
 	this->btnAddStyle->SetRect(8, 8, 75, 23, false);
 	this->btnAddStyle->HandleButtonClick(AddStyleClicked, this);
@@ -116,7 +116,7 @@ SSWR::AVIRead::AVIRGISFontStyleForm::AVIRGISFontStyleForm(Optional<UI::GUIClient
 	this->btnEditStyle->HandleButtonClick(EditStyleClicked, this);
 
 	NEW_CLASSNN(this->fsFonts, SSWR::AVIRead::AVIRFontSelector(ui, this->grpStyle, this->core, this->env, fontStyle, this->colorSess));
-	this->fsFonts->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->fsFonts->SetDockType(UI::GUIControl::DockType::Fill);
 	this->fsFonts->HandleSelChg(FontsSelectedChg, this);
 
 	this->changed = false;

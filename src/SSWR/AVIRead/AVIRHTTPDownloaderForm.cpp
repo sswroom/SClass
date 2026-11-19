@@ -275,7 +275,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(Optional<UI::GUICl
 
 	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 151, false);
-	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRequest->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblURL = ui->NewLabel(this->pnlRequest, CSTR("URL"));
 	this->lblURL->SetRect(4, 4, 100, 23, false);
 	this->txtURL = ui->NewTextBox(this->pnlRequest, CSTR("http://"));
@@ -293,7 +293,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(Optional<UI::GUICl
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	this->grpStatus = ui->NewGroupBox(*this, CSTR("Status"));
 	this->grpStatus->SetRect(0, 0, 100, 67, false);
-	this->grpStatus->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpStatus->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblCurrSpeed = ui->NewLabel(this->grpStatus, CSTR("Curr Speed"));
 	this->lblCurrSpeed->SetRect(4, 0, 100, 23, false);
 	this->txtCurrSpeed = ui->NewTextBox(this->grpStatus, CSTR(""));
@@ -305,10 +305,10 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(Optional<UI::GUICl
 	this->txtTotalSize->SetRect(104, 24, 200, 23, false);
 	this->txtTotalSize->SetReadOnly(true);
 	this->grpResponse = ui->NewGroupBox(*this, CSTR("Response"));
-	this->grpResponse->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpResponse->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pnlResponse = ui->NewPanel(this->grpResponse);
 	this->pnlResponse->SetRect(0, 0, 100, 151, false);
-	this->pnlResponse->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlResponse->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblSvrIP = ui->NewLabel(this->pnlResponse, CSTR("Server IP"));
 	this->lblSvrIP->SetRect(4, 4, 100, 23, false);
 	this->txtSvrIP = ui->NewTextBox(this->pnlResponse, CSTR(""));
@@ -340,7 +340,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(Optional<UI::GUICl
 	this->txtTimeTotal->SetRect(104, 124, 150, 23, false);
 	this->txtTimeTotal->SetReadOnly(true);
 	this->lvHeaders = ui->NewListView(this->grpResponse, UI::ListViewStyle::Table, 1);
-	this->lvHeaders->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvHeaders->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvHeaders->SetShowGrid(true);
 	this->lvHeaders->SetFullRowSelect(true);
 	this->lvHeaders->AddColumn(CSTR("Header"), 1000);

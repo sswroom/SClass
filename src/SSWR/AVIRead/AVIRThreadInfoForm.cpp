@@ -537,7 +537,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	Manage::ThreadInfo thread(proc->GetProcId(), threadId);
 	UTF8Char sbuff[512];
@@ -583,7 +583,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 
 	this->tpContext = this->tcMain->AddTabPage(CSTR("Context"));
 	this->lvContext = ui->NewListView(this->tpContext, UI::ListViewStyle::Table, 2);
-	this->lvContext->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvContext->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvContext->SetFullRowSelect(true);
 	this->lvContext->SetShowGrid(true);
 	this->lvContext->AddColumn(CSTR("Name"), 100);
@@ -591,7 +591,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 
 	this->tpStack = this->tcMain->AddTabPage(CSTR("Stack"));
 	this->lvStack = ui->NewListView(this->tpStack, UI::ListViewStyle::Table, 2);
-	this->lvStack->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvStack->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvStack->SetFullRowSelect(true);
 	this->lvStack->SetShowGrid(true);
 	this->lvStack->AddColumn(CSTR("Address"), 120);
@@ -600,20 +600,20 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 	this->tpMyStack = this->tcMain->AddTabPage(CSTR("My Stack"));
 	this->lbMyStack = ui->NewListBox(this->tpMyStack, false);
 	this->lbMyStack->SetRect(0, 0, 300, 23, false);
-	this->lbMyStack->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbMyStack->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbMyStack->HandleSelectionChange(OnMyStackChg, this);
 	this->hspMyStack = ui->NewHSplitter(this->tpMyStack, 3, false);
 	this->pnlMyStack = ui->NewPanel(this->tpMyStack);
-	this->pnlMyStack->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlMyStack->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtMyStackMem = ui->NewTextBox(this->pnlMyStack, CSTR(""), true);
 	this->txtMyStackMem->SetRect(0, 0, 100, 200, false);
-	this->txtMyStackMem->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->txtMyStackMem->SetDockType(UI::GUIControl::DockType::Top);
 	this->txtMyStackMem->SetReadOnly(true);
 	this->vspMyStack = ui->NewVSplitter(this->pnlMyStack, 3, false);
 	this->lvMyStack = ui->NewListView(this->pnlMyStack, UI::ListViewStyle::Table, 1);
 	this->lvMyStack->SetShowGrid(true);
 	this->lvMyStack->SetFullRowSelect(true);
-	this->lvMyStack->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvMyStack->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvMyStack->HandleDblClk(OnMyStackDblClk, this);
 
 	if (thread.IsCurrThread())

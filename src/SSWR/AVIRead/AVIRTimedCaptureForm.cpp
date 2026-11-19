@@ -300,11 +300,11 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(Optional<UI::GUIClient
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lbDevice = ui->NewListBox(*this, false);
 	this->lbDevice->SetRect(0, 8, 256, 88, false);
-	this->lbDevice->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbDevice->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbDevice->HandleSelectionChange(OnDevChg, this);
 	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	this->lblFormat = ui->NewLabel(this->tpControl, CSTR("Capture Format"));
@@ -329,7 +329,7 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(Optional<UI::GUIClient
 	this->txtDeviceInfo = ui->NewTextBox(this->tpControl, CSTR(""), true);
 	this->txtDeviceInfo->SetReadOnly(true);
 	this->txtDeviceInfo->SetRect(4, 144, 384, 168, false);
-	this->txtDeviceInfo->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtDeviceInfo->SetDockType(UI::GUIControl::DockType::Bottom);
 
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	this->lblFrameCnt = ui->NewLabel(this->tpStatus, CSTR("Frame Count"));

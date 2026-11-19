@@ -240,7 +240,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(Optional<UI::GUIClientControl> p
 
 	this->grpServer = ui->NewGroupBox(*this, CSTR("Server"));
 	this->grpServer->SetRect(0, 0, 200, 23, false);
-	this->grpServer->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->grpServer->SetDockType(UI::GUIControl::DockType::Left);
 	this->lblServerPort = ui->NewLabel(this->grpServer, CSTR("Port"));
 	this->lblServerPort->SetRect(4, 4, 50, 23, false);
 	this->txtServerPort = ui->NewTextBox(this->grpServer, CSTR(""));
@@ -253,7 +253,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(Optional<UI::GUIClientControl> p
 	this->chkAutoReply->HandleCheckedChange(OnAutoReplyChanged, this);
 	this->grpDest = ui->NewGroupBox(*this, CSTR("Dest"));
 	this->grpDest->SetRect(0, 0, 250, 23, false);
-	this->grpDest->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->grpDest->SetDockType(UI::GUIControl::DockType::Left);
 	this->lblDestHost = ui->NewLabel(this->grpDest, CSTR("Host"));
 	this->lblDestHost->SetRect(4, 4, 50, 23, false);
 	this->txtDestHost = ui->NewTextBox(this->grpDest, CSTR("127.0.0.1"));
@@ -270,7 +270,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(Optional<UI::GUIClientControl> p
 	this->btnSend->SetRect(54, 76, 75, 23, false);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
 	this->grpStatus = ui->NewGroupBox(*this, CSTR("Status"));
-	this->grpStatus->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpStatus->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblRecvCnt = ui->NewLabel(this->grpStatus, CSTR("Recv Count"));
 	this->lblRecvCnt->SetRect(4, 4, 100, 23, false);
 	this->txtRecvCnt = ui->NewTextBox(this->grpStatus, CSTR(""));

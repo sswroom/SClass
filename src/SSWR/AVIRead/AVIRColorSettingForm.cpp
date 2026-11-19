@@ -492,7 +492,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClient
 
 	this->pnlMonitor = ui->NewPanel(*this);
 	this->pnlMonitor->SetRect(0, 0, 100, 23, false);
-	this->pnlMonitor->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlMonitor->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblMonitor = ui->NewLabel(this->pnlMonitor, CSTR("Monitor"));
 	this->lblMonitor->SetRect(0, 0, 100, 23, false);
 	this->txtMonitor = ui->NewTextBox(this->pnlMonitor, CSTR(""), false);
@@ -505,7 +505,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClient
 	}
 	this->pnlButtons = ui->NewPanel(*this);
 	this->pnlButtons->SetRect(0, 0, 100, 40, false);
-	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlButtons->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnOK = ui->NewButton(this->pnlButtons, CSTR("OK"));
 	this->btnOK->SetRect(216, 8, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
@@ -513,7 +513,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClient
 	this->btnCancel->SetRect(304, 8, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpSetting = this->tcMain->AddTabPage(CSTR("Setting"));
 	this->lblMonProfile = ui->NewLabel(this->tpSetting, CSTR("Monitor Profile"));
@@ -639,7 +639,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClient
 	this->pnlCalRed = ui->NewPanel(this->tpCal);
 	this->pnlCalRed->SetBGColor(0xffffc0c0);
 	this->pnlCalRed->SetRect(0, 0, 608, 104, false);
-	this->pnlCalRed->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCalRed->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblCalRedB = ui->NewLabel(this->pnlCalRed, CSTR("Brightness"));
 	this->lblCalRedB->SetRect(8, 8, 120, 16, false);
 	this->lblCalRedB->SetBGColor(0xffffc0c0);
@@ -668,7 +668,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClient
 	this->pnlCalGreen = ui->NewPanel(this->tpCal);
 	this->pnlCalGreen->SetBGColor(0xffc0ffc0);
 	this->pnlCalGreen->SetRect(0, 0, 608, 104, false);
-	this->pnlCalGreen->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCalGreen->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblCalGreenB = ui->NewLabel(this->pnlCalGreen, CSTR("Brightness"));
 	this->lblCalGreenB->SetRect(8, 8, 120, 16, false);
 	this->lblCalGreenB->SetBGColor(0xffc0ffc0);
@@ -697,7 +697,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClient
 	this->pnlCalBlue = ui->NewPanel(this->tpCal);
 	this->pnlCalBlue->SetBGColor(0xffc0c0ff);
 	this->pnlCalBlue->SetRect(0, 0, 608, 104, false);
-	this->pnlCalBlue->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCalBlue->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblCalBlueB = ui->NewLabel(this->pnlCalBlue, CSTR("Brightness"));
 	this->lblCalBlueB->SetRect(8, 8, 120, 16, false);
 	this->lblCalBlueB->SetBGColor(0xffc0c0ff);

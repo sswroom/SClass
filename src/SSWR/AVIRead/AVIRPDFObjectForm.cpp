@@ -124,16 +124,16 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientContro
 	
 	this->lbObject = ui->NewListBox(*this, false);
 	this->lbObject->SetRect(0, 0, 100, 23, false);
-	this->lbObject->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbObject->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbObject->HandleSelectionChange(OnObjectSelChg, this);
 	this->lbObject->HandleDoubleClicked(OnObjectDblClk, this);
 	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpParameter = this->tcMain->AddTabPage(CSTR("Parameter"));
 	this->lvParameter = ui->NewListView(this->tpParameter, UI::ListViewStyle::Table, 2);
-	this->lvParameter->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvParameter->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvParameter->SetFullRowSelect(true);
 	this->lvParameter->SetShowGrid(true);
 	this->lvParameter->AddColumn(CSTR("Type"), 100);
@@ -141,28 +141,28 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientContro
 
 	this->tpText = this->tcMain->AddTabPage(CSTR("Text"));
 	this->txtText = ui->NewTextBox(this->tpText, CSTR(""), true);
-	this->txtText->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtText->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtText->SetReadOnly(true);
 
 	this->tpImage = this->tcMain->AddTabPage(CSTR("Image"));
 	this->pnlImage = ui->NewPanel(this->tpImage);
 	this->pnlImage->SetRect(0, 0, 100, 31, false);
-	this->pnlImage->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlImage->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnImageOpen = ui->NewButton(this->pnlImage, CSTR("Open"));
 	this->btnImageOpen->SetRect(4, 4, 75, 23, false);
 	this->btnImageOpen->HandleButtonClick(OnImageOpenClicked, this);
 	this->pbImage = ui->NewPictureBoxDD(this->tpImage, this->colorSess, true, false);
-	this->pbImage->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbImage->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpStream = this->tcMain->AddTabPage(CSTR("Stream"));
 	this->pnlStream = ui->NewPanel(this->tpStream);
 	this->pnlStream->SetRect(0, 0, 100, 31, false);
-	this->pnlStream->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlStream->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnStreamHex = ui->NewButton(this->pnlStream, CSTR("Show Hex"));
 	this->btnStreamHex->SetRect(4, 4, 75, 23, false);
 	this->btnStreamHex->HandleButtonClick(OnStreamHexClicked, this);
 	this->txtStream = ui->NewTextBox(this->tpStream, CSTR(""), true);
-	this->txtStream->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtStream->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtStream->SetReadOnly(true);
 
 	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());

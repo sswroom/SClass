@@ -7,12 +7,12 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NN<SSWR::AVIRead::AVIR
 
 	this->tcHeader = ui->NewTabControl(ctrl);
 	this->tcHeader->SetRect(0,0, 100, 96, false);
-	this->tcHeader->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->tcHeader->SetDockType(UI::GUIControl::DockType::Top);
 
 	this->tpHeading = this->tcHeader->AddTabPage(CSTR("Heading"));
 	this->lvRecp = ui->NewListView(this->tpHeading, UI::ListViewStyle::Table, 3);
 	this->lvRecp->SetRect(0, 0, 300, 23, false);
-	this->lvRecp->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->lvRecp->SetDockType(UI::GUIControl::DockType::Right);
 	this->lvRecp->AddColumn(CSTR("Type"), 40);
 	this->lvRecp->AddColumn(CSTR("Name"), 100);
 	this->lvRecp->AddColumn(CSTR("Email"), 150);
@@ -20,41 +20,41 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NN<SSWR::AVIRead::AVIR
 	this->lvRecp->SetFullRowSelect(true);
 	this->pnlFrom = ui->NewPanel(this->tpHeading);
 	this->pnlFrom->SetRect(0, 0, 100, 24, false);
-	this->pnlFrom->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlFrom->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblFrom = ui->NewLabel(this->pnlFrom, CSTR("From"));
 	this->lblFrom->SetRect(0, 0, 100, 23, false);
-	this->lblFrom->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lblFrom->SetDockType(UI::GUIControl::DockType::Left);
 	this->txtFrom = ui->NewTextBox(this->pnlFrom, CSTR(""));
-	this->txtFrom->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtFrom->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtFrom->SetReadOnly(true);
 	this->pnlSubject = ui->NewPanel(this->tpHeading);
 	this->pnlSubject->SetRect(0, 0, 100, 24, false);
-	this->pnlSubject->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlSubject->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblSubject = ui->NewLabel(this->pnlSubject, CSTR("Subject"));
 	this->lblSubject->SetRect(0, 0, 100, 23, false);
-	this->lblSubject->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lblSubject->SetDockType(UI::GUIControl::DockType::Left);
 	this->txtSubject = ui->NewTextBox(this->pnlSubject, CSTR(""));
-	this->txtSubject->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtSubject->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtSubject->SetReadOnly(true);
 	this->pnlDate = ui->NewPanel(this->tpHeading);
-	this->pnlDate->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlDate->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblDate = ui->NewLabel(this->pnlDate, CSTR("Date"));
 	this->lblDate->SetRect(0, 0, 100, 23, false);
-	this->lblDate->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lblDate->SetDockType(UI::GUIControl::DockType::Left);
 	this->txtDate = ui->NewTextBox(this->pnlDate, CSTR(""));
-	this->txtDate->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtDate->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtDate->SetReadOnly(true);
 
 	this->tpRAW = this->tcHeader->AddTabPage(CSTR("RAW Headers"));
 	this->lvRAW = ui->NewListView(this->tpRAW, UI::ListViewStyle::Table, 2);
-	this->lvRAW->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvRAW->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvRAW->AddColumn(CSTR("Name"), 100);
 	this->lvRAW->AddColumn(CSTR("Value"), 600);
 	this->lvRAW->SetShowGrid(true);
 	this->lvRAW->SetFullRowSelect(true);
 
 	this->pnlContent = ui->NewPanel(ctrl);
-	this->pnlContent->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlContent->SetDockType(UI::GUIControl::DockType::Fill);
 	this->viewer = nullptr;
 	NN<Text::MIMEObject> content;
 	if (this->mail->GetRAWContent().SetTo(content))

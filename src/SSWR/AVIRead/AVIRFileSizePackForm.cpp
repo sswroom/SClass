@@ -344,7 +344,7 @@ SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(Optional<UI::GUIClient
 
 	this->pnlFile = ui->NewPanel(*this);
 	this->pnlFile->SetRect(0, 0, 424, 104, false);
-	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlFile->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblDir = ui->NewLabel(this->pnlFile, CSTR("Directory"));
 	this->lblDir->SetRect(16, 8, 100, 23, false);
 	this->txtDir = ui->NewTextBox(this->pnlFile, CSTR(""));
@@ -374,10 +374,10 @@ SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(Optional<UI::GUIClient
 	this->btnMove->HandleButtonClick(OnMoveClicked, this);
 	this->lbFilePack = ui->NewListBox(*this, false);
 	this->lbFilePack->SetRect(0, 0, 120, 212, false);
-	this->lbFilePack->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbFilePack->SetDockType(UI::GUIControl::DockType::Left);
 	this->hspFile = ui->NewHSplitter(*this, 3, false);
 	this->lbFileDir = ui->NewListBox(*this, false);
-	this->lbFileDir->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbFileDir->SetDockType(UI::GUIControl::DockType::Fill);
 }
 
 SSWR::AVIRead::AVIRFileSizePackForm::~AVIRFileSizePackForm()

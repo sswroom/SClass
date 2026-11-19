@@ -275,7 +275,7 @@ SSWR::AVIRead::AVIRImageViewerForm::AVIRImageViewerForm(Optional<UI::GUIClientCo
 
 	this->pbImage = ui->NewPictureBoxDD(*this, this->colorSess, this->allowEnlarge, false);
 	this->pbImage->SetUserFSMode(UI::GUIDDrawControl::SM_VFS);
-	this->pbImage->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbImage->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pbImage->HandleMoveToNext(OnMoveToNext, this);
 	this->pbImage->HandleMoveToPrev(OnMoveToPrev, this);
 	this->pbImage->HandleMouseMove(OnMouseMove, this);

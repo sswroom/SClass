@@ -58,7 +58,7 @@ SSWR::AVIRead::AVIRLogFileForm::AVIRLogFileForm(Optional<UI::GUIClientControl> p
 	this->SetFont(nullptr, 8.25, false);
 
 	this->lvLogs = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
-	this->lvLogs->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvLogs->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvLogs->SetShowGrid(true);
 	this->lvLogs->SetFullRowSelect(true);
 	this->lvLogs->AddColumn(CSTR("Time"), 200);

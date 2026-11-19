@@ -70,7 +70,7 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(Optional<UI::GUIClientControl> par
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblIP = ui->NewLabel(this->pnlControl, CSTR("IP"));
 	this->lblIP->SetRect(4, 4, 100, 23, false);
 	this->cboIP = ui->NewComboBox(this->pnlControl, false);
@@ -79,7 +79,7 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(Optional<UI::GUIClientControl> par
 	this->btnStart->SetRect(254, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	this->lvIP = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
-	this->lvIP->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvIP->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvIP->SetFullRowSelect(true);
 	this->lvIP->SetShowGrid(true);
 	this->lvIP->AddColumn(CSTR("IP"), 80);

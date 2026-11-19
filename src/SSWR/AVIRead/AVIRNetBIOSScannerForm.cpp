@@ -123,7 +123,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(Optional<UI::GUICl
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 104, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblTargetAddr = ui->NewLabel(this->pnlControl, CSTR("Target Addr"));
 	this->lblTargetAddr->SetRect(4, 4, 100, 23, false);
 	this->txtTargetAddr = ui->NewTextBox(this->pnlControl, CSTR(""));
@@ -136,7 +136,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(Optional<UI::GUICl
 
 	this->lvAnswers = ui->NewListView(*this, UI::ListViewStyle::Table, 5);
 	this->lvAnswers->SetRect(0, 0, 100, 300, false);
-	this->lvAnswers->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lvAnswers->SetDockType(UI::GUIControl::DockType::Top);
 	this->lvAnswers->SetShowGrid(true);
 	this->lvAnswers->SetFullRowSelect(true);
 	this->lvAnswers->AddColumn(CSTR("IP"), 100);
@@ -147,7 +147,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(Optional<UI::GUICl
 	this->lvAnswers->HandleSelChg(OnAnswerSelChg, this);
 	this->vspAnswers = ui->NewVSplitter(*this, 3, false);
 	this->lvEntries = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
-	this->lvEntries->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvEntries->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvEntries->SetShowGrid(true);
 	this->lvEntries->SetFullRowSelect(true);
 	this->lvEntries->AddColumn(CSTR("Name"), 140);

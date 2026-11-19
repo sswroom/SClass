@@ -122,19 +122,19 @@ SSWR::ColorDemo::ColorDemoForm::ColorDemoForm(Optional<UI::GUIClientControl> par
 
 	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetRect(0, 0, 10, 3 + 1, false);
-	this->pnlMain->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlMain->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblValue = ui->NewLabel(this->pnlMain, CSTR("0"));
 	this->lblValue->SetRect(0, 0, 50, 24, false);
-	this->lblValue->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->lblValue->SetDockType(UI::GUIControl::DockType::Right);
 /*	this->tbValue = ui->NewTrackBar(this->pnlMain, 0, 800, 400);
-	this->tbValue->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tbValue->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tbValue->HandleScrolled(OnValueChanged, this);*/
 	this->hsbValue = ui->NewHScrollBar(this->pnlMain, 3);
-	this->hsbValue->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->hsbValue->SetDockType(UI::GUIControl::DockType::Fill);
 	this->hsbValue->InitScrollBar(0, 809, 400, 10);
 	this->hsbValue->HandlePosChanged(OnValueChanged, this);
 	this->pbMain = ui->NewPictureBoxDD(*this, this->colorSess, false, false);
-	this->pbMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pbMain->HandleSizeChanged(OnPBResized, this);
 }
 

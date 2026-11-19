@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnFontClicked(AnyType userObj)
 UI::EventState __stdcall SSWR::AVIRead::AVIRGISFontForm::OnColorClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRGISFontForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontForm>();
-	if (btn == UI::GUIControl::MBTN_LEFT)
+	if (btn == UI::GUIControl::MouseButton::Left)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 		UtilUI::ColorDialog dlg(nullptr, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
@@ -109,9 +109,9 @@ SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(Optional<UI::GUIClientControl> p
 
 	this->pbPreview = ui->NewPictureBox(*this, eng, true, false);
 	this->pbPreview->SetRect(0, 0, 100, 60, false);
-	this->pbPreview->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pbPreview->SetDockType(UI::GUIControl::DockType::Top);
 	this->pnlMain = ui->NewPanel(*this);
-	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblFont = ui->NewLabel(this->pnlMain, CSTR("Font"));
 	this->lblFont->SetRect(4, 4, 100, 23, false);
 	this->txtFont = ui->NewTextBox(this->pnlMain, CSTR(""));

@@ -771,7 +771,7 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl>
 
 	this->pnlObj = ui->NewPanel(*this);
 	this->pnlObj->SetRect(0, 0, 100, 55, false);
-	this->pnlObj->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlObj->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblObjName = ui->NewLabel(this->pnlObj, CSTR("Name Column"));
 	this->lblObjName->SetRect(4, 4, 100, 23, false);
 	this->cboObjName = ui->NewComboBox(this->pnlObj, false);
@@ -786,11 +786,11 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl>
 	this->lblObjMsg = ui->NewLabel(this->pnlObj, CSTR(""));
 	this->lblObjMsg->SetRect(204, 28, 200, 23, false);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	this->lvInfo = ui->NewListView(this->tpInfo, UI::ListViewStyle::Table, 2);
-	this->lvInfo->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvInfo->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvInfo->AddColumn(CSTR("Name"), 100);
 	this->lvInfo->AddColumn(CSTR("Value"), 300);
 	this->lvInfo->SetShowGrid(true);
@@ -800,7 +800,7 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl>
 	this->tpShape = this->tcMain->AddTabPage(CSTR("Shape"));
 	this->pnlShape = ui->NewPanel(this->tpShape);
 	this->pnlShape->SetRect(0, 0, 100, 103, false);
-	this->pnlShape->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlShape->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblShapeHLength = ui->NewLabel(this->pnlShape, CSTR("H. Length"));
 	this->lblShapeHLength->SetRect(4, 4, 100, 23, false);
 	this->txtShapeHLength = ui->NewTextBox(this->pnlShape, CSTR(""));
@@ -819,7 +819,7 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl>
 	this->cboShapeFmt->SetRect(104, 76, 200, 23, false);
 	this->cboShapeFmt->HandleSelectionChange(OnShapeFmtChanged, this);
 	this->txtShape = ui->NewTextBox(this->tpShape, CSTR(""), true);
-	this->txtShape->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtShape->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtShape->SetReadOnly(true);
 
 	this->tpBounds = this->tcMain->AddTabPage(CSTR("Bounds"));

@@ -394,7 +394,7 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 
 	this->pnlPort = ui->NewPanel(*this);
 	this->pnlPort->SetRect(0, 0, 100, 31, false);
-	this->pnlPort->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlPort->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblPort = ui->NewLabel(this->pnlPort, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	this->txtPort = ui->NewTextBox(this->pnlPort, CSTR("9222"));
@@ -403,7 +403,7 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 	this->btnStart->SetRect(204, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpVersion = this->tcMain->AddTabPage(CSTR("Version"));
 	this->lblVersionBrowser = ui->NewLabel(this->tpVersion, CSTR("Browser"));
@@ -440,16 +440,16 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 	this->tpTarget = this->tcMain->AddTabPage(CSTR("Target"));
 	this->pnlTarget = ui->NewPanel(this->tpTarget);
 	this->pnlTarget->SetRect(0, 0, 100, 31, false);
-	this->pnlTarget->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlTarget->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnTarget = ui->NewButton(this->pnlTarget, CSTR("Refresh"));
 	this->btnTarget->SetRect(4, 4, 75, 23, false);
 	this->btnTarget->HandleButtonClick(OnTargetClicked, this);
 	this->lbTarget = ui->NewListBox(this->tpTarget, false);
 	this->lbTarget->SetRect(0, 0, 200, 23, false);
-	this->lbTarget->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbTarget->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbTarget->HandleSelectionChange(OnTargetSelChg, this);
 	this->pnlTargetDetail = ui->NewPanel(this->tpTarget);
-	this->pnlTargetDetail->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlTargetDetail->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblTargetDescription = ui->NewLabel(this->pnlTargetDetail, CSTR("Description"));
 	this->lblTargetDescription->SetRect(4, 4, 100, 23, false);
 	this->txtTargetDescription = ui->NewTextBox(this->pnlTargetDetail, CSTR(""));
@@ -489,7 +489,7 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 	this->tpProtocol = this->tcMain->AddTabPage(CSTR("Protocol"));
 	this->pnlProtocol = ui->NewPanel(this->tpProtocol);
 	this->pnlProtocol->SetRect(0, 0, 100, 55, false);
-	this->pnlProtocol->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlProtocol->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblProtocolVerMajor = ui->NewLabel(this->pnlProtocol, CSTR("Version Major"));
 	this->lblProtocolVerMajor->SetRect(4, 4, 100, 23, false);
 	this->txtProtocolVerMajor = ui->NewTextBox(this->pnlProtocol, CSTR(""));
@@ -502,12 +502,12 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 	this->txtProtocolVerMinor->SetReadOnly(true);
 	this->lbProtocol = ui->NewListBox(this->tpProtocol, false);
 	this->lbProtocol->SetRect(0, 0, 150, 23, false);
-	this->lbProtocol->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbProtocol->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbProtocol->HandleSelectionChange(OnProtocolSelChg, this);
 	this->hspProtocol = ui->NewHSplitter(this->tpProtocol, 3, false);
 	this->pnlProtocolDomain = ui->NewPanel(this->tpProtocol);
 	this->pnlProtocolDomain->SetRect(0, 0, 100, 79, false);
-	this->pnlProtocolDomain->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlProtocolDomain->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblProtocolDomain = ui->NewLabel(this->pnlProtocolDomain, CSTR("Domain"));
 	this->lblProtocolDomain->SetRect(4, 4, 100, 23, false);
 	this->txtProtocolDomain = ui->NewTextBox(this->pnlProtocolDomain, CSTR(""));
@@ -525,20 +525,20 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 	this->chkProtocolExperimental->SetRect(204, 52, 200, 23, false);
 	this->chkProtocolExperimental->SetEnabled(false);
 	this->tcProtocol = ui->NewTabControl(this->tpProtocol);
-	this->tcProtocol->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcProtocol->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpProtocolCommands = this->tcProtocol->AddTabPage(CSTR("Commands"));
 	this->lbProtocolCommands = ui->NewListBox(this->tpProtocolCommands, false);
 	this->lbProtocolCommands->SetRect(0, 0, 150, 23, false);
-	this->lbProtocolCommands->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbProtocolCommands->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbProtocolCommands->HandleSelectionChange(OnProtocolCommandsSelChg, this);
 	this->hspProtocolCommands = ui->NewHSplitter(this->tpProtocolCommands, 3, false);
 	this->tcProtocolCommands = ui->NewTabControl(this->tpProtocolCommands);
-	this->tcProtocolCommands->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcProtocolCommands->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpProtocolCommandDetail = this->tcProtocolCommands->AddTabPage(CSTR("Detail"));
 	this->pnlProtocolCommands = ui->NewPanel(this->tpProtocolCommandDetail);
 	this->pnlProtocolCommands->SetRect(0, 0, 100, 79, false);
-	this->pnlProtocolCommands->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlProtocolCommands->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblProtocolCommandsName = ui->NewLabel(this->pnlProtocolCommands, CSTR("Name"));
 	this->lblProtocolCommandsName->SetRect(4, 4, 100, 23, false);
 	this->txtProtocolCommandsName = ui->NewTextBox(this->pnlProtocolCommands, CSTR(""));
@@ -557,9 +557,9 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 	this->chkProtocolCommandsExperimental->SetEnabled(false);
 	this->grpProtocolCommandsParams = ui->NewGroupBox(this->tpProtocolCommandDetail, CSTR("Parameters"));
 	this->grpProtocolCommandsParams->SetRect(0, 0, 100, 256, false);
-	this->grpProtocolCommandsParams->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpProtocolCommandsParams->SetDockType(UI::GUIControl::DockType::Top);
 	this->lvProtocolCommandsParams = ui->NewListView(this->grpProtocolCommandsParams, UI::ListViewStyle::Table, 8);
-	this->lvProtocolCommandsParams->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvProtocolCommandsParams->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvProtocolCommandsParams->SetFullRowSelect(true);
 	this->lvProtocolCommandsParams->SetShowGrid(true);
 	this->lvProtocolCommandsParams->AddColumn(CSTR("Name"), 100);
@@ -572,9 +572,9 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 	this->lvProtocolCommandsParams->AddColumn(CSTR("Deprecated"), 80);
 	this->vspProtocolCommands = ui->NewVSplitter(this->tpProtocolCommandDetail, 3, false);
 	this->grpProtocolCommandsRets = ui->NewGroupBox(this->tpProtocolCommandDetail, CSTR("Returns"));
-	this->grpProtocolCommandsRets->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpProtocolCommandsRets->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvProtocolCommandsRets = ui->NewListView(this->grpProtocolCommandsRets, UI::ListViewStyle::Table, 8);
-	this->lvProtocolCommandsRets->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvProtocolCommandsRets->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvProtocolCommandsRets->SetFullRowSelect(true);
 	this->lvProtocolCommandsRets->SetShowGrid(true);
 	this->lvProtocolCommandsRets->AddColumn(CSTR("Name"), 100);
@@ -587,26 +587,26 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 	this->lvProtocolCommandsRets->AddColumn(CSTR("Deprecated"), 80);
 	this->tpProtocolCommandJSON = this->tcProtocolCommands->AddTabPage(CSTR("JSON"));
 	this->txtProtocolCommandJSON = ui->NewTextBox(this->tpProtocolCommandJSON, CSTR(""), true);
-	this->txtProtocolCommandJSON->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtProtocolCommandJSON->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtProtocolCommandJSON->SetReadOnly(true);
 	this->tpProtocolCommandText = this->tcProtocolCommands->AddTabPage(CSTR("Text"));
 	this->txtProtocolCommandText = ui->NewTextBox(this->tpProtocolCommandText, CSTR(""), true);
-	this->txtProtocolCommandText->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtProtocolCommandText->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtProtocolCommandText->SetReadOnly(true);
 
 	this->tpProtocolDependencies = this->tcProtocol->AddTabPage(CSTR("Dependencies"));
 	this->lbProtocolDependencies = ui->NewListBox(this->tpProtocolDependencies, false);
-	this->lbProtocolDependencies->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbProtocolDependencies->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpProtocolEvents = this->tcProtocol->AddTabPage(CSTR("Events"));
 	this->lbProtocolEvents = ui->NewListBox(this->tpProtocolEvents, false);
 	this->lbProtocolEvents->SetRect(0, 0, 150, 23, false);
-	this->lbProtocolEvents->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbProtocolEvents->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbProtocolEvents->HandleSelectionChange(OnProtocolEventsSelChg, this);
 	this->hspProtocolEvents = ui->NewHSplitter(this->tpProtocolEvents, 3, false);
 	this->pnlProtocolEvents = ui->NewPanel(this->tpProtocolEvents);
 	this->pnlProtocolEvents->SetRect(0, 0, 100, 79, false);
-	this->pnlProtocolEvents->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlProtocolEvents->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblProtocolEventsName = ui->NewLabel(this->pnlProtocolEvents, CSTR("Name"));
 	this->lblProtocolEventsName->SetRect(4, 4, 100, 23, false);
 	this->txtProtocolEventsName = ui->NewTextBox(this->pnlProtocolEvents, CSTR(""));
@@ -624,7 +624,7 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 	this->chkProtocolEventsExperimental->SetRect(204, 52, 200, 23, false);
 	this->chkProtocolEventsExperimental->SetEnabled(false);
 	this->lvProtocolEventsParams = ui->NewListView(this->tpProtocolEvents, UI::ListViewStyle::Table, 8);
-	this->lvProtocolEventsParams->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvProtocolEventsParams->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvProtocolEventsParams->SetFullRowSelect(true);
 	this->lvProtocolEventsParams->SetShowGrid(true);
 	this->lvProtocolEventsParams->AddColumn(CSTR("Name"), 100);
@@ -639,15 +639,15 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 	this->tpProtocolTypes = this->tcProtocol->AddTabPage(CSTR("Types"));
 	this->lbProtocolTypes = ui->NewListBox(this->tpProtocolTypes, false);
 	this->lbProtocolTypes->SetRect(0, 0, 150, 23, false);
-	this->lbProtocolTypes->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbProtocolTypes->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbProtocolTypes->HandleSelectionChange(OnProtocolTypesSelChg, this);
 	this->hspProtocolTypes = ui->NewHSplitter(this->tpProtocolTypes, 3, false);
 	this->tcProtocolTypes = ui->NewTabControl(this->tpProtocolTypes);
-	this->tcProtocolTypes->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcProtocolTypes->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpProtocolTypeDetail = this->tcProtocolTypes->AddTabPage(CSTR("Detail"));
 	this->pnlProtocolTypes = ui->NewPanel(this->tpProtocolTypeDetail);
 	this->pnlProtocolTypes->SetRect(0, 0, 100, 127, false);
-	this->pnlProtocolTypes->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlProtocolTypes->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblProtocolTypesId = ui->NewLabel(this->pnlProtocolTypes, CSTR("Id"));
 	this->lblProtocolTypesId->SetRect(4, 4, 100, 23, false);
 	this->txtProtocolTypesId = ui->NewTextBox(this->pnlProtocolTypes, CSTR(""));
@@ -676,14 +676,14 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 	this->chkProtocolTypesExperimental->SetEnabled(false);
 	this->grpProtocolTypesEnum = ui->NewGroupBox(this->tpProtocolTypeDetail, CSTR("Enum"));
 	this->grpProtocolTypesEnum->SetRect(0, 0, 100, 256, false);
-	this->grpProtocolTypesEnum->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpProtocolTypesEnum->SetDockType(UI::GUIControl::DockType::Top);
 	this->lbProtocolTypesEnum = ui->NewListBox(this->grpProtocolTypesEnum, false);
-	this->lbProtocolTypesEnum->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbProtocolTypesEnum->SetDockType(UI::GUIControl::DockType::Fill);
 	this->vspProtocolTypes = ui->NewVSplitter(this->tpProtocolTypeDetail, 3, false);
 	this->grpProtocolTypesProp = ui->NewGroupBox(this->tpProtocolTypeDetail, CSTR("Properties"));
-	this->grpProtocolTypesProp->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpProtocolTypesProp->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvProtocolTypesProp = ui->NewListView(this->grpProtocolTypesProp, UI::ListViewStyle::Table, 8);
-	this->lvProtocolTypesProp->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvProtocolTypesProp->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvProtocolTypesProp->SetFullRowSelect(true);
 	this->lvProtocolTypesProp->SetShowGrid(true);
 	this->lvProtocolTypesProp->AddColumn(CSTR("Name"), 100);
@@ -696,11 +696,11 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 	this->lvProtocolTypesProp->AddColumn(CSTR("Deprecated"), 80);
 	this->tpProtocolTypeJSON = this->tcProtocolTypes->AddTabPage(CSTR("JSON"));
 	this->txtProtocolTypeJSON = ui->NewTextBox(this->tpProtocolTypeJSON, CSTR(""), true);
-	this->txtProtocolTypeJSON->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtProtocolTypeJSON->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtProtocolTypeJSON->SetReadOnly(true);
 	this->tpProtocolTypeText = this->tcProtocolTypes->AddTabPage(CSTR("Text"));
 	this->txtProtocolTypeText = ui->NewTextBox(this->tpProtocolTypeText, CSTR(""), true);
-	this->txtProtocolTypeText->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtProtocolTypeText->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtProtocolTypeText->SetReadOnly(true);
 }
 

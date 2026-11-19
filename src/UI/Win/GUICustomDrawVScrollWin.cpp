@@ -65,14 +65,14 @@ IntOS __stdcall UI::GUICustomDrawVScroll::CDVSWndProc(void *hWnd, UInt32 msg, UI
 		yPos = (Int16)HIWORD(lParam);
 		xPos = (Int16)LOWORD(lParam);
 		keys = (KeyButton)wParam;
-		me->OnMouseDown(GetScrollPos((HWND)hWnd, SB_VERT), Math::Coord2D<IntOS>(xPos, yPos), UI::GUIClientControl::MBTN_LEFT, keys);
+		me->OnMouseDown(GetScrollPos((HWND)hWnd, SB_VERT), Math::Coord2D<IntOS>(xPos, yPos), UI::GUIClientControl::MouseButton::Left, keys);
 		return 0;
 	case WM_RBUTTONDOWN:
 		me->Focus();
 		yPos = (Int16)HIWORD(lParam);
 		xPos = (Int16)LOWORD(lParam);
 		keys = (KeyButton)wParam;
-		me->OnMouseDown(GetScrollPos((HWND)hWnd, SB_VERT), Math::Coord2D<IntOS>(xPos, yPos), UI::GUIClientControl::MBTN_RIGHT, keys);
+		me->OnMouseDown(GetScrollPos((HWND)hWnd, SB_VERT), Math::Coord2D<IntOS>(xPos, yPos), UI::GUIClientControl::MouseButton::Right, keys);
 		return 0;
 	case WM_LBUTTONDBLCLK:
 		me->EventDblClk();

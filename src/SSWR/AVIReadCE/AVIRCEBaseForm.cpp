@@ -159,11 +159,11 @@ SSWR::AVIReadCE::AVIRCEBaseForm::AVIRCEBaseForm(Optional<UI::GUIClientControl> p
 	Math::Size2D<UIntOS> sz = this->GetSizeP();
 	this->lbCategory = ui->NewListBox(*this, true);
 	this->lbCategory->SetRect(0, 0, (sz.x >> 1) - 3, 23, false);
-	this->lbCategory->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbCategory->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbCategory->HandleSelectionChange(OnCategoryChg, this);
 	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	this->lbContent = ui->NewListBox(*this, true);
-	this->lbContent->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbContent->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbContent->HandleDoubleClicked(OnContentClick, this);
 	
 	NEW_CLASSNN(menu, Data::ArrayListNN<MenuInfo>());

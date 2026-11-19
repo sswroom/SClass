@@ -65,7 +65,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(Optional<UI::GUIClientCont
 
 	this->pnlChannel = ui->NewPanel(*this);
 	this->pnlChannel->SetRect(0, 0, 100, 31, false);
-	this->pnlChannel->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlChannel->SetDockType(UI::GUIControl::DockType::Top);
 	this->cboChannel = ui->NewComboBox(this->pnlChannel, false);
 	this->cboChannel->SetRect(4, 4, 100, 23, false);
 	this->txtChannelId = ui->NewTextBox(this->pnlChannel, CSTR(""));
@@ -75,14 +75,14 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(Optional<UI::GUIClientCont
 	this->btnChannelAdd->HandleButtonClick(OnChannelAddClicked, this);
 	this->lbChannels = ui->NewListBox(*this, false);
 	this->lbChannels->SetRect(0, 0, 150, 23, false);
-	this->lbChannels->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbChannels->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbChannels->HandleSelectionChange(OnChannelsSelChg, this);
 	this->tcChannels = ui->NewTabControl(*this);
-	this->tcChannels->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcChannels->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpCurrItems = this->tcChannels->AddTabPage(CSTR("Curr Items"));
 	this->lvCurrItems = ui->NewListView(this->tpCurrItems, UI::ListViewStyle::Table, 4);
-	this->lvCurrItems->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvCurrItems->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvCurrItems->SetFullRowSelect(true);
 	this->lvCurrItems->SetShowGrid(true);
 	this->lvCurrItems->AddColumn(CSTR("Id"), 120);

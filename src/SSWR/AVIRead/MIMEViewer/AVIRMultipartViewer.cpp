@@ -25,7 +25,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 	{
 		this->pnlSMIME = ui->NewPanel(ctrl);
 		this->pnlSMIME->SetRect(0, 0, 100, 31, false);
-		this->pnlSMIME->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+		this->pnlSMIME->SetDockType(UI::GUIControl::DockType::Bottom);
 		this->lblSignState = ui->NewLabel(this->pnlSMIME, CSTR("Signature"));
 		this->lblSignState->SetRect(4, 4, 100, 23, false);
 		this->txtSignState = ui->NewTextBox(this->pnlSMIME, CSTR(""));
@@ -172,7 +172,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 	NN<UI::GUITabPage> tp;
 	NN<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer> viewer;
 	this->tcParts = ui->NewTabControl(ctrl);
-	this->tcParts->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcParts->SetDockType(UI::GUIControl::DockType::Fill);
 
 	NN<Text::String> defMsg;
 	if (obj->GetDefMsg().SetTo(defMsg) && defMsg->v[0])
@@ -180,7 +180,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 		NN<UI::GUITextBox> txt;
 		tp = this->tcParts->AddTabPage(CSTR("Default"));
 		txt = ui->NewTextBox(tp, defMsg->ToCString(), true);
-		txt->SetDockType(UI::GUIControl::DOCK_FILL);
+		txt->SetDockType(UI::GUIControl::DockType::Fill);
 		txt->SetReadOnly(true);
 	}
 

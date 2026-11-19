@@ -49,16 +49,16 @@ gboolean GUIListView_ButtonClick(GtkWidget *widget, GdkEventButton *event, gpoin
 		switch (event->button)
 		{
 		case GDK_BUTTON_PRIMARY:
-			btn = UI::GUIControl::MouseButton::MBTN_LEFT;
+			btn = UI::GUIControl::MouseButton::Left;
 			break;
 		case GDK_BUTTON_MIDDLE:
-			btn = UI::GUIControl::MouseButton::MBTN_MIDDLE;
+			btn = UI::GUIControl::MouseButton::Middle;
 			break;
 		case GDK_BUTTON_SECONDARY:
-			btn = UI::GUIControl::MouseButton::MBTN_RIGHT;
+			btn = UI::GUIControl::MouseButton::Right;
 			break;
 		default:
-			btn = UI::GUIControl::MouseButton::MBTN_LEFT;
+			btn = UI::GUIControl::MouseButton::Left;
 			break;
 		}
 		me->EventMouseClick(Math::Coord2DDbl(event->x, event->y), btn);
@@ -690,7 +690,7 @@ void UI::GUIListView::EventDblClk(UIntOS itemIndex)
 
 void UI::GUIListView::EventMouseClick(Math::Coord2DDbl coord, MouseButton btn)
 {
-	if (btn == MouseButton::MBTN_RIGHT)
+	if (btn == MouseButton::Right)
 	{
 		UIntOS index = this->GetSelectedIndex();
 		UIntOS i;

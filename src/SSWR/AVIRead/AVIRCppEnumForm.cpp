@@ -135,7 +135,7 @@ SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(Optional<UI::GUIClientControl> p
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 55, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblType = ui->NewLabel(this->pnlCtrl, CSTR("Type"));
 	this->lblType->SetRect(4, 4, 100, 23, false);
 	this->cboType = ui->NewComboBox(this->pnlCtrl, false);
@@ -157,10 +157,10 @@ SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(Optional<UI::GUIClientControl> p
 	this->txtPrefix->SetRect(334, 28, 100, 23, false);
 	this->txtSource = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtSource->SetRect(0, 0, 512, 100, false);
-	this->txtSource->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->txtSource->SetDockType(UI::GUIControl::DockType::Left);
 	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	this->txtDest = ui->NewTextBox(*this, CSTR(""), true);
-	this->txtDest->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtDest->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtDest->SetReadOnly(true);
 }
 

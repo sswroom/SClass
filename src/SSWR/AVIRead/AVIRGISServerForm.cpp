@@ -293,7 +293,7 @@ SSWR::AVIRead::AVIRGISServerForm::AVIRGISServerForm(Optional<UI::GUIClientContro
 
 	this->pnlConn = ui->NewPanel(*this);
 	this->pnlConn->SetRect(0, 0, 100, 103, false);
-	this->pnlConn->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlConn->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblPort = ui->NewLabel(this->pnlConn, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	this->txtPort = ui->NewTextBox(this->pnlConn, CSTR("12345"));
@@ -316,16 +316,16 @@ SSWR::AVIRead::AVIRGISServerForm::AVIRGISServerForm(Optional<UI::GUIClientContro
 	this->btnStart->SetRect(104, 76, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpAsset = this->tcMain->AddTabPage(CSTR("Asset"));
 	this->lbAsset = ui->NewListBox(this->tpAsset, false);
 	this->lbAsset->SetRect(0, 0, 150, 23, false);
-	this->lbAsset->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbAsset->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbAsset->HandleSelectionChange(OnAssetSelChg, this);
 	this->hspAsset = ui->NewHSplitter(this->tpAsset, 3, false);
 	this->pnlAsset = ui->NewPanel(this->tpAsset);
-	this->pnlAsset->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlAsset->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblAssetPath = ui->NewLabel(this->pnlAsset, CSTR("Path"));
 	this->lblAssetPath->SetRect(4, 4, 100, 23, false);
 	this->txtAssetPath = ui->NewTextBox(this->pnlAsset, CSTR(""));
@@ -365,11 +365,11 @@ SSWR::AVIRead::AVIRGISServerForm::AVIRGISServerForm(Optional<UI::GUIClientContro
 	this->tpWS = this->tcMain->AddTabPage(CSTR("Workspace"));
 	this->lbWS = ui->NewListBox(this->tpWS, false);
 	this->lbWS->SetRect(0, 0, 150, 23, false);
-	this->lbWS->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbWS->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbWS->HandleSelectionChange(OnWSSelChg, this);
 	this->hspWS = ui->NewHSplitter(this->tpWS, 3, false);
 	this->pnlWS = ui->NewPanel(this->tpWS);
-	this->pnlWS->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlWS->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblWSName = ui->NewLabel(this->pnlWS, CSTR("Name"));
 	this->lblWSName->SetRect(4, 4, 100, 23, false);
 	this->txtWSName = ui->NewTextBox(this->pnlWS, CSTR(""));
@@ -385,10 +385,10 @@ SSWR::AVIRead::AVIRGISServerForm::AVIRGISServerForm(Optional<UI::GUIClientContro
 	this->tpFeature = this->tcMain->AddTabPage(CSTR("Feature"));
 	this->lbFeature = ui->NewListBox(this->tpFeature, false);
 	this->lbFeature->SetRect(0, 0, 150, 23, false);
-	this->lbFeature->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbFeature->SetDockType(UI::GUIControl::DockType::Left);
 	this->hspFeature = ui->NewHSplitter(this->tpFeature, 3, false);
 	this->pnlFeature = ui->NewPanel(this->tpFeature);
-	this->pnlFeature->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlFeature->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblFeatureLayer = ui->NewLabel(this->pnlFeature, CSTR("Layer"));
 	this->lblFeatureLayer->SetRect(4, 4, 100, 23, false);
 	this->cboFeatureLayer = ui->NewComboBox(this->pnlFeature, false);

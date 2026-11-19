@@ -299,7 +299,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientCont
 	this->lastUpdateTime.SetCurrTimeUTC();
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpLocation = this->tcMain->AddTabPage(CSTR("Location"));
 
 	this->lblStreamStatus = ui->NewLabel(this->tpLocation, CSTR("Stream Status"));
@@ -405,20 +405,20 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientCont
 
 	this->tpAlert = this->tcMain->AddTabPage(CSTR("Alert"));
 	this->tcAlert = ui->NewTabControl(this->tpAlert);
-	this->tcAlert->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcAlert->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpAlertAdd = this->tcAlert->AddTabPage(CSTR("Add"));
 	this->lbAlertLyr = ui->NewListBox(this->tpAlertAdd, false);
 	this->lbAlertLyr->SetRect(0, 0, 100, 23, false);
-	this->lbAlertLyr->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbAlertLyr->SetDockType(UI::GUIControl::DockType::Left);
 	this->hspAlertAdd = ui->NewHSplitter(this->tpAlertAdd, 3, false);
 	this->lbAlertAdd = ui->NewListBox(this->tpAlertAdd, false);
-	this->lbAlertAdd->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbAlertAdd->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpAlertView = this->tcAlert->AddTabPage(CSTR("View"));
 	this->pnlAlertView = ui->NewPanel(this->tpAlertView);
 	this->pnlAlertView->SetRect(0, 0, 100, 31, false);
-	this->pnlAlertView->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlAlertView->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbAlert = ui->NewListBox(this->tpAlertView, false);
-	this->lbAlert->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbAlert->SetDockType(UI::GUIControl::DockType::Fill);
 
 	if (this->locSvc->GetServiceType() == Map::LocationService::ST_MTK)
 	{
@@ -465,7 +465,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientCont
 
 	this->tpSate = this->tcMain->AddTabPage(CSTR("Satellite"));
 	this->lvSate = ui->NewListView(this->tpSate, UI::ListViewStyle::Table, 5);
-	this->lvSate->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvSate->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvSate->AddColumn(CSTR("Type"), 80);
 	this->lvSate->AddColumn(CSTR("PRN"), 60);
 	this->lvSate->AddColumn(CSTR("Elevation"), 60);
@@ -476,7 +476,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientCont
 
 	this->tpNMEA = this->tcMain->AddTabPage(CSTR("NMEA"));
 	this->lbNMEA = ui->NewListBox(this->tpNMEA, false);
-	this->lbNMEA->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbNMEA->SetDockType(UI::GUIControl::DockType::Fill);
 	NN<IO::GPSNMEA>::ConvertFrom(this->locSvc)->HandleCommand(OnNMEALine, this);
 
 	this->AddTimer(1000, OnTimerTick, this);

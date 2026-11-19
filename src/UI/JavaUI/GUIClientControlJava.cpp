@@ -137,7 +137,7 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 		{
 			ctrl->UpdatePos(false);
 		}
-		else if (dt == UI::GUIControl::DOCK_FILL)
+		else if (dt == UI::GUIControl::DockType::Fill)
 		{
 //			printf("UpdateChildrenSize: Fill: %lf, %lf, %lf, %lf\r\n", left, top, right, bottom);
 			ctrl->SetArea(left, top, br.x, br.y, false);
@@ -149,7 +149,7 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 		else
 		{
 			ctrlSize = ctrl->GetSize();
-			if (dt == UI::GUIControl::DOCK_LEFT)
+			if (dt == UI::GUIControl::DockType::Left)
 			{
 //				printf("UpdateChildrenSize: Left: %lf, %lf, %lf, %lf\r\n", left, top, left + ctrlW, bottom);
 				ctrl->SetArea(left, top, left + ctrlSize.x, br.y, false);
@@ -157,7 +157,7 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 //				printf("UpdateChildrenSize: Size: %lf, %lf\r\n", ctrlW, ctrlH);
 				left += ctrlSize.x;
 			}
-			else if (dt == UI::GUIControl::DOCK_TOP)
+			else if (dt == UI::GUIControl::DockType::Top)
 			{
 //				printf("UpdateChildrenSize: Top: %lf, %lf, %lf, %lf\r\n", left, top, right, top + ctrlH);
 				ctrl->SetArea(left, top, br.x, top + ctrlSize.y, false);
@@ -165,7 +165,7 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 //				printf("UpdateChildrenSize: Size: %lf, %lf\r\n", ctrlW, ctrlH);
 				top += ctrlSize.y;
 			}
-			else if (dt == UI::GUIControl::DOCK_RIGHT)
+			else if (dt == UI::GUIControl::DockType::Right)
 			{
 //				printf("UpdateChildrenSize: Right: %lf, %lf, %lf, %lf\r\n", right - ctrlW, top, right, bottom);
 				ctrl->SetArea(br.x - ctrlSize.x, top, br.x, br.y, false);
@@ -173,7 +173,7 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 //				printf("UpdateChildrenSize: Size: %lf, %lf\r\n", ctrlW, ctrlH);
 				br.x -= ctrlSize.x;
 			}
-			else if (dt == UI::GUIControl::DOCK_BOTTOM)
+			else if (dt == UI::GUIControl::DockType::Bottom)
 			{
 //				printf("UpdateChildrenSize: Bottom: %lf, %lf, %lf, %lf\r\n", left, bottom - ctrlH, right, bottom);
 				ctrl->SetArea(left, br.y - ctrlSize.y, br.x, br.y , false);

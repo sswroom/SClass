@@ -168,7 +168,7 @@ SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(Optional<UI::GUIClientCo
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblInterface = ui->NewLabel(this->pnlControl, CSTR("Interface"));
 	this->lblInterface->SetRect(4, 4, 100, 23, false);
 	this->cboInterface = ui->NewComboBox(this->pnlControl, false);
@@ -180,7 +180,7 @@ SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(Optional<UI::GUIClientCo
 	this->btnStoreList->SetRect(404, 4, 100, 23, false);
 	this->btnStoreList->HandleButtonClick(OnStoreListClicked, this);
 	this->lvDevices = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
-	this->lvDevices->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDevices->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);
 	this->lvDevices->HandleDblClk(OnDevicesDblClick, this);

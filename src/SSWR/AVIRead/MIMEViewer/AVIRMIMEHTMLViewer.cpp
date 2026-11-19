@@ -8,7 +8,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEHTMLViewer::AVIRMIMEHTMLViewer(NN<SSWR::AVIRe
 	this->obj = obj;
 
 	this->txtHTML = ui->NewTextBox(ctrl, CSTR(""), true);
-	this->txtHTML->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtHTML->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtHTML->SetReadOnly(true);
 
 	UIntOS size;

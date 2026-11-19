@@ -203,9 +203,9 @@ SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(Optional<UI::GUIClientCo
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 40, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblFile = ui->NewLabel(this->pnlCtrl, CSTR("MPEG File"));
 	this->lblFile->SetRect(8, 8, 100, 23, false);
 	this->txtFile = ui->NewTextBox(this->pnlCtrl, CSTR(""));
@@ -220,16 +220,16 @@ SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(Optional<UI::GUIClientCo
 
 	this->lbPackList = ui->NewListBox(this->tpContent, false);
 	this->lbPackList->SetRect(0, 0, 200, 100, false);
-	this->lbPackList->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbPackList->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbPackList->HandleSelectionChange(OnPackListChanged, this);
 	this->hspPack = ui->NewHSplitter(this->tpContent, 3, false);
 	this->lbPackItems = ui->NewListBox(this->tpContent, false);
 	this->lbPackItems->SetRect(0, 0, 250, 100, false);
-	this->lbPackItems->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbPackItems->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbPackItems->HandleSelectionChange(OnPackItemChanged, this);
 	this->hspPack2 = ui->NewHSplitter(this->tpContent, 3, false);
 	this->txtPack = ui->NewTextBox(this->tpContent, CSTR(""), true);
-	this->txtPack->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtPack->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtPack->SetReadOnly(true);
 
 	this->btnTrimPadding = ui->NewButton(this->tpTool, CSTR("Trim Padding"));

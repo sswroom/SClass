@@ -179,10 +179,10 @@ SSWR::AVIRead::AVIRHQMPPlaylistForm::AVIRHQMPPlaylistForm(Optional<UI::GUIClient
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 56, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbPlaylist = ui->NewListBox(*this, false);
 	this->lbPlaylist->SetRect(0, 0, 160, 100, false);
-	this->lbPlaylist->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbPlaylist->SetDockType(UI::GUIControl::DockType::Fill);
 	this->btnAdd = ui->NewButton(this->pnlCtrl, CSTR("&Add"));
 	this->btnAdd->SetRect(16, 16, 75, 23, false);
 	this->btnAdd->HandleButtonClick(OnAddClicked, this);

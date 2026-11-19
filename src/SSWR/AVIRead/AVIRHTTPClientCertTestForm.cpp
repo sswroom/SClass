@@ -190,7 +190,7 @@ SSWR::AVIRead::AVIRHTTPClientCertTestForm::AVIRHTTPClientCertTestForm(Optional<U
 
 	this->grpParam = ui->NewGroupBox(*this, CSTR("Parameters"));
 	this->grpParam->SetRect(0, 0, 620, 96, false);
-	this->grpParam->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpParam->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblPort = ui->NewLabel(this->grpParam, CSTR("Port"));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
 	this->txtPort = ui->NewTextBox(this->grpParam, CSTR("12345"));

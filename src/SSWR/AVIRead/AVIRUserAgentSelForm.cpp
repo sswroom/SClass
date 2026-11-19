@@ -118,7 +118,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClient
 
 	this->pnlFilter = ui->NewPanel(*this);
 	this->pnlFilter->SetRect(0, 0, 100, 31, false);
-	this->pnlFilter->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlFilter->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblFilterOS = ui->NewLabel(this->pnlFilter, CSTR("OS"));
 	this->lblFilterOS->SetRect(4, 4, 100, 23, false);
 	this->cboFilterOS = ui->NewComboBox(this->pnlFilter, false);
@@ -131,12 +131,12 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClient
 	this->cboFilterBrowser->HandleSelectionChange(OnFilterChg, this);
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnOk = ui->NewButton(this->pnlControl, CSTR("Ok"));
 	this->btnOk->SetRect(4, 4, 75, 23, false);
 	this->btnOk->HandleButtonClick(OnOkClicked, this);
 	this->lvUserAgent = ui->NewListView(*this, UI::ListViewStyle::Table, 7);
-	this->lvUserAgent->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvUserAgent->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvUserAgent->HandleSelChg(OnUserAgentSelChg, this);
 	this->lvUserAgent->SetFullRowSelect(true);
 	this->lvUserAgent->SetShowGrid(true);

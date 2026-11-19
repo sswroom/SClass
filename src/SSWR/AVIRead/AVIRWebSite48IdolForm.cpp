@@ -96,12 +96,12 @@ SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(Optional<UI::GUIClie
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpItems = this->tcMain->AddTabPage(CSTR("Items"));
 	this->pnlRequest = ui->NewPanel(this->tpItems);
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
-	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlRequest->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblPageNo = ui->NewLabel(this->pnlRequest, CSTR("PageNo"));
 	this->lblPageNo->SetRect(4, 4, 100, 23, false);
 	this->txtPageNo = ui->NewTextBox(this->pnlRequest, CSTR(""));
@@ -110,7 +110,7 @@ SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(Optional<UI::GUIClie
 	this->btnRequestPage->SetRect(164, 4, 75, 23, false);
 	this->btnRequestPage->HandleButtonClick(OnRequestPageClicked, this);
 	this->lvItems = ui->NewListView(this->tpItems, UI::ListViewStyle::Table, 3);
-	this->lvItems->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvItems->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvItems->SetFullRowSelect(true);
 	this->lvItems->SetShowGrid(true);
 	this->lvItems->AddColumn(CSTR("Id"), 60);

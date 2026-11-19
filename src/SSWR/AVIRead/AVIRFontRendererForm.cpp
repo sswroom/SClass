@@ -25,16 +25,16 @@ SSWR::AVIRead::AVIRFontRendererForm::AVIRFontRendererForm(Optional<UI::GUIClient
 	this->SetText(CSTR("Font Renderer Form"));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpChar = this->tcMain->AddTabPage(CSTR("Char"));
 	this->lbChar = ui->NewListBox(this->tpChar, false);
 	this->lbChar->SetRect(0, 0, 150, 23, false);
-	this->lbChar->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbChar->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbChar->HandleSelectionChange(OnCharSelChg, this);
 	this->hspChar = ui->NewHSplitter(this->tpChar, 3, false);
 	this->pbChar = ui->NewPictureBoxDD(this->tpChar, this->colorSess, true, false);
-	this->pbChar->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pbChar->SetDockType(UI::GUIControl::DockType::Fill);
 
 	UTF32Char i = font->GetMinChar();
 	UTF32Char j = font->GetMaxChar();

@@ -220,7 +220,7 @@ IntOS __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wPara
 		mouseXPos = (Int16)LOWORD(lParam);
 		mouseYPos = (Int16)HIWORD(lParam);
 		SetFocus((HWND)hWnd);
-		me->EventMouseDown(mouseXPos, mouseYPos, MBTN_LEFT);
+		me->EventMouseDown(mouseXPos, mouseYPos, MouseButton::Left);
 		::SetCapture((HWND)hWnd);
 		break;
 	case WM_MOUSEMOVE:
@@ -231,7 +231,7 @@ IntOS __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wPara
 	case WM_LBUTTONUP:
 		mouseXPos = (Int16)LOWORD(lParam);
 		mouseYPos = (Int16)HIWORD(lParam);
-		me->EventMouseUp(mouseXPos, mouseYPos, MBTN_LEFT);
+		me->EventMouseUp(mouseXPos, mouseYPos, MouseButton::Left);
 		::ReleaseCapture();
 		break;
 	case WM_MOUSEWHEEL:

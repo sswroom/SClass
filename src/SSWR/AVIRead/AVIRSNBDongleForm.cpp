@@ -483,12 +483,12 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(Optional<UI::GUIClientContro
 	this->dongleUpdated = false;
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpDevice = this->tcMain->AddTabPage(CSTR("Device"));
 	this->pnlDevice = ui->NewPanel(this->tpDevice);
 	this->pnlDevice->SetRect(0, 0, 100, 103, false);
-	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlDevice->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnDongleInfo = ui->NewButton(this->pnlDevice, CSTR("Get Dongle Info"));
 	this->btnDongleInfo->SetRect(4, 4, 95, 23, false);
 	this->btnDongleInfo->HandleButtonClick(OnDongleInfoClicked, this);
@@ -522,10 +522,10 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(Optional<UI::GUIClientContro
 	this->btnUpload->SetRect(704, 76, 75, 23, false);
 	this->btnUpload->HandleButtonClick(OnUploadClicked, this);
 	this->grpDevice = ui->NewGroupBox(this->tpDevice, CSTR("Device"));
-	this->grpDevice->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpDevice->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pnlDevCtrl = ui->NewPanel(this->grpDevice);
 	this->pnlDevCtrl->SetRect(0, 0, 100, 31, false);
-	this->pnlDevCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlDevCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnCopyDevId = ui->NewButton(this->pnlDevCtrl, CSTR("Copy Device Id"));
 	this->btnCopyDevId->SetRect(4, 4, 95, 23, false);
 	this->btnCopyDevId->HandleButtonClick(OnCopyDevIdClicked, this);
@@ -545,7 +545,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(Optional<UI::GUIClientContro
 	this->btnDevStatus->SetRect(484, 4, 75, 23, false);
 	this->btnDevStatus->HandleButtonClick(OnDevStatusClicked, this);
 	this->lvDevice = ui->NewListView(this->grpDevice, UI::ListViewStyle::Table, 5);
-	this->lvDevice->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDevice->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDevice->AddColumn(CSTR("Device Id"), 120);
 	this->lvDevice->AddColumn(CSTR("Short Addr"), 60);
 	this->lvDevice->AddColumn(CSTR("Handle Type"), 120);
@@ -557,9 +557,9 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(Optional<UI::GUIClientContro
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogClicked, this);
 
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 300, true));

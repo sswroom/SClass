@@ -438,7 +438,7 @@ SSWR::AVIRead::AVIRAsmConvForm::AVIRAsmConvForm(Optional<UI::GUIClientControl> p
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnConv = ui->NewButton(this->pnlCtrl, CSTR("Convert"));
 	this->btnConv->SetRect(4, 4, 75, 23, false);
 	this->btnConv->HandleButtonClick(OnConvClicked, this);
@@ -447,10 +447,10 @@ SSWR::AVIRead::AVIRAsmConvForm::AVIRAsmConvForm(Optional<UI::GUIClientControl> p
 	this->btnConv2->HandleButtonClick(OnConv2Clicked, this);
 	this->txtIntelAsm = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtIntelAsm->SetRect(0, 0, 512, 100, false);
-	this->txtIntelAsm->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->txtIntelAsm->SetDockType(UI::GUIControl::DockType::Left);
 	this->hspAsm = ui->NewHSplitter(*this, 3, false);
 	this->txtGNUAsm = ui->NewTextBox(*this, CSTR(""), true);
-	this->txtGNUAsm->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtGNUAsm->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtGNUAsm->SetReadOnly(true);
 }
 

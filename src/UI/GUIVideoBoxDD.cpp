@@ -208,7 +208,7 @@ void UI::GUIVideoBoxDD::OnMouseMove(Math::Coord2D<IntOS> pos)
 
 void UI::GUIVideoBoxDD::OnMouseDown(Math::Coord2D<IntOS> pos, MouseButton button)
 {
-	if (button == UI::GUIControl::MBTN_LEFT && !this->maDown)
+	if (button == UI::GUIControl::MouseButton::Left && !this->maDown)
 	{
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
@@ -220,7 +220,7 @@ void UI::GUIVideoBoxDD::OnMouseDown(Math::Coord2D<IntOS> pos, MouseButton button
 
 void UI::GUIVideoBoxDD::OnMouseUp(Math::Coord2D<IntOS> pos, MouseButton button)
 {
-	if (this->maDown && button == UI::GUIControl::MBTN_LEFT)
+	if (this->maDown && button == UI::GUIControl::MouseButton::Left)
 	{
 		this->maDown = false;
 		Data::DateTime dt;

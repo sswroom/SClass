@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnCancelClicked(AnyType userObj)
 UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
-	if (btn == UI::GUIPictureBox::MBTN_LEFT)
+	if (btn == UI::GUIPictureBox::MouseButton::Left)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 		UtilUI::ColorDialog dlg(nullptr, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
@@ -116,7 +116,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(AnyType u
 UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 //	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
-	if (btn == UI::GUIPictureBox::MBTN_LEFT)
+	if (btn == UI::GUIPictureBox::MouseButton::Left)
 	{
 		OnLineModifyClicked(userObj);
 	}
@@ -175,7 +175,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(AnyType userOb
 UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
-	if (btn == UI::GUIPictureBox::MBTN_LEFT)
+	if (btn == UI::GUIPictureBox::MouseButton::Left)
 	{
 		SSWR::AVIRead::AVIRGISImageForm frm(nullptr, me->ui, me->core, me->env, me->imgIndex);
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
@@ -190,7 +190,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(AnyType u
 UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyDown(AnyType userObj, Math::Coord2D<IntOS> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 //	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
-	if (btn == UI::GUIPictureBox::MBTN_LEFT)
+	if (btn == UI::GUIPictureBox::MouseButton::Left)
 	{
 		OnFontModifyClicked(userObj);
 	}
@@ -274,7 +274,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnOK = ui->NewButton(this->pnlCtrl, CSTR("OK"));
 	this->btnOK->SetRect(336, 4, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
@@ -283,7 +283,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpLayer = this->tcMain->AddTabPage(CSTR("Layer"));
 	lbl = ui->NewLabel(this->tpLayer, CSTR("Min Visible Scale"));
 	lbl->SetRect(8, 0, 100, 23, false);
@@ -351,7 +351,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 	this->tpCSys = this->tcMain->AddTabPage(CSTR("CSys"));
 	this->pnlCSysBounds = ui->NewPanel(this->tpCSys);
 	this->pnlCSysBounds->SetRect(0, 0, 100, 51, false);
-	this->pnlCSysBounds->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCSysBounds->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblCSysBounds = ui->NewLabel(this->pnlCSysBounds, CSTR("Bounds"));
 	this->lblCSysBounds->SetRect(4, 4, 100, 23, false);
 	this->lblCSysMin = ui->NewLabel(this->pnlCSysBounds, CSTR("Min"));
@@ -376,7 +376,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 	this->txtCSysMaxY->SetReadOnly(true);
 	this->txtCSysCurr = ui->NewTextBox(this->tpCSys, CSTR(""), true);
 	this->txtCSysCurr->SetRect(0, 0, 100, 240, false);
-	this->txtCSysCurr->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->txtCSysCurr->SetDockType(UI::GUIControl::DockType::Top);
 	this->txtCSysCurr->SetReadOnly(true);
 
 	this->pbFillStyle->HandleMouseDown(OnFillClicked, this);
@@ -415,7 +415,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 							simg->ToString(sb);
 							this->tpImage = this->tcMain->AddTabPage(CSTR("Image"));
 							this->txtImage = ui->NewTextBox(this->tpImage, sb.ToCString(), true);
-							this->txtImage->SetDockType(UI::GUIControl::DOCK_FILL);
+							this->txtImage->SetDockType(UI::GUIControl::DockType::Fill);
 						}
 						vec.Delete();
 					}

@@ -644,7 +644,7 @@ SSWR::AVIRead::AVIRJavaSpringForm::AVIRJavaSpringForm(Optional<UI::GUIClientCont
 
 	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetRect(0, 0, 100, 55, false);
-	this->pnlMain->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlMain->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblPath = ui->NewLabel(this->pnlMain, CSTR("Path"));
 	this->lblPath->SetRect(4, 4, 100, 23, false);
 	this->txtPath = ui->NewTextBox(this->pnlMain, CSTR(""));
@@ -656,17 +656,17 @@ SSWR::AVIRead::AVIRJavaSpringForm::AVIRJavaSpringForm(Optional<UI::GUIClientCont
 	this->txtMainClass->SetRect(104, 32, 600, 23, false);
 	this->txtMainClass->SetReadOnly(true);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpController = this->tcMain->AddTabPage(CSTR("Controller"));
 	this->pnlController = ui->NewPanel(this->tpController);
 	this->pnlController->SetRect(0, 0, 100, 31, false);
-	this->pnlController->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlController->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnControllerSave = ui->NewButton(this->pnlController, CSTR("Save"));
 	this->btnControllerSave->SetRect(4, 4, 75, 23, false);
 	this->btnControllerSave->HandleButtonClick(OnControllerSaveClicked, this);
 	this->lvController = ui->NewListView(this->tpController, UI::ListViewStyle::Table, 5);
-	this->lvController->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvController->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvController->AddColumn(CSTR("Path"), 200);
 	this->lvController->AddColumn(CSTR("Request Method"), 100);
 	this->lvController->AddColumn(CSTR("Return Type"), 100);
@@ -677,7 +677,7 @@ SSWR::AVIRead::AVIRJavaSpringForm::AVIRJavaSpringForm(Optional<UI::GUIClientCont
 	this->lvLib = ui->NewListView(this->tpLib, UI::ListViewStyle::Table, 3);
 	this->lvLib->SetFullRowSelect(true);
 	this->lvLib->SetShowGrid(true);
-	this->lvLib->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvLib->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvLib->AddColumn(CSTR("FileName"), 200);
 	this->lvLib->AddColumn(CSTR("Title"), 200);
 	this->lvLib->AddColumn(CSTR("Version"), 100);
@@ -685,10 +685,10 @@ SSWR::AVIRead::AVIRJavaSpringForm::AVIRJavaSpringForm(Optional<UI::GUIClientCont
 	this->tpClasses = this->tcMain->AddTabPage(CSTR("Classes"));
 	this->lbClassPackages = ui->NewListBox(this->tpClasses, false);
 	this->lbClassPackages->SetRect(0, 0, 200, 100, false);
-	this->lbClassPackages->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbClassPackages->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbClassPackages->HandleSelectionChange(OnClassPackagesSelChg, this);
 	this->lbClasses = ui->NewListBox(this->tpClasses, false);
-	this->lbClasses->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbClasses->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbClasses->HandleDoubleClicked(OnClassesDoubleClicked, this);
 
 	this->HandleDropFiles(OnDirectoryDrop, this);

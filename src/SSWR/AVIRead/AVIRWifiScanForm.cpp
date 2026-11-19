@@ -172,7 +172,7 @@ SSWR::AVIRead::AVIRWifiScanForm::AVIRWifiScanForm(Optional<UI::GUIClientControl>
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnScan = ui->NewButton(this->pnlControl, CSTR("Scan"));
 	this->btnScan->SetRect(4, 4, 75, 23, false);
 	this->btnScan->HandleButtonClick(OnScanClicked, this);
@@ -189,10 +189,10 @@ SSWR::AVIRead::AVIRWifiScanForm::AVIRWifiScanForm(Optional<UI::GUIClientControl>
 	this->txtWifi = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtWifi->SetRect(0, 0, 100, 128, false);
 	this->txtWifi->SetReadOnly(true);
-	this->txtWifi->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtWifi->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->vspWifi = ui->NewVSplitter(*this, 3, true);
 	this->lvWifi = ui->NewListView(*this, UI::ListViewStyle::Table, 16);
-	this->lvWifi->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvWifi->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvWifi->SetShowGrid(true);
 	this->lvWifi->SetFullRowSelect(true);
 	this->lvWifi->AddColumn(CSTR("SSID"), 200);

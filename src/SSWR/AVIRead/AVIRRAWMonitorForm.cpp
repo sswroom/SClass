@@ -1328,7 +1328,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 79, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblInfo = ui->NewLabel(this->pnlControl, CSTR("Info Port"));
 	this->lblInfo->SetRect(4, 4, 100, 23, false);
 	this->txtInfo = ui->NewTextBox(this->pnlControl, CSTR("8089"));
@@ -1358,16 +1358,16 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->txtPLog->SetRect(334, 52, 200, 23, false);
 	this->txtPLog->SetReadOnly(true);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpDevice = this->tcMain->AddTabPage(CSTR("Device"));
 	this->txtDevice = ui->NewTextBox(this->tpDevice, CSTR(""), true);
 	this->txtDevice->SetReadOnly(true);
 	this->txtDevice->SetRect(0, 0, 100, 300, false);
-	this->txtDevice->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtDevice->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->vspDevice = ui->NewVSplitter(this->tpDevice, 3, true);
 	this->lvDevice = ui->NewListView(this->tpDevice, UI::ListViewStyle::Table, 10);
-	this->lvDevice->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDevice->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDevice->SetFullRowSelect(true);
 	this->lvDevice->SetShowGrid(true);
 	this->lvDevice->AddColumn(CSTR("MAC"), 115);
@@ -1386,14 +1386,14 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->tpIPTran = this->tcMain->AddTabPage(CSTR("IP Tran"));
 	this->lbIPTran = ui->NewListBox(this->tpIPTran, false);
 	this->lbIPTran->SetRect(0, 0, 150, 23, false);
-	this->lbIPTran->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbIPTran->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbIPTran->HandleSelectionChange(OnIPTranSelChg, this);
 	this->hspIPTran = ui->NewHSplitter(this->tpIPTran, 3, false);
 	this->tcIPTran = ui->NewTabControl(this->tpIPTran);
-	this->tcIPTran->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcIPTran->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpIPTranInfo = this->tcIPTran->AddTabPage(CSTR("Info"));
 	this->lvIPTranInfo = ui->NewListView(this->tpIPTranInfo, UI::ListViewStyle::Table, 2);
-	this->lvIPTranInfo->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvIPTranInfo->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvIPTranInfo->SetFullRowSelect(true);
 	this->lvIPTranInfo->SetShowGrid(true);
 	this->lvIPTranInfo->AddColumn(CSTR("Name"), 200);
@@ -1416,18 +1416,18 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->lvIPTranInfo->AddItem(CSTR("Send Other Size"), nullptr);
 	this->tpIPTranWhois = this->tcIPTran->AddTabPage(CSTR("Whois"));
 	this->txtIPTranWhois = ui->NewTextBox(this->tpIPTranWhois, CSTR(""), true);
-	this->txtIPTranWhois->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtIPTranWhois->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtIPTranWhois->SetReadOnly(true);
 
 	this->tpDNSReqv4 = this->tcMain->AddTabPage(CSTR("DNS Req v4"));
 	this->lbDNSReqv4 = ui->NewListBox(this->tpDNSReqv4, false);
 	this->lbDNSReqv4->SetRect(0, 0, 250, 23, false);
-	this->lbDNSReqv4->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbDNSReqv4->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbDNSReqv4->HandleSelectionChange(OnDNSReqv4SelChg, this);
 	this->hspDNSReqv4 = ui->NewHSplitter(this->tpDNSReqv4, 3, false);
 	this->pnlDNSReqv4 = ui->NewPanel(this->tpDNSReqv4);
 	this->pnlDNSReqv4->SetRect(0, 0, 100, 79, false);
-	this->pnlDNSReqv4->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlDNSReqv4->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblDNSReqv4Name = ui->NewLabel(this->pnlDNSReqv4, CSTR("Req Name"));
 	this->lblDNSReqv4Name->SetRect(4, 4, 100, 23, false);
 	this->txtDNSReqv4Name = ui->NewTextBox(this->pnlDNSReqv4, CSTR(""));
@@ -1444,7 +1444,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->txtDNSReqv4TTL->SetRect(104, 52, 80, 23, false);
 	this->txtDNSReqv4TTL->SetReadOnly(true);
 	this->lvDNSReqv4 = ui->NewListView(this->tpDNSReqv4, UI::ListViewStyle::Table, 5);
-	this->lvDNSReqv4->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDNSReqv4->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDNSReqv4->SetFullRowSelect(true);
 	this->lvDNSReqv4->SetShowGrid(true);
 	this->lvDNSReqv4->AddColumn(CSTR("Name"), 250);
@@ -1456,12 +1456,12 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->tpDNSReqv6 = this->tcMain->AddTabPage(CSTR("DNS Req v6"));
 	this->lbDNSReqv6 = ui->NewListBox(this->tpDNSReqv6, false);
 	this->lbDNSReqv6->SetRect(0, 0, 250, 23, false);
-	this->lbDNSReqv6->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbDNSReqv6->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbDNSReqv6->HandleSelectionChange(OnDNSReqv6SelChg, this);
 	this->hspDNSReqv6 = ui->NewHSplitter(this->tpDNSReqv6, 3, false);
 	this->pnlDNSReqv6 = ui->NewPanel(this->tpDNSReqv6);
 	this->pnlDNSReqv6->SetRect(0, 0, 100, 79, false);
-	this->pnlDNSReqv6->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlDNSReqv6->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblDNSReqv6Name = ui->NewLabel(this->pnlDNSReqv6, CSTR("Req Name"));
 	this->lblDNSReqv6Name->SetRect(4, 4, 100, 23, false);
 	this->txtDNSReqv6Name = ui->NewTextBox(this->pnlDNSReqv6, CSTR(""));
@@ -1478,7 +1478,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->txtDNSReqv6TTL->SetRect(104, 52, 80, 23, false);
 	this->txtDNSReqv6TTL->SetReadOnly(true);
 	this->lvDNSReqv6 = ui->NewListView(this->tpDNSReqv6, UI::ListViewStyle::Table, 5);
-	this->lvDNSReqv6->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDNSReqv6->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDNSReqv6->SetFullRowSelect(true);
 	this->lvDNSReqv6->SetShowGrid(true);
 	this->lvDNSReqv6->AddColumn(CSTR("Name"), 250);
@@ -1490,12 +1490,12 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->tpDNSReqOth = this->tcMain->AddTabPage(CSTR("DNS Req Other"));
 	this->lbDNSReqOth = ui->NewListBox(this->tpDNSReqOth, false);
 	this->lbDNSReqOth->SetRect(0, 0, 250, 23, false);
-	this->lbDNSReqOth->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbDNSReqOth->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbDNSReqOth->HandleSelectionChange(OnDNSReqOthSelChg, this);
 	this->hspDNSReqOth = ui->NewHSplitter(this->tpDNSReqOth, 3, false);
 	this->pnlDNSReqOth = ui->NewPanel(this->tpDNSReqOth);
 	this->pnlDNSReqOth->SetRect(0, 0, 100, 79, false);
-	this->pnlDNSReqOth->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlDNSReqOth->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblDNSReqOthName = ui->NewLabel(this->pnlDNSReqOth, CSTR("Req Name"));
 	this->lblDNSReqOthName->SetRect(4, 4, 100, 23, false);
 	this->txtDNSReqOthName = ui->NewTextBox(this->pnlDNSReqOth, CSTR(""));
@@ -1512,7 +1512,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->txtDNSReqOthTTL->SetRect(104, 52, 80, 23, false);
 	this->txtDNSReqOthTTL->SetReadOnly(true);
 	this->lvDNSReqOth = ui->NewListView(this->tpDNSReqOth, UI::ListViewStyle::Table, 5);
-	this->lvDNSReqOth->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDNSReqOth->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDNSReqOth->SetFullRowSelect(true);
 	this->lvDNSReqOth->SetShowGrid(true);
 	this->lvDNSReqOth->AddColumn(CSTR("Name"), 250);
@@ -1524,27 +1524,27 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->tpDNSTarget = this->tcMain->AddTabPage(CSTR("DNS Target"));
 	this->lbDNSTarget = ui->NewListBox(this->tpDNSTarget, false);
 	this->lbDNSTarget->SetRect(0, 0, 150, 23, false);
-	this->lbDNSTarget->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbDNSTarget->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbDNSTarget->HandleSelectionChange(OnDNSTargetSelChg, this);
 	this->hspDNSTarget = ui->NewHSplitter(this->tpDNSTarget, 3, false);
 	this->tcDNSTarget = ui->NewTabControl(this->tpDNSTarget);
-	this->tcDNSTarget->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcDNSTarget->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpDNSTargetDomain = this->tcDNSTarget->AddTabPage(CSTR("Domains"));
 	this->lbDNSTargetDomain = ui->NewListBox(this->tpDNSTargetDomain, false);
-	this->lbDNSTargetDomain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbDNSTargetDomain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpDNSTargetWhois = this->tcDNSTarget->AddTabPage(CSTR("Whois"));
 	this->txtDNSTargetWhois = ui->NewTextBox(this->tpDNSTargetWhois, CSTR(""), true);
 	this->txtDNSTargetWhois->SetReadOnly(true);
-	this->txtDNSTargetWhois->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtDNSTargetWhois->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpMDNS = this->tcMain->AddTabPage(CSTR("MDNS"));
 	this->lbMDNS = ui->NewListBox(this->tpMDNS, false);
 	this->lbMDNS->SetRect(0, 0, 200, 23, false);
-	this->lbMDNS->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbMDNS->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbMDNS->HandleSelectionChange(OnMDNSSelChg, this);
 	this->hspMDNS = ui->NewHSplitter(this->tpMDNS, 3, false);
 	this->pnlMDNS = ui->NewPanel(this->tpMDNS);
-	this->pnlMDNS->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlMDNS->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblMDNSName = ui->NewLabel(this->pnlMDNS, CSTR("Name"));
 	this->lblMDNSName->SetRect(4, 4, 100, 23, false);
 	this->txtMDNSName = ui->NewTextBox(this->pnlMDNS, CSTR(""));
@@ -1574,11 +1574,11 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->tpDNSClient = this->tcMain->AddTabPage(CSTR("DNS Client"));
 	this->lbDNSClient = ui->NewListBox(this->tpDNSClient, false);
 	this->lbDNSClient->SetRect(0, 0, 150, 23, false);
-	this->lbDNSClient->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbDNSClient->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbDNSClient->HandleSelectionChange(OnDNSClientSelChg, this);
 	this->hspDNSClient = ui->NewHSplitter(this->tpDNSClient, 3, false);
 	this->lvDNSClient = ui->NewListView(this->tpDNSClient, UI::ListViewStyle::Table, 2);
-	this->lvDNSClient->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDNSClient->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDNSClient->SetFullRowSelect(true);
 	this->lvDNSClient->SetShowGrid(true);
 	this->lvDNSClient->AddColumn(CSTR("Time"), 120);
@@ -1586,7 +1586,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 
 	this->tpDHCP = this->tcMain->AddTabPage(CSTR("DHCP"));
 	this->lvDHCP = ui->NewListView(this->tpDHCP, UI::ListViewStyle::Table, 14);
-	this->lvDHCP->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDHCP->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDHCP->SetFullRowSelect(true);
 	this->lvDHCP->SetShowGrid(true);
 	this->lvDHCP->AddColumn(CSTR("MAC"), 105);
@@ -1607,20 +1607,20 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->tpIPLog = this->tcMain->AddTabPage(CSTR("IP Log"));
 	this->lbIPLog = ui->NewListBox(this->tpIPLog, false);
 	this->lbIPLog->SetRect(0, 0, 150, 23, false);
-	this->lbIPLog->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbIPLog->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbIPLog->HandleSelectionChange(OnIPLogSelChg, this);
 	this->hspIPLog = ui->NewHSplitter(this->tpIPLog, 3, false);
 	this->lbIPLogVal = ui->NewListBox(this->tpIPLog, false);
-	this->lbIPLogVal->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbIPLogVal->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpPingIP = this->tcMain->AddTabPage(CSTR("Ping IP"));
 	this->lbPingIP = ui->NewListBox(this->tpPingIP, false);
 	this->lbPingIP->SetRect(0, 0, 150, 23, false);
-	this->lbPingIP->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbPingIP->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbPingIP->HandleSelectionChange(OnPingIPSelChg, this);
 	this->hspPingIP = ui->NewHSplitter(this->tpPingIP, 3, false);
 	this->tcPingIP = ui->NewTabControl(this->tpPingIP);
-	this->tcPingIP->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcPingIP->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpPingIPInfo = this->tcPingIP->AddTabPage(CSTR("Info"));
 	this->lblPingIPCount = ui->NewLabel(this->tpPingIPInfo, CSTR("Count"));
 	this->lblPingIPCount->SetRect(4, 4, 100, 23, false);
@@ -1639,12 +1639,12 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->txtPingIPCountry->SetReadOnly(true);
 	this->tpPingIPWhois = this->tcPingIP->AddTabPage(CSTR("Whois"));
 	this->txtPingIPWhois = ui->NewTextBox(this->tpPingIPWhois, CSTR(""), true);
-	this->txtPingIPWhois->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtPingIPWhois->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtPingIPWhois->SetReadOnly(true);
 
 	this->tpTCP4SYN = this->tcMain->AddTabPage(CSTR("TCPv4 SYN"));
 	this->lvTCP4SYN = ui->NewListView(this->tpTCP4SYN, UI::ListViewStyle::Table, 7);
-	this->lvTCP4SYN->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvTCP4SYN->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvTCP4SYN->SetFullRowSelect(true);
 	this->lvTCP4SYN->SetShowGrid(true);
 	this->lvTCP4SYN->AddColumn(CSTR("Time"), 180);
@@ -1657,7 +1657,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 
 	this->tpBandwidth = this->tcMain->AddTabPage(CSTR("Bandwidth"));
 	this->lvBandwidth = ui->NewListView(this->tpBandwidth, UI::ListViewStyle::Table, 6);
-	this->lvBandwidth->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvBandwidth->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvBandwidth->SetFullRowSelect(true);
 	this->lvBandwidth->SetShowGrid(true);
 	this->lvBandwidth->AddColumn(CSTR("IP"), 100);
@@ -1671,9 +1671,9 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 500, true));

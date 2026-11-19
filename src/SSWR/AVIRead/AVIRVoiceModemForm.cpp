@@ -182,7 +182,7 @@ SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(Optional<UI::GUIClientCont
 	this->isConnected = false;
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	this->lblModemManu = ui->NewLabel(this->tpInfo, CSTR("Manufacture"));

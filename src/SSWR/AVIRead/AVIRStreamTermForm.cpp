@@ -277,7 +277,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(Optional<UI::GUIClientCont
 
 	this->grpStream = ui->NewGroupBox(*this, CSTR("Stream"));
 	this->grpStream->SetRect(0, 0, 100, 48, false);
-	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->grpStream->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblStream = ui->NewLabel(this->grpStream, CSTR("Stream Type"));
 	this->lblStream->SetRect(4, 4, 100, 23, false);
 	this->txtStream = ui->NewTextBox(this->grpStream, CSTR("-"));
@@ -289,29 +289,29 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(Optional<UI::GUIClientCont
 	
 	this->grpRecv = ui->NewGroupBox(*this, CSTR("Receive"));
 	this->grpRecv->SetRect(0, 0, 256, 100, false);
-	this->grpRecv->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->grpRecv->SetDockType(UI::GUIControl::DockType::Left);
 	this->hspMain = ui->NewHSplitter(*this, 3, false);
 	this->grpSend = ui->NewGroupBox(*this, CSTR("Send"));
-	this->grpSend->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->grpSend->SetDockType(UI::GUIControl::DockType::Fill);
 	this->cboRecvType = ui->NewComboBox(this->grpRecv, false);
 	this->cboRecvType->SetRect(0, 0, 100, 23, false);
-	this->cboRecvType->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->cboRecvType->SetDockType(UI::GUIControl::DockType::Top);
 	this->cboRecvType->AddItem(CSTR("Display as Hex"), 0);
 	this->cboRecvType->AddItem(CSTR("Display as Text"), 0);
 	this->cboRecvType->SetSelectedIndex(0);
 	this->cboRecvType->HandleSelectionChange(OnRecvTypeChg, this);
 	this->txtRecvDisp = ui->NewTextBox(this->grpRecv, CSTR(""), true);
 	this->txtRecvDisp->SetReadOnly(true);
-	this->txtRecvDisp->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtRecvDisp->SetDockType(UI::GUIControl::DockType::Fill);
 	this->pnlSendOption = ui->NewPanel(this->grpSend);
 	this->pnlSendOption->SetRect(0, 0, 100, 72, false);
-	this->pnlSendOption->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlSendOption->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->pnlSend = ui->NewPanel(this->pnlSendOption);
 	this->pnlSend->SetRect(0, 0, 100, 24, false);
-	this->pnlSend->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlSend->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnSend = ui->NewButton(this->pnlSend, CSTR("&Send"));
 	this->btnSend->SetRect(0, 0, 75, 23, false);
-	this->btnSend->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->btnSend->SetDockType(UI::GUIControl::DockType::Right);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
 	this->lblSendLBreak = ui->NewLabel(this->pnlSendOption, CSTR("Line Break"));
 	this->lblSendLBreak->SetRect(0, 24, 100, 23, false);
@@ -327,17 +327,17 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(Optional<UI::GUIClientCont
 	this->radSendHex = ui->NewRadioButton(this->pnlSendOption, CSTR("Hex"), false);
 	this->radSendHex->SetRect(100, 0, 100, 23, false);
 	this->txtSendValue = ui->NewTextBox(this->pnlSend, CSTR(""));
-	this->txtSendValue->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtSendValue->SetDockType(UI::GUIControl::DockType::Fill);
 	this->cboSendType = ui->NewComboBox(this->grpSend, false);
 	this->cboSendType->SetRect(0, 0, 100, 23, false);
-	this->cboSendType->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->cboSendType->SetDockType(UI::GUIControl::DockType::Top);
 	this->cboSendType->AddItem(CSTR("Display as Hex"), 0);
 	this->cboSendType->AddItem(CSTR("Display as Text"), 0);
 	this->cboSendType->SetSelectedIndex(0);
 	this->cboSendType->HandleSelectionChange(OnSendTypeChg, this);
 	this->txtSendDisp = ui->NewTextBox(this->grpSend, CSTR(""), true);
 	this->txtSendDisp->SetReadOnly(true);
-	this->txtSendDisp->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtSendDisp->SetDockType(UI::GUIControl::DockType::Fill);
 	this->AddTimer(1000, OnTimerTick, this);
 }
 

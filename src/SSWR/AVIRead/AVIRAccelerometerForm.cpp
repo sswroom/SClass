@@ -69,7 +69,7 @@ SSWR::AVIRead::AVIRAccelerometerForm::AVIRAccelerometerForm(Optional<UI::GUIClie
 	this->txtZ->SetReadOnly(true);
 	this->pnlMoving = ui->NewPanel(*this);
 	this->pnlMoving->SetRect(0, 0, 100, 48, false);
-	this->pnlMoving->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlMoving->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->pnlMoving->SetBGColor(0xff40ff40);
 	this->AddTimer(500, OnTimerTick, this);
 }

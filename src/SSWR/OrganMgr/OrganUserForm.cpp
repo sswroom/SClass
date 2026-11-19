@@ -59,7 +59,7 @@ SSWR::OrganMgr::OrganUserForm::OrganUserForm(Optional<UI::GUIClientControl> pare
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 32, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnAdd = ui->NewButton(this->pnlCtrl, this->env->GetLang(CSTR("UserFormAdd")));
 	this->btnAdd->SetRect(4, 4, 75, 23, false);
 	this->btnAdd->HandleButtonClick(OnAddClicked, this);
@@ -67,7 +67,7 @@ SSWR::OrganMgr::OrganUserForm::OrganUserForm(Optional<UI::GUIClientControl> pare
 	this->btnModify->SetRect(84, 4, 75, 23, false);
 	this->btnModify->HandleButtonClick(OnModifyClicked, this);
 	this->lvUser = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
-	this->lvUser->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvUser->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvUser->SetShowGrid(true);
 	this->lvUser->SetFullRowSelect(true);
 	this->lvUser->AddColumn(this->env->GetLang(CSTR("UserFormColId")), 60);

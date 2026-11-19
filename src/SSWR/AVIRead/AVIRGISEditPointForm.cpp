@@ -283,12 +283,12 @@ SSWR::AVIRead::AVIRGISEditPointForm::AVIRGISEditPointForm(Optional<UI::GUIClient
 
 	this->lbObjects = ui->NewListBox(*this, false);
 	this->lbObjects->SetRect(0, 0, 150, 23, false);
-	this->lbObjects->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbObjects->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbObjects->HandleSelectionChange(OnObjectsSelChg, this);
 	this->lbObjects->HandleDoubleClicked(OnObjectsDblClk, this);
 	this->hspObjects = ui->NewHSplitter(*this, 3, false);
 	this->pnlObjects = ui->NewPanel(*this);
-	this->pnlObjects->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlObjects->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblStatus = ui->NewLabel(this->pnlObjects, CSTR("Status"));
 	this->lblStatus->SetRect(4, 4, 100, 23, false);
 	this->txtStatus = ui->NewTextBox(this->pnlObjects, CSTR("View"));

@@ -176,30 +176,30 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(Optional<UI::GUIClientControl> parent, N
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	this->pnlInfo = ui->NewPanel(this->tpInfo);
 	this->pnlInfo->SetRect(0, 0, 100, 36, false);
-	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlInfo->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblFileName = ui->NewLabel(this->pnlInfo, CSTR("File Name"));
 	this->lblFileName->SetRect(4, 4, 100, 23, false);
 	this->txtFileName = ui->NewTextBox(this->pnlInfo, CSTR(""));
 	this->txtFileName->SetRect(104, 4, 500, 23, false);
 	this->txtFileName->SetReadOnly(true);
 	this->txtRemark = ui->NewTextBox(this->tpInfo, CSTR(""), true);
-	this->txtRemark->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtRemark->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtRemark->SetReadOnly(true);
 
 	this->tpValues = this->tcMain->AddTabPage(CSTR("Values"));
 	this->pnlValues = ui->NewPanel(this->tpValues);
 	this->pnlValues->SetRect(0, 0, 100, 32, false);
-	this->pnlValues->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlValues->SetDockType(UI::GUIControl::DockType::Top);
 	this->cboChannels = ui->NewComboBox(this->pnlValues, false);
 	this->cboChannels->SetRect(4, 4, 100, 23, false);
 	this->cboChannels->HandleSelectionChange(OnChannelChg, this);
 	this->lvValues = ui->NewListView(this->tpValues, UI::ListViewStyle::Table, 2 + this->lut->GetInputCh());
-	this->lvValues->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvValues->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvValues->SetFullRowSelect(true);
 
 	this->lvValues->AddColumn(CSTR("Input"), 60);

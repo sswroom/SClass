@@ -102,7 +102,7 @@ SSWR::OrganMgr::OrganDataFileForm::OrganDataFileForm(Optional<UI::GUIClientContr
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 32, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnDelete = ui->NewButton(this->pnlCtrl, this->env->GetLang(CSTR("DataFileDelete")));
 	this->btnDelete->SetRect(4, 4, 75, 23, false);
 	this->btnDelete->HandleButtonClick(OnDeleteClicked, this);
@@ -110,7 +110,7 @@ SSWR::OrganMgr::OrganDataFileForm::OrganDataFileForm(Optional<UI::GUIClientContr
 	this->btnStartTime->SetRect(104, 4, 75, 23, false);
 	this->btnStartTime->HandleButtonClick(OnStartTimeClicked, this);
 	this->lvFiles = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
-	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvFiles->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvFiles->SetShowGrid(true);
 	this->lvFiles->SetFullRowSelect(true);
 	this->lvFiles->AddColumn(this->env->GetLang(CSTR("DataFileColFileName")), 200);

@@ -270,7 +270,7 @@ SSWR::AVIRead::AVIRJMeterLogForm::AVIRJMeterLogForm(Optional<UI::GUIClientContro
 
 	this->pnlFile = ui->NewPanel(*this);
 	this->pnlFile->SetRect(0, 0, 100, 80, false);
-	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlFile->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblLogFile = ui->NewLabel(this->pnlFile, CSTR("Results File"));
 	this->lblLogFile->SetRect(4, 4, 100, 23, false);
 	this->txtLogFile = ui->NewTextBox(this->pnlFile, CSTR(""));
@@ -289,11 +289,11 @@ SSWR::AVIRead::AVIRJMeterLogForm::AVIRJMeterLogForm(Optional<UI::GUIClientContro
 	this->txtEndTime->SetRect(104, 52, 200, 23, false);
 	this->txtEndTime->SetReadOnly(true);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpGroup = this->tcMain->AddTabPage(CSTR("Group"));
 	this->lvGroup = ui->NewListView(this->tpGroup, UI::ListViewStyle::Table, 8);
-	this->lvGroup->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvGroup->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvGroup->SetFullRowSelect(true);
 	this->lvGroup->SetShowGrid(true);
 	this->lvGroup->AddColumn(CSTR("Label"), 200);
@@ -307,7 +307,7 @@ SSWR::AVIRead::AVIRJMeterLogForm::AVIRJMeterLogForm(Optional<UI::GUIClientContro
 
 	this->tpThread = this->tcMain->AddTabPage(CSTR("Thread"));
 	this->lvThread = ui->NewListView(this->tpThread, UI::ListViewStyle::Table, 2);
-	this->lvThread->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvThread->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvThread->SetFullRowSelect(true);
 	this->lvThread->SetShowGrid(true);
 	this->lvThread->AddColumn(CSTR("Name"), 200);
@@ -316,7 +316,7 @@ SSWR::AVIRead::AVIRJMeterLogForm::AVIRJMeterLogForm(Optional<UI::GUIClientContro
 	this->tpConcurr = this->tcMain->AddTabPage(CSTR("Concurr"));
 	this->pnlConcurr = ui->NewPanel(this->tpConcurr);
 	this->pnlConcurr->SetRect(0, 0, 100, 31, false);
-	this->pnlConcurr->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlConcurr->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblConcurr = ui->NewLabel(this->pnlConcurr, CSTR("Time"));
 	this->lblConcurr->SetRect(4, 4, 100, 23, false);
 	this->txtConcurr = ui->NewTextBox(this->pnlConcurr, CSTR(""));
@@ -325,7 +325,7 @@ SSWR::AVIRead::AVIRJMeterLogForm::AVIRJMeterLogForm(Optional<UI::GUIClientContro
 	this->btnConcurr->SetRect(254, 4, 75, 23, false);
 	this->btnConcurr->HandleButtonClick(OnConcurrClicked, this);
 	this->lvConcurr = ui->NewListView(this->tpConcurr, UI::ListViewStyle::Table, 2);
-	this->lvConcurr->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvConcurr->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvConcurr->SetFullRowSelect(true);
 	this->lvConcurr->SetShowGrid(true);
 	this->lvConcurr->AddColumn(CSTR("Time"), 150);

@@ -58,7 +58,7 @@ SSWR::DiscDB::DiscDBSearchDiscForm::DiscDBSearchDiscForm(Optional<UI::GUIClientC
 
 	this->pnlDiscId = ui->NewPanel(*this);
 	this->pnlDiscId->SetRect(0, 0, 292, 43, false);
-	this->pnlDiscId->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlDiscId->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblDiscId = ui->NewLabel(this->pnlDiscId, CSTR("Disc ID"));
 	this->lblDiscId->SetRect(8, 9, 56, 25, false);
 	this->txtDiscId = ui->NewTextBox(this->pnlDiscId, CSTR(""));
@@ -68,7 +68,7 @@ SSWR::DiscDB::DiscDBSearchDiscForm::DiscDBSearchDiscForm(Optional<UI::GUIClientC
 	this->btnSearch->HandleButtonClick(OnSearchClicked, this);
 	this->pnlOut = ui->NewPanel(*this);
 	this->pnlOut->SetRect(0, 0, 292, 108, false);
-	this->pnlOut->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlOut->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblDiscIdOut = ui->NewLabel(this->pnlOut, CSTR("Disc ID"));
 	this->lblDiscIdOut->SetRect(8, 9, 64, 25, false);
 	this->txtDiscIdOut = ui->NewTextBox(this->pnlOut, CSTR(""));
@@ -85,7 +85,7 @@ SSWR::DiscDB::DiscDBSearchDiscForm::DiscDBSearchDiscForm(Optional<UI::GUIClientC
 	this->txtBurntDate->SetRect(72, 61, 100, 20, false);
 	this->txtBurntDate->SetReadOnly(true);
 	this->lvFiles = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
-	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvFiles->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvFiles->SetFullRowSelect(true);
 	this->lvFiles->SetShowGrid(true);
 	this->lvFiles->AddColumn(CSTR("File Name"), 150);

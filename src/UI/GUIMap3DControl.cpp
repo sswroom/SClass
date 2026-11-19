@@ -9,7 +9,7 @@ UI::GUIMap3DControl::GUIMap3DControl(NN<GUICore> ui, NN<UI::GUIClientControl> pa
 	NN<Map::Map3DView> view3d;
 	this->colorSess = colorSess;
 	this->mouseDown = false;
-	this->mouseBtn = UI::GUIControl::MBTN_LEFT;
+	this->mouseBtn = UI::GUIControl::MouseButton::Left;
 	this->lastMouse = Math::Coord2D<IntOS>(0, 0);
 
 	eng3d = Media::Engine3DFactory::CreateEngine3D();
@@ -85,7 +85,7 @@ void UI::GUIMap3DControl::OnMouseMove(Math::Coord2D<IntOS> scnPos)
 	if (this->mouseDown)
 	{
 		Math::Coord2D<IntOS> diff = scnPos - this->lastMouse;
-		if (this->mouseBtn == UI::GUIControl::MBTN_LEFT)
+		if (this->mouseBtn == UI::GUIControl::MouseButton::Left)
 		{
 			this->view3d->Orbit(-IntOS2Double(diff.x) * 0.01, -IntOS2Double(diff.y) * 0.01);
 		}

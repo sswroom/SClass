@@ -289,15 +289,15 @@ SSWR::OrganMgr::OrganLocationForm::OrganLocationForm(Optional<UI::GUIClientContr
 
 	this->lbLocation = ui->NewListBox(*this, false);
 	this->lbLocation->SetRect(0, 0, 96, 100, false);
-	this->lbLocation->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbLocation->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbLocation->HandleSelectionChange(OnLocSelChg, this);
 	this->lbSublocations = ui->NewListBox(*this, false);
 	this->lbSublocations->SetRect(0, 0, 96, 100, false);
-	this->lbSublocations->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbSublocations->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbSublocations->HandleSelectionChange(OnSubLocSelChg, this);
 	this->lbSublocations->HandleDoubleClicked(OnSubLocDblClk, this);
 	this->pnlLocation = ui->NewPanel(*this);
-	this->pnlLocation->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlLocation->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblID = ui->NewLabel(this->pnlLocation, this->env->GetLang(CSTR("LocationId")));
 	this->lblID->SetRect(11, 16, 80, 23, false);
 	this->lblEName = ui->NewLabel(this->pnlLocation, this->env->GetLang(CSTR("LocationEName")));

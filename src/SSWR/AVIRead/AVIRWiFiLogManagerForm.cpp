@@ -346,7 +346,7 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(Optional<UI::GUICl
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnFile = ui->NewButton(this->pnlControl, CSTR("Open Log"));
 	this->btnFile->SetRect(4, 4, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
@@ -375,11 +375,11 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(Optional<UI::GUICl
 	this->cboDblClk->SetSelectedIndex(0);
 	this->txtFileIE = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtFileIE->SetRect(0, 0, 100, 255, false);
-	this->txtFileIE->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtFileIE->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->txtFileIE->SetReadOnly(true);
 	this->vspFile = ui->NewVSplitter(*this, 3, true);
 	this->lvContent = ui->NewListView(*this, UI::ListViewStyle::Table, 13);
-	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvContent->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvContent->SetShowGrid(true);
 	this->lvContent->SetFullRowSelect(true);
 	this->lvContent->HandleDblClk(OnContentDblClicked, this);

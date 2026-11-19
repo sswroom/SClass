@@ -112,11 +112,11 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 	{
 		ctrl = it.Next();
 		dt = ctrl->GetDockType();
-		if (dt == UI::GUIControl::DOCK_NONE)
+		if (dt == UI::GUIControl::DockType::None)
 		{
 			ctrl->UpdatePos(false);
 		}
-		else if (dt == UI::GUIControl::DOCK_FILL)
+		else if (dt == UI::GUIControl::DockType::Fill)
 		{
 			ctrl->SetArea(left, top, br.x, br.y, false);
 			ctrlSz = ctrl->GetSize();
@@ -126,25 +126,25 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 		else
 		{
 			ctrlSz = ctrl->GetSize();
-			if (dt == UI::GUIControl::DOCK_LEFT)
+			if (dt == UI::GUIControl::DockType::Left)
 			{
 				ctrl->SetArea(left, top, left + ctrlSz.x, br.y, false);
 				ctrlSz = ctrl->GetSize();
 				left += ctrlSz.x;
 			}
-			else if (dt == UI::GUIControl::DOCK_TOP)
+			else if (dt == UI::GUIControl::DockType::Top)
 			{
 				ctrl->SetArea(left, top, br.x, top + ctrlSz.y, false);
 				ctrlSz = ctrl->GetSize();
 				top += ctrlSz.y;
 			}
-			else if (dt == UI::GUIControl::DOCK_RIGHT)
+			else if (dt == UI::GUIControl::DockType::Right)
 			{
 				ctrl->SetArea(br.x - ctrlSz.x, top, br.x, br.y, false);
 				ctrlSz = ctrl->GetSize();
 				br.x -= ctrlSz.x;
 			}
-			else if (dt == UI::GUIControl::DOCK_BOTTOM)
+			else if (dt == UI::GUIControl::DockType::Bottom)
 			{
 				ctrl->SetArea(left, br.y - ctrlSz.y, br.x, br.y, false);
 				ctrlSz = ctrl->GetSize();

@@ -215,7 +215,7 @@ SSWR::AVIRead::AVIRDHCPServerForm::AVIRDHCPServerForm(Optional<UI::GUIClientCont
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 199, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblIP = ui->NewLabel(this->pnlControl, CSTR("Interface"));
 	this->lblIP->SetRect(4, 4, 100, 23, false);
 	this->cboIP = ui->NewComboBox(this->pnlControl, false);
@@ -248,7 +248,7 @@ SSWR::AVIRead::AVIRDHCPServerForm::AVIRDHCPServerForm(Optional<UI::GUIClientCont
 	this->btnStart->SetRect(104, 172, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	this->lvDevices = ui->NewListView(*this, UI::ListViewStyle::Table, 7);
-	this->lvDevices->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvDevices->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);
 	this->lvDevices->AddColumn(CSTR("HW Address"), 105);

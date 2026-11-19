@@ -56,11 +56,11 @@ SSWR::AVIRead::AVIRGPUInfoForm::AVIRGPUInfoForm(Optional<UI::GUIClientControl> p
 	
 	this->lbGPU = ui->NewListBox(*this, false);
 	this->lbGPU->SetRect(0, 0, 250, 23, false);
-	this->lbGPU->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbGPU->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbGPU->HandleSelectionChange(OnGPUSelChange, this);
 	this->hspGPU = ui->NewHSplitter(*this, 3, false);
 	this->lvMain = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
-	this->lvMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvMain->SetShowGrid(true);
 	this->lvMain->SetFullRowSelect(true);
 	this->lvMain->AddColumn(CSTR("Name"), 150);

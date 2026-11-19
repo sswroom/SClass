@@ -291,7 +291,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(Optional<UI::GUIClientCo
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 104, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblAgentAddr = ui->NewLabel(this->pnlControl, CSTR("Agent Addr"));
 	this->lblAgentAddr->SetRect(4, 4, 100, 23, false);
 	this->txtAgentAddr = ui->NewTextBox(this->pnlControl, CSTR(""));
@@ -309,12 +309,12 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(Optional<UI::GUIClientCo
 	this->chkSendToSvr->SetRect(104, 76, 150, 23, false);
 	this->lbAgent = ui->NewListBox(*this, false);
 	this->lbAgent->SetRect(0, 0, 150, 23, false);
-	this->lbAgent->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbAgent->SetDockType(UI::GUIControl::DockType::Left);
 	this->lbAgent->HandleSelectionChange(OnAgentSelChg, this);
 	this->hspAgent = ui->NewHSplitter(*this, 3, false);
 	this->pnlAgent = ui->NewPanel(*this);
 	this->pnlAgent->SetRect(0, 0, 100, 248, false);
-	this->pnlAgent->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlAgent->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblAgentDAddr = ui->NewLabel(this->pnlAgent, CSTR("Agent Address"));
 	this->lblAgentDAddr->SetRect(4, 4, 100, 23, false);
 	this->txtAgentDAddr = ui->NewTextBox(this->pnlAgent, CSTR(""));
@@ -369,7 +369,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(Optional<UI::GUIClientCo
 	this->txtAgentModel->SetRect(104, 220, 150, 23, false);
 	this->txtAgentModel->SetReadOnly(true);
 	this->lvAgentReading = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
-	this->lvAgentReading->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvAgentReading->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvAgentReading->SetShowGrid(true);
 	this->lvAgentReading->SetFullRowSelect(true);
 	this->lvAgentReading->AddColumn(CSTR("Name"), 150);

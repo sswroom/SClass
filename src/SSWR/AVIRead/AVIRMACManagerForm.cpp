@@ -497,19 +497,19 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(Optional<UI::GUIClientCont
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
-	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlControl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnStore = ui->NewButton(this->pnlControl, CSTR("Store"));
 	this->btnStore->SetRect(4, 4, 75, 23, false);
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
 	this->lblInfo = ui->NewLabel(this->pnlControl, CSTR(""));
 	this->lblInfo->SetRect(84, 4, 200, 23, false);
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpFile = this->tcMain->AddTabPage(CSTR("WiFi Log"));
 	this->pnlFile = ui->NewPanel(this->tpFile);
 	this->pnlFile->SetRect(0, 0, 100, 31, false);
-	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlFile->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblFile = ui->NewLabel(this->pnlFile, CSTR("Log File"));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	this->txtFile = ui->NewTextBox(this->pnlFile, CSTR(""));
@@ -520,11 +520,11 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(Optional<UI::GUIClientCont
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
 	this->txtFileIE = ui->NewTextBox(this->tpFile, CSTR(""), true);
 	this->txtFileIE->SetRect(0, 0, 100, 256, false);
-	this->txtFileIE->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtFileIE->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->txtFileIE->SetReadOnly(true);
 	this->vspFile = ui->NewVSplitter(this->tpFile, 3, true);
 	this->lvContent = ui->NewListView(this->tpFile, UI::ListViewStyle::Table, 12);
-	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvContent->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvContent->SetShowGrid(true);
 	this->lvContent->SetFullRowSelect(true);
 	this->lvContent->HandleDblClk(OnContentDblClicked, this);

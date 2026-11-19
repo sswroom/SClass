@@ -63,7 +63,7 @@ SSWR::AVIRead::AVIRPythonForm::AVIRPythonForm(Optional<UI::GUIClientControl> par
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	this->lblVersion = ui->NewLabel(this->tpInfo, CSTR("Version"));
 	this->lblVersion->SetRect(4, 4, 100, 23, false);
@@ -94,7 +94,7 @@ SSWR::AVIRead::AVIRPythonForm::AVIRPythonForm(Optional<UI::GUIClientControl> par
 	this->tpModule = this->tcMain->AddTabPage(CSTR("Module"));
 	this->pnlModule = ui->NewPanel(this->tpModule);
 	this->pnlModule->SetRect(0, 0, 100, 52, true);
-	this->pnlModule->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlModule->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblModuleName = ui->NewLabel(this->pnlModule, CSTR("Module Name"));
 	this->lblModuleName->SetRect(4, 4, 100, 23, false);
 	this->txtModuleName = ui->NewTextBox(this->pnlModule, CSTR(""));
@@ -108,7 +108,7 @@ SSWR::AVIRead::AVIRPythonForm::AVIRPythonForm(Optional<UI::GUIClientControl> par
 	this->txtModuleFile->SetRect(104, 28, 400, 23, false);
 	this->txtModuleFile->SetReadOnly(true);
 	this->lvModule = ui->NewListView(this->tpModule, UI::ListViewStyle::Table, 3);
-	this->lvModule->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvModule->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvModule->AddColumn(CSTR("Key"), 200);
 	this->lvModule->AddColumn(CSTR("Type"), 100);
 	this->lvModule->AddColumn(CSTR("Value"), 400);

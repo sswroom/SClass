@@ -40,7 +40,7 @@ void UI::GUIListBox::EventRightClick(Math::Coord2D<IntOS> pos)
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<MouseEventHandler> cb = this->rightClickHdlrs.GetItem(i);
-		cb.func(cb.userObj, pos, UI::GUIControl::MBTN_RIGHT);
+		cb.func(cb.userObj, pos, UI::GUIControl::MouseButton::Right);
 	}
 }
 

@@ -1495,7 +1495,7 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(Optional<UI::GUIClientControl> p
 	this->lblLabelLegend->SetRect(16, 416, 520, 23, false);
 	this->lblProgress = ui->NewLabel(*this, CSTR(""));
 	this->lblProgress->SetRect(0, 416, 570, 23, false);
-	this->lblProgress->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->lblProgress->SetDockType(UI::GUIControl::DockType::Bottom);
 
 	this->progressName = nullptr;
 	this->totalVal = 1;

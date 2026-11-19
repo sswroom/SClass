@@ -46,14 +46,14 @@ UtilUI::TextViewerForm::TextViewerForm(Optional<UI::GUIClientControl> parent, NN
 	this->srchFrm = nullptr;
 	this->pnlStatus = ui->NewPanel(*this);
 	this->pnlStatus->SetRect(0, 0, 100, 24, false);
-	this->pnlStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlStatus->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->txtStatus = ui->NewTextBox(this->pnlStatus, CSTR(""));
 	this->txtStatus->SetRect(0, 0, 200, 23, false);
 	this->txtStatus->SetReadOnly(true);
-	this->txtStatus->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->txtStatus->SetDockType(UI::GUIControl::DockType::Left);
 	NEW_CLASSNN(this->txtView, UI::GUITextFileView(ui, *this, deng, nullptr));
 	this->txtView->SetCodePage(codePage);
-	this->txtView->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtView->SetDockType(UI::GUIControl::DockType::Fill);
 	this->HandleDropFiles(OnFileDrop, this);
 	this->txtView->HandleTextPosUpdate(OnTextPosUpd, this);
 	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());

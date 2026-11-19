@@ -767,7 +767,7 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(Optional<UI::GUIClientControl> parent,
 		NEW_CLASSNN(this->vbox, UI::GUIVideoBoxDDLQ(ui, *this, this->colorSess, 6, 2));
 	}
 
-	this->vbox->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->vbox->SetDockType(UI::GUIControl::DockType::Fill);
 	this->vbox->SetUserFSMode(VFSMODE?(UI::GUIDDrawControl::SM_VFS):(UI::GUIDDrawControl::SM_FS));
 	this->vbox->HandleMouseActon(OnMouseAction, this);
 	this->HandleDropFiles(OnFileDrop, this);
@@ -905,7 +905,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			this->dbgFrm = frm;
 			this->txtDebug = ui->NewTextBox(frm, CSTR(""), true);
 			this->txtDebug->SetReadOnly(true);
-			this->txtDebug->SetDockType(UI::GUIControl::DOCK_FILL);
+			this->txtDebug->SetDockType(UI::GUIControl::DockType::Fill);
 			frm->SetFont(nullptr, 8.25, false);
 			frm->SetText(CSTR("Info"));
 			frm->Show();

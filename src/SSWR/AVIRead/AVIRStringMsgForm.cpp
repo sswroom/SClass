@@ -22,12 +22,12 @@ SSWR::AVIRead::AVIRStringMsgForm::AVIRStringMsgForm(Optional<UI::GUIClientContro
 
 	this->pnlButton = ui->NewPanel(*this);
 	this->pnlButton->SetRect(0, 0, 100, 32, false);
-	this->pnlButton->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlButton->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnOK = ui->NewButton(this->pnlButton, CSTR("OK"));
 	this->btnOK->SetRect(24, 4, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 	this->txtMessage = ui->NewTextBox(*this, msg, true);
-	this->txtMessage->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtMessage->SetDockType(UI::GUIControl::DockType::Fill);
 	this->txtMessage->SetReadOnly(true);
 	this->txtMessage->Focus();
 }

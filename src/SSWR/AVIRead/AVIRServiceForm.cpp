@@ -166,7 +166,7 @@ SSWR::AVIRead::AVIRServiceForm::AVIRServiceForm(Optional<UI::GUIClientControl> p
 
 	this->lvService = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
 	this->lvService->SetRect(0, 0, 220, 23, false);
-	this->lvService->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lvService->SetDockType(UI::GUIControl::DockType::Left);
 	this->lvService->AddColumn(CSTR("Name"), 150);
 	this->lvService->AddColumn(CSTR("State"), 60);
 	this->lvService->SetFullRowSelect(true);
@@ -175,7 +175,7 @@ SSWR::AVIRead::AVIRServiceForm::AVIRServiceForm(Optional<UI::GUIClientControl> p
 	this->hspService = ui->NewHSplitter(*this, 3, false);
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 55, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Top);
 	this->btnStart = ui->NewButton(this->pnlCtrl, CSTR("Start"));
 	this->btnStart->SetRect(4, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
@@ -195,7 +195,7 @@ SSWR::AVIRead::AVIRServiceForm::AVIRServiceForm(Optional<UI::GUIClientControl> p
 	this->btnCreate->SetRect(84, 28, 75, 23, false);
 	this->btnCreate->HandleButtonClick(OnCreateClicked, this);
 	this->pnlDetail = ui->NewPanel(*this);
-	this->pnlDetail->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlDetail->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblName = ui->NewLabel(this->pnlDetail, CSTR("Name"));
 	this->lblName->SetRect(4, 4, 100, 23, false);
 	this->txtName = ui->NewTextBox(this->pnlDetail, CSTR(""));

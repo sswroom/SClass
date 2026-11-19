@@ -212,7 +212,7 @@ SSWR::AVIRead::AVIRSIDERunnerLogForm::AVIRSIDERunnerLogForm(Optional<UI::GUIClie
 
 	this->pnlFile = ui->NewPanel(*this);
 	this->pnlFile->SetRect(0, 0, 100, 31, false);
-	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlFile->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblFile = ui->NewLabel(this->pnlFile, CSTR("File"));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	this->txtFile = ui->NewTextBox(this->pnlFile, CSTR(""));
@@ -220,12 +220,12 @@ SSWR::AVIRead::AVIRSIDERunnerLogForm::AVIRSIDERunnerLogForm(Optional<UI::GUIClie
 	this->txtFile->SetRect(104, 4, 600, 23, false);
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->btnSave = ui->NewButton(this->pnlCtrl, CSTR("Save"));
 	this->btnSave->SetRect(4, 4, 75, 23, false);
 	this->btnSave->HandleButtonClick(OnExportClicked, this);
 	this->lvSteps = ui->NewListView(*this, UI::ListViewStyle::Table, 9);
-	this->lvSteps->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvSteps->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvSteps->SetFullRowSelect(true);
 	this->lvSteps->SetShowGrid(true);
 	this->lvSteps->AddColumn(CSTR("Index"), 60);

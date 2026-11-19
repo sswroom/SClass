@@ -250,7 +250,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(Optional<UI::GUIClientCont
 	this->dispTime = Data::Timestamp::UtcNow();
 
 	this->tcMain = ui->NewTabControl(*this);
-	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tcMain->SetDockType(UI::GUIControl::DockType::Fill);
 
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	this->lblSSL = ui->NewLabel(this->tpStatus, CSTR("SSL"));
@@ -282,7 +282,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(Optional<UI::GUIClientCont
 
 	this->tpTopic = this->tcMain->AddTabPage(CSTR("Topic"));
 	this->lvTopic = ui->NewListView(this->tpTopic, UI::ListViewStyle::Table, 3);
-	this->lvTopic->SetDockType(UI::GUIClientControl::DOCK_FILL);
+	this->lvTopic->SetDockType(UI::GUIClientControl::DockType::Fill);
 	this->lvTopic->SetFullRowSelect(true);
 	this->lvTopic->SetShowGrid(true);
 	this->lvTopic->AddColumn(CSTR("Topic"), 200);
@@ -292,10 +292,10 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(Optional<UI::GUIClientCont
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
-	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtLog->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->txtLog->SetReadOnly(true);
 	this->lbLog = ui->NewListBox(this->tpLog, false);
-	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbLog->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 100, false));

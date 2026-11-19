@@ -57,10 +57,10 @@ IntOS __stdcall UI::GUICustomDraw::FormWndProc(void *hWnd, UInt32 msg, UIntOS wP
 		}
 		return 0;
 	case WM_LBUTTONDOWN:
-		me->OnMouseDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MBTN_LEFT);
+		me->OnMouseDown(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MouseButton::Left);
 		return 0;
 	case WM_LBUTTONUP:
-		me->OnMouseUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MBTN_LEFT);
+		me->OnMouseUp(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)), UI::GUIControl::MouseButton::Left);
 		return 0;
 	case WM_MOUSEMOVE:
 		me->OnMouseMove(Math::Coord2D<IntOS>((Int16)LOWORD(lParam), (Int16)HIWORD(lParam)));

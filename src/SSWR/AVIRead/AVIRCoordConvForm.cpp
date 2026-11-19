@@ -561,7 +561,7 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(Optional<UI::GUIClientContro
 
 	this->pnlSrc = ui->NewPanel(*this);
 	this->pnlSrc->SetRect(0, 0, 100, 24, false);
-	this->pnlSrc->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlSrc->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblSrc = ui->NewLabel(this->pnlSrc, CSTR("Source Type"));
 	this->lblSrc->SetRect(0, 0, 100, 23, false);
 	this->radSrcGeo = ui->NewRadioButton(this->pnlSrc, CSTR("Geographic"), false);
@@ -574,7 +574,7 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(Optional<UI::GUIClientContro
 	this->cboSrc->HandleSelectionChange(OnSrcCboChanged, this);
 	this->pnlDest = ui->NewPanel(*this);
 	this->pnlDest->SetRect(0, 0, 100, 24, false);
-	this->pnlDest->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlDest->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblDest = ui->NewLabel(this->pnlDest, CSTR("Dest Type"));
 	this->lblDest->SetRect(0, 0, 100, 23, false);
 	this->radDestGeo = ui->NewRadioButton(this->pnlDest, CSTR("Geographic"), true);
@@ -590,7 +590,7 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(Optional<UI::GUIClientContro
 	this->btnConvFile->HandleButtonClick(OnConvFileClicked, this);
 	this->pnlCoord = ui->NewPanel(*this);
 	this->pnlCoord->SetRect(0, 0, 100, 24, false);
-	this->pnlCoord->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlCoord->SetDockType(UI::GUIControl::DockType::Top);
 	this->lblName = ui->NewLabel(this->pnlCoord, CSTR("Name"));
 	this->lblName->SetRect(0, 0, 100, 23, false);
 	this->txtName = ui->NewTextBox(this->pnlCoord, CSTR(""));
@@ -619,9 +619,9 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(Optional<UI::GUIClientContro
 	this->txtStatus = ui->NewTextBox(*this, CSTR(""));
 	this->txtStatus->SetRect(0, 0, 100, 23, false);
 	this->txtStatus->SetReadOnly(true);
-	this->txtStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->txtStatus->SetDockType(UI::GUIControl::DockType::Bottom);
 	this->lvCoord = ui->NewListView(*this, UI::ListViewStyle::Table, 7);
-	this->lvCoord->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvCoord->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lvCoord->AddColumn(CSTR("Name"), 100);
 	this->lvCoord->AddColumn(CSTR("Easting"), 100);
 	this->lvCoord->AddColumn(CSTR("Northing"), 100);

@@ -83,15 +83,15 @@ SSWR::AVIRead::AVIRDBGenEnumForm::AVIRDBGenEnumForm(Optional<UI::GUIClientContro
 
 	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetRect(0, 0, 100, 96, false);
-	this->pnlMain->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlMain->SetDockType(UI::GUIControl::DockType::Top);
 	this->txtEnum = ui->NewTextBox(*this, CSTR(""), true);
-	this->txtEnum->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtEnum->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lbValues = ui->NewListBox(this->pnlMain, false);
 	this->lbValues->SetRect(0, 0, 150, 24, false);
-	this->lbValues->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbValues->SetDockType(UI::GUIControl::DockType::Left);
 	this->hspCtrl = ui->NewHSplitter(this->pnlMain, 3, false);
 	this->pnlCtrl = ui->NewPanel(this->pnlMain);
-	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DockType::Fill);
 	this->lblValueCase = ui->NewLabel(this->pnlCtrl, CSTR("Value Case"));
 	this->lblValueCase->SetRect(4, 4, 100, 23, false);
 	this->cboValueCase = ui->NewComboBox(this->pnlCtrl, false);

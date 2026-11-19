@@ -35,7 +35,7 @@ IntOS __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UIntO
 		break;
 	case WM_LBUTTONDOWN:
 		GetCursorPos(&pt);
-		me->EventMouseDown(GUIControl::MouseButton::MBTN_LEFT, Math::Coord2D<IntOS>(pt.x, pt.y));
+		me->EventMouseDown(GUIControl::MouseButton::Left, Math::Coord2D<IntOS>(pt.x, pt.y));
 		return 0;
 	case WM_LBUTTONUP:
 		if (me->dragMode)
@@ -81,7 +81,7 @@ IntOS __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UIntO
 						else if (foundThis)
 						{
 							dockType = ctrl->GetDockType();
-							if (dockType == UI::GUIControl::DOCK_BOTTOM && me->isBottom)
+							if (dockType == UI::GUIControl::DockType::Bottom && me->isBottom)
 							{
 								pos = ctrl->GetPositionP();
 								sz = ctrl->GetSizeP();
@@ -89,7 +89,7 @@ IntOS __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UIntO
 								nnparent->UpdateChildrenSize(true);
 								break;
 							}
-							else if (dockType == UI::GUIControl::DOCK_TOP && !me->isBottom)
+							else if (dockType == UI::GUIControl::DockType::Top && !me->isBottom)
 							{
 								pos = ctrl->GetPositionP();
 								sz = ctrl->GetSizeP();
@@ -231,7 +231,7 @@ void UI::Win::WinVSplitter::CalDragRange()
 					else
 					{
 						dockType = ctrl->GetDockType();
-						if (dockType == UI::GUIControl::DOCK_BOTTOM)
+						if (dockType == UI::GUIControl::DockType::Bottom)
 						{
 							if (foundThis && !foundBottom)
 							{
@@ -240,7 +240,7 @@ void UI::Win::WinVSplitter::CalDragRange()
 								max += (IntOS)ctrl->GetSizeP().y;
 							}
 						}
-						else if (dockType == UI::GUIControl::DOCK_TOP)
+						else if (dockType == UI::GUIControl::DockType::Top)
 						{
 							if (!foundTop)
 							{
@@ -266,7 +266,7 @@ void UI::Win::WinVSplitter::CalDragRange()
 					else
 					{
 						dockType = ctrl->GetDockType();
-						if (dockType == UI::GUIControl::DOCK_BOTTOM)
+						if (dockType == UI::GUIControl::DockType::Bottom)
 						{
 							if (!foundBottom)
 							{
@@ -274,7 +274,7 @@ void UI::Win::WinVSplitter::CalDragRange()
 								max = ctrl->GetPositionP().y;
 							}
 						}
-						else if (dockType == UI::GUIControl::DOCK_TOP)
+						else if (dockType == UI::GUIControl::DockType::Top)
 						{
 							if (foundThis && !foundTop)
 							{
@@ -307,7 +307,7 @@ UI::Win::WinVSplitter::WinVSplitter(NN<UI::GUICore> ui, NN<UI::GUIClientControl>
 		style = style | WS_VISIBLE;
 	}
 	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, nullptr, style, 0, 0, 0, 10, height);
-	this->SetDockType(isBottom?DOCK_BOTTOM:DOCK_TOP);
+	this->SetDockType(isBottom?DockType::Bottom:DockType::Top);
 }
 
 UI::Win::WinVSplitter::~WinVSplitter()
@@ -325,7 +325,7 @@ IntOS UI::Win::WinVSplitter::OnNotify(UInt32 code, IntOS lParam)
 
 void UI::Win::WinVSplitter::EventMouseDown(UI::GUIControl::MouseButton btn, Math::Coord2D<IntOS> pos)
 {
-	if (btn == GUIControl::MouseButton::MBTN_LEFT)
+	if (btn == GUIControl::MouseButton::Left)
 	{
 		this->dragMode = true;
 		this->dragX = pos.x;
