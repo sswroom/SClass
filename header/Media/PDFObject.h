@@ -9,6 +9,15 @@ namespace Media
 {
 	class PDFObject
 	{
+	public:
+		enum class ImageType
+		{
+			NonImage,
+			Unknown,
+			JPEG,
+			CCITTFax,
+			FlateDecode
+		};
 	private:
 		UInt32 id;
 		Bool streamData;
@@ -25,12 +34,13 @@ namespace Media
 		Optional<PDFParameter> GetParameter() const;
 		UInt32 GetId() const;
 		Bool IsImage() const;
+		ImageType GetImageType() const;
 		Bool IsFlateDecode() const;
 		Optional<Text::String> GetType() const;
 		Optional<Text::String> GetSubtype() const;
 		Optional<Text::String> GetFilter() const;
 		Optional<Text::String> GetColorSpace() const;
-		UIntOS GetBitPerComponent() const;
+		UIntOS GetBitsPerComponent() const;
 		UIntOS GetWidth() const;
 		UIntOS GetHeight() const;
 		Bool ToString(NN<Text::StringBuilderUTF8> sb) const;
@@ -38,6 +48,8 @@ namespace Media
 		Optional<IO::StreamData> GetData();
 		Bool SaveFile(Text::CStringNN fileName);
 		Bool SaveStream(NN<IO::Stream> stm);
+
+		static Text::CStringNN ImageTypeGetName(ImageType imgType);
 	};
 }
 #endif

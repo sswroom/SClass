@@ -267,7 +267,7 @@ Optional<Media::StaticImage> Media::JPEGDecoder::DecodeImage(Data::ByteArrayR da
 #endif
 	ret = jpeg_read_header(&cinfo, TRUE);
 #if defined(VERBOSE)
-	printf("image_width = %d, image_height = %d, output_components = %d, out_color_space = %d, ret = %d\r\n", cinfo.image_width, cinfo.image_height, cinfo.output_components, cinfo.out_color_space, ret);
+	printf("JPEGDecoder: image_width = %d, image_height = %d, output_components = %d, out_color_space = %d, ret = %d\r\n", cinfo.image_width, cinfo.image_height, cinfo.output_components, cinfo.out_color_space, ret);
 #endif
 	if (ret == 1 && jpeg_start_decompress(&cinfo))
 	{
@@ -281,6 +281,37 @@ Optional<Media::StaticImage> Media::JPEGDecoder::DecodeImage(Data::ByteArrayR da
 			UInt8 *r = nnimg->data.Ptr();
 			while (cinfo.output_scanline < cinfo.image_height) {
 				jpeg_read_scanlines(&cinfo, &r, 1);
+				r += bpl;
+			}
+		}
+		else if (cinfo.out_color_space == JCS_CMYK)
+		{
+			Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
+			NEW_CLASSNN(nnimg, Media::StaticImage(Math::Size2D<UIntOS>(cinfo.image_width, cinfo.image_height), 0, 32, Media::PixelFormat::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
+			img = nnimg;
+			UIntOS bpl = nnimg->GetDataBpl();
+			UIntOS i;
+			UIntOS w = cinfo.image_width;
+			UInt8 c;
+			UInt8 m;
+			UInt8 y;
+			UInt8 k;
+			UInt8 *r = nnimg->data.Ptr();
+			while (cinfo.output_scanline < cinfo.image_height) {
+				jpeg_read_scanlines(&cinfo, &r, 1);
+				i = 0;
+				while (i < w)
+				{
+					c = r[i * 4 + 0];
+					m = r[i * 4 + 1];
+					y = r[i * 4 + 2];
+					k = r[i * 4 + 3];
+					r[i * 4 + 0] = (UInt8)(((255 - y) * (255 - k)) / 255);
+					r[i * 4 + 1] = (UInt8)(((255 - m) * (255 - k)) / 255);
+					r[i * 4 + 2] = (UInt8)(((255 - c) * (255 - k)) / 255);
+					r[i * 4 + 3] = 255;
+					i++;
+				}
 				r += bpl;
 			}
 		}

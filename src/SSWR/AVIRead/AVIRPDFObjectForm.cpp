@@ -34,6 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectSelChg(AnyType userObj)
 				i++;
 			}
 		}
+		me->txtImageType->SetText(Media::PDFObject::ImageTypeGetName(obj->GetImageType()));
 		NN<Media::ImageList> imgList;
 		me->dispImage.Delete();
 		if (obj->IsImage() && me->doc->CreateImage(obj->GetId(), me->core->GetParserList()).SetTo(imgList))
@@ -151,6 +152,11 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientContro
 	this->btnImageOpen = ui->NewButton(this->pnlImage, CSTR("Open"));
 	this->btnImageOpen->SetRect(4, 4, 75, 23, false);
 	this->btnImageOpen->HandleButtonClick(OnImageOpenClicked, this);
+	this->lblImageType = ui->NewLabel(this->pnlImage, CSTR("Type"));
+	this->lblImageType->SetRect(84, 4, 50, 23, false);
+	this->txtImageType = ui->NewTextBox(this->pnlImage, CSTR(""), false);
+	this->txtImageType->SetRect(138, 4, 200, 23, false);
+	this->txtImageType->SetReadOnly(true);
 	this->pbImage = ui->NewPictureBoxDD(this->tpImage, this->colorSess, true, false);
 	this->pbImage->SetDockType(UI::GUIControl::DockType::Fill);
 

@@ -6,6 +6,8 @@
 #include "Media/JPEGFile.h"
 #include "Parser/FileParser/JPGParser.h"
 
+//#define VERBOSE
+
 Parser::FileParser::JPGParser::JPGParser()
 {
 }
@@ -46,6 +48,9 @@ Optional<IO::ParsedObject> Parser::FileParser::JPGParser::ParseFileHdr(NN<IO::St
 		MemFreeArr(buff);
 		return nullptr;
 	}
+#ifdef VERBOSE
+	printf("JPGParser: Parsing JPG file of size %llu\n", fileLen);
+#endif
 	
 	NN<Media::StaticImage> img;
 	Media::JPEGDecoder jpgDecoder;

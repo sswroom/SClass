@@ -127,6 +127,7 @@ UIntOS Data::Compress::LZWDecStream::Read(const Data::ByteArray &buff)
 		{
 			if (code > this->currTableSize)
 			{
+				printf("LZWDecStream: Invalid code %u\n", code);
 				break;
 				////////////////////////
 			}

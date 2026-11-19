@@ -18,15 +18,22 @@ UIntOS Text::TextBinEnc::ASCII85Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, U
 		v = ReadMUInt32(&dataBuff[0]);
 		dataBuff += 4;
 		buffSize -= 4;
-		sb->AppendUTF8Char((UTF8Char)(v / 52200625 + 33));
-		v %= 52200625;
-		sb->AppendUTF8Char((UTF8Char)(v / 614125 + 33));
-		v %= 614125;
-		sb->AppendUTF8Char((UTF8Char)(v / 7225 + 33));
-		v %= 7225;
-		sb->AppendUTF8Char((UTF8Char)(v / 85 + 33));
-		v %= 85;
-		sb->AppendUTF8Char((UTF8Char)(v + 33));
+		if (v == 0)
+		{
+			sb->AppendUTF8Char('z');
+		}
+		else
+		{
+			sb->AppendUTF8Char((UTF8Char)(v / 52200625 + 33));
+			v %= 52200625;
+			sb->AppendUTF8Char((UTF8Char)(v / 614125 + 33));
+			v %= 614125;
+			sb->AppendUTF8Char((UTF8Char)(v / 7225 + 33));
+			v %= 7225;
+			sb->AppendUTF8Char((UTF8Char)(v / 85 + 33));
+			v %= 85;
+			sb->AppendUTF8Char((UTF8Char)(v + 33));
+		}
 	}
 	switch (buffSize)
 	{
@@ -69,15 +76,22 @@ UnsafeArray<UTF8Char> Text::TextBinEnc::ASCII85Enc::EncodeBin(UnsafeArray<UTF8Ch
 		v = ReadMUInt32(&dataBuff[0]);
 		dataBuff += 4;
 		buffSize -= 4;
-		*sbuff++ = (UTF8Char)(v / 52200625 + 33);
-		v %= 52200625;
-		*sbuff++ = (UTF8Char)(v / 614125 + 33);
-		v %= 614125;
-		*sbuff++ = (UTF8Char)(v / 7225 + 33);
-		v %= 7225;
-		*sbuff++ = (UTF8Char)(v / 85 + 33);
-		v %= 85;
-		*sbuff++ = (UTF8Char)(v + 33);
+		if (v == 0)
+		{
+			*sbuff++ = 'z';
+		}
+		else
+		{
+			*sbuff++ = (UTF8Char)(v / 52200625 + 33);
+			v %= 52200625;
+			*sbuff++ = (UTF8Char)(v / 614125 + 33);
+			v %= 614125;
+			*sbuff++ = (UTF8Char)(v / 7225 + 33);
+			v %= 7225;
+			*sbuff++ = (UTF8Char)(v / 85 + 33);
+			v %= 85;
+			*sbuff++ = (UTF8Char)(v + 33);
+		}
 	}
 	switch (buffSize)
 	{

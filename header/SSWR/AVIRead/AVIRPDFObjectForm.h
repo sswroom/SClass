@@ -6,6 +6,7 @@
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
+#include "UI/GUILabel.h"
 #include "UI/GUIListBox.h"
 #include "UI/GUIListView.h"
 #include "UI/GUIPanel.h"
@@ -39,6 +40,8 @@ namespace SSWR
 			NN<UI::GUITabPage> tpImage;
 			NN<UI::GUIPanel> pnlImage;
 			NN<UI::GUIButton> btnImageOpen;
+			NN<UI::GUILabel> lblImageType;
+			NN<UI::GUITextBox> txtImageType;
 			NN<UI::GUIPictureBoxDD> pbImage;
 
 			NN<UI::GUITabPage> tpStream;

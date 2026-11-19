@@ -54,6 +54,7 @@
 #include "Parser/FullParserList.h"
 #include "Parser/FileParser/CFBParser.h"
 #include "Parser/FileParser/IFCParser.h"
+#include "Parser/FileParser/PDFParser.h"
 #include "Parser/ObjParser/FileGDB2Parser.h"
 #include "Sync/SimpleThread.h"
 #include "Text/CPPText.h"
@@ -1737,9 +1738,87 @@ Int32 CFBParserTest()
 	return 0;
 }
 
+Int32 PDFTest()
+{
+	Text::CStringNN fileName = CSTR("/mnt/QDisk1/Data/BookFile/442.pdf");
+	Parser::FullParserList parsers;
+	Parser::FileParser::PDFParser parser;
+	NN<IO::ParsedObject> pobj;
+	if (parser.ParseFilePath(fileName).SetTo(pobj))
+	{
+		printf("PDF parse succeeded for file %s\r\n", fileName.v.Ptr());
+		NN<Media::PDFDocument> pdf = NN<Media::PDFDocument>::ConvertFrom(pobj);
+		NN<Media::ImageList> imgList;
+		if (pdf->CreateImage(3, parsers).SetTo(imgList))
+		{
+			printf("PDF page 3 image creation succeeded\r\n");
+			imgList.Delete();
+		}
+		else
+		{
+			printf("PDF page 3 image creation failed\r\n");
+		}
+		pdf.Delete();
+	}
+	return 0;
+}
+
+Int32 PDFTest2()
+{
+	Text::CStringNN path = CSTR("/mnt/QDisk1/Data/BookFile/");
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	sptr = path.ConcatTo(sbuff);
+	sptr2 = Text::StrConcatC(sptr, UTF8STRC("*.pdf"));
+	Parser::FileParser::PDFParser parser;
+	NN<IO::ParsedObject> pobj;
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
+	{
+		IO::Path::PathType pt;
+		while (IO::Path::FindNextFile(sptr, sess, nullptr, pt, nullptr).SetTo(sptr2))
+		{
+			if (pt == IO::Path::PathType::File)
+			{
+				UIntOS imgCnt = 0;
+				if (parser.ParseFilePath(CSTRP(sbuff, sptr2)).SetTo(pobj))
+				{
+					NN<Media::PDFDocument> pdf = NN<Media::PDFDocument>::ConvertFrom(pobj);
+					UIntOS i = 0;
+					UIntOS j = pdf->GetCount();
+					while (i < j)
+					{
+						NN<Media::PDFObject> pdfObj = pdf->GetItemNoCheck(i);
+						Media::PDFObject::ImageType imgType = pdfObj->GetImageType();
+						if (imgType == Media::PDFObject::ImageType::Unknown)
+						{
+							printf("PDF %s object %d has unknown image type\r\n", sptr.Ptr(), pdfObj->GetId());
+							break;
+						}
+						else if (imgType != Media::PDFObject::ImageType::NonImage)
+						{
+							imgCnt++;
+						}
+						i++;
+					}
+					pobj.Delete();
+					printf("PDF %s has %d image objects\r\n", sptr.Ptr(), (Int32)imgCnt);
+				}
+				else
+				{
+					printf("PDF parse failed for file %s\r\n", sptr.Ptr());
+				}
+			}
+		}
+		IO::Path::FindFileClose(sess);
+	}
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UIntOS testType = 45;
+	UIntOS testType = 47;
 	switch (testType)
 	{
 	case 0:
@@ -1834,6 +1913,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return CFBFileAnalyseTest();
 	case 45:
 		return CFBParserTest();
+	case 46:
+		return PDFTest();
+	case 47:
+		return PDFTest2();
 	default:
 		return 0;
 	}
