@@ -13,8 +13,8 @@ namespace UI
 		class GTKDropData : public UI::GUIDropData
 		{
 		private:
-			void *widget;
-			void *context;
+			AnyType widget;
+			AnyType context;
 			UInt32 time;
 			Data::StringMapNative<IntOS> targetMap;
 			Data::FastMapNN<Int32, Text::String> targetText;
@@ -23,7 +23,7 @@ namespace UI
 
 			void LoadData();
 		public:
-			GTKDropData(void *widget, void *context, UInt32 time, Bool readData);
+			GTKDropData(AnyType widget, AnyType context, UInt32 time, Bool readData);
 			virtual ~GTKDropData();
 
 			virtual UIntOS GetCount();
@@ -31,7 +31,7 @@ namespace UI
 			virtual Bool GetDataText(UnsafeArray<const UTF8Char> name, NN<Text::StringBuilderUTF8> sb);
 			virtual Optional<IO::Stream> GetDataStream(UnsafeArray<const UTF8Char> name);
 
-			void OnDataReceived(void *selData);
+			void OnDataReceived(AnyType selData);
 
 		};
 
@@ -53,9 +53,9 @@ namespace UI
 
 			void SetHandler(NN<UI::GUIDropHandler> hdlr);
 
-			Int32 EventDragMotion(void *context, IntOS x, IntOS y, UInt32 time);
+			Int32 EventDragMotion(AnyType context, IntOS x, IntOS y, UInt32 time);
 			void EventDragLeave();		
-			Bool EventDragDrop(void *context, IntOS x, IntOS y, UInt32 time);
+			Bool EventDragDrop(AnyType context, IntOS x, IntOS y, UInt32 time);
 		};
 	}
 }

@@ -28,13 +28,13 @@ namespace UI
 	class GUIDropHandler
 	{
 	public:
-		typedef enum
+		enum class DragEffect
 		{
-			DE_NONE,
-			DE_COPY,
-			DE_MOVE,
-			DE_LINK
-		} DragEffect;
+			None,
+			Copy,
+			Move,
+			Link
+		};
 	public:
 		virtual DragEffect DragEnter(NN<GUIDropData> data) = 0;
 		virtual void DropData(NN<GUIDropData> data, IntOS x, IntOS y) = 0;

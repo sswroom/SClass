@@ -14,7 +14,7 @@ void UI::GTK::GTKDropData::AppendWC(NN<Text::StringBuilderUTF8> sb, UnsafeArray<
 	str->Release();
 }
 
-UI::GTK::GTKDropData::GTKDropData(void *widget, void *context, UInt32 time, Bool readData)
+UI::GTK::GTKDropData::GTKDropData(AnyType widget, AnyType context, UInt32 time, Bool readData)
 {
 	this->widget = widget;
 	this->context = context;
@@ -22,7 +22,7 @@ UI::GTK::GTKDropData::GTKDropData(void *widget, void *context, UInt32 time, Bool
 
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
-	GList *list = gdk_drag_context_list_targets((GdkDragContext*)context);
+	GList *list = gdk_drag_context_list_targets((GdkDragContext*)context.p);
 	if (list)
 	{
 		guint i;
@@ -47,7 +47,7 @@ UI::GTK::GTKDropData::GTKDropData(void *widget, void *context, UInt32 time, Bool
 
 			if (readData)
 			{
-				gtk_drag_get_data((GtkWidget*)this->widget, (GdkDragContext*)this->context, target, this->time);
+				gtk_drag_get_data((GtkWidget*)this->widget.p, (GdkDragContext*)this->context.p, target, this->time);
 			}
 
 			i++;
@@ -113,12 +113,12 @@ Optional<IO::Stream> UI::GTK::GTKDropData::GetDataStream(UnsafeArray<const UTF8C
 	return nullptr;
 }
 
-void UI::GTK::GTKDropData::OnDataReceived(void *selData)
+void UI::GTK::GTKDropData::OnDataReceived(AnyType selData)
 {
-	GdkAtom target = gtk_selection_data_get_target((GtkSelectionData*)selData);
+	GdkAtom target = gtk_selection_data_get_target((GtkSelectionData*)selData.p);
 	Int32 itarget = (Int32)(IntOS)target;
-	UIntOS dataSize = (UInt32)gtk_selection_data_get_length((GtkSelectionData*)selData);
-	GdkAtom dataType = gtk_selection_data_get_data_type((GtkSelectionData*)selData);
+	UIntOS dataSize = (UInt32)gtk_selection_data_get_length((GtkSelectionData*)selData.p);
+	GdkAtom dataType = gtk_selection_data_get_data_type((GtkSelectionData*)selData.p);
 	const char *csptr = gdk_atom_name(target);
 	if (csptr == 0)
 	{
@@ -130,7 +130,7 @@ void UI::GTK::GTKDropData::OnDataReceived(void *selData)
 	{
 		csptr2 = "Unknown";
 	}
-	GdkAtom sel = gtk_selection_data_get_selection((GtkSelectionData*)selData);
+	GdkAtom sel = gtk_selection_data_get_selection((GtkSelectionData*)selData.p);
 //	printf("Selection = %d, Target = %d (%s), Data Type = %d (%s), size = %d\r\n", sel, itarget, csptr, (Int32)(IntOS)dataType, csptr2, (Int32)dataSize);
 	if (this->targetText.ContainsKey(itarget))
 	{
@@ -140,10 +140,10 @@ void UI::GTK::GTKDropData::OnDataReceived(void *selData)
 	if (dataSize >= 0 && sel != 0)
 	{
 		Text::StringBuilderUTF8 sb;
-		const UInt8 *data = gtk_selection_data_get_data((GtkSelectionData*)selData);
+		const UInt8 *data = gtk_selection_data_get_data((GtkSelectionData*)selData.p);
 		if (Text::StrEqualsCh(csptr, "application/x-moz-nativeimage"))
 		{
-			GdkPixbuf *pixbuf = gtk_selection_data_get_pixbuf((GtkSelectionData*)selData);
+			GdkPixbuf *pixbuf = gtk_selection_data_get_pixbuf((GtkSelectionData*)selData.p);
 			if (pixbuf)
 			{
 				sb.AppendC(UTF8STRC("PixBuf Image"));
@@ -243,7 +243,7 @@ UI::GTK::GTKDragDrop::GTKDragDrop(Optional<ControlHandle> hWnd, NN<UI::GUIDropHa
 {
 	this->hWnd = hWnd;
 	this->hdlr = hdlr;
-	this->currEff = UI::GUIDropHandler::DE_NONE;
+	this->currEff = UI::GUIDropHandler::DragEffect::None;
 	this->dragData = 0;
 
 	gtk_drag_dest_set((GtkWidget*)this->hWnd.OrNull(), (GtkDestDefaults)0, 0, 0, GDK_ACTION_COPY);
@@ -263,7 +263,7 @@ void UI::GTK::GTKDragDrop::SetHandler(NN<UI::GUIDropHandler> hdlr)
 	this->hdlr = hdlr;
 }
 
-Int32 UI::GTK::GTKDragDrop::EventDragMotion(void *context, IntOS x, IntOS y, UInt32 time)
+Int32 UI::GTK::GTKDragDrop::EventDragMotion(AnyType context, IntOS x, IntOS y, UInt32 time)
 {
 	NN<UI::GTK::GTKDropData> dragData;
 	if (dragData.Set(this->dragData))
@@ -275,11 +275,11 @@ Int32 UI::GTK::GTKDragDrop::EventDragMotion(void *context, IntOS x, IntOS y, UIn
 		this->dragData = dragData.Ptr();
 		this->currEff = this->hdlr->DragEnter(dragData);
 	}
-	if (this->currEff == UI::GUIDropHandler::DE_COPY)
+	if (this->currEff == UI::GUIDropHandler::DragEffect::Copy)
 		return GDK_ACTION_COPY;
-	else if (this->currEff == UI::GUIDropHandler::DE_MOVE)
+	else if (this->currEff == UI::GUIDropHandler::DragEffect::Move)
 		return GDK_ACTION_MOVE;
-	else if (this->currEff == UI::GUIDropHandler::DE_LINK)
+	else if (this->currEff == UI::GUIDropHandler::DragEffect::Link)
 		return GDK_ACTION_LINK;
 	else
 		return GDK_ACTION_DEFAULT;
@@ -290,7 +290,7 @@ void UI::GTK::GTKDragDrop::EventDragLeave()
 	SDEL_CLASS(this->dragData);
 }
 
-Bool UI::GTK::GTKDragDrop::EventDragDrop(void *context, IntOS x, IntOS y, UInt32 time)
+Bool UI::GTK::GTKDragDrop::EventDragDrop(AnyType context, IntOS x, IntOS y, UInt32 time)
 {
 	NN<UI::GTK::GTKDropData> dragData;
 	if (dragData.Set(this->dragData))

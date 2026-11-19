@@ -3191,7 +3191,7 @@ void SSWR::OrganMgr::OrganMainForm::OnMonitorChanged()
 
 UI::GUIDropHandler::DragEffect SSWR::OrganMgr::OrganMainForm::DragEnter(NN<UI::GUIDropData> data)
 {
-	UI::GUIDropHandler::DragEffect retEff = UI::GUIDropHandler::DE_NONE;
+	UI::GUIDropHandler::DragEffect retEff = UI::GUIDropHandler::DragEffect::None;
 	if (this->inputMode == IM_SPECIES)
 	{
 		UIntOS i = this->lbObj->GetSelectedIndex();
@@ -3255,11 +3255,11 @@ UI::GUIDropHandler::DragEffect SSWR::OrganMgr::OrganMainForm::DragEnter(NN<UI::G
 
 				if (fmtSURL != (UIntOS)-1 && fmtIURL != (UIntOS)-1 && fmtFile != (UIntOS)-1)
 				{
-					retEff = UI::GUIDropHandler::DE_LINK;
+					retEff = UI::GUIDropHandler::DragEffect::Link;
 				}
 				else if (fmtHDROP != (UIntOS)-1)
 				{
-					retEff = UI::GUIDropHandler::DE_COPY;
+					retEff = UI::GUIDropHandler::DragEffect::Copy;
 				}
 			}
 		}

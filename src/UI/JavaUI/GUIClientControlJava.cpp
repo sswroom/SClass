@@ -99,7 +99,7 @@ Optional<UI::GUIControl> UI::GUIClientControl::GetChild(UIntOS index) const
 	return this->children.GetItem(index);
 }
 
-void UI::GUIClientControl::FocusChild(GUIControl *child)
+void UI::GUIClientControl::FocusChild(NN<GUIControl> child)
 {
 	NN<GUIClientControl> parent;
 	if (this->parent.SetTo(parent))

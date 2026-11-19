@@ -141,7 +141,7 @@ Data::ArrayIterator<NN<UI::GUIControl>> UI::GUIClientControl::ChildIterator() co
 	return this->children.Iterator();
 }
 
-void UI::GUIClientControl::FocusChild(GUIControl *child)
+void UI::GUIClientControl::FocusChild(NN<GUIControl> child)
 {
 	NN<GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))

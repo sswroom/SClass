@@ -139,7 +139,7 @@ UI::Win::WinDragDrop::WinDragDrop(Optional<ControlHandle> hWnd, NN<UI::GUIDropHa
 	this->hWnd = hWnd;
 	this->hdlr = hdlr;
 	this->unkCnt = 0;
-	this->currEff = UI::GUIDropHandler::DE_NONE;
+	this->currEff = UI::GUIDropHandler::DragEffect::None;
 }
 
 UI::Win::WinDragDrop::~WinDragDrop()
@@ -169,15 +169,15 @@ HRESULT STDMETHODCALLTYPE UI::Win::WinDragDrop::DragEnter(IDataObject *pDataObj,
 		eff = this->hdlr->DragEnter(data);
 	}
 	this->currEff = eff;
-	if (eff == UI::GUIDropHandler::DE_COPY)
+	if (eff == UI::GUIDropHandler::DragEffect::Copy)
 	{
 		*pdwEffect = DROPEFFECT_COPY;
 	}
-	else if (eff == UI::GUIDropHandler::DE_MOVE)
+	else if (eff == UI::GUIDropHandler::DragEffect::Move)
 	{
 		*pdwEffect = DROPEFFECT_MOVE;
 	}
-	else if (eff == UI::GUIDropHandler::DE_LINK)
+	else if (eff == UI::GUIDropHandler::DragEffect::Link)
 	{
 		*pdwEffect = DROPEFFECT_LINK;
 	}
@@ -190,15 +190,15 @@ HRESULT STDMETHODCALLTYPE UI::Win::WinDragDrop::DragEnter(IDataObject *pDataObj,
 
 HRESULT STDMETHODCALLTYPE UI::Win::WinDragDrop::DragOver(DWORD grfKeyState, POINTL pt, DWORD *pdwEffect)
 {
-	if (this->currEff == UI::GUIDropHandler::DE_COPY)
+	if (this->currEff == UI::GUIDropHandler::DragEffect::Copy)
 	{
 		*pdwEffect = *pdwEffect & DROPEFFECT_COPY;
 	}
-	else if (this->currEff == UI::GUIDropHandler::DE_MOVE)
+	else if (this->currEff == UI::GUIDropHandler::DragEffect::Move)
 	{
 		*pdwEffect = *pdwEffect & DROPEFFECT_MOVE;
 	}
-	else if (this->currEff == UI::GUIDropHandler::DE_LINK)
+	else if (this->currEff == UI::GUIDropHandler::DragEffect::Link)
 	{
 		*pdwEffect = *pdwEffect & DROPEFFECT_LINK;
 	}

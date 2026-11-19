@@ -61,12 +61,12 @@ namespace UI
 	{
 	public:
 		
-		typedef enum
+		enum class DisplayRotation
 		{
-			DR_NONE,
-			DR_LANDSCAPE,
-			DR_PORT
-		} DisplayRotation;
+			None,
+			Landscape,
+			Portrait
+		};
 	public:
 		virtual ~GUICore();
 

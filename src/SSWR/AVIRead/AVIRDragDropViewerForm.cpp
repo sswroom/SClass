@@ -77,7 +77,7 @@ void SSWR::AVIRead::AVIRDragDropViewerForm::OnMonitorChanged()
 
 UI::GUIDropHandler::DragEffect SSWR::AVIRead::AVIRDragDropViewerForm::DragEnter(NN<UI::GUIDropData> data)
 {
-	return UI::GUIDropHandler::DE_COPY;
+	return UI::GUIDropHandler::DragEffect::Copy;
 }
 
 void SSWR::AVIRead::AVIRDragDropViewerForm::DropData(NN<UI::GUIDropData> data, IntOS x, IntOS y)

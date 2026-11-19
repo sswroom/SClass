@@ -34,7 +34,7 @@ namespace UI
 		UIntOS GetChildCount() const;
 		Optional<UI::GUIControl> GetChild(UIntOS index) const;
 		Data::ArrayIterator<NN<UI::GUIControl>> ChildIterator() const;
-		void FocusChild(GUIControl *child);
+		void FocusChild(NN<GUIControl> child);
 
 		void UpdateChildrenSize(Bool redraw);
 		virtual void OnSizeChanged(Bool updateScn);
