@@ -127,20 +127,37 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 					}
 				}
 				dataLen = b64.DecodeBin(sb.ToCString(), dataBuff);
+
 				NN<Crypto::Cert::X509Cert> certFile;
 				if (Optional<Crypto::Cert::X509Cert>::ConvertFrom(file).SetTo(certFile))
 				{
 					NEW_CLASSOPT(fileList, Crypto::Cert::X509FileList(fileName, certFile));
 					file = nullptr;
 				}
-				NEW_CLASSNN(certFile, Crypto::Cert::X509Cert(fileName, Data::ByteArrayR(dataBuff, dataLen)));
-				if (fileList.SetTo(nnfileList))
+				if (Crypto::Cert::X509File::IsContentInfo(dataBuff, dataBuff + dataLen, "1"))
 				{
-					nnfileList->AddFile(certFile);
+					NN<Crypto::Cert::X509PKCS7> pkcs7;
+					NEW_CLASSNN(pkcs7, Crypto::Cert::X509PKCS7(fileName, Data::ByteArrayR(dataBuff, dataLen)));
+					if (fileList.SetTo(nnfileList))
+					{
+						nnfileList->AddFile(pkcs7);
+					}
+					else
+					{
+						file = pkcs7;
+					}
 				}
 				else
 				{
-					file = certFile;
+					NEW_CLASSNN(certFile, Crypto::Cert::X509Cert(fileName, Data::ByteArrayR(dataBuff, dataLen)));
+					if (fileList.SetTo(nnfileList))
+					{
+						nnfileList->AddFile(certFile);
+					}
+					else
+					{
+						file = certFile;
+					}
 				}
 			}
 			else if (Text::StrEqualsC(dataBuff, (UIntOS)(sptr - dataBuff), UTF8STRC("-----BEGIN RSA PRIVATE KEY-----")))
