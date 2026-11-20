@@ -322,13 +322,42 @@ Optional<IO::StreamData> Media::PDFObject::GetData()
 		{
 			if (filter->IndexOf(UTF8STRC("/FlateDecode")) != INVALID_INDEX)
 			{
-				IO::MemoryStream memStm;
-				Data::Compress::Inflater infStm(memStm, true);
-				if (infStm.WriteFromData(fd, 1048576))
+				UInt64 streamSize = fd->GetDataSize();
+				UIntOS trailingEOLSize = 0;
+				UInt8 tail[2];
+				if (streamSize >= 2 && fd->GetRealData(streamSize - 2, 2, Data::ByteArray(tail, 2)) == 2)
 				{
-					NEW_CLASSOPT(this->decFd, IO::StmData::MemoryDataCopy(memStm.GetArray()));
+					if (tail[1] == '\n')
+					{
+						if (tail[0] == '\r')
+							trailingEOLSize = 2;
+						else
+							trailingEOLSize = 1;
+					}
+					else if (tail[1] == '\r')
+					{
+						trailingEOLSize = 1;
+					}
 				}
-				else
+
+				Bool decompressed = false;
+				// Retry without a trailing stream EOL for PDFs that include it in /Length.
+				UIntOS attempt = 0;
+				while (attempt <= trailingEOLSize)
+				{
+					IO::MemoryStream memStm;
+					NN<IO::StreamData> input = fd->GetPartialData(0, streamSize - attempt);
+					Data::Compress::Inflater infStm(memStm, true);
+					decompressed = infStm.WriteFromData(input, 1048576);
+					input.Delete();
+					if (decompressed)
+					{
+						NEW_CLASSOPT(this->decFd, IO::StmData::MemoryDataCopy(memStm.GetArray()));
+						break;
+					}
+					attempt++;
+				}
+				if (!decompressed)
 				{
 					printf("PDFObject: Error in decompressing PDF object data\r\n");
 					return this->fd;
@@ -426,4 +455,3 @@ Text::CStringNN Media::PDFObject::ImageTypeGetName(ImageType imgType)
 		return CSTR("Unknown");
 	}
 }
-

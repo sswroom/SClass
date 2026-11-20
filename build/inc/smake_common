@@ -2361,6 +2361,8 @@ IO/ED588Sim.h:
 @ED588Sim.o
 IO/EXEFile.h:
 @EXEFile.o
+IO/FaxBitReader.h:
+@FaxBitReader.o
 IO/FileBuffer.h:
 IO/FileCheck.h:
 @FileCheck.o
@@ -3315,6 +3317,8 @@ Media/AudioUtil.h:
 @AudioUtil.o
 Media/BitmapUtil.h:
 @BitmapUtil.o
+Media/CCITTFaxDecoder.h:
+@CCITTFaxDecoder.o
 Media/ChapterInfo.h:
 @ChapterInfo.o
 Media/ClockSpeechCh.h:

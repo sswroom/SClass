@@ -501,6 +501,7 @@ ED527Sim.o: ../../src/IO/ED527Sim.cpp
 ED538Sim.o: ../../src/IO/ED538Sim.cpp
 ED588Sim.o: ../../src/IO/ED588Sim.cpp
 EXEFile.o: ../../src/IO/EXEFile.cpp
+FaxBitReader.o: ../../src/IO/FaxBitReader.cpp
 FileCheck.o: ../../src/IO/FileCheck.cpp
 FileExporter.o: ../../src/IO/FileExporter.cpp
 FileFindRecur.o: ../../src/IO/FileFindRecur.cpp
@@ -1219,6 +1220,7 @@ AudioUtil.o: ../../src/Media/AudioUtil.cpp
 BitmapUtil.o: ../../src/Media/BitmapUtil.cpp
 CameraManagerNul.o: ../../src/Media/CameraManagerNul.cpp
 CameraManagerRPi.o: ../../src/Media/CameraManagerRPi.cpp
+CCITTFaxDecoder.o: ../../src/Media/CCITTFaxDecoder.cpp
 ChapterInfo.o: ../../src/Media/ChapterInfo.cpp
 ClockSpeechCh.o: ../../src/Media/ClockSpeechCh.cpp
 ColorConv.o: ../../src/Media/ColorConv.cpp

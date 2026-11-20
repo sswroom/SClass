@@ -29,6 +29,12 @@ namespace Parser
 		private:
 			struct PDFParseEnv;
 
+			static UInt8 HexValue(UTF8Char c);
+			static Bool ParseHex(Text::CStringNN value, UnsafeArray<UInt8> output, UIntOS outputSize);
+			static Bool ParsePDFString(Text::CStringNN value, UnsafeArray<UInt8> output, UIntOS outputSize);
+			static Bool DeriveStandardRC4Key(NN<Media::PDFParameter> encryption, Text::CStringNN fileID, UnsafeArray<UInt8> fileKey, UIntOS &keyLen);
+
+			void SetupEncryption(NN<Media::PDFDocument> doc, NN<PDFXRef> xref);
 			Bool IsComment(UnsafeArray<const UTF8Char> buff, UIntOS size);
 			Bool NextLine(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb, Bool skipComment);
 			Bool NextLineFixed(NN<PDFParseEnv> env, UIntOS size);

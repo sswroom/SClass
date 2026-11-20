@@ -4,6 +4,8 @@
 #include "Data/ByteBuffer.h"
 #include "Data/Compress/Inflater.h"
 #include "Core/ByteTool_C.h"
+#include "Crypto/Encrypt/RC4Cipher.h"
+#include "Crypto/Hash/MD5.h"
 #include "IO/FileStream.h"
 #include "IO/StreamData.h"
 #include "Media/PDFDocument.h"
@@ -27,6 +29,295 @@ struct Parser::FileParser::PDFParser::PDFParseEnv
 	Bool normalEnd;
 	Bool succ;
 };
+
+UInt8 Parser::FileParser::PDFParser::HexValue(UTF8Char c)
+{
+	if (c >= '0' && c <= '9')
+		return (UInt8)(c - '0');
+	if (c >= 'A' && c <= 'F')
+		return (UInt8)(c - 'A' + 10);
+	if (c >= 'a' && c <= 'f')
+		return (UInt8)(c - 'a' + 10);
+	return 255;
+}
+
+Bool Parser::FileParser::PDFParser::ParseHex(Text::CStringNN value, UnsafeArray<UInt8> output, UIntOS outputSize)
+{
+	UIntOS pos = 0;
+	while (pos < value.leng && value.v[pos] != '<')
+		pos++;
+	if (pos == value.leng)
+		return false;
+	pos++;
+	UIntOS outPos = 0;
+	Bool hasHigh = false;
+	UInt8 high = 0;
+	while (pos < value.leng && value.v[pos] != '>')
+	{
+		UTF8Char c = value.v[pos++];
+		if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+			continue;
+		UInt8 v = HexValue(c);
+		if (v == 255)
+			return false;
+		if (!hasHigh)
+		{
+			high = v;
+			hasHigh = true;
+		}
+		else
+		{
+			if (outPos >= outputSize)
+				return false;
+			output[outPos++] = (UInt8)((high << 4) | v);
+			hasHigh = false;
+		}
+	}
+	if (pos == value.leng || hasHigh || outPos != outputSize)
+		return false;
+	return true;
+}
+
+Bool Parser::FileParser::PDFParser::ParsePDFString(Text::CStringNN value, UnsafeArray<UInt8> output, UIntOS outputSize)
+{
+	UIntOS pos = 0;
+	while (pos < value.leng && (value.v[pos] == ' ' || value.v[pos] == '\t' || value.v[pos] == '\r' || value.v[pos] == '\n'))
+		pos++;
+	if (pos < value.leng && value.v[pos] == '<')
+		return ParseHex(Text::CStringNN(&value.v[pos], value.leng - pos), output, outputSize);
+	if (pos >= value.leng || value.v[pos] != '(')
+		return false;
+	pos++;
+	UIntOS outPos = 0;
+	UIntOS depth = 1;
+	while (pos < value.leng && depth > 0)
+	{
+		UTF8Char c = value.v[pos++];
+		if (c == '\\')
+		{
+			if (pos >= value.leng)
+				return false;
+			c = value.v[pos++];
+			if (c >= '0' && c <= '7')
+			{
+				UInt32 octal = (UInt32)(c - '0');
+				UIntOS count = 1;
+				while (count < 3 && pos < value.leng && value.v[pos] >= '0' && value.v[pos] <= '7')
+				{
+					octal = (octal << 3) | (UInt32)(value.v[pos++] - '0');
+					count++;
+				}
+				c = (UTF8Char)octal;
+			}
+			else if (c == 'n')
+				c = '\n';
+			else if (c == 'r')
+				c = '\r';
+			else if (c == 't')
+				c = '\t';
+			else if (c == 'b')
+				c = '\b';
+			else if (c == 'f')
+				c = '\f';
+			else if (c == '\r')
+			{
+				if (pos < value.leng && value.v[pos] == '\n')
+					pos++;
+				continue;
+			}
+			else if (c == '\n')
+				continue;
+		}
+		else if (c == '(')
+		{
+			depth++;
+		}
+		else if (c == ')')
+		{
+			depth--;
+			if (depth == 0)
+				break;
+		}
+		if (outPos >= outputSize)
+			return false;
+		output[outPos++] = (UInt8)c;
+	}
+	return depth == 0 && outPos == outputSize;
+}
+
+Bool Parser::FileParser::PDFParser::DeriveStandardRC4Key(NN<Media::PDFParameter> encryption, Text::CStringNN fileID, UnsafeArray<UInt8> fileKey, UIntOS &keyLen)
+{
+	static const UInt8 passwordPadding[] =
+	{
+		0x28,0xBF,0x4E,0x5E,0x4E,0x75,0x8A,0x41,0x64,0x00,0x4E,0x56,0xFF,0xFA,0x01,0x08,
+		0x2E,0x2E,0x00,0xB6,0xD0,0x68,0x3E,0x80,0x2F,0x0C,0xA9,0xFE,0x64,0x53,0x69,0x7A
+	};
+	NN<Text::String> s;
+	if (!encryption->GetEntryValue(CSTR("Filter")).SetTo(s) || !s->Equals(UTF8STRC("/Standard")))
+		return false;
+	if (!encryption->GetEntryValue(CSTR("R")).SetTo(s))
+		return false;
+	Int32 revision = s->ToInt32();
+	if (!encryption->GetEntryValue(CSTR("V")).SetTo(s))
+		return false;
+	Int32 version = s->ToInt32();
+	if (revision != 2 && revision != 3)
+		return false;
+	if (version != 1 && version != 2)
+		return false;
+	UIntOS bits = 40;
+	if (encryption->GetEntryValue(CSTR("Length")).SetTo(s))
+		bits = s->ToUIntOS();
+	if (bits < 40 || bits > 128 || (bits & 7) != 0)
+		return false;
+	keyLen = bits >> 3;
+
+	UInt8 ownerKey[32];
+	UInt8 userValue[32];
+	if (!encryption->GetEntryValue(CSTR("O")).SetTo(s) || !ParsePDFString(s->ToCString(), UnsafeArray<UInt8>(ownerKey), sizeof(ownerKey)))
+		return false;
+	if (!encryption->GetEntryValue(CSTR("U")).SetTo(s) || !ParsePDFString(s->ToCString(), UnsafeArray<UInt8>(userValue), sizeof(userValue)))
+		return false;
+	if (!encryption->GetEntryValue(CSTR("P")).SetTo(s))
+		return false;
+	UInt32 permissions = (UInt32)s->ToInt32();
+
+	UInt8 keyInput[32 + 32 + 4 + 128];
+	MemCopyNO(keyInput, passwordPadding, sizeof(passwordPadding));
+	MemCopyNO(&keyInput[32], ownerKey, sizeof(ownerKey));
+	WriteLUInt32(&keyInput[64], permissions);
+	UIntOS fileIDLen = 0;
+	UIntOS i = 0;
+	Bool hasHigh = false;
+	UInt8 high = 0;
+	while (i < fileID.leng && fileID.v[i] != '<')
+		i++;
+	if (i == fileID.leng)
+		return false;
+	i++;
+	while (i < fileID.leng && fileID.v[i] != '>')
+	{
+		UTF8Char c = fileID.v[i++];
+		if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+			continue;
+		UInt8 v = HexValue(c);
+		if (v == 255)
+			return false;
+		if (!hasHigh)
+		{
+			high = v;
+			hasHigh = true;
+		}
+		else
+		{
+			if (fileIDLen >= 128)
+				return false;
+			keyInput[68 + fileIDLen++] = (UInt8)((high << 4) | v);
+			hasHigh = false;
+		}
+	}
+	if (i == fileID.leng || hasHigh)
+		return false;
+	UIntOS keyInputSize = 68 + fileIDLen;
+	UInt8 digest[16];
+	Crypto::Hash::MD5 md5;
+	md5.Calc(keyInput, keyInputSize);
+	md5.GetValue(digest);
+	if (revision >= 3)
+	{
+		UIntOS round = 0;
+		while (round < 50)
+		{
+			md5.Clear();
+			md5.Calc(digest, keyLen);
+			md5.GetValue(digest);
+			round++;
+		}
+	}
+	MemCopyNO(fileKey.Ptr(), digest, keyLen);
+
+	UInt8 validationInput[32 + 128];
+	UInt8 validation[32];
+	UIntOS validationSize;
+	if (revision == 2)
+	{
+		MemCopyNO(validation, passwordPadding, sizeof(passwordPadding));
+		validationSize = sizeof(passwordPadding);
+	}
+	else
+	{
+		MemCopyNO(validationInput, passwordPadding, sizeof(passwordPadding));
+		MemCopyNO(&validationInput[32], &keyInput[68], fileIDLen);
+		md5.Clear();
+		md5.Calc(validationInput, sizeof(passwordPadding) + fileIDLen);
+		md5.GetValue(digest);
+		MemCopyNO(validation, digest, sizeof(digest));
+		validationSize = sizeof(digest);
+	}
+	Crypto::Encrypt::RC4Cipher cipher(UnsafeArray<const UInt8>(fileKey), keyLen);
+	cipher.Encrypt(UnsafeArray<const UInt8>(validation), validationSize, UnsafeArray<UInt8>(validation));
+	if (revision >= 3)
+	{
+		UInt8 roundKey[16];
+		UIntOS round = 1;
+		while (round <= 19)
+		{
+			i = 0;
+			while (i < keyLen)
+			{
+				roundKey[i] = (UInt8)(fileKey[i] ^ (UInt8)round);
+				i++;
+			}
+			Crypto::Encrypt::RC4Cipher roundCipher(UnsafeArray<const UInt8>(roundKey), keyLen);
+			roundCipher.Encrypt(UnsafeArray<const UInt8>(validation), validationSize, UnsafeArray<UInt8>(validation));
+			round++;
+		}
+	}
+	i = 0;
+	UIntOS compareSize = revision >= 3 ? 16 : 32;
+	while (i < compareSize)
+	{
+		if (validation[i] != userValue[i])
+			return false;
+		i++;
+	}
+	return true;
+}
+
+void Parser::FileParser::PDFParser::SetupEncryption(NN<Media::PDFDocument> doc, NN<PDFXRef> xref)
+{
+	NN<Media::PDFParameter> trailer;
+	NN<Text::String> encryptRef;
+	if (!xref->trailer.SetTo(trailer) || !trailer->GetEntryValue(CSTR("Encrypt")).SetTo(encryptRef))
+		return;
+	doc->SetEncryptionRequired();
+	UInt32 encryptId = 0;
+	UIntOS pos = 0;
+	while (pos < encryptRef->leng && (encryptRef->v[pos] == ' ' || encryptRef->v[pos] == '\t'))
+		pos++;
+	while (pos < encryptRef->leng && encryptRef->v[pos] >= '0' && encryptRef->v[pos] <= '9')
+	{
+		UInt32 digit = (UInt32)(encryptRef->v[pos++] - '0');
+		if (encryptId > (0xffffffffU - digit) / 10)
+			return;
+		encryptId = encryptId * 10 + digit;
+	}
+	if (encryptId == 0)
+		return;
+	NN<Media::PDFObject> encryptObj;
+	NN<Media::PDFParameter> encryptParams;
+	NN<Text::String> fileID;
+	NN<Text::String> idValue;
+	if (!doc->GetObjectById(encryptId).SetTo(encryptObj) ||
+		!encryptObj->GetParameter().SetTo(encryptParams) ||
+		!trailer->GetEntryValue(CSTR("ID")).SetTo(idValue))
+		return;
+	fileID = idValue;
+	UInt8 key[16];
+	UIntOS keyLen;
+	if (DeriveStandardRC4Key(encryptParams, fileID->ToCString(), UnsafeArray<UInt8>(key), keyLen))
+		doc->SetEncryptionKey(UnsafeArray<const UInt8>(key), keyLen);
+}
 
 Bool Parser::FileParser::PDFParser::IsComment(UnsafeArray<const UTF8Char> buff, UIntOS size)
 {
@@ -1561,6 +1852,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 		printf("PDFParser: Error in parsing next line\r\n");
 	}
 #endif
+	if (env.succ && xref.SetTo(nnxref))
+		this->SetupEncryption(doc, nnxref);
 	if (xref.SetTo(nnxref))
 		FreeXRef(nnxref);
 	if (env.succ)

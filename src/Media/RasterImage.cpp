@@ -73,6 +73,21 @@ Media::RasterImage::RasterImage(Math::Size2D<UIntOS> dispSize, Math::Size2D<UInt
 		this->info.storeSize = dispSize;
 		this->info.byteSize = (((dispSize.x + 7) >> 3) + dispSize.x) * dispSize.y;
 	}
+	else if (pf == Media::PF_PAL_1 || pf == Media::PF_PAL_W1)
+	{
+		this->info.storeSize.x = (storeSize.x + 7) & (UIntOS)~7;
+		this->info.byteSize = (this->info.storeSize.x >> 3) * dispSize.y;
+	}
+	else if (pf == Media::PF_PAL_2 || pf == Media::PF_PAL_W2)
+	{
+		this->info.storeSize.x = (storeSize.x + 3) & (UIntOS)~3;
+		this->info.byteSize = (this->info.storeSize.x >> 2) * dispSize.y;
+	}
+	else if (pf == Media::PF_PAL_4 || pf == Media::PF_PAL_W4)
+	{
+		this->info.storeSize.x = (storeSize.x + 1) & (UIntOS)~1;
+		this->info.byteSize = (this->info.storeSize.x >> 1) * dispSize.y;
+	}
 	else
 	{
 		if (storeSize.x == 0)

@@ -13,6 +13,9 @@ namespace Media
 	private:
 		Data::UInt32FastMapNN<PDFObject> objMap;
 		NN<Text::String> version;
+		Bool encryptionRequired;
+		UIntOS encryptionKeyLen;
+		UInt8 encryptionKey[16];
 
 		Optional<IO::ParsedObject> SetPObjName(Optional<IO::ParsedObject> pobj, UInt32 objId, Text::CStringNN ext);
 	public:
@@ -26,6 +29,9 @@ namespace Media
 		
 		NN<PDFObject> AddObject(UInt32 id);
 		Optional<PDFObject> GetObjectById(UInt32 id) const;
+		void SetEncryptionRequired();
+		Bool SetEncryptionKey(UnsafeArray<const UInt8> key, UIntOS keyLen);
+		Bool DecryptStreamData(UInt32 objId, UnsafeArray<UInt8> data, UIntOS dataSize) const;
 		Optional<Media::ImageList> CreateImage(UInt32 id, NN<Parser::ParserList> parsers);
 	};
 }

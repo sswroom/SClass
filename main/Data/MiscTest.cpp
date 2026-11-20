@@ -32,9 +32,11 @@
 #include "Math/WKTReader.h"
 #include "Math/CSys/CoordinateSystemManager.h"
 #include "Media/DrawEngineFactory.h"
+#include "Media/CCITTFaxDecoder.h"
 #include "Media/MonitorSurfaceMgrFactory.h"
 #include "Media/PaperSize.h"
 #include "Media/Printer.h"
+#include "Media/StaticImage.h"
 #include "Media/SVGDocument.h"
 #include "Net/HKOAPI.h"
 #include "Net/HTTPClient.h"
@@ -1738,9 +1740,186 @@ Int32 CFBParserTest()
 	return 0;
 }
 
+Int32 CCITTFaxTest()
+{
+	UInt8 faxData[] = {0x83};
+	Media::CCITTFaxDecoder faxDecoder;
+	NN<Media::StaticImage> faxImage;
+	if (!faxDecoder.DecodeImage(Data::ByteArrayR(faxData, sizeof(faxData)), 8, 1).SetTo(faxImage))
+	{
+		printf("CCITT fax decode test failed\r\n");
+		return 1;
+	}
+	Bool faxTestPassed = faxImage->data[0] == 255 && faxImage->data[1] == 255 && faxImage->data[2] == 255 &&
+		faxImage->data[3] == 0 && faxImage->data[4] == 0 && faxImage->data[5] == 0 && faxImage->data[6] == 0 && faxImage->data[7] == 0;
+	faxImage.Delete();
+	if (!faxTestPassed)
+	{
+		printf("CCITT fax decode test failed\r\n");
+		return 1;
+	}
+	UInt8 fax4Data[] = {0x30, 0x78};
+	if (!faxDecoder.DecodeImage(Data::ByteArrayR(fax4Data, sizeof(fax4Data)), 8, 2, -1).SetTo(faxImage))
+	{
+		printf("CCITT Group 4 decode test failed\r\n");
+		return 1;
+	}
+	UIntOS faxBpl = faxImage->GetDataBpl();
+	faxTestPassed = true;
+	UIntOS x = 0;
+	while (x < 8)
+	{
+		UInt8 expected = x < 3 ? 255 : 0;
+		if (faxImage->data[x] != expected || faxImage->data[faxBpl + x] != expected)
+		{
+			faxTestPassed = false;
+			break;
+		}
+		x++;
+	}
+	faxImage.Delete();
+	if (!faxTestPassed)
+	{
+		printf("CCITT Group 4 decode test failed\r\n");
+		return 1;
+	}
+	UInt8 faxGroup4WhiteRow[] = {0x60};
+	if (!faxDecoder.DecodeImage(Data::ByteArrayR(faxGroup4WhiteRow, sizeof(faxGroup4WhiteRow)), 8, 1, -1).SetTo(faxImage))
+	{
+		printf("CCITT Group 4 white row decode test failed\r\n");
+		return 1;
+	}
+	faxTestPassed = true;
+	x = 0;
+	while (x < 8)
+	{
+		if (faxImage->data[x++] != 255)
+		{
+			faxTestPassed = false;
+			break;
+		}
+	}
+	faxImage.Delete();
+	if (!faxTestPassed)
+	{
+		printf("CCITT Group 4 white row decode test failed\r\n");
+		return 1;
+	}
+	UInt8 fax3Data[] = {0xC1, 0xB0};
+	if (!faxDecoder.DecodeImage(Data::ByteArrayR(fax3Data, sizeof(fax3Data)), 8, 2, 2).SetTo(faxImage))
+	{
+		printf("CCITT Group 3 mixed decode test failed\r\n");
+		return 1;
+	}
+	faxTestPassed = true;
+	x = 0;
+	while (x < 8)
+	{
+		UInt8 expected = x < 3 ? 255 : 0;
+		if (faxImage->data[x] != expected || faxImage->data[faxBpl + x] != expected)
+		{
+			faxTestPassed = false;
+			break;
+		}
+		x++;
+	}
+	faxImage.Delete();
+	if (!faxTestPassed)
+	{
+		printf("CCITT Group 3 mixed decode test failed\r\n");
+		return 1;
+	}
+	UInt8 faxImageData[] =
+	{
+		0xF9,0x48,0x38,0x25,0x23,0x02,0x56,0x49,0xDE,0x74,0xBF,0xEB,0x3C,0x7F,0x23,0x87,
+		0xE8,0x75,0x36,0x26,0x44,0x7D,0x13,0xEE,0x17,0x14,0x61,0xF4,0xBA,0x5D,0x2E,0x97,
+		0x4B,0xA5,0xC2,0x5D,0x2E,0x10,0x5D,0x05,0xC2,0x0B,0x8F,0x25,0xD7,0x7B,0xDA,0xBC,
+		0x7F,0xFC,0x00,0x40,0x04,0x0A
+	};
+	if (!faxDecoder.DecodeImage(Data::ByteArrayR(faxImageData, sizeof(faxImageData)), 59, 50, -1).SetTo(faxImage))
+	{
+		printf("CCITT Group 4 image decode test failed\r\n");
+		return 1;
+	}
+	UInt32 faxHash = 2166136261U;
+	faxBpl = faxImage->GetDataBpl();
+	UIntOS y = 0;
+	while (y < 50)
+	{
+		x = 0;
+		while (x < 59)
+			faxHash = (faxHash ^ faxImage->data[y * faxBpl + x++]) * 16777619U;
+		y++;
+	}
+	faxImage.Delete();
+	if (faxHash != 0xB05F65C2U)
+	{
+		printf("CCITT Group 4 image decode test failed\r\n");
+		return 1;
+	}
+	UInt8 faxImage2Data[] =
+	{
+		0xF2,0x1D,0xB2,0x45,0xD8,0x78,0x30,0xF9,0x87,0x0D,0xE9,0x03,0x90,0xC7,0xA3,0x51,
+		0x98,0x3A,0x9A,0x64,0x72,0xBD,0x17,0x51,0x05,0x0A,0xB0,0x73,0x90,0x0B,0x41,0xD6,
+		0xA9,0x0D,0x0D,0x7D,0x1F,0x65,0x0E,0x83,0x23,0xB2,0xF1,0x8C,0x13,0xA0,0x40,0x9F,
+		0x27,0x1D,0x55,0x30,0xAA,0x96,0x5E,0xFE,0x94,0x42,0x5C,0x2D,0x28,0x2A,0x88,0x2D,
+		0x38,0x40,0xB9,0xC6,0x86,0x23,0xF3,0x87,0x38,0x7A,0xC1,0x3E,0x6F,0x92,0x8D,0x58,
+		0x73,0xFA,0xF7,0xFC,0x23,0xBF,0x4B,0x06,0x38,0x27,0x4A,0x2A,0x92,0x2C,0x0E,0xAB,
+		0x5C,0x7B,0x51,0xFF,0xE0,0x02,0x00,0x20,0x0A
+	};
+	if (!faxDecoder.DecodeImage(Data::ByteArrayR(faxImage2Data, sizeof(faxImage2Data)), 59, 50, -1).SetTo(faxImage))
+	{
+		printf("CCITT Group 4 second image decode test failed\r\n");
+		return 1;
+	}
+	faxHash = 2166136261U;
+	faxBpl = faxImage->GetDataBpl();
+	y = 0;
+	while (y < 50)
+	{
+		x = 0;
+		while (x < 59)
+			faxHash = (faxHash ^ faxImage->data[y * faxBpl + x++]) * 16777619U;
+		y++;
+	}
+	faxImage.Delete();
+	if (faxHash != 0x1DF657B8U)
+	{
+		printf("CCITT Group 4 second image decode test failed\r\n");
+		return 1;
+	}
+	UInt8 faxLongBlackRun[] = {0x35,0x01,0x01,0x92,0x0B,0x80};
+	if (!faxDecoder.DecodeImage(Data::ByteArrayR(faxLongBlackRun, sizeof(faxLongBlackRun)), 2000, 1).SetTo(faxImage))
+	{
+		printf("CCITT long black run decode test failed\r\n");
+		return 1;
+	}
+	faxTestPassed = true;
+	x = 0;
+	while (x < 2000)
+	{
+		if (faxImage->data[x++] != 0)
+		{
+			faxTestPassed = false;
+			break;
+		}
+	}
+	faxImage.Delete();
+	if (!faxTestPassed)
+	{
+		printf("CCITT long black run decode test failed\r\n");
+		return 1;
+	}
+	return 0;
+}
+
 Int32 PDFTest()
 {
-	Text::CStringNN fileName = CSTR("/mnt/QDisk1/Data/BookFile/20.pdf");
+	Int32 ccittTestResult = CCITTFaxTest();
+	if (ccittTestResult != 0)
+		return ccittTestResult;
+
+	Text::CStringNN fileName = CSTR("/mnt/QDisk1/Data/BookFile/347.pdf");
 	Parser::FullParserList parsers;
 	Parser::FileParser::PDFParser parser;
 	NN<IO::ParsedObject> pobj;
@@ -1749,15 +1928,58 @@ Int32 PDFTest()
 		printf("PDF parse succeeded for file %s\r\n", fileName.v.Ptr());
 		NN<Media::PDFDocument> pdf = NN<Media::PDFDocument>::ConvertFrom(pobj);
 		NN<Media::ImageList> imgList;
-		UInt32 id = 31;
+		UInt32 id = 7;
 		if (pdf->CreateImage(id, parsers).SetTo(imgList))
 		{
-			printf("PDF page %d image creation succeeded\r\n", id);
+			printf("PDF id %d image creation succeeded\r\n", id);
+			NN<Media::Image> img;
+			if (!imgList->GetImage2(0, 0).SetTo(img) || img->GetImageType() != Media::ImageType::Raster)
+			{
+				printf("PDF id %d image raster validation failed\r\n", id);
+				imgList.Delete();
+				pdf.Delete();
+				return 1;
+			}
+			NN<Media::RasterImage> raster = NN<Media::RasterImage>::ConvertFrom(img);
+			if (raster->GetImageClass() != Media::RasterImage::ImageClass::StaticImage)
+			{
+				printf("PDF id %d image raster validation failed\r\n", id);
+				imgList.Delete();
+				pdf.Delete();
+				return 1;
+			}
+			NN<Media::StaticImage> staticImage = NN<Media::StaticImage>::ConvertFrom(raster);
+			if (staticImage->info.dispSize.x != 7138 || staticImage->info.dispSize.y != 4509)
+			{
+				printf("PDF id %d image dimensions validation failed\r\n", id);
+				imgList.Delete();
+				pdf.Delete();
+				return 1;
+			}
+			UIntOS row = 0;
+			UIntOS bpl = staticImage->GetDataBpl();
+			while (row < 17)
+			{
+				UIntOS x = 0;
+				while (x < 7138)
+				{
+					if (staticImage->data[row * bpl + x++] != 255)
+					{
+						printf("PDF id %d image content validation failed at row %d\r\n", id, (UInt32)row);
+						imgList.Delete();
+						pdf.Delete();
+						return 1;
+					}
+				}
+				row++;
+			}
 			imgList.Delete();
 		}
 		else
 		{
-			printf("PDF page %d image creation failed\r\n", id);
+			printf("PDF id %d image creation failed\r\n", id);
+			pdf.Delete();
+			return 1;
 		}
 		pdf.Delete();
 	}
@@ -1834,7 +2056,7 @@ Int32 PDFTest2()
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UIntOS testType = 46;
+	UIntOS testType = 47;
 	switch (testType)
 	{
 	case 0:
@@ -1933,6 +2155,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return PDFTest();
 	case 47:
 		return PDFTest2();
+	case 48:
+		return CCITTFaxTest();
 	default:
 		return 0;
 	}
