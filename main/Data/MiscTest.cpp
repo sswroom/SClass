@@ -1740,7 +1740,7 @@ Int32 CFBParserTest()
 
 Int32 PDFTest()
 {
-	Text::CStringNN fileName = CSTR("/mnt/QDisk1/Data/BookFile/442.pdf");
+	Text::CStringNN fileName = CSTR("/mnt/QDisk1/Data/BookFile/704.pdf");
 	Parser::FullParserList parsers;
 	Parser::FileParser::PDFParser parser;
 	NN<IO::ParsedObject> pobj;
@@ -1748,7 +1748,7 @@ Int32 PDFTest()
 	{
 		printf("PDF parse succeeded for file %s\r\n", fileName.v.Ptr());
 		NN<Media::PDFDocument> pdf = NN<Media::PDFDocument>::ConvertFrom(pobj);
-		NN<Media::ImageList> imgList;
+/*		NN<Media::ImageList> imgList;
 		if (pdf->CreateImage(3, parsers).SetTo(imgList))
 		{
 			printf("PDF page 3 image creation succeeded\r\n");
@@ -1757,8 +1757,12 @@ Int32 PDFTest()
 		else
 		{
 			printf("PDF page 3 image creation failed\r\n");
-		}
+		}*/
 		pdf.Delete();
+	}
+	else
+	{
+		printf("PDF parse failed for file %s\r\n", fileName.v.Ptr());
 	}
 	return 0;
 }
@@ -1781,7 +1785,7 @@ Int32 PDFTest2()
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				UIntOS imgCnt = 0;
+				//UIntOS imgCnt = 0;
 				if (parser.ParseFilePath(CSTRP(sbuff, sptr2)).SetTo(pobj))
 				{
 					NN<Media::PDFDocument> pdf = NN<Media::PDFDocument>::ConvertFrom(pobj);
@@ -1798,12 +1802,12 @@ Int32 PDFTest2()
 						}
 						else if (imgType != Media::PDFObject::ImageType::NonImage)
 						{
-							imgCnt++;
+							//imgCnt++;
 						}
 						i++;
 					}
 					pobj.Delete();
-					printf("PDF %s has %d image objects\r\n", sptr.Ptr(), (Int32)imgCnt);
+					//printf("PDF %s has %d image objects\r\n", sptr.Ptr(), (Int32)imgCnt);
 				}
 				else
 				{
@@ -1818,7 +1822,7 @@ Int32 PDFTest2()
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UIntOS testType = 47;
+	UIntOS testType = 46;
 	switch (testType)
 	{
 	case 0:

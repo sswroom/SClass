@@ -84,7 +84,7 @@ Media::PDFObject::ImageType Media::PDFObject::GetImageType() const
 	{
 		if (s->IndexOf(UTF8STRC("/DCTDecode")) != INVALID_INDEX)
 			return ImageType::JPEG;
-		if (s->Equals(UTF8STRC("/CCITTFaxDecode")))
+		if (s->IndexOf(UTF8STRC("/CCITTFaxDecode")) != INVALID_INDEX)
 			return ImageType::CCITTFax;
 		if (s->Equals(UTF8STRC("/FlateDecode")))
 			return ImageType::FlateDecode;

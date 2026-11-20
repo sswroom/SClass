@@ -185,7 +185,7 @@ void Parser::FileParser::PDFParser::ParseStartxref(NN<PDFParseEnv> env, NN<Text:
 	if (!sb->Equals(UTF8STRC("startxref")))
 	{
 #if defined(VERBOSE)
-		printf("PDFParser: startxref not present after trailer: %s\r\n", sb->ToString());
+		printf("PDFParser: startxref not present after trailer: %s\r\n", sb->v.Ptr());
 #endif
 		env->normalEnd = true;
 		return;
@@ -209,7 +209,7 @@ void Parser::FileParser::PDFParser::ParseStartxref(NN<PDFParseEnv> env, NN<Text:
 	else
 	{
 #if defined(VERBOSE)
-		printf("PDFParser: startxref offset not valid: %s\r\n", sb->ToString());
+		printf("PDFParser: startxref offset not valid: %s\r\n", sb->v.Ptr());
 #endif
 		env->normalEnd = true;
 		return;
@@ -244,7 +244,7 @@ void Parser::FileParser::PDFParser::ParseStartxref(NN<PDFParseEnv> env, NN<Text:
 	else
 	{
 #if defined(VERBOSE)
-		printf("PDFParser: Unknown entry after startxref: %s\r\n", sb->ToString());
+		printf("PDFParser: Unknown entry after startxref: %s\r\n", sb->v.Ptr());
 #endif
 		env->normalEnd = true;
 	}
@@ -257,7 +257,7 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 	if (!sb->ToUInt32(id))
 	{
 #if defined(VERBOSE)
-		printf("PDFParser: Error in parsing object id: %s\r\n", sb->ToString());
+		printf("PDFParser: Error in parsing object id: %s\r\n", sb->v.Ptr());
 #endif
 		env->normalEnd = true;
 		return false;
@@ -301,7 +301,7 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 					if (!Media::PDFParameter::Parse(Text::CStringNN(&sb->v[2], sb->leng - 10)).SetTo(param))
 					{
 #if defined(VERBOSE)
-						printf("PDFParser: Error in parsing object stream parameter: %s\r\n", sb->ToString());
+						printf("PDFParser: Error in parsing object stream parameter: %s\r\n", sb->v.Ptr());
 #endif
 						env->normalEnd = true;
 						break;
@@ -315,7 +315,7 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 					if (!Media::PDFParameter::Parse(Text::CStringNN(&sb->v[2], sb->leng - 8)).SetTo(param))
 					{
 	#if defined(VERBOSE)
-						printf("PDFParser: Error in parsing object parameter: %s\r\n", sb->ToString());
+						printf("PDFParser: Error in parsing object parameter: %s\r\n", sb->v.Ptr());
 	#endif
 						env->normalEnd = true;
 						break;
@@ -341,7 +341,7 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 						if (!Media::PDFParameter::Parse(Text::CStringNN(&sb->v[2], sb->leng - 4)).SetTo(param))
 						{
 #if defined(VERBOSE)
-							printf("PDFParser: Error in parsing object parameter: %s\r\n", sb->ToString());
+							printf("PDFParser: Error in parsing object parameter: %s\r\n", sb->v.Ptr());
 #endif
 							env->normalEnd = true;
 							break;
@@ -353,7 +353,7 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 					else
 					{
 #if defined(VERBOSE)
-						printf("PDFParser: Unknown object content: %s\r\n", sb->ToString());
+						printf("PDFParser: Unknown object content: %s\r\n", sb->v.Ptr());
 #endif
 						env->normalEnd = true;
 						break;
@@ -389,7 +389,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Te
 	if (!param->GetEntryValue(CSTR("Length")).SetTo(leng))
 	{
 #if defined(VERBOSE)
-		printf("PDFParser: Length not found in stream filters: %s\r\n", sb->ToString());
+		printf("PDFParser: Length not found in stream filters: %s\r\n", sb->v.Ptr());
 #endif
 		env->normalEnd = true;
 		return false;
@@ -401,7 +401,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Te
 		if (leng->leng > 35)
 		{
 #if defined(VERBOSE)
-			printf("PDFParser: Stream Length Filter is too long: %s\r\n", leng->v);
+			printf("PDFParser: Stream Length Filter is too long: %s\r\n", leng->v.Ptr());
 #endif
 			env->normalEnd = true;
 			return false;
@@ -411,7 +411,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Te
 		if (!Text::StrToUInt32(buff, id))
 		{
 #if defined(VERBOSE)
-			printf("PDFParser: Stream Length Filter cannot parse id: %s\r\n", leng->v);
+			printf("PDFParser: Stream Length Filter cannot parse id: %s\r\n", leng->v.Ptr());
 #endif
 			env->normalEnd = true;
 			return false;
@@ -469,7 +469,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Te
 		if (!sb->EndsWith(UTF8STRC(" 0 obj")))
 		{
 #if defined(VERBOSE)
-			printf("PDFParser: Stream Length reference object not valid: %s\r\n", sb->ToString());
+			printf("PDFParser: Stream Length reference object not valid: %s\r\n", sb->v.Ptr());
 #endif
 			env->normalEnd = true;
 			return false;
@@ -486,7 +486,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Te
 		if (!sb->ToUIntOS(iLeng))
 		{
 #if defined(VERBOSE)
-			printf("PDFParser: Stream Length reference object content not valid: %s\r\n", sb->ToString());
+			printf("PDFParser: Stream Length reference object content not valid: %s\r\n", sb->v.Ptr());
 #endif
 			env->normalEnd = true;
 			return false;
@@ -503,7 +503,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Te
 		if (!sb->Equals(UTF8STRC("endobj")))
 		{
 #if defined(VERBOSE)
-			printf("PDFParser: Stream Length reference object endobj not found: %s\r\n", sb->ToString());
+			printf("PDFParser: Stream Length reference object endobj not found: %s\r\n", sb->v.Ptr());
 #endif
 			env->normalEnd = true;
 			return false;
@@ -514,7 +514,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Te
 		if (!leng->ToUIntOS(iLeng))
 		{
 #if defined(VERBOSE)
-			printf("PDFParser: Stream Length Filter is not valid: %s\r\n", leng->v);
+			printf("PDFParser: Stream Length Filter is not valid: %s\r\n", leng->v.Ptr());
 #endif
 			env->normalEnd = true;
 			return false;
@@ -537,7 +537,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Te
 	if (!sb->Equals(UTF8STRC("endstream")))
 	{
 #if defined(VERBOSE)
-		printf("PDFParser: End of stream not found: %s\r\n", sb->ToString());
+		printf("PDFParser: End of stream not found: %s\r\n", sb->v.Ptr());
 #endif
 		env->normalEnd = true;
 		return false;
@@ -601,7 +601,7 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 			if (!sb->StartsWith(UTF8STRC("<<")))
 			{
 #if defined(VERBOSE)
-				printf("PDFParser: trailer values is not valid format: %s\r\n", sb->ToString());
+				printf("PDFParser: trailer values is not valid format: %s\r\n", sb->v.Ptr());
 #endif
 				env->normalEnd = true;
 				break;
@@ -626,7 +626,7 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 			if (!sb->EndsWith(UTF8STRC(">>")))
 			{
 #if defined(VERBOSE)
-				printf("PDFParser: trailer values is not valid format2: %s\r\n", sb->ToString());
+				printf("PDFParser: trailer values is not valid format2: %s\r\n", sb->v.Ptr());
 #endif
 				env->normalEnd = true;
 				break;
@@ -638,7 +638,7 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 			if (!thisRef->trailer.SetTo(trailer))
 			{
 #if defined(VERBOSE)
-				printf("PDFParser: Error in parsing trailer: %s\r\n", sb->ToString());
+				printf("PDFParser: Error in parsing trailer: %s\r\n", sb->v.Ptr());
 #endif
 				env->normalEnd = true;
 				break;
@@ -655,7 +655,7 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 			if (!sb->Equals(UTF8STRC("startxref")))
 			{
 #if defined(VERBOSE)
-				printf("PDFParser: startxref not present after trailer: %s\r\n", sb->ToString());
+				printf("PDFParser: startxref not present after trailer: %s\r\n", sb->v.Ptr());
 #endif
 				env->normalEnd = true;
 				break;
@@ -679,7 +679,7 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 			else
 			{
 #if defined(VERBOSE)
-				printf("PDFParser: startxref offset not valid: %s\r\n", sb->ToString());
+				printf("PDFParser: startxref offset not valid: %s\r\n", sb->v.Ptr());
 #endif
 				env->normalEnd = true;
 				break;
@@ -696,7 +696,7 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 			if (!sb->StartsWith(UTF8STRC("%%EOF")))
 			{
 #if defined(VERBOSE)
-				printf("PDFParser: Unknown entry after startxref: %s\r\n", sb->ToString());
+				printf("PDFParser: Unknown entry after startxref: %s\r\n", sb->v.Ptr());
 #endif
 				env->normalEnd = true;
 				break;
@@ -725,7 +725,7 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 			else
 			{
 #if defined(VERBOSE)
-				printf("PDFParser: Error in parsing previous Xref offset: %s\r\n", prevOfst->v);
+				printf("PDFParser: Error in parsing previous Xref offset: %s\r\n", prevOfst->v.Ptr());
 #endif
 				env->normalEnd = true;
 				break;
@@ -739,7 +739,7 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 			if (i == INVALID_INDEX)
 			{
 #if defined(VERBOSE)
-				printf("PDFParser: xref count format is not valid: %s\r\n", sb->ToString());
+				printf("PDFParser: xref count format is not valid: %s\r\n", sb->v.Ptr());
 #endif
 				env->normalEnd = true;
 				break;
@@ -749,7 +749,7 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 			{
 				sb->v[i] = ' ';
 #if defined(VERBOSE)
-				printf("PDFParser: xref count format is not valid 2: %s\r\n", sb->ToString());
+				printf("PDFParser: xref count format is not valid 2: %s\r\n", sb->v.Ptr());
 #endif
 				env->normalEnd = true;
 				break;
@@ -780,7 +780,7 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 				if (sb->leng != 18 || sb->v[10] != ' ' || sb->v[16] != ' ')
 				{
 #if defined(VERBOSE)
-					printf("PDFParser: xref value format invalid: %d, %d, %d, %s\r\n", (UInt32)sb->leng, sb->v[10], sb->v[16], sb->ToString());
+					printf("PDFParser: xref value format invalid: %d, %d, %d, %s\r\n", (UInt32)sb->leng, sb->v[10], sb->v[16], sb->v.Ptr());
 #endif
 					env->normalEnd = true;
 					break;
@@ -790,7 +790,7 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 				if (!Text::StrToUInt64(&sb->v[0], thisRef->items[i].ofst) || !Text::StrToUIntOS(&sb->v[11], thisRef->items[i].generation))
 				{
 #if defined(VERBOSE)
-					printf("PDFParser: xref value format invalid2: %d, %d, %d, %s\r\n", (UInt32)sb->leng, sb->v[10], sb->v[16], sb->ToString());
+					printf("PDFParser: xref value format invalid2: %d, %d, %d, %s\r\n", (UInt32)sb->leng, sb->v[10], sb->v[16], sb->v.Ptr());
 #endif
 					env->normalEnd = true;
 					break;
@@ -949,7 +949,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 					if (!sb.StartsWith(UTF8STRC("<<")))
 					{
 #if defined(VERBOSE)
-						printf("PDFParser: trailer values is not valid format: %s\r\n", sb.ToString());
+						printf("PDFParser: trailer values is not valid format: %s\r\n", sb.v.Ptr());
 #endif
 						env.normalEnd = true;
 						break;
@@ -974,7 +974,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 					if (!sb.EndsWith(UTF8STRC(">>")))
 					{
 #if defined(VERBOSE)
-						printf("PDFParser: trailer values is not valid format2: %s\r\n", sb.ToString());
+						printf("PDFParser: trailer values is not valid format2: %s\r\n", sb.v.Ptr());
 #endif
 						env.normalEnd = true;
 						break;
@@ -999,7 +999,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 					if (i == INVALID_INDEX)
 					{
 #if defined(VERBOSE)
-						printf("PDFParser: xref count format is not valid: %s\r\n", sb.ToString());
+						printf("PDFParser: xref count format is not valid: %s\r\n", sb.v.Ptr());
 #endif
 						env.normalEnd = true;
 						break;
@@ -1009,7 +1009,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 					{
 						sb.v[i] = ' ';
 #if defined(VERBOSE)
-						printf("PDFParser: xref count format is not valid 2: %s\r\n", sb.ToString());
+						printf("PDFParser: xref count format is not valid 2: %s\r\n", sb.v.Ptr());
 #endif
 						env.normalEnd = true;
 						break;
@@ -1029,7 +1029,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 						if ((sb.leng != 18 && sb.leng != 19) || sb.v[10] != ' ' || sb.v[16] != ' ')
 						{
 #if defined(VERBOSE)
-							printf("PDFParser: xref value format invalid: %d, %d, %d, %s\r\n", (UInt32)sb.leng, sb.v[10], sb.v[16], sb.ToString());
+							printf("PDFParser: xref value format invalid: %d, %d, %d, %s\r\n", (UInt32)sb.leng, sb.v[10], sb.v[16], sb.v.Ptr());
 #endif
 							env.normalEnd = true;
 							break;
@@ -1086,7 +1086,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 			if (sb.GetLength() > 0)
 			{
 #if defined(VERBOSE)
-				printf("PDFParser: Unsupported line: %s, ofst = %lld\r\n", sb.ToString(), env.lineBegin);
+				printf("PDFParser: Unsupported line: %s, ofst = %lld\r\n", sb.v.Ptr(), env.lineBegin);
 #endif
 				if (env.lineBegin >= 16)
 				{
