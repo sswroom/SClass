@@ -1740,7 +1740,7 @@ Int32 CFBParserTest()
 
 Int32 PDFTest()
 {
-	Text::CStringNN fileName = CSTR("/mnt/QDisk1/Data/BookFile/704.pdf");
+	Text::CStringNN fileName = CSTR("/mnt/QDisk1/Data/BookFile/20.pdf");
 	Parser::FullParserList parsers;
 	Parser::FileParser::PDFParser parser;
 	NN<IO::ParsedObject> pobj;
@@ -1748,16 +1748,17 @@ Int32 PDFTest()
 	{
 		printf("PDF parse succeeded for file %s\r\n", fileName.v.Ptr());
 		NN<Media::PDFDocument> pdf = NN<Media::PDFDocument>::ConvertFrom(pobj);
-/*		NN<Media::ImageList> imgList;
-		if (pdf->CreateImage(3, parsers).SetTo(imgList))
+		NN<Media::ImageList> imgList;
+		UInt32 id = 31;
+		if (pdf->CreateImage(id, parsers).SetTo(imgList))
 		{
-			printf("PDF page 3 image creation succeeded\r\n");
+			printf("PDF page %d image creation succeeded\r\n", id);
 			imgList.Delete();
 		}
 		else
 		{
-			printf("PDF page 3 image creation failed\r\n");
-		}*/
+			printf("PDF page %d image creation failed\r\n", id);
+		}
 		pdf.Delete();
 	}
 	else
@@ -1778,6 +1779,8 @@ Int32 PDFTest2()
 	Parser::FileParser::PDFParser parser;
 	NN<IO::ParsedObject> pobj;
 	NN<IO::Path::FindFileSession> sess;
+	NN<Media::ImageList> imgList;
+	Parser::FullParserList parsers;
 	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
 		IO::Path::PathType pt;
@@ -1794,7 +1797,7 @@ Int32 PDFTest2()
 					while (i < j)
 					{
 						NN<Media::PDFObject> pdfObj = pdf->GetItemNoCheck(i);
-						Media::PDFObject::ImageType imgType = pdfObj->GetImageType();
+						Media::PDFObject::ImageType imgType = pdfObj->GetImageType(pdf);
 						if (imgType == Media::PDFObject::ImageType::Unknown)
 						{
 							printf("PDF %s object %d has unknown image type\r\n", sptr.Ptr(), pdfObj->GetId());
@@ -1802,7 +1805,16 @@ Int32 PDFTest2()
 						}
 						else if (imgType != Media::PDFObject::ImageType::NonImage)
 						{
-							//imgCnt++;
+							if (pdf->CreateImage(pdfObj->GetId(), parsers).SetTo(imgList))
+							{
+								//imgCnt++;
+								imgList.Delete();
+							}
+							else
+							{
+								printf("PDF %s object %d image creation failed\r\n", sptr.Ptr(), pdfObj->GetId());
+								break;
+							}
 						}
 						i++;
 					}

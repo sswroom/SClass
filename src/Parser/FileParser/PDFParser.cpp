@@ -1,6 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ArrayListNative.hpp"
 #include "Data/ByteBuffer.h"
+#include "Data/Compress/Inflater.h"
 #include "Core/ByteTool_C.h"
 #include "IO/FileStream.h"
 #include "IO/StreamData.h"
@@ -182,7 +184,7 @@ Bool Parser::FileParser::PDFParser::NextLineFixed(NN<PDFParseEnv> env, UIntOS si
 
 void Parser::FileParser::PDFParser::ParseStartxref(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb)
 {
-	if (!sb->Equals(UTF8STRC("startxref")))
+	if (!sb->Equals(UTF8STRC("startxref")) && !sb->StartsWith(UTF8STRC("startxref ")))
 	{
 #if defined(VERBOSE)
 		printf("PDFParser: startxref not present after trailer: %s\r\n", sb->v.Ptr());
@@ -190,16 +192,32 @@ void Parser::FileParser::PDFParser::ParseStartxref(NN<PDFParseEnv> env, NN<Text:
 		env->normalEnd = true;
 		return;
 	}
-	sb->ClearStr();
-	if (!NextLine(env, sb, true))
-	{
-#if defined(VERBOSE)
-		printf("PDFParser: startxref offset not found\r\n");
-#endif
-		env->normalEnd = true;
-		return;
-	}
 	UInt64 ofst;
+	if (sb->Equals(UTF8STRC("startxref")))
+	{
+		sb->ClearStr();
+		if (!NextLine(env, sb, true))
+		{
+#if defined(VERBOSE)
+			printf("PDFParser: startxref offset not found\r\n");
+#endif
+			env->normalEnd = true;
+			return;
+		}
+	}
+	else
+	{
+		if (!sb->StartsWith(UTF8STRC("startxref")))
+		{
+#if defined(VERBOSE)
+			printf("PDFParser: startxref not present after trailer: %s\r\n", sb->v.Ptr());
+#endif
+			env->normalEnd = true;
+			return;
+		}
+		sb->SetSubstr(9);
+		sb->Trim();
+	}
 	if (sb->ToUInt64(ofst))
 	{
 #if defined(VERBOSE)
@@ -228,10 +246,33 @@ void Parser::FileParser::PDFParser::ParseStartxref(NN<PDFParseEnv> env, NN<Text:
 #if defined(VERBOSE)
 		printf("PDFParser: EOF found, ofst = %lld\r\n", env->lineBegin);
 #endif
-		if (env->dataOfst + env->currOfst >= env->fileSize)
+		env->succ = true;
+		UInt64 ofst = env->dataOfst + env->currOfst;
+		if (ofst <= env->fileSize)
 		{
-			env->normalEnd = true;
-			env->succ = true;
+			UInt8 buff[1024];
+			Bool onlyWhitespace = true;
+			while (ofst < env->fileSize && onlyWhitespace)
+			{
+				UIntOS readSize = (UIntOS)((env->fileSize - ofst > sizeof(buff)) ? sizeof(buff) : env->fileSize - ofst);
+				if (env->fd->GetRealData(ofst, readSize, BYTEARR(buff)) != readSize)
+					break;
+				UIntOS i = 0;
+				while (i < readSize)
+				{
+					if (buff[i] != 0 && buff[i] != 9 && buff[i] != 10 && buff[i] != 12 && buff[i] != 13 && buff[i] != 32)
+					{
+						onlyWhitespace = false;
+						break;
+					}
+					i++;
+				}
+				ofst += readSize;
+			}
+			if (onlyWhitespace && ofst == env->fileSize)
+			{
+				env->normalEnd = true;
+			}
 		}
 	}
 	else if (sb->StartsWith(UTF8STRC("%%EOF")))
@@ -256,6 +297,16 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 	sb->RemoveChars(6);
 	if (!sb->ToUInt32(id))
 	{
+		if (sb->Equals(UTF8STRC("WebFastLoad2")))
+		{
+			sb->ClearStr();
+			if (NextLine(env, sb, true))
+			{
+				sb->ClearStr();
+				if (NextLine(env, sb, true) && sb->Equals(UTF8STRC("endobj")))
+					return true;
+			}
+		}
 #if defined(VERBOSE)
 		printf("PDFParser: Error in parsing object id: %s\r\n", sb->v.Ptr());
 #endif
@@ -286,10 +337,20 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 			}
 			return true;
 		}
+		else if (sb->EndsWith(UTF8STRC("endobj")) && !sb->EndsWith(UTF8STRC(">>endobj")))
+		{
+			if (dataOfst != 0)
+			{
+				obj->SetData(env->fd, dataOfst, (UIntOS)(env->lineBegin + sb->leng - 6 - dataOfst));
+			}
+			return true;
+		}
 		else if (sb->Equals(UTF8STRC("stream")))
 		{
 			if (!ParseObjectStream(env, sb, obj, xref))
 				break;
+			if (sb->EndsWith(UTF8STRC("endstream endobj")))
+				return true;
 		}
 		else if (sb->StartsWith(UTF8STRC("<<")))
 		{
@@ -308,6 +369,8 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 					}
 					obj->SetParameter(param);
 					notBreak = ParseObjectStream(env, sb, obj, xref);
+					if (notBreak && sb->EndsWith(UTF8STRC("endstream endobj")))
+						return true;
 					break;
 				}
 				else if (sb->EndsWith(UTF8STRC(">>endobj")))
@@ -536,11 +599,42 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Te
 	}
 	if (!sb->Equals(UTF8STRC("endstream")))
 	{
+		if (sb->EndsWith(UTF8STRC("endstream endobj")))
+			return true;
 #if defined(VERBOSE)
 		printf("PDFParser: End of stream not found: %s\r\n", sb->v.Ptr());
 #endif
 		env->normalEnd = true;
 		return false;
+	}
+	return true;
+}
+
+static Bool PDFParseUIntArray(NN<Text::String> value, Data::ArrayListNative<UIntOS> &values)
+{
+	if (value->leng < 2 || value->v[0] != '[' || value->v[value->leng - 1] != ']')
+		return false;
+	UIntOS i = 1;
+	while (i + 1 < value->leng)
+	{
+		while (i + 1 < value->leng && (value->v[i] == ' ' || value->v[i] == '\t' || value->v[i] == '\r' || value->v[i] == '\n'))
+			i++;
+		if (i + 1 == value->leng)
+			break;
+		if (value->v[i] < '0' || value->v[i] > '9')
+			return false;
+		UIntOS number = 0;
+		while (i + 1 < value->leng && value->v[i] >= '0' && value->v[i] <= '9')
+		{
+			UIntOS digit = (UIntOS)(value->v[i] - '0');
+			if (number > (INVALID_INDEX - digit) / 10)
+				return false;
+			number = number * 10 + digit;
+			i++;
+		}
+		values.Add(number);
+		if (i + 1 < value->leng && value->v[i] != ' ' && value->v[i] != '\t' && value->v[i] != '\r' && value->v[i] != '\n' && value->v[i] != ']')
+			return false;
 	}
 	return true;
 }
@@ -556,10 +650,348 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 	}
 	if (!sb->Equals(UTF8STRC("xref")))
 	{
+		if (!sb->EndsWith(UTF8STRC(" obj")))
+		{
 #if defined(VERBOSE)
-		printf("PDFParser: xref not found, ofst = %lld\r\n", env->lineBegin);
+			printf("PDFParser: xref stream object not found, ofst = %lld\r\n", env->lineBegin);
 #endif
-		return nullptr;
+			env->normalEnd = true;
+			return nullptr;
+		}
+		sb->ClearStr();
+		if (!NextLine(env, sb, true) || !sb->StartsWith(UTF8STRC("<<")))
+		{
+			env->normalEnd = true;
+			return nullptr;
+		}
+		Bool inlineStream = false;
+		while (true)
+		{
+			if (sb->EndsWith(UTF8STRC(">>stream")))
+			{
+				sb->TrimToLength(sb->leng - 6);
+				inlineStream = true;
+			}
+			UIntOS startCnt = sb->CountStr(UTF8STRC("<<"));
+			UIntOS endCnt = sb->CountStr(UTF8STRC(">>"));
+			if (startCnt <= endCnt)
+				break;
+			sb->AppendUTF8Char(' ');
+			if (!NextLine(env, sb, true))
+			{
+				env->normalEnd = true;
+				return nullptr;
+			}
+		}
+		if (!sb->EndsWith(UTF8STRC(">>")))
+		{
+			env->normalEnd = true;
+			return nullptr;
+		}
+		sb->RemoveChars(2);
+		sb->SetSubstr(2);
+		NN<Media::PDFParameter> trailer;
+		Optional<Media::PDFParameter> optTrailer = Media::PDFParameter::Parse(sb->ToCString());
+		if (!optTrailer.SetTo(trailer))
+		{
+			env->normalEnd = true;
+			return nullptr;
+		}
+		Optional<Media::PDFParameter> decodeParameters = nullptr;
+#define PARSE_ERROR \
+			decodeParameters.Delete(); \
+			trailer.Delete(); \
+			env->normalEnd = true; \
+			return nullptr;
+
+		NN<Text::String> widthValue;
+		NN<Text::String> sizeValue;
+		Data::ArrayListNative<UIntOS> widths;
+		if (!trailer->GetEntryValue(CSTR("W")).SetTo(widthValue) || !PDFParseUIntArray(widthValue, widths) || widths.GetCount() != 3 ||
+			!trailer->GetEntryValue(CSTR("Size")).SetTo(sizeValue))
+		{
+			PARSE_ERROR
+		}
+		UIntOS size = sizeValue->ToUIntOS();
+		if (size == 0 || widths.GetItem(0) > 8 || widths.GetItem(1) > 8 || widths.GetItem(2) > 8 ||
+			widths.GetItem(0) + widths.GetItem(1) + widths.GetItem(2) == 0)
+		{
+			PARSE_ERROR
+		}
+		UIntOS rowSize = widths.GetItem(0) + widths.GetItem(1) + widths.GetItem(2);
+		UIntOS predictor = 1;
+		UIntOS colors = 1;
+		UIntOS columns = rowSize;
+		UIntOS bitsPerComponent = 8;
+		NN<Text::String> decodeParmsValue;
+		NN<Media::PDFParameter> nnDecodeParameters;
+		if (trailer->GetEntryValue(CSTR("DecodeParms")).SetTo(decodeParmsValue))
+		{
+			if (decodeParmsValue->leng < 4 || !decodeParmsValue->StartsWith(UTF8STRC("<<")) || !decodeParmsValue->EndsWith(UTF8STRC(">>")) ||
+				!Media::PDFParameter::Parse(Text::CStringNN(&decodeParmsValue->v[2], decodeParmsValue->leng - 4)).SetTo(nnDecodeParameters))
+			{
+				PARSE_ERROR
+			}
+			decodeParameters = nnDecodeParameters;
+			NN<Text::String> parameterValue;
+			if (nnDecodeParameters->GetEntryValue(CSTR("Predictor")).SetTo(parameterValue))
+				predictor = parameterValue->ToUIntOS();
+			if (nnDecodeParameters->GetEntryValue(CSTR("Colors")).SetTo(parameterValue))
+				colors = parameterValue->ToUIntOS();
+			if (nnDecodeParameters->GetEntryValue(CSTR("Columns")).SetTo(parameterValue))
+				columns = parameterValue->ToUIntOS();
+			if (nnDecodeParameters->GetEntryValue(CSTR("BitsPerComponent")).SetTo(parameterValue))
+				bitsPerComponent = parameterValue->ToUIntOS();
+		}
+		if (colors == 0 || columns == 0 || bitsPerComponent == 0 || bitsPerComponent > 16 ||
+			(UInt64)colors * columns * bitsPerComponent > (UInt64)INVALID_INDEX * 8 ||
+			((UIntOS)(((UInt64)colors * columns * bitsPerComponent + 7) / 8) != rowSize))
+		{
+			PARSE_ERROR
+		}
+		Bool hasPNGFilter = predictor >= 10 && predictor <= 15;
+		if (predictor != 1 && predictor != 2 && !hasPNGFilter)
+		{
+			PARSE_ERROR
+		}
+		if (predictor == 2 && bitsPerComponent != 8)
+		{
+			PARSE_ERROR
+		}
+		UIntOS bytesPerPixel = (colors * bitsPerComponent + 7) / 8;
+		if (bytesPerPixel == 0)
+			bytesPerPixel = 1;
+		Data::ArrayListNative<UIntOS> indexes;
+		NN<Text::String> indexValue;
+		if (trailer->GetEntryValue(CSTR("Index")).SetTo(indexValue))
+		{
+			if (!PDFParseUIntArray(indexValue, indexes) || indexes.GetCount() == 0 || (indexes.GetCount() & 1) != 0)
+			{
+				PARSE_ERROR
+			}
+		}
+		else
+		{
+			indexes.Add(0);
+			indexes.Add(size);
+		}
+		UIntOS rowCount = 0;
+		UIntOS rangeIndex = 0;
+		while (rangeIndex < indexes.GetCount())
+		{
+			UIntOS startId = indexes.GetItem(rangeIndex++);
+			UIntOS count = indexes.GetItem(rangeIndex++);
+			if (startId > size || count > size - startId || count > INVALID_INDEX - rowCount)
+			{
+				PARSE_ERROR
+			}
+			rowCount += count;
+		}
+		if (rowCount > INVALID_INDEX / rowSize)
+		{
+			PARSE_ERROR
+		}
+		UIntOS decodedSize = rowCount * rowSize;
+		if (hasPNGFilter && rowCount > INVALID_INDEX / (rowSize + 1))
+		{
+			PARSE_ERROR
+		}
+		UIntOS encodedSize = rowCount * (rowSize + (hasPNGFilter ? 1 : 0));
+
+		NN<Text::String> lengthValue;
+		UIntOS streamLength;
+		sb->ClearStr();
+		if (!trailer->GetEntryValue(CSTR("Length")).SetTo(lengthValue) || !lengthValue->ToUIntOS(streamLength))
+		{
+			PARSE_ERROR
+		}
+		if (!inlineStream && (!NextLine(env, sb, true) || !sb->Equals(UTF8STRC("stream"))))
+		{
+			PARSE_ERROR
+		}
+		UInt64 streamOfst = env->dataOfst + env->currOfst;
+		if (streamOfst > env->fileSize || streamLength > env->fileSize - streamOfst)
+		{
+			PARSE_ERROR
+		}
+		Data::ByteBuffer streamData(streamLength);
+		if (env->fd->GetRealData(streamOfst, streamLength, streamData) != streamLength)
+		{
+			PARSE_ERROR
+		}
+		NN<Text::String> filterValue;
+		Bool hasFilter = trailer->GetEntryValue(CSTR("Filter")).SetTo(filterValue);
+		if (hasFilter && !filterValue->Equals(UTF8STRC("/FlateDecode")))
+		{
+			PARSE_ERROR
+		}
+		Data::ByteBuffer encodedData(encodedSize);
+		UIntOS actualDecodedSize = encodedSize;
+		if (hasFilter)
+		{
+			if (!Data::Compress::Inflater::DecompressDirect(encodedData, actualDecodedSize, streamData.AsByteArray(), true))
+			{
+				PARSE_ERROR
+			}
+		}
+		else
+		{
+			if (streamLength != encodedSize)
+			{
+				PARSE_ERROR
+			}
+			encodedData.CopyFrom(streamData);
+		}
+		if (actualDecodedSize != encodedSize)
+		{
+			PARSE_ERROR
+		}
+		Data::ByteBuffer decodedData(decodedSize);
+		if (hasPNGFilter)
+		{
+			UIntOS encodedIndex = 0;
+			UIntOS decodedIndex = 0;
+			UIntOS row = 0;
+			while (row < rowCount)
+			{
+				UInt8 filter = encodedData[encodedIndex++];
+				if (filter > 4)
+				{
+					PARSE_ERROR
+				}
+				UIntOS column = 0;
+				while (column < rowSize)
+				{
+					UInt8 value = encodedData[encodedIndex++];
+					UInt8 left = column >= bytesPerPixel ? decodedData[decodedIndex - bytesPerPixel] : 0;
+					UInt8 up = row > 0 ? decodedData[decodedIndex - rowSize] : 0;
+					UInt8 upperLeft = row > 0 && column >= bytesPerPixel ? decodedData[decodedIndex - rowSize - bytesPerPixel] : 0;
+					if (filter == 1)
+					{
+						value = (UInt8)(value + left);
+					}
+					else if (filter == 2)
+					{
+						value = (UInt8)(value + up);
+					}
+					else if (filter == 3)
+					{
+						value = (UInt8)(value + ((UInt16)left + up) / 2);
+					}
+					else if (filter == 4)
+					{
+						IntOS p = (IntOS)left + up - upperLeft;
+						IntOS pa = p - left;
+						if (pa < 0)
+							pa = -pa;
+						IntOS pb = p - up;
+						if (pb < 0)
+							pb = -pb;
+						IntOS pc = p - upperLeft;
+						if (pc < 0)
+							pc = -pc;
+						if (pa <= pb && pa <= pc)
+							value = (UInt8)(value + left);
+						else if (pb <= pc)
+							value = (UInt8)(value + up);
+						else
+							value = (UInt8)(value + upperLeft);
+					}
+					decodedData[decodedIndex++] = value;
+					column++;
+				}
+				row++;
+			}
+		}
+		else
+		{
+			decodedData.CopyFrom(encodedData);
+			if (predictor == 2)
+			{
+				UIntOS row = 0;
+				while (row < rowCount)
+				{
+					UIntOS column = bytesPerPixel;
+					while (column < rowSize)
+					{
+						decodedData[row * rowSize + column] = (UInt8)(decodedData[row * rowSize + column] + decodedData[row * rowSize + column - bytesPerPixel]);
+						column++;
+					}
+					row++;
+				}
+			}
+		}
+		decodeParameters.Delete();
+
+		PDFXRef *thisRef = MemAlloc(PDFXRef, 1);
+		thisRef->startId = 0;
+		thisRef->count = size;
+		thisRef->items = MemAlloc(PDFXRefItem, size);
+		thisRef->nextRef = nullptr;
+		thisRef->trailer = trailer;
+		for (UIntOS i = 0; i < size; i++)
+		{
+			thisRef->items[i].ofst = 0;
+			thisRef->items[i].generation = 0;
+			thisRef->items[i].type = 'f';
+		}
+		UIntOS dataIndex = 0;
+		rangeIndex = 0;
+		while (rangeIndex < indexes.GetCount())
+		{
+			UIntOS startId = indexes.GetItem(rangeIndex++);
+			UIntOS count = indexes.GetItem(rangeIndex++);
+			for (UIntOS i = 0; i < count; i++)
+			{
+				UInt64 fields[3] = {0, 0, 0};
+				for (UIntOS field = 0; field < 3; field++)
+				{
+					UIntOS fieldWidth = widths.GetItem(field);
+					for (UIntOS b = 0; b < fieldWidth; b++)
+					{
+						fields[field] = (fields[field] << 8) | decodedData[dataIndex++];
+					}
+				}
+				if (widths.GetItem(0) == 0)
+					fields[0] = 1;
+				if (fields[0] > 2 || fields[2] > INVALID_INDEX)
+				{
+					MemFree(thisRef->items);
+					thisRef->trailer.Delete();
+					MemFree(thisRef);
+					env->normalEnd = true;
+					return nullptr;
+				}
+				thisRef->items[startId + i].type = fields[0] == 1 ? 'n' : (fields[0] == 2 ? 'c' : 'f');
+				thisRef->items[startId + i].ofst = fields[1];
+				thisRef->items[startId + i].generation = (UIntOS)fields[2];
+			}
+		}
+
+		NN<Text::String> prevOfst;
+		if (!trailer->GetEntryValue(CSTR("Prev")).SetTo(prevOfst))
+			return thisRef;
+		if (!prevOfst->ToUInt64(env->dataOfst))
+		{
+			MemFree(thisRef->items);
+			thisRef->trailer.Delete();
+			MemFree(thisRef);
+			env->normalEnd = true;
+			return nullptr;
+		}
+		env->currOfst = 0;
+		env->dataSize = 0;
+		sb->ClearStr();
+		thisRef->nextRef = ParseXRef(env, sb);
+		if (thisRef->nextRef.IsNull())
+		{
+			MemFree(thisRef->items);
+			thisRef->trailer.Delete();
+			MemFree(thisRef);
+			env->normalEnd = true;
+			return nullptr;
+		}
+		return thisRef;
 	}
 	PDFXRef *thisRef = 0;
 	Optional<PDFXRef> firstRef = nullptr;
@@ -643,6 +1075,8 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 				env->normalEnd = true;
 				break;
 			}
+			NN<Text::String> prevOfst;
+			Bool hasPrev = trailer->GetEntryValue(CSTR("Prev")).SetTo(prevOfst);
 			sb->ClearStr();
 			if (!NextLine(env, sb, true))
 			{
@@ -652,7 +1086,9 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 				env->normalEnd = true;
 				break;
 			}
-			if (!sb->Equals(UTF8STRC("startxref")))
+			Bool isNextXRef = sb->Equals(UTF8STRC("xref"));
+			Bool isStartXRef = sb->Equals(UTF8STRC("startxref")) || sb->StartsWith(UTF8STRC("startxref "));
+			if (!isStartXRef && (!isNextXRef || !hasPrev))
 			{
 #if defined(VERBOSE)
 				printf("PDFParser: startxref not present after trailer: %s\r\n", sb->v.Ptr());
@@ -660,58 +1096,67 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 				env->normalEnd = true;
 				break;
 			}
-			sb->ClearStr();
-			if (!NextLine(env, sb, true))
+			if (!isNextXRef)
 			{
+				if (sb->Equals(UTF8STRC("startxref")))
+				{
+					sb->ClearStr();
+					if (!NextLine(env, sb, true))
+					{
 #if defined(VERBOSE)
-				printf("PDFParser: startxref offset not found\r\n");
+						printf("PDFParser: startxref offset not found\r\n");
 #endif
-				env->normalEnd = true;
-				break;
+						env->normalEnd = true;
+						break;
+					}
+				}
+				else
+				{
+					sb->SetSubstr(9);
+					sb->Trim();
+				}
+				UInt64 ofst;
+				if (!sb->ToUInt64(ofst))
+				{
+#if defined(VERBOSE)
+					printf("PDFParser: startxref offset not valid: %s\r\n", sb->v.Ptr());
+#endif
+					env->normalEnd = true;
+					break;
+				}
+				sb->ClearStr();
+				if (!NextLine(env, sb, true))
+				{
+#if defined(VERBOSE)
+					printf("PDFParser: unexpected end of file after startxref\r\n");
+#endif
+					env->normalEnd = true;
+					break;
+				}
+				if (!sb->StartsWith(UTF8STRC("%%EOF")))
+				{
+#if defined(VERBOSE)
+					printf("PDFParser: Unknown entry after startxref: %s\r\n", sb->v.Ptr());
+#endif
+					env->normalEnd = true;
+					break;
+				}
+#if defined(VERBOSE)
+				printf("PDFParser: EOF found, ofst = %lld\r\n", env->lineBegin);
+#endif
 			}
-			UInt64 ofst;
-			if (sb->ToUInt64(ofst))
+			if (!hasPrev)
 			{
-#if defined(VERBOSE)
-				printf("PDFParser: startxref value = %lld\r\n", ofst);
-#endif
+				return firstRef;
 			}
-			else
-			{
-#if defined(VERBOSE)
-				printf("PDFParser: startxref offset not valid: %s\r\n", sb->v.Ptr());
-#endif
-				env->normalEnd = true;
-				break;
-			}
-			sb->ClearStr();
-			if (!NextLine(env, sb, true))
-			{
-#if defined(VERBOSE)
-				printf("PDFParser: unexpected end of file after startxref\r\n");
-#endif
-				env->normalEnd = true;
-				break;
-			}
-			if (!sb->StartsWith(UTF8STRC("%%EOF")))
-			{
-#if defined(VERBOSE)
-				printf("PDFParser: Unknown entry after startxref: %s\r\n", sb->v.Ptr());
-#endif
-				env->normalEnd = true;
-				break;
-			}
-#if defined(VERBOSE)
-			printf("PDFParser: EOF found, ofst = %lld\r\n", env->lineBegin);
-#endif
-			NN<Text::String> prevOfst;
-			if (!trailer->GetEntryValue(CSTR("Prev")).SetTo(prevOfst))
+			NN<Text::String> nnPrevOfst;
+			if (!trailer->GetEntryValue(CSTR("Prev")).SetTo(nnPrevOfst))
 			{
 				return firstRef;
 			}
 			env->currOfst = 0;
 			env->dataSize = 0;
-			if (prevOfst->ToUInt64(env->dataOfst))
+			if (nnPrevOfst->ToUInt64(env->dataOfst))
 			{
 				sb->ClearStr();
 				thisRef->nextRef = ParseXRef(env, sb);
@@ -877,21 +1322,31 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 		i += 9;
 		if (tmpBuff[i] == 13 || tmpBuff[i] == 10)
 		{
-			i++;
-			if (tmpBuff[i] == 10)
+			if (i < 32)
 				i++;
-			j = i;
-			while (j < 32)
+			if (i < 32 && tmpBuff[i] == 10)
+				i++;
+		}
+		else if (tmpBuff[i] == ' ' || tmpBuff[i] == '\t')
+		{
+			while (tmpBuff[i] == ' ' || tmpBuff[i] == '\t')
+				i++;
+		}
+		else
+		{
+			i = 32;
+		}
+		j = i;
+		while (j < 32)
+		{
+			if (tmpBuff[j] == 13 || tmpBuff[j] == 10)
 			{
-				if (tmpBuff[j] == 13 || tmpBuff[j] == 10)
-				{
-					tmpBuff[j] = 0;
-					if (Text::StrToUInt64(&tmpBuff[i], env.dataOfst))
-						xref = ParseXRef(env, sb);
-					break;
-				}
-				j++;
+				tmpBuff[j] = 0;
+				if (Text::StrToUInt64(&tmpBuff[i], env.dataOfst))
+					xref = ParseXRef(env, sb);
+				break;
 			}
+			j++;
 		}
 	}
 
@@ -988,7 +1443,10 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 						env.normalEnd = true;
 						break;
 					}
-					ParseStartxref(env, sb);
+					if (sb.Equals(UTF8STRC("xref")))
+						env.currOfst = env.lineBegin - env.dataOfst;
+					else
+						ParseStartxref(env, sb);
 					break;
 				}
 				else
@@ -1043,7 +1501,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 			if (env.normalEnd)
 				break;
 		}
-		else if (sb.Equals(UTF8STRC("startxref")))
+		else if (sb.Equals(UTF8STRC("startxref")) || sb.StartsWith(UTF8STRC("startxref ")))
 		{
 			ParseStartxref(env, sb);
 			if (env.normalEnd)

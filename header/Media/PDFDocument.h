@@ -25,6 +25,7 @@ namespace Media
 		virtual Optional<PDFObject> GetItem(UIntOS index) const;
 		
 		NN<PDFObject> AddObject(UInt32 id);
+		Optional<PDFObject> GetObjectById(UInt32 id) const;
 		Optional<Media::ImageList> CreateImage(UInt32 id, NN<Parser::ParserList> parsers);
 	};
 }

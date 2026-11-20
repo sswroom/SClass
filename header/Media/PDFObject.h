@@ -7,6 +7,7 @@
 
 namespace Media
 {
+	class PDFDocument;
 	class PDFObject
 	{
 	public:
@@ -14,9 +15,10 @@ namespace Media
 		{
 			NonImage,
 			Unknown,
+			PlainImage,
 			JPEG,
 			CCITTFax,
-			FlateDecode
+			JBIG2
 		};
 	private:
 		UInt32 id;
@@ -34,7 +36,7 @@ namespace Media
 		Optional<PDFParameter> GetParameter() const;
 		UInt32 GetId() const;
 		Bool IsImage() const;
-		ImageType GetImageType() const;
+		ImageType GetImageType(NN<PDFDocument> doc) const;
 		Bool IsFlateDecode() const;
 		Optional<Text::String> GetType() const;
 		Optional<Text::String> GetSubtype() const;

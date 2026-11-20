@@ -110,7 +110,11 @@ Optional<Media::PDFParameter> Media::PDFParameter::Parse(Text::CStringNN paramet
 	UIntOS j = parameter.leng;
 	UIntOS k;
 	if (j == 0)
-		return nullptr;
+	{
+		NN<PDFParameter> param;
+		NEW_CLASSNN(param, PDFParameter());
+		return param;
+	}
 	if (parameter.v[0] != '/')
 		return nullptr;
 	NN<PDFParameter> param;

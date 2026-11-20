@@ -67,6 +67,11 @@ NN<Media::PDFObject> Media::PDFDocument::AddObject(UInt32 id)
 	return obj;
 }
 
+Optional<Media::PDFObject> Media::PDFDocument::GetObjectById(UInt32 id) const
+{
+	return this->objMap.Get(id);
+}
+
 Optional<Media::ImageList> Media::PDFDocument::CreateImage(UInt32 id, NN<Parser::ParserList> parsers)
 {
 	NN<Media::PDFObject> obj;

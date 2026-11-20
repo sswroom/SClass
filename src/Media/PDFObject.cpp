@@ -5,6 +5,7 @@
 #include "IO/MemoryStream.h"
 #include "IO/StreamDataStream.h"
 #include "IO/StmData/MemoryDataCopy.h"
+#include "Media/PDFDocument.h"
 #include "Media/PDFObject.h"
 #include "Text/TextBinEnc/ASCII85Enc.h"
 
@@ -65,7 +66,7 @@ Bool Media::PDFObject::IsImage() const
 	return false;
 }
 
-Media::PDFObject::ImageType Media::PDFObject::GetImageType() const
+Media::PDFObject::ImageType Media::PDFObject::GetImageType(NN<PDFDocument> doc) const
 {
 	NN<Media::PDFParameter> parameter;
 	if (!this->parameter.SetTo(parameter))
@@ -82,12 +83,64 @@ Media::PDFObject::ImageType Media::PDFObject::GetImageType() const
 	}
 	if (parameter->GetEntryValue(CSTR("Filter")).SetTo(s))
 	{
+		Optional<Text::String> relStr = nullptr;
+		if (s->EndsWith(CSTR(" 0 R")))
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(s->v, s->leng - 4);
+			UInt32 objId;
+			NN<PDFObject> refObj;
+			NN<IO::StreamData> fd;
+			if (sb.ToUInt32(objId) && doc->GetObjectById(objId).SetTo(refObj) && refObj->GetData().SetTo(fd))
+			{
+				Data::ByteBuffer data((UIntOS)fd->GetDataSize());
+				fd->GetRealData(0, fd->GetDataSize(), data);
+				UnsafeArray<UInt8> dataArr = data.Arr();
+				UIntOS dataSize = data.GetSize();
+				while (dataSize > 0)
+				{
+					if (dataArr[dataSize - 1] == '\r' || dataArr[dataSize - 1] == '\n')
+					{
+						dataSize--;
+					}
+					else
+					{
+						break;
+					}
+				}
+				relStr = s = Text::String::New(dataArr, dataSize);
+			}
+		}
 		if (s->IndexOf(UTF8STRC("/DCTDecode")) != INVALID_INDEX)
+		{
+			OPTSTR_DEL(relStr);
 			return ImageType::JPEG;
+		}
 		if (s->IndexOf(UTF8STRC("/CCITTFaxDecode")) != INVALID_INDEX)
+		{
+			OPTSTR_DEL(relStr);
 			return ImageType::CCITTFax;
+		}
+		if (s->IndexOf(UTF8STRC("/JBIG2Decode")) != INVALID_INDEX)
+		{
+			OPTSTR_DEL(relStr);
+			return ImageType::JBIG2;
+		}
 		if (s->Equals(UTF8STRC("/FlateDecode")))
-			return ImageType::FlateDecode;
+		{
+			OPTSTR_DEL(relStr);
+			return ImageType::PlainImage;
+		}
+		if (s->Equals(UTF8STRC("/LZWDecode")))
+		{
+			OPTSTR_DEL(relStr);
+			return ImageType::PlainImage;
+		}
+		OPTSTR_DEL(relStr);
+	}
+	else
+	{
+		return ImageType::PlainImage;
 	}
 	return ImageType::Unknown;
 }
@@ -305,6 +358,14 @@ Optional<IO::StreamData> Media::PDFObject::GetData()
 				printf("PDFObject: LZWDecode filter processed, size %llu\r\n", memStm.GetLength());
 				NEW_CLASSOPT(this->decFd, IO::StmData::MemoryDataCopy(memStm.GetArray()));
 			}*/
+			else if (filter->IndexOf(UTF8STRC("/DCTDecode")) != INVALID_INDEX)
+			{
+				return this->fd;
+			}
+			else if (filter->IndexOf(UTF8STRC("/CCITTFaxDecode")) != INVALID_INDEX)
+			{
+				return this->fd;
+			}
 			else
 			{
 				printf("PDFObject: Unsupported filter: %s\r\n", filter->v.Ptr());
@@ -357,8 +418,10 @@ Text::CStringNN Media::PDFObject::ImageTypeGetName(ImageType imgType)
 		return CSTR("JPEG");
 	case ImageType::CCITTFax:
 		return CSTR("CCITTFax");
-	case ImageType::FlateDecode:
-		return CSTR("FlateDecode");
+	case ImageType::JBIG2:
+		return CSTR("JBIG2");
+	case ImageType::PlainImage:
+		return CSTR("PlainImage");
 	default:
 		return CSTR("Unknown");
 	}
