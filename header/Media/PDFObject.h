@@ -38,6 +38,7 @@ namespace Media
 		void SetStream(NN<IO::StreamData> fd, UInt64 ofst, UInt64 len);
 		void SetData(NN<IO::StreamData> fd, UInt64 ofst, UInt64 len);
 		void SetParameter(Optional<PDFParameter> parameter);
+		void ClearContents();
 		void ClearDecodedData();
 		Optional<PDFParameter> GetParameter() const;
 		UInt32 GetId() const;

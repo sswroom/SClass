@@ -41,6 +41,7 @@ namespace Parser
 			void ParseStartxref(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb);
 			Bool ParseObject(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb, NN<Media::PDFDocument> doc, Optional<PDFXRef> xref);
 			Bool ParseObjectStream(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb, NN<Media::PDFObject> obj, Optional<PDFXRef> xref);
+			Bool ExpandObjectStreams(NN<Media::PDFDocument> doc, Optional<PDFXRef> xref);
 			Optional<PDFXRef> ParseXRef(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb);
 			void FreeXRef(NN<PDFXRef> xref);
 		public:

@@ -3,11 +3,13 @@
 #include "Data/ArrayListNative.hpp"
 #include "Data/ByteBuffer.h"
 #include "Data/Compress/Inflater.h"
+#include "Data/FastMapNative.hpp"
 #include "Core/ByteTool_C.h"
 #include "Crypto/Encrypt/RC4Cipher.h"
 #include "Crypto/Hash/MD5.h"
 #include "IO/FileStream.h"
 #include "IO/StreamData.h"
+#include "IO/StmData/MemoryDataCopy.h"
 #include "Media/PDFDocument.h"
 #include "Parser/FileParser/PDFParser.h"
 
@@ -783,6 +785,11 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Te
 			}
 			else if (id >= nnxref->startId && id < nnxref->startId + nnxref->count)
 			{
+				if (nnxref->items[id - nnxref->startId].type == '-')
+				{
+					xref = nnxref->nextRef;
+					continue;
+				}
 				if (nnxref->items[id - nnxref->startId].type != 'n')
 				{
 #if defined(VERBOSE)
@@ -1224,7 +1231,7 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 		{
 			thisRef->items[i].ofst = 0;
 			thisRef->items[i].generation = 0;
-			thisRef->items[i].type = 'f';
+			thisRef->items[i].type = '-';
 		}
 		UIntOS dataIndex = 0;
 		rangeIndex = 0;
@@ -1545,6 +1552,207 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 	return nullptr;
 }
 
+static Bool PDFReadObjectStreamNumber(Data::ByteArrayR data, UIntOS limit, UIntOS &pos, UIntOS &number)
+{
+	while (pos < limit)
+	{
+		UInt8 c = data[pos];
+		if (c == 0 || c == 9 || c == 10 || c == 12 || c == 13 || c == 32)
+			pos++;
+		else if (c == '%')
+		{
+			while (pos < limit && data[pos] != '\r' && data[pos] != '\n')
+				pos++;
+		}
+		else
+			break;
+	}
+	if (pos == limit || data[pos] < '0' || data[pos] > '9')
+		return false;
+	number = 0;
+	while (pos < limit && data[pos] >= '0' && data[pos] <= '9')
+	{
+		UIntOS digit = (UIntOS)(data[pos++] - '0');
+		if (number > (INVALID_INDEX - digit) / 10)
+			return false;
+		number = number * 10 + digit;
+	}
+	return true;
+}
+
+Bool Parser::FileParser::PDFParser::ExpandObjectStreams(NN<Media::PDFDocument> doc, Optional<PDFXRef> xref)
+{
+	UIntOS objectCount = doc->GetCount();
+	Data::ArrayListNative<UInt32> streamIds;
+	Data::UInt32FastMapNative<UInt64> unresolvedIds;
+	Data::UInt32FastMapNative<Bool> referencedStreams;
+	NN<PDFXRef> curr;
+	Optional<PDFXRef> ref = xref;
+	while (ref.SetTo(curr))
+	{
+		for (UIntOS i = 0; i < curr->count; i++)
+		{
+			if (curr->items[i].type != 'c')
+				continue;
+			UIntOS id = curr->startId + i;
+			NN<PDFXRef> newer;
+			Optional<PDFXRef> prior = xref;
+			Bool overridden = false;
+			while (prior.SetTo(newer) && newer.Ptr() != curr.Ptr())
+			{
+				if (id >= newer->startId && id - newer->startId < newer->count &&
+					newer->items[id - newer->startId].type != '-')
+				{
+					overridden = true;
+					break;
+				}
+				prior = newer->nextRef;
+			}
+			if (!overridden)
+			{
+				if (id > 0xffffffffU || curr->items[i].ofst > 0xffffffffU)
+				{
+					printf("PDFParser: Invalid compressed object reference\r\n");
+					return false;
+				}
+				unresolvedIds.Put((UInt32)id, curr->items[i].ofst);
+				referencedStreams.Put((UInt32)curr->items[i].ofst, true);
+			}
+		}
+		ref = curr->nextRef;
+	}
+	for (UIntOS i = 0; i < objectCount; i++)
+	{
+		NN<Media::PDFObject> obj = doc->GetItemNoCheck(i);
+		NN<Text::String> type;
+		if ((xref.IsNull() || referencedStreams.ContainsKey(obj->GetId())) &&
+			obj->GetType().SetTo(type) && type->Equals(UTF8STRC("/ObjStm")))
+			streamIds.Add(obj->GetId());
+	}
+	for (UIntOS streamIndex = 0; streamIndex < streamIds.GetCount(); streamIndex++)
+	{
+		UInt32 streamId = streamIds.GetItem(streamIndex);
+		NN<Media::PDFObject> streamObj;
+		NN<Media::PDFParameter> streamParams;
+		NN<Text::String> value;
+		NN<IO::StreamData> streamData;
+		UIntOS count;
+		UIntOS first;
+		if (!doc->GetObjectById(streamId).SetTo(streamObj) ||
+			!streamObj->GetParameter().SetTo(streamParams) ||
+			!streamParams->GetEntryValue(CSTR("N")).SetTo(value) || !value->ToUIntOS(count) ||
+			!streamParams->GetEntryValue(CSTR("First")).SetTo(value) || !value->ToUIntOS(first) ||
+			!streamObj->GetData().SetTo(streamData) || streamData->GetDataSize() > (UInt64)INVALID_INDEX)
+		{
+			printf("PDFParser: Unable to decode object stream %u\r\n", streamId);
+			return false;
+		}
+		UIntOS size = (UIntOS)streamData->GetDataSize();
+		if (first > size || count > first / 3)
+		{
+			printf("PDFParser: Invalid object stream %u header\r\n", streamId);
+			return false;
+		}
+		Data::ByteBuffer data(size);
+		if (streamData->GetRealData(0, size, data) != size)
+		{
+			printf("PDFParser: Unable to read object stream %u\r\n", streamId);
+			return false;
+		}
+		Data::ArrayListNative<UIntOS> ids;
+		Data::ArrayListNative<UIntOS> offsets;
+		UIntOS pos = 0;
+		for (UIntOS i = 0; i < count; i++)
+		{
+			UIntOS id;
+			UIntOS offset;
+			if (!PDFReadObjectStreamNumber(data, first, pos, id) ||
+				!PDFReadObjectStreamNumber(data, first, pos, offset) ||
+				id == 0 || id > 0xffffffffU || offset >= size - first ||
+				(i > 0 && offset <= offsets.GetItem(i - 1)))
+			{
+				printf("PDFParser: Invalid object stream %u index\r\n", streamId);
+				return false;
+			}
+			ids.Add(id);
+			offsets.Add(offset);
+		}
+		UIntOS unused;
+		if (PDFReadObjectStreamNumber(data, first, pos, unused) || pos != first)
+		{
+			printf("PDFParser: Invalid object stream %u header padding\r\n", streamId);
+			return false;
+		}
+		NN<IO::StmData::MemoryDataCopy> memory;
+		NEW_CLASSNN(memory, IO::StmData::MemoryDataCopy(data));
+		for (UIntOS i = 0; i < count; i++)
+		{
+			UIntOS id = ids.GetItem(i);
+			Bool active = xref.IsNull();
+			NN<PDFXRef> curr;
+			Optional<PDFXRef> ref = xref;
+			while (ref.SetTo(curr))
+			{
+				if (id >= curr->startId && id - curr->startId < curr->count)
+				{
+					PDFXRefItem &item = curr->items[id - curr->startId];
+					if (item.type != '-')
+					{
+						active = item.type == 'c' && item.ofst == streamId && item.generation == i;
+						break;
+					}
+				}
+				ref = curr->nextRef;
+			}
+			if (!active)
+				continue;
+			UIntOS begin = first + offsets.GetItem(i);
+			UIntOS end = first + (i + 1 < count ? offsets.GetItem(i + 1) : size - first);
+			while (begin < end && (data[begin] == 0 || data[begin] == 9 || data[begin] == 10 || data[begin] == 12 || data[begin] == 13 || data[begin] == 32))
+				begin++;
+			while (end > begin && (data[end - 1] == 0 || data[end - 1] == 9 || data[end - 1] == 10 || data[end - 1] == 12 || data[end - 1] == 13 || data[end - 1] == 32))
+				end--;
+			if (begin == end)
+			{
+				printf("PDFParser: Empty object %u in object stream %u\r\n", (UInt32)id, streamId);
+				memory.Delete();
+				return false;
+			}
+			NN<Media::PDFParameter> params;
+			if (end - begin >= 4 && data[begin] == '<' && data[begin + 1] == '<' &&
+				data[end - 2] == '>' && data[end - 1] == '>')
+			{
+				if (!Media::PDFParameter::Parse(Text::CStringNN(data.Arr() + begin + 2, end - begin - 4)).SetTo(params))
+				{
+					printf("PDFParser: Invalid object %u in object stream %u\r\n", (UInt32)id, streamId);
+					memory.Delete();
+					return false;
+				}
+				NN<Media::PDFObject> object = doc->AddObject((UInt32)id);
+				object->ClearContents();
+				object->SetParameter(params);
+			}
+			else
+			{
+				NN<Media::PDFObject> object = doc->AddObject((UInt32)id);
+				object->ClearContents();
+				object->SetData(memory, begin, end - begin);
+			}
+			unresolvedIds.Remove((UInt32)id);
+		}
+		memory.Delete();
+	}
+	if (!unresolvedIds.IsEmpty())
+	{
+#if defined(VERBOSE)
+		printf("PDFParser: Compressed object %u is missing from object stream %llu\r\n",
+			unresolvedIds.GetKey(0), (unsigned long long)unresolvedIds.GetItem(0));
+#endif
+		return false;
+	}
+	return true;
+}
+
 void Parser::FileParser::PDFParser::FreeXRef(NN<PDFXRef> xref)
 {
 	NN<PDFXRef> nextRef;
@@ -1854,6 +2062,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 #endif
 	if (env.succ && xref.SetTo(nnxref))
 		this->SetupEncryption(doc, nnxref);
+	if (env.succ && !this->ExpandObjectStreams(doc, xref))
+		env.succ = false;
 	if (xref.SetTo(nnxref))
 		FreeXRef(nnxref);
 	if (env.succ)

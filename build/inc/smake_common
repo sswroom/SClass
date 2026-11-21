@@ -246,6 +246,7 @@ console:
 @WiFiScan
 @ELFFuncTest
 @KMLParserTest
+@PDFParserTest
 @AIDemo
 @ArgsTest
 @AVIReadWeb
@@ -940,6 +941,9 @@ ELFFuncTest:
 KMLParserTest:
 @KMLParserTest.o
 @ConsoleStartup.o
+PDFParserTest:
+@PDFParserTest.o
+@ConsoleStartup.o
 
 #SSWR
 AIDemo:
@@ -1512,6 +1516,7 @@ WiFiScanMain.o: ../../main/NetTest/WiFiScanMain.cpp
 OpenCVFaceDetectMain.o: ../../main/OpenCV/OpenCVFaceDetectMain.cpp
 ELFFuncTest.o: ../../main/Parser/ELFFuncTest.cpp
 KMLParserTest.o: ../../main/Parser/KMLParserTest.cpp
+PDFParserTest.o: ../../main/Parser/PDFParserTest.cpp
 AIDemoMain.o: ../../main/SSWR/AIDemoMain.cpp
 ArgsTestMain.o: ../../main/SSWR/ArgsTestMain.cpp
 AVIReadWebMain.o: ../../main/SSWR/AVIReadWebMain.cpp
@@ -3458,10 +3463,14 @@ Media/PaperSize.h:
 Media/PBControl.h:
 Media/PDFDocument.h:
 @PDFDocument.o
+Media/PDFImage.h:
+@PDFImage.o
 Media/PDFObject.h:
 @PDFObject.o
 Media/PDFParameter.h:
 @PDFParameter.o
+Media/PDFUtil.h:
+@PDFUtil.o
 Media/PhotoCapturer.h:
 Media/PhotoInfo.h:
 @PhotoInfo.o

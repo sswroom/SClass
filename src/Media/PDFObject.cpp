@@ -128,12 +128,16 @@ Bool Media::PDFObject::ReadPredictorParams(NN<PDFParameter> parameter, UIntOS &e
 		refIdStr.AppendC(refIdText.v, refIdText.leng);
 		if (!refIdStr.ToUInt32(refId))
 		{
+#if defined(VERBOSE)
 			printf("PDFObject: Invalid DecodeParms reference %s\r\n", value->v.Ptr());
+#endif
 			return false;
 		}
 		if (!this->document->GetObjectById(refId).SetTo(refObj) || !refObj->GetParameter().SetTo(params))
 		{
+#if defined(VERBOSE)
 			printf("PDFObject: DecodeParms object %u unavailable\r\n", refId);
+#endif
 			return false;
 		}
 	}
@@ -156,7 +160,11 @@ Bool Media::PDFObject::ReadPredictorParams(NN<PDFParameter> parameter, UIntOS &e
 	if (valid && params->GetEntryValue(CSTR("BitsPerComponent")).SetTo(value))
 		valid = value->ToUIntOS(bits);
 	if (!valid)
+	{
+#if defined(VERBOSE)
 		printf("PDFObject: Invalid predictor parameter '%s' in object %d\r\n", value->v.Ptr(), this->id);
+#endif
+	}
 	ownedParams.Delete();
 	return valid;
 }
@@ -200,6 +208,14 @@ void Media::PDFObject::SetParameter(Optional<PDFParameter> parameter)
 	this->parameter.Delete();
 	this->decFd.Delete();
 	this->parameter = parameter;
+}
+
+void Media::PDFObject::ClearContents()
+{
+	this->fd.Delete();
+	this->decFd.Delete();
+	this->parameter.Delete();
+	this->streamData = false;
 }
 
 void Media::PDFObject::ClearDecodedData()
@@ -491,14 +507,18 @@ Optional<IO::StreamData> Media::PDFObject::GetData()
 		UInt64 size = fd->GetDataSize();
 		if (size > (UInt64)INVALID_INDEX)
 		{
+#if defined(VERBOSE)
 			printf("PDFObject: Encrypted stream %d is too large\r\n", this->id);
+#endif
 			return nullptr;
 		}
 		Data::ByteBuffer data((UIntOS)size);
 		if (fd->GetRealData(0, (UIntOS)size, data) != size ||
 			!this->document->DecryptStreamData(this->id, data.Arr(), data.GetSize()))
 		{
+#if defined(VERBOSE)
 			printf("PDFObject: Unable to read or decrypt stream %d\r\n", this->id);
+#endif
 			return nullptr;
 		}
 		NEW_CLASSOPT(decryptedFd, IO::StmData::MemoryDataCopy(data));
@@ -521,7 +541,9 @@ Optional<IO::StreamData> Media::PDFObject::GetData()
 			if (!valid || !Data::Compress::LZWStreamDataDec::Decode(fd, decoded, earlyChange) ||
 				!ApplyPredictor(decoded, result, predictor, colors, columns, bits))
 			{
+#if defined(VERBOSE)
 				printf("PDFObject: Error decoding LZW object %d (invalid parameters or data)\r\n", this->id);
+#endif
 				decryptedFd.Delete();
 				return nullptr;
 			}
@@ -537,7 +559,9 @@ Optional<IO::StreamData> Media::PDFObject::GetData()
 			if (!IsSingleFilter(filter->ToCString(), CSTR("/FlateDecode")) ||
 				!this->ReadPredictorParams(parameter, earlyChange, predictor, colors, columns, bits))
 			{
+#if defined(VERBOSE)
 				printf("PDFObject: Invalid Flate filter or DecodeParms for object %d\r\n", this->id);
+#endif
 				decryptedFd.Delete();
 				return nullptr;
 			}
@@ -574,7 +598,9 @@ Optional<IO::StreamData> Media::PDFObject::GetData()
 					IO::MemoryStream result;
 					if (!ApplyPredictor(memStm, result, predictor, colors, columns, bits))
 					{
+#if defined(VERBOSE)
 						printf("PDFObject: Invalid Flate predictor data for object %d\r\n", this->id);
+#endif
 						decryptedFd.Delete();
 						return nullptr;
 					}
@@ -585,7 +611,9 @@ Optional<IO::StreamData> Media::PDFObject::GetData()
 			}
 			if (!decompressed)
 			{
+#if defined(VERBOSE)
 				printf("PDFObject: Error in decompressing PDF object %d data with %s\r\n", this->id, filter->v.Ptr());
+#endif
 				decryptedFd.Delete();
 				return nullptr;
 			}

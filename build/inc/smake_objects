@@ -1358,8 +1358,10 @@ OCREngine_Null.o: ../../src/Media/OCREngine_Null.cpp
 OpenSLESRenderer.o: ../../src/Media/OpenSLESRenderer.cpp
 PaperSize.o: ../../src/Media/PaperSize.cpp
 PDFDocument.o: ../../src/Media/PDFDocument.cpp
+PDFImage.o: ../../src/Media/PDFImage.cpp
 PDFObject.o: ../../src/Media/PDFObject.cpp
 PDFParameter.o: ../../src/Media/PDFParameter.cpp
+PDFUtil.o: ../../src/Media/PDFUtil.cpp
 PhotoInfo.o: ../../src/Media/PhotoInfo.cpp
 Playlist.o: ../../src/Media/Playlist.cpp
 PrinterCUPS.o: ../../src/Media/PrinterCUPS.cpp
