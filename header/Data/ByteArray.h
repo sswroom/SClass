@@ -87,6 +87,20 @@ namespace Data
 			MemCopyO(&buff[destIndex], &buff[srcIndex], cnt);
 		}
 
+		void Fill(UInt8 val)
+		{
+			MemFillB(&buff[0], buffSize, val);
+		}
+
+		void FillPart(UIntOS ofst, UIntOS size, UInt8 val)
+		{
+			if (ofst >= this->buffSize)
+				return;
+			if (ofst + size >= this->buffSize)
+				size = this->buffSize - ofst;
+			MemFillB(&buff[ofst], size, val);
+		}
+
 		ByteArray &operator+=(UIntOS ofst)
 		{
 			CheckError(ofst);

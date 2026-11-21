@@ -50,7 +50,7 @@ namespace Data
 			}
 		}
 
-		void ChangeSizeAndClear(UIntOS buffSize)
+		void ChangeSizeAndIgnoreData(UIntOS buffSize)
 		{
 			if (!this->deleted)
 				MemFreeArr(this->buff);

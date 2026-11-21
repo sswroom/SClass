@@ -509,7 +509,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						}
 						if (compBuff.GetSize() < tileLeng)
 						{
-							compBuff.ChangeSizeAndClear(tileLeng);
+							compBuff.ChangeSizeAndIgnoreData(tileLeng);
 						}
 						if (fd->GetRealData(tileOfst, tileLeng, compBuff) == tileLeng)
 						{
@@ -748,7 +748,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					}
 					if (jpgBuff.GetSize() < jpgLeng + jpegTables.GetSize())
 					{
-						jpgBuff.ChangeSizeAndClear(jpgLeng + jpegTables.GetSize());
+						jpgBuff.ChangeSizeAndIgnoreData(jpgLeng + jpegTables.GetSize());
 					}
 					if (fd->GetRealData(jpgOfst, jpgLeng, jpgBuff + jpegTables.GetSize()) == jpgLeng)
 					{

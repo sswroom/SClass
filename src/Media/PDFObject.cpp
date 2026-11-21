@@ -395,6 +395,10 @@ Optional<IO::StreamData> Media::PDFObject::GetData()
 			{
 				return this->fd;
 			}
+			else if (filter->IndexOf(UTF8STRC("/JBIG2Decode")) != INVALID_INDEX)
+			{
+				return this->fd;
+			}
 			else
 			{
 				printf("PDFObject: Unsupported filter: %s\r\n", filter->v.Ptr());

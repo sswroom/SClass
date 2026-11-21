@@ -79,7 +79,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 			sb.AppendC(UTF8STRC(".key"));
 			if (cerBuff.GetSize() < certLen)
 			{
-				cerBuff.ChangeSizeAndClear(certLen);
+				cerBuff.ChangeSizeAndIgnoreData(certLen);
 			}
 			NN<Text::String> s = Text::String::New(sb.ToCString());
 			fd->GetRealData(ofst + 18 + aliasLen, certLen, cerBuff);
@@ -100,7 +100,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 				certLen = ReadMUInt32(&buff[6 + certTypeLen]);
 				if (cerBuff.GetSize() < certLen)
 				{
-					cerBuff.ChangeSizeAndClear(certLen);
+					cerBuff.ChangeSizeAndIgnoreData(certLen);
 				}
 				fd->GetRealData(ofst + 6 + certTypeLen, certLen, cerBuff);
 				NEW_CLASSNN(file, Crypto::Cert::X509Cert(s, cerBuff.WithSize(certLen)));
@@ -121,7 +121,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 						certLen = ReadMUInt32(&buff[2 + certTypeLen]);
 						if (cerBuff.GetSize() < certLen)
 						{
-							cerBuff.ChangeSizeAndClear(certLen);
+							cerBuff.ChangeSizeAndIgnoreData(certLen);
 						}
 						fd->GetRealData(ofst + 6 + certTypeLen, certLen, cerBuff);
 						NEW_CLASSNN(file, Crypto::Cert::X509Cert(s, cerBuff.WithSize(certLen)));
@@ -150,7 +150,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 			sb.AppendC(UTF8STRC(".cer"));
 			if (cerBuff.GetSize() < certLen)
 			{
-				cerBuff.ChangeSizeAndClear(certLen);
+				cerBuff.ChangeSizeAndIgnoreData(certLen);
 			}
 			NN<Text::String> s = Text::String::New(sb.ToCString());
 			fd->GetRealData(ofst + 20 + aliasLen + certTypeLen, certLen, cerBuff);

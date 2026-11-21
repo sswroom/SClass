@@ -780,7 +780,7 @@ void UI::GUITextFileView::CopySelected()
 			return;
 //			endOfst = this->fs->GetLength();
 		}
-		rbuff.ChangeSizeAndClear((UIntOS)(endOfst - startOfst));
+		rbuff.ChangeSizeAndIgnoreData((UIntOS)(endOfst - startOfst));
 		fs->SeekFromBeginning(startOfst);
 		fs->Read(rbuff);
 		mutUsage.EndUse();

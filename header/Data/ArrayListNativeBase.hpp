@@ -30,6 +30,7 @@ namespace Data
 		virtual UIntOS GetCapacity() const;
 
 		virtual T GetItem(UIntOS index) const;
+		T& GetItemNoCheckRef(UIntOS index) const;
 		virtual void SetItem(UIntOS index, T val);
 		void CopyItems(UIntOS destIndex, UIntOS srcIndex, UIntOS count);
 		UIntOS GetRange(UnsafeArray<T> outArr, UIntOS index, UIntOS cnt) const;
@@ -125,6 +126,11 @@ namespace Data
 	{
 		if (index >= this->objCnt)
 			return (T)0;
+		return this->arr[index];
+	}
+
+	template <class T> T& ArrayListNativeBase<T>::GetItemNoCheckRef(UIntOS index) const
+	{
 		return this->arr[index];
 	}
 

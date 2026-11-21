@@ -62,7 +62,7 @@ void __stdcall IO::FileAnalyse::OSMPBFFileAnalyse::ParseThread(NN<Sync::Thread> 
 			{
 				buffSize <<= 1;
 			}
-			packetBuff.ChangeSizeAndClear(buffSize);
+			packetBuff.ChangeSizeAndIgnoreData(buffSize);
 		}
 		if (fd->GetRealData(ofst, thisSize, packetBuff) != thisSize)
 		{

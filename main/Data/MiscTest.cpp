@@ -33,6 +33,7 @@
 #include "Math/CSys/CoordinateSystemManager.h"
 #include "Media/DrawEngineFactory.h"
 #include "Media/CCITTFaxDecoder.h"
+#include "Media/JBIG2Decoder.h"
 #include "Media/MonitorSurfaceMgrFactory.h"
 #include "Media/PaperSize.h"
 #include "Media/Printer.h"
@@ -1913,13 +1914,43 @@ Int32 CCITTFaxTest()
 	return 0;
 }
 
+Int32 JBIG2Test()
+{
+	static const UInt8 jbig2Data[] =
+	{
+		0x97,0x4a,0x42,0x32,0x0d,0x0a,0x1a,0x0a,0x01,0x00,0x00,0x00,0x01,
+		0x00,0x00,0x00,0x01,0x30,0x00,0x01,0x00,0x00,0x00,0x13,
+		0x00,0x00,0x00,0x08,0x00,0x00,0x00,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+		0x00,0x00,0x00,0x02,0x31,0x00,0x01,0x00,0x00,0x00,0x00,
+		0x00,0x00,0x00,0x03,0x33,0x00,0x00,0x00,0x00,0x00,0x00
+	};
+	Media::JBIG2Decoder jbig2Decoder;
+	NN<Media::StaticImage> jbig2Image;
+	if (!jbig2Decoder.DecodeImage(Data::ByteArrayR(jbig2Data, sizeof(jbig2Data)), 8, 1).SetTo(jbig2Image))
+	{
+		printf("JBIG2 decode test failed\r\n");
+		return 1;
+	}
+	Bool jbig2TestPassed = jbig2Image->data[0] == 255 && jbig2Image->data[7] == 255;
+	jbig2Image.Delete();
+	if (!jbig2TestPassed)
+	{
+		printf("JBIG2 decode test failed\r\n");
+		return 1;
+	}
+	return 0;
+}
+
 Int32 PDFTest()
 {
-	Int32 ccittTestResult = CCITTFaxTest();
-	if (ccittTestResult != 0)
-		return ccittTestResult;
+	Int32 testResult = CCITTFaxTest();
+	if (testResult != 0)
+		return testResult;
+	testResult = JBIG2Test();
+	if (testResult != 0)
+		return testResult;
 
-	Text::CStringNN fileName = CSTR("/mnt/QDisk1/Data/BookFile/347.pdf");
+	Text::CStringNN fileName = CSTR("/mnt/QDisk1/Data/BookFile/341.pdf");
 	Parser::FullParserList parsers;
 	Parser::FileParser::PDFParser parser;
 	NN<IO::ParsedObject> pobj;
@@ -1928,7 +1959,7 @@ Int32 PDFTest()
 		printf("PDF parse succeeded for file %s\r\n", fileName.v.Ptr());
 		NN<Media::PDFDocument> pdf = NN<Media::PDFDocument>::ConvertFrom(pobj);
 		NN<Media::ImageList> imgList;
-		UInt32 id = 7;
+		UInt32 id = 10;
 		if (pdf->CreateImage(id, parsers).SetTo(imgList))
 		{
 			printf("PDF id %d image creation succeeded\r\n", id);
@@ -1949,29 +1980,31 @@ Int32 PDFTest()
 				return 1;
 			}
 			NN<Media::StaticImage> staticImage = NN<Media::StaticImage>::ConvertFrom(raster);
-			if (staticImage->info.dispSize.x != 7138 || staticImage->info.dispSize.y != 4509)
+			if (staticImage->info.dispSize.x != 2550 || staticImage->info.dispSize.y != 3299)
 			{
 				printf("PDF id %d image dimensions validation failed\r\n", id);
 				imgList.Delete();
 				pdf.Delete();
 				return 1;
 			}
-			UIntOS row = 0;
+			UInt64 hash = 14695981039346656037ULL;
 			UIntOS bpl = staticImage->GetDataBpl();
-			while (row < 17)
+			UIntOS row = 0;
+			while (row < 3299)
 			{
 				UIntOS x = 0;
-				while (x < 7138)
+				while (x < 2550)
 				{
-					if (staticImage->data[row * bpl + x++] != 255)
-					{
-						printf("PDF id %d image content validation failed at row %d\r\n", id, (UInt32)row);
-						imgList.Delete();
-						pdf.Delete();
-						return 1;
-					}
+					hash = (hash ^ staticImage->data[row * bpl + x++]) * 1099511628211ULL;
 				}
 				row++;
+			}
+			if (hash != 0xb4d9c0e40432766cULL)
+			{
+				printf("PDF id %d image content validation failed: %016llx\r\n", id, (unsigned long long)hash);
+				imgList.Delete();
+				pdf.Delete();
+				return 1;
 			}
 			imgList.Delete();
 		}
@@ -2056,7 +2089,7 @@ Int32 PDFTest2()
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UIntOS testType = 47;
+	UIntOS testType = 46;
 	switch (testType)
 	{
 	case 0:

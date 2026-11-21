@@ -70,7 +70,7 @@ Optional<IO::ParsedObject> Parser::FileParser::OSMPBFParser::ParseFileHdr(NN<IO:
 		}
 		if (dataBuff.GetSize() < blockSize)
 		{
-			dataBuff.ChangeSizeAndClear(blockSize);
+			dataBuff.ChangeSizeAndIgnoreData(blockSize);
 		}
 		if (fd->GetRealData(ofst, blockSize, dataBuff.SubArray(0, blockSize)) != blockSize)
 		{
@@ -127,7 +127,7 @@ Optional<IO::ParsedObject> Parser::FileParser::OSMPBFParser::ParseFileHdr(NN<IO:
 		{
 			if (dataBuff.GetSize() < blobSize)
 			{
-				dataBuff.ChangeSizeAndClear(blobSize);
+				dataBuff.ChangeSizeAndIgnoreData(blobSize);
 			}
 			if (fd->GetRealData(ofst, blobSize, dataBuff.SubArray(0, blobSize)) != blobSize)
 			{
@@ -155,7 +155,7 @@ Optional<IO::ParsedObject> Parser::FileParser::OSMPBFParser::ParseFileHdr(NN<IO:
 		{
 			if (dataBuff.GetSize() < blobSize)
 			{
-				dataBuff.ChangeSizeAndClear(blobSize);
+				dataBuff.ChangeSizeAndIgnoreData(blobSize);
 			}
 			if (fd->GetRealData(ofst, blobSize, dataBuff.SubArray(0, blobSize)) != blobSize)
 			{

@@ -235,7 +235,7 @@ IO::SPackageFile::SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease, Int32
 	this->customSize = customSize;
 	if (customSize > 0)
 	{
-		this->customBuff.ChangeSizeAndClear(customSize);
+		this->customBuff.ChangeSizeAndIgnoreData(customSize);
 		this->customBuff.CopyFrom(customBuff.WithSize(customSize));
 	}
 	this->writeMode = true;
@@ -295,7 +295,7 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 						this->customSize = ReadLUInt32(&customBuff[4]);
 						if (this->customSize > 0)
 						{
-							this->customBuff.ChangeSizeAndClear(this->customSize);
+							this->customBuff.ChangeSizeAndIgnoreData(this->customSize);
 							this->stm->Read(this->customBuff);
 						}
 					}

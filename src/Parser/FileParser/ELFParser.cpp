@@ -383,7 +383,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ELFParser::ParseFileHdr(NN<IO::St
 			if (readInt32(&secHdr[shSize * secNameInd + 4]) == 3)
 			{
 				UInt32 sz = (UInt32)readInt32(&secHdr[shSize * secNameInd + 20]);
-				progHdr.ChangeSizeAndClear(sz + 1);
+				progHdr.ChangeSizeAndIgnoreData(sz + 1);
 				fd->GetRealData((UInt32)readInt32(&secHdr[shSize * secNameInd + 16]), sz, progHdr);
 				progHdr[sz] = 0;
 			}
@@ -754,7 +754,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ELFParser::ParseFileHdr(NN<IO::St
 			if (readInt32(&secHdr[shSize * secNameInd + 4]) == 3)
 			{
 				UIntOS sz = (UIntOS)(UInt64)readInt64(&secHdr[shSize * secNameInd + 32]);
-				progHdr.ChangeSizeAndClear(sz + 1);
+				progHdr.ChangeSizeAndIgnoreData(sz + 1);
 				fd->GetRealData((UInt32)readInt64(&secHdr[shSize * secNameInd + 24]), sz, progHdr);
 				progHdr[sz] = 0;
 			}
@@ -939,7 +939,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ELFParser::ParseFileHdr(NN<IO::St
 								{
 									if (funcBuff.GetSize() < thisSize)
 									{
-										funcBuff.ChangeSizeAndClear((UIntOS)thisSize);
+										funcBuff.ChangeSizeAndIgnoreData((UIntOS)thisSize);
 									}
 									fd->GetRealData(thisAddr, (UIntOS)thisSize, funcBuff);
 									//exef->AddFunc(CSTRP(sbuff2, sptr2), thisAddr, thisSize, funcBuff);

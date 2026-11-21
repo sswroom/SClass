@@ -1221,6 +1221,7 @@ BitmapUtil.o: ../../src/Media/BitmapUtil.cpp
 CameraManagerNul.o: ../../src/Media/CameraManagerNul.cpp
 CameraManagerRPi.o: ../../src/Media/CameraManagerRPi.cpp
 CCITTFaxDecoder.o: ../../src/Media/CCITTFaxDecoder.cpp
+JBIG2Decoder.o: ../../src/Media/JBIG2Decoder.cpp
 ChapterInfo.o: ../../src/Media/ChapterInfo.cpp
 ClockSpeechCh.o: ../../src/Media/ClockSpeechCh.cpp
 ColorConv.o: ../../src/Media/ColorConv.cpp

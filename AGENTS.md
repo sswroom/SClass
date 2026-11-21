@@ -21,6 +21,8 @@ This is a C++ framework support multi-platform and minimum dependencies.
 - *.hpp are files with function body in headers
 - build/Linux_dbg_x64 is the default build and test environment
 ​- Do not declare pointer (*) in header. Use NN<> for single object cannot be nullptr, Optional<> for single object can be nullptr, UnsafeArray<> for array of object cannnot be nullptr, UnsafeArrayOpt<> for array of object can be nullptr.
+- Do not use lambda syntax.
+- Do not std::vector unless calling required third-party functions. Use ArrayList* instead.
 
 ## Commands
 * smake all: Build all programs and do self test

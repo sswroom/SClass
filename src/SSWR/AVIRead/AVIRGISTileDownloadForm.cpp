@@ -375,7 +375,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(AnyType user
 					fileSize = fd->GetDataSize();
 					if (fileSize > fileBuff.GetSize())
 					{
-						fileBuff.ChangeSizeAndClear((UIntOS)fileSize);
+						fileBuff.ChangeSizeAndIgnoreData((UIntOS)fileSize);
 					}
 					if (fd->GetRealData(0, (UIntOS)fileSize, fileBuff) == fileSize)
 					{

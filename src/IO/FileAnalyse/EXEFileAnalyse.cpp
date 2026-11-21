@@ -66,7 +66,7 @@ void __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(NN<Sync::Thread> thr
 				}
 				if (me->imageSize > 0)
 				{
-					me->imageBuff.ChangeSizeAndClear(me->imageSize);
+					me->imageBuff.ChangeSizeAndIgnoreData(me->imageSize);
 				}
 			}
 			UIntOS ofst = val + 24 + optHdrSize;

@@ -1,9 +1,82 @@
 #include "Stdafx.h"
 #include "Crypto/Encrypt/RC4Cipher.h"
 #include "Crypto/Hash/MD5.h"
+#include "Data/ByteBuffer.h"
 #include "Media/CCITTFaxDecoder.h"
+#include "Media/JBIG2Decoder.h"
 #include "Media/PDFDocument.h"
 #include "Media/StaticImage.h"
+
+void Media::PDFDocument::SkipPDFWhitespace(UnsafeArray<const UTF8Char> str, UIntOS length, UIntOS &pos)
+{
+	while (pos < length && (str[pos] == ' ' || str[pos] == '\t' || str[pos] == '\r' || str[pos] == '\n' || str[pos] == '\f'))
+		pos++;
+}
+
+Bool Media::PDFDocument::ReadPDFNumberToken(UnsafeArray<const UTF8Char> str, UIntOS length, UIntOS &pos, UIntOS &start, UIntOS &end)
+{
+	SkipPDFWhitespace(str, length, pos);
+	start = pos;
+	while (pos < length && str[pos] != ' ' && str[pos] != '\t' && str[pos] != '\r' && str[pos] != '\n' && str[pos] != '\f' && str[pos] != ']')
+		pos++;
+	end = pos;
+	return start != end;
+}
+
+Bool Media::PDFDocument::IsPDFDecodeEndpoint(UnsafeArray<const UTF8Char> str, UIntOS start, UIntOS end, UInt8 endpoint)
+{
+	Bool negative = false;
+	if (start < end && (str[start] == '+' || str[start] == '-'))
+	{
+		negative = str[start] == '-';
+		start++;
+	}
+	Bool hasDigit = false;
+	UInt8 integer = 0;
+	while (start < end && str[start] >= '0' && str[start] <= '9')
+	{
+		hasDigit = true;
+		if (integer > 1)
+			return false;
+		integer = (UInt8)(integer * 10 + str[start] - '0');
+		start++;
+	}
+	if (start < end && str[start] == '.')
+	{
+		start++;
+		while (start < end && str[start] >= '0' && str[start] <= '9')
+		{
+			hasDigit = true;
+			if (str[start] != '0')
+				return false;
+			start++;
+		}
+	}
+	return start == end && hasDigit && integer == endpoint && (!negative || endpoint == 0);
+}
+
+Bool Media::PDFDocument::IsReverseDecodeArray(Text::CStringNN value)
+{
+	UnsafeArray<const UTF8Char> str = value.v;
+	UIntOS pos = 0;
+	SkipPDFWhitespace(str, value.leng, pos);
+	if (pos >= value.leng || str[pos++] != '[')
+		return false;
+	UIntOS firstStart;
+	UIntOS firstEnd;
+	UIntOS secondStart;
+	UIntOS secondEnd;
+	if (!ReadPDFNumberToken(str, value.leng, pos, firstStart, firstEnd) ||
+		!ReadPDFNumberToken(str, value.leng, pos, secondStart, secondEnd))
+		return false;
+	SkipPDFWhitespace(str, value.leng, pos);
+	if (pos >= value.leng || str[pos++] != ']')
+		return false;
+	SkipPDFWhitespace(str, value.leng, pos);
+	return pos == value.leng &&
+		IsPDFDecodeEndpoint(str, firstStart, firstEnd, 1) &&
+		IsPDFDecodeEndpoint(str, secondStart, secondEnd, 0);
+}
 
 Optional<IO::ParsedObject> Media::PDFDocument::SetPObjName(Optional<IO::ParsedObject> pobj, UInt32 objId, Text::CStringNN ext)
 {
@@ -212,8 +285,128 @@ Optional<Media::ImageList> Media::PDFDocument::CreateImage(UInt32 id, NN<Parser:
 		}
 		else if (filter->IndexOf(UTF8STRC("/JBIG2Decode")) != INVALID_INDEX)
 		{
-			printf("PDFDocument: Creating image failed, unsupported filter: %s\r\n", filter->v.Ptr());
-			return nullptr;
+			UIntOS width = obj->GetWidth();
+			UIntOS height = obj->GetHeight();
+			if (width == 0 || height == 0 || width > INVALID_INDEX / height)
+			{
+				printf("PDFDocument: Creating JBIG2 image failed, invalid dimensions\r\n");
+				return nullptr;
+			}
+
+			Data::ByteBuffer globalData;
+			Bool hasGlobalData = false;
+			NN<Media::PDFParameter> params;
+			NN<Text::String> paramStr;
+			if (obj->GetParameter().SetTo(params) && params->GetEntryValue(CSTR("DecodeParms")).SetTo(paramStr))
+			{
+				UnsafeArray<const UTF8Char> paramPtr = paramStr->v;
+				UIntOS paramLen = paramStr->leng;
+				while (paramLen > 0 && (*paramPtr == ' ' || *paramPtr == '\r' || *paramPtr == '\n'))
+				{
+					paramPtr++;
+					paramLen--;
+				}
+				if (paramLen >= 4 && paramPtr[0] == '<' && paramPtr[1] == '<' && paramPtr[paramLen - 2] == '>' && paramPtr[paramLen - 1] == '>')
+				{
+					Optional<Media::PDFParameter> decodeParams = Media::PDFParameter::Parse(Text::CStringNN(paramPtr + 2, paramLen - 4));
+					NN<Media::PDFParameter> nnDecodeParams;
+					if (decodeParams.SetTo(nnDecodeParams))
+					{
+						NN<Text::String> globalRef;
+						NN<Media::PDFObject> globalObj;
+						NN<IO::StreamData> globalStream;
+						UInt32 globalObjId;
+						if (nnDecodeParams->GetEntryValue(CSTR("JBIG2Globals")).SetTo(globalRef))
+						{
+							if (!globalRef->EndsWith(CSTR(" 0 R")) ||
+								!Text::CStringNN(globalRef->v, globalRef->leng - 4).ToUInt32(globalObjId) ||
+								!this->GetObjectById(globalObjId).SetTo(globalObj) ||
+								!globalObj->GetData().SetTo(globalStream))
+							{
+								printf("PDFDocument: Creating JBIG2 image failed, invalid JBIG2Globals reference\r\n");
+								decodeParams.Delete();
+								return nullptr;
+							}
+							UInt64 globalSize = globalStream->GetDataSize();
+							if (globalSize == 0 || globalSize > (UInt64)INVALID_INDEX)
+							{
+								printf("PDFDocument: Creating JBIG2 image failed, invalid JBIG2Globals stream size\r\n");
+								decodeParams.Delete();
+								return nullptr;
+							}
+							globalData.ChangeSizeAndIgnoreData((UIntOS)globalSize);
+							if (globalStream->GetRealData(0, globalSize, globalData) != globalSize ||
+								!this->DecryptStreamData(globalObjId, globalData.Arr(), globalData.GetSize()))
+							{
+								printf("PDFDocument: Creating JBIG2 image failed, unable to read JBIG2Globals stream\r\n");
+								decodeParams.Delete();
+								return nullptr;
+							}
+							hasGlobalData = true;
+						}
+					}
+					decodeParams.Delete();
+				}
+			}
+
+			UInt64 dataSize = fd->GetDataSize();
+			if (dataSize == 0 || dataSize > (UInt64)INVALID_INDEX)
+			{
+				printf("PDFDocument: Creating JBIG2 image failed, invalid image data size\r\n");
+				return nullptr;
+			}
+			Data::ByteBuffer dataBuff((UIntOS)dataSize);
+			if (fd->GetRealData(0, dataSize, dataBuff) != dataSize ||
+				!this->DecryptStreamData(id, dataBuff.Arr(), dataBuff.GetSize()))
+			{
+				printf("PDFDocument: Creating JBIG2 image failed, unable to read image data: id=%d\r\n", id);
+				return nullptr;
+			}
+
+			Media::JBIG2Decoder decoder;
+			NN<Media::StaticImage> simg;
+			if (hasGlobalData)
+			{
+				if (!decoder.DecodeImage(dataBuff, width, height, globalData).SetTo(simg))
+				{
+					printf("PDFDocument: Creating JBIG2 image failed, invalid encoded data or decoder unavailable: id=%d\r\n", id);
+					return nullptr;
+				}
+			}
+			else
+			{
+				if (!decoder.DecodeImage(dataBuff, width, height).SetTo(simg))
+				{
+					printf("PDFDocument: Creating JBIG2 image failed, invalid encoded data or decoder unavailable: id=%d\r\n", id);
+					return nullptr;
+				}
+			}
+			NN<Media::PDFParameter> imageParams;
+			NN<Text::String> decodeArray;
+			Bool reverseDecode = false;
+			if (obj->GetParameter().SetTo(imageParams) && imageParams->GetEntryValue(CSTR("Decode")).SetTo(decodeArray))
+			{
+				reverseDecode = IsReverseDecodeArray(Text::CStringNN(decodeArray->v, decodeArray->leng));
+			}
+			if (reverseDecode)
+			{
+				UIntOS bpl = simg->GetDataBpl();
+				UIntOS y = 0;
+				while (y < height)
+				{
+					UIntOS x = 0;
+					while (x < width)
+					{
+						simg->data[y * bpl + x] = (UInt8)(255 - simg->data[y * bpl + x]);
+						x++;
+					}
+					y++;
+				}
+			}
+			NN<Media::ImageList> imgList;
+			NEW_CLASSNN(imgList, Media::ImageList(CSTR("Image.jbig2")));
+			imgList->AddImage(simg, 0);
+			return imgList;
 		}
 		else
 		{

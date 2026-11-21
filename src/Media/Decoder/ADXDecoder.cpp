@@ -117,7 +117,7 @@ UIntOS Media::Decoder::ADXDecoder::ReadBlock(Data::ByteArray blk)
 		readSize = blkSize * 18;
 		if (readBuff.GetSize() < readSize)
 		{
-			readBuff.ChangeSizeAndClear(readSize);
+			readBuff.ChangeSizeAndIgnoreData(readSize);
 		}
 		readSize = sourceAudio->ReadBlock(readBuff.WithSize(readSize));
 		blkSize = readSize / 18;
@@ -142,7 +142,7 @@ UIntOS Media::Decoder::ADXDecoder::ReadBlock(Data::ByteArray blk)
 		readSize = blkSize * 36;
 		if (readBuff.GetSize() < readSize)
 		{
-			readBuff.ChangeSizeAndClear(readSize);
+			readBuff.ChangeSizeAndIgnoreData(readSize);
 		}
 		readSize = sourceAudio->ReadBlock(readBuff.WithSize(readSize));
 		blkSize = readSize / 36;
