@@ -1,9 +1,603 @@
 #include "Stdafx.h"
+#include <math.h>
 #include "Media/CCITTFaxDecoder.h"
 #include "Media/JBIG2Decoder.h"
 #include "Media/PDFDocument.h"
 #include "Media/PDFImage.h"
 #include "Media/PDFUtil.h"
+
+struct PDFSeparationInstruction
+{
+	enum class Op
+	{
+		Number,
+		Dup,
+		Exch,
+		Pop,
+		Add,
+		Sub,
+		Mul,
+		Div,
+		Neg,
+		Abs
+	};
+
+	Op op;
+	Double value;
+};
+
+struct PDFSeparationInfo
+{
+	static const UIntOS MAX_FUNCTION_INSTRUCTIONS = 128;
+	UIntOS components;
+	Double domainMin;
+	Double domainMax;
+	Double exponent;
+	Double decodeMin;
+	Double decodeMax;
+	Double c0[4];
+	Double c1[4];
+	Double rangeMin[4];
+	Double rangeMax[4];
+	Double encodeMin;
+	Double encodeMax;
+	Double decodeRangeMin[4];
+	Double decodeRangeMax[4];
+	UIntOS functionType;
+	UIntOS sampleSize;
+	UIntOS bitsPerSample;
+	Data::ByteBuffer samples;
+	PDFSeparationInstruction functionInstructions[MAX_FUNCTION_INSTRUCTIONS];
+	UIntOS functionInstructionCount;
+	Bool hasRange;
+	Media::ColorProfile color;
+
+	PDFSeparationInfo() : color(Media::ColorProfile::CPT_PUNKNOWN)
+	{
+		this->components = 0;
+		this->domainMin = 0;
+		this->domainMax = 1;
+		this->exponent = 1;
+		this->decodeMin = 0;
+		this->decodeMax = 1;
+		this->functionType = 0;
+		this->sampleSize = 0;
+		this->bitsPerSample = 0;
+		this->functionInstructionCount = 0;
+		this->hasRange = false;
+	}
+};
+
+static Bool PDFImageReadNumberArray(UnsafeArray<const UTF8Char> str, UIntOS length, UIntOS &pos, UnsafeArray<Double> values, UIntOS count)
+{
+	Media::PDFUtil::SkipIndexedWhitespace(str, length, pos);
+	if (pos >= length || str[pos++] != '[')
+		return false;
+	for (UIntOS i = 0; i < count; i++)
+	{
+		UIntOS start;
+		UIntOS end;
+		Double value;
+		if (!Media::PDFUtil::ReadIndexedToken(str, length, pos, start, end))
+			return false;
+		NN<Text::String> number = Text::String::New(str + start, end - start);
+		Bool validNumber = number->ToDouble(value) && isfinite(value);
+		number->Release();
+		if (!validNumber)
+			return false;
+		values[i] = value;
+	}
+	Media::PDFUtil::SkipIndexedWhitespace(str, length, pos);
+	return pos < length && str[pos++] == ']';
+}
+
+static Bool PDFImageCompileType4Function(NN<IO::StreamData> streamData, PDFSeparationInfo &info)
+{
+	UInt64 streamSize = streamData->GetDataSize();
+	if (streamSize == 0 || streamSize > 1048576)
+		return false;
+	Data::ByteBuffer program((UIntOS)streamSize);
+	if (streamData->GetRealData(0, streamSize, program) != streamSize)
+		return false;
+	UnsafeArray<const UTF8Char> str = (UnsafeArray<const UTF8Char>)program.Arr();
+	UIntOS length = (UIntOS)streamSize;
+	UIntOS pos = 0;
+	Media::PDFUtil::SkipIndexedWhitespace(str, length, pos);
+	if (pos >= length || str[pos++] != '{')
+		return false;
+
+	while (pos < length)
+	{
+		Media::PDFUtil::SkipIndexedWhitespace(str, length, pos);
+		if (pos >= length)
+			return false;
+		if (str[pos] == '}')
+		{
+			pos++;
+			Media::PDFUtil::SkipIndexedWhitespace(str, length, pos);
+			return pos == length && info.functionInstructionCount > 0;
+		}
+		if (str[pos] == '%')
+		{
+			while (pos < length && str[pos] != '\r' && str[pos] != '\n')
+				pos++;
+			continue;
+		}
+
+		UIntOS start = pos;
+		while (pos < length && str[pos] != ' ' && str[pos] != '\t' && str[pos] != '\r' &&
+			str[pos] != '\n' && str[pos] != '\f' && str[pos] != '{' && str[pos] != '}')
+			pos++;
+		UIntOS tokenLength = pos - start;
+		if (tokenLength == 0 || info.functionInstructionCount >= PDFSeparationInfo::MAX_FUNCTION_INSTRUCTIONS)
+			return false;
+
+		PDFSeparationInstruction instruction;
+		Text::CStringNN token(str + start, tokenLength);
+		if (token.Equals(CSTR("dup")))
+			instruction.op = PDFSeparationInstruction::Op::Dup;
+		else if (token.Equals(CSTR("exch")))
+			instruction.op = PDFSeparationInstruction::Op::Exch;
+		else if (token.Equals(CSTR("pop")))
+			instruction.op = PDFSeparationInstruction::Op::Pop;
+		else if (token.Equals(CSTR("add")))
+			instruction.op = PDFSeparationInstruction::Op::Add;
+		else if (token.Equals(CSTR("sub")))
+			instruction.op = PDFSeparationInstruction::Op::Sub;
+		else if (token.Equals(CSTR("mul")))
+			instruction.op = PDFSeparationInstruction::Op::Mul;
+		else if (token.Equals(CSTR("div")))
+			instruction.op = PDFSeparationInstruction::Op::Div;
+		else if (token.Equals(CSTR("neg")))
+			instruction.op = PDFSeparationInstruction::Op::Neg;
+		else if (token.Equals(CSTR("abs")))
+			instruction.op = PDFSeparationInstruction::Op::Abs;
+		else
+		{
+			NN<Text::String> number = Text::String::New(str + start, tokenLength);
+			Bool isNumber = number->ToDouble(instruction.value) && isfinite(instruction.value);
+			number->Release();
+			if (!isNumber)
+				return false;
+			instruction.op = PDFSeparationInstruction::Op::Number;
+		}
+		info.functionInstructions[info.functionInstructionCount++] = instruction;
+	}
+	return false;
+}
+
+static Bool PDFImageEvaluateType4Function(const PDFSeparationInfo &info, Double input, UnsafeArray<Double> values)
+{
+	Double stack[64];
+	UIntOS stackCount = 1;
+	stack[0] = input;
+	for (UIntOS i = 0; i < info.functionInstructionCount; i++)
+	{
+		const PDFSeparationInstruction &instruction = info.functionInstructions[i];
+		switch (instruction.op)
+		{
+		case PDFSeparationInstruction::Op::Number:
+			if (stackCount >= 64)
+				return false;
+			stack[stackCount++] = instruction.value;
+			break;
+		case PDFSeparationInstruction::Op::Dup:
+			if (stackCount == 0 || stackCount >= 64)
+				return false;
+			stack[stackCount] = stack[stackCount - 1];
+			stackCount++;
+			break;
+		case PDFSeparationInstruction::Op::Exch:
+			if (stackCount < 2)
+				return false;
+			{
+				Double tmp = stack[stackCount - 1];
+				stack[stackCount - 1] = stack[stackCount - 2];
+				stack[stackCount - 2] = tmp;
+			}
+			break;
+		case PDFSeparationInstruction::Op::Pop:
+			if (stackCount == 0)
+				return false;
+			stackCount--;
+			break;
+		case PDFSeparationInstruction::Op::Neg:
+			if (stackCount == 0)
+				return false;
+			stack[stackCount - 1] = -stack[stackCount - 1];
+			break;
+		case PDFSeparationInstruction::Op::Abs:
+			if (stackCount == 0)
+				return false;
+			stack[stackCount - 1] = fabs(stack[stackCount - 1]);
+			break;
+		case PDFSeparationInstruction::Op::Add:
+		case PDFSeparationInstruction::Op::Sub:
+		case PDFSeparationInstruction::Op::Mul:
+		case PDFSeparationInstruction::Op::Div:
+			if (stackCount < 2)
+				return false;
+			{
+				Double rhs = stack[--stackCount];
+				Double &lhs = stack[stackCount - 1];
+				switch (instruction.op)
+				{
+				case PDFSeparationInstruction::Op::Add: lhs += rhs; break;
+				case PDFSeparationInstruction::Op::Sub: lhs -= rhs; break;
+				case PDFSeparationInstruction::Op::Mul: lhs *= rhs; break;
+				case PDFSeparationInstruction::Op::Div:
+					if (rhs == 0)
+						return false;
+					lhs /= rhs;
+					break;
+				case PDFSeparationInstruction::Op::Number:
+				case PDFSeparationInstruction::Op::Dup:
+				case PDFSeparationInstruction::Op::Exch:
+				case PDFSeparationInstruction::Op::Pop:
+				case PDFSeparationInstruction::Op::Neg:
+				case PDFSeparationInstruction::Op::Abs:
+				default: return false;
+				}
+				if (!isfinite(lhs))
+					return false;
+			}
+			break;
+		default:
+			return false;
+		}
+	}
+	if (stackCount != info.components)
+		return false;
+	for (UIntOS i = 0; i < info.components; i++)
+	{
+		values[i] = stack[i];
+		if (values[i] < info.rangeMin[i])
+			values[i] = info.rangeMin[i];
+		else if (values[i] > info.rangeMax[i])
+			values[i] = info.rangeMax[i];
+	}
+	return true;
+}
+
+static Bool PDFImageParseFunction(NN<Media::PDFParameter> functionParams, Optional<Media::PDFObject> functionObj, PDFSeparationInfo &info)
+{
+	NN<Text::String> value;
+	if (!functionParams->GetEntryValue(CSTR("FunctionType")).SetTo(value))
+		return false;
+	info.functionType = value->ToUIntOS();
+	if (info.functionType == 0)
+	{
+		Double domain[2];
+		UIntOS domainPos = 0;
+		if (!functionParams->GetEntryValue(CSTR("Domain")).SetTo(value) ||
+			!PDFImageReadNumberArray(value->v, value->leng, domainPos, domain, 2))
+			return false;
+		Media::PDFUtil::SkipIndexedWhitespace(value->v, value->leng, domainPos);
+		if (domainPos != value->leng || domain[0] >= domain[1])
+			return false;
+		info.domainMin = domain[0];
+		info.domainMax = domain[1];
+
+		Double sizes[1];
+		UIntOS sizePos = 0;
+		if (!functionParams->GetEntryValue(CSTR("Size")).SetTo(value) ||
+			!PDFImageReadNumberArray(value->v, value->leng, sizePos, sizes, 1))
+			return false;
+		Media::PDFUtil::SkipIndexedWhitespace(value->v, value->leng, sizePos);
+		if (sizePos != value->leng || sizes[0] < 1 || sizes[0] > 1048576 || floor(sizes[0]) != sizes[0])
+			return false;
+		info.sampleSize = (UIntOS)sizes[0];
+		if (!functionParams->GetEntryValue(CSTR("BitsPerSample")).SetTo(value) ||
+			!value->ToUIntOS(info.bitsPerSample) || info.bitsPerSample == 0 || info.bitsPerSample > 16)
+			return false;
+		if (functionParams->GetEntryValue(CSTR("Order")).SetTo(value))
+		{
+			UIntOS order;
+			if (!value->ToUIntOS(order) || order != 1)
+				return false;
+		}
+
+		Double ranges[8];
+		UIntOS rangePos = 0;
+		if (!functionParams->GetEntryValue(CSTR("Range")).SetTo(value) ||
+			!PDFImageReadNumberArray(value->v, value->leng, rangePos, ranges, info.components * 2))
+			return false;
+		Media::PDFUtil::SkipIndexedWhitespace(value->v, value->leng, rangePos);
+		if (rangePos != value->leng)
+			return false;
+		for (UIntOS i = 0; i < info.components; i++)
+		{
+			if (ranges[i * 2] > ranges[i * 2 + 1])
+				return false;
+			info.rangeMin[i] = ranges[i * 2];
+			info.rangeMax[i] = ranges[i * 2 + 1];
+		}
+
+		if (functionParams->GetEntryValue(CSTR("Encode")).SetTo(value))
+		{
+			Double encode[2];
+			UIntOS encodePos = 0;
+			if (!PDFImageReadNumberArray(value->v, value->leng, encodePos, encode, 2))
+				return false;
+			Media::PDFUtil::SkipIndexedWhitespace(value->v, value->leng, encodePos);
+			if (encodePos != value->leng)
+				return false;
+			info.encodeMin = encode[0];
+			info.encodeMax = encode[1];
+		}
+		else
+		{
+			info.encodeMin = 0;
+			info.encodeMax = (Double)(info.sampleSize - 1);
+		}
+		Double decode[8];
+		UIntOS decodePos = 0;
+		if (functionParams->GetEntryValue(CSTR("Decode")).SetTo(value))
+		{
+			if (!PDFImageReadNumberArray(value->v, value->leng, decodePos, decode, info.components * 2))
+				return false;
+			Media::PDFUtil::SkipIndexedWhitespace(value->v, value->leng, decodePos);
+			if (decodePos != value->leng)
+				return false;
+		}
+		else
+		{
+			for (UIntOS i = 0; i < info.components * 2; i++)
+				decode[i] = ranges[i];
+		}
+		for (UIntOS i = 0; i < info.components; i++)
+		{
+			info.decodeRangeMin[i] = decode[i * 2];
+			info.decodeRangeMax[i] = decode[i * 2 + 1];
+		}
+
+		NN<Media::PDFObject> streamObj;
+		NN<IO::StreamData> streamData;
+		UInt64 totalBits = (UInt64)info.sampleSize * info.components * info.bitsPerSample;
+		UIntOS requiredBytes = (UIntOS)((totalBits + 7) / 8);
+		if (totalBits > (UInt64)INVALID_INDEX * 8 || requiredBytes > 16777216 ||
+			!functionObj.SetTo(streamObj) || !streamObj->GetData().SetTo(streamData) ||
+			streamData->GetDataSize() < requiredBytes)
+			return false;
+		info.samples.ChangeSizeAndIgnoreData(requiredBytes);
+		return streamData->GetRealData(0, requiredBytes, info.samples) == requiredBytes;
+	}
+	if (info.functionType == 4)
+	{
+		Double domain[2];
+		UIntOS domainPos = 0;
+		if (!functionParams->GetEntryValue(CSTR("Domain")).SetTo(value) ||
+			!PDFImageReadNumberArray(value->v, value->leng, domainPos, domain, 2))
+			return false;
+		Media::PDFUtil::SkipIndexedWhitespace(value->v, value->leng, domainPos);
+		if (domainPos != value->leng || domain[0] >= domain[1])
+			return false;
+		info.domainMin = domain[0];
+		info.domainMax = domain[1];
+		Double ranges[8];
+		UIntOS rangePos = 0;
+		if (!functionParams->GetEntryValue(CSTR("Range")).SetTo(value) ||
+			!PDFImageReadNumberArray(value->v, value->leng, rangePos, ranges, info.components * 2))
+			return false;
+		Media::PDFUtil::SkipIndexedWhitespace(value->v, value->leng, rangePos);
+		if (rangePos != value->leng)
+			return false;
+		for (UIntOS i = 0; i < info.components; i++)
+		{
+			if (ranges[i * 2] > ranges[i * 2 + 1])
+				return false;
+			info.rangeMin[i] = ranges[i * 2];
+			info.rangeMax[i] = ranges[i * 2 + 1];
+		}
+		NN<Media::PDFObject> streamObj;
+		NN<IO::StreamData> streamData;
+		return functionObj.SetTo(streamObj) && streamObj->GetData().SetTo(streamData) &&
+			PDFImageCompileType4Function(streamData, info);
+	}
+	if (info.functionType != 2)
+		return false;
+	if (functionParams->GetEntryValue(CSTR("Domain")).SetTo(value))
+	{
+		Double domain[2];
+		UIntOS domainPos = 0;
+		if (!PDFImageReadNumberArray(value->v, value->leng, domainPos, domain, 2))
+			return false;
+		Media::PDFUtil::SkipIndexedWhitespace(value->v, value->leng, domainPos);
+		if (domainPos != value->leng || domain[0] >= domain[1])
+			return false;
+		info.domainMin = domain[0];
+		info.domainMax = domain[1];
+	}
+	if (!functionParams->GetEntryValue(CSTR("N")).SetTo(value) ||
+		!value->ToDouble(info.exponent) || !isfinite(info.exponent) || info.exponent <= 0)
+		return false;
+	for (UIntOS i = 0; i < info.components; i++)
+	{
+		info.c0[i] = 0;
+		info.c1[i] = 1;
+		info.rangeMin[i] = 0;
+		info.rangeMax[i] = 1;
+	}
+	if (functionParams->GetEntryValue(CSTR("C0")).SetTo(value))
+	{
+		UIntOS arrayPos = 0;
+		if (!PDFImageReadNumberArray(value->v, value->leng, arrayPos, info.c0, info.components))
+			return false;
+		Media::PDFUtil::SkipIndexedWhitespace(value->v, value->leng, arrayPos);
+		if (arrayPos != value->leng)
+			return false;
+	}
+	if (functionParams->GetEntryValue(CSTR("C1")).SetTo(value))
+	{
+		UIntOS arrayPos = 0;
+		if (!PDFImageReadNumberArray(value->v, value->leng, arrayPos, info.c1, info.components))
+			return false;
+		Media::PDFUtil::SkipIndexedWhitespace(value->v, value->leng, arrayPos);
+		if (arrayPos != value->leng)
+			return false;
+	}
+	if (functionParams->GetEntryValue(CSTR("Range")).SetTo(value))
+	{
+		Double range[8];
+		UIntOS arrayPos = 0;
+		if (!PDFImageReadNumberArray(value->v, value->leng, arrayPos, range, info.components * 2))
+			return false;
+		Media::PDFUtil::SkipIndexedWhitespace(value->v, value->leng, arrayPos);
+		if (arrayPos != value->leng)
+			return false;
+		for (UIntOS i = 0; i < info.components; i++)
+		{
+			if (range[i * 2] > range[i * 2 + 1])
+				return false;
+			info.rangeMin[i] = range[i * 2];
+			info.rangeMax[i] = range[i * 2 + 1];
+		}
+		info.hasRange = true;
+	}
+	return true;
+}
+
+static Bool PDFImageParseSeparation(NN<Media::PDFDocument> pdf, Text::CStringNN colorSpace, PDFSeparationInfo &info)
+{
+	UnsafeArray<const UTF8Char> str = colorSpace.v;
+	UIntOS length = colorSpace.leng;
+	UIntOS pos = 0;
+	UIntOS start;
+	UIntOS end;
+	Media::PDFUtil::SkipIndexedWhitespace(str, length, pos);
+	if (pos >= length || str[pos++] != '[' ||
+		!Media::PDFUtil::ReadIndexedToken(str, length, pos, start, end) ||
+		!Text::CStringNN(str + start, end - start).Equals(CSTR("/Separation")) ||
+		!Media::PDFUtil::ReadIndexedToken(str, length, pos, start, end) || str[start] != '/')
+		return false;
+
+	Media::PDFUtil::SkipIndexedWhitespace(str, length, pos);
+	UIntOS alternateStart = pos;
+	UIntOS alternateEnd;
+	if (pos < length && str[pos] == '[')
+	{
+		UIntOS depth = 0;
+		do
+		{
+			if (str[pos] == '[')
+				depth++;
+			else if (str[pos] == ']')
+				depth--;
+			pos++;
+		} while (pos < length && depth > 0);
+		if (depth != 0)
+			return false;
+		alternateEnd = pos;
+	}
+	else
+	{
+		if (!Media::PDFUtil::ReadIndexedToken(str, length, pos, start, end))
+			return false;
+		if (str[start] >= '0' && str[start] <= '9')
+		{
+			pos = start;
+			UInt32 alternateId;
+			if (!Media::PDFUtil::ReadIndexedReference(str, length, pos, alternateId))
+				return false;
+		}
+		alternateEnd = pos;
+	}
+	if (!Media::PDFUtil::ResolveIndexedBase(pdf, Text::CStringNN(str + alternateStart, alternateEnd - alternateStart), info.components, info.color, true) ||
+		info.components == 0 || info.components > 4)
+		return false;
+
+	Media::PDFUtil::SkipIndexedWhitespace(str, length, pos);
+	NN<Media::PDFParameter> functionParams;
+	Optional<Media::PDFObject> functionObj = nullptr;
+	Optional<Media::PDFParameter> ownedFunctionParams = nullptr;
+	if (pos + 1 < length && str[pos] == '<' && str[pos + 1] == '<')
+	{
+		UIntOS functionStart = pos + 2;
+		UIntOS depth = 1;
+		pos += 2;
+		while (pos + 1 < length && depth > 0)
+		{
+			if (str[pos] == '<' && str[pos + 1] == '<')
+			{
+				depth++;
+				pos += 2;
+			}
+			else if (str[pos] == '>' && str[pos + 1] == '>')
+			{
+				depth--;
+				if (depth == 0)
+					break;
+				pos += 2;
+			}
+			else
+			{
+				pos++;
+			}
+		}
+		if (depth != 0)
+			return false;
+		if (!Media::PDFParameter::Parse(Text::CStringNN(str + functionStart, pos - functionStart)).SetTo(functionParams))
+			return false;
+		ownedFunctionParams = functionParams;
+		pos += 2;
+	}
+	else
+	{
+		UInt32 functionId;
+		if (!Media::PDFUtil::ReadIndexedReference(str, length, pos, functionId))
+			return false;
+		NN<Media::PDFObject> functionObject;
+		if (!pdf->GetObjectById(functionId).SetTo(functionObject) || !functionObject->GetParameter().SetTo(functionParams))
+			return false;
+		functionObj = functionObject;
+	}
+
+	Media::PDFUtil::SkipIndexedWhitespace(str, length, pos);
+	Bool valid = pos < length && str[pos++] == ']';
+	Media::PDFUtil::SkipIndexedWhitespace(str, length, pos);
+	valid = valid && pos == length;
+	valid = valid && PDFImageParseFunction(functionParams, functionObj, info);
+	NN<Media::PDFParameter> ownedParams;
+	if (ownedFunctionParams.SetTo(ownedParams))
+		ownedParams.Delete();
+	return valid;
+}
+
+static void PDFImageEvaluateSampledFunction(const PDFSeparationInfo &info, Double input, UnsafeArray<Double> values)
+{
+	if (input < info.domainMin)
+		input = info.domainMin;
+	else if (input > info.domainMax)
+		input = info.domainMax;
+	Double samplePos = info.encodeMin + (input - info.domainMin) * (info.encodeMax - info.encodeMin) / (info.domainMax - info.domainMin);
+	if (samplePos < 0)
+		samplePos = 0;
+	else if (samplePos > (Double)(info.sampleSize - 1))
+		samplePos = (Double)(info.sampleSize - 1);
+	UIntOS sample0 = (UIntOS)floor(samplePos);
+	UIntOS sample1 = sample0 + 1 < info.sampleSize ? sample0 + 1 : sample0;
+	Double fraction = samplePos - (Double)sample0;
+	UnsafeArray<const UInt8> samples = info.samples.Arr();
+	UInt32 maxSample = ((UInt32)1 << info.bitsPerSample) - 1;
+	for (UIntOS c = 0; c < info.components; c++)
+	{
+		UIntOS bitPos0 = (sample0 * info.components + c) * info.bitsPerSample;
+		UIntOS bitPos1 = (sample1 * info.components + c) * info.bitsPerSample;
+		UInt32 raw0 = 0;
+		UInt32 raw1 = 0;
+		for (UIntOS bit = 0; bit < info.bitsPerSample; bit++)
+		{
+			raw0 = (raw0 << 1) | ((samples[(bitPos0 + bit) / 8] >> (7 - ((bitPos0 + bit) & 7))) & 1);
+			raw1 = (raw1 << 1) | ((samples[(bitPos1 + bit) / 8] >> (7 - ((bitPos1 + bit) & 7))) & 1);
+		}
+		Double raw = (Double)raw0 + ((Double)raw1 - (Double)raw0) * fraction;
+		values[c] = info.decodeRangeMin[c] + raw * (info.decodeRangeMax[c] - info.decodeRangeMin[c]) / maxSample;
+		if (values[c] < info.rangeMin[c])
+			values[c] = info.rangeMin[c];
+		else if (values[c] > info.rangeMax[c])
+			values[c] = info.rangeMax[c];
+	}
+}
 
 UInt8 Media::PDFImage::IndexedHexValue(UTF8Char c)
 {
@@ -260,6 +854,145 @@ Optional<Media::ImageList> Media::PDFImage::Parse(NN<Media::PDFDocument> pdf, UI
 					UIntOS kindStart;
 					UIntOS kindEnd;
 					Bool hasKind = PDFUtil::ReadIndexedToken(csStr, csLen, csPos, kindStart, kindEnd);
+					if (hasKind && Text::CStringNN(csStr + kindStart, kindEnd - kindStart).Equals(CSTR("/Separation")))
+					{
+						PDFSeparationInfo separation;
+						NN<Media::PDFParameter> imageParams;
+						NN<Text::String> decodeArray;
+						if (!PDFImageParseSeparation(pdf, sbColorSpace.ToCString(), separation))
+						{
+							printf("PDFImage: Creating Separation image failed, unsupported or invalid color space or tint function\r\n");
+							return nullptr;
+						}
+						if (obj->GetParameter().SetTo(imageParams) && imageParams->GetEntryValue(CSTR("Decode")).SetTo(decodeArray))
+						{
+							Double decode[2];
+							UIntOS decodePos = 0;
+							if (!PDFImageReadNumberArray(decodeArray->v, decodeArray->leng, decodePos, decode, 2))
+							{
+								printf("PDFImage: Creating Separation image failed, invalid Decode array\r\n");
+								return nullptr;
+							}
+							PDFUtil::SkipIndexedWhitespace(decodeArray->v, decodeArray->leng, decodePos);
+							if (decodePos != decodeArray->leng)
+							{
+								printf("PDFImage: Creating Separation image failed, invalid Decode array\r\n");
+								return nullptr;
+							}
+							separation.decodeMin = decode[0];
+							separation.decodeMax = decode[1];
+						}
+						if (width > (INVALID_INDEX - 7) / bpc || width > INVALID_INDEX / 3 ||
+							height > INVALID_INDEX / width || width * height > INVALID_INDEX / 3)
+						{
+							printf("PDFImage: Separation image dimensions are too large\r\n");
+							return nullptr;
+						}
+						UIntOS rowSize = (width * bpc + 7) / 8;
+						if (height > INVALID_INDEX / rowSize || fd->GetDataSize() != rowSize * height)
+						{
+							printf("PDFImage: Separation image has unexpected data size\r\n");
+							return nullptr;
+						}
+						NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UIntOS>(width, height), 0, 24, Media::PixelFormat::PF_B8G8R8, width * height * 3, separation.color, Media::ColorProfile::YUVT_UNKNOWN, Media::AlphaType::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+						Data::ByteBuffer rowData(rowSize);
+						UInt32 maxSample = ((UInt32)1 << bpc) - 1;
+						for (UIntOS y = 0; y < height; y++)
+						{
+							if (fd->GetRealData(y * rowSize, rowSize, rowData) != rowSize)
+							{
+								printf("PDFImage: Unable to read Separation image data\r\n");
+								simg.Delete();
+								return nullptr;
+							}
+							UnsafeArray<UInt8> dest = simg->data + y * simg->GetDataBpl();
+							for (UIntOS x = 0; x < width; x++)
+							{
+								UIntOS bitPos = x * bpc;
+								UInt32 sample = bpc == 16 ? ((UInt32)rowData[bitPos / 8] << 8) | rowData[bitPos / 8 + 1] :
+									(rowData[bitPos / 8] >> (8 - bpc - (bitPos & 7))) & maxSample;
+								Double values[4];
+								if (separation.functionType == 0)
+								{
+									Double tint = separation.decodeMin + (Double)sample * (separation.decodeMax - separation.decodeMin) / maxSample;
+									PDFImageEvaluateSampledFunction(separation, tint, values);
+								}
+								else if (separation.functionType == 4)
+								{
+									Double tint = separation.decodeMin + (Double)sample * (separation.decodeMax - separation.decodeMin) / maxSample;
+									if (tint < separation.domainMin)
+										tint = separation.domainMin;
+									else if (tint > separation.domainMax)
+										tint = separation.domainMax;
+									if (!PDFImageEvaluateType4Function(separation, tint, values))
+									{
+										printf("PDFImage: Invalid Separation calculator function output\r\n");
+										simg.Delete();
+										return nullptr;
+									}
+								}
+								else
+								{
+									Double tint = separation.decodeMin + (Double)sample * (separation.decodeMax - separation.decodeMin) / maxSample;
+									if (tint < separation.domainMin)
+										tint = separation.domainMin;
+									else if (tint > separation.domainMax)
+										tint = separation.domainMax;
+									Double t = pow((tint - separation.domainMin) / (separation.domainMax - separation.domainMin), separation.exponent);
+									for (UIntOS c = 0; c < separation.components; c++)
+									{
+										values[c] = separation.c0[c] + (separation.c1[c] - separation.c0[c]) * t;
+										if (separation.hasRange)
+										{
+											if (values[c] < separation.rangeMin[c])
+												values[c] = separation.rangeMin[c];
+											else if (values[c] > separation.rangeMax[c])
+												values[c] = separation.rangeMax[c];
+										}
+										if (values[c] < 0)
+											values[c] = 0;
+										else if (values[c] > 1)
+											values[c] = 1;
+									}
+								}
+								if (separation.functionType == 0)
+								{
+									for (UIntOS c = 0; c < separation.components; c++)
+									{
+										if (values[c] < 0)
+											values[c] = 0;
+										else if (values[c] > 1)
+											values[c] = 1;
+									}
+								}
+								Double r;
+								Double g;
+								Double b;
+								if (separation.components == 1)
+								{
+									r = g = b = values[0];
+								}
+								else if (separation.components == 3)
+								{
+									r = values[0];
+									g = values[1];
+									b = values[2];
+								}
+								else
+								{
+									r = (1 - values[0]) * (1 - values[3]);
+									g = (1 - values[1]) * (1 - values[3]);
+									b = (1 - values[2]) * (1 - values[3]);
+								}
+								dest[x * 3] = (UInt8)(b * 255 + 0.5);
+								dest[x * 3 + 1] = (UInt8)(g * 255 + 0.5);
+								dest[x * 3 + 2] = (UInt8)(r * 255 + 0.5);
+							}
+						}
+						NEW_CLASSNN(imgList, Media::ImageList(CSTR("Image.separation")));
+						imgList->AddImage(simg, 0);
+						return imgList;
+					}
 					if (hasKind && Text::CStringNN(csStr + kindStart, kindEnd - kindStart).Equals(CSTR("/ICCBased")))
 					{
 						Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);

@@ -563,6 +563,197 @@ Int32 PDFFlatePredictorTest()
 	return 0;
 }
 
+Int32 PDFSeparationImageTest()
+{
+	NN<Text::String> name = Text::String::New(UTF8STRC("separation-test.pdf"));
+	Media::PDFDocument pdf(name, CSTR("1.4"));
+	name->Release();
+	NN<Media::PDFObject> imageObj = pdf.AddObject(1);
+	const UInt8 sampleData[] = {0, 128, 255};
+	IO::StmData::MemoryDataRef imageStream(Data::ByteArrayR(sampleData, sizeof(sampleData)));
+	imageObj->SetStream(imageStream, 0, imageStream.GetDataSize());
+	IO::StmData::MemoryDataRef colorSpaceData(Data::ByteArrayR(UTF8STRC("[ /Separation /Spot /DeviceRGB 3 0 R ]")));
+	pdf.AddObject(2)->SetData(colorSpaceData, 0, colorSpaceData.GetDataSize());
+	NN<Media::PDFObject> functionObj = pdf.AddObject(3);
+	functionObj->SetParameter(Media::PDFParameter::Parse(CSTR("/FunctionType 2 /Domain [0 1] /C0 [1 0 0] /C1 [0 0 1] /N 1")));
+	Parser::FullParserList parsers;
+	NN<Media::ImageList> images;
+	NN<Media::Image> image;
+	imageObj->SetParameter(Media::PDFParameter::Parse(CSTR("/Subtype /Image /Width 3 /Height 1 /BitsPerComponent 8 /ColorSpace [/Separation /Spot /DeviceRGB << /FunctionType 2 /Domain [0 1] /C0 [1 0 0] /C1 [0 0 1] /N 1 >>]")));
+	if (!Media::PDFImage::Parse(pdf, 1, parsers).SetTo(images) ||
+		!images->GetImage2(0, 0).SetTo(image) ||
+		image->GetImageType() != Media::ImageType::Raster ||
+		NN<Media::RasterImage>::ConvertFrom(image)->GetImageClass() != Media::RasterImage::ImageClass::StaticImage)
+	{
+		printf("PDF Separation inline image creation test failed\r\n");
+		return 1;
+	}
+	NN<Media::StaticImage> staticImage = NN<Media::StaticImage>::ConvertFrom(NN<Media::RasterImage>::ConvertFrom(image));
+	Bool ok = staticImage->info.dispSize.x == 3 && staticImage->info.dispSize.y == 1 &&
+		staticImage->info.pf == Media::PixelFormat::PF_B8G8R8 &&
+		staticImage->data[0] == 0 && staticImage->data[1] == 0 && staticImage->data[2] == 255 &&
+		staticImage->data[3] == 128 && staticImage->data[4] == 0 && staticImage->data[5] == 127 &&
+		staticImage->data[6] == 255 && staticImage->data[7] == 0 && staticImage->data[8] == 0;
+	images.Delete();
+	if (!ok)
+	{
+		printf("PDF Separation inline tint transform test failed\r\n");
+		return 1;
+	}
+
+	imageObj->SetParameter(Media::PDFParameter::Parse(CSTR("/Subtype /Image /Width 3 /Height 1 /BitsPerComponent 8 /ColorSpace 2 0 R")));
+	if (!Media::PDFImage::Parse(pdf, 1, parsers).SetTo(images) ||
+		!images->GetImage2(0, 0).SetTo(image) ||
+		image->GetImageType() != Media::ImageType::Raster ||
+		NN<Media::RasterImage>::ConvertFrom(image)->GetImageClass() != Media::RasterImage::ImageClass::StaticImage)
+	{
+		printf("PDF Separation indirect image creation test failed\r\n");
+		return 1;
+	}
+	staticImage = NN<Media::StaticImage>::ConvertFrom(NN<Media::RasterImage>::ConvertFrom(image));
+	ok = staticImage->data[0] == 0 && staticImage->data[2] == 255 &&
+		staticImage->data[3] == 128 && staticImage->data[5] == 127 &&
+		staticImage->data[6] == 255 && staticImage->data[8] == 0;
+	images.Delete();
+	if (!ok)
+	{
+		printf("PDF Separation indirect tint transform test failed\r\n");
+		return 1;
+	}
+
+	const UInt8 sampledData[] = {255, 0, 0, 0, 0, 255};
+	IO::StmData::MemoryDataRef sampledStream(Data::ByteArrayR(sampledData, sizeof(sampledData)));
+	NN<Media::PDFObject> sampledFunction = pdf.AddObject(4);
+	sampledFunction->SetParameter(Media::PDFParameter::Parse(CSTR("/FunctionType 0 /Domain [0 1] /Range [0 1 0 1 0 1] /Size [2] /BitsPerSample 8 /Decode [0 1 0 1 0 1]")));
+	sampledFunction->SetStream(sampledStream, 0, sizeof(sampledData));
+	IO::StmData::MemoryDataRef sampledColorSpace(Data::ByteArrayR(UTF8STRC("[ /Separation /Spot /DeviceRGB 4 0 R ]")));
+	pdf.AddObject(5)->SetData(sampledColorSpace, 0, sampledColorSpace.GetDataSize());
+	imageObj->SetParameter(Media::PDFParameter::Parse(CSTR("/Subtype /Image /Width 3 /Height 1 /BitsPerComponent 8 /ColorSpace 5 0 R")));
+	if (!Media::PDFImage::Parse(pdf, 1, parsers).SetTo(images) ||
+		!images->GetImage2(0, 0).SetTo(image) ||
+		image->GetImageType() != Media::ImageType::Raster ||
+		NN<Media::RasterImage>::ConvertFrom(image)->GetImageClass() != Media::RasterImage::ImageClass::StaticImage)
+	{
+		printf("PDF Separation sampled image creation test failed\r\n");
+		return 1;
+	}
+	staticImage = NN<Media::StaticImage>::ConvertFrom(NN<Media::RasterImage>::ConvertFrom(image));
+	ok = staticImage->data[0] == 0 && staticImage->data[1] == 0 && staticImage->data[2] == 255 &&
+		staticImage->data[3] == 128 && staticImage->data[4] == 0 && staticImage->data[5] == 127 &&
+		staticImage->data[6] == 255 && staticImage->data[7] == 0 && staticImage->data[8] == 0;
+	images.Delete();
+	if (!ok)
+	{
+		printf("PDF Separation sampled tint transform test failed\r\n");
+		return 1;
+	}
+
+	UInt8 cmykICC[132];
+	MemClear(cmykICC, sizeof(cmykICC));
+	cmykICC[3] = 132;
+	cmykICC[16] = 'C';
+	cmykICC[17] = 'M';
+	cmykICC[18] = 'Y';
+	cmykICC[19] = 'K';
+	cmykICC[36] = 'a';
+	cmykICC[37] = 'c';
+	cmykICC[38] = 's';
+	cmykICC[39] = 'p';
+	IO::StmData::MemoryDataRef cmykICCStream(Data::ByteArrayR(cmykICC, sizeof(cmykICC)));
+	NN<Media::PDFObject> cmykICCObj = pdf.AddObject(8);
+	cmykICCObj->SetParameter(Media::PDFParameter::Parse(CSTR("/N 4 /Alternate /DeviceCMYK")));
+	cmykICCObj->SetStream(cmykICCStream, 0, sizeof(cmykICC));
+	IO::StmData::MemoryDataRef cmykBase(Data::ByteArrayR(UTF8STRC("[/ICCBased 8 0 R]")));
+	pdf.AddObject(9)->SetData(cmykBase, 0, cmykBase.GetDataSize());
+	const UInt8 cmykSamples[] = {0, 0, 0, 0, 0, 0, 0, 255};
+	IO::StmData::MemoryDataRef cmykSamplesStream(Data::ByteArrayR(cmykSamples, sizeof(cmykSamples)));
+	NN<Media::PDFObject> cmykFunction = pdf.AddObject(10);
+	cmykFunction->SetParameter(Media::PDFParameter::Parse(CSTR("/FunctionType 0 /Domain [0 1] /Range [0 1 0 1 0 1 0 .5] /Size [2] /BitsPerSample 8")));
+	cmykFunction->SetStream(cmykSamplesStream, 0, sizeof(cmykSamples));
+	IO::StmData::MemoryDataRef cmykColorSpace(Data::ByteArrayR(UTF8STRC("[/Separation /Black 9 0 R 10 0 R]")));
+	pdf.AddObject(11)->SetData(cmykColorSpace, 0, cmykColorSpace.GetDataSize());
+	imageObj->SetParameter(Media::PDFParameter::Parse(CSTR("/Subtype /Image /Width 3 /Height 1 /BitsPerComponent 8 /ColorSpace 11 0 R")));
+	if (!Media::PDFImage::Parse(pdf, 1, parsers).SetTo(images))
+	{
+		printf("PDF Separation ICC CMYK sampled image creation test failed\r\n");
+		return 1;
+	}
+	ok = images->GetImage2(0, 0).SetTo(image) && image->GetImageType() == Media::ImageType::Raster &&
+		NN<Media::RasterImage>::ConvertFrom(image)->GetImageClass() == Media::RasterImage::ImageClass::StaticImage;
+	if (ok)
+	{
+		staticImage = NN<Media::StaticImage>::ConvertFrom(NN<Media::RasterImage>::ConvertFrom(image));
+		ok = staticImage->data[0] == 255 && staticImage->data[1] == 255 && staticImage->data[2] == 255 &&
+			staticImage->data[3] == 191 && staticImage->data[4] == 191 && staticImage->data[5] == 191 &&
+			staticImage->data[6] == 128 && staticImage->data[7] == 128 && staticImage->data[8] == 128 &&
+			staticImage->info.color.GetRAWICC().IsNull();
+	}
+	images.Delete();
+	if (!ok)
+	{
+		printf("PDF Separation sampled default Decode test failed\r\n");
+		return 1;
+	}
+	cmykICCObj->SetParameter(Media::PDFParameter::Parse(CSTR("/N 4 /Alternate /DeviceRGB")));
+	if (Media::PDFImage::Parse(pdf, 1, parsers).SetTo(images))
+	{
+		images.Delete();
+		printf("PDF Separation invalid ICC alternate test failed\r\n");
+		return 1;
+	}
+	cmykICCObj->SetParameter(Media::PDFParameter::Parse(CSTR("/N 4 /Alternate /DeviceCMYK")));
+	cmykICCObj->SetStream(cmykICCStream, 0, sizeof(cmykICC) - 1);
+	if (Media::PDFImage::Parse(pdf, 1, parsers).SetTo(images))
+	{
+		images.Delete();
+		printf("PDF Separation truncated CMYK ICC test failed\r\n");
+		return 1;
+	}
+	cmykICCObj->SetStream(cmykICCStream, 0, sizeof(cmykICC));
+	cmykFunction->SetParameter(Media::PDFParameter::Parse(CSTR("/FunctionType 0 /Domain [0 1] /Range [0 1 0 1 0 1 0 1] /Size [2] /BitsPerSample 8 /Order 3")));
+	if (Media::PDFImage::Parse(pdf, 1, parsers).SetTo(images))
+	{
+		images.Delete();
+		printf("PDF Separation unsupported sampled interpolation test failed\r\n");
+		return 1;
+	}
+
+	NN<Media::PDFObject> calculatorFunction = pdf.AddObject(6);
+	calculatorFunction->SetParameter(Media::PDFParameter::Parse(CSTR("/FunctionType 4 /Domain [0 1] /Range [0 1 0 1 0 1 0 1]")));
+	IO::StmData::MemoryDataRef calculatorStream(Data::ByteArrayR(UTF8STRC("{dup 0 mul exch dup 0 mul exch dup 0 mul exch 1 mul}")));
+	calculatorFunction->SetStream(calculatorStream, 0, calculatorStream.GetDataSize());
+	IO::StmData::MemoryDataRef calculatorColorSpace(Data::ByteArrayR(UTF8STRC("[ /Separation /Spot /DeviceCMYK 6 0 R ]")));
+	pdf.AddObject(7)->SetData(calculatorColorSpace, 0, calculatorColorSpace.GetDataSize());
+	imageObj->SetParameter(Media::PDFParameter::Parse(CSTR("/Subtype /Image /Width 3 /Height 1 /BitsPerComponent 8 /ColorSpace 7 0 R")));
+	if (!Media::PDFImage::Parse(pdf, 1, parsers).SetTo(images) ||
+		!images->GetImage2(0, 0).SetTo(image) ||
+		image->GetImageType() != Media::ImageType::Raster ||
+		NN<Media::RasterImage>::ConvertFrom(image)->GetImageClass() != Media::RasterImage::ImageClass::StaticImage)
+	{
+		printf("PDF Separation calculator image creation test failed\r\n");
+		return 1;
+	}
+	staticImage = NN<Media::StaticImage>::ConvertFrom(NN<Media::RasterImage>::ConvertFrom(image));
+	ok = staticImage->data[0] == 255 && staticImage->data[1] == 255 && staticImage->data[2] == 255 &&
+		staticImage->data[3] == 127 && staticImage->data[4] == 127 && staticImage->data[5] == 127 &&
+		staticImage->data[6] == 0 && staticImage->data[7] == 0 && staticImage->data[8] == 0;
+	images.Delete();
+	if (!ok)
+	{
+		printf("PDF Separation calculator tint transform test failed\r\n");
+		return 1;
+	}
+
+	imageObj->SetParameter(Media::PDFParameter::Parse(CSTR("/Subtype /Image /Width 3 /Height 1 /BitsPerComponent 8 /ColorSpace [/Separation /Spot /DeviceRGB << /FunctionType 0 /N 1 >>]")));
+	if (Media::PDFImage::Parse(pdf, 1, parsers).SetTo(images))
+	{
+		images.Delete();
+		printf("PDF Separation unsupported tint function test failed\r\n");
+		return 1;
+	}
+	return 0;
+}
+
 Int32 PDFICCImageTest()
 {
 	NN<Text::String> name = Text::String::New(UTF8STRC("icc-test.pdf"));
@@ -949,6 +1140,9 @@ Int32 PDFObjectStreamTest()
 
 Int32 PDFStreamTest()
 {
+	Int32 separationResult = PDFSeparationImageTest();
+	if (separationResult != 0)
+		return separationResult;
 	Int32 iccResult = PDFICCImageTest();
 	if (iccResult != 0)
 		return iccResult;
@@ -1102,7 +1296,7 @@ Int32 PDFStreamTest()
 
 Int32 PDFSingleTest()
 {
-	Text::CStringNN fileName = CSTR("/mnt/QDisk1/Data/BookFile/106.pdf");
+	Text::CStringNN fileName = CSTR("/mnt/QDisk1/Data/BookFile/371.pdf");
 	Parser::FullParserList parsers;
 	Parser::FileParser::PDFParser parser;
 	NN<IO::ParsedObject> pobj;
@@ -1272,17 +1466,24 @@ Int32 PDFAllTest()
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
+	UIntOS testType = 0;
 	UIntOS argc;
 	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
-	if (argc == 2 && Text::StrEqualsC(argv[1], Text::StrCharCnt(argv[1]), UTF8STRC("--self-test")))
+	if (argc == 2)
 	{
-		Int32 result = CCITTFaxTest();
-		if (result != 0) return result;
-		result = JBIG2Test();
-		if (result != 0) return result;
-		return PDFStreamTest();
+		if (Text::StrEqualsC(argv[1], Text::StrCharCnt(argv[1]), UTF8STRC("--self-test")))
+		{
+			Int32 result = CCITTFaxTest();
+			if (result != 0) return result;
+			result = JBIG2Test();
+			if (result != 0) return result;
+			return PDFStreamTest();
+		}
+		else
+		{
+			Text::StrToUIntOS(argv[1], testType);
+		}
 	}
-	UIntOS testType = 0;
 	switch (testType)
 	{
 	case 0:

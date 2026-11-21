@@ -192,7 +192,7 @@ Bool Media::PDFUtil::ValidateIndexedICC(Data::ByteArrayR bytes)
 	return true;
 }
 
-Bool Media::PDFUtil::ResolveIndexedBase(NN<Media::PDFDocument> doc, Text::CStringNN base, UIntOS &components, NN<Media::ColorProfile> color)
+Bool Media::PDFUtil::ResolveIndexedBase(NN<Media::PDFDocument> doc, Text::CStringNN base, UIntOS &components, NN<Media::ColorProfile> color, Bool allowICCDeviceAlternate)
 {
 	Optional<Text::String> owned = nullptr;
 	UIntOS depth = 0;
@@ -238,14 +238,42 @@ Bool Media::PDFUtil::ResolveIndexedBase(NN<Media::PDFDocument> doc, Text::CStrin
 			SkipIndexedWhitespace(str, base.leng, pos);
 			if (pos != base.leng || !doc->GetObjectById(profileId).SetTo(profileObj) ||
 				!profileObj->GetParameter().SetTo(params) || !params->GetEntryValue(CSTR("N")).SetTo(n) ||
-				!n->ToUIntOS(components) || components != 3 || !profileObj->GetData().SetTo(data) ||
+				!n->ToUIntOS(components) || (components != 3 && !(allowICCDeviceAlternate && components == 4)) || !profileObj->GetData().SetTo(data) ||
 				data->GetDataSize() > 16777216)
 				break;
 			if (params->GetEntryValue(CSTR("Range")).SetTo(range) && !IsDefaultDecodeArray(range->ToCString(), components))
 				break;
 			Data::ByteBuffer bytes((UIntOS)data->GetDataSize());
-			if (data->GetRealData(0, bytes.GetSize(), bytes) != bytes.GetSize() ||
-				!ValidateIndexedICC(bytes) || !Media::ICCProfile::Parse(bytes).SetTo(profile))
+			if (data->GetRealData(0, bytes.GetSize(), bytes) != bytes.GetSize())
+				break;
+			if (components == 4)
+			{
+				NN<Text::String> alternate;
+				if ((params->GetEntryValue(CSTR("Alternate")).SetTo(alternate) && !alternate->Equals(UTF8STRC("/DeviceCMYK"))) ||
+					bytes.GetSize() < 132 || bytes.ReadMU32(0) != bytes.GetSize() ||
+					bytes.ReadMU32(16) != 0x434d594b || bytes.ReadMU32(36) != 0x61637370)
+					break;
+				UIntOS tagCount = bytes.ReadMU32(128);
+				if (tagCount > (bytes.GetSize() - 132) / 12)
+					break;
+				Bool validTags = true;
+				for (UIntOS i = 0; i < tagCount; i++)
+				{
+					UIntOS offset = bytes.ReadMU32(132 + i * 12 + 4);
+					UIntOS length = bytes.ReadMU32(132 + i * 12 + 8);
+					if (offset > bytes.GetSize() || length > bytes.GetSize() - offset)
+					{
+						validTags = false;
+						break;
+					}
+				}
+				if (!validTags)
+					break;
+				printf("PDFUtil: CMYK ICC color conversion unavailable; using DeviceCMYK alternate approximation\r\n");
+				OPTSTR_DEL(owned);
+				return true;
+			}
+			if (!ValidateIndexedICC(bytes) || !Media::ICCProfile::Parse(bytes).SetTo(profile))
 				break;
 			Bool ok = profile->SetToColorProfile(color);
 			profile.Delete();

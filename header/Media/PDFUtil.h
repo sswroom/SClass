@@ -19,7 +19,7 @@ namespace Media
 		static Bool ParseIndexedUInt(UnsafeArray<const UTF8Char> str, UIntOS start, UIntOS end, UIntOS &value);
 		static Bool ReadIndexedReference(UnsafeArray<const UTF8Char> str, UIntOS length, UIntOS &pos, UInt32 &id);
 		static Bool ValidateIndexedICC(Data::ByteArrayR bytes);
-		static Bool ResolveIndexedBase(NN<Media::PDFDocument> doc, Text::CStringNN base, UIntOS &components, NN<Media::ColorProfile> color);
+		static Bool ResolveIndexedBase(NN<Media::PDFDocument> doc, Text::CStringNN base, UIntOS &components, NN<Media::ColorProfile> color, Bool allowICCDeviceAlternate = false);
 		static Bool ResolveReference(NN<Media::PDFDocument> doc, NN<Text::StringBuilderUTF8> sbRef);
 	};
 }
