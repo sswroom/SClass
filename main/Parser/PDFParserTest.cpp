@@ -563,6 +563,156 @@ Int32 PDFFlatePredictorTest()
 	return 0;
 }
 
+Int32 PDFICCImageTest()
+{
+	NN<Text::String> name = Text::String::New(UTF8STRC("icc-test.pdf"));
+	Media::PDFDocument pdf(name, CSTR("1.4"));
+	name->Release();
+	NN<Media::PDFObject> imageObj = pdf.AddObject(1);
+	NN<Media::PDFObject> iccObj = pdf.AddObject(2);
+	UnsafeArray<const UInt8> icc = Media::ICCProfile::GetSRGBICCData();
+	IO::StmData::MemoryDataRef iccStream(Data::ByteArrayR(icc, ReadMUInt32(icc.Ptr())));
+	iccObj->SetParameter(Media::PDFParameter::Parse(CSTR("/N 3")));
+	iccObj->SetStream(iccStream, 0, iccStream.GetDataSize());
+	IO::StmData::MemoryDataRef colorSpace(Data::ByteArrayR(UTF8STRC("[ /ICCBased 2 0 R ]")));
+	NN<Media::PDFObject> colorObj = pdf.AddObject(3);
+	colorObj->SetData(colorSpace, 0, colorSpace.GetDataSize());
+	Parser::FullParserList parsers;
+	const UInt8 packed1[] = {0x90, 0x24};
+	const UInt8 packed2[] = {0xd3, 0x40, 0x1c, 0x70};
+	const UInt8 packed4[] = {0xf8, 0x0f, 0x80, 0x08, 0xf0, 0x8f};
+	const UInt8 packed8[] = {255,128,0,255,128,0, 0,128,255,0,128,255, 10};
+	const UInt8 packed16[] = {255,255,128,128,0,0,255,255,128,128,0,0, 0,0,128,128,255,255,0,0,128,128,255,255};
+	const UInt8 *samples[] = {packed1, packed2, packed4, packed8, packed16};
+	UIntOS sizes[] = {sizeof(packed1), sizeof(packed2), sizeof(packed4), sizeof(packed8), sizeof(packed16)};
+	Text::CStringNN dictionaries[] = {
+		CSTR("/Subtype /Image /Width 2 /Height 2 /BitsPerComponent 1 /ColorSpace [/ICCBased 2 0 R]"),
+		CSTR("/Subtype /Image /Width 2 /Height 2 /BitsPerComponent 2 /ColorSpace 3 0 R"),
+		CSTR("/Subtype /Image /Width 2 /Height 2 /BitsPerComponent 4 /ColorSpace [/ICCBased 2 0 R]"),
+		CSTR("/Subtype /Image /Width 2 /Height 2 /BitsPerComponent 8 /ColorSpace 3 0 R /Decode [0 1 0 1 0 1]"),
+		CSTR("/Subtype /Image /Width 2 /Height 2 /BitsPerComponent 16 /ColorSpace [/ICCBased 2 0 R]")
+	};
+	UInt8 middle[] = {0, 85, 136, 128, 128};
+	for (UIntOS i = 0; i < 5; i++)
+	{
+		IO::StmData::MemoryDataRef stream(Data::ByteArrayR(samples[i], sizes[i]));
+		imageObj->SetStream(stream, 0, sizes[i]);
+		imageObj->SetParameter(Media::PDFParameter::Parse(dictionaries[i]));
+		NN<Media::ImageList> images;
+		NN<Media::Image> image;
+		if (!Media::PDFImage::Parse(pdf, 1, parsers).SetTo(images))
+		{
+			printf("PDF ICCBased image creation test failed for case %d\r\n", (Int32)i);
+			return 1;
+		}
+		Bool ok = images->GetImage2(0, 0).SetTo(image) && image->GetImageType() == Media::ImageType::Raster &&
+			NN<Media::RasterImage>::ConvertFrom(image)->GetImageClass() == Media::RasterImage::ImageClass::StaticImage;
+		if (ok)
+		{
+			NN<Media::StaticImage> img = NN<Media::StaticImage>::ConvertFrom(NN<Media::RasterImage>::ConvertFrom(image));
+			UIntOS bpl = img->GetDataBpl();
+			ok = img->info.color.GetRAWICC().NotNull() && img->info.pf == Media::PixelFormat::PF_B8G8R8 &&
+				img->data[0] == 0 && img->data[1] == middle[i] && img->data[2] == 255 &&
+				img->data[3] == 0 && img->data[4] == middle[i] && img->data[5] == 255 &&
+				img->data[bpl] == 255 && img->data[bpl + 1] == middle[i] && img->data[bpl + 2] == 0 &&
+				img->data[bpl + 3] == 255 && img->data[bpl + 4] == middle[i] && img->data[bpl + 5] == 0;
+		}
+		images.Delete();
+		if (!ok)
+		{
+			printf("PDF ICCBased image sample test failed for case %d\r\n", (Int32)i);
+			return 1;
+		}
+	}
+	static const UInt8 compressed[] = {0x78,0x9c,0x63,0xe0,0x12,0x91,0x63,0x62,0x64,0x62,0x06,0x00,0x01,0x6e,0x00,0x45};
+	IO::StmData::MemoryDataRef compressedStream(Data::ByteArrayR(compressed, sizeof(compressed)));
+	imageObj->SetStream(compressedStream, 0, sizeof(compressed));
+	imageObj->SetParameter(Media::PDFParameter::Parse(CSTR("/Subtype /Image /Width 1 /Height 2 /BitsPerComponent 8 /ColorSpace 3 0 R /Filter /FlateDecode /DecodeParms << /Predictor 15 /Colors 3 /Columns 1 >>")));
+	NN<Media::ImageList> images;
+	NN<Media::Image> image;
+	if (!Media::PDFImage::Parse(pdf, 1, parsers).SetTo(images))
+	{
+		printf("PDF ICCBased Flate predictor image test failed\r\n");
+		return 1;
+	}
+	Bool ok = images->GetImage2(0, 0).SetTo(image) && image->GetImageType() == Media::ImageType::Raster &&
+		NN<Media::RasterImage>::ConvertFrom(image)->GetImageClass() == Media::RasterImage::ImageClass::StaticImage;
+	if (ok)
+	{
+		NN<Media::StaticImage> img = NN<Media::StaticImage>::ConvertFrom(NN<Media::RasterImage>::ConvertFrom(image));
+		UIntOS bpl = img->GetDataBpl();
+		ok = img->info.color.GetRAWICC().NotNull() && img->data[0] == 30 && img->data[1] == 20 && img->data[2] == 10 &&
+			img->data[bpl] == 33 && img->data[bpl + 1] == 22 && img->data[bpl + 2] == 11;
+	}
+	images.Delete();
+	if (!ok)
+	{
+		printf("PDF ICCBased Flate predictor pixel test failed\r\n");
+		return 1;
+	}
+	iccObj->SetParameter(Media::PDFParameter::Parse(CSTR("/N 3 /Range [0 1 0 1 0 1]")));
+	if (!Media::PDFImage::Parse(pdf, 1, parsers).SetTo(images))
+	{
+		printf("PDF ICCBased default Range test failed\r\n");
+		return 1;
+	}
+	images.Delete();
+	IO::StmData::MemoryDataRef shortStream(Data::ByteArrayR(packed8, 2));
+	imageObj->SetStream(shortStream, 0, 2);
+	imageObj->SetParameter(Media::PDFParameter::Parse(dictionaries[3]));
+	if (Media::PDFImage::Parse(pdf, 1, parsers).SetTo(images))
+	{
+		images.Delete();
+		printf("PDF ICCBased truncated image test failed\r\n");
+		return 1;
+	}
+	IO::StmData::MemoryDataRef stream(Data::ByteArrayR(packed8, sizeof(packed8)));
+	imageObj->SetStream(stream, 0, sizeof(packed8));
+	imageObj->SetParameter(Media::PDFParameter::Parse(CSTR("/Subtype /Image /Width 2 /Height 2 /BitsPerComponent 8 /ColorSpace [/ICCBased 2 0 R] /Decode [1 0 0 1 0 1]")));
+	if (Media::PDFImage::Parse(pdf, 1, parsers).SetTo(images))
+	{
+		images.Delete();
+		printf("PDF ICCBased unsupported Decode test failed\r\n");
+		return 1;
+	}
+	iccObj->SetParameter(Media::PDFParameter::Parse(CSTR("/N 4")));
+	imageObj->SetParameter(Media::PDFParameter::Parse(dictionaries[3]));
+	if (Media::PDFImage::Parse(pdf, 1, parsers).SetTo(images))
+	{
+		images.Delete();
+		printf("PDF ICCBased component mismatch test failed\r\n");
+		return 1;
+	}
+	iccObj->SetParameter(Media::PDFParameter::Parse(CSTR("/N 3 /Range [0 1 0 1 0 2]")));
+	if (Media::PDFImage::Parse(pdf, 1, parsers).SetTo(images))
+	{
+		images.Delete();
+		printf("PDF ICCBased unsupported Range test failed\r\n");
+		return 1;
+	}
+	iccObj->SetParameter(Media::PDFParameter::Parse(CSTR("/N 3")));
+	IO::StmData::MemoryDataRef badICC(Data::ByteArrayR(icc, 100));
+	iccObj->SetStream(badICC, 0, 100);
+	if (Media::PDFImage::Parse(pdf, 1, parsers).SetTo(images))
+	{
+		images.Delete();
+		printf("PDF ICCBased truncated profile test failed\r\n");
+		return 1;
+	}
+	IO::StmData::MemoryDataRef cycle(Data::ByteArrayR(UTF8STRC("3 0 R")));
+	colorObj->SetData(cycle, 0, cycle.GetDataSize());
+	imageObj = pdf.AddObject(4);
+	imageObj->SetStream(stream, 0, sizeof(packed8));
+	imageObj->SetParameter(Media::PDFParameter::Parse(dictionaries[3]));
+	if (Media::PDFImage::Parse(pdf, 4, parsers).SetTo(images))
+	{
+		images.Delete();
+		printf("PDF ICCBased cyclic reference test failed\r\n");
+		return 1;
+	}
+	return 0;
+}
+
 Int32 PDFIndexedImageTest()
 {
 	static const UInt8 imageData[] = {0x10, 0xB0};
@@ -799,6 +949,9 @@ Int32 PDFObjectStreamTest()
 
 Int32 PDFStreamTest()
 {
+	Int32 iccResult = PDFICCImageTest();
+	if (iccResult != 0)
+		return iccResult;
 	Int32 indexedResult = PDFIndexedImageTest();
 	if (indexedResult != 0)
 		return indexedResult;
@@ -949,17 +1102,7 @@ Int32 PDFStreamTest()
 
 Int32 PDFSingleTest()
 {
-/*	Int32 testResult = PDFStreamTest();
-	if (testResult != 0)
-		return testResult;
-	testResult = CCITTFaxTest();
-	if (testResult != 0)
-		return testResult;
-	testResult = JBIG2Test();
-	if (testResult != 0)
-		return testResult;*/
-
-	Text::CStringNN fileName = CSTR("/mnt/QDisk1/Data/BookFile/491.pdf");
+	Text::CStringNN fileName = CSTR("/mnt/QDisk1/Data/BookFile/106.pdf");
 	Parser::FullParserList parsers;
 	Parser::FileParser::PDFParser parser;
 	NN<IO::ParsedObject> pobj;
@@ -1129,7 +1272,17 @@ Int32 PDFAllTest()
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UIntOS testType = 1;
+	UIntOS argc;
+	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
+	if (argc == 2 && Text::StrEqualsC(argv[1], Text::StrCharCnt(argv[1]), UTF8STRC("--self-test")))
+	{
+		Int32 result = CCITTFaxTest();
+		if (result != 0) return result;
+		result = JBIG2Test();
+		if (result != 0) return result;
+		return PDFStreamTest();
+	}
+	UIntOS testType = 0;
 	switch (testType)
 	{
 	case 0:
@@ -1140,6 +1293,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return CCITTFaxTest();
 	case 3:
 		return PDFStreamTest();
+	case 4:
+		return JBIG2Test();
 	default:
 		return 0;
 	}

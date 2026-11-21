@@ -34,6 +34,18 @@ cd build/FreeBSD_x64
 gmake smake
 ```
 
+## PDF parser tests
+
+In the Linux debug build, run `smake PDFParserTest` followed by
+`./bin/PDFParserTest --self-test` to run the synthetic PDF regression tests.
+Running without arguments scans the configured local PDF corpus.
+
+Raw ICCBased PDF images support RGB matrix/TRC profiles with default component
+ranges and Decode arrays, at 1, 2, 4, 8, or 16 bits per component. Samples
+are stored as 8-bit RGB. Other ICCBased profiles or non-default ranges and
+Decode arrays are reported as unsupported rather than being silently
+misinterpreted.
+
 
 ## Directory Description
 ### build

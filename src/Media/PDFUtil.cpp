@@ -74,6 +74,27 @@ Bool Media::PDFUtil::IsReverseDecodeArray(Text::CStringNN value)
 		IsPDFDecodeEndpoint(str, secondStart, secondEnd, 0);
 }
 
+Bool Media::PDFUtil::IsDefaultDecodeArray(Text::CStringNN value, UIntOS components)
+{
+	UnsafeArray<const UTF8Char> str = value.v;
+	UIntOS pos = 0;
+	SkipPDFWhitespace(str, value.leng, pos);
+	if (pos >= value.leng || str[pos++] != '[')
+		return false;
+	for (UIntOS i = 0; i < components * 2; i++)
+	{
+		UIntOS start;
+		UIntOS end;
+		if (!ReadPDFNumberToken(str, value.leng, pos, start, end) || !IsPDFDecodeEndpoint(str, start, end, (UInt8)(i & 1)))
+			return false;
+	}
+	SkipPDFWhitespace(str, value.leng, pos);
+	if (pos >= value.leng || str[pos++] != ']')
+		return false;
+	SkipPDFWhitespace(str, value.leng, pos);
+	return pos == value.leng;
+}
+
 void Media::PDFUtil::SkipIndexedWhitespace(UnsafeArray<const UTF8Char> str, UIntOS length, UIntOS &pos)
 {
 	while (pos < length && (str[pos] == ' ' || str[pos] == '\t' || str[pos] == '\r' || str[pos] == '\n' || str[pos] == '\f'))
@@ -206,6 +227,7 @@ Bool Media::PDFUtil::ResolveIndexedBase(NN<Media::PDFDocument> doc, Text::CStrin
 			NN<Media::PDFObject> profileObj;
 			NN<Media::PDFParameter> params;
 			NN<Text::String> n;
+			NN<Text::String> range;
 			NN<IO::StreamData> data;
 			NN<Media::ICCProfile> profile;
 			if (!ReadIndexedReference(str, base.leng, pos, profileId))
@@ -218,6 +240,8 @@ Bool Media::PDFUtil::ResolveIndexedBase(NN<Media::PDFDocument> doc, Text::CStrin
 				!profileObj->GetParameter().SetTo(params) || !params->GetEntryValue(CSTR("N")).SetTo(n) ||
 				!n->ToUIntOS(components) || components != 3 || !profileObj->GetData().SetTo(data) ||
 				data->GetDataSize() > 16777216)
+				break;
+			if (params->GetEntryValue(CSTR("Range")).SetTo(range) && !IsDefaultDecodeArray(range->ToCString(), components))
 				break;
 			Data::ByteBuffer bytes((UIntOS)data->GetDataSize());
 			if (data->GetRealData(0, bytes.GetSize(), bytes) != bytes.GetSize() ||
@@ -250,4 +274,71 @@ Bool Media::PDFUtil::ResolveIndexedBase(NN<Media::PDFDocument> doc, Text::CStrin
 	}
 	OPTSTR_DEL(owned);
 	return false;
+}
+
+Bool Media::PDFUtil::ResolveReference(NN<Media::PDFDocument> doc, NN<Text::StringBuilderUTF8> sbRef)
+{
+	UIntOS refDepth = 0;
+	while (sbRef->EndsWith(CSTR(" R")))
+	{
+		if (refDepth++ >= 32)
+		{
+			printf("PDFUtil: Reference chain too deep\r\n");
+			return false;
+		}
+		UTF8Char sbuff[32];
+		UnsafeArray<UTF8Char> sptr;
+		if (sbRef->GetLength() > 20)
+		{
+			printf("PDFUtil: Reference too long: %s\r\n", sbRef->v.Ptr());
+			return false;
+		}
+		sptr = sbRef->ConcatTo(sbuff);
+		sptr -= 2;
+		sptr[0] = 0;
+		UIntOS i = Text::StrLastIndexOfC(sbuff, (UIntOS)(sptr - sbuff), ' ');
+		if (i == INVALID_INDEX)
+		{
+			printf("PDFUtil: Invalid reference: %s\r\n", sbRef->v.Ptr());
+			return false;
+		}
+		sbuff[i] = 0;
+		UInt32 id;
+		if (!Text::StrToUInt32(sbuff, id))
+		{	
+			printf("PDFUtil: Invalid reference ID: %s\r\n", sbuff);
+			break;
+		}
+		NN<Media::PDFObject> refObj;
+		if (!doc->GetObjectById(id).SetTo(refObj))
+		{
+			printf("PDFUtil: Failed to get reference object: %s\r\n", sbuff);
+			return false;
+		}
+		NN<IO::StreamData> refData;
+		if (!refObj->GetData().SetTo(refData))
+		{
+			printf("PDFUtil: Failed to get reference data: %s\r\n", sbuff);
+			return false;
+		}
+		if (refData->GetDataSize() > 1048576)
+		{
+			printf("PDFUtil: Reference too large\r\n");
+			return false;
+		}
+		UnsafeArray<UInt8> refArr = MemAllocArr(UInt8, (UIntOS)refData->GetDataSize() + 1);
+		if (refData->GetRealData(0, (UIntOS)refData->GetDataSize(), Data::ByteArray(refArr, (UIntOS)refData->GetDataSize())) != refData->GetDataSize())
+		{
+			printf("PDFUtil: Unable to read reference\r\n");
+			MemFreeArr(refArr);
+			return false;
+		}
+		refArr[(UIntOS)refData->GetDataSize()] = 0;
+		Text::StrReplace(refArr, '\r', ' ');
+		Text::StrReplace(refArr, '\n', ' ');
+		sbRef->ClearStr();
+		sbRef->AppendC(refArr, (UIntOS)refData->GetDataSize());
+		MemFreeArr(refArr);
+	}
+	return true;
 }

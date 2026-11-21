@@ -8,6 +8,7 @@
 #include "IO/StmData/MemoryDataCopy.h"
 #include "Media/PDFDocument.h"
 #include "Media/PDFObject.h"
+#include "Media/PDFUtil.h"
 #include "Text/TextBinEnc/ASCII85Enc.h"
 
 Bool Media::PDFObject::IsSingleFilter(Text::CStringNN filter, Text::CStringNN target)
@@ -527,14 +528,17 @@ Optional<IO::StreamData> Media::PDFObject::GetData()
 	}
 	if (this->parameter.SetTo(parameter) && parameter->GetEntryValue(CSTR("Filter")).SetTo(filter))
 	{
-		if (filter->IndexOf(UTF8STRC("/LZWDecode")) != INVALID_INDEX)
+		Text::StringBuilderUTF8 sbFilter;
+		sbFilter.Append(filter);
+		PDFUtil::ResolveReference(this->document, sbFilter);
+		if (sbFilter.IndexOf(UTF8STRC("/LZWDecode")) != INVALID_INDEX)
 		{
 			UIntOS earlyChange = 1;
 			UIntOS predictor = 1;
 			UIntOS colors = 1;
 			UIntOS columns = 1;
 			UIntOS bits = 8;
-			Bool valid = IsSingleFilter(filter->ToCString(), CSTR("/LZWDecode")) &&
+			Bool valid = IsSingleFilter(sbFilter.ToCString(), CSTR("/LZWDecode")) &&
 				this->ReadPredictorParams(parameter, earlyChange, predictor, colors, columns, bits);
 			IO::MemoryStream decoded;
 			IO::MemoryStream result;
@@ -549,14 +553,14 @@ Optional<IO::StreamData> Media::PDFObject::GetData()
 			}
 			NEW_CLASSOPT(this->decFd, IO::StmData::MemoryDataCopy(result.GetArray()));
 		}
-		else if (filter->IndexOf(UTF8STRC("/FlateDecode")) != INVALID_INDEX)
+		else if (sbFilter.IndexOf(UTF8STRC("/FlateDecode")) != INVALID_INDEX)
 		{
 			UIntOS earlyChange = 1;
 			UIntOS predictor = 1;
 			UIntOS colors = 1;
 			UIntOS columns = 1;
 			UIntOS bits = 8;
-			if (!IsSingleFilter(filter->ToCString(), CSTR("/FlateDecode")) ||
+			if (!IsSingleFilter(sbFilter.ToCString(), CSTR("/FlateDecode")) ||
 				!this->ReadPredictorParams(parameter, earlyChange, predictor, colors, columns, bits))
 			{
 #if defined(VERBOSE)
@@ -612,13 +616,13 @@ Optional<IO::StreamData> Media::PDFObject::GetData()
 			if (!decompressed)
 			{
 #if defined(VERBOSE)
-				printf("PDFObject: Error in decompressing PDF object %d data with %s\r\n", this->id, filter->v.Ptr());
+				printf("PDFObject: Error in decompressing PDF object %d data with %s\r\n", this->id, sbFilter.v.Ptr());
 #endif
 				decryptedFd.Delete();
 				return nullptr;
 			}
 		}
-		else if (filter->IndexOf(UTF8STRC("/ASCII85Decode")) != INVALID_INDEX)
+		else if (sbFilter.IndexOf(UTF8STRC("/ASCII85Decode")) != INVALID_INDEX)
 		{
 			Text::TextBinEnc::ASCII85Enc ascii85Enc;
 			UIntOS len = fd->GetDataSize();
@@ -630,24 +634,24 @@ Optional<IO::StreamData> Media::PDFObject::GetData()
 			MemFreeArr(srcArr);
 			MemFreeArr(decArr);
 		}
-		else if (filter->IndexOf(UTF8STRC("/DCTDecode")) != INVALID_INDEX)
+		else if (sbFilter.IndexOf(UTF8STRC("/DCTDecode")) != INVALID_INDEX)
 		{
 			this->decFd = decryptedFd;
 			return this->decFd.NotNull() ? this->decFd : this->fd;
 		}
-		else if (filter->IndexOf(UTF8STRC("/CCITTFaxDecode")) != INVALID_INDEX)
+		else if (sbFilter.IndexOf(UTF8STRC("/CCITTFaxDecode")) != INVALID_INDEX)
 		{
 			this->decFd = decryptedFd;
 			return this->decFd.NotNull() ? this->decFd : this->fd;
 		}
-		else if (filter->IndexOf(UTF8STRC("/JBIG2Decode")) != INVALID_INDEX)
+		else if (sbFilter.IndexOf(UTF8STRC("/JBIG2Decode")) != INVALID_INDEX)
 		{
 			this->decFd = decryptedFd;
 			return this->decFd.NotNull() ? this->decFd : this->fd;
 		}
 		else
 		{
-			printf("PDFObject: Unsupported filter: %s\r\n", filter->v.Ptr());
+			printf("PDFObject: Unsupported filter: %s\r\n", sbFilter.v.Ptr());
 			decryptedFd.Delete();
 			return nullptr;
 		}

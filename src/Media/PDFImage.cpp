@@ -28,7 +28,17 @@ Optional<Media::ImageList> Media::PDFImage::Parse(NN<Media::PDFDocument> pdf, UI
 	NN<Text::String> filter;
 	if (obj->GetData().SetTo(fd))
 	{
-		Bool hasFilter = obj->GetFilter().SetTo(filter);
+		Text::StringBuilderUTF8 sbFilter;
+		Bool hasFilter = false;
+		if (obj->GetFilter().SetTo(filter))
+		{
+			hasFilter = true;
+			sbFilter.Append(filter);
+			if (sbFilter.EndsWith(UTF8STRC(" R")))
+			{
+				
+			}
+		}
 		if (hasFilter && filter->IndexOf(UTF8STRC("/DCTDecode")) != INVALID_INDEX)
 		{
 			return Optional<Media::ImageList>::ConvertFrom(pdf->SetPObjName(parsers->ParseFileType(fd, IO::ParserType::ImageList), id, CSTR(".jpg")));
@@ -234,59 +244,14 @@ Optional<Media::ImageList> Media::PDFImage::Parse(NN<Media::PDFDocument> pdf, UI
 				printf("PDFImage: Creating image failed, invalid image parameters: bpc=%d, width=%d, height=%d\r\n", (Int32)bpc, (Int32)width, (Int32)height);
 				return nullptr;
 			}
-			if ((bpc == 1 || bpc == 2 || bpc == 4 || bpc == 8) && obj->GetColorSpace().SetTo(colorSpace))
+			if ((bpc == 1 || bpc == 2 || bpc == 4 || bpc == 8 || bpc == 16) && obj->GetColorSpace().SetTo(colorSpace))
 			{
-				Optional<Text::String> relStr = nullptr;
-				while (colorSpace->EndsWith(CSTR(" R")))
-				{
-					UTF8Char sbuff[32];
-					UnsafeArray<UTF8Char> sptr;
-					if (colorSpace->leng > 20)
-					{
-						printf("PDFImage: Color space reference too long: %s\r\n", colorSpace->v.Ptr());
-						break;
-					}
-					sptr = colorSpace->ConcatTo(sbuff);
-					sptr -= 2;
-					sptr[0] = 0;
-					UIntOS i = Text::StrLastIndexOfC(sbuff, (UIntOS)(sptr - sbuff), ' ');
-					if (i == INVALID_INDEX)
-					{
-						printf("PDFImage: Invalid color space reference: %s\r\n", colorSpace->v.Ptr());
-						break;
-					}
-					sbuff[i] = 0;
-					UInt32 id;
-					if (!Text::StrToUInt32(sbuff, id))
-					{	
-						printf("PDFImage: Invalid color space reference ID: %s\r\n", sbuff);
-						break;
-					}
-					NN<Media::PDFObject> refObj;
-					if (!pdf->GetObjectById(id).SetTo(refObj))
-					{
-						printf("PDFImage: Failed to get color space reference object: %s\r\n", sbuff);
-						break;
-					}
-					NN<IO::StreamData> refData;
-					if (!refObj->GetData().SetTo(refData))
-					{
-						printf("PDFImage: Failed to get color space reference data: %s\r\n", sbuff);
-						break;
-					}
-					UnsafeArray<UInt8> refArr = MemAllocArr(UInt8, (UIntOS)refData->GetDataSize() + 1);
-					refData->GetRealData(0, (UIntOS)refData->GetDataSize(), Data::ByteArray(refArr, (UIntOS)refData->GetDataSize()));
-					refArr[(UIntOS)refData->GetDataSize()] = 0;
-					Text::StrReplace(refArr, '\r', ' ');
-					Text::StrReplace(refArr, '\n', ' ');
-					colorSpace = Text::String::New(refArr, (UIntOS)refData->GetDataSize());
-					MemFreeArr(refArr);
-					OPTSTR_DEL(relStr);
-					relStr = colorSpace;
-				}
+				Text::StringBuilderUTF8 sbColorSpace;
+				sbColorSpace.Append(colorSpace);
+				PDFUtil::ResolveReference(pdf, sbColorSpace);
 
-				UnsafeArray<const UTF8Char> csStr = colorSpace->v;
-				UIntOS csLen = colorSpace->leng;
+				UnsafeArray<const UTF8Char> csStr = sbColorSpace.v;
+				UIntOS csLen = sbColorSpace.leng;
 				UIntOS csPos = 0;
 				PDFUtil::SkipIndexedWhitespace(csStr, csLen, csPos);
 				if (csPos < csLen && csStr[csPos] == '[')
@@ -294,7 +259,60 @@ Optional<Media::ImageList> Media::PDFImage::Parse(NN<Media::PDFDocument> pdf, UI
 					csPos++;
 					UIntOS kindStart;
 					UIntOS kindEnd;
-					if (PDFUtil::ReadIndexedToken(csStr, csLen, csPos, kindStart, kindEnd) &&
+					Bool hasKind = PDFUtil::ReadIndexedToken(csStr, csLen, csPos, kindStart, kindEnd);
+					if (hasKind && Text::CStringNN(csStr + kindStart, kindEnd - kindStart).Equals(CSTR("/ICCBased")))
+					{
+						Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
+						UIntOS components = 0;
+						NN<Media::PDFParameter> params;
+						NN<Text::String> decode;
+						if (!PDFUtil::ResolveIndexedBase(pdf, sbColorSpace.ToCString(), components, color) || components != 3 ||
+							(obj->GetParameter().SetTo(params) && params->GetEntryValue(CSTR("Decode")).SetTo(decode) &&
+								!PDFUtil::IsDefaultDecodeArray(decode->ToCString(), components)))
+						{
+							printf("PDFImage: Unsupported or invalid ICCBased color space or Decode array\r\n");
+							return nullptr;
+						}
+						if (width > (INVALID_INDEX - 7) / (3 * bpc) || width > INVALID_INDEX / 3 ||
+							height > (INVALID_INDEX - 4) / (width * 3))
+						{
+							printf("PDFImage: ICCBased image dimensions are too large\r\n");
+							return nullptr;
+						}
+						UIntOS rowSize = (width * 3 * bpc + 7) / 8;
+						if (height > INVALID_INDEX / rowSize || fd->GetDataSize() < rowSize * height)
+						{
+							printf("PDFImage: ICCBased image has unexpected data size\r\n");
+							return nullptr;
+						}
+						NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UIntOS>(width, height), 0, 24, Media::PixelFormat::PF_B8G8R8, width * height * 3, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AlphaType::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+						Data::ByteBuffer rowData(rowSize);
+						UInt32 maxSample = ((UInt32)1 << bpc) - 1;
+						for (UIntOS y = 0; y < height; y++)
+						{
+							if (fd->GetRealData(y * rowSize, rowSize, rowData) != rowSize)
+							{
+								printf("PDFImage: Unable to read ICCBased image data\r\n");
+								simg.Delete();
+								return nullptr;
+							}
+							UnsafeArray<UInt8> dest = simg->data + y * simg->GetDataBpl();
+							for (UIntOS x = 0; x < width; x++)
+							{
+								for (UIntOS c = 0; c < 3; c++)
+								{
+									UIntOS bitPos = (x * 3 + c) * bpc;
+									UInt32 sample = bpc == 16 ? ((UInt32)rowData[bitPos / 8] << 8) | rowData[bitPos / 8 + 1] :
+										(rowData[bitPos / 8] >> (8 - bpc - (bitPos & 7))) & maxSample;
+									dest[x * 3 + 2 - c] = (UInt8)((sample * 255 + maxSample / 2) / maxSample);
+								}
+							}
+						}
+						NEW_CLASSNN(imgList, Media::ImageList(CSTR("Image.icc")));
+						imgList->AddImage(simg, 0);
+						return imgList;
+					}
+					if (hasKind && bpc != 16 &&
 						(Text::CStringNN(csStr + kindStart, kindEnd - kindStart).Equals(CSTR("/Indexed")) ||
 							Text::CStringNN(csStr + kindStart, kindEnd - kindStart).Equals(CSTR("/I"))))
 					{
@@ -512,28 +530,25 @@ Optional<Media::ImageList> Media::PDFImage::Parse(NN<Media::PDFDocument> pdf, UI
 							valid = false;
 						if (!valid)
 						{
-							printf("PDFImage: Creating Indexed image failed, invalid color space or lookup table: %s\r\n", colorSpace->v.Ptr());
-							OPTSTR_DEL(relStr);
+							printf("PDFImage: Creating Indexed image failed, invalid color space or lookup table: %s\r\n", sbColorSpace.v.Ptr());
 							return nullptr;
 						}
 						UIntOS maxSample = ((UIntOS)1 << bpc) - 1;
 						if (high > maxSample)
 						{
 							printf("PDFImage: Creating Indexed image failed, hival exceeds sample range\r\n");
-							OPTSTR_DEL(relStr);
 							return nullptr;
 						}
 						if (width > (INVALID_INDEX - 7) / bpc)
 						{
-							OPTSTR_DEL(relStr);
+							printf("PDFImage: Creating Indexed image failed, width exceeds sample range\r\n");
 							return nullptr;
 						}
 						UIntOS rowSize = (width * bpc + 7) / 8;
 						if (height > INVALID_INDEX / rowSize || width > INVALID_INDEX / height ||
 							fd->GetDataSize() != rowSize * height)
 						{
-							printf("PDFImage: Creating Indexed image failed, unexpected data size\r\n");
-							OPTSTR_DEL(relStr);
+							printf("PDFImage: Creating Indexed image failed, unexpected data size: width=%llu, height=%llu, expected=%llu, actual=%llu\r\n", (UInt64)width, (UInt64)height, (UInt64)(rowSize * height), (UInt64)fd->GetDataSize());
 							return nullptr;
 						}
 						NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UIntOS>(width, height), 0, 8, Media::PixelFormat::PF_PAL_W8, width * height, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AlphaType::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
@@ -542,7 +557,7 @@ Optional<Media::ImageList> Media::PDFImage::Parse(NN<Media::PDFDocument> pdf, UI
 						if (!simg->pal.SetTo(pal) || fd->GetRealData(0, rowSize * height, imageData) != rowSize * height)
 						{
 							simg.Delete();
-							OPTSTR_DEL(relStr);
+							printf("PDFImage: Creating Indexed image failed, unable to set palette or read image data\r\n");
 							return nullptr;
 						}
 						UIntOS p = 0;
@@ -611,17 +626,15 @@ Optional<Media::ImageList> Media::PDFImage::Parse(NN<Media::PDFDocument> pdf, UI
 						{
 							printf("PDFImage: Creating Indexed image failed, sample exceeds hival\r\n");
 							simg.Delete();
-							OPTSTR_DEL(relStr);
 							return nullptr;
 						}
 						NEW_CLASSNN(imgList, Media::ImageList(CSTR("Image.indexed")));
 						imgList->AddImage(simg, 0);
-						OPTSTR_DEL(relStr);
 						return imgList;
 					}
 				}
 
-				if (bpc == 1 && (colorSpace->Equals(UTF8STRC("/DeviceGray")) || colorSpace->Equals(UTF8STRC("/G"))))
+				if (bpc == 1 && (sbColorSpace.Equals(UTF8STRC("/DeviceGray")) || sbColorSpace.Equals(UTF8STRC("/G"))))
 				{
 					UIntOS bpl = (width + 7) / 8;
 					if (fd->GetDataSize() == bpl * height)
@@ -631,7 +644,7 @@ Optional<Media::ImageList> Media::PDFImage::Parse(NN<Media::PDFDocument> pdf, UI
 						if (fd->GetRealData(0, bpl * height, simg->GetDataArray()) != bpl * height)
 						{
 							simg.Delete();
-							OPTSTR_DEL(relStr);
+							printf("PDFImage: Creating Indexed image failed, unable to read image data\r\n");
 							return nullptr;
 						}
 						UnsafeArray<UInt8> pal;
@@ -648,11 +661,10 @@ Optional<Media::ImageList> Media::PDFImage::Parse(NN<Media::PDFDocument> pdf, UI
 						}
 						NEW_CLASSNN(imgList, Media::ImageList(CSTR("Image.raw")));
 						imgList->AddImage(simg, 0);
-						OPTSTR_DEL(relStr);
 						return imgList;
 					}
 				}
-				else if (bpc == 8 && colorSpace->Equals(UTF8STRC("/DeviceGray")))
+				else if (bpc == 8 && sbColorSpace.Equals(UTF8STRC("/DeviceGray")))
 				{
 					if (fd->GetDataSize() == (width * height))
 					{
@@ -675,7 +687,6 @@ Optional<Media::ImageList> Media::PDFImage::Parse(NN<Media::PDFDocument> pdf, UI
 						}
 						NEW_CLASSNN(imgList, Media::ImageList(CSTR("Image.raw")));
 						imgList->AddImage(simg, 0);
-						OPTSTR_DEL(relStr);
 						return imgList;
 					}
 					else
@@ -683,7 +694,7 @@ Optional<Media::ImageList> Media::PDFImage::Parse(NN<Media::PDFDocument> pdf, UI
 						printf("PDFImage: Creating Gray image failed, unexpected data size, width=%d, height=%d, size=%llu\r\n", (UInt32)width, (UInt32)height, fd->GetDataSize());
 					}
 				}
-				else if (bpc == 8 && colorSpace->Equals(UTF8STRC("/DeviceCMYK")))
+				else if (bpc == 8 && sbColorSpace.Equals(UTF8STRC("/DeviceCMYK")))
 				{
 					if (fd->GetDataSize() == (width * height * 4))
 					{
@@ -715,7 +726,6 @@ Optional<Media::ImageList> Media::PDFImage::Parse(NN<Media::PDFDocument> pdf, UI
 						MemFreeArr(cmyk);
 						NEW_CLASSNN(imgList, Media::ImageList(CSTR("Image.raw")));
 						imgList->AddImage(simg, 0);
-						OPTSTR_DEL(relStr);
 						return imgList;
 					}
 					else
@@ -723,7 +733,7 @@ Optional<Media::ImageList> Media::PDFImage::Parse(NN<Media::PDFDocument> pdf, UI
 						printf("PDFImage: Creating CMYK image failed, unexpected data size, width=%d, height=%d, size=%llu\r\n", (UInt32)width, (UInt32)height, fd->GetDataSize());
 					}
 				}
-				else if (bpc == 8 && colorSpace->Equals(UTF8STRC("/DeviceRGB")))
+				else if (bpc == 8 && sbColorSpace.Equals(UTF8STRC("/DeviceRGB")))
 				{
 					if (fd->GetDataSize() == (width * height * 3))
 					{
@@ -737,7 +747,6 @@ Optional<Media::ImageList> Media::PDFImage::Parse(NN<Media::PDFDocument> pdf, UI
 							{
 								printf("PDFImage: Unable to read RGB image data\r\n");
 								simg.Delete();
-								OPTSTR_DEL(relStr);
 								return nullptr;
 							}
 							UnsafeArray<UInt8> bytePtr = simg->data + row * simg->GetDataBpl();
@@ -753,7 +762,6 @@ Optional<Media::ImageList> Media::PDFImage::Parse(NN<Media::PDFDocument> pdf, UI
 						}
 						NEW_CLASSNN(imgList, Media::ImageList(CSTR("Image.raw")));
 						imgList->AddImage(simg, 0);
-						OPTSTR_DEL(relStr);
 						return imgList;
 					}
 					else
@@ -763,9 +771,8 @@ Optional<Media::ImageList> Media::PDFImage::Parse(NN<Media::PDFDocument> pdf, UI
 				}
 				else
 				{
-					printf("PDFImage: Creating image failed, unsupported color space: %s\r\n", colorSpace->v.Ptr());
+					printf("PDFImage: Creating image failed, unsupported color space: %s\r\n", sbColorSpace.v.Ptr());
 				}
-				OPTSTR_DEL(relStr);
 			}
 			else if (bpc == 1)
 			{
