@@ -190,6 +190,7 @@ LZODecompressor.o: ../../src/Data/Compress/LZODecompressor.cpp
 LZWDecompressor.o: ../../src/Data/Compress/LZWDecompressor.cpp
 LZWDecStream.o: ../../src/Data/Compress/LZWDecStream.cpp
 LZWEncStream2.o: ../../src/Data/Compress/LZWEncStream2.cpp
+LZWStreamDataDec.o: ../../src/Data/Compress/LZWStreamDataDec.cpp
 PackBits.o: ../../src/Data/Compress/PackBits.cpp
 InvestmentManager.o: ../../src/Data/Invest/InvestmentManager.cpp
 Keras.o: ../../src/Data/ML/Keras.cpp

@@ -142,7 +142,7 @@ NN<Media::PDFObject> Media::PDFDocument::AddObject(UInt32 id)
 	NN<Media::PDFObject> obj;
 	if (this->objMap.Get(id).SetTo(obj))
 		return obj;
-	NEW_CLASSNN(obj, Media::PDFObject(id));
+	NEW_CLASSNN(obj, Media::PDFObject(id, *this));
 	this->objMap.Put(id, obj);
 	return obj;
 }
@@ -154,13 +154,27 @@ Optional<Media::PDFObject> Media::PDFDocument::GetObjectById(UInt32 id) const
 
 void Media::PDFDocument::SetEncryptionRequired()
 {
+	this->ClearCachedStreams();
 	this->encryptionRequired = true;
+}
+
+void Media::PDFDocument::ClearCachedStreams()
+{
+	UIntOS i = this->objMap.GetCount();
+	while (i-- > 0)
+		this->objMap.GetItemNoCheck(i)->ClearDecodedData();
+}
+
+Bool Media::PDFDocument::IsEncryptionRequired() const
+{
+	return this->encryptionRequired;
 }
 
 Bool Media::PDFDocument::SetEncryptionKey(UnsafeArray<const UInt8> key, UIntOS keyLen)
 {
 	if (keyLen == 0 || keyLen > sizeof(this->encryptionKey))
 		return false;
+	this->ClearCachedStreams();
 	MemCopyNO(this->encryptionKey, key.Ptr(), keyLen);
 	this->encryptionKeyLen = keyLen;
 	return true;
@@ -223,40 +237,35 @@ Optional<Media::ImageList> Media::PDFDocument::CreateImage(UInt32 id, NN<Parser:
 			}
 			if (obj->GetParameter().SetTo(params) && params->GetEntryValue(CSTR("DecodeParms")).SetTo(paramStr))
 			{
-				UnsafeArray<const UTF8Char> paramPtr = paramStr->v;
-				UIntOS paramLen = paramStr->leng;
-				while (paramLen > 0 && (*paramPtr == ' ' || *paramPtr == '\r' || *paramPtr == '\n'))
+				Optional<Media::PDFParameter> decodeParams = nullptr;
+				if (!Media::PDFParameter::ParseDecodeParams(paramStr, decodeParams))
 				{
-					paramPtr++;
-					paramLen--;
+					printf("PDFDocument: Creating CCITT image failed, invalid DecodeParms\r\n");
+					return nullptr;
 				}
-				if (paramLen >= 4 && paramPtr[0] == '<' && paramPtr[1] == '<' && paramPtr[paramLen - 2] == '>' && paramPtr[paramLen - 1] == '>')
+				NN<Media::PDFParameter> nnDecodeParams;
+				if (decodeParams.SetTo(nnDecodeParams))
 				{
-					Optional<Media::PDFParameter> decodeParams = Media::PDFParameter::Parse(Text::CStringNN(paramPtr + 2, paramLen - 4));
-					NN<Media::PDFParameter> nnDecodeParams;
-					if (decodeParams.SetTo(nnDecodeParams))
+					if (nnDecodeParams->GetEntryValue(CSTR("K")).SetTo(paramStr))
+						k = paramStr->ToInt32();
+					if (nnDecodeParams->GetEntryValue(CSTR("EndOfLine")).SetTo(paramStr))
+						endOfLine = paramStr->Equals(UTF8STRC("true"));
+					if (nnDecodeParams->GetEntryValue(CSTR("EncodedByteAlign")).SetTo(paramStr))
+						encodedByteAlign = paramStr->Equals(UTF8STRC("true"));
+					if (nnDecodeParams->GetEntryValue(CSTR("Columns")).SetTo(paramStr) && paramStr->ToUIntOS() != width)
 					{
-						if (nnDecodeParams->GetEntryValue(CSTR("K")).SetTo(paramStr))
-							k = paramStr->ToInt32();
-						if (nnDecodeParams->GetEntryValue(CSTR("EndOfLine")).SetTo(paramStr))
-							endOfLine = paramStr->Equals(UTF8STRC("true"));
-						if (nnDecodeParams->GetEntryValue(CSTR("EncodedByteAlign")).SetTo(paramStr))
-							encodedByteAlign = paramStr->Equals(UTF8STRC("true"));
-						if (nnDecodeParams->GetEntryValue(CSTR("Columns")).SetTo(paramStr) && paramStr->ToUIntOS() != width)
-						{
-							printf("PDFDocument: Creating CCITT image failed, Columns does not match image width\r\n");
-							decodeParams.Delete();
-							return nullptr;
-						}
-						if (nnDecodeParams->GetEntryValue(CSTR("Rows")).SetTo(paramStr) && paramStr->ToUIntOS() != 0 && paramStr->ToUIntOS() != height)
-						{
-							printf("PDFDocument: Creating CCITT image failed, Rows does not match image height\r\n");
-							decodeParams.Delete();
-							return nullptr;
-						}
+						printf("PDFDocument: Creating CCITT image failed, Columns does not match image width\r\n");
+						decodeParams.Delete();
+						return nullptr;
 					}
-					decodeParams.Delete();
+					if (nnDecodeParams->GetEntryValue(CSTR("Rows")).SetTo(paramStr) && paramStr->ToUIntOS() != 0 && paramStr->ToUIntOS() != height)
+					{
+						printf("PDFDocument: Creating CCITT image failed, Rows does not match image height\r\n");
+						decodeParams.Delete();
+						return nullptr;
+					}
 				}
+				decodeParams.Delete();
 			}
 			UInt64 dataSize = fd->GetDataSize();
 			if (dataSize > (UInt64)INVALID_INDEX)
@@ -265,10 +274,9 @@ Optional<Media::ImageList> Media::PDFDocument::CreateImage(UInt32 id, NN<Parser:
 				return nullptr;
 			}
 			Data::ByteBuffer dataBuff((UIntOS)dataSize);
-			fd->GetRealData(0, dataSize, dataBuff);
-			if (!this->DecryptStreamData(id, dataBuff.Arr(), dataBuff.GetSize()))
+			if (fd->GetRealData(0, dataSize, dataBuff) != dataSize)
 			{
-				printf("PDFDocument: Creating CCITT image failed, encrypted stream key unavailable: id=%d\r\n", id);
+				printf("PDFDocument: Creating CCITT image failed, unable to read image data: id=%d\r\n", id);
 				return nullptr;
 			}
 			Media::CCITTFaxDecoder decoder;
@@ -299,54 +307,48 @@ Optional<Media::ImageList> Media::PDFDocument::CreateImage(UInt32 id, NN<Parser:
 			NN<Text::String> paramStr;
 			if (obj->GetParameter().SetTo(params) && params->GetEntryValue(CSTR("DecodeParms")).SetTo(paramStr))
 			{
-				UnsafeArray<const UTF8Char> paramPtr = paramStr->v;
-				UIntOS paramLen = paramStr->leng;
-				while (paramLen > 0 && (*paramPtr == ' ' || *paramPtr == '\r' || *paramPtr == '\n'))
+				Optional<Media::PDFParameter> decodeParams = nullptr;
+				if (!Media::PDFParameter::ParseDecodeParams(paramStr, decodeParams))
 				{
-					paramPtr++;
-					paramLen--;
+					printf("PDFDocument: Creating JBIG2 image failed, invalid DecodeParms\r\n");
+					return nullptr;
 				}
-				if (paramLen >= 4 && paramPtr[0] == '<' && paramPtr[1] == '<' && paramPtr[paramLen - 2] == '>' && paramPtr[paramLen - 1] == '>')
+				NN<Media::PDFParameter> nnDecodeParams;
+				if (decodeParams.SetTo(nnDecodeParams))
 				{
-					Optional<Media::PDFParameter> decodeParams = Media::PDFParameter::Parse(Text::CStringNN(paramPtr + 2, paramLen - 4));
-					NN<Media::PDFParameter> nnDecodeParams;
-					if (decodeParams.SetTo(nnDecodeParams))
+					NN<Text::String> globalRef;
+					NN<Media::PDFObject> globalObj;
+					NN<IO::StreamData> globalStream;
+					UInt32 globalObjId;
+					if (nnDecodeParams->GetEntryValue(CSTR("JBIG2Globals")).SetTo(globalRef))
 					{
-						NN<Text::String> globalRef;
-						NN<Media::PDFObject> globalObj;
-						NN<IO::StreamData> globalStream;
-						UInt32 globalObjId;
-						if (nnDecodeParams->GetEntryValue(CSTR("JBIG2Globals")).SetTo(globalRef))
+						if (!globalRef->EndsWith(CSTR(" 0 R")) ||
+							!Text::CStringNN(globalRef->v, globalRef->leng - 4).ToUInt32(globalObjId) ||
+							!this->GetObjectById(globalObjId).SetTo(globalObj) ||
+							!globalObj->GetData().SetTo(globalStream))
 						{
-							if (!globalRef->EndsWith(CSTR(" 0 R")) ||
-								!Text::CStringNN(globalRef->v, globalRef->leng - 4).ToUInt32(globalObjId) ||
-								!this->GetObjectById(globalObjId).SetTo(globalObj) ||
-								!globalObj->GetData().SetTo(globalStream))
-							{
-								printf("PDFDocument: Creating JBIG2 image failed, invalid JBIG2Globals reference\r\n");
-								decodeParams.Delete();
-								return nullptr;
-							}
-							UInt64 globalSize = globalStream->GetDataSize();
-							if (globalSize == 0 || globalSize > (UInt64)INVALID_INDEX)
-							{
-								printf("PDFDocument: Creating JBIG2 image failed, invalid JBIG2Globals stream size\r\n");
-								decodeParams.Delete();
-								return nullptr;
-							}
-							globalData.ChangeSizeAndIgnoreData((UIntOS)globalSize);
-							if (globalStream->GetRealData(0, globalSize, globalData) != globalSize ||
-								!this->DecryptStreamData(globalObjId, globalData.Arr(), globalData.GetSize()))
-							{
-								printf("PDFDocument: Creating JBIG2 image failed, unable to read JBIG2Globals stream\r\n");
-								decodeParams.Delete();
-								return nullptr;
-							}
-							hasGlobalData = true;
+							printf("PDFDocument: Creating JBIG2 image failed, invalid JBIG2Globals reference\r\n");
+							decodeParams.Delete();
+							return nullptr;
 						}
+						UInt64 globalSize = globalStream->GetDataSize();
+						if (globalSize == 0 || globalSize > (UInt64)INVALID_INDEX)
+						{
+							printf("PDFDocument: Creating JBIG2 image failed, invalid JBIG2Globals stream size\r\n");
+							decodeParams.Delete();
+							return nullptr;
+						}
+						globalData.ChangeSizeAndIgnoreData((UIntOS)globalSize);
+						if (globalStream->GetRealData(0, globalSize, globalData) != globalSize)
+						{
+							printf("PDFDocument: Creating JBIG2 image failed, unable to read JBIG2Globals stream\r\n");
+							decodeParams.Delete();
+							return nullptr;
+						}
+						hasGlobalData = true;
 					}
-					decodeParams.Delete();
 				}
+				decodeParams.Delete();
 			}
 
 			UInt64 dataSize = fd->GetDataSize();
@@ -356,8 +358,7 @@ Optional<Media::ImageList> Media::PDFDocument::CreateImage(UInt32 id, NN<Parser:
 				return nullptr;
 			}
 			Data::ByteBuffer dataBuff((UIntOS)dataSize);
-			if (fd->GetRealData(0, dataSize, dataBuff) != dataSize ||
-				!this->DecryptStreamData(id, dataBuff.Arr(), dataBuff.GetSize()))
+			if (fd->GetRealData(0, dataSize, dataBuff) != dataSize)
 			{
 				printf("PDFDocument: Creating JBIG2 image failed, unable to read image data: id=%d\r\n", id);
 				return nullptr;
@@ -423,6 +424,55 @@ Optional<Media::ImageList> Media::PDFDocument::CreateImage(UInt32 id, NN<Parser:
 			}
 			if (bpc == 8 && obj->GetColorSpace().SetTo(colorSpace))
 			{
+				Optional<Text::String> relStr = nullptr;
+				while (colorSpace->EndsWith(CSTR(" R")))
+				{
+					UTF8Char sbuff[32];
+					UnsafeArray<UTF8Char> sptr;
+					if (colorSpace->leng > 20)
+					{
+						printf("PDFDocument: Color space reference too long: %s\r\n", colorSpace->v.Ptr());
+						break;
+					}
+					sptr = colorSpace->ConcatTo(sbuff);
+					sptr -= 2;
+					sptr[0] = 0;
+					UIntOS i = Text::StrLastIndexOfC(sbuff, (UIntOS)(sptr - sbuff), ' ');
+					if (i == INVALID_INDEX)
+					{
+						printf("PDFDocument: Invalid color space reference: %s\r\n", colorSpace->v.Ptr());
+						break;
+					}
+					sbuff[i] = 0;
+					UInt32 id;
+					if (!Text::StrToUInt32(sbuff, id))
+					{	
+						printf("PDFDocument: Invalid color space reference ID: %s\r\n", sbuff);
+						break;
+					}
+					NN<Media::PDFObject> refObj;
+					if (!this->GetObjectById(id).SetTo(refObj))
+					{
+						printf("PDFDocument: Failed to get color space reference object: %s\r\n", sbuff);
+						break;
+					}
+					NN<IO::StreamData> refData;
+					if (!refObj->GetData().SetTo(refData))
+					{
+						printf("PDFDocument: Failed to get color space reference data: %s\r\n", sbuff);
+						break;
+					}
+					UnsafeArray<UInt8> refArr = MemAllocArr(UInt8, (UIntOS)refData->GetDataSize() + 1);
+					refData->GetRealData(0, (UIntOS)refData->GetDataSize(), Data::ByteArray(refArr, (UIntOS)refData->GetDataSize()));
+					refArr[(UIntOS)refData->GetDataSize()] = 0;
+					Text::StrReplace(refArr, '\r', ' ');
+					Text::StrReplace(refArr, '\n', ' ');
+					colorSpace = Text::String::New(refArr, (UIntOS)refData->GetDataSize());
+					MemFreeArr(refArr);
+					OPTSTR_DEL(relStr);
+					relStr = colorSpace;
+				}
+
 				if (colorSpace->Equals(UTF8STRC("/DeviceGray")))
 				{
 					if (fd->GetDataSize() == (width * height))
@@ -446,11 +496,12 @@ Optional<Media::ImageList> Media::PDFDocument::CreateImage(UInt32 id, NN<Parser:
 						}
 						NEW_CLASSNN(imgList, Media::ImageList(CSTR("Image.raw")));
 						imgList->AddImage(simg, 0);
+						OPTSTR_DEL(relStr);
 						return imgList;
 					}
 					else
 					{
-						printf("PDFDocument: Creating Gray image failed, unexpected data size\r\n");
+						printf("PDFDocument: Creating Gray image failed, unexpected data size, width=%d, height=%d, size=%llu\r\n", (UInt32)width, (UInt32)height, fd->GetDataSize());
 					}
 				}
 				else if (colorSpace->Equals(UTF8STRC("/DeviceCMYK")))
@@ -485,17 +536,57 @@ Optional<Media::ImageList> Media::PDFDocument::CreateImage(UInt32 id, NN<Parser:
 						MemFreeArr(cmyk);
 						NEW_CLASSNN(imgList, Media::ImageList(CSTR("Image.raw")));
 						imgList->AddImage(simg, 0);
+						OPTSTR_DEL(relStr);
 						return imgList;
 					}
 					else
 					{
-						printf("PDFDocument: Creating CMYK image failed, unexpected data size\r\n");
+						printf("PDFDocument: Creating CMYK image failed, unexpected data size, width=%d, height=%d, size=%llu\r\n", (UInt32)width, (UInt32)height, fd->GetDataSize());
+					}
+				}
+				else if (colorSpace->Equals(UTF8STRC("/DeviceRGB")))
+				{
+					if (fd->GetDataSize() == (width * height * 3))
+					{
+						Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
+						NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UIntOS>(width, height), 0, 24, Media::PixelFormat::PF_B8G8R8, width * height, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AlphaType::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+						Data::ByteBuffer rgb(width * 3);
+						UIntOS row = 0;
+						while (row < height)
+						{
+							if (fd->GetRealData(row * width * 3, width * 3, rgb) != width * 3)
+							{
+								printf("PDFDocument: Unable to read RGB image data\r\n");
+								simg.Delete();
+								OPTSTR_DEL(relStr);
+								return nullptr;
+							}
+							UnsafeArray<UInt8> bytePtr = simg->data + row * simg->GetDataBpl();
+							UIntOS x = 0;
+							while (x < width)
+							{
+								bytePtr[x * 3] = rgb[x * 3 + 2];
+								bytePtr[x * 3 + 1] = rgb[x * 3 + 1];
+								bytePtr[x * 3 + 2] = rgb[x * 3];
+								x++;
+							}
+							row++;
+						}
+						NEW_CLASSNN(imgList, Media::ImageList(CSTR("Image.raw")));
+						imgList->AddImage(simg, 0);
+						OPTSTR_DEL(relStr);
+						return imgList;
+					}
+					else
+					{
+						printf("PDFDocument: Creating RGB image failed, unexpected data size, width=%d, height=%d, size=%llu\r\n", (UInt32)width, (UInt32)height, fd->GetDataSize());
 					}
 				}
 				else
 				{
-					printf("PDFDocument: Creating image failed, unsupported color space\r\n");
+					printf("PDFDocument: Creating image failed, unsupported color space: %s\r\n", colorSpace->v.Ptr());
 				}
+				OPTSTR_DEL(relStr);
 			}
 			else if (bpc == 1)
 			{

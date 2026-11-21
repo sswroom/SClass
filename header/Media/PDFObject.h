@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_PDFOBJECT
 #define _SM_MEDIA_PDFOBJECT
-#include "IO/Stream.h"
+#include "IO/MemoryStream.h"
 #include "IO/StreamData.h"
 #include "Media/PDFParameter.h"
 #include "Text/StringBuilderUTF8.h"
@@ -22,17 +22,23 @@ namespace Media
 		};
 	private:
 		UInt32 id;
+		NN<PDFDocument> document;
 		Bool streamData;
 		Optional<IO::StreamData> fd;
 		Optional<IO::StreamData> decFd;
 		Optional<PDFParameter> parameter;
+
+		static Bool IsSingleFilter(Text::CStringNN filter, Text::CStringNN target);
+		static Bool ApplyPredictor(NN<IO::MemoryStream> decoded, NN<IO::MemoryStream> output, UIntOS predictor, UIntOS colors, UIntOS columns, UIntOS bits);
+		Bool ReadPredictorParams(NN<PDFParameter> parameter, UIntOS &earlyChange, UIntOS &predictor, UIntOS &colors, UIntOS &columns, UIntOS &bits);
 	public:
-		PDFObject(UInt32 id);
+		PDFObject(UInt32 id, NN<PDFDocument> document);
 		~PDFObject();
 
 		void SetStream(NN<IO::StreamData> fd, UInt64 ofst, UInt64 len);
 		void SetData(NN<IO::StreamData> fd, UInt64 ofst, UInt64 len);
 		void SetParameter(Optional<PDFParameter> parameter);
+		void ClearDecodedData();
 		Optional<PDFParameter> GetParameter() const;
 		UInt32 GetId() const;
 		Bool IsImage() const;

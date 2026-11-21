@@ -2028,6 +2028,8 @@ Data/Compress/LZWEncStream.h:
 @LZWEncStream.o
 Data/Compress/LZWEncStream2.h:
 @LZWEncStream2.o
+Data/Compress/LZWStreamDataDec.h:
+@LZWStreamDataDec.o
 Data/Compress/PackBits.h:
 @PackBits.o
 Data/Invest/InvestmentManager.h:

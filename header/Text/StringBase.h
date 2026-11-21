@@ -25,6 +25,9 @@ namespace Text
 		Bool EqualsICase(NN<StringBase<UTF8Char>> s) const;
 		Bool EqualsICase(StringBase<const UTF8Char> s) const;
 		Bool EqualsICase(UnsafeArray<const UTF8Char> s, UIntOS len) const;
+		Bool TrimEquals(NN<StringBase<UTF8Char>> s) const;
+		Bool TrimEquals(StringBase<const UTF8Char> s) const;
+		Bool TrimEquals(UnsafeArray<const UTF8Char> s, UIntOS len) const;
 		Bool StartsWith(UTF8Char c) const;
 		Bool StartsWith(NN<StringBase<UTF8Char>> s) const;
 		Bool StartsWith(StringBase<const UTF8Char> s) const;
@@ -179,6 +182,32 @@ template <typename T> Bool Text::StringBase<T>::EqualsICase(StringBase<const UTF
 template <typename T> Bool Text::StringBase<T>::EqualsICase(UnsafeArray<const UTF8Char> s, UIntOS len) const
 {
 	return Text::StrEqualsICaseC(this->v, this->leng, s, len);
+}
+
+template <typename T> Bool Text::StringBase<T>::TrimEquals(NN<StringBase<UTF8Char>> s) const
+{
+	return TrimEquals(s->v, s->leng);
+}
+
+template <typename T> Bool Text::StringBase<T>::TrimEquals(StringBase<const UTF8Char> s) const
+{
+	return TrimEquals(s.v, s.leng);
+}
+
+template <typename T> Bool Text::StringBase<T>::TrimEquals(UnsafeArray<const UTF8Char> s, UIntOS len) const
+{
+	UnsafeArray<const UTF8Char> src = this->v;
+	UIntOS srcLeng = this->leng;
+	while (srcLeng > 0 && (src[0] == ' ' || src[0] == '\t' || src[0] == '\n' || src[0] == '\r' || src[0] == '\f'))
+	{
+		src += 1;
+		srcLeng--;
+	}
+	while (srcLeng > 0 && (src[srcLeng - 1] == ' ' || src[srcLeng - 1] == '\t' || src[srcLeng - 1] == '\n' || src[srcLeng - 1] == '\r' || src[srcLeng - 1] == '\f'))
+	{
+		srcLeng--;
+	}
+	return Text::StrEqualsC(src, srcLeng, s, len);
 }
 
 template <typename T> Bool Text::StringBase<T>::StartsWith(UTF8Char c) const

@@ -31,6 +31,7 @@ namespace Media
 		Optional<ParamEntry> GetItem(UIntOS index) const;
 
 		static Optional<PDFParameter> Parse(Text::CStringNN parameter);
+		static Bool ParseDecodeParams(NN<Text::String> value, Optional<PDFParameter> &params);
 	};
 }
 #endif

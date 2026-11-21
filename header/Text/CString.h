@@ -149,6 +149,17 @@ namespace Text
 			}
 			return CStringNN(this->v + i, this->leng - i);
 		}
+
+		CStringNN TrimNZ() const
+		{
+			UIntOS i = 0;
+			UIntOS j = this->leng;
+			while (i < j && (this->v[i] == ' ' || this->v[i] == '\t' || this->v[i] == '\n' || this->v[i] == '\r' || this->v[i] == '\f'))
+				i++;
+			while (j > i && (this->v[j - 1] == ' ' || this->v[j - 1] == '\t' || this->v[j - 1] == '\n' || this->v[j - 1] == '\r' || this->v[j - 1] == '\f'))
+				j--;
+			return CStringNN(this->v + i, j - i);
+		}
 	};
 
 	FORCEINLINE CString::CString(Text::CStringNN cstr)

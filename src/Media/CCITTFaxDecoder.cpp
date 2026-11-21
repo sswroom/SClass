@@ -142,8 +142,9 @@ Bool Media::CCITTFaxDecoder::Decode2DLine(IO::FaxBitReader &reader, UnsafeArray<
 					break;
 				refIndex++;
 			}
-			UIntOS b1 = refIndex < transitions.GetCount() ? transitions.GetItem(refIndex) : width + 1;
-			UIntOS b2 = refIndex + 1 < transitions.GetCount() ? transitions.GetItem(refIndex + 1) : width + 1;
+			// Imaginary reference transitions lie at the right edge of the row.
+			UIntOS b1 = refIndex < transitions.GetCount() ? transitions.GetItem(refIndex) : width;
+			UIntOS b2 = refIndex + 1 < transitions.GetCount() ? transitions.GetItem(refIndex + 1) : width;
 			if (mode == 2)
 			{
 				if (b2 <= a0)

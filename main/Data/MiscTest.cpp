@@ -1784,6 +1784,27 @@ Int32 CCITTFaxTest()
 		printf("CCITT Group 4 decode test failed\r\n");
 		return 1;
 	}
+	UInt8 faxBoundaryData[] = {0xA8};
+	if (!faxDecoder.DecodeImage(Data::ByteArrayR(faxBoundaryData, sizeof(faxBoundaryData)), 8, 2, -1).SetTo(faxImage))
+	{
+		printf("CCITT Group 4 reference boundary test failed\r\n");
+		return 1;
+	}
+	faxBpl = faxImage->GetDataBpl();
+	faxTestPassed = true;
+	x = 0;
+	while (x < 8)
+	{
+		if (faxImage->data[x] != 255 || faxImage->data[faxBpl + x] != (x == 7 ? 0 : 255))
+			faxTestPassed = false;
+		x++;
+	}
+	faxImage.Delete();
+	if (!faxTestPassed)
+	{
+		printf("CCITT Group 4 reference boundary test failed\r\n");
+		return 1;
+	}
 	UInt8 faxGroup4WhiteRow[] = {0x60};
 	if (!faxDecoder.DecodeImage(Data::ByteArrayR(faxGroup4WhiteRow, sizeof(faxGroup4WhiteRow)), 8, 1, -1).SetTo(faxImage))
 	{
@@ -1911,6 +1932,46 @@ Int32 CCITTFaxTest()
 		printf("CCITT long black run decode test failed\r\n");
 		return 1;
 	}
+	NN<Text::String> pdfName = Text::String::New(UTF8STRC("fax-test.pdf"));
+	Media::PDFDocument pdf(pdfName, CSTR("1.4"));
+	pdfName->Release();
+	Parser::FullParserList parsers;
+	IO::StmData::MemoryDataRef faxStream(Data::ByteArrayR(faxBoundaryData, sizeof(faxBoundaryData)));
+	Text::CStringNN dictionaries[] = {
+		CSTR("/Subtype /Image /Filter /CCITTFaxDecode /Width 8 /Height 2 /DecodeParms << /K -1 /Columns 8 /Rows 2 >>"),
+		CSTR("/Subtype /Image /Filter [ /CCITTFaxDecode ] /Width 8 /Height 2 /DecodeParms [ << /K -1 /Columns 8 /Rows 2 >> ]")
+	};
+	UIntOS testIndex = 0;
+	while (testIndex < 2)
+	{
+		NN<Media::PDFObject> obj = pdf.AddObject((UInt32)testIndex + 1);
+		obj->SetParameter(Media::PDFParameter::Parse(dictionaries[testIndex]));
+		obj->SetStream(faxStream, 0, sizeof(faxBoundaryData));
+		NN<Media::ImageList> imgList;
+		NN<Media::Image> image;
+		if (!pdf.CreateImage((UInt32)testIndex + 1, parsers).SetTo(imgList))
+		{
+			printf("PDF CCITT DecodeParms test failed\r\n");
+			return 1;
+		}
+		if (!imgList->GetImage2(0, 0).SetTo(image) || image->GetImageType() != Media::ImageType::Raster ||
+			NN<Media::RasterImage>::ConvertFrom(image)->GetImageClass() != Media::RasterImage::ImageClass::StaticImage)
+		{
+			imgList.Delete();
+			printf("PDF CCITT DecodeParms test failed\r\n");
+			return 1;
+		}
+		NN<Media::StaticImage> staticImage = NN<Media::StaticImage>::ConvertFrom(NN<Media::RasterImage>::ConvertFrom(image));
+		faxTestPassed = staticImage->data[staticImage->GetDataBpl() + 6] == 255 &&
+			staticImage->data[staticImage->GetDataBpl() + 7] == 0;
+		imgList.Delete();
+		if (!faxTestPassed)
+		{
+			printf("PDF CCITT DecodeParms test failed\r\n");
+			return 1;
+		}
+		testIndex++;
+	}
 	return 0;
 }
 
@@ -1941,16 +2002,454 @@ Int32 JBIG2Test()
 	return 0;
 }
 
+void PDFTestWriteLZWCode(UnsafeArray<UInt8> data, UIntOS &bitPos, UInt32 code, UIntOS width)
+{
+	while (width > 0)
+	{
+		width--;
+		if ((code >> width) & 1)
+			data[bitPos >> 3] |= (UInt8)(0x80 >> (bitPos & 7));
+		bitPos++;
+	}
+}
+
+Int32 PDFLZWTest()
+{
+	static const UInt8 kwkwk[] = {0x80,0x10,0x48,0x50,0x28,0x24,0x04};
+	static const UInt8 pngData[] = {0x80,0x00,0x01,0x40,0xa0,0x50,0x08,0x02,0x01,0x00,0xc0,0x40};
+	static const UInt8 pngFilters[] = {0x80,0x00,0x41,0x40,0xa0,0x50,0x0c,0x1e,0x0f,0x07,0x81,0x01,0x40,0xa0,0x54,0x04};
+	static const UInt8 tiffData[] = {0x80,0x04,0x84,0x50,0x10};
+	static const UInt8 tiff16Data[] = {0x80,0x00,0x1f,0xe0,0x00,0x08,0x00,0x03,0x01};
+	static const UInt8 tiff1Data[] = {0x80,0x20,0x20,0x20};
+	static const UInt8 invalidData[] = {0x80,0x10,0x60,0x70,0x10};
+	static const UInt8 pngExpected[] = {10,10,10,11,11,11};
+	static const UInt8 pngFiltersExpected[] = {10,20,30,20,35,47,30,45,57};
+	static const UInt8 tiffExpected[] = {0x13,0x57};
+	static const UInt8 tiff16Expected[] = {0,255,1,0,1,1};
+	NN<Text::String> name = Text::String::New(UTF8STRC("lzw-test.pdf"));
+	Media::PDFDocument pdf(name, CSTR("1.4"));
+	name->Release();
+	NN<Media::PDFObject> obj = pdf.AddObject(1);
+	NN<IO::StreamData> data;
+	UInt8 output[7];
+	IO::StmData::MemoryDataRef kwStream(Data::ByteArrayR(kwkwk, sizeof(kwkwk)));
+	obj->SetParameter(Media::PDFParameter::Parse(CSTR("/Filter /LZWDecode")));
+	obj->SetStream(kwStream, 0, sizeof(kwkwk));
+	if (!obj->GetData().SetTo(data) || data->GetDataSize() != 7 ||
+		data->GetRealData(0, 7, BYTEARR(output)) != 7 || memcmp(output, "ABABABA", 7) != 0)
+	{
+		printf("PDF LZW dictionary test failed\r\n");
+		return 1;
+	}
+	obj->SetStream(kwStream, 0, sizeof(kwkwk) - 1);
+	if (obj->GetData().NotNull())
+	{
+		printf("PDF truncated LZW test failed\r\n");
+		return 1;
+	}
+	IO::StmData::MemoryDataRef invalidStream(Data::ByteArrayR(invalidData, sizeof(invalidData)));
+	obj->SetStream(invalidStream, 0, sizeof(invalidData));
+	if (obj->GetData().NotNull())
+	{
+		printf("PDF invalid LZW code test failed\r\n");
+		return 1;
+	}
+	obj->SetParameter(Media::PDFParameter::Parse(CSTR("/Filter /LZWDecode /DecodeParms << /EarlyChange 2 >>")));
+	obj->SetStream(kwStream, 0, sizeof(kwkwk));
+	if (obj->GetData().NotNull())
+	{
+		printf("PDF invalid LZW parameters test failed\r\n");
+		return 1;
+	}
+	obj->SetParameter(Media::PDFParameter::Parse(CSTR("/Filter [/ASCII85Decode /LZWDecode]")));
+	obj->SetStream(kwStream, 0, sizeof(kwkwk));
+	if (obj->GetData().NotNull())
+	{
+		printf("PDF unsupported LZW filter chain test failed\r\n");
+		return 1;
+	}
+	IO::StmData::MemoryDataRef pngStream(Data::ByteArrayR(pngData, sizeof(pngData)));
+	obj->SetParameter(Media::PDFParameter::Parse(CSTR("/Filter [/LZWDecode] /DecodeParms [<< /Predictor 15 /Columns 3 >>]")));
+	obj->SetStream(pngStream, 0, sizeof(pngData));
+	if (!obj->GetData().SetTo(data) || data->GetDataSize() != sizeof(pngExpected) ||
+		data->GetRealData(0, sizeof(pngExpected), BYTEARR(output)) != sizeof(pngExpected) ||
+		memcmp(output, pngExpected, sizeof(pngExpected)) != 0)
+	{
+		printf("PDF LZW PNG predictor test failed\r\n");
+		return 1;
+	}
+	IO::StmData::MemoryDataRef filtersStream(Data::ByteArrayR(pngFilters, sizeof(pngFilters)));
+	obj->SetStream(filtersStream, 0, sizeof(pngFilters));
+	UInt8 filterOutput[sizeof(pngFiltersExpected)];
+	if (!obj->GetData().SetTo(data) || data->GetDataSize() != sizeof(pngFiltersExpected) ||
+		data->GetRealData(0, sizeof(filterOutput), BYTEARR(filterOutput)) != sizeof(filterOutput) ||
+		memcmp(filterOutput, pngFiltersExpected, sizeof(filterOutput)) != 0)
+	{
+		printf("PDF LZW PNG filter test failed\r\n");
+		return 1;
+	}
+	IO::StmData::MemoryDataRef tiffStream(Data::ByteArrayR(tiffData, sizeof(tiffData)));
+	obj->SetParameter(Media::PDFParameter::Parse(CSTR("/Filter /LZWDecode /DecodeParms << /Predictor 2 /Columns 4 /BitsPerComponent 4 >>")));
+	obj->SetStream(tiffStream, 0, sizeof(tiffData));
+	if (!obj->GetData().SetTo(data) || data->GetDataSize() != sizeof(tiffExpected) ||
+		data->GetRealData(0, sizeof(tiffExpected), BYTEARR(output)) != sizeof(tiffExpected) ||
+		memcmp(output, tiffExpected, sizeof(tiffExpected)) != 0)
+	{
+		printf("PDF LZW TIFF predictor test failed\r\n");
+		return 1;
+	}
+	IO::StmData::MemoryDataRef tiff16Stream(Data::ByteArrayR(tiff16Data, sizeof(tiff16Data)));
+	obj->SetParameter(Media::PDFParameter::Parse(CSTR("/Filter /LZWDecode /DecodeParms << /Predictor 2 /Columns 3 /BitsPerComponent 16 >>")));
+	obj->SetStream(tiff16Stream, 0, sizeof(tiff16Data));
+	if (!obj->GetData().SetTo(data) || data->GetDataSize() != sizeof(tiff16Expected) ||
+		data->GetRealData(0, sizeof(tiff16Expected), BYTEARR(output)) != sizeof(tiff16Expected) ||
+		memcmp(output, tiff16Expected, sizeof(tiff16Expected)) != 0)
+	{
+		printf("PDF LZW 16-bit TIFF predictor test failed\r\n");
+		return 1;
+	}
+	IO::StmData::MemoryDataRef tiff1Stream(Data::ByteArrayR(tiff1Data, sizeof(tiff1Data)));
+	obj->SetParameter(Media::PDFParameter::Parse(CSTR("/Filter /LZWDecode /DecodeParms << /Predictor 2 /Columns 8 /BitsPerComponent 1 >>")));
+	obj->SetStream(tiff1Stream, 0, sizeof(tiff1Data));
+	if (!obj->GetData().SetTo(data) || data->GetDataSize() != 1 ||
+		data->GetRealData(0, 1, BYTEARR(output)) != 1 || output[0] != 255)
+	{
+		printf("PDF LZW 1-bit TIFF predictor test failed\r\n");
+		return 1;
+	}
+	UIntOS earlyChange = 0;
+	while (earlyChange <= 1)
+	{
+		UInt8 encoded[7000];
+		MemClear(encoded, sizeof(encoded));
+		UIntOS bitPos = 0;
+		UIntOS codeSize = 9;
+		UIntOS nextCode = 258;
+		Bool hasPrevious = false;
+		PDFTestWriteLZWCode(encoded, bitPos, 256, codeSize);
+		UIntOS i = 0;
+		while (i < 4400)
+		{
+			if (nextCode == 4096)
+			{
+				PDFTestWriteLZWCode(encoded, bitPos, 256, codeSize);
+				codeSize = 9;
+				nextCode = 258;
+				hasPrevious = false;
+			}
+			PDFTestWriteLZWCode(encoded, bitPos, (UInt32)(i & 255), codeSize);
+			if (hasPrevious)
+			{
+				nextCode++;
+				if (codeSize < 12 && nextCode + earlyChange == ((UIntOS)1 << codeSize))
+					codeSize++;
+			}
+			hasPrevious = true;
+			i++;
+		}
+		PDFTestWriteLZWCode(encoded, bitPos, 257, codeSize);
+		IO::StmData::MemoryDataRef encodedStream(encoded, (bitPos + 7) / 8);
+		obj->SetParameter(Media::PDFParameter::Parse(earlyChange == 0 ?
+			CSTR("/Filter /LZWDecode /DecodeParms << /EarlyChange 0 >>") :
+			CSTR("/Filter /LZWDecode /DecodeParms << /EarlyChange 1 >>")));
+		obj->SetStream(encodedStream, 0, (bitPos + 7) / 8);
+		if (!obj->GetData().SetTo(data) || data->GetDataSize() != 4400)
+		{
+			printf("PDF LZW code width test failed\r\n");
+			return 1;
+		}
+		Data::ByteBuffer actual(4400);
+		if (data->GetRealData(0, 4400, actual) != 4400)
+			return 1;
+		i = 0;
+		while (i < 4400)
+		{
+			if (actual[i] != (UInt8)(i & 255))
+			{
+				printf("PDF LZW code width data test failed\r\n");
+				return 1;
+			}
+			i++;
+		}
+		earlyChange++;
+	}
+	UInt8 encrypted[sizeof(kwkwk)];
+	MemCopyNO(encrypted, kwkwk, sizeof(kwkwk));
+	UInt8 key[] = {1,2,3,4,5};
+	pdf.SetEncryptionRequired();
+	if (!pdf.SetEncryptionKey(key, sizeof(key)) || !pdf.DecryptStreamData(1, encrypted, sizeof(encrypted)))
+		return 1;
+	IO::StmData::MemoryDataRef encryptedStream(Data::ByteArrayR(encrypted, sizeof(encrypted)));
+	obj->SetParameter(Media::PDFParameter::Parse(CSTR("/Subtype /Image /Filter [ /LZWDecode ]")));
+	obj->SetStream(encryptedStream, 0, sizeof(encrypted));
+	if (obj->GetImageType(pdf) != Media::PDFObject::ImageType::PlainImage ||
+		!obj->GetData().SetTo(data) || data->GetDataSize() != 7 ||
+		data->GetRealData(0, 7, BYTEARR(output)) != 7 || memcmp(output, "ABABABA", 7) != 0)
+	{
+		printf("PDF encrypted LZW test failed\r\n");
+		return 1;
+	}
+	return 0;
+}
+
+Int32 PDFFlatePredictorTest()
+{
+	static const UInt8 compressed[] = {0x78,0x9c,0x63,0xe0,0x12,0x91,0x63,0x62,0x64,0x62,0x06,0x00,0x01,0x6e,0x00,0x45};
+	static const UInt8 expected[] = {10,20,30,11,22,33};
+	static const UInt8 tiffCompressed[] = {0x78,0x9c,0x13,0x52,0x02,0x00,0x00,0x48,0x00,0x35};
+	static const UInt8 invalidCompressed[] = {0x78,0x9c,0x63,0x65,0x64,0x62,0x06,0x00,0x00,0x22,0x00,0x0c};
+	static const UInt8 lzwData[] = {0x80,0x00,0x01,0x40,0xa0,0x50,0x08,0x02,0x01,0x00,0xc0,0x40};
+	static const UInt8 lzwExpected[] = {10,10,10,11,11,11};
+	NN<Text::String> name = Text::String::New(UTF8STRC("predictor-test.pdf"));
+	Media::PDFDocument pdf(name, CSTR("1.4"));
+	name->Release();
+	NN<Media::PDFObject> imageObj = pdf.AddObject(1);
+	NN<Media::PDFObject> parmsObj = pdf.AddObject(309);
+	parmsObj->SetParameter(Media::PDFParameter::Parse(CSTR("/Predictor 15 /Colors 3 /Columns 1 /BitsPerComponent 8")));
+	IO::StmData::MemoryDataRef source(Data::ByteArrayR(compressed, sizeof(compressed)));
+	imageObj->SetStream(source, 0, sizeof(compressed));
+	Text::CStringNN dictionaries[] = {
+		CSTR("/Subtype /Image /Width 1 /Height 2 /BitsPerComponent 8 /ColorSpace /DeviceRGB /Filter /FlateDecode /DecodeParms 309 0 R"),
+		CSTR("/Subtype /Image /Width 1 /Height 2 /BitsPerComponent 8 /ColorSpace /DeviceRGB /Filter [/FlateDecode] /DecodeParms [<< /Predictor 15 /Colors 3 /Columns 1 >>]"),
+		CSTR("/Subtype /Image /Width 1 /Height 2 /BitsPerComponent 8 /ColorSpace /DeviceRGB /Filter /FlateDecode /DecodeParms [309 0 R]")
+	};
+	Parser::FullParserList parsers;
+	UIntOS i = 0;
+	while (i < 3)
+	{
+		imageObj->SetParameter(Media::PDFParameter::Parse(dictionaries[i]));
+		NN<IO::StreamData> data;
+		UInt8 output[sizeof(expected)];
+		if (!imageObj->GetData().SetTo(data) || data->GetDataSize() != sizeof(expected) ||
+			data->GetRealData(0, sizeof(output), BYTEARR(output)) != sizeof(output) ||
+			memcmp(output, expected, sizeof(expected)) != 0)
+		{
+			printf("PDF Flate predictor stream test failed\r\n");
+			return 1;
+		}
+		NN<Media::ImageList> images;
+		NN<Media::Image> image;
+		if (!pdf.CreateImage(1, parsers).SetTo(images))
+		{
+			printf("PDF Flate predictor image test failed\r\n");
+			return 1;
+		}
+		if (!images->GetImage2(0, 0).SetTo(image) || image->GetImageType() != Media::ImageType::Raster ||
+			NN<Media::RasterImage>::ConvertFrom(image)->GetImageClass() != Media::RasterImage::ImageClass::StaticImage)
+		{
+			images.Delete();
+			printf("PDF Flate predictor image test failed\r\n");
+			return 1;
+		}
+		NN<Media::StaticImage> img = NN<Media::StaticImage>::ConvertFrom(NN<Media::RasterImage>::ConvertFrom(image));
+		UIntOS bpl = img->GetDataBpl();
+		Bool match = img->data[0] == 30 && img->data[1] == 20 && img->data[2] == 10 &&
+			img->data[bpl] == 33 && img->data[bpl + 1] == 22 && img->data[bpl + 2] == 11;
+		images.Delete();
+		if (!match)
+		{
+			printf("PDF Flate predictor RGB image test failed\r\n");
+			return 1;
+		}
+		i++;
+	}
+	IO::StmData::MemoryDataRef tiffSource(Data::ByteArrayR(tiffCompressed, sizeof(tiffCompressed)));
+	imageObj->SetStream(tiffSource, 0, sizeof(tiffCompressed));
+	imageObj->SetParameter(Media::PDFParameter::Parse(CSTR("/Filter /FlateDecode /DecodeParms << /Predictor 2 /Columns 4 /BitsPerComponent 4 >>")));
+	NN<IO::StreamData> data;
+	UInt8 tiffOutput[2];
+	if (!imageObj->GetData().SetTo(data) || data->GetDataSize() != 2 ||
+		data->GetRealData(0, 2, BYTEARR(tiffOutput)) != 2 || tiffOutput[0] != 0x13 || tiffOutput[1] != 0x57)
+	{
+		printf("PDF Flate TIFF predictor test failed\r\n");
+		return 1;
+	}
+	imageObj->SetParameter(Media::PDFParameter::Parse(CSTR("/Filter /FlateDecode /DecodeParms 999 0 R")));
+	if (imageObj->GetData().NotNull())
+	{
+		printf("PDF missing DecodeParms test failed\r\n");
+		return 1;
+	}
+	IO::StmData::MemoryDataRef invalidSource(Data::ByteArrayR(invalidCompressed, sizeof(invalidCompressed)));
+	imageObj->SetStream(invalidSource, 0, sizeof(invalidCompressed));
+	imageObj->SetParameter(Media::PDFParameter::Parse(CSTR("/Filter /FlateDecode /DecodeParms << /Predictor 15 /Columns 3 >>")));
+	if (imageObj->GetData().NotNull())
+	{
+		printf("PDF invalid Flate predictor test failed\r\n");
+		return 1;
+	}
+	parmsObj->SetParameter(Media::PDFParameter::Parse(CSTR("/Predictor 15 /Columns 3")));
+	IO::StmData::MemoryDataRef lzwSource(Data::ByteArrayR(lzwData, sizeof(lzwData)));
+	imageObj->SetStream(lzwSource, 0, sizeof(lzwData));
+	imageObj->SetParameter(Media::PDFParameter::Parse(CSTR("/Filter /LZWDecode /DecodeParms 309 0 R")));
+	UInt8 lzwOutput[sizeof(lzwExpected)];
+	if (!imageObj->GetData().SetTo(data) || data->GetDataSize() != sizeof(lzwExpected) ||
+		data->GetRealData(0, sizeof(lzwOutput), BYTEARR(lzwOutput)) != sizeof(lzwOutput) ||
+		memcmp(lzwOutput, lzwExpected, sizeof(lzwExpected)) != 0)
+	{
+		printf("PDF indirect LZW DecodeParms test failed\r\n");
+		return 1;
+	}
+	return 0;
+}
+
+Int32 PDFStreamTest()
+{
+	Int32 predictorResult = PDFFlatePredictorTest();
+	if (predictorResult != 0)
+		return predictorResult;
+	Int32 lzwResult = PDFLZWTest();
+	if (lzwResult != 0)
+		return lzwResult;
+	NN<Media::PDFParameter> parameter;
+	NN<Text::String> parameterValue;
+	if (!Media::PDFParameter::Parse(CSTR("/O (abc[<</not-an-entry\\)x\\(foo\\\\bar) /P -1324 /R 3")).SetTo(parameter))
+	{
+		printf("PDF literal string parse test failed\r\n");
+		return 1;
+	}
+	Bool parameterPassed = parameter->GetEntryValue(CSTR("O")).SetTo(parameterValue) &&
+		parameterValue->Equals(UTF8STRC("(abc[<</not-an-entry\\)x\\(foo\\\\bar)")) &&
+		parameter->GetEntryValue(CSTR("P")).SetTo(parameterValue) && parameterValue->Equals(UTF8STRC("-1324")) &&
+		parameter->GetEntryValue(CSTR("R")).SetTo(parameterValue) && parameterValue->Equals(UTF8STRC("3"));
+	parameter.Delete();
+	if (!parameterPassed)
+	{
+		printf("PDF literal string parse test failed\r\n");
+		return 1;
+	}
+	static const UInt8 compressed[] = {
+		0x78,0xda,0x0b,0x70,0x71,0x53,0x48,0xce,0xcf,0x2d,0x28,0x4a,0x2d,0x2e,0x4e,0x4d,0x51,
+		0x28,0x2e,0x29,0x4a,0x4d,0xcc,0x55,0x28,0x49,0x2d,0x2e,0x01,0x00,0x7e,0x50,0x09,0xbc
+	};
+	static const UInt8 expected[] = "PDF compressed stream test";
+	UInt8 key[] = {1,2,3,4,5};
+	NN<Text::String> name = Text::String::New(UTF8STRC("stream-test.pdf"));
+	Media::PDFDocument pdf(name, CSTR("1.4"));
+	name->Release();
+	pdf.SetEncryptionRequired();
+	NN<Media::PDFObject> obj = pdf.AddObject(1);
+	obj->SetParameter(Media::PDFParameter::Parse(CSTR("/Filter /FlateDecode")));
+	IO::StmData::MemoryDataRef noKeyStream(Data::ByteArrayR(compressed, sizeof(compressed)));
+	obj->SetStream(noKeyStream, 0, sizeof(compressed));
+	if (obj->GetData().NotNull() || !pdf.SetEncryptionKey(key, sizeof(key)))
+	{
+		printf("PDF encrypted stream key test failed\r\n");
+		return 1;
+	}
+	UInt8 encrypted[sizeof(compressed) + 1];
+	MemCopyNO(encrypted, compressed, sizeof(compressed));
+	encrypted[sizeof(compressed)] = '\n';
+	if (!pdf.DecryptStreamData(1, encrypted, sizeof(encrypted)))
+		return 1;
+	IO::StmData::MemoryDataRef encryptedStream(Data::ByteArrayR(encrypted, sizeof(encrypted)));
+	obj->SetStream(encryptedStream, 0, sizeof(encrypted));
+	NN<IO::StreamData> data;
+	UInt8 output[sizeof(expected) - 1];
+	if (!obj->GetData().SetTo(data) || data->GetDataSize() != sizeof(output) ||
+		data->GetRealData(0, sizeof(output), BYTEARR(output)) != sizeof(output) ||
+		memcmp(output, expected, sizeof(output)) != 0 ||
+		!obj->GetData().SetTo(data) || data->GetDataSize() != sizeof(output))
+	{
+		printf("PDF encrypted Flate stream test failed\r\n");
+		return 1;
+	}
+	if (!obj->GetRAWData().SetTo(data) || data->GetDataSize() != sizeof(encrypted))
+	{
+		printf("PDF raw stream preservation test failed\r\n");
+		return 1;
+	}
+	IO::MemoryStream saved;
+	if (!obj->SaveStream(saved) || saved.GetLength() != sizeof(output) ||
+		memcmp(saved.GetArray().Arr().Ptr(), expected, sizeof(output)) != 0)
+	{
+		printf("PDF decoded stream save test failed\r\n");
+		return 1;
+	}
+	obj->SetData(noKeyStream, 0, sizeof(compressed));
+	if (!obj->GetData().SetTo(data) || data->GetDataSize() != sizeof(output) ||
+		data->GetRealData(0, sizeof(output), BYTEARR(output)) != sizeof(output) ||
+		memcmp(output, expected, sizeof(output)) != 0)
+	{
+		printf("PDF unencrypted data cache test failed\r\n");
+		return 1;
+	}
+	obj->SetData(noKeyStream, 0, sizeof(compressed) - 1);
+	if (obj->GetData().NotNull())
+	{
+		printf("PDF truncated Flate stream test failed\r\n");
+		return 1;
+	}
+	NN<Media::PDFObject> xrefObj = pdf.AddObject(3);
+	xrefObj->SetParameter(Media::PDFParameter::Parse(CSTR("/Type /XRef /Filter /FlateDecode")));
+	xrefObj->SetStream(noKeyStream, 0, sizeof(compressed));
+	if (!xrefObj->GetData().SetTo(data) || data->GetDataSize() != sizeof(output) ||
+		data->GetRealData(0, sizeof(output), BYTEARR(output)) != sizeof(output) ||
+		memcmp(output, expected, sizeof(output)) != 0)
+	{
+		printf("PDF unencrypted cross-reference stream test failed\r\n");
+		return 1;
+	}
+	UInt8 plainData[] = {1,2,3,4};
+	if (!pdf.DecryptStreamData(4, plainData, sizeof(plainData)))
+		return 1;
+	IO::StmData::MemoryDataRef plainStream(Data::ByteArrayR(plainData, sizeof(plainData)));
+	NN<Media::PDFObject> plainObj = pdf.AddObject(4);
+	plainObj->SetStream(plainStream, 0, sizeof(plainData));
+	UInt8 plainOutput[sizeof(plainData)];
+	if (!plainObj->GetData().SetTo(data) || data->GetDataSize() != sizeof(plainOutput) ||
+		data->GetRealData(0, sizeof(plainOutput), BYTEARR(plainOutput)) != sizeof(plainOutput) ||
+		plainOutput[0] != 1 || plainOutput[1] != 2 || plainOutput[2] != 3 || plainOutput[3] != 4)
+	{
+		printf("PDF encrypted unfiltered stream test failed\r\n");
+		return 1;
+	}
+	UInt8 faxData[] = {0xA8};
+	if (!pdf.DecryptStreamData(2, faxData, sizeof(faxData)))
+		return 1;
+	IO::StmData::MemoryDataRef faxStream(Data::ByteArrayR(faxData, sizeof(faxData)));
+	NN<Media::PDFObject> faxObj = pdf.AddObject(2);
+	faxObj->SetParameter(Media::PDFParameter::Parse(CSTR("/Subtype /Image /Filter /CCITTFaxDecode /Width 8 /Height 2 /DecodeParms << /K -1 /Columns 8 >>")));
+	faxObj->SetStream(faxStream, 0, sizeof(faxData));
+	Parser::FullParserList parsers;
+	NN<Media::ImageList> images;
+	NN<Media::Image> image;
+	if (!pdf.CreateImage(2, parsers).SetTo(images))
+	{
+		printf("PDF encrypted CCITT stream test failed\r\n");
+		return 1;
+	}
+	if (!images->GetImage2(0, 0).SetTo(image) || image->GetImageType() != Media::ImageType::Raster ||
+		NN<Media::RasterImage>::ConvertFrom(image)->GetImageClass() != Media::RasterImage::ImageClass::StaticImage)
+	{
+		images.Delete();
+		printf("PDF encrypted CCITT image test failed\r\n");
+		return 1;
+	}
+	NN<Media::StaticImage> faxImage = NN<Media::StaticImage>::ConvertFrom(NN<Media::RasterImage>::ConvertFrom(image));
+	Bool faxPassed = faxImage->data[faxImage->GetDataBpl() + 6] == 255 && faxImage->data[faxImage->GetDataBpl() + 7] == 0;
+	images.Delete();
+	if (!faxPassed)
+	{
+		printf("PDF encrypted CCITT image test failed\r\n");
+		return 1;
+	}
+	return 0;
+}
+
 Int32 PDFTest()
 {
-	Int32 testResult = CCITTFaxTest();
+	Int32 testResult = PDFStreamTest();
+	if (testResult != 0)
+		return testResult;
+	testResult = CCITTFaxTest();
 	if (testResult != 0)
 		return testResult;
 	testResult = JBIG2Test();
 	if (testResult != 0)
 		return testResult;
 
-	Text::CStringNN fileName = CSTR("/mnt/QDisk1/Data/BookFile/341.pdf");
+	Text::CStringNN fileName = CSTR("/mnt/QDisk1/Data/BookFile/742.pdf");
 	Parser::FullParserList parsers;
 	Parser::FileParser::PDFParser parser;
 	NN<IO::ParsedObject> pobj;
@@ -2120,7 +2619,7 @@ Int32 PDFTest2()
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UIntOS testType = 46;
+	UIntOS testType = 47;
 	switch (testType)
 	{
 	case 0:
@@ -2221,6 +2720,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return PDFTest2();
 	case 48:
 		return CCITTFaxTest();
+	case 49:
+		return PDFStreamTest();
 	default:
 		return 0;
 	}

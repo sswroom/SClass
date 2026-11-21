@@ -103,6 +103,37 @@ Optional<Media::PDFParameter::ParamEntry> Media::PDFParameter::GetItem(UIntOS in
 	return this->entries.GetItem(index);
 }
 
+Bool Media::PDFParameter::ParseDecodeParams(NN<Text::String> value, Optional<PDFParameter> &params)
+{
+	UnsafeArray<const UTF8Char> ptr = value->v;
+	UIntOS len = value->leng;
+	while (len > 0 && (*ptr == ' ' || *ptr == '\t' || *ptr == '\r' || *ptr == '\n' || *ptr == '\f'))
+	{
+		ptr++;
+		len--;
+	}
+	while (len > 0 && (ptr[len - 1] == ' ' || ptr[len - 1] == '\t' || ptr[len - 1] == '\r' || ptr[len - 1] == '\n' || ptr[len - 1] == '\f'))
+		len--;
+	if (len >= 2 && ptr[0] == '[' && ptr[len - 1] == ']')
+	{
+		ptr++;
+		len -= 2;
+		while (len > 0 && (*ptr == ' ' || *ptr == '\t' || *ptr == '\r' || *ptr == '\n' || *ptr == '\f'))
+		{
+			ptr++;
+			len--;
+		}
+		while (len > 0 && (ptr[len - 1] == ' ' || ptr[len - 1] == '\t' || ptr[len - 1] == '\r' || ptr[len - 1] == '\n' || ptr[len - 1] == '\f'))
+			len--;
+	}
+	if (Text::CStringNN(ptr, len).Equals(CSTR("null")))
+		return true;
+	if (len < 4 || ptr[0] != '<' || ptr[1] != '<' || ptr[len - 2] != '>' || ptr[len - 1] != '>')
+		return false;
+	params = PDFParameter::Parse(Text::CStringNN(ptr + 2, len - 4));
+	return params.NotNull();
+}
+
 Optional<Media::PDFParameter> Media::PDFParameter::Parse(Text::CStringNN parameter)
 {
 	parameter = parameter.LTrim();
@@ -127,6 +158,17 @@ Optional<Media::PDFParameter> Media::PDFParameter::Parse(Text::CStringNN paramet
 	UIntOS startValue = 0;
 	while (true)
 	{
+		if (i < j && endChars.GetCount() > 0 && endChars.GetItem(endChars.GetCount() - 1) == ')')
+		{
+			if (parameter.v[i] == '\\' && i + 1 < j)
+				i++;
+			else if (parameter.v[i] == '(')
+				endChars.Add(')');
+			else if (parameter.v[i] == ')')
+				endChars.RemoveAt(endChars.GetCount() - 1);
+			i++;
+			continue;
+		}
 		if (i >= j || (endChars.GetCount() == 0 && parameter.v[i] == '/'))
 		{
 			k = i;
@@ -155,7 +197,7 @@ Optional<Media::PDFParameter> Media::PDFParameter::Parse(Text::CStringNN paramet
 			if (i >= j)
 				break;
 		}
-		else if (parameter.v[i] == '<' && parameter.v[i + 1] == '<')
+		else if (parameter.v[i] == '<' && i + 1 < j && parameter.v[i + 1] == '<')
 		{
 			if (startValue == 0)
 			{
