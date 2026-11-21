@@ -1959,60 +1959,91 @@ Int32 PDFTest()
 		printf("PDF parse succeeded for file %s\r\n", fileName.v.Ptr());
 		NN<Media::PDFDocument> pdf = NN<Media::PDFDocument>::ConvertFrom(pobj);
 		NN<Media::ImageList> imgList;
-		UInt32 id = 10;
-		if (pdf->CreateImage(id, parsers).SetTo(imgList))
+		Bool allImages = true;
+		if (allImages)
 		{
-			printf("PDF id %d image creation succeeded\r\n", id);
-			NN<Media::Image> img;
-			if (!imgList->GetImage2(0, 0).SetTo(img) || img->GetImageType() != Media::ImageType::Raster)
+			NN<Media::PDFObject> obj;
+			UIntOS imgCount = 0;
+			UIntOS i = 0;
+			UIntOS j = pdf->GetCount();
+			while (i < j)
 			{
-				printf("PDF id %d image raster validation failed\r\n", id);
-				imgList.Delete();
-				pdf.Delete();
-				return 1;
-			}
-			NN<Media::RasterImage> raster = NN<Media::RasterImage>::ConvertFrom(img);
-			if (raster->GetImageClass() != Media::RasterImage::ImageClass::StaticImage)
-			{
-				printf("PDF id %d image raster validation failed\r\n", id);
-				imgList.Delete();
-				pdf.Delete();
-				return 1;
-			}
-			NN<Media::StaticImage> staticImage = NN<Media::StaticImage>::ConvertFrom(raster);
-			if (staticImage->info.dispSize.x != 2550 || staticImage->info.dispSize.y != 3299)
-			{
-				printf("PDF id %d image dimensions validation failed\r\n", id);
-				imgList.Delete();
-				pdf.Delete();
-				return 1;
-			}
-			UInt64 hash = 14695981039346656037ULL;
-			UIntOS bpl = staticImage->GetDataBpl();
-			UIntOS row = 0;
-			while (row < 3299)
-			{
-				UIntOS x = 0;
-				while (x < 2550)
+				obj = pdf->GetItemNoCheck(i);
+				if (obj->GetImageType(pdf) != Media::PDFObject::ImageType::NonImage)
 				{
-					hash = (hash ^ staticImage->data[row * bpl + x++]) * 1099511628211ULL;
+					if (pdf->CreateImage(obj->GetId(), parsers).SetTo(imgList))
+					{
+						imgList.Delete();
+						imgCount++;
+					}
+					else
+					{
+						printf("PDF id %d image creation failed\r\n", obj->GetId());
+						pdf.Delete();
+						return 1;
+					}
 				}
-				row++;
+				i++;
 			}
-			if (hash != 0xb4d9c0e40432766cULL)
-			{
-				printf("PDF id %d image content validation failed: %016llx\r\n", id, (unsigned long long)hash);
-				imgList.Delete();
-				pdf.Delete();
-				return 1;
-			}
-			imgList.Delete();
+			printf("PDF all images creation succeeded, total images: %d\r\n", (Int32)imgCount);
 		}
 		else
 		{
-			printf("PDF id %d image creation failed\r\n", id);
-			pdf.Delete();
-			return 1;
+			UInt32 id = 19;
+			if (pdf->CreateImage(id, parsers).SetTo(imgList))
+			{
+				printf("PDF id %d image creation succeeded\r\n", id);
+				NN<Media::Image> img;
+				if (!imgList->GetImage2(0, 0).SetTo(img) || img->GetImageType() != Media::ImageType::Raster)
+				{
+					printf("PDF id %d image raster validation failed\r\n", id);
+					imgList.Delete();
+					pdf.Delete();
+					return 1;
+				}
+				NN<Media::RasterImage> raster = NN<Media::RasterImage>::ConvertFrom(img);
+				if (raster->GetImageClass() != Media::RasterImage::ImageClass::StaticImage)
+				{
+					printf("PDF id %d image raster validation failed\r\n", id);
+					imgList.Delete();
+					pdf.Delete();
+					return 1;
+				}
+				NN<Media::StaticImage> staticImage = NN<Media::StaticImage>::ConvertFrom(raster);
+				if (staticImage->info.dispSize.x != 2560 || staticImage->info.dispSize.y != 3307)
+				{
+					printf("PDF id %d image dimensions validation failed\r\n", id);
+					imgList.Delete();
+					pdf.Delete();
+					return 1;
+				}
+				UInt64 hash = 14695981039346656037ULL;
+				UIntOS bpl = staticImage->GetDataBpl();
+				UIntOS row = 0;
+				while (row < 3307)
+				{
+					UIntOS x = 0;
+					while (x < 2560)
+					{
+						hash = (hash ^ staticImage->data[row * bpl + x++]) * 1099511628211ULL;
+					}
+					row++;
+				}
+				if (hash != 0xc659e537ae79b813ULL)
+				{
+					printf("PDF id %d image content validation failed: %016llx\r\n", id, (unsigned long long)hash);
+					imgList.Delete();
+					pdf.Delete();
+					return 1;
+				}
+				imgList.Delete();
+			}
+			else
+			{
+				printf("PDF id %d image creation failed\r\n", id);
+				pdf.Delete();
+				return 1;
+			}
 		}
 		pdf.Delete();
 	}

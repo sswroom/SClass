@@ -3319,8 +3319,6 @@ Media/BitmapUtil.h:
 @BitmapUtil.o
 Media/CCITTFaxDecoder.h:
 @CCITTFaxDecoder.o
-Media/JBIG2Decoder.h:
-@JBIG2Decoder.o
 Media/ChapterInfo.h:
 @ChapterInfo.o
 Media/ClockSpeechCh.h:
@@ -3398,6 +3396,10 @@ Media/ImageUtil.h:
 @ImageUtil.o
 Media/ImageUtil_C.h:
 @ImageUtil_CPP.o
+Media/JBIG2ArithmeticDecoder.h:
+@JBIG2ArithmeticDecoder.o
+Media/JBIG2Decoder.h:
+@JBIG2Decoder.o
 Media/JPEGFile.h:
 @JPEGFile.o
 Media/LinearRectRemapper.h:

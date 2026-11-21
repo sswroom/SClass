@@ -1221,7 +1221,6 @@ BitmapUtil.o: ../../src/Media/BitmapUtil.cpp
 CameraManagerNul.o: ../../src/Media/CameraManagerNul.cpp
 CameraManagerRPi.o: ../../src/Media/CameraManagerRPi.cpp
 CCITTFaxDecoder.o: ../../src/Media/CCITTFaxDecoder.cpp
-JBIG2Decoder.o: ../../src/Media/JBIG2Decoder.cpp
 ChapterInfo.o: ../../src/Media/ChapterInfo.cpp
 ClockSpeechCh.o: ../../src/Media/ClockSpeechCh.cpp
 ColorConv.o: ../../src/Media/ColorConv.cpp
@@ -1296,6 +1295,8 @@ ImageRemapper.o: ../../src/Media/ImageRemapper.cpp
 ImageResizer.o: ../../src/Media/ImageResizer.cpp
 ImageTo8Bit.o: ../../src/Media/ImageTo8Bit.cpp
 ImageUtil.o: ../../src/Media/ImageUtil.cpp
+JBIG2ArithmeticDecoder.o: ../../src/Media/JBIG2ArithmeticDecoder.cpp
+JBIG2Decoder.o: ../../src/Media/JBIG2Decoder.cpp
 JPEGDecoder.o: ../../src/Media/JPEGDecoder.cpp
 !`$(PKG-CONFIG) --libs libjpeg`
 JPEGDecoder_Null.o: ../../src/Media/JPEGDecoder_Null.cpp
