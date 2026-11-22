@@ -500,6 +500,10 @@ DB::MySQLReader::~MySQLReader()
 
 }
 
+Text::CStringNN DB::MySQLReader::GetClassName() const
+{
+	return CSTR("MySQLReader");
+}
 
 Bool DB::MySQLReader::ReadNext()
 {

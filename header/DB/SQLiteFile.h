@@ -77,6 +77,7 @@ namespace DB
 		SQLiteReader(NN<SQLiteFile> conn, AnyType hStmt);
 		~SQLiteReader();
 
+		virtual Text::CStringNN GetClassName() const;
 		virtual Bool ReadNext();
 		virtual UIntOS ColCount();
 		virtual IntOS GetRowChanged();

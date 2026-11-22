@@ -2071,6 +2071,8 @@ DB/ColDef.h:
 @ColDef.o
 DB/CSVFile.h:
 @CSVFile.o
+DB/CSVMonthGroupedReader.h:
+@CSVMonthGroupedReader.o
 DB/DBCache.h:
 @DBCache.o
 DB/DBChangeChecker.h:

@@ -193,6 +193,11 @@ Math::TSPReader::~TSPReader()
 {
 }
 
+Text::CStringNN Math::TSPReader::GetClassName() const
+{
+	return CSTR("TSPReader");
+}
+
 Bool Math::TSPReader::ReadNext()
 {
 	if (this->currRow >= (IntOS)this->rowCnt - 1)
@@ -631,6 +636,11 @@ Math::TSPHReader::TSPHReader(Math::TSPFile *file)
 }
 Math::TSPHReader::~TSPHReader()
 {
+}
+
+Text::CStringNN Math::TSPHReader::GetClassName() const
+{
+	return CSTR("TSPHReader");
 }
 
 Bool Math::TSPHReader::ReadNext()

@@ -977,6 +977,11 @@ Map::MapLayerReader::~MapLayerReader()
 	this->layer->ReleaseNameArr(this->nameArr);
 }
 
+Text::CStringNN Map::MapLayerReader::GetClassName() const
+{
+	return CSTR("MapLayerReader");
+}
+
 Bool Map::MapLayerReader::ReadNext()
 {
 	this->currIndex++;

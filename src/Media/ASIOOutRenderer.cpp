@@ -286,7 +286,6 @@ ASIOCallbacks asioCallbacks;
 
 long ASIOHdlrMessage(long selector, long value, void* message, double* opt)
 {
-	Int32 i;
 	switch (selector)
 	{
 	case kAsioEngineVersion:
@@ -298,8 +297,6 @@ long ASIOHdlrMessage(long selector, long value, void* message, double* opt)
 	case kAsioLatenciesChanged:
 		return 1;
 	default:
-		i = 0;
-		i+=0;
 		return 0;
 	}
 
@@ -323,8 +320,6 @@ ASIOTime* ASIOHdlrBuffSwitchTI(ASIOTime* params, long doubleBufferIndex, ASIOBoo
 
 void ASIOHdlrSRChg(ASIOSampleRate sRate)
 {
-	Int32 i = 0;
-	i += 0;
 }
 
 Int32 Media::ASIOOutRenderer::GetDeviceIndex(UnsafeArrayOpt<const UTF8Char> buff)

@@ -16,6 +16,7 @@ extern "C"
 #include <msdasql.h>
 }
 #include <msdasc.h>
+#undef GetClassName
 
 DB::OLEDBConn::ProviderInfo DB::OLEDBConn::providerInfo[] = {
 	{"ADsDSOObject",                     "OLE DB Provider for Microsoft Directory Services",     DB::SQLType::Unknown},
@@ -865,6 +866,11 @@ DB::OLEDBReader::~OLEDBReader()
 	}
 	this->clsData->pIRowset->Release();
 	MemFreeNN(this->clsData);
+}
+
+Text::CStringNN DB::OLEDBReader::GetClassName() const
+{
+	return CSTR("OLEDBReader");
 }
 
 Bool DB::OLEDBReader::ReadNext()

@@ -128,6 +128,7 @@ namespace DB
 		ODBCReader(ODBCConn *conn, void *hStmt, Bool enableDebug, Int8 tzQhr);
 		~ODBCReader();
 
+		virtual Text::CStringNN GetClassName() const;
 		virtual Bool ReadNext();
 		virtual UIntOS ColCount();
 		virtual IntOS GetRowChanged();

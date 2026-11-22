@@ -14,6 +14,7 @@ namespace DB
 			SQLEngineActionReader(IntOS rowChanged);
 			virtual ~SQLEngineActionReader();
 
+			virtual Text::CStringNN GetClassName() const;
 			virtual Bool ReadNext();
 			virtual UIntOS ColCount();
 			virtual IntOS GetRowChanged(); //-1 = error

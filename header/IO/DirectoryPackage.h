@@ -34,7 +34,7 @@ namespace IO
 				unixAttr = 0;
 			}
 
-			Bool operator==(const FileItem &item)
+			Bool operator==(const FileItem &item) const
 			{
 				return fileSize == item.fileSize &&
 					modTime == item.modTime &&

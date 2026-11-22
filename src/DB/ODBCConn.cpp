@@ -24,6 +24,7 @@
 #if defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
 #include <windows.h>
 #include "IO/Registry.h"
+#undef GetClassName
 #else
 #include "IO/IniFile.h"
 #endif
@@ -1419,6 +1420,11 @@ DB::ODBCReader::~ODBCReader()
 		}
 	}
 	MemFreeArr(this->colDatas);
+}
+
+Text::CStringNN DB::ODBCReader::GetClassName() const
+{
+	return CSTR("ODBCReader");
 }
 
 Bool DB::ODBCReader::ReadNext()

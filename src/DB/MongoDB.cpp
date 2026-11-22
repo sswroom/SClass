@@ -227,6 +227,10 @@ DB::MongoDBReader::~MongoDBReader()
 	}
 }
 
+Text::CStringNN DB::MongoDBReader::GetClassName() const
+{
+	return CSTR("MongoDBReader");
+}
 
 Bool DB::MongoDBReader::ReadNext()
 {

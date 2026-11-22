@@ -76,6 +76,7 @@ namespace DB
 		OLEDBReader(void *pIRowset, IntOS rowChanged, Int8 tzQhr);
 		virtual ~OLEDBReader();
 
+		virtual Text::CStringNN GetClassName() const;
 		virtual Bool ReadNext();
 		virtual UIntOS ColCount();
 		virtual IntOS GetRowChanged();

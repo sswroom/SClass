@@ -343,6 +343,11 @@ DB::CSVReader::~CSVReader()
 	MemFreeArr(this->hdrs);
 }
 
+Text::CStringNN DB::CSVReader::GetClassName() const
+{
+	return CSTR("CSVReader");
+}
+
 Bool DB::CSVReader::ReadNext()
 {
 	UnsafeArray<UTF8Char> sptr;

@@ -38,6 +38,7 @@ namespace Map
 			FileGDBReader(NN<IO::StreamData> fd, UInt64 ofst, NN<FileGDBTableInfo> tableInfo, Optional<Data::ArrayListStringNN> columnNames, UIntOS dataOfst, UIntOS maxCnt, Optional<Data::QueryConditions> conditions, UInt32 maxRowSize, Int8 tzQhr);
 			virtual ~FileGDBReader();
 
+			virtual Text::CStringNN GetClassName() const;
 			virtual Bool ReadNext();
 			virtual UIntOS ColCount();
 			virtual IntOS GetRowChanged(); //-1 = error

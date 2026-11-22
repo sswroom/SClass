@@ -1836,6 +1836,23 @@ void Data::QueryConditions::GetFieldList(NN<Data::ArrayListStringNN> fieldList) 
 	this->cond->GetFieldList(fieldList);
 }
 
+NN<Data::QueryConditions> Data::QueryConditions::Clone() const
+{
+	NN<Data::QueryConditions> clone;
+	NEW_CLASSNN(clone, Data::QueryConditions());
+	clone->cond.Delete();
+	clone->cond = NN<Data::Conditions::BooleanObject>::ConvertFrom(this->cond->Clone());
+	clone->andCond = NN<Data::Conditions::BooleanAnd>::ConvertFrom(clone->cond);
+	clone->orCond = nullptr;
+	if (this->andCond.Ptr() != this->cond.Ptr() || this->orCond.NotNull())
+	{
+		//Bool foundAnd = false;
+		////////////////////////////////////////////////
+		printf("QueryConditions: Not support complex cloning\n");
+	}
+	return clone;
+}
+
 NN<Data::QueryConditions> Data::QueryConditions::TimeBetween(Text::CStringNN fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2)
 {
 	NN<Conditions::TimeBetweenCondition> cond;

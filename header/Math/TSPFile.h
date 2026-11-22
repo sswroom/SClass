@@ -48,6 +48,7 @@ namespace Math
 		TSPReader(TSPFile *file);
 		virtual ~TSPReader();
 
+		virtual Text::CStringNN GetClassName() const;
 		virtual Bool ReadNext();
 		virtual UIntOS ColCount();
 		virtual IntOS GetRowChanged();
@@ -84,6 +85,7 @@ namespace Math
 		TSPHReader(TSPFile *file);
 		virtual ~TSPHReader();
 
+		virtual Text::CStringNN GetClassName() const;
 		virtual Bool ReadNext();
 		virtual UIntOS ColCount();
 		virtual IntOS GetRowChanged();

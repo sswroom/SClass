@@ -79,6 +79,7 @@ namespace DB
 		DBFReader(NN<DB::DBFFile> dbf, UIntOS colCnt, UnsafeArray<DB::DBFFile::DBFCol> cols, UIntOS rowSize, NN<Text::Encoding> enc);
 		virtual ~DBFReader();
 
+		virtual Text::CStringNN GetClassName() const;
 		virtual Bool ReadNext();
 		virtual UIntOS ColCount();
 		virtual IntOS GetRowChanged();

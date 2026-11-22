@@ -550,6 +550,7 @@ namespace Data
 		Bool CanWhereClause(UIntOS maxDBItem) const;
 		void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
 		NN<Conditions::BooleanObject> GetRootCond() const { return cond; }
+		NN<QueryConditions> Clone() const;
 
 		NN<QueryConditions> TimeBetween(Text::CStringNN fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2);
 		NN<QueryConditions> TimeBefore(Text::CStringNN fieldName, const Data::Timestamp &val);

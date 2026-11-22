@@ -101,7 +101,7 @@ namespace Math
 			return ret;
 		}
 
-		Bool operator==(Math::RectArea<T> &rect) const
+		Bool operator==(const Math::RectArea<T> &rect) const
 		{
 			return this->min == rect.min && this->max == rect.max;
 		}

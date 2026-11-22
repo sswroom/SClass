@@ -73,7 +73,7 @@ namespace Net
 				this->value = value;
 			}
 
-			Bool operator==(const TimedValue &val)
+			Bool operator==(const TimedValue &val) const
 			{
 				return this->ts == val.ts && this->value == val.value;
 			}

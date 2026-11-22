@@ -228,6 +228,11 @@ public:
 		}
 	}
 
+	virtual Text::CStringNN GetClassName() const
+	{
+		return CSTR("TDSReader");
+	}
+	
 	virtual Bool ReadNext()
 	{
 		while (true)

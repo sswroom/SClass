@@ -113,6 +113,7 @@ namespace DB
 		PostgreSQLTCPReader(NN<PostgreSQLTCPConn> conn, UInt64 clientId, UInt32 backendPID, Int32 cancelKey, Int8 tzQhr, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListNative<UInt32>> types, NN<Data::ArrayListNative<Int32>> typeMods, Bool finished);
 		virtual ~PostgreSQLTCPReader();
 
+		virtual Text::CStringNN GetClassName() const;
 		virtual Bool ReadNext();
 		virtual UIntOS ColCount();
 		virtual IntOS GetRowChanged();

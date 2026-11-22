@@ -195,6 +195,11 @@ DB::SortableDBReader::~SortableDBReader()
 	}
 }
 
+Text::CStringNN DB::SortableDBReader::GetClassName() const
+{
+	return CSTR("SortableDBReader");
+}
+
 Bool DB::SortableDBReader::ReadNext()
 {
 	if (this->currIndex == this->objList.GetCount())

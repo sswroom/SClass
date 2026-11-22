@@ -29,6 +29,11 @@ public:
 		this->tab.Delete();
 	}
 
+	virtual Text::CStringNN GetClassName() const
+	{
+		return CSTR("JSONDBReader");
+	}
+	
 	virtual Bool ReadNext()
 	{
 		this->obj = nullptr;

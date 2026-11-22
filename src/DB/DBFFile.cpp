@@ -554,6 +554,11 @@ DB::DBFReader::~DBFReader()
 	MemFreeArr(this->recordData);
 }
 
+Text::CStringNN DB::DBFReader::GetClassName() const
+{
+	return CSTR("DBFReader");
+}
+
 Bool DB::DBFReader::ReadNext()
 {
 	if ((UIntOS)(this->currIndex + 1) < this->rowCnt)

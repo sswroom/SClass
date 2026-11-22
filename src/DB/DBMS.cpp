@@ -164,6 +164,11 @@ namespace DB
 			}
 		}
 
+		virtual Text::CStringNN GetClassName() const
+		{
+			return CSTR("DBMSReader");
+		}
+		
 		virtual Bool ReadNext()
 		{
 			NN<Data::ArrayListArr<Optional<Text::String>>> rows;

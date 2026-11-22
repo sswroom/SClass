@@ -12,6 +12,11 @@ DB::SQL::SQLEmbeddedReader::~SQLEmbeddedReader()
 	this->table->CloseReader(this->r);
 }
 
+Text::CStringNN DB::SQL::SQLEmbeddedReader::GetClassName() const
+{
+	return CSTR("SQLEmbeddedReader");
+}
+
 Bool DB::SQL::SQLEmbeddedReader::ReadNext()
 {
 	return this->r->ReadNext();

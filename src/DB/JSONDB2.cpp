@@ -24,6 +24,11 @@ public:
 	{
 	}
 
+	virtual Text::CStringNN GetClassName() const
+	{
+		return CSTR("JSONDB2Reader");
+	}
+	
 	virtual Bool ReadNext()
 	{
 		if (this->currRow + 1 >= this->rows->GetArrayLength())

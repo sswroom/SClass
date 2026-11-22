@@ -151,6 +151,8 @@ namespace Map
 	public:
 		GPSTrackReader(NN<Map::GPSTrack> gps);
 		virtual ~GPSTrackReader();
+
+		virtual Text::CStringNN GetClassName() const;
 	};
 
 	class GPSDataReader : public DB::DBReader
@@ -163,6 +165,7 @@ namespace Map
 		GPSDataReader(NN<Map::GPSTrack> gps);
 		virtual ~GPSDataReader();
 
+		virtual Text::CStringNN GetClassName() const;
 		virtual Bool ReadNext();
 		virtual UIntOS ColCount();
 		virtual IntOS GetRowChanged();

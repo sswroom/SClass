@@ -26,6 +26,11 @@ public:
 
 	}
 
+	virtual Text::CStringNN GetClassName() const
+	{
+		return CSTR("TextDBReader");
+	}	
+	
 	virtual Bool ReadNext()
 	{
 		this->row = data->valList.GetItem(this->index);

@@ -116,6 +116,11 @@ Optional<DB::SQL::SQLValue> DB::SQL::SQLFileDBReader::GetSQLValue(UIntOS colInde
 	return row->GetItem((UIntOS)srcCol);
 }
 
+Text::CStringNN DB::SQL::SQLFileDBReader::GetClassName() const
+{
+	return CSTR("SQLFileDBReader");
+}
+
 Bool DB::SQL::SQLFileDBReader::ReadNext()
 {
 	if (this->maxCnt != 0 && this->rowReadCnt >= this->maxCnt)

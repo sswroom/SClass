@@ -10,6 +10,11 @@ DB::SQL::SQLEngineActionReader::~SQLEngineActionReader()
 {
 }
 
+Text::CStringNN DB::SQL::SQLEngineActionReader::GetClassName() const
+{
+	return CSTR("SQLEngineActionReader");
+}
+
 Bool DB::SQL::SQLEngineActionReader::ReadNext()
 {
 	return false;

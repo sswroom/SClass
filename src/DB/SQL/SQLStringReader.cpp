@@ -55,6 +55,11 @@ DB::SQL::SQLStringReader::~SQLStringReader()
 	}
 }
 
+Text::CStringNN DB::SQL::SQLStringReader::GetClassName() const
+{
+	return CSTR("SQLStringReader");
+}
+
 Bool DB::SQL::SQLStringReader::ReadNext()
 {
 	if ((this->currRow + 1) * this->colNames.GetCount() >= this->values.GetCount())

@@ -30,6 +30,7 @@ namespace DB
 			SQLFileDBReader(NN<SQLFileDB::TableInfo> tableInfo, Optional<Data::ArrayListStringNN> colNames, UIntOS dataOfst, UIntOS maxCnt, Optional<Data::QueryConditions> condition, Text::CString ordering, Int8 tzQhr);
 			virtual ~SQLFileDBReader();
 
+			virtual Text::CStringNN GetClassName() const;
 			virtual Bool ReadNext();
 			virtual UIntOS ColCount();
 			virtual IntOS GetRowChanged();

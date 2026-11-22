@@ -80,6 +80,7 @@ namespace DB
 		MySQLReader(IntOS rowChanged, void *result, Int8 tzQhr);
 		virtual ~MySQLReader();
 
+		virtual Text::CStringNN GetClassName() const;
 		virtual Bool ReadNext();
 		virtual UIntOS ColCount();
 		virtual IntOS GetRowChanged();

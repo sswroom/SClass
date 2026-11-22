@@ -26,6 +26,7 @@ namespace Win32
 		WMIReader(void *pEnum, Int8 tzQhr);
 		virtual ~WMIReader();
 
+		virtual Text::CStringNN GetClassName() const;
 		virtual Bool ReadNext();
 		virtual UIntOS ColCount();
 		virtual IntOS GetRowChanged();

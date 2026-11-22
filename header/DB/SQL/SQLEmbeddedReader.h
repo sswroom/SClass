@@ -16,6 +16,7 @@ namespace DB
 			SQLEmbeddedReader(NN<DBReader> r, NN<SQLEngineTable> table);
 			virtual ~SQLEmbeddedReader();
 
+			virtual Text::CStringNN GetClassName() const;
 			virtual Bool ReadNext();
 			virtual UIntOS ColCount();
 			virtual IntOS GetRowChanged(); //-1 = error

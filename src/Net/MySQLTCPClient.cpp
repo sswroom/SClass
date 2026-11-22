@@ -91,6 +91,11 @@ namespace Net
 			}
 		}
 
+		virtual Text::CStringNN GetClassName() const
+		{
+			return CSTR("MySQLTCPReader");
+		}
+
 		virtual Bool ReadNext()
 		{
 			UnsafeArray<Optional<Text::String>> row;
@@ -591,6 +596,11 @@ namespace Net
 			{
 
 			}
+		}
+
+		virtual Text::CStringNN GetClassName() const
+		{
+			return CSTR("MySQLTCPBinaryReader");
 		}
 
 		virtual Bool ReadNext()

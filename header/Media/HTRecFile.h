@@ -23,6 +23,7 @@ namespace Media
 			HTRecReader(HTRecFile *file, Bool setting);
 			virtual ~HTRecReader();
 
+			virtual Text::CStringNN GetClassName() const;
 			virtual Bool ReadNext();
 			virtual UIntOS ColCount();
 			virtual IntOS GetRowChanged();

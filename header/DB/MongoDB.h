@@ -49,6 +49,7 @@ namespace DB
 		MongoDBReader(NN<MongoDB> conn, void *coll);
 		virtual ~MongoDBReader();
 
+		virtual Text::CStringNN GetClassName() const;
 		virtual Bool ReadNext();
 		virtual UIntOS ColCount();
 		virtual IntOS GetRowChanged();

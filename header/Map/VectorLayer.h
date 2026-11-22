@@ -33,7 +33,7 @@ namespace Map
 				this->colDP = colDP;
 			}
 
-			Bool operator==(const ColInfo &v)
+			Bool operator==(const ColInfo &v) const
 			{
 				return this->colType == v.colType && this->colSize == v.colSize && this->colDP == v.colDP;
 			}

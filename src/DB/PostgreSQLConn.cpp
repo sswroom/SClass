@@ -58,6 +58,11 @@ public:
 	}
 
 public:
+	virtual Text::CStringNN GetClassName() const
+	{
+		return CSTR("PostgreSQLReader");
+	}
+	
 	virtual Bool ReadNext()
 	{
 		this->currrow++;

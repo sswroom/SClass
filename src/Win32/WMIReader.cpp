@@ -6,6 +6,7 @@
 #include "Text/MyStringW.h"
 #include "Win32/WMIReader.h"
 #include <wbemidl.h>
+#undef GetClassName
 
 Win32::WMIReader::WMIReader(void *pEnum, Int8 tzQhr)
 {
@@ -81,6 +82,11 @@ Win32::WMIReader::~WMIReader()
 	this->columns.Delete();
 	((IEnumWbemClassObject*)this->pEnum)->Release();
 	this->pEnum = 0;
+}
+
+Text::CStringNN Win32::WMIReader::GetClassName() const
+{
+	return CSTR("WMIReader");
 }
 
 Bool Win32::WMIReader::ReadNext()

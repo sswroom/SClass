@@ -210,6 +210,7 @@ QuickBubbleSort.o: ../../src/Data/Sort/QuickBubbleSort.cpp
 
 ColDef.o: ../../src/DB/ColDef.cpp
 CSVFile.o: ../../src/DB/CSVFile.cpp
+CSVMonthGroupedReader.o: ../../src/DB/CSVMonthGroupedReader.cpp
 DBCache.o: ../../src/DB/DBCache.cpp
 DBChangeChecker.o: ../../src/DB/DBChangeChecker.cpp
 DBConfig.o: ../../src/DB/DBConfig.cpp

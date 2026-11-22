@@ -29,6 +29,11 @@ public:
 		this->tabDef.Delete();
 	}
 
+	virtual Text::CStringNN GetClassName() const
+	{
+		return CSTR("WorkbookReader");
+	}
+	
 	virtual Bool ReadNext()
 	{
 		this->currIndex++;

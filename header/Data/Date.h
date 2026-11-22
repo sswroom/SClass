@@ -221,6 +221,11 @@ namespace Data
 		{
 			return Data::Date((Data::DateTimeUtil::GetCurrTimeMillis() + Data::DateTimeUtil::GetLocalTzQhr() * 900000) / 86400000);
 		}
+
+		static Date UTCToday()
+		{
+			return Data::Date(Data::DateTimeUtil::GetCurrTimeMillis() / 86400000);
+		}
 	};
 }
 #endif

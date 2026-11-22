@@ -430,6 +430,11 @@ DB::SQLiteReader::~SQLiteReader()
 	MemFreeArr(this->colTypes);
 }
 
+Text::CStringNN DB::SQLiteReader::GetClassName() const
+{
+	return CSTR("SQLiteReader");
+}
+
 Bool DB::SQLiteReader::ReadNext()
 {
 	if (isFirst)

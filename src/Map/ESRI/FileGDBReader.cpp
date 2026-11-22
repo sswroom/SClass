@@ -105,6 +105,11 @@ Map::ESRI::FileGDBReader::~FileGDBReader()
 	this->columnIndices.Delete();
 }
 
+Text::CStringNN Map::ESRI::FileGDBReader::GetClassName() const
+{
+	return CSTR("FileGDBReader");
+}
+
 Bool Map::ESRI::FileGDBReader::ReadNext()
 {
 	NN<Data::QueryConditions> nncondition;

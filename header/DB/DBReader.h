@@ -26,6 +26,7 @@ namespace DB
 		virtual ~DBReader(){};
 
 	public:
+		virtual Text::CStringNN GetClassName() const = 0;
 		virtual Bool ReadNext() = 0;
 		virtual UIntOS ColCount() = 0;
 		virtual IntOS GetRowChanged() = 0; //-1 = error

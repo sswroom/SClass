@@ -87,6 +87,11 @@ public:
 		MemFreeArr(this->pageBuff);
 	}
 
+	virtual Text::CStringNN GetClassName() const
+	{
+		return CSTR("MDBFileReader");
+	}
+	
 	virtual Bool ReadNext()
 	{
 		if (this->maxRows && this->returnedRows >= this->maxRows)

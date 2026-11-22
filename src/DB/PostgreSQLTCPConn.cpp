@@ -1361,6 +1361,11 @@ void DB::PostgreSQLTCPReader::ClearCurrentRow()
 	this->hasCurrentRow = false;
 }
 
+Text::CStringNN DB::PostgreSQLTCPReader::GetClassName() const
+{
+	return CSTR("PostgreSQLTCPReader");
+}
+
 Bool DB::PostgreSQLTCPReader::ReadNext()
 {
 	this->ClearCurrentRow();

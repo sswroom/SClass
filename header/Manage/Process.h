@@ -35,7 +35,7 @@ namespace Manage
 				this->createTime = createTime;
 			}
 
-			Bool operator==(const HandleInfo &val)
+			Bool operator==(const HandleInfo &val) const
 			{
 				return this->id == val.id;
 			}

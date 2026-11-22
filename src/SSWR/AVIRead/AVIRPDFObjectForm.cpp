@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
+#include "Media/PDFImage.h"
 #include "SSWR/AVIRead/AVIRPDFObjectForm.h"
 #include "Text/StringTool.h"
 #include "UI/GUIFileDialog.h"
@@ -37,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectSelChg(AnyType userObj)
 		me->txtImageType->SetText(Media::PDFObject::ImageTypeGetName(obj->GetImageType(me->doc)));
 		NN<Media::ImageList> imgList;
 		me->dispImage.Delete();
-		if (obj->IsImage() && me->doc->CreateImage(obj->GetId(), me->core->GetParserList()).SetTo(imgList))
+		if (obj->IsImage() && Media::PDFImage::Parse(me->doc, obj->GetId(), me->core->GetParserList()).SetTo(imgList))
 		{
 			me->pbImage->SetImage(imgList->GetImage2(0, 0), false);
 			me->dispImage = imgList;
@@ -81,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectDblClk(AnyType userObj)
 	if (me->lbObject->GetSelectedItem().GetOpt<Media::PDFObject>().SetTo(obj) && obj->IsImage())
 	{
 		NN<Media::ImageList> imgList;
-		if (me->doc->CreateImage(obj->GetId(), me->core->GetParserList()).SetTo(imgList))
+		if (Media::PDFImage::Parse(me->doc, obj->GetId(), me->core->GetParserList()).SetTo(imgList))
 			me->core->OpenObject(imgList);
 	}
 }
@@ -93,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnImageOpenClicked(AnyType user
 	if (me->lbObject->GetSelectedItem().GetOpt<Media::PDFObject>().SetTo(obj) && obj->IsImage())
 	{
 		NN<Media::ImageList> imgList;
-		if (me->doc->CreateImage(obj->GetId(), me->core->GetParserList()).SetTo(imgList))
+		if (Media::PDFImage::Parse(me->doc, obj->GetId(), me->core->GetParserList()).SetTo(imgList))
 			me->core->OpenObject(imgList);
 	}
 }

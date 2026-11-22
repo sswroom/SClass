@@ -1112,6 +1112,11 @@ Map::GPSTrackReader::~GPSTrackReader()
 {
 }
 
+Text::CStringNN Map::GPSTrackReader::GetClassName() const
+{
+	return CSTR("GPSTrackReader");
+}
+
 Map::GPSDataReader::GPSDataReader(NN<Map::GPSTrack> gps)
 {
 	this->gps = gps;
@@ -1121,6 +1126,11 @@ Map::GPSDataReader::GPSDataReader(NN<Map::GPSTrack> gps)
 
 Map::GPSDataReader::~GPSDataReader()
 {
+}
+
+Text::CStringNN Map::GPSDataReader::GetClassName() const
+{
+	return CSTR("GPSDataReader");
 }
 
 Bool Map::GPSDataReader::ReadNext()

@@ -205,6 +205,7 @@ namespace Map
 		MapLayerReader(NN<MapDrawLayer> layer);
 		~MapLayerReader();
 
+		virtual Text::CStringNN GetClassName() const;
 		virtual Bool ReadNext();
 		virtual UIntOS ColCount();
 		virtual IntOS GetRowChanged();

@@ -460,6 +460,11 @@ Map::ESRI::ESRIMDBReader::~ESRIMDBReader()
 	this->mutUsage.Delete();
 }
 
+Text::CStringNN Map::ESRI::ESRIMDBReader::GetClassName() const
+{
+	return CSTR("ESRIMDBReader");
+}
+
 Bool Map::ESRI::ESRIMDBReader::ReadNext()
 {
 	return this->r->ReadNext();

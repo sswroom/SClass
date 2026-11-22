@@ -23,6 +23,11 @@ Media::HTRecFile::HTRecReader::~HTRecReader()
 {
 }
 
+Text::CStringNN Media::HTRecFile::HTRecReader::GetClassName() const
+{
+	return CSTR("HTRecReader");
+}
+
 Bool Media::HTRecFile::HTRecReader::ReadNext()
 {
 	if (this->setting)

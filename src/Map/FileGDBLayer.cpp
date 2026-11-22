@@ -449,6 +449,11 @@ Map::FileGDBLReader::~FileGDBLReader()
 	this->mutUsage.Delete();
 }
 
+Text::CStringNN Map::FileGDBLReader::GetClassName() const
+{
+	return CSTR("FileGDBLReader");
+}
+
 Bool Map::FileGDBLReader::ReadNext()
 {
 	return this->r->ReadNext();

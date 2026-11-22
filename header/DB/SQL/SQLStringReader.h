@@ -18,6 +18,7 @@ namespace DB
 			SQLStringReader(NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListObj<Optional<Text::String>>> values);
 			virtual ~SQLStringReader();
 
+			virtual Text::CStringNN GetClassName() const;
 			virtual Bool ReadNext();
 			virtual UIntOS ColCount();
 			virtual IntOS GetRowChanged(); //-1 = error
