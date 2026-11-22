@@ -67,6 +67,7 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const = 0;
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const = 0;
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const = 0;
+			virtual Bool HasField(Text::CStringNN fieldName) const = 0;
 		};
 
 		class BooleanObject : public ConditionObject
@@ -77,6 +78,7 @@ namespace Data
 			virtual DataType GetReturnType() const { return DataType::Boolean; };
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const = 0;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const = 0;
+			virtual Optional<BooleanObject> CreateFieldCondition(Text::CStringNN fieldName) const = 0;
 		};
 
 		class NumberObject : public ConditionObject
@@ -128,8 +130,10 @@ namespace Data
 			Bool ToWhereClauseOrClient(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem, NN<Data::ArrayListNN<BooleanObject>> clientConditions) const;
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
+			virtual Bool HasField(Text::CStringNN fieldName) const;
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
+			virtual Optional<BooleanObject> CreateFieldCondition(Text::CStringNN fieldName) const;
 
 			UIntOS GetCount() const;
 			void AddAnd(NN<BooleanObject> obj);
@@ -149,8 +153,10 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
+			virtual Bool HasField(Text::CStringNN fieldName) const;
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
+			virtual Optional<BooleanObject> CreateFieldCondition(Text::CStringNN fieldName) const;
 
 			UIntOS GetCount() const;
 			void AddOr(NN<BooleanObject> obj);
@@ -170,6 +176,7 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const { return true; }
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const { fieldList->Add(this->fieldName); }
+			virtual Bool HasField(Text::CStringNN fieldName) const { return this->fieldName->Equals(fieldName); }
 			virtual NumberType GetNumberType(NN<Data::VariObject> obj) const;
 			virtual NumberType GetNumberType(NN<Data::ObjectGetter> getter) const;
 			virtual Bool EvalInt(NN<Data::VariObject> obj, OutParam<Int64> outVal) const;
@@ -194,6 +201,7 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const { return true; }
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const { fieldList->Add(this->fieldName); }
+			virtual Bool HasField(Text::CStringNN fieldName) const { return this->fieldName->Equals(fieldName); }
 			virtual Data::Timestamp Eval(NN<Data::VariObject> obj) const;
 			virtual Data::Timestamp Eval(NN<Data::ObjectGetter> getter) const;
 		};
@@ -211,6 +219,7 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const { sb->AppendI32(this->val); return true; }
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const { return true; }
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const {}
+			virtual Bool HasField(Text::CStringNN fieldName) const { return false; }
 			virtual NumberType GetNumberType(NN<Data::VariObject> obj) const { return NumberType::I32; }
 			virtual NumberType GetNumberType(NN<Data::ObjectGetter> getter) const { return NumberType::I32; }
 			virtual Bool EvalInt(NN<Data::VariObject> obj, OutParam<Int64> outVal) const { outVal.Set(this->val); return true; }
@@ -232,6 +241,7 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const { sb->AppendI64(this->val); return true; }
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const { return true; }
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const {}
+			virtual Bool HasField(Text::CStringNN fieldName) const { return false; }
 			virtual NumberType GetNumberType(NN<Data::VariObject> obj) const { return NumberType::I64; }
 			virtual NumberType GetNumberType(NN<Data::ObjectGetter> getter) const { return NumberType::I64; }
 			virtual Bool EvalInt(NN<Data::VariObject> obj, OutParam<Int64> outVal) const { outVal.Set(this->val); return true; }
@@ -254,6 +264,7 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const { sb->AppendDouble(this->val); return true; }
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const { return true; }
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const {}
+			virtual Bool HasField(Text::CStringNN fieldName) const { return false; }
 			virtual NumberType GetNumberType(NN<Data::VariObject> obj) const { return NumberType::F64; }
 			virtual NumberType GetNumberType(NN<Data::ObjectGetter> getter) const { return NumberType::F64; }
 			virtual Bool EvalInt(NN<Data::VariObject> obj, OutParam<Int64> outVal) const { outVal.Set(Math_Round(this->val)); return true; }
@@ -275,6 +286,7 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const { UTF8Char sbuff[128]; UnsafeArray<UTF8Char> sptr = DB::DBUtil::SDBTS(sbuff, this->val, sqlType, tzQhr); sb->AppendP(sbuff, sptr); return true; }
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const { return true; }
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const {}
+			virtual Bool HasField(Text::CStringNN fieldName) const { return false; }
 			virtual Data::Timestamp Eval(NN<Data::VariObject> obj) const { return this->val; }
 			virtual Data::Timestamp Eval(NN<Data::ObjectGetter> getter) const { return this->val; }
 		};
@@ -297,8 +309,10 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const { return this->left->CanWhereClause(maxDBItem) && this->right->CanWhereClause(maxDBItem); }
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
+			virtual Bool HasField(Text::CStringNN fieldName) const;
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
+			virtual Optional<BooleanObject> CreateFieldCondition(Text::CStringNN fieldName) const;
 
 			NN<NumberObject> GetLeft() const { return this->left; }
 			NN<NumberObject> GetRight() const { return this->right; }
@@ -321,8 +335,10 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const { return this->left->CanWhereClause(maxDBItem) && this->middle->CanWhereClause(maxDBItem) && this->right->CanWhereClause(maxDBItem); }
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
+			virtual Bool HasField(Text::CStringNN fieldName) const;
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
+			virtual Optional<BooleanObject> CreateFieldCondition(Text::CStringNN fieldName) const;
 
 			NN<NumberObject> GetLeft() const { return this->left; }
 			NN<NumberObject> GetMiddle() const { return this->middle; }
@@ -346,8 +362,10 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const { return this->left->CanWhereClause(maxDBItem) && this->right->CanWhereClause(maxDBItem); }
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
+			virtual Bool HasField(Text::CStringNN fieldName) const;
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
+			virtual Optional<BooleanObject> CreateFieldCondition(Text::CStringNN fieldName) const;
 
 			NN<TimeObject> GetLeft() const { return this->left; }
 			NN<TimeObject> GetRight() const { return this->right; }
@@ -365,7 +383,9 @@ namespace Data
 
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
+			virtual Optional<BooleanObject> CreateFieldCondition(Text::CStringNN fieldName) const;
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
+			virtual Bool HasField(Text::CStringNN fieldName) const;
 
 			virtual Bool TestValid(NN<Data::VariItem> item) const = 0;
 		};
@@ -530,7 +550,9 @@ namespace Data
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
+			virtual Optional<BooleanObject> CreateFieldCondition(Text::CStringNN fieldName) const;
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
+			virtual Bool HasField(Text::CStringNN fieldName) const;
 		};
 	}
 
@@ -551,6 +573,7 @@ namespace Data
 		void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
 		NN<Conditions::BooleanObject> GetRootCond() const { return cond; }
 		NN<QueryConditions> Clone() const;
+		Optional<Conditions::BooleanObject> CreateFieldCondition(Text::CStringNN fieldName) const;
 
 		NN<QueryConditions> TimeBetween(Text::CStringNN fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2);
 		NN<QueryConditions> TimeBefore(Text::CStringNN fieldName, const Data::Timestamp &val);

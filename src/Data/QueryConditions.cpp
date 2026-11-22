@@ -134,6 +134,19 @@ void Data::Conditions::BooleanAnd::GetFieldList(NN<Data::ArrayListStringNN> fiel
 	}
 }
 
+Bool Data::Conditions::BooleanAnd::HasField(Text::CStringNN fieldName) const
+{
+	UIntOS i = 0;
+	UIntOS j = this->andList.GetCount();
+	while (i < j)
+	{
+		if (this->andList.GetItemNoCheck(i)->HasField(fieldName))
+			return true;
+		i++;
+	}
+	return false;
+}
+
 Bool Data::Conditions::BooleanAnd::Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const
 {
 	UIntOS i = 0;
@@ -176,6 +189,30 @@ Bool Data::Conditions::BooleanAnd::Eval(NN<Data::ObjectGetter> getter, OutParam<
 	}
 	outVal.Set(true);
 	return true;
+}
+
+Optional<Data::Conditions::BooleanObject> Data::Conditions::BooleanAnd::CreateFieldCondition(Text::CStringNN fieldName) const
+{
+	Data::ArrayListNN<BooleanObject> fieldConds;
+	NN<BooleanObject> cond;
+	UIntOS i = 0;
+	UIntOS j = this->andList.GetCount();
+	while (i < j)
+	{
+		if (this->andList.GetItemNoCheck(i)->CreateFieldCondition(fieldName).SetTo(cond))
+			fieldConds.Add(cond);
+		i++;
+	}
+	if (fieldConds.GetCount() == 1)
+		return fieldConds.GetItem(0);
+	else if (fieldConds.GetCount() > 1)
+	{
+		NN<BooleanAnd> andCond;
+		NEW_CLASSNN(andCond, BooleanAnd());
+		andCond->andList.AddAll(fieldConds);
+		return andCond;
+	}
+	return nullptr;
 }
 
 UIntOS Data::Conditions::BooleanAnd::GetCount() const
@@ -264,6 +301,17 @@ void Data::Conditions::BooleanOr::GetFieldList(NN<Data::ArrayListStringNN> field
 	}
 }
 
+Bool Data::Conditions::BooleanOr::HasField(Text::CStringNN fieldName) const
+{
+	UIntOS i = this->orList.GetCount();
+	while (i-- > 0)
+	{
+		if (this->orList.GetItemNoCheck(i)->HasField(fieldName))
+			return true;
+	}
+	return false;
+}
+
 Bool Data::Conditions::BooleanOr::Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const
 {
 	Bool v;
@@ -306,6 +354,30 @@ Bool Data::Conditions::BooleanOr::Eval(NN<Data::ObjectGetter> getter, OutParam<B
 	}
 	outVal.Set(false);
 	return true;
+}
+
+Optional<Data::Conditions::BooleanObject> Data::Conditions::BooleanOr::CreateFieldCondition(Text::CStringNN fieldName) const
+{
+	NN<BooleanObject> cond;
+	Data::ArrayListNN<BooleanObject> fieldConds;
+	UIntOS i = 0;
+	UIntOS j = this->orList.GetCount();
+	while (i < j)
+	{
+		if (this->orList.GetItemNoCheck(i)->CreateFieldCondition(fieldName).SetTo(cond))
+			fieldConds.Add(cond);
+		i++;
+	}
+	if (fieldConds.GetCount() == 1)
+		return fieldConds.GetItemNoCheck(0);
+	else if (fieldConds.GetCount() > 1)
+	{
+		NN<BooleanOr> orCond;
+		NEW_CLASSNN(orCond, BooleanOr());
+		orCond->orList.AddAll(fieldConds);
+		return orCond;
+	}
+	return nullptr;
 }
 
 UIntOS Data::Conditions::BooleanOr::GetCount() const
@@ -588,6 +660,11 @@ void Data::Conditions::NumberCondition::GetFieldList(NN<Data::ArrayListStringNN>
 	this->right->GetFieldList(fieldList);
 }
 
+Bool Data::Conditions::NumberCondition::HasField(Text::CStringNN fieldName) const
+{
+	return this->left->HasField(fieldName) || this->right->HasField(fieldName);
+}
+
 Bool Data::Conditions::NumberCondition::Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const
 {
 	if (this->left->GetNumberType(obj) == NumberType::F64 || this->right->GetNumberType(obj) == NumberType::F64)
@@ -632,6 +709,13 @@ Bool Data::Conditions::NumberCondition::Eval(NN<Data::ObjectGetter> getter, OutP
 	}
 }
 
+Optional<Data::Conditions::BooleanObject> Data::Conditions::NumberCondition::CreateFieldCondition(Text::CStringNN fieldName) const
+{
+	if (this->left->HasField(fieldName))
+		return NN<BooleanObject>::ConvertFrom(this->Clone());
+	return nullptr;
+}
+
 Bool Data::Conditions::NumberBetweenCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
 {
 	if (!this->left->ToWhereClause(sb, sqlType, tzQhr, maxDBItem))
@@ -650,6 +734,11 @@ void Data::Conditions::NumberBetweenCondition::GetFieldList(NN<Data::ArrayListSt
 	this->left->GetFieldList(fieldList);
 	this->middle->GetFieldList(fieldList);
 	this->right->GetFieldList(fieldList);
+}
+
+Bool Data::Conditions::NumberBetweenCondition::HasField(Text::CStringNN fieldName) const
+{
+	return this->left->HasField(fieldName) || this->middle->HasField(fieldName) || this->right->HasField(fieldName);
 }
 
 Bool Data::Conditions::NumberBetweenCondition::Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const
@@ -698,6 +787,15 @@ Bool Data::Conditions::NumberBetweenCondition::Eval(NN<Data::ObjectGetter> gette
 		outVal.Set(leftVal >= middleVal && leftVal <= rightVal);
 		return true;
 	}
+}
+
+Optional<Data::Conditions::BooleanObject> Data::Conditions::NumberBetweenCondition::CreateFieldCondition(Text::CStringNN fieldName) const
+{
+	if (this->left->HasField(fieldName) || this->middle->HasField(fieldName) || this->right->HasField(fieldName))
+	{
+		return NN<BooleanObject>::ConvertFrom(this->Clone());
+	}
+	return nullptr;
 }
 
 Bool Data::Conditions::TimeCondition::TSCompare(Data::Timestamp left, Data::Timestamp right, CompareCondition cond)
@@ -761,6 +859,11 @@ void Data::Conditions::TimeCondition::GetFieldList(NN<Data::ArrayListStringNN> f
 	this->right->GetFieldList(fieldList);
 }
 
+Bool Data::Conditions::TimeCondition::HasField(Text::CStringNN fieldName) const
+{
+	return this->left->HasField(fieldName) || this->right->HasField(fieldName);
+}
+
 Bool Data::Conditions::TimeCondition::Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const
 {
 	Data::Timestamp leftVal = this->left->Eval(obj);
@@ -779,6 +882,14 @@ Bool Data::Conditions::TimeCondition::Eval(NN<Data::ObjectGetter> getter, OutPar
 		return false;
 	outVal.Set(TSCompare(leftVal, rightVal, this->cond));
 	return true;
+}
+Optional<Data::Conditions::BooleanObject> Data::Conditions::TimeCondition::CreateFieldCondition(Text::CStringNN fieldName) const
+{
+	if (this->left->HasField(fieldName) || this->right->HasField(fieldName))
+	{
+		return NN<BooleanObject>::ConvertFrom(this->Clone());
+	}
+	return nullptr;
 }
 
 Data::Conditions::FieldCondition::FieldCondition(Text::CStringNN fieldName)
@@ -814,9 +925,23 @@ Bool Data::Conditions::FieldCondition::Eval(NN<Data::ObjectGetter> getter, OutPa
 	return true;
 }
 
+Optional<Data::Conditions::BooleanObject> Data::Conditions::FieldCondition::CreateFieldCondition(Text::CStringNN fieldName) const
+{
+	if (this->fieldName->Equals(fieldName))
+	{
+		return NN<BooleanObject>::ConvertFrom(this->Clone());
+	}
+	return nullptr;
+}
+
 void Data::Conditions::FieldCondition::GetFieldList(NN<Data::ArrayListStringNN> fieldList) const
 {
 	fieldList->Add(this->fieldName);
+}
+
+Bool Data::Conditions::FieldCondition::HasField(Text::CStringNN fieldName) const
+{
+	return this->fieldName->Equals(fieldName);
 }
 
 Data::Conditions::TimeBetweenCondition::TimeBetweenCondition(Text::CStringNN fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2) : FieldCondition(fieldName)
@@ -1783,9 +1908,23 @@ Bool Data::Conditions::NullCondition::Eval(NN<Data::ObjectGetter> getter, OutPar
 	}
 }
 
+Optional<Data::Conditions::BooleanObject> Data::Conditions::NullCondition::CreateFieldCondition(Text::CStringNN fieldName) const
+{
+	if (this->fieldName->Equals(fieldName))
+	{
+		return NN<BooleanObject>::ConvertFrom(this->Clone());
+	}
+	return nullptr;
+}
+
 void Data::Conditions::NullCondition::GetFieldList(NN<Data::ArrayListStringNN> fieldList) const
 {
 	fieldList->Add(this->fieldName);
+}
+
+Bool Data::Conditions::NullCondition::HasField(Text::CStringNN fieldName) const
+{
+	return this->fieldName->Equals(fieldName);
 }
 
 Data::QueryConditions::QueryConditions()
@@ -1851,6 +1990,12 @@ NN<Data::QueryConditions> Data::QueryConditions::Clone() const
 		printf("QueryConditions: Not support complex cloning\n");
 	}
 	return clone;
+}
+
+Optional<Data::Conditions::BooleanObject> Data::QueryConditions::CreateFieldCondition(Text::CStringNN fieldName) const
+{
+	return this->cond->CreateFieldCondition(fieldName);
+//	return nullptr;
 }
 
 NN<Data::QueryConditions> Data::QueryConditions::TimeBetween(Text::CStringNN fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2)

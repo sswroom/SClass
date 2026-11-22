@@ -20,14 +20,21 @@ namespace DB
 		UIntOS dataOfst;
 		UIntOS countLeft;
 		Optional<Data::QueryConditions> condition;
+		Optional<Data::Conditions::BooleanObject> timeCondition;
 		Data::ArrayListNative<UIntOS> colIndex;
 		Bool noHeader;
 		Optional<DB::CSVReader> currReader;
 		Data::ArrayListUInt32 monthList;
+		Data::ArrayListStringNN monthFiles;
+		UIntOS currMonth;
+		UIntOS currFile;
+		Int8 tzQhr;
 
+		Optional<DB::CSVReader> NextReader();
 	public:
 		CSVMonthGroupedReader(Text::CStringNN filePart1, Text::CStringNN filePart2, Text::CStringNN filePart3, Data::DataArray<Text::CStringNN> tableColNames,
-			UIntOS dateCol, UIntOS dataOfst, UIntOS maxCount, Optional<Data::QueryConditions> condition, NN<Data::ArrayListNative<UIntOS>> colIndex, Bool noHeader);
+			UIntOS dateCol, UIntOS dataOfst, UIntOS maxCount, Optional<Data::QueryConditions> condition, NN<Data::ArrayListNative<UIntOS>> colIndex,
+			Bool noHeader, Int8 tzQhr);
 		virtual ~CSVMonthGroupedReader();
 
 		virtual Text::CStringNN GetClassName() const;

@@ -2,9 +2,84 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/ColDef.h"
 #include "DB/CSVMonthGroupedReader.h"
+#include "IO/FileStream.h"
 #include "IO/Path.h"
+#include "Text/UTF8Reader.h"
 
-DB::CSVMonthGroupedReader::CSVMonthGroupedReader(Text::CStringNN filePart1, Text::CStringNN filePart2, Text::CStringNN filePart3, Data::DataArray<Text::CStringNN> tableColNames, UIntOS dateCol, UIntOS dataOfst, UIntOS maxCount, Optional<Data::QueryConditions> condition, NN<Data::ArrayListNative<UIntOS>> colIndex, Bool noHeader)
+Optional<DB::CSVReader> DB::CSVMonthGroupedReader::NextReader()
+{
+	NN<DB::CSVReader> reader;
+	NN<IO::FileStream> fs;
+	NN<Text::UTF8Reader> fsReader;
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	NN<Data::Conditions::BooleanObject> timeCond;
+	UInt32 month;
+	UIntOS i;
+	if (currFile == 0)
+	{
+		while (this->currMonth > 0)
+		{
+			this->currMonth--;
+			this->monthFiles.FreeAll();
+			month = this->monthList.GetItem(this->currMonth);
+
+			if (!this->timeCondition.SetTo(timeCond) || true)//timeCond->MonthAffected(month / 100, month % 100))
+			{
+				sptr = this->filePart1->ConcatTo(sbuff);
+				sptr = Text::StrUInt32(sptr, month);
+				sptr = this->filePart2->ConcatTo(sptr);
+				sptr2 = Text::StrUInt32(sptr, month);
+				sptr2 = Text::StrConcatC(sptr2, UTF8STRC("??"));
+				sptr2 = this->filePart3->ConcatTo(sptr2);
+				i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+				sptr = &sbuff[i + 1];
+				NN<IO::Path::FindFileSession> sess;
+				IO::Path::PathType pt;
+				if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
+				{
+					while (IO::Path::FindNextFile(sptr, sess, nullptr, pt, nullptr).SetTo(sptr2))
+					{
+						if (pt == IO::Path::PathType::File)
+						{
+							this->monthFiles.Add(Text::String::NewP(sptr, sptr2));
+						}
+					}
+					IO::Path::FindFileClose(sess);
+				}
+				currFile = this->monthFiles.GetCount();
+				if (currFile > 0)
+				{
+					Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(this->monthFiles, this->monthFiles);
+					break;
+				}
+			}
+		}
+		if (currFile == 0)
+		{
+			return nullptr;
+		}
+	}
+
+	month = this->monthList.GetItem(this->currMonth);
+	currFile--;
+	sptr = this->filePart1->ConcatTo(sbuff);
+	sptr = Text::StrUInt32(sptr, month);
+	sptr = this->filePart2->ConcatTo(sptr);
+	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+	sptr = &sbuff[i + 1];
+	NN<Text::String> fileName = this->monthFiles.GetItemNoCheck(currFile);
+	sptr2 = fileName->ConcatTo(sptr);
+	printf("CSVMonthGroupedReader: NextReader %s\n", fileName->v.Ptr());
+	
+	NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASSNN(fsReader, Text::UTF8Reader(fs));
+	NEW_CLASSNN(reader, DB::CSVReader(fs, fsReader, this->noHeader, false, this->condition, this->tzQhr));
+	return reader;
+}
+
+DB::CSVMonthGroupedReader::CSVMonthGroupedReader(Text::CStringNN filePart1, Text::CStringNN filePart2, Text::CStringNN filePart3, Data::DataArray<Text::CStringNN> tableColNames, UIntOS dateCol, UIntOS dataOfst, UIntOS maxCount, Optional<Data::QueryConditions> condition, NN<Data::ArrayListNative<UIntOS>> colIndex, Bool noHeader, Int8 tzQhr)
 {
 	this->filePart1 = Text::String::New(filePart1);
 	this->filePart2 = Text::String::New(filePart2);
@@ -22,14 +97,19 @@ DB::CSVMonthGroupedReader::CSVMonthGroupedReader(Text::CStringNN filePart1, Text
 	if (condition.SetTo(nncond))
 	{
 		this->condition = nncond->Clone();
+		this->timeCondition = nncond->CreateFieldCondition(tableColNames[dateCol]);
 	}
 	else
 	{
 		this->condition = nullptr;
+		this->timeCondition = nullptr;
 	}
 	this->colIndex.AddAll(colIndex);
 	this->noHeader = noHeader;
+	this->tzQhr = tzQhr;
 	this->currReader = nullptr;
+	this->currMonth = 0;
+	this->currFile = 0;
 
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -51,8 +131,8 @@ DB::CSVMonthGroupedReader::CSVMonthGroupedReader(Text::CStringNN filePart1, Text
 		Data::Sort::ArtificialQuickSort::Sort<UInt32>(this->monthList, this->monthList);
 		IO::Path::FindFileClose(sess);
 		printf("Found %d months\n", (Int32)this->monthList.GetCount());
+		this->currMonth = this->monthList.GetCount();
 	}
-	///////////////////////////////
 }
 
 DB::CSVMonthGroupedReader::~CSVMonthGroupedReader()
@@ -62,6 +142,8 @@ DB::CSVMonthGroupedReader::~CSVMonthGroupedReader()
 	this->filePart3->Release();
 	this->currReader.Delete();
 	this->condition.Delete();
+	this->timeCondition.Delete();
+	this->monthFiles.FreeAll();
 }
 
 Text::CStringNN DB::CSVMonthGroupedReader::GetClassName() const
@@ -77,12 +159,29 @@ Bool DB::CSVMonthGroupedReader::ReadNext()
 	if (this->currReader.SetTo(reader))
 	{
 		if (reader->ReadNext())
+		{
+			this->countLeft--;
 			return true;
+		}
 		this->currReader.Delete();
 	}
-	
-	/////////////////////
-	return false;
+	while (true)
+	{
+		if (!NextReader().SetTo(reader))
+			return false;
+		this->currReader = reader;
+		while (reader->ReadNext())
+		{
+			if (this->dataOfst == 0)
+			{
+				this->countLeft--;
+				return true;
+			}
+			this->dataOfst--;
+		}
+		reader.Delete();
+		this->currReader = nullptr;
+	}
 }
 
 UIntOS DB::CSVMonthGroupedReader::ColCount()
