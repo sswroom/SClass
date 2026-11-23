@@ -354,6 +354,8 @@ Bool DB::CSVReader::ReadNext()
 	UnsafeArray<UTF8Char> currPtr;
 	WChar c;
 	Bool colStart;
+	NN<Data::QueryConditions> nncondition;
+	Bool valid;
 	Int32 quote = 0;
 
 	UIntOS nCol;
@@ -366,7 +368,10 @@ Bool DB::CSVReader::ReadNext()
 		{
 			this->cols[nCol].value = this->hdrs[nCol].v;
 		}
-		return true;
+		if (!this->condition.SetTo(nncondition) || !nncondition->IsValid(*this, valid) || valid)
+		{
+			return true;
+		}
 	}
 	while (true)
 	{
@@ -458,8 +463,6 @@ Bool DB::CSVReader::ReadNext()
 				currPtr++;
 			}
 		}
-		NN<Data::QueryConditions> nncondition;
-		Bool valid;
 		if (!this->condition.SetTo(nncondition) || !nncondition->IsValid(*this, valid) || valid)
 		{
 			this->nCol = nCol;
@@ -1068,7 +1071,10 @@ NN<Data::VariItem> DB::CSVReader::GetNewItem(Text::CStringNN name)
 			}
 			else
 			{
-				return Data::VariItem::NewStrSlow(UnsafeArray<const UTF8Char>(this->cols[i].value));
+				NN<Text::String> s = this->GetNewStrNN(i);
+				NN<Data::VariItem> vi = Data::VariItem::NewStr(s);
+				s->Release();
+				return vi;
 			}
 		}
 	}

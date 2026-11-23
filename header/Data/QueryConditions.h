@@ -79,6 +79,8 @@ namespace Data
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const = 0;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const = 0;
 			virtual Optional<BooleanObject> CreateFieldCondition(Text::CStringNN fieldName) const = 0;
+			virtual Bool MonthAffected(Int32 year, UInt8 month) const = 0;
+			virtual Bool DayAffected(Int32 year, UInt8 month, UInt8 day) const = 0;
 		};
 
 		class NumberObject : public ConditionObject
@@ -134,6 +136,8 @@ namespace Data
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
 			virtual Optional<BooleanObject> CreateFieldCondition(Text::CStringNN fieldName) const;
+			virtual Bool MonthAffected(Int32 year, UInt8 month) const;
+			virtual Bool DayAffected(Int32 year, UInt8 month, UInt8 day) const;
 
 			UIntOS GetCount() const;
 			void AddAnd(NN<BooleanObject> obj);
@@ -157,6 +161,8 @@ namespace Data
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
 			virtual Optional<BooleanObject> CreateFieldCondition(Text::CStringNN fieldName) const;
+			virtual Bool MonthAffected(Int32 year, UInt8 month) const;
+			virtual Bool DayAffected(Int32 year, UInt8 month, UInt8 day) const;
 
 			UIntOS GetCount() const;
 			void AddOr(NN<BooleanObject> obj);
@@ -313,6 +319,8 @@ namespace Data
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
 			virtual Optional<BooleanObject> CreateFieldCondition(Text::CStringNN fieldName) const;
+			virtual Bool MonthAffected(Int32 year, UInt8 month) const;
+			virtual Bool DayAffected(Int32 year, UInt8 month, UInt8 day) const;
 
 			NN<NumberObject> GetLeft() const { return this->left; }
 			NN<NumberObject> GetRight() const { return this->right; }
@@ -339,6 +347,8 @@ namespace Data
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
 			virtual Optional<BooleanObject> CreateFieldCondition(Text::CStringNN fieldName) const;
+			virtual Bool MonthAffected(Int32 year, UInt8 month) const;
+			virtual Bool DayAffected(Int32 year, UInt8 month, UInt8 day) const;
 
 			NN<NumberObject> GetLeft() const { return this->left; }
 			NN<NumberObject> GetMiddle() const { return this->middle; }
@@ -366,6 +376,8 @@ namespace Data
 			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
 			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
 			virtual Optional<BooleanObject> CreateFieldCondition(Text::CStringNN fieldName) const;
+			virtual Bool MonthAffected(Int32 year, UInt8 month) const;
+			virtual Bool DayAffected(Int32 year, UInt8 month, UInt8 day) const;
 
 			NN<TimeObject> GetLeft() const { return this->left; }
 			NN<TimeObject> GetRight() const { return this->right; }
@@ -405,6 +417,8 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual Bool TestValid(NN<Data::VariItem> item) const;
+			virtual Bool MonthAffected(Int32 year, UInt8 month) const;
+			virtual Bool DayAffected(Int32 year, UInt8 month, UInt8 day) const;
 		};
 
 		class Int32InCondition : public FieldCondition
@@ -421,6 +435,8 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual Bool TestValid(NN<Data::VariItem> item) const;
+			virtual Bool MonthAffected(Int32 year, UInt8 month) const;
+			virtual Bool DayAffected(Int32 year, UInt8 month, UInt8 day) const;
 		};
 
 		class StringInCondition : public FieldCondition
@@ -437,6 +453,8 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual Bool TestValid(NN<Data::VariItem> item) const;
+			virtual Bool MonthAffected(Int32 year, UInt8 month) const;
+			virtual Bool DayAffected(Int32 year, UInt8 month, UInt8 day) const;
 		};
 
 		class StringNotInCondition : public FieldCondition
@@ -453,6 +471,8 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual Bool TestValid(NN<Data::VariItem> item) const;
+			virtual Bool MonthAffected(Int32 year, UInt8 month) const;
+			virtual Bool DayAffected(Int32 year, UInt8 month, UInt8 day) const;
 		};
 
 		class StringContainsCondition : public FieldCondition
@@ -469,6 +489,8 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual Bool TestValid(NN<Data::VariItem> item) const;
+			virtual Bool MonthAffected(Int32 year, UInt8 month) const;
+			virtual Bool DayAffected(Int32 year, UInt8 month, UInt8 day) const;
 		};
 
 		class StringEqualsCondition : public FieldCondition
@@ -485,6 +507,8 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual Bool TestValid(NN<Data::VariItem> item) const;
+			virtual Bool MonthAffected(Int32 year, UInt8 month) const;
+			virtual Bool DayAffected(Int32 year, UInt8 month, UInt8 day) const;
 		};
 
 		class StringNotEqualsCondition : public FieldCondition
@@ -501,6 +525,8 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual Bool TestValid(NN<Data::VariItem> item) const;
+			virtual Bool MonthAffected(Int32 year, UInt8 month) const;
+			virtual Bool DayAffected(Int32 year, UInt8 month, UInt8 day) const;
 		};
 
 		class StringLikeCondition : public FieldCondition
@@ -517,6 +543,8 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual Bool TestValid(NN<Data::VariItem> item) const;
+			virtual Bool MonthAffected(Int32 year, UInt8 month) const;
+			virtual Bool DayAffected(Int32 year, UInt8 month, UInt8 day) const;
 		};
 
 		class BooleanCondition : public FieldCondition
@@ -533,6 +561,8 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const;
 			virtual Bool CanWhereClause(UIntOS maxDBItem) const;
 			virtual Bool TestValid(NN<Data::VariItem> item) const;
+			virtual Bool MonthAffected(Int32 year, UInt8 month) const;
+			virtual Bool DayAffected(Int32 year, UInt8 month, UInt8 day) const;
 		};
 
 		class NullCondition : public BooleanObject
@@ -553,6 +583,8 @@ namespace Data
 			virtual Optional<BooleanObject> CreateFieldCondition(Text::CStringNN fieldName) const;
 			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
 			virtual Bool HasField(Text::CStringNN fieldName) const;
+			virtual Bool MonthAffected(Int32 year, UInt8 month) const;
+			virtual Bool DayAffected(Int32 year, UInt8 month, UInt8 day) const;
 		};
 	}
 

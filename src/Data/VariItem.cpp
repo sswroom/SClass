@@ -7,6 +7,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/StringTool.h"
 
 Single Data::VariItem::GetAsF32() const
 {
@@ -826,11 +827,57 @@ Data::Timestamp Data::VariItem::GetAsTimestamp() const
 	}
 	else if (this->itemType == ItemType::CStr)
 	{
-		return Data::Timestamp::FromStr(Text::CStringNN(this->val.cstr.v, this->val.cstr.leng), Data::DateTimeUtil::GetLocalTzQhr());
+		Int64 tVal;
+		if (Text::StrToInt64(this->val.cstr.v, tVal))
+		{
+			if (this->val.cstr.leng <= 10)
+			{
+				return Data::Timestamp::FromEpochSec(tVal, Data::DateTimeUtil::GetLocalTzQhr());
+			}
+			else if (this->val.cstr.leng <= 13)
+			{
+				return Data::Timestamp::FromEpochMS(tVal, Data::DateTimeUtil::GetLocalTzQhr());
+			}
+			else if (this->val.cstr.leng <= 16)
+			{
+				return Data::Timestamp::FromEpochUS(tVal, Data::DateTimeUtil::GetLocalTzQhr());
+			}
+			else
+			{
+				return Data::Timestamp::FromStr(Text::CStringNN(this->val.cstr.v, this->val.cstr.leng), Data::DateTimeUtil::GetLocalTzQhr());
+			}
+		}
+		else
+		{
+			return Data::Timestamp::FromStr(Text::CStringNN(this->val.cstr.v, this->val.cstr.leng), Data::DateTimeUtil::GetLocalTzQhr());
+		}
 	}
 	else if (this->itemType == ItemType::Str)
 	{
-		return Data::Timestamp::FromStr(this->val.str->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+		Int64 tVal;
+		if (this->val.str->ToInt64(tVal))
+		{
+			if (this->val.str->leng <= 10)
+			{
+				return Data::Timestamp::FromEpochSec(tVal, Data::DateTimeUtil::GetLocalTzQhr());
+			}
+			else if (this->val.str->leng <= 13)
+			{
+				return Data::Timestamp::FromEpochMS(tVal, Data::DateTimeUtil::GetLocalTzQhr());
+			}
+			else if (this->val.str->leng <= 16)
+			{
+				return Data::Timestamp::FromEpochUS(tVal, Data::DateTimeUtil::GetLocalTzQhr());
+			}
+			else
+			{
+				return Data::Timestamp::FromStr(this->val.str->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+			}
+		}
+		else
+		{
+			return Data::Timestamp::FromStr(this->val.str->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+		}
 	}
 	else
 	{

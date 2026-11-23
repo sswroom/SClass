@@ -214,6 +214,31 @@ Optional<Data::Conditions::BooleanObject> Data::Conditions::BooleanAnd::CreateFi
 	}
 	return nullptr;
 }
+Bool Data::Conditions::BooleanAnd::MonthAffected(Int32 year, UInt8 month) const
+{
+	UIntOS i = 0;
+	UIntOS j = this->andList.GetCount();
+	while (i < j)
+	{
+		if (!this->andList.GetItemNoCheck(i)->MonthAffected(year, month))
+			return false;
+		i++;
+	}
+	return true;
+}
+
+Bool Data::Conditions::BooleanAnd::DayAffected(Int32 year, UInt8 month, UInt8 day) const
+{
+	UIntOS i = 0;
+	UIntOS j = this->andList.GetCount();
+	while (i < j)
+	{
+		if (!this->andList.GetItemNoCheck(i)->DayAffected(year, month, day))
+			return false;
+		i++;
+	}
+	return true;
+}
 
 UIntOS Data::Conditions::BooleanAnd::GetCount() const
 {
@@ -378,6 +403,32 @@ Optional<Data::Conditions::BooleanObject> Data::Conditions::BooleanOr::CreateFie
 		return orCond;
 	}
 	return nullptr;
+}
+
+Bool Data::Conditions::BooleanOr::MonthAffected(Int32 year, UInt8 month) const
+{
+	UIntOS i = 0;
+	UIntOS j = this->orList.GetCount();
+	while (i < j)
+	{
+		if (this->orList.GetItemNoCheck(i)->MonthAffected(year, month))
+			return true;
+		i++;
+	}
+	return false;
+}
+
+Bool Data::Conditions::BooleanOr::DayAffected(Int32 year, UInt8 month, UInt8 day) const
+{
+	UIntOS i = 0;
+	UIntOS j = this->orList.GetCount();
+	while (i < j)
+	{
+		if (this->orList.GetItemNoCheck(i)->DayAffected(year, month, day))
+			return true;
+		i++;
+	}
+	return false;
 }
 
 UIntOS Data::Conditions::BooleanOr::GetCount() const
@@ -716,6 +767,16 @@ Optional<Data::Conditions::BooleanObject> Data::Conditions::NumberCondition::Cre
 	return nullptr;
 }
 
+Bool Data::Conditions::NumberCondition::MonthAffected(Int32 year, UInt8 month) const
+{
+	return true;
+}
+
+Bool Data::Conditions::NumberCondition::DayAffected(Int32 year, UInt8 month, UInt8 day) const
+{
+	return true;
+}
+
 Bool Data::Conditions::NumberBetweenCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
 {
 	if (!this->left->ToWhereClause(sb, sqlType, tzQhr, maxDBItem))
@@ -796,6 +857,16 @@ Optional<Data::Conditions::BooleanObject> Data::Conditions::NumberBetweenConditi
 		return NN<BooleanObject>::ConvertFrom(this->Clone());
 	}
 	return nullptr;
+}
+
+Bool Data::Conditions::NumberBetweenCondition::MonthAffected(Int32 year, UInt8 month) const
+{
+	return true;
+}
+
+Bool Data::Conditions::NumberBetweenCondition::DayAffected(Int32 year, UInt8 month, UInt8 day) const
+{
+	return true;
 }
 
 Bool Data::Conditions::TimeCondition::TSCompare(Data::Timestamp left, Data::Timestamp right, CompareCondition cond)
@@ -883,6 +954,7 @@ Bool Data::Conditions::TimeCondition::Eval(NN<Data::ObjectGetter> getter, OutPar
 	outVal.Set(TSCompare(leftVal, rightVal, this->cond));
 	return true;
 }
+
 Optional<Data::Conditions::BooleanObject> Data::Conditions::TimeCondition::CreateFieldCondition(Text::CStringNN fieldName) const
 {
 	if (this->left->HasField(fieldName) || this->right->HasField(fieldName))
@@ -892,6 +964,83 @@ Optional<Data::Conditions::BooleanObject> Data::Conditions::TimeCondition::Creat
 	return nullptr;
 }
 
+Bool Data::Conditions::TimeCondition::MonthAffected(Int32 year, UInt8 month) const
+{
+	Data::ArrayListStringNN fieldList;
+	this->left->GetFieldList(fieldList);
+	this->right->GetFieldList(fieldList);
+	UIntOS i = fieldList.GetCount();
+	Data::VariObject obj(Data::VariObject::NameType::Field);
+	while (i-- > 0)
+	{
+		obj.SetItemTS(fieldList.GetItemNoCheck(i)->v, Data::Timestamp::FromDate(Data::Date(year, month, 1), 0));
+	}
+	Data::Timestamp t1 = this->left->Eval(obj);
+	Data::Timestamp t2 = this->right->Eval(obj);
+	Data::DateTimeUtil::TimeValue tv1;
+	Data::DateTimeUtil::TimeValue tv2;
+	t1.ToTimeValue(tv1);
+	t2.ToTimeValue(tv2);
+	Int32 month1 = tv1.year * 100 + tv1.month;
+	Int32 month2 = tv2.year * 100 + tv2.month;
+	switch (this->cond)
+	{
+	case CompareCondition::Equal:
+		return month1 == month2;
+	case CompareCondition::NotEqual:
+		return true;
+	case CompareCondition::Less:
+		return month1 <= month2;
+	case CompareCondition::LessOrEqual:
+		return month1 <= month2;
+	case CompareCondition::Greater:
+		return month1 >= month2;
+	case CompareCondition::GreaterOrEqual:
+		return month1 >= month2;
+	case CompareCondition::Unknown:
+	default:
+		return false;
+	}
+}
+
+Bool Data::Conditions::TimeCondition::DayAffected(Int32 year, UInt8 month, UInt8 day) const
+{
+	Data::ArrayListStringNN fieldList;
+	this->left->GetFieldList(fieldList);
+	this->right->GetFieldList(fieldList);
+	UIntOS i = fieldList.GetCount();
+	Data::VariObject obj(Data::VariObject::NameType::Field);
+	while (i-- > 0)
+	{
+		obj.SetItemTS(fieldList.GetItemNoCheck(i)->v, Data::Timestamp::FromDate(Data::Date(year, month, day), 0));
+	}
+	Data::Timestamp t1 = this->left->Eval(obj);
+	Data::Timestamp t2 = this->right->Eval(obj);
+	Data::DateTimeUtil::TimeValue tv1;
+	Data::DateTimeUtil::TimeValue tv2;
+	t1.ToTimeValue(tv1);
+	t2.ToTimeValue(tv2);
+	Int32 day1 = tv1.year * 10000 + tv1.month * 100 + tv1.day;
+	Int32 day2 = tv2.year * 10000 + tv2.month * 100 + tv2.day;
+	switch (this->cond)
+	{
+	case CompareCondition::Equal:
+		return day1 == day2;
+	case CompareCondition::NotEqual:
+		return true;
+	case CompareCondition::Less:
+		return day1 <= day2;
+	case CompareCondition::LessOrEqual:
+		return day1 <= day2;
+	case CompareCondition::Greater:
+		return day1 >= day2;
+	case CompareCondition::GreaterOrEqual:
+		return day1 >= day2;
+	case CompareCondition::Unknown:
+	default:
+		return false;
+	}
+}
 Data::Conditions::FieldCondition::FieldCondition(Text::CStringNN fieldName)
 {
 	this->fieldName = Text::String::New(fieldName);
@@ -946,8 +1095,16 @@ Bool Data::Conditions::FieldCondition::HasField(Text::CStringNN fieldName) const
 
 Data::Conditions::TimeBetweenCondition::TimeBetweenCondition(Text::CStringNN fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2) : FieldCondition(fieldName)
 {
-	this->t1 = t1;
-	this->t2 = t2;
+	if (t1 > t2)
+	{
+		this->t1 = t2;
+		this->t2 = t1;
+	}
+	else
+	{
+		this->t1 = t1;
+		this->t2 = t2;
+	}
 }
 
 Data::Conditions::TimeBetweenCondition::~TimeBetweenCondition()
@@ -1015,6 +1172,30 @@ Bool Data::Conditions::TimeBetweenCondition::TestValid(NN<Data::VariItem> item) 
 	default:
 		return false;
 	}
+}
+
+Bool Data::Conditions::TimeBetweenCondition::MonthAffected(Int32 year, UInt8 month) const
+{
+	Data::DateTimeUtil::TimeValue tv1;
+	Data::DateTimeUtil::TimeValue tv2;
+	this->t1.ToTimeValue(tv1);
+	this->t2.ToTimeValue(tv2);
+	Int32 month1 = tv1.year * 100 + tv1.month;
+	Int32 month2 = tv2.year * 100 + tv2.month;
+	Int32 targetMonth = year * 100 + month;
+	return (month1 <= targetMonth && targetMonth <= month2);
+}
+
+Bool Data::Conditions::TimeBetweenCondition::DayAffected(Int32 year, UInt8 month, UInt8 day) const
+{
+	Data::DateTimeUtil::TimeValue tv1;
+	Data::DateTimeUtil::TimeValue tv2;
+	this->t1.ToTimeValue(tv1);
+	this->t2.ToTimeValue(tv2);
+	Int32 day1 = tv1.year * 10000 + tv1.month * 100 + tv1.day;
+	Int32 day2 = tv2.year * 10000 + tv2.month * 100 + tv2.day;
+	Int32 targetDay = year * 10000 + month * 100 + day;
+	return (day1 <= targetDay && targetDay <= day2);
 }
 
 Data::Conditions::Int32InCondition::Int32InCondition(Text::CStringNN fieldName, NN<const Data::ArrayListNative<Int32>> val) : FieldCondition(fieldName)
@@ -1113,6 +1294,16 @@ Bool Data::Conditions::Int32InCondition::TestValid(NN<Data::VariItem> item) cons
 		}
 	}
 	return false;
+}
+
+Bool Data::Conditions::Int32InCondition::MonthAffected(Int32 year, UInt8 month) const
+{
+	return true;
+}
+
+Bool Data::Conditions::Int32InCondition::DayAffected(Int32 year, UInt8 month, UInt8 day) const
+{
+	return true;
 }
 
 Data::Conditions::StringInCondition::StringInCondition(Text::CStringNN fieldName, NN<const Data::ArrayListArr<const UTF8Char>> val) : FieldCondition(fieldName)
@@ -1261,6 +1452,16 @@ Bool Data::Conditions::StringInCondition::TestValid(NN<Data::VariItem> item) con
 	}
 }
 
+Bool Data::Conditions::StringInCondition::MonthAffected(Int32 year, UInt8 month) const
+{
+	return true;
+}
+
+Bool Data::Conditions::StringInCondition::DayAffected(Int32 year, UInt8 month, UInt8 day) const
+{
+	return true;
+}
+
 Data::Conditions::StringNotInCondition::StringNotInCondition(Text::CStringNN fieldName, NN<const Data::ArrayListArr<const UTF8Char>> val) : FieldCondition(fieldName)
 {
 	UIntOS i = 0;
@@ -1407,6 +1608,16 @@ Bool Data::Conditions::StringNotInCondition::TestValid(NN<Data::VariItem> item) 
 	}
 }
 
+Bool Data::Conditions::StringNotInCondition::MonthAffected(Int32 year, UInt8 month) const
+{
+	return true;
+}
+
+Bool Data::Conditions::StringNotInCondition::DayAffected(Int32 year, UInt8 month, UInt8 day) const
+{
+	return true;
+}
+
 Data::Conditions::StringContainsCondition::StringContainsCondition(Text::CStringNN fieldName, Text::CStringNN val) : FieldCondition(fieldName)
 {
 	this->val = Text::String::New(val);
@@ -1489,6 +1700,16 @@ Bool Data::Conditions::StringContainsCondition::TestValid(NN<Data::VariItem> ite
 	}
 }
 
+Bool Data::Conditions::StringContainsCondition::MonthAffected(Int32 year, UInt8 month) const
+{
+	return true;
+}
+
+Bool Data::Conditions::StringContainsCondition::DayAffected(Int32 year, UInt8 month, UInt8 day) const
+{
+	return true;
+}
+
 Data::Conditions::StringEqualsCondition::StringEqualsCondition(Text::CStringNN fieldName, Text::CStringNN val) : FieldCondition(fieldName)
 {
 	this->val = Text::String::New(val);
@@ -1565,6 +1786,16 @@ Bool Data::Conditions::StringEqualsCondition::TestValid(NN<Data::VariItem> item)
 	default:
 		return false;
 	}
+}
+
+Bool Data::Conditions::StringEqualsCondition::MonthAffected(Int32 year, UInt8 month) const
+{
+	return true;
+}
+
+Bool Data::Conditions::StringEqualsCondition::DayAffected(Int32 year, UInt8 month, UInt8 day) const
+{
+	return true;
 }
 
 Data::Conditions::StringNotEqualsCondition::StringNotEqualsCondition(Text::CStringNN fieldName, Text::CStringNN val) : FieldCondition(fieldName)
@@ -1645,6 +1876,15 @@ Bool Data::Conditions::StringNotEqualsCondition::TestValid(NN<Data::VariItem> it
 	}
 }
 
+Bool Data::Conditions::StringNotEqualsCondition::MonthAffected(Int32 year, UInt8 month) const
+{
+	return true;
+}
+
+Bool Data::Conditions::StringNotEqualsCondition::DayAffected(Int32 year, UInt8 month, UInt8 day) const
+{
+	return true;
+}
 
 Data::Conditions::StringLikeCondition::StringLikeCondition(Text::CStringNN fieldName, Text::CStringNN val) : FieldCondition(fieldName)
 {
@@ -1722,6 +1962,16 @@ Bool Data::Conditions::StringLikeCondition::TestValid(NN<Data::VariItem> item) c
 	default:
 		return false;
 	}
+}
+
+Bool Data::Conditions::StringLikeCondition::MonthAffected(Int32 year, UInt8 month) const
+{
+	return true;
+}
+
+Bool Data::Conditions::StringLikeCondition::DayAffected(Int32 year, UInt8 month, UInt8 day) const
+{
+	return true;
 }
 
 Data::Conditions::BooleanCondition::BooleanCondition(Text::CStringNN fieldName, Bool val) : FieldCondition(fieldName)
@@ -1808,6 +2058,16 @@ Bool Data::Conditions::BooleanCondition::TestValid(NN<Data::VariItem> item) cons
 		return false;
 	}
 	return bVal == this->val;
+}
+
+Bool Data::Conditions::BooleanCondition::MonthAffected(Int32 year, UInt8 month) const
+{
+	return true;
+}
+
+Bool Data::Conditions::BooleanCondition::DayAffected(Int32 year, UInt8 month, UInt8 day) const
+{
+	return true;
 }
 
 Bool Data::Conditions::NullCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UIntOS maxDBItem) const
@@ -1925,6 +2185,16 @@ void Data::Conditions::NullCondition::GetFieldList(NN<Data::ArrayListStringNN> f
 Bool Data::Conditions::NullCondition::HasField(Text::CStringNN fieldName) const
 {
 	return this->fieldName->Equals(fieldName);
+}
+
+Bool Data::Conditions::NullCondition::MonthAffected(Int32 year, UInt8 month) const
+{
+	return true;
+}
+
+Bool Data::Conditions::NullCondition::DayAffected(Int32 year, UInt8 month, UInt8 day) const
+{
+	return true;
 }
 
 Data::QueryConditions::QueryConditions()

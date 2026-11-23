@@ -11,72 +11,82 @@ Optional<DB::CSVReader> DB::CSVMonthGroupedReader::NextReader()
 	NN<DB::CSVReader> reader;
 	NN<IO::FileStream> fs;
 	NN<Text::UTF8Reader> fsReader;
+	UTF8Char sbuff2[16];
+	UnsafeArray<UTF8Char> sptr3;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	NN<Data::Conditions::BooleanObject> timeCond;
 	UInt32 month;
 	UIntOS i;
-	if (currFile == 0)
+	while (true)
 	{
-		while (this->currMonth > 0)
-		{
-			this->currMonth--;
-			this->monthFiles.FreeAll();
-			month = this->monthList.GetItem(this->currMonth);
-
-			if (!this->timeCondition.SetTo(timeCond) || true)//timeCond->MonthAffected(month / 100, month % 100))
-			{
-				sptr = this->filePart1->ConcatTo(sbuff);
-				sptr = Text::StrUInt32(sptr, month);
-				sptr = this->filePart2->ConcatTo(sptr);
-				sptr2 = Text::StrUInt32(sptr, month);
-				sptr2 = Text::StrConcatC(sptr2, UTF8STRC("??"));
-				sptr2 = this->filePart3->ConcatTo(sptr2);
-				i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
-				sptr = &sbuff[i + 1];
-				NN<IO::Path::FindFileSession> sess;
-				IO::Path::PathType pt;
-				if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
-				{
-					while (IO::Path::FindNextFile(sptr, sess, nullptr, pt, nullptr).SetTo(sptr2))
-					{
-						if (pt == IO::Path::PathType::File)
-						{
-							this->monthFiles.Add(Text::String::NewP(sptr, sptr2));
-						}
-					}
-					IO::Path::FindFileClose(sess);
-				}
-				currFile = this->monthFiles.GetCount();
-				if (currFile > 0)
-				{
-					Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(this->monthFiles, this->monthFiles);
-					break;
-				}
-			}
-		}
 		if (currFile == 0)
 		{
-			return nullptr;
+			while (this->currMonth > 0)
+			{
+				this->currMonth--;
+				this->monthFiles.FreeAll();
+				month = this->monthList.GetItem(this->currMonth);
+
+				if (!this->timeCondition.SetTo(timeCond) || timeCond->MonthAffected((Int32)(month / 100), (UInt8)(month % 100)))
+				{
+					sptr = this->filePart1->ConcatTo(sbuff);
+					sptr = Text::StrUInt32(sptr, month);
+					sptr = this->filePart2->ConcatTo(sptr);
+					sptr2 = Text::StrUInt32(sptr, month);
+					sptr2 = Text::StrConcatC(sptr2, UTF8STRC("??"));
+					sptr2 = this->filePart3->ConcatTo(sptr2);
+					i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+					sptr = &sbuff[i + 1];
+					NN<IO::Path::FindFileSession> sess;
+					IO::Path::PathType pt;
+					if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
+					{
+						while (IO::Path::FindNextFile(sptr, sess, nullptr, pt, nullptr).SetTo(sptr2))
+						{
+							if (pt == IO::Path::PathType::File)
+							{
+								this->monthFiles.Add(Text::String::NewP(sptr, sptr2));
+							}
+						}
+						IO::Path::FindFileClose(sess);
+					}
+					currFile = this->monthFiles.GetCount();
+					if (currFile > 0)
+					{
+						Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(this->monthFiles, this->monthFiles);
+						break;
+					}
+				}
+			}
+			if (currFile == 0)
+			{
+				return nullptr;
+			}
+		}
+
+		month = this->monthList.GetItem(this->currMonth);
+		currFile--;
+		sptr = this->filePart1->ConcatTo(sbuff);
+		sptr = Text::StrUInt32(sptr, month);
+		sptr = this->filePart2->ConcatTo(sptr);
+		i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+		sptr = &sbuff[i + 1];
+		NN<Text::String> fileName = this->monthFiles.GetItemNoCheck(currFile);
+		sptr3 = Text::StrConcatC(sbuff2, &fileName->v[fileName->leng - this->filePart3->leng - 8], 8);
+		UInt32 day = Text::StrToUInt32(sbuff2);
+		if (!this->timeCondition.SetTo(timeCond) || timeCond->DayAffected((Int32)(month / 100), (UInt8)(month % 100), (UInt8)(day % 100)))
+		{
+			sptr2 = fileName->ConcatTo(sptr);
+			printf("CSVMonthGroupedReader: NextReader %s\n", fileName->v.Ptr());
+			
+			NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASSNN(fsReader, Text::UTF8Reader(fs));
+			NEW_CLASSNN(reader, DB::CSVReader(fs, fsReader, this->noHeader, false, this->condition, this->tzQhr));
+			return reader;
 		}
 	}
-
-	month = this->monthList.GetItem(this->currMonth);
-	currFile--;
-	sptr = this->filePart1->ConcatTo(sbuff);
-	sptr = Text::StrUInt32(sptr, month);
-	sptr = this->filePart2->ConcatTo(sptr);
-	i = Text::StrLastIndexOfCharC(sbuff, (UIntOS)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
-	sptr = &sbuff[i + 1];
-	NN<Text::String> fileName = this->monthFiles.GetItemNoCheck(currFile);
-	sptr2 = fileName->ConcatTo(sptr);
-	printf("CSVMonthGroupedReader: NextReader %s\n", fileName->v.Ptr());
-	
-	NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASSNN(fsReader, Text::UTF8Reader(fs));
-	NEW_CLASSNN(reader, DB::CSVReader(fs, fsReader, this->noHeader, false, this->condition, this->tzQhr));
-	return reader;
 }
 
 DB::CSVMonthGroupedReader::CSVMonthGroupedReader(Text::CStringNN filePart1, Text::CStringNN filePart2, Text::CStringNN filePart3, Data::DataArray<Text::CStringNN> tableColNames, UIntOS dateCol, UIntOS dataOfst, UIntOS maxCount, Optional<Data::QueryConditions> condition, NN<Data::ArrayListNative<UIntOS>> colIndex, Bool noHeader, Int8 tzQhr)
@@ -94,10 +104,21 @@ DB::CSVMonthGroupedReader::CSVMonthGroupedReader(Text::CStringNN filePart1, Text
 		this->countLeft = INVALID_INDEX;
 	}
 	NN<Data::QueryConditions> nncond;
+	NN<Data::Conditions::BooleanObject> timeCond;
 	if (condition.SetTo(nncond))
 	{
 		this->condition = nncond->Clone();
 		this->timeCondition = nncond->CreateFieldCondition(tableColNames[dateCol]);
+		if (!this->timeCondition.SetTo(timeCond))
+		{
+			printf("CSVMonthGroupedReader: No time condition for field %s\n", tableColNames[dateCol].v.Ptr());
+		}
+		else
+		{
+			Text::StringBuilderUTF8 sb;
+			timeCond->ToWhereClause(sb, DB::SQLType::MySQL, this->tzQhr, 100);
+			printf("CSVMonthGroupedReader: Time condition for field %s: %s\n", tableColNames[dateCol].v.Ptr(), sb.v.Ptr());
+		}
 	}
 	else
 	{
