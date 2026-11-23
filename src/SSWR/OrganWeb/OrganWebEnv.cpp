@@ -774,6 +774,7 @@ void SSWR::OrganWeb::OrganWebEnv::ClearUsers()
 			OPTSTR_DEL(userFile->descript);
 			OPTSTR_DEL(userFile->location);
 			OPTSTR_DEL(userFile->camera);
+			OPTSTR_DEL(userFile->tag);
 			MemFreeNN(userFile);
 		}
 		user->userFileIndex.Clear();
@@ -2674,8 +2675,6 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 						userFile->crcVal = crcVal;
 						userFile->rotType = rotType;
 						userFile->prevUpdated = 0;
-						userFile->camera = camera;
-						userFile->locType = locType;
 						userFile->cropLeft = 0;
 						userFile->cropTop = 0;
 						userFile->cropRight = 0;
@@ -2685,6 +2684,10 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 							userFile->location = s->Clone();
 						else
 							userFile->location = nullptr;
+						userFile->camera = camera;
+						userFile->locType = locType;
+						userFile->tag = nullptr;
+						userFile->tagDefault = false;
 						this->userFileMap.Put(userFile->id, userFile);
 
 						NN<SpeciesInfo> species;
@@ -2879,16 +2882,20 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 						userFile->dataFileName = Text::String::NewP(dataFileName, sptr);
 						userFile->crcVal = crcVal;
 						userFile->rotType = 0;
-						//userFile->camera = 0;
-						userFile->descript = nullptr;
+						userFile->prevUpdated = 0;
 						userFile->cropLeft = 0;
 						userFile->cropTop = 0;
 						userFile->cropRight = 0;
 						userFile->cropBottom = 0;
+						userFile->descript = nullptr;
 						if (location.SetTo(s) && s->leng > 0)
 							userFile->location = s->Clone();
 						else
 							userFile->location = nullptr;
+						userFile->camera = nullptr;
+						userFile->locType = LocType::Unknown;
+						userFile->tag = nullptr;
+						userFile->tagDefault = false;
 						this->userFileMap.Put(userFile->id, userFile);
 
 						NN<SpeciesInfo> species;
