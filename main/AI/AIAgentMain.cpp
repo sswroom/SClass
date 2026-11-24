@@ -110,8 +110,14 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	log.LogMessage(Text::StringBuilderUTF8().Append(CSTR("Using model: "))->Append(modelName)->ToCString(), IO::LogHandler::LogLevel::Command);
 	Data::ArrayListNN<AI::AITool> tools;
 	{
+		UTF8Char sbuff[512];
+		UnsafeArray<UTF8Char> sptr;
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("web"));
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+		sptr = Text::StrConcatC(sptr, UTF8STRC("attach"));
 		AI::SimpleAIAgent agent(openAI, modelName->ToCString());
-		AI::AIReadDBTool readDBTool(db->GetDBConn(), schema->ToCString());
+		AI::AIReadDBTool readDBTool(db->GetDBConn(), schema->ToCString(), CSTRP(sbuff, sptr), true, false);
 		agent.AddTool(readDBTool);
 		if (cfg->GetValue(CSTR("app.ai.md-path")).SetTo(s))
 		{
@@ -123,8 +129,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		AI::AINowTool nowTool;
 		agent.AddTool(nowTool);
 		agent.SetMaxToolCalls(maxToolCalls);
-		UTF8Char sbuff[512];
-		UnsafeArray<UTF8Char> sptr;
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("web"));
 		AI::AIAgentHandler agentHandler(agent, log, systemPrompt, CSTRP(sbuff, sptr));

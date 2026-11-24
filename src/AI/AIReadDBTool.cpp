@@ -3,17 +3,26 @@
 #include "DB/DBConn.h"
 #include "DB/DBReader.h"
 #include "DB/TableDef.h"
+#include "Exporter/XLSXExporter.h"
+#include "IO/Path.h"
 #include "Text/JSONBuilder.h"
+#include "Text/SpreadSheet/Workbook.h"
 
 //#define VERBOSE
 
-AI::AIReadDBTool::AIReadDBTool(NN<DB::ReadingDB> db, Text::CStringNN schemaName) : db(db), schemaName(Text::String::New(schemaName))
+AI::AIReadDBTool::AIReadDBTool(NN<DB::ReadingDB> db, Text::CStringNN schemaName, Text::CString filePath, Bool allowXlsx, Bool allowChart)
 {
+	this->db = db;
+	this->schemaName = Text::String::New(schemaName);
+	this->filePath = Text::String::NewOrNull(filePath);
+	this->allowXlsx = allowXlsx;
+	this->allowChart = allowChart;
 }
 
 AI::AIReadDBTool::~AIReadDBTool()
 {
 	this->schemaName->Release();
+	OPTSTR_DEL(this->filePath)
 }
 
 Text::CStringNN AI::AIReadDBTool::GetName() const
@@ -25,24 +34,69 @@ void AI::AIReadDBTool::GetDescription(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->AppendC(UTF8STRC("Read tables from schema "));
 	sb->Append(this->schemaName);
-	sb->AppendC(UTF8STRC(". Use list_tables to list tables. Use read_table with tableName, optional SQL-like condition, offset and maxCount to inspect rows. Conditions support comparisons, IN, BETWEEN and AND; for example site_code = 'SK-03'. Filter by condition instead of reading many rows. maxCount is limited to 100 and defaults to 20. Results are returned as JSON in data."));
+	sb->AppendC(UTF8STRC(". Use list_tables to list tables. Use read_table with tableName, optional SQL-like condition, offset and maxCount to inspect rows."));
+	sb->AppendC(UTF8STRC(" Conditions support comparisons, IN, BETWEEN and AND; for example site_code = 'SK-03'."));
+	sb->AppendC(UTF8STRC(" Filter by condition instead of reading many rows. maxCount is limited to 100 and defaults to 20. Results are returned as JSON in data."));
 }
 
 void AI::AIReadDBTool::GetParameters(NN<Net::OpenAIToolParameters> parameters) const
 {
 	if (this->db->IsFullConn())
 	{
-		parameters->AddParameter(CSTR("action"), CSTR("list_tables, execute_sql, or read_table"), Net::OpenAIToolParameterType::String, true);
 		DB::SQLType sqlType = NN<DB::DBConn>::ConvertFrom(this->db)->GetSQLType();
-		Text::StringBuilderUTF8 sb;
-		sb.Append(CSTR("SQL query in "));
-		sb.Append(DB::SQLTypeGetName(sqlType));
-		sb.Append(CSTR(" syntax; required for execute_sql"));
+		Text::StringBuilderUTF8 sbSQL;
+		Text::StringBuilderUTF8 sbParam;
+		sbSQL.Append(CSTR("SQL query in "));
+		sbSQL.Append(DB::SQLTypeGetName(sqlType));
+		sbSQL.Append(CSTR(" syntax; required for execute_sql"));
+
+		sbParam.AppendC(UTF8STRC("list_tables, execute_sql"));
+		if (this->filePath.NotNull())
+		{
+			if (this->allowXlsx)
+			{
+				sbParam.AppendC(UTF8STRC(", sql2xlsx"));
+				sbSQL.Append(CSTR(", sql2xlsx"));
+			}
+			if (this->allowChart)
+			{
+				sbParam.AppendC(UTF8STRC(", sql2chart"));
+				sbSQL.Append(CSTR(", sql2chart"));
+			}
+		}
+		sbParam.AppendC(UTF8STRC(", or read_table"));
+		parameters->AddParameter(CSTR("action"), sbParam.ToCString(), Net::OpenAIToolParameterType::String, true);
+
 		if (DB::DBUtil::HasSchema(sqlType))
 		{
-			sb.Append(CSTR("; requires schema name"));
+			sbSQL.Append(CSTR("; requires schema name"));
 		}
-		parameters->AddParameter(CSTR("sql"), sb.ToCString(), Net::OpenAIToolParameterType::String, false);
+		parameters->AddParameter(CSTR("sql"), sbSQL.ToCString(), Net::OpenAIToolParameterType::String, false);
+		if (this->filePath.NotNull())
+		{
+			if (this->allowXlsx || this->allowChart)
+			{
+				sbParam.ClearStr();
+				sbParam.Append(CSTR("File Name without extension; required for "));
+				if (this->allowXlsx)
+				{
+					sbParam.Append(CSTR("sql2xlsx"));
+				}
+				if (this->allowChart)
+				{
+					if (this->allowXlsx)
+					{
+						sbParam.Append(CSTR(" and "));
+					}
+					sbParam.Append(CSTR("sql2chart"));
+				}
+				parameters->AddParameter(CSTR("fileName"), sbParam.ToCString(), Net::OpenAIToolParameterType::String, false);
+			}
+			if (this->allowXlsx)
+			{
+				parameters->AddParameter(CSTR("sheetName"), CSTR("Sheet Name; required for sql2xlsx"), Net::OpenAIToolParameterType::String, false);
+			}
+		}
 	}
 	else
 	{
@@ -99,6 +153,8 @@ Bool AI::AIReadDBTool::Invoke(NN<Data::VariObject> input, NN<Data::VariObject> o
 	Bool sqlAction = action->Equals(UTF8STRC("execute_sql"));
 	Bool listTables = action->Equals(UTF8STRC("list_tables"));
 	Bool readTable = action->Equals(UTF8STRC("read_table"));
+	Bool sql2xlsx = action->Equals(UTF8STRC("sql2xlsx"));
+	Bool sql2chart = action->Equals(UTF8STRC("sql2chart"));
 	action->Release();
 	if (listTables)
 	{
@@ -119,7 +175,7 @@ Bool AI::AIReadDBTool::Invoke(NN<Data::VariObject> input, NN<Data::VariObject> o
 		return true;
 	}
 
-	if (sqlAction)
+	if (sqlAction || sql2xlsx || sql2chart)
 	{
 		if (!this->db->IsFullConn())
 			return false;
@@ -153,40 +209,193 @@ Bool AI::AIReadDBTool::Invoke(NN<Data::VariObject> input, NN<Data::VariObject> o
 #endif
 			return true;
 		}
-		Data::VariItem item;
-		Text::JSONBuilder json(Text::JSONBuilder::OT_ARRAY);
-		UIntOS colCount = r->ColCount();
-		while (r->ReadNext())
+		if (sql2xlsx)
 		{
-			json.ArrayBeginObject();
-			UIntOS i = 0;
-			while (i < colCount)
+			NN<Text::String> fileName;
+			NN<Text::String> sheetName;
+			if (!input->GetItem(U8STR("fileName")).SetTo(actionItem) || !actionItem->GetAsNewString().SetTo(fileName))
 			{
-				UTF8Char nameBuff[512];
-				UnsafeArray<UTF8Char> nameEnd;
-				if (!r->GetName(i, nameBuff).SetTo(nameEnd))
-				{
-					conn->CloseReader(r);
-					printf("AIReadDBTool: failed to get column name at index %d\n", (Int32)i);
-					return false;
-				}
-				if (!r->GetVariItem(i, item) || !json.ObjectAddVarItem(CSTRP(nameBuff, nameEnd), item))
-				{
-					conn->CloseReader(r);
-					printf("AIReadDBTool: failed to get column value at index %d\n", (Int32)i);
-					return false;
-				}
-				i++;
+				sql->Release();
+				return false;
 			}
-			json.ObjectEnd();
+			if (!input->GetItem(U8STR("sheetName")).SetTo(actionItem) || !actionItem->GetAsNewString().SetTo(sheetName))
+			{
+				sql->Release();
+				fileName->Release();
+				return false;
+			}
+			Text::SpreadSheet::Workbook workbook;
+			NN<Text::SpreadSheet::Worksheet> sheet = workbook.AddWorksheet(sheetName);
+			UTF8Char sbuff[512];
+			UnsafeArray<UTF8Char> sptr;
+			NN<Text::String> s;
+			UIntOS colCount = r->ColCount();
+			UIntOS row = 0;
+			UIntOS col = 0;
+			UnsafeArray<DB::DBUtil::ColType> colTypes = MemAllocArr(DB::DBUtil::ColType, colCount);
+			while (col < colCount)
+			{
+				if (r->GetName(col, sbuff).SetTo(sptr))
+				{
+					sheet->SetCellString(row, col, CSTRP(sbuff, sptr));
+				}
+				colTypes[col] = r->GetColType(col, nullptr);
+				col++;
+			}
+			row++;
+			while (r->ReadNext())
+			{
+				col = 0;
+				while (col < colCount)
+				{
+					if (!r->IsNull(col))
+					{
+						switch (colTypes[col])
+						{
+						case DB::DBUtil::CT_Byte:
+						case DB::DBUtil::CT_Int16:
+						case DB::DBUtil::CT_UInt16:
+						case DB::DBUtil::CT_Int32:
+							sheet->SetCellInt32(row, col, r->GetInt32(col));
+							break;
+						case DB::DBUtil::CT_UInt32:
+						case DB::DBUtil::CT_UInt64:
+						case DB::DBUtil::CT_Int64:
+							sheet->SetCellInt64(row, col, r->GetInt64(col));
+							break;
+						case DB::DBUtil::CT_Float:
+						case DB::DBUtil::CT_Double:
+						case DB::DBUtil::CT_Decimal:
+							sheet->SetCellDouble(row, col, r->GetDblOrNAN(col));
+							break;
+						case DB::DBUtil::CT_Bool:
+							sheet->SetCellString(row, col, r->GetBool(col) ? CSTR("Y") : CSTR("N"));
+							break;
+						case DB::DBUtil::CT_Date:
+						case DB::DBUtil::CT_DateTimeTZ:
+						case DB::DBUtil::CT_DateTime:
+							sheet->SetCellTS(row, col, r->GetTimestamp(col).ToLocalTime());
+							break;
+						case DB::DBUtil::CT_Unknown:
+						case DB::DBUtil::CT_UTF8Char:
+						case DB::DBUtil::CT_UTF16Char:
+						case DB::DBUtil::CT_UTF32Char:
+						case DB::DBUtil::CT_VarUTF8Char:
+						case DB::DBUtil::CT_VarUTF16Char:
+						case DB::DBUtil::CT_VarUTF32Char:
+						case DB::DBUtil::CT_Binary:
+						case DB::DBUtil::CT_Vector:
+						case DB::DBUtil::CT_UUID:
+						default:
+							if (r->GetNewStr(col).SetTo(s))
+							{
+								sheet->SetCellString(row, col, s);
+								s->Release();
+							}
+							break;
+						}
+					}
+					col++;
+				}
+				row++;
+			}
+			Text::StringBuilderUTF8 sb;
+			sb.AppendOpt(this->filePath);
+			if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
+			{
+				sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+			}
+			Data::Timestamp fileTime = Data::Timestamp::Now();
+			sb.AppendTS(fileTime, "yyyyMMdd");
+			IO::Path::CreateDirectory(sb.ToCString());
+			sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+			sb.Append(fileName);
+			sb.Append(CSTR(".xlsx"));
+			Bool succ = false;
+			{
+				Exporter::XLSXExporter exporter;
+				succ = exporter.ExportNewFile(sb.ToCString(), workbook, nullptr);
+			}
+			if (!succ)
+			{
+				sb.ClearStr();
+				sb.Append(CSTR("Failed to export to "));
+				sb.Append(fileName);
+				sb.Append(CSTR(".xlsx file"));
+				s = Text::String::New(sb.ToCString());
+				output->SetItemStr(U8STR("data"), s);
+				s->Release();
+			}
+			else
+			{
+				sb.ClearStr();
+				sb.Append(CSTR("Attachment "));
+				sb.Append(fileName);
+				sb.Append(CSTR(".xlsx added to user"));
+				s = Text::String::New(sb.ToCString());
+				output->SetItemStr(U8STR("data"), s);
+				s->Release();
+
+				sb.ClearStr();
+				sb.AppendTS(fileTime, "yyyyMMdd");
+				sb.AppendUTF8Char('/');
+				sb.Append(fileName);
+				sb.Append(CSTR(".xlsx"));
+				s = Text::String::New(sb.ToCString());
+				output->SetItemStr(U8STR("attachment"), s);
+				s->Release();
+			}
+
+			conn->CloseReader(r);
+			fileName->Release();
+			sheetName->Release();
+			sql->Release();
+			return true;
 		}
-		conn->CloseReader(r);
-		NN<Text::String> dataStr;
-		dataStr = Text::String::New(json.Build());
-		output->SetItemStr(U8STR("data"), dataStr);
-		dataStr->Release();
-		sql->Release();
-		return true;
+		else if (sql2chart)
+		{
+			///////////////////////////////
+			sql->Release();
+			conn->CloseReader(r);
+			return false;
+		}
+		else
+		{
+			Data::VariItem item;
+			Text::JSONBuilder json(Text::JSONBuilder::OT_ARRAY);
+			UIntOS colCount = r->ColCount();
+			while (r->ReadNext())
+			{
+				json.ArrayBeginObject();
+				UIntOS i = 0;
+				while (i < colCount)
+				{
+					UTF8Char nameBuff[512];
+					UnsafeArray<UTF8Char> nameEnd;
+					if (!r->GetName(i, nameBuff).SetTo(nameEnd))
+					{
+						conn->CloseReader(r);
+						printf("AIReadDBTool: failed to get column name at index %d\n", (Int32)i);
+						return false;
+					}
+					if (!r->GetVariItem(i, item) || !json.ObjectAddVarItem(CSTRP(nameBuff, nameEnd), item))
+					{
+						conn->CloseReader(r);
+						printf("AIReadDBTool: failed to get column value at index %d\n", (Int32)i);
+						return false;
+					}
+					i++;
+				}
+				json.ObjectEnd();
+			}
+			conn->CloseReader(r);
+			NN<Text::String> dataStr;
+			dataStr = Text::String::New(json.Build());
+			output->SetItemStr(U8STR("data"), dataStr);
+			dataStr->Release();
+			sql->Release();
+			return true;
+		}
 	}
 
 	if (!readTable)

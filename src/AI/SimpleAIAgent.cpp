@@ -4,6 +4,96 @@
 
 //#define VERBOSE
 
+void AI::AISession::AddTurn(Text::CStringNN question, Text::CStringNN answer)
+{
+	Text::StringBuilderUTF8 userLine;
+	userLine.Append(CSTR("User: "));
+	userLine.Append(question);
+	userLine.AppendUTF8Char('\n');
+	this->sessionLines.Add(Text::String::New(userLine.ToCString()));
+	Text::StringBuilderUTF8 assistantLine;
+	assistantLine.Append(CSTR("Assistant: "));
+	assistantLine.Append(answer);
+	assistantLine.AppendUTF8Char('\n');
+	this->sessionLines.Add(Text::String::New(assistantLine.ToCString()));
+}
+
+void AI::AISession::AddAttachment(NN<Text::String> attachment)
+{
+	this->attachments.Add(attachment->Clone());
+}
+
+AI::AISession::AISession(Text::CStringNN modelName, Text::CStringNN systemPrompt) : modelName(Text::String::New(modelName))
+{
+	NEW_CLASSNN(this->chat, Net::OpenAIChatCompletion(this->modelName->ToCString()));
+	if (systemPrompt.leng > 0)
+	{
+		this->chat->AddMessage(Net::OpenAIMessageRole::System, systemPrompt);
+	}
+}
+
+AI::AISession::~AISession()
+{
+	this->chat.Delete();
+	this->sessionLines.FreeAll();
+	this->attachments.FreeAll();
+	this->modelName->Release();
+}
+
+NN<Text::String> AI::AISession::GetText() const
+{
+	Text::StringBuilderUTF8 sb;
+	UIntOS i = 0;
+	UIntOS count = this->sessionLines.GetCount();
+	while (i < count)
+	{
+		sb.Append(this->sessionLines.GetItemNoCheck(i));
+		i++;
+	}
+	return Text::String::New(sb.ToCString());
+}
+
+UIntOS AI::AISession::GetMessageCount() const
+{
+	UIntOS count = 0;
+	NN<Net::OpenAIMessage> message;
+	if (this->chat->GetFirstMessage().SetTo(message))
+	{
+		do
+		{
+			count++;
+		}
+		while (message->GetNext().SetTo(message));
+	}
+	return count;
+}
+
+Optional<Net::OpenAIMessage> AI::AISession::GetMessage(UIntOS index) const
+{
+	NN<Net::OpenAIMessage> message;
+	if (!this->chat->GetFirstMessage().SetTo(message))
+		return nullptr;
+	while (index > 0)
+	{
+		if (!message->GetNext().SetTo(message))
+			return nullptr;
+		index--;
+	}
+	return message;
+}
+
+UIntOS AI::AISession::GetAttachmentCount() const
+{
+	return this->attachments.GetCount();
+}
+
+Optional<Text::String> AI::AISession::GetAttachment(UIntOS index) const
+{
+	if (index >= this->attachments.GetCount())
+		return nullptr;
+	return this->attachments.GetItemNoCheck(index);
+}
+
 UIntOS AI::SimpleAIAgent::GetUTF8PrefixLength(UnsafeArray<const UTF8Char> text, UIntOS maxLen)
 {
 	UIntOS prefixLen = maxLen;
@@ -204,6 +294,11 @@ Optional<Text::String> AI::SimpleAIAgent::SendQuestion(NN<AISession> session, Te
 				{
 					output.ToString(toolOutput);
 				}
+				if (output.GetItem(U8STR("attachment")).SetTo(dataItem) && dataItem->GetAsNewString().SetTo(data))
+				{
+					session->AddAttachment(data);
+					data->Release();
+				}
 			}
 			if (toolOutput.GetLength() > 8192)
 			{
@@ -238,78 +333,6 @@ AI::SimpleAIAgent::SimpleAIAgent(NN<Net::OpenAIClient> openAI, Text::CStringNN m
 AI::SimpleAIAgent::~SimpleAIAgent()
 {
 	this->modelName->Release();
-}
-
-AI::AISession::AISession(Text::CStringNN modelName, Text::CStringNN systemPrompt) : modelName(Text::String::New(modelName))
-{
-	NEW_CLASSNN(this->chat, Net::OpenAIChatCompletion(this->modelName->ToCString()));
-	if (systemPrompt.leng > 0)
-	{
-		this->chat->AddMessage(Net::OpenAIMessageRole::System, systemPrompt);
-	}
-}
-
-AI::AISession::~AISession()
-{
-	this->chat.Delete();
-	this->sessionLines.FreeAll();
-	this->modelName->Release();
-}
-
-NN<Text::String> AI::AISession::GetText() const
-{
-	Text::StringBuilderUTF8 sb;
-	UIntOS i = 0;
-	UIntOS count = this->sessionLines.GetCount();
-	while (i < count)
-	{
-		sb.Append(this->sessionLines.GetItemNoCheck(i));
-		i++;
-	}
-	return Text::String::New(sb.ToCString());
-}
-
-UIntOS AI::AISession::GetMessageCount() const
-{
-	UIntOS count = 0;
-	NN<Net::OpenAIMessage> message;
-	if (this->chat->GetFirstMessage().SetTo(message))
-	{
-		do
-		{
-			count++;
-		}
-		while (message->GetNext().SetTo(message));
-	}
-	return count;
-}
-
-Optional<Net::OpenAIMessage> AI::AISession::GetMessage(UIntOS index) const
-{
-	NN<Net::OpenAIMessage> message;
-	if (!this->chat->GetFirstMessage().SetTo(message))
-		return nullptr;
-	while (index > 0)
-	{
-		if (!message->GetNext().SetTo(message))
-			return nullptr;
-		index--;
-	}
-	return message;
-}
-
-void AI::AISession::AddTurn(Text::CStringNN question, Text::CStringNN answer)
-{
-	Text::StringBuilderUTF8 userLine;
-	userLine.Append(CSTR("User: "));
-	userLine.Append(question);
-	userLine.AppendUTF8Char('\n');
-	this->sessionLines.Add(Text::String::New(userLine.ToCString()));
-	Text::StringBuilderUTF8 assistantLine;
-	assistantLine.Append(CSTR("Assistant: "));
-	assistantLine.Append(answer);
-	assistantLine.AppendUTF8Char('\n');
-	this->sessionLines.Add(Text::String::New(assistantLine.ToCString()));
 }
 
 NN<AI::AISession> AI::SimpleAIAgent::CreateSession(Text::CStringNN systemPrompt) const

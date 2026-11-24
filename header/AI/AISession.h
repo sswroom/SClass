@@ -15,15 +15,19 @@ namespace AI
 		NN<Text::String> modelName;
 		NN<Net::OpenAIChatCompletion> chat;
 		Data::ArrayListStringNN sessionLines;
+		Data::ArrayListStringNN attachments;
+
+		void AddTurn(Text::CStringNN question, Text::CStringNN answer);
+		void AddAttachment(NN<Text::String> attachment);
 
 		AISession(Text::CStringNN modelName, Text::CStringNN systemPrompt);
-		void AddTurn(Text::CStringNN question, Text::CStringNN answer);
-
 	public:
 		~AISession();
 		NN<Text::String> GetText() const;
 		UIntOS GetMessageCount() const;
 		Optional<Net::OpenAIMessage> GetMessage(UIntOS index) const;
+		UIntOS GetAttachmentCount() const;
+		Optional<Text::String> GetAttachment(UIntOS index) const;
 	};
 }
 #endif

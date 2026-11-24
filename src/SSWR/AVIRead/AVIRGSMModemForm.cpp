@@ -1089,7 +1089,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	this->huaweiVersion.exts = nullptr;
 	this->huaweiVersion.extd = nullptr;
 	this->huaweiVersion.exth = nullptr;
-	this->huaweiVersion.exts = nullptr;
+	this->huaweiVersion.extu = nullptr;
 	this->huaweiVersion.cfg = nullptr;
 	this->huaweiVersion.ini = nullptr;
 	this->huaweiVersionUpdated = false;

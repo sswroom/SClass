@@ -12,9 +12,12 @@ namespace AI
 	private:
 		NN<DB::ReadingDB> db;
 		NN<Text::String> schemaName;
+		Optional<Text::String> filePath;
+		Bool allowXlsx;
+		Bool allowChart;
 
 	public:
-		AIReadDBTool(NN<DB::ReadingDB> db, Text::CStringNN schemaName);
+		AIReadDBTool(NN<DB::ReadingDB> db, Text::CStringNN schemaName, Text::CString filePath, Bool allowXlsx, Bool allowChart);
 		virtual ~AIReadDBTool();
 		virtual Text::CStringNN GetName() const;
 		virtual void GetDescription(NN<Text::StringBuilderUTF8> sb) const;

@@ -146,9 +146,9 @@ Bool __stdcall AI::AIAgentHandler::SessFunc(NN<Net::WebServer::WebRequest> req, 
 		aiReq->gotResult = true;
 	}
 	json.ObjectBeginArray(CSTR("session"));
-	UIntOS messageCount = aiReq->session->GetMessageCount();
+	UIntOS count = aiReq->session->GetMessageCount();
 	UIntOS i = 0;
-	while (i < messageCount)
+	while (i < count)
 	{
 		NN<Net::OpenAIMessage> message;
 		if (aiReq->session->GetMessage(i).SetTo(message))
@@ -186,6 +186,20 @@ Bool __stdcall AI::AIAgentHandler::SessFunc(NN<Net::WebServer::WebRequest> req, 
 		i++;
 	}
 	json.ArrayEnd();
+	count = aiReq->session->GetAttachmentCount();
+	if (count > 0)
+	{
+		json.ObjectBeginArray(CSTR("attachments"));
+		UIntOS j = 0;
+		while (j < count)
+		{
+			NN<Text::String> attachment;
+			if (aiReq->session->GetAttachment(j).SetTo(attachment))
+				json.ArrayAddStr(attachment);
+			j++;
+		}
+		json.ArrayEnd();
+	}
 	return me->ResponseJSONStr(req, resp, 0, json.Build());
 }
 
