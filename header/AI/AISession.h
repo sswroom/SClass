@@ -12,17 +12,20 @@ namespace AI
 		friend class SimpleAIAgent;
 
 	private:
+		NN<Text::String> sessionId;
 		NN<Text::String> modelName;
 		NN<Net::OpenAIChatCompletion> chat;
 		Data::ArrayListStringNN sessionLines;
 		Data::ArrayListStringNN attachments;
 
+		static NN<Text::String> NewAISessionId();
 		void AddTurn(Text::CStringNN question, Text::CStringNN answer);
 		void AddAttachment(NN<Text::String> attachment);
 
 		AISession(Text::CStringNN modelName, Text::CStringNN systemPrompt);
 	public:
 		~AISession();
+		Text::CStringNN GetSessionId() const;
 		NN<Text::String> GetText() const;
 		UIntOS GetMessageCount() const;
 		Optional<Net::OpenAIMessage> GetMessage(UIntOS index) const;

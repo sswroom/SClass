@@ -51,7 +51,7 @@ void AI::AIReadMDTool::GetParameters(NN<Net::OpenAIToolParameters> parameters) c
 	parameters->AddParameter(CSTR("count"), CSTR("Maximum number of lines to read; defaults to all remaining lines"), Net::OpenAIToolParameterType::Integer, false);
 }
 
-Bool AI::AIReadMDTool::Invoke(NN<Data::VariObject> input, NN<Data::VariObject> output)
+Bool AI::AIReadMDTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> input, NN<Data::VariObject> output)
 {
 	if (this->directory->leng == 0 || IO::Path::GetPathType(this->directory->ToCString()) != IO::Path::PathType::Directory)
 	{

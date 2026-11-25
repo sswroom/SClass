@@ -23,7 +23,7 @@ void AI::AINowTool::GetParameters(NN<Net::OpenAIToolParameters> parameters) cons
 {
 }
 
-Bool AI::AINowTool::Invoke(NN<Data::VariObject> input, NN<Data::VariObject> output)
+Bool AI::AINowTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> input, NN<Data::VariObject> output)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr = Data::Timestamp::Now().ToString(sbuff);

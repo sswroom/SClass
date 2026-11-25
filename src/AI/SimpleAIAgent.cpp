@@ -1,8 +1,17 @@
 #include "Stdafx.h"
 #include "AI/SimpleAIAgent.h"
 #include "Data/ArrayListStringNN.h"
+#include "Data/UUID.h"
 
 //#define VERBOSE
+
+NN<Text::String> AI::AISession::NewAISessionId()
+{
+	Data::UUID uuid;
+	uuid.GenerateV4();
+	UTF8Char sessionIdBuff[37];
+	return Text::String::NewP(sessionIdBuff, uuid.ToString(sessionIdBuff));
+}
 
 void AI::AISession::AddTurn(Text::CStringNN question, Text::CStringNN answer)
 {
@@ -23,7 +32,7 @@ void AI::AISession::AddAttachment(NN<Text::String> attachment)
 	this->attachments.Add(attachment->Clone());
 }
 
-AI::AISession::AISession(Text::CStringNN modelName, Text::CStringNN systemPrompt) : modelName(Text::String::New(modelName))
+AI::AISession::AISession(Text::CStringNN modelName, Text::CStringNN systemPrompt) : sessionId(NewAISessionId()), modelName(Text::String::New(modelName))
 {
 	NEW_CLASSNN(this->chat, Net::OpenAIChatCompletion(this->modelName->ToCString()));
 	if (systemPrompt.leng > 0)
@@ -35,9 +44,15 @@ AI::AISession::AISession(Text::CStringNN modelName, Text::CStringNN systemPrompt
 AI::AISession::~AISession()
 {
 	this->chat.Delete();
+	this->sessionId->Release();
 	this->sessionLines.FreeAll();
 	this->attachments.FreeAll();
 	this->modelName->Release();
+}
+
+Text::CStringNN AI::AISession::GetSessionId() const
+{
+	return this->sessionId->ToCString();
 }
 
 NN<Text::String> AI::AISession::GetText() const
@@ -275,7 +290,7 @@ Optional<Text::String> AI::SimpleAIAgent::SendQuestion(NN<AISession> session, Te
 			Data::VariObject input(Data::VariObject::NameType::Field);
 			Data::VariObject output(Data::VariObject::NameType::Field);
 			Bool invoked = SimpleAIAgent::SetArgs(input, argObject) &&
-				this->InvokeTool(functionName->ToCString(), input, output);
+				this->InvokeTool(functionName->ToCString(), session->GetSessionId(), input, output);
 			Text::StringBuilderUTF8 toolOutput;
 			if (!invoked)
 			{

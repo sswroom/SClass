@@ -61,7 +61,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	log.LogMessage(Text::StringBuilderUTF8().Append(CSTR("Using model: "))->Append(modelName)->ToCString(), IO::LogHandler::LogLevel::Command);
 	{
 		AI::SimpleAIAgent agent(openAI, modelName->ToCString());
-		AI::AIReadDBTool dbTool(db->GetDBConn(), dbSchema);
+		AI::AIReadDBTool dbTool(db->GetDBConn(), dbSchema, nullptr, false, false);
 		agent.AddTool(dbTool);
 		NN<AI::AISession> session = agent.CreateSession(systemPrompt);
 		NN<Text::String> answer;

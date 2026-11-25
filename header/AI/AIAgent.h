@@ -21,7 +21,7 @@ namespace AI
 		Optional<AITool> RemoveTool(Text::CStringNN name);
 		UIntOS GetToolCount() const;
 		Optional<AITool> GetTool(UIntOS index) const;
-		Bool InvokeTool(Text::CStringNN name, NN<Data::VariObject> input, NN<Data::VariObject> output) const;
+		Bool InvokeTool(Text::CStringNN name, Text::CStringNN sessionId, NN<Data::VariObject> input, NN<Data::VariObject> output) const;
 	};
 }
 #endif

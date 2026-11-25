@@ -137,7 +137,7 @@ void AI::AIReadDBTool::CloseReader(NN<DB::DBReader> reader) const
 	this->db->CloseReader(reader);
 }
 
-Bool AI::AIReadDBTool::Invoke(NN<Data::VariObject> input, NN<Data::VariObject> output)
+Bool AI::AIReadDBTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> input, NN<Data::VariObject> output)
 {
 	NN<Data::VariItem> actionItem;
 	NN<Text::String> action;
@@ -299,6 +299,7 @@ Bool AI::AIReadDBTool::Invoke(NN<Data::VariObject> input, NN<Data::VariObject> o
 				}
 				row++;
 			}
+			MemFreeArr(colTypes);
 			Text::StringBuilderUTF8 sb;
 			sb.AppendOpt(this->filePath);
 			if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
@@ -309,7 +310,11 @@ Bool AI::AIReadDBTool::Invoke(NN<Data::VariObject> input, NN<Data::VariObject> o
 			sb.AppendTS(fileTime, "yyyyMMdd");
 			IO::Path::CreateDirectory(sb.ToCString());
 			sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
-			sb.Append(fileName);
+			Text::StringBuilderUTF8 exportFileName;
+			exportFileName.Append(sessionId);
+			exportFileName.AppendUTF8Char('_');
+			exportFileName.Append(fileName);
+			sb.Append(exportFileName.ToCString());
 			sb.Append(CSTR(".xlsx"));
 			Bool succ = false;
 			{
@@ -320,7 +325,7 @@ Bool AI::AIReadDBTool::Invoke(NN<Data::VariObject> input, NN<Data::VariObject> o
 			{
 				sb.ClearStr();
 				sb.Append(CSTR("Failed to export to "));
-				sb.Append(fileName);
+				sb.Append(exportFileName.ToCString());
 				sb.Append(CSTR(".xlsx file"));
 				s = Text::String::New(sb.ToCString());
 				output->SetItemStr(U8STR("data"), s);
@@ -330,7 +335,7 @@ Bool AI::AIReadDBTool::Invoke(NN<Data::VariObject> input, NN<Data::VariObject> o
 			{
 				sb.ClearStr();
 				sb.Append(CSTR("Attachment "));
-				sb.Append(fileName);
+				sb.Append(exportFileName.ToCString());
 				sb.Append(CSTR(".xlsx added to user"));
 				s = Text::String::New(sb.ToCString());
 				output->SetItemStr(U8STR("data"), s);
@@ -339,7 +344,7 @@ Bool AI::AIReadDBTool::Invoke(NN<Data::VariObject> input, NN<Data::VariObject> o
 				sb.ClearStr();
 				sb.AppendTS(fileTime, "yyyyMMdd");
 				sb.AppendUTF8Char('/');
-				sb.Append(fileName);
+				sb.Append(exportFileName.ToCString());
 				sb.Append(CSTR(".xlsx"));
 				s = Text::String::New(sb.ToCString());
 				output->SetItemStr(U8STR("attachment"), s);

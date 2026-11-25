@@ -17,7 +17,7 @@ namespace AI
 		virtual Text::CStringNN GetName() const;
 		virtual void GetDescription(NN<Text::StringBuilderUTF8> sb) const;
 		virtual void GetParameters(NN<Net::OpenAIToolParameters> parameters) const;
-		virtual Bool Invoke(NN<Data::VariObject> input, NN<Data::VariObject> output);
+		virtual Bool Invoke(Text::CStringNN sessionId, NN<Data::VariObject> input, NN<Data::VariObject> output);
 	};
 }
 #endif

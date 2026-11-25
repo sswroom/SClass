@@ -27,7 +27,7 @@ namespace AI
 		Optional<DB::TableDef> GetTableDef(Text::CStringNN tableName) const;
 		Optional<DB::DBReader> QueryTableData(Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS dataOfst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition) const;
 		void CloseReader(NN<DB::DBReader> reader) const;
-		virtual Bool Invoke(NN<Data::VariObject> input, NN<Data::VariObject> output);
+		virtual Bool Invoke(Text::CStringNN sessionId, NN<Data::VariObject> input, NN<Data::VariObject> output);
 	};
 }
 #endif
