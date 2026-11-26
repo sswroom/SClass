@@ -1,6 +1,11 @@
 #include "Stdafx.h"
 #include "AI/AIAgent.h"
 
+AI::AIAgent::AIAgent()
+{
+	this->maxToolSize = 8192;
+}
+
 AI::AIAgent::~AIAgent()
 {
 }
@@ -14,6 +19,7 @@ Bool AI::AIAgent::AddTool(NN<AITool> tool)
 			return false;
 	}
 	this->tools.Add(tool);
+	tool->SetMaxToolSize(this->maxToolSize);
 	return true;
 }
 
@@ -49,4 +55,14 @@ Bool AI::AIAgent::InvokeTool(Text::CStringNN name, Text::CStringNN sessionId, NN
 	}
 	printf("AIAgent: tool not found: %s\n", name.v.Ptr());
 	return false;
+}
+
+void AI::AIAgent::SetMaxToolSize(UIntOS maxToolSize)
+{
+	this->maxToolSize = maxToolSize;
+	UIntOS i = this->tools.GetCount();
+	while (i-- > 0)
+	{
+		this->tools.GetItemNoCheck(i)->SetMaxToolSize(maxToolSize);
+	}
 }

@@ -1474,3 +1474,8 @@ Text::CStringNN Text::JSONBuilder::Build()
 	this->objTypes.Clear();
 	return this->sb.ToCString();
 }
+
+UIntOS Text::JSONBuilder::GetLength() const
+{
+	return this->sb.GetLength() + this->objTypes.GetCount();
+}

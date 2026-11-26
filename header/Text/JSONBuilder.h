@@ -101,6 +101,7 @@ namespace Text
 		Bool ObjectBeginFeatureCollection();
 		Bool ObjectEnd();
 
+		UIntOS GetLength() const;
 		Text::CStringNN Build();
 	};
 }

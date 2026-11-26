@@ -17,6 +17,7 @@ AI::AIReadDBTool::AIReadDBTool(NN<DB::ReadingDB> db, Text::CStringNN schemaName,
 	this->filePath = Text::String::NewOrNull(filePath);
 	this->allowXlsx = allowXlsx;
 	this->allowChart = allowChart;
+	this->maxToolSize = 8192;
 }
 
 AI::AIReadDBTool::~AIReadDBTool()
@@ -502,6 +503,10 @@ Bool AI::AIReadDBTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 			i++;
 		}
 		json.ObjectEnd();
+		if (json.GetLength() > this->maxToolSize)
+		{
+			break;
+		}
 	}
 	this->CloseReader(reader);
 	NN<Text::String> dataStr;
@@ -509,4 +514,9 @@ Bool AI::AIReadDBTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 	output->SetItemStr(U8STR("data"), dataStr);
 	dataStr->Release();
 	return true;
+}
+
+void AI::AIReadDBTool::SetMaxToolSize(UIntOS maxToolSize)
+{
+	this->maxToolSize = maxToolSize;
 }

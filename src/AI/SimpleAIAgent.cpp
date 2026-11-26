@@ -315,13 +315,15 @@ Optional<Text::String> AI::SimpleAIAgent::SendQuestion(NN<AISession> session, Te
 					data->Release();
 				}
 			}
-			if (toolOutput.GetLength() > 8192)
+			if (toolOutput.GetLength() > this->maxToolSize)
 			{
 				Text::CStringNN toolOutputStr = toolOutput.ToCString();
-				UIntOS prefixLen = SimpleAIAgent::GetUTF8PrefixLength(toolOutputStr.v, 8192);
+				UIntOS prefixLen = SimpleAIAgent::GetUTF8PrefixLength(toolOutputStr.v, this->maxToolSize);
 				Text::StringBuilderUTF8 cappedOutput;
 				cappedOutput.AppendC(toolOutputStr.v, prefixLen);
-				cappedOutput.Append(CSTR("\n[Tool result truncated at 8192 bytes.]"));
+				cappedOutput.Append(CSTR("\n[Tool result truncated at "));
+				cappedOutput.AppendUIntOS(this->maxToolSize);
+				cappedOutput.Append(CSTR(" bytes.]"));
 				chat->AddToolResultMessage(callId->ToCString(), cappedOutput.ToCString());
 			}
 			else
@@ -343,6 +345,7 @@ Optional<Text::String> AI::SimpleAIAgent::SendQuestion(NN<AISession> session, Te
 AI::SimpleAIAgent::SimpleAIAgent(NN<Net::OpenAIClient> openAI, Text::CStringNN modelName) : openAI(openAI), modelName(Text::String::New(modelName))
 {
 	this->maxToolCalls = 8;
+	this->maxToolSize = 8192;
 }
 
 AI::SimpleAIAgent::~SimpleAIAgent()

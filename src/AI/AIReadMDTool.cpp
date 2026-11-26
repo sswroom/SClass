@@ -25,6 +25,7 @@ Bool AI::AIReadMDTool::IsMarkdownFileName(UnsafeArray<const UTF8Char> fileName, 
 
 AI::AIReadMDTool::AIReadMDTool(Text::CStringNN directory) : directory(Text::String::New(directory))
 {
+	this->maxToolSize = 8192;
 }
 
 AI::AIReadMDTool::~AIReadMDTool()
@@ -166,6 +167,10 @@ Bool AI::AIReadMDTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 						json.ObjectAddUInt64(CSTR("lineNumber"), lineNumber);
 						json.ObjectAddStr(CSTR("line"), line.ToCString());
 						json.ObjectEnd();
+						if (json.GetLength() > this->maxToolSize)
+						{
+							break;
+						}
 					}
 					line.ClearStr();
 					lineNumber++;
@@ -185,6 +190,10 @@ Bool AI::AIReadMDTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 				keyword->Release();
 				printf("AIReadMDTool: failed to read Markdown file during search\n");
 				return false;
+			}
+			if (json.GetLength() > this->maxToolSize)
+			{
+				break;
 			}
 		}
 		IO::Path::FindFileClose(session);
@@ -263,6 +272,8 @@ Bool AI::AIReadMDTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 		}
 		if (currentLine > startLine + lineCount)
 			break;
+		if (content.GetLength() > this->maxToolSize)
+			break;
 	}
 	if (fs.IsError())
 	{
@@ -274,4 +285,9 @@ Bool AI::AIReadMDTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 	output->SetItemStr(U8STR("data"), data);
 	data->Release();
 	return true;
+}
+
+void AI::AIReadMDTool::SetMaxToolSize(UIntOS maxToolSize)
+{
+	this->maxToolSize = maxToolSize;
 }

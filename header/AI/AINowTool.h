@@ -13,6 +13,7 @@ namespace AI
 		virtual void GetDescription(NN<Text::StringBuilderUTF8> sb) const;
 		virtual void GetParameters(NN<Net::OpenAIToolParameters> parameters) const;
 		virtual Bool Invoke(Text::CStringNN sessionId, NN<Data::VariObject> input, NN<Data::VariObject> output);
+		virtual void SetMaxToolSize(UIntOS maxToolSize);
 	};
 }
 #endif

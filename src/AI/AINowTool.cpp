@@ -32,3 +32,7 @@ Bool AI::AINowTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> input
 	data->Release();
 	return true;
 }
+
+void AI::AINowTool::SetMaxToolSize(UIntOS maxToolSize)
+{
+}

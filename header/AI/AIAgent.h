@@ -8,11 +8,14 @@ namespace AI
 {
 	class AIAgent
 	{
+	protected:
+		UIntOS maxToolSize;
 	private:
 		Data::ArrayListNN<AITool> tools;
 
 	public:
-		virtual ~AIAgent() = 0;
+		AIAgent();
+		virtual ~AIAgent();
 
 		virtual NN<AISession> CreateSession(Text::CStringNN systemPrompt) const = 0;
 		virtual Optional<Text::String> Ask(NN<AISession> session, Text::CStringNN question) = 0;
@@ -22,6 +25,7 @@ namespace AI
 		UIntOS GetToolCount() const;
 		Optional<AITool> GetTool(UIntOS index) const;
 		Bool InvokeTool(Text::CStringNN name, Text::CStringNN sessionId, NN<Data::VariObject> input, NN<Data::VariObject> output) const;
+		void SetMaxToolSize(UIntOS maxToolSize);
 	};
 }
 #endif
