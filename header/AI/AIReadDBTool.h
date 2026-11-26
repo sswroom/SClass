@@ -5,7 +5,9 @@
 #include "Data/ArrayListStringNN.h"
 #include "Data/ChartPlotter.h"
 #include "Data/QueryConditions.h"
+#include "Math/Geometry/Vector2D.h"
 #include "Media/DrawEngine.h"
+#include "Text/JSONBuilder.h"
 
 namespace AI
 {
@@ -24,6 +26,8 @@ namespace AI
 		static void ChartResult(NN<Data::VariObject> output, Text::CStringNN message);
 		static Bool SaveChart(NN<Media::DrawEngine> engine, NN<Data::ChartPlotter> chart, Text::CStringNN fileName);
 		static void MakeChart(NN<Media::DrawEngine> engine, NN<DB::DBReader> r, Text::CStringNN sessionId, Text::CStringNN path, NN<Data::VariObject> input, NN<Data::VariObject> output);
+		static Bool GeoJSONGeometry(NN<Text::JSONBuilder> json, NN<Math::Geometry::Vector2D> vec);
+		void MakeGeoJSON(NN<DB::DBReader> r, Text::CStringNN sessionId, Text::CStringNN path, NN<Data::VariObject> input, NN<Data::VariObject> output);
 	public:
 		AIReadDBTool(NN<DB::ReadingDB> db, Text::CStringNN schemaName, Text::CString filePath, Bool allowXlsx, Optional<Media::DrawEngine> drawEngine);
 		virtual ~AIReadDBTool();

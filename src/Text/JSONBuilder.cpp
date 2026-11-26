@@ -293,7 +293,7 @@ void Text::JSONBuilder::AppendCoordPG(NN<Math::Geometry::Polygon> pg)
 	this->sb.AppendUTF8Char(']');
 }
 
-void Text::JSONBuilder::AppendGeometry(NN<Math::Geometry::Vector2D> vec)
+Bool Text::JSONBuilder::AppendGeometry(NN<Math::Geometry::Vector2D> vec)
 {
 	Math::Geometry::Vector2D::VectorType vecType = vec->GetVectorType();
 	if (vecType == Math::Geometry::Vector2D::VectorType::Point)
@@ -360,7 +360,9 @@ void Text::JSONBuilder::AppendGeometry(NN<Math::Geometry::Vector2D> vec)
 	{
 		this->sb.AppendC(UTF8STRC("null"));
 		printf("JSONBuilder: Unsupport Geometry Type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vecType).v.Ptr());
+		return false;
 	}
+	return true;
 }
 
 Text::JSONBuilder::JSONBuilder(ObjectType rootType)
@@ -688,9 +690,9 @@ Bool Text::JSONBuilder::ArrayAddFeature(NN<Map::MapDrawLayer> layer, Int64 id, O
 		i++;
 	}
 	this->sb.AppendC(UTF8STRC("},\"geometry\":"));
-	this->AppendGeometry(vec);
+	Bool succ = this->AppendGeometry(vec);
 	this->sb.AppendUTF8Char('}');
-	return true;
+	return succ;
 }
 
 Bool Text::JSONBuilder::ArrayAddGeometry(NN<Math::Geometry::Vector2D> vec)
@@ -703,8 +705,7 @@ Bool Text::JSONBuilder::ArrayAddGeometry(NN<Math::Geometry::Vector2D> vec)
 	{
 		this->sb.AppendUTF8Char(',');
 	}
-	this->AppendGeometry(vec);
-	return true;
+	return this->AppendGeometry(vec);
 }
 
 Bool Text::JSONBuilder::ArrayAdd(NN<Text::JSONArray> arr)
@@ -1256,8 +1257,7 @@ Bool Text::JSONBuilder::ObjectAddGeometry(Text::CStringNN name, NN<Math::Geometr
 	}
 	this->AppendStr(name);
 	this->sb.AppendUTF8Char(':');
-	this->AppendGeometry(vec);
-	return true;
+	return this->AppendGeometry(vec);
 }
 
 Bool Text::JSONBuilder::ObjectAddGeometryOpt(Text::CStringNN name, Optional<Math::Geometry::Vector2D> vec)
@@ -1275,13 +1275,13 @@ Bool Text::JSONBuilder::ObjectAddGeometryOpt(Text::CStringNN name, Optional<Math
 	NN<Math::Geometry::Vector2D> nnvec;
 	if (vec.SetTo(nnvec))
 	{
-		this->AppendGeometry(nnvec);
+		return this->AppendGeometry(nnvec);
 	}
 	else
 	{
 		this->sb.AppendC(UTF8STRC("null"));
+		return true;
 	}
-	return true;
 }
 
 Bool Text::JSONBuilder::ObjectAddVarItem(Text::CStringNN name, NN<Data::VariItem> item)

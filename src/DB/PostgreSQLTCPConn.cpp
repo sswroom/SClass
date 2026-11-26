@@ -629,7 +629,11 @@ Bool DB::PostgreSQLTCPConn::ParseErrorResponse(NN<Net::TCPClient> cli, UIntOS da
 	}
 	
 	MemFreeArr(data);
-	return errMsg->GetLength() > 0;
+	if (errMsg->GetLength() > 0)
+	{
+		return true;
+	}
+	return false;
 }
 
 Bool DB::PostgreSQLTCPConn::Connect()
@@ -845,9 +849,10 @@ void DB::PostgreSQLTCPConn::Dispose()
 	DEL_CLASS(this);
 }
 
-	IntOS DB::PostgreSQLTCPConn::ExecuteNonQuery(Text::CStringNN sql)
+IntOS DB::PostgreSQLTCPConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	this->lastDataError = DataError::NoError;
+	this->lastErrorMsg.ClearStr();
 	if (this->readerActive)
 	{
 		this->lastDataError = DataError::ConnError;
@@ -897,11 +902,10 @@ void DB::PostgreSQLTCPConn::Dispose()
 				return rowChanged;
 			case 'E':
 				{
-					Text::StringBuilderUTF8 errMsg;
-					if (this->ParseErrorResponse(cli, dataLen, errMsg))
+					if (this->ParseErrorResponse(cli, dataLen, this->lastErrorMsg))
 					{
 						this->lastDataError = DataError::ExecSQLError;
-						this->log->LogMessage(errMsg.ToCString(), IO::LogHandler::LogLevel::Error);
+						this->log->LogMessage(this->lastErrorMsg.ToCString(), IO::LogHandler::LogLevel::Error);
 					}
 				}
 				return -2;
@@ -915,9 +919,10 @@ void DB::PostgreSQLTCPConn::Dispose()
 	return rowChanged;
 }
 
-	Optional<DB::DBReader> DB::PostgreSQLTCPConn::ExecuteReader(Text::CStringNN sql)
+Optional<DB::DBReader> DB::PostgreSQLTCPConn::ExecuteReader(Text::CStringNN sql)
 {
 	this->lastDataError = DataError::NoError;
+	this->lastErrorMsg.ClearStr();
 	if (this->readerActive)
 	{
 		this->lastDataError = DataError::ConnError;
@@ -991,11 +996,10 @@ void DB::PostgreSQLTCPConn::Dispose()
 				return NEW_CLASS_D(PostgreSQLTCPReader(NNTHIS, cli->GetCliId(), this->backendPID, this->cancelKey, this->tzQhr, colNames, types, typeMods, true));
 			case 'E':
 				{
-					Text::StringBuilderUTF8 errMsg;
-					if (this->ParseErrorResponse(cli, dataLen, errMsg))
+					if (this->ParseErrorResponse(cli, dataLen, this->lastErrorMsg))
 					{
 						this->lastDataError = DataError::ExecSQLError;
-						this->log->LogMessage(errMsg.ToCString(), IO::LogHandler::LogLevel::Error);
+						this->log->LogMessage(this->lastErrorMsg.ToCString(), IO::LogHandler::LogLevel::Error);
 					}
 				}
 				queryError = true;
@@ -1025,7 +1029,14 @@ void DB::PostgreSQLTCPConn::CloseReader(NN<DB::DBReader> r)
 
 void DB::PostgreSQLTCPConn::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
-	str->Append(CSTR("Error occurred during query execution"));
+	if (this->lastErrorMsg.GetLength() > 0)
+	{
+		str->AppendSB(this->lastErrorMsg);
+	}
+	else
+	{
+		str->Append(CSTR("Error occurred during query execution"));
+	}
 }
 
 Bool DB::PostgreSQLTCPConn::IsLastDataError()
@@ -1436,11 +1447,10 @@ Bool DB::PostgreSQLTCPReader::ReadNext()
 			break;
 		case 'E':
 			{
-				Text::StringBuilderUTF8 errMsg;
-				if (this->conn->ParseErrorResponse(cli, dataLen, errMsg))
+				if (this->conn->ParseErrorResponse(cli, dataLen, this->conn->lastErrorMsg))
 				{
 					this->conn->lastDataError = DB::DBConn::DataError::ExecSQLError;
-					this->conn->log->LogMessage(errMsg.ToCString(), IO::LogHandler::LogLevel::Error);
+					this->conn->log->LogMessage(this->conn->lastErrorMsg.ToCString(), IO::LogHandler::LogLevel::Error);
 				}
 			}
 			break;

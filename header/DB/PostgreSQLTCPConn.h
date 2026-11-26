@@ -8,6 +8,7 @@
 #include "DB/DBTool.h"
 #include "IO/LogTool.h"
 #include "Net/TCPClientFactory.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace DB
 {
@@ -31,6 +32,7 @@ namespace DB
 		Optional<Text::String> uid;
 		Optional<Text::String> pwd;
 		NN<IO::LogTool> log;
+		Text::StringBuilderUTF8 lastErrorMsg;
 		Int8 tzQhr;
 
 		Bool Connect();

@@ -36,6 +36,7 @@ Net::MIME::MIMEEntry Net::MIME::mimeList[] = {
 	{UTF8STRC("epub"), UTF8STRC("application/epub+zip")},
 	{UTF8STRC("exe"),  UTF8STRC("application/x-exe")},
 	{UTF8STRC("flv"),  UTF8STRC("video/x-flv")},
+	{UTF8STRC("geojson"), UTF8STRC("application/geo+json")},
 	{UTF8STRC("gif"),  UTF8STRC("image/gif")},
 	{UTF8STRC("glb"),  UTF8STRC("model/gltf-binary")},
 	{UTF8STRC("gpx"),  UTF8STRC("application/gpx+xml")},
@@ -145,8 +146,8 @@ Net::MIME::MIMEEntry Net::MIME::mimeList[] = {
 
 Text::CStringNN Net::MIME::GetMIMEFromExt(Text::CStringNN ext)
 {
-	UTF8Char sbuff[7];
-	if (ext.leng > 6 || ext.leng < 2)
+	UTF8Char sbuff[8];
+	if (ext.leng > 7 || ext.leng < 2)
 	{
 		return CSTR("application/octet-stream");
 	}

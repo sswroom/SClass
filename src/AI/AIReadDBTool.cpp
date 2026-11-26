@@ -8,10 +8,16 @@
 #include "Exporter/XLSXExporter.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
+#include "Math/CSys/CoordinateSystemConverter.h"
+#include "Math/CSys/CoordinateSystemManager.h"
+#include "Math/Geometry/MultiPoint.h"
+#include "Math/Geometry/MultiPolygon.h"
+#include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/Polyline.h"
 #include "Text/JSONBuilder.h"
 #include "Text/SpreadSheet/Workbook.h"
 
-//#define VERBOSE
+#define VERBOSE
 
 Bool AI::AIReadDBTool::IsNumeric(DB::DBUtil::ColType type)
 {
@@ -374,7 +380,9 @@ void AI::AIReadDBTool::MakeChart(NN<Media::DrawEngine> drawEngine, NN<DB::DBRead
 			sb.ClearStr();
 			sb.Append(CSTR("Attachment "));
 			sb.Append(exportFileName.ToCString());
-			sb.Append(CSTR(".png added to user"));
+			sb.Append(CSTR(".png added to user with "));
+			sb.AppendUIntOS(values.GetItemNoCheck(0)->GetCount());
+			sb.Append(CSTR(" records"));
 			ChartResult(output, sb.ToCString());
 			sb.ClearStr();
 			sb.AppendTS(fileTime, "yyyyMMdd");
@@ -391,6 +399,218 @@ void AI::AIReadDBTool::MakeChart(NN<Media::DrawEngine> drawEngine, NN<DB::DBRead
 		ChartResult(output, Text::CStringNN(errorText, error.leng));
 	names.FreeAll();
 	values.DeleteAll();
+}
+
+void AI::AIReadDBTool::MakeGeoJSON(NN<DB::DBReader> r, Text::CStringNN sessionId, Text::CStringNN path, NN<Data::VariObject> input, NN<Data::VariObject> output)
+{
+	NN<Data::VariItem> item;
+	NN<Text::String> fileName;
+	if (!input->GetItem(U8STR("fileName")).SetTo(item) || !item->GetAsNewString().SetTo(fileName))
+	{
+		ChartResult(output, CSTR("sql2geojson requires a fileName"));
+		return;
+	}
+	Bool validName = SafeFilePart(fileName->ToCString()) && SafeFilePart(sessionId);
+	Text::StringBuilderUTF8 exportName;
+	exportName.Append(sessionId);
+	exportName.AppendUTF8Char('_');
+	exportName.Append(fileName);
+	exportName.Append(CSTR(".geojson"));
+	fileName->Release();
+	if (!validName)
+	{
+		ChartResult(output, CSTR("sql2geojson: invalid fileName or sessionId"));
+		return;
+	}
+
+	Bool hasRow = r->ReadNext();
+	UIntOS colCount = r->ColCount();
+	UIntOS geomCol = INVALID_INDEX;
+	Data::ArrayListStringNN names;
+	Text::CString error = nullptr;
+	UIntOS i = 0;
+	while (i < colCount)
+	{
+		DB::ColDef col(CSTR(""));
+		if (!r->GetColDef(i, col))
+		{
+			error = CSTR("sql2geojson: failed to get a column name");
+			break;
+		}
+		UIntOS j = 0;
+		while (j < names.GetCount())
+		{
+			if (names.GetItemNoCheck(j++)->Equals(col.GetColName()->ToCString()))
+			{
+				error = CSTR("sql2geojson: duplicate column name; use unique aliases");
+				break;
+			}
+		}
+		if (!error.IsNull())
+			break;
+		names.Add(col.GetColName()->Clone());
+		if (r->GetColType(i, nullptr) == DB::DBUtil::CT_Vector)
+		{
+			if (geomCol != INVALID_INDEX)
+			{
+				error = CSTR("sql2geojson: select exactly one geometry column");
+				break;
+			}
+			geomCol = i;
+		}
+		i++;
+	}
+	if (error.IsNull() && geomCol == INVALID_INDEX)
+		error = CSTR("sql2geojson: select exactly one geometry column");
+
+	UIntOS recCount = 0;
+	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
+	json.ObjectAddStr(CSTR("type"), CSTR("FeatureCollection"));
+	json.ObjectBeginArray(CSTR("features"));
+	while (error.IsNull() && hasRow)
+	{
+		json.ArrayBeginObject();
+		recCount++;
+		json.ObjectAddStr(CSTR("type"), CSTR("Feature"));
+		if (r->IsNull(geomCol))
+		{
+			json.ObjectAddNull(CSTR("geometry"));
+		}
+		else
+		{
+			NN<Math::Geometry::Vector2D> vec;
+			if (!r->GetVector(geomCol).SetTo(vec))
+			{
+				error = CSTR("sql2geojson: failed to read geometry");
+				break;
+			}
+			if (vec->GetSRID() != 4326)
+			{
+				NN<Math::CSys::CoordinateSystem> source;
+				if (vec->GetSRID() == 0 || !Math::CSys::CoordinateSystemManager::SRCreateCSys(vec->GetSRID()).SetTo(source))
+				{
+					error = CSTR("sql2geojson: unknown geometry SRID; select geometry in EPSG:4326");
+				}
+				else
+				{
+					NN<Math::CSys::GeographicCoordinateSystem> dest = Math::CSys::CoordinateSystemManager::CreateWGS84Csys();
+					Math::CSys::CoordinateSystemConverter converter(source, dest);
+					vec->Convert(converter);
+					source.Delete();
+					dest.Delete();
+				}
+			}
+			Data::ArrayListA<Math::Coord2DDbl> coords;
+			if (error.IsNull())
+			{
+				vec->GetCoordinates(coords);
+				i = 0;
+				while (i < coords.GetCount())
+				{
+					Math::Coord2DDbl p = coords.GetItem(i++);
+					if (Math::IsNAN(p.x) || Math::IsNAN(p.y) || Math::IsInfinity(p.x) || Math::IsInfinity(p.y))
+					{
+						error = CSTR("sql2geojson: non-finite geometry coordinate");
+						break;
+					}
+				}
+			}
+			if (error.IsNull())
+			{
+				if (!json.ObjectAddGeometry(CSTR("geometry"), vec))
+					error = CSTR("sql2geojson: unsupported geometry type");
+			}
+			vec.Delete();
+			if (!error.IsNull())
+				break;
+		}
+		json.ObjectBeginObject(CSTR("properties"));
+		Data::VariItem value;
+		i = 0;
+		while (i < colCount)
+		{
+			if (i != geomCol)
+			{
+				Text::CStringNN name = names.GetItemNoCheck(i)->ToCString();
+				if (r->IsNull(i))
+					json.ObjectAddNull(name);
+				else if (r->GetColType(i, nullptr) == DB::DBUtil::CT_Bool)
+					json.ObjectAddBool(name, r->GetBool(i));
+				else if (r->GetColType(i, nullptr) == DB::DBUtil::CT_Binary || r->GetColType(i, nullptr) == DB::DBUtil::CT_UUID)
+				{
+					NN<Text::String> str;
+					if (!r->GetNewStr(i).SetTo(str))
+					{
+						error = CSTR("sql2geojson: failed to read property");
+						break;
+					}
+					json.ObjectAddStr(name, str);
+					str->Release();
+				}
+				else if (!r->GetVariItem(i, value) || ((value.GetItemType() == Data::VariItem::ItemType::F32 || value.GetItemType() == Data::VariItem::ItemType::F64) && (Math::IsNAN(value.GetAsF64()) || Math::IsInfinity(value.GetAsF64()))) || !json.ObjectAddVarItem(name, value))
+				{
+					error = CSTR("sql2geojson: failed to read property");
+					break;
+				}
+			}
+			i++;
+		}
+		json.ObjectEnd();
+		json.ObjectEnd();
+		if (error.IsNull())
+			hasRow = r->ReadNext();
+	}
+	names.FreeAll();
+	if (!error.IsNull())
+	{
+		UnsafeArray<const UTF8Char> errorText;
+		if (error.v.SetTo(errorText))
+			ChartResult(output, Text::CStringNN(errorText, error.leng));
+		return;
+	}
+	if (NN<DB::DBConn>::ConvertFrom(this->db)->GetLastDataError() != DB::DBConn::DataError::NoError)
+	{
+		Text::StringBuilderUTF8 sbError;
+		this->db->GetLastErrorMsg(sbError);
+		ChartResult(output, sbError.ToCString());
+		return;
+	}
+	json.ArrayEnd();
+	Text::CStringNN content = json.Build();
+	Text::StringBuilderUTF8 filePath;
+	filePath.Append(path);
+	if (!filePath.EndsWith(IO::Path::PATH_SEPERATOR))
+		filePath.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+	Data::Timestamp fileTime = Data::Timestamp::Now();
+	filePath.AppendTS(fileTime, "yyyyMMdd");
+	IO::Path::CreateDirectory(filePath.ToCString());
+	filePath.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+	filePath.Append(exportName.ToCString());
+	Bool saved = false;
+	{
+		IO::FileStream file(filePath.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!file.IsError())
+			saved = file.Write(Data::ByteArrayR(content.v, content.leng)) == content.leng;
+	}
+	if (!saved)
+	{
+		ChartResult(output, CSTR("sql2geojson: failed to export GeoJSON"));
+		return;
+	}
+	Text::StringBuilderUTF8 result;
+	result.Append(CSTR("Attachment "));
+	result.Append(exportName.ToCString());
+	result.Append(CSTR(" added to user with "));
+	result.AppendUIntOS(recCount);
+	result.AppendC(UTF8STRC(" rows."));
+	ChartResult(output, result.ToCString());
+	result.ClearStr();
+	result.AppendTS(fileTime, "yyyyMMdd");
+	result.AppendUTF8Char('/');
+	result.Append(exportName.ToCString());
+	NN<Text::String> attachment = Text::String::New(result.ToCString());
+	output->SetItemStr(U8STR("attachment"), attachment);
+	attachment->Release();
 }
 
 AI::AIReadDBTool::AIReadDBTool(NN<DB::ReadingDB> db, Text::CStringNN schemaName, Text::CString filePath, Bool allowXlsx, Optional<Media::DrawEngine> drawEngine)
@@ -437,6 +657,8 @@ void AI::AIReadDBTool::GetParameters(NN<Net::OpenAIToolParameters> parameters) c
 		sbParam.AppendC(UTF8STRC("list_tables, execute_sql"));
 		if (this->filePath.NotNull())
 		{
+			sbParam.AppendC(UTF8STRC(", sql2geojson"));
+			sbSQL.Append(CSTR(", sql2geojson (select exactly one geometry column and any property columns; known SRIDs are converted to EPSG:4326, unknown SRIDs must be transformed in SQL; supports Point, LineString, MultiLineString, Polygon, MultiPolygon and CurvePolygon; CurvePolygon is converted to Polygon, and coordinates are exported in 2D)"));
 			if (this->allowXlsx)
 			{
 				sbParam.AppendC(UTF8STRC(", sql2xlsx"));
@@ -458,21 +680,16 @@ void AI::AIReadDBTool::GetParameters(NN<Net::OpenAIToolParameters> parameters) c
 		parameters->AddParameter(CSTR("sql"), sbSQL.ToCString(), Net::OpenAIToolParameterType::String, false);
 		if (this->filePath.NotNull())
 		{
-			if (this->allowXlsx || this->drawEngine.NotNull())
 			{
 				sbParam.ClearStr();
-				sbParam.Append(CSTR("File Name without extension; required for "));
+				sbParam.Append(CSTR("File Name without extension; required for sql2geojson"));
 				if (this->allowXlsx)
 				{
-					sbParam.Append(CSTR("sql2xlsx"));
+					sbParam.Append(CSTR(", sql2xlsx"));
 				}
 				if (this->drawEngine.NotNull())
 				{
-					if (this->allowXlsx)
-					{
-						sbParam.Append(CSTR(" and "));
-					}
-					sbParam.Append(CSTR("sql2chart"));
+					sbParam.Append(CSTR(", sql2chart"));
 				}
 				parameters->AddParameter(CSTR("fileName"), sbParam.ToCString(), Net::OpenAIToolParameterType::String, false);
 			}
@@ -533,8 +750,8 @@ Bool AI::AIReadDBTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 	NN<Text::String> action;
 	if (!input->GetItem(U8STR("action")).SetTo(actionItem) || !actionItem->GetAsNewString().SetTo(action))
 	{
-		printf("AIReadDBTool: action not specified or invalid\n");
-		return false;
+		ChartResult(output, CSTR("action not specified or invalid"));
+		return true;
 	}
 
 #ifdef VERBOSE
@@ -545,6 +762,7 @@ Bool AI::AIReadDBTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 	Bool readTable = action->Equals(UTF8STRC("read_table"));
 	Bool sql2xlsx = action->Equals(UTF8STRC("sql2xlsx"));
 	Bool sql2chart = action->Equals(UTF8STRC("sql2chart"));
+	Bool sql2geojson = action->Equals(UTF8STRC("sql2geojson"));
 	action->Release();
 	if (listTables)
 	{
@@ -565,27 +783,37 @@ Bool AI::AIReadDBTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 		return true;
 	}
 
-	if (sqlAction || sql2xlsx || sql2chart)
+	if (sqlAction || sql2xlsx || sql2chart || sql2geojson)
 	{
 		NN<Media::DrawEngine> drawEngine;
+		if (sql2geojson && this->filePath.IsNull())
+		{
+			ChartResult(output, CSTR("sql2geojson is not enabled"));
+			return true;
+		}
 		if (sql2chart && (!this->drawEngine.SetTo(drawEngine) || this->filePath.IsNull()))
 		{
 			ChartResult(output, CSTR("sql2chart is not enabled"));
 			return true;
 		}
 		if (!this->db->IsFullConn())
-			return false;
+		{
+			ChartResult(output, CSTR("SQL actions is not supported"));
+			return true;
+		}
 		NN<DB::DBConn> conn = NN<DB::DBConn>::ConvertFrom(this->db);
 		NN<Text::String> sql;
 		NN<Data::VariItem> sqlItem;
 		if (!input->GetItem(U8STR("sql")).SetTo(sqlItem) || !sqlItem->GetAsNewString().SetTo(sql))
 		{
-			return false;
+			ChartResult(output, CSTR("sql is not specified or invalid"));
+			return true;
 		}
-		if (!sql->StartsWithICase(CSTR("SELECT ")))
+		if (!sql->StartsWithICase(CSTR("SELECT")))
 		{
 			sql->Release();
-			return false;
+			ChartResult(output, CSTR("sql is not specified or invalid"));
+			return true;
 		}
 #ifdef VERBOSE
 		printf("AIReadDBTool: Execute SQL: %s\n", sql->v.Ptr());
@@ -612,19 +840,22 @@ Bool AI::AIReadDBTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 			if (!input->GetItem(U8STR("fileName")).SetTo(actionItem) || !actionItem->GetAsNewString().SetTo(fileName))
 			{
 				sql->Release();
-				return false;
+				ChartResult(output, CSTR("fileName is not specified"));
+				return true;
 			}
 			if (!input->GetItem(U8STR("sheetName")).SetTo(actionItem) || !actionItem->GetAsNewString().SetTo(sheetName))
 			{
 				sql->Release();
 				fileName->Release();
-				return false;
+				ChartResult(output, CSTR("sheetName is not specified"));
+				return true;
 			}
 			Text::SpreadSheet::Workbook workbook;
 			NN<Text::SpreadSheet::Worksheet> sheet = workbook.AddWorksheet(sheetName);
 			UTF8Char sbuff[512];
 			UnsafeArray<UTF8Char> sptr;
 			NN<Text::String> s;
+			UIntOS recCount = 0;
 			UIntOS colCount = r->ColCount();
 			UIntOS row = 0;
 			UIntOS col = 0;
@@ -641,6 +872,7 @@ Bool AI::AIReadDBTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 			row++;
 			while (r->ReadNext())
 			{
+				recCount++;
 				col = 0;
 				while (col < colCount)
 				{
@@ -732,7 +964,9 @@ Bool AI::AIReadDBTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 				sb.ClearStr();
 				sb.Append(CSTR("Attachment "));
 				sb.Append(exportFileName.ToCString());
-				sb.Append(CSTR(".xlsx added to user"));
+				sb.Append(CSTR(".xlsx added to user with "));
+				sb.AppendUIntOS(recCount);
+				sb.Append(CSTR(" rows."));
 				s = Text::String::New(sb.ToCString());
 				output->SetItemStr(U8STR("data"), s);
 				s->Release();
@@ -751,6 +985,17 @@ Bool AI::AIReadDBTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 			fileName->Release();
 			sheetName->Release();
 			sql->Release();
+			return true;
+		}
+		else if (sql2geojson)
+		{
+			NN<Text::String> geoPath;
+			if (this->filePath.SetTo(geoPath))
+				MakeGeoJSON(r, sessionId, geoPath->ToCString(), input, output);
+			else
+				ChartResult(output, CSTR("sql2geojson is not enabled"));
+			sql->Release();
+			conn->CloseReader(r);
 			return true;
 		}
 		else if (sql2chart)
@@ -804,7 +1049,10 @@ Bool AI::AIReadDBTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 	}
 
 	if (!readTable)
-		return false;
+	{
+		ChartResult(output, CSTR("action is not specified or invalid"));
+		return true;
+	}
 
 	NN<Data::VariItem> tableNameItem;
 	NN<Text::String> tableName;
@@ -812,8 +1060,8 @@ Bool AI::AIReadDBTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 	Text::StringBuilderUTF8 orderingSb;
 	if (!input->GetItem(U8STR("tableName")).SetTo(tableNameItem) || !tableNameItem->GetAsNewString().SetTo(tableName))
 	{
-		printf("AIReadDBTool: tableName not specified or invalid\n");
-		return false;
+		ChartResult(output, CSTR("tableName not specified or invalid"));
+		return true;
 	}
 
 	NN<Data::VariItem> orderingItem;
@@ -831,8 +1079,8 @@ Bool AI::AIReadDBTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 	if (!GetUIntOSInput(input, U8STR("offset"), 0, dataOfst) || !GetUIntOSInput(input, U8STR("maxCount"), 20, maxCnt) || maxCnt == 0 || maxCnt > 100)
 	{
 		tableName->Release();
-		printf("AIReadDBTool: invalid offset or maxCount\n");
-		return false;
+		ChartResult(output, CSTR("invalid offset or maxCount"));
+		return true;
 	}
 
 	Optional<Data::QueryConditions> condition = nullptr;
@@ -844,15 +1092,15 @@ Bool AI::AIReadDBTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 		if (!conditionItem->GetAsNewString().SetTo(conditionText))
 		{
 			tableName->Release();
-			printf("AIReadDBTool: condition is not a valid string\n");
-			return false;
+			ChartResult(output, CSTR("condition is not a valid string"));
+			return true;
 		}
 		if (!this->GetTableDef(tableName->ToCString()).SetTo(tableDef))
 		{
 			conditionText->Release();
 			tableName->Release();
-			printf("AIReadDBTool: table not found: %s\n", tableName->v.Ptr());
-			return false;
+			ChartResult(output, CSTR("table not found"));
+			return true;
 		}
 		condition = Data::QueryConditions::ParseStr(conditionText->ToCString(), tableDef->GetSQLType(), this->db->GetTzQhr());
 		conditionText->Release();
@@ -860,8 +1108,8 @@ Bool AI::AIReadDBTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 		if (condition.IsNull())
 		{
 			tableName->Release();
-			printf("AIReadDBTool: failed to parse condition: %s\n", conditionText->v.Ptr());
-			return false;
+			ChartResult(output, CSTR("failed to parse condition"));
+			return true;
 		}
 	}
 
@@ -870,8 +1118,8 @@ Bool AI::AIReadDBTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 	{
 		condition.Delete();
 		tableName->Release();
-		printf("AIReadDBTool: failed to query table data: %s\n", tableName->v.Ptr());
-		return false;
+		ChartResult(output, CSTR("failed to query table data"));
+		return true;
 	}
 	condition.Delete();
 	tableName->Release();
