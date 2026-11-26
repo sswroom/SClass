@@ -237,6 +237,18 @@ Optional<const Math::CSys::CoordinateSystemManager::SpatialRefInfo> Math::CSys::
 	return nullptr;
 }
 
+UIntOS Math::CSys::CoordinateSystemManager::SRGetSpatialRefCount()
+{
+	return sizeof(srInfoList) / sizeof(srInfoList[0]);
+}
+
+Optional<const Math::CSys::CoordinateSystemManager::SpatialRefInfo> Math::CSys::CoordinateSystemManager::SRGetSpatialRefByIndex(UIntOS index)
+{
+	if (index >= SRGetSpatialRefCount())
+		return nullptr;
+	return &srInfoList[index];
+}
+
 Optional<const Math::CSys::CoordinateSystemManager::SpatialRefInfo> Math::CSys::CoordinateSystemManager::SRGetSpatialRefPrev(UInt32 epsgId)
 {
 	IntOS i = 0;

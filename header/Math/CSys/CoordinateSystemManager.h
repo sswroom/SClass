@@ -168,6 +168,8 @@ namespace Math
 			static ProjectedCSysInfo pcsysList[];
 
 		public:
+			static UIntOS SRGetSpatialRefCount();
+			static Optional<const SpatialRefInfo> SRGetSpatialRefByIndex(UIntOS index);
 			static Optional<const SpatialRefInfo> SRGetSpatialRef(UInt32 epsgId);
 			static Optional<const SpatialRefInfo> SRGetSpatialRefPrev(UInt32 epsgId);
 			static Optional<const SpatialRefInfo> SRGetSpatialRefNext(UInt32 epsgId);

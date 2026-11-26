@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "AI/AIAgentHandler.h"
+#include "AI/AICSysTool.h"
 #include "AI/AINowTool.h"
 #include "AI/AIReadDBTool.h"
 #include "AI/AIReadMDTool.h"
@@ -125,6 +126,12 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			NEW_CLASSNN(readMDTool, AI::AIReadMDTool(s->ToCString()));
 			agent.AddTool(readMDTool);
 			tools.Add(readMDTool);
+		}
+		{
+			NN<AI::AICSysTool> cSysTool;
+			NEW_CLASSNN(cSysTool, AI::AICSysTool());
+			agent.AddTool(cSysTool);
+			tools.Add(cSysTool);
 		}
 		AI::AINowTool nowTool;
 		agent.AddTool(nowTool);
