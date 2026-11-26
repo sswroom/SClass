@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRAIAgentForm::OnStartClicked(AnyType userObj)
 			me->ui->ShowMsgOK(CSTR("Failed to open the database. Check the connection parameters and log."), CSTR("AI Agent"), me);
 			return;
 		}
-		NEW_CLASSNN(tool, AI::AIReadDBTool(db->GetDBConn(), schema.ToCString(), nullptr, false, false));
+		NEW_CLASSNN(tool, AI::AIReadDBTool(db->GetDBConn(), schema.ToCString(), nullptr, false, nullptr));
 		me->tools.Add(tool);
 	}
 

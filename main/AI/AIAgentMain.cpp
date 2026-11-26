@@ -11,6 +11,7 @@
 #include "IO/ConsoleWriter.h"
 #include "IO/Path.h"
 #include "IO/Java/JavaProperties.h"
+#include "Media/DrawEngineFactory.h"
 #include "Net/OpenAIClient.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/TCPClientFactory.h"
@@ -111,6 +112,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	log.LogMessage(Text::StringBuilderUTF8().Append(CSTR("Using model: "))->Append(modelName)->ToCString(), IO::LogHandler::LogLevel::Command);
 	Data::ArrayListNN<AI::AITool> tools;
 	{
+		NN<Media::DrawEngine> drawEngine = Media::DrawEngineFactory::CreateDrawEngine();
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
@@ -118,7 +120,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcatC(sptr, UTF8STRC("attach"));
 		AI::SimpleAIAgent agent(openAI, modelName->ToCString());
-		AI::AIReadDBTool readDBTool(db->GetDBConn(), schema->ToCString(), CSTRP(sbuff, sptr), true, false);
+		AI::AIReadDBTool readDBTool(db->GetDBConn(), schema->ToCString(), CSTRP(sbuff, sptr), true, drawEngine);
 		agent.AddTool(readDBTool);
 		if (cfg->GetValue(CSTR("app.ai.md-path")).SetTo(s))
 		{
@@ -149,6 +151,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			log.LogMessage(CSTR("AIAgent running"), IO::LogHandler::LogLevel::Command);
 			progCtrl->WaitForExit(progCtrl);
 		}
+		drawEngine.Delete();
 	}
 	openAI.Delete();
 	tools.DeleteAll();

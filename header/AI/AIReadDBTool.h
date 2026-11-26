@@ -3,7 +3,9 @@
 #include "AI/AITool.h"
 #include "DB/ReadingDB.h"
 #include "Data/ArrayListStringNN.h"
+#include "Data/ChartPlotter.h"
 #include "Data/QueryConditions.h"
+#include "Media/DrawEngine.h"
 
 namespace AI
 {
@@ -14,11 +16,16 @@ namespace AI
 		NN<Text::String> schemaName;
 		Optional<Text::String> filePath;
 		Bool allowXlsx;
-		Bool allowChart;
 		UIntOS maxToolSize;
+		Optional<Media::DrawEngine> drawEngine;
 
+		static Bool IsNumeric(DB::DBUtil::ColType type);
+		static Bool SafeFilePart(Text::CStringNN name);
+		static void ChartResult(NN<Data::VariObject> output, Text::CStringNN message);
+		static Bool SaveChart(NN<Media::DrawEngine> engine, NN<Data::ChartPlotter> chart, Text::CStringNN fileName);
+		static void MakeChart(NN<Media::DrawEngine> engine, NN<DB::DBReader> r, Text::CStringNN sessionId, Text::CStringNN path, NN<Data::VariObject> input, NN<Data::VariObject> output);
 	public:
-		AIReadDBTool(NN<DB::ReadingDB> db, Text::CStringNN schemaName, Text::CString filePath, Bool allowXlsx, Bool allowChart);
+		AIReadDBTool(NN<DB::ReadingDB> db, Text::CStringNN schemaName, Text::CString filePath, Bool allowXlsx, Optional<Media::DrawEngine> drawEngine);
 		virtual ~AIReadDBTool();
 		virtual Text::CStringNN GetName() const;
 		virtual void GetDescription(NN<Text::StringBuilderUTF8> sb) const;

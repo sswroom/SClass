@@ -1,22 +1,405 @@
 #include "Stdafx.h"
 #include "AI/AIReadDBTool.h"
+#include "Data/ChartPlotter.h"
+#include "DB/ColDef.h"
 #include "DB/DBConn.h"
 #include "DB/DBReader.h"
 #include "DB/TableDef.h"
 #include "Exporter/XLSXExporter.h"
+#include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Text/JSONBuilder.h"
 #include "Text/SpreadSheet/Workbook.h"
 
 //#define VERBOSE
 
-AI::AIReadDBTool::AIReadDBTool(NN<DB::ReadingDB> db, Text::CStringNN schemaName, Text::CString filePath, Bool allowXlsx, Bool allowChart)
+Bool AI::AIReadDBTool::IsNumeric(DB::DBUtil::ColType type)
+{
+	switch (type)
+	{
+	case DB::DBUtil::CT_Byte:
+	case DB::DBUtil::CT_Int16:
+	case DB::DBUtil::CT_UInt16:
+	case DB::DBUtil::CT_Int32:
+	case DB::DBUtil::CT_UInt32:
+	case DB::DBUtil::CT_Int64:
+	case DB::DBUtil::CT_UInt64:
+	case DB::DBUtil::CT_Float:
+	case DB::DBUtil::CT_Double:
+	case DB::DBUtil::CT_Decimal:
+		return true;
+	case DB::DBUtil::CT_Unknown:
+	case DB::DBUtil::CT_UTF8Char:
+	case DB::DBUtil::CT_UTF16Char:
+	case DB::DBUtil::CT_UTF32Char:
+	case DB::DBUtil::CT_VarUTF8Char:
+	case DB::DBUtil::CT_VarUTF16Char:
+	case DB::DBUtil::CT_VarUTF32Char:
+	case DB::DBUtil::CT_Date:
+	case DB::DBUtil::CT_DateTime:
+	case DB::DBUtil::CT_DateTimeTZ:
+	case DB::DBUtil::CT_Bool:
+	case DB::DBUtil::CT_Binary:
+	case DB::DBUtil::CT_Vector:
+	case DB::DBUtil::CT_UUID:
+	default:
+		return false;
+	}
+}
+
+Bool AI::AIReadDBTool::SafeFilePart(Text::CStringNN name)
+{
+	if (name.leng == 0)
+		return false;
+	UIntOS i = 0;
+	while (i < name.leng)
+	{
+		UTF8Char c = name.v[i++];
+		if (c < 32 || c == '/' || c == '\\' || c == ':' || c == '*' || c == '?' || c == '"' || c == '<' || c == '>' || c == '|')
+			return false;
+	}
+	return true;
+}
+
+void AI::AIReadDBTool::ChartResult(NN<Data::VariObject> output, Text::CStringNN message)
+{
+	NN<Text::String> s = Text::String::New(message);
+	output->SetItemStr(U8STR("data"), s);
+	s->Release();
+}
+
+Bool AI::AIReadDBTool::SaveChart(NN<Media::DrawEngine> engine, NN<Data::ChartPlotter> chart, Text::CStringNN fileName)
+{
+	NN<Media::DrawImage> image;
+	UIntOS count = chart->GetChartCount();
+	if (!engine->CreateImage32({1024, 768 + count * 24}, Media::AlphaType::AT_IGNORE_ALPHA).SetTo(image))
+	{
+		return false;
+	}
+	chart->Plot(image, 0, 0, 1024, 768);
+	NN<Media::DrawBrush> background = image->NewBrushARGB(0xffffffff);
+	image->DrawRect({0, 768}, {1024, UIntOS2Double(count * 24)}, nullptr, background);
+	image->DelBrush(background);
+	NN<Media::DrawBrush> text = image->NewBrushARGB(0xff000000);
+	NN<Media::DrawFont> font = image->NewFontPt(CSTR("SimHei"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
+	UIntOS i = 0;
+	NN<Data::ChartPlotter::ChartParam> series;
+	while (i < count && chart->GetChart(i).SetTo(series))
+	{
+		Double y = 768 + UIntOS2Double(i * 24);
+		NN<Media::DrawPen> pen = image->NewPenARGB(series->lineColor, 3, nullptr, 0);
+		image->DrawLine(12, y + 12, 42, y + 12, pen);
+		image->DelPen(pen);
+		image->DrawString({50, y}, series->name, font, text);
+		i++;
+	}
+	image->DelFont(font);
+	image->DelBrush(text);
+	Bool saved = false;
+	if (i == count)
+	{
+		IO::FileStream file(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!file.IsError())
+			saved = image->SavePng(file) > 0;
+	}
+	engine->DeleteImage(image);
+	return saved;
+}
+
+void AI::AIReadDBTool::MakeChart(NN<Media::DrawEngine> drawEngine, NN<DB::DBReader> r, Text::CStringNN sessionId, Text::CStringNN path, NN<Data::VariObject> input, NN<Data::VariObject> output)
+{
+	NN<Data::VariItem> item;
+	NN<Text::String> fileName;
+	if (!input->GetItem(U8STR("fileName")).SetTo(item) || !item->GetAsNewString().SetTo(fileName))
+	{
+		ChartResult(output, CSTR("sql2chart requires a fileName"));
+		return;
+	}
+	Bool validName = SafeFilePart(fileName->ToCString()) && SafeFilePart(sessionId);
+	Text::StringBuilderUTF8 exportFileName;
+	exportFileName.Append(sessionId);
+	exportFileName.AppendUTF8Char('_');
+	exportFileName.Append(fileName);
+	fileName->Release();
+	if (!validName)
+	{
+		ChartResult(output, CSTR("sql2chart: invalid fileName or sessionId"));
+		return;
+	}
+	NN<Text::String> chartType;
+	if (!input->GetItem(U8STR("chartType")).SetTo(item) || !item->GetAsNewString().SetTo(chartType))
+	{
+		ChartResult(output, CSTR("sql2chart requires chartType: line, filledLine or scatter"));
+		return;
+	}
+	Bool filled = chartType->Equals(UTF8STRC("filledLine"));
+	Bool scatter = chartType->Equals(UTF8STRC("scatter"));
+	Bool validType = filled || scatter || chartType->Equals(UTF8STRC("line"));
+	chartType->Release();
+	if (!validType)
+	{
+		ChartResult(output, CSTR("sql2chart: chartType must be line, filledLine or scatter"));
+		return;
+	}
+	Data::ChartPlotter chart(nullptr);
+	if (scatter)
+		chart.SetPointType(Data::ChartPlotter::PointType::Circle, 4);
+	chart.SetDateFormat(CSTR("yyyy-MM-dd"));
+	chart.SetTimeFormat(CSTR("HH:mm"));
+	NN<Text::String> style;
+	if (input->GetItem(U8STR("dateStyle")).SetTo(item))
+	{
+		if (!item->GetAsNewString().SetTo(style))
+		{
+			ChartResult(output, CSTR("sql2chart: invalid dateStyle"));
+			return;
+		}
+		if (style->leng == 0 || style->leng > 32)
+		{
+			style->Release();
+			ChartResult(output, CSTR("sql2chart: invalid dateStyle"));
+			return;
+		}
+		chart.SetDateFormat(style->ToCString());
+		style->Release();
+	}
+	if (input->GetItem(U8STR("timeStyle")).SetTo(item))
+	{
+		if (!item->GetAsNewString().SetTo(style))
+		{
+			ChartResult(output, CSTR("sql2chart: invalid timeStyle"));
+			return;
+		}
+		if (style->leng == 0 || style->leng > 32)
+		{
+			style->Release();
+			ChartResult(output, CSTR("sql2chart: invalid timeStyle"));
+			return;
+		}
+		chart.SetTimeFormat(style->ToCString());
+		style->Release();
+	}
+	UIntOS colCount = r->ColCount();
+	if (colCount < 2)
+	{
+		ChartResult(output, CSTR("sql2chart requires an X column and at least one numeric Y column"));
+		return;
+	}
+	if (!r->ReadNext())
+	{
+		ChartResult(output, CSTR("sql2chart: query returned no rows"));
+		return;
+	}
+	DB::DBUtil::ColType xType = r->GetColType(0, nullptr);
+	Bool timeX = xType == DB::DBUtil::CT_Date || xType == DB::DBUtil::CT_DateTime || xType == DB::DBUtil::CT_DateTimeTZ;
+	if (!timeX && !IsNumeric(xType))
+	{
+		ChartResult(output, CSTR("sql2chart: X column must be numeric or a date/time"));
+		return;
+	}
+	Data::ArrayListStringNN names;
+	Data::ArrayListNN<Data::ArrayListDbl> values;
+	Data::ArrayListNative<Data::Timestamp> times;
+	Text::CString error = nullptr;
+	UIntOS i = 0;
+	while (i < colCount)
+	{
+		if (r->IsNull(i))
+		{
+			error = CSTR("sql2chart: NULL values are not supported");
+			break;
+		}
+		DB::ColDef colDef(CSTR(""));
+		if (!r->GetColDef(i, colDef))
+		{
+			error = CSTR("sql2chart: failed to get a column name");
+			break;
+		}
+		names.Add(colDef.GetColName()->Clone());
+		NN<Data::ArrayListDbl> column;
+		NEW_CLASSNN(column, Data::ArrayListDbl());
+		values.Add(column);
+		i++;
+	}
+	if (error.IsNull())
+	{
+		do
+		{
+			i = 0;
+			while (i < colCount)
+			{
+				DB::DBUtil::ColType type = r->GetColType(i, nullptr);
+				if (r->IsNull(i))
+				{
+					error = CSTR("sql2chart: NULL values are not supported");
+					break;
+				}
+				if (i == 0 && timeX)
+				{
+					if (type != DB::DBUtil::CT_Date && type != DB::DBUtil::CT_DateTime && type != DB::DBUtil::CT_DateTimeTZ)
+					{
+						error = CSTR("sql2chart: X column contains a non-date value");
+						break;
+					}
+					Data::Timestamp ts = r->GetTimestamp(i);
+					if (ts.IsNull())
+					{
+						error = CSTR("sql2chart: invalid date/time value");
+						break;
+					}
+					times.Add(ts);
+				}
+				else
+				{
+					if (!IsNumeric(type))
+					{
+						error = CSTR("sql2chart: all Y columns and a numeric X column must contain numbers");
+						break;
+					}
+					Double value = r->GetDblOrNAN(i);
+					if (Math::IsNAN(value) || Math::IsInfinity(value))
+					{
+						error = CSTR("sql2chart: non-finite numeric value");
+						break;
+					}
+					if (value < -1e100 || value > 1e100)
+					{
+						error = CSTR("sql2chart: numeric value exceeds supported range");
+						break;
+					}
+					values.GetItemNoCheck(i)->Add(value);
+				}
+				i++;
+			}
+			if (error.NotNull())
+				break;
+		} while (r->ReadNext());
+	}
+	if (error.IsNull() && !scatter && (timeX ? times.GetCount() : values.GetItemNoCheck(0)->GetCount()) < 2)
+		error = CSTR("sql2chart: query must return at least two rows");
+	if (error.IsNull())
+	{
+		NN<Data::ChartPlotter::ChartData> xData;
+		if (timeX)
+			xData = Data::ChartPlotter::NewData(times);
+		else
+			xData = Data::ChartPlotter::NewData(values.GetItemNoCheck(0)->Arr(), values.GetItemNoCheck(0)->GetCount());
+		i = 1;
+		while (i < colCount)
+		{
+			UInt32 color = chart.GetRndColor();
+			NN<Data::ArrayListDbl> column = values.GetItemNoCheck(i);
+			Bool added;
+			if (filled)
+				added = chart.AddFilledLineChart(names.GetItemNoCheck(i), Data::ChartPlotter::NewData(column->Arr(), column->GetCount()), xData->Clone(), color, (color & 0x00ffffff) | 0x80000000);
+			else if (scatter)
+				added = chart.AddScatter(names.GetItemNoCheck(i)->ToCString(), Data::ChartPlotter::NewData(column->Arr(), column->GetCount()), xData->Clone(), color);
+			else
+				added = chart.AddLineChart(names.GetItemNoCheck(i), Data::ChartPlotter::NewData(column->Arr(), column->GetCount()), xData->Clone(), color);
+			if (!added)
+			{
+				error = CSTR("sql2chart: failed to add chart series");
+				break;
+			}
+			i++;
+		}
+		xData.Delete();
+	}
+	if (error.IsNull())
+	{
+		chart.SetXAxisName(names.GetItemNoCheck(0)->ToCString());
+		NN<Data::ChartPlotter::Axis> axis;
+		Double minRange = 0;
+		if (chart.GetXAxis().SetTo(axis))
+		{
+			if (timeX)
+			{
+				NN<Data::ChartPlotter::TimeAxis> tAxis = NN<Data::ChartPlotter::TimeAxis>::ConvertFrom(axis);
+				if (tAxis->GetMin() == tAxis->GetMax())
+					tAxis->ExtendRange(tAxis->GetMin().AddSecond(60));
+			}
+			else
+			{
+				NN<Data::ChartPlotter::DoubleAxis> dAxis = NN<Data::ChartPlotter::DoubleAxis>::ConvertFrom(axis);
+				if (dAxis->GetMin() == dAxis->GetMax())
+					dAxis->ExtendRange(dAxis->GetMin() == 0 ? 1 : 0);
+				minRange = dAxis->GetMax() - dAxis->GetMin();
+			}
+		}
+		if (chart.GetY1Axis().SetTo(axis))
+		{
+			NN<Data::ChartPlotter::DoubleAxis> dAxis = NN<Data::ChartPlotter::DoubleAxis>::ConvertFrom(axis);
+			if (dAxis->GetMin() == dAxis->GetMax())
+				dAxis->ExtendRange(dAxis->GetMin() == 0 ? 1 : 0);
+			Double yRange = dAxis->GetMax() - dAxis->GetMin();
+			if (minRange == 0 || yRange < minRange)
+				minRange = yRange;
+		}
+		if (minRange < 1e-14)
+			error = CSTR("sql2chart: numeric range is too small to label accurately");
+		else
+		{
+			Text::StringBuilderUTF8 format;
+			format.Append(CSTR("0.00"));
+			Double precision = 0.01;
+			UIntOS decimals = 2;
+			while (precision > minRange / 10 && decimals < 15)
+			{
+				format.AppendUTF8Char('0');
+				precision *= 0.1;
+				decimals++;
+			}
+			chart.SetDblFormat(format.ToCString());
+		}
+	}
+	if (error.IsNull())
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.Append(path);
+		if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
+			sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+		Data::Timestamp fileTime = Data::Timestamp::Now();
+		sb.AppendTS(fileTime, "yyyyMMdd");
+		IO::Path::CreateDirectory(sb.ToCString());
+		sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+		sb.Append(exportFileName.ToCString());
+		sb.Append(CSTR(".png"));
+		Bool saved = SaveChart(drawEngine, chart, sb.ToCString());
+		if (!saved)
+		{
+			error = CSTR("sql2chart: failed to export PNG");
+		}
+		else
+		{
+			sb.ClearStr();
+			sb.Append(CSTR("Attachment "));
+			sb.Append(exportFileName.ToCString());
+			sb.Append(CSTR(".png added to user"));
+			ChartResult(output, sb.ToCString());
+			sb.ClearStr();
+			sb.AppendTS(fileTime, "yyyyMMdd");
+			sb.AppendUTF8Char('/');
+			sb.Append(exportFileName.ToCString());
+			sb.Append(CSTR(".png"));
+			NN<Text::String> attachment = Text::String::New(sb.ToCString());
+			output->SetItemStr(U8STR("attachment"), attachment);
+			attachment->Release();
+		}
+	}
+	UnsafeArray<const UTF8Char> errorText;
+	if (error.v.SetTo(errorText))
+		ChartResult(output, Text::CStringNN(errorText, error.leng));
+	names.FreeAll();
+	values.DeleteAll();
+}
+
+AI::AIReadDBTool::AIReadDBTool(NN<DB::ReadingDB> db, Text::CStringNN schemaName, Text::CString filePath, Bool allowXlsx, Optional<Media::DrawEngine> drawEngine)
 {
 	this->db = db;
 	this->schemaName = Text::String::New(schemaName);
 	this->filePath = Text::String::NewOrNull(filePath);
 	this->allowXlsx = allowXlsx;
-	this->allowChart = allowChart;
+	this->drawEngine = drawEngine;
 	this->maxToolSize = 8192;
 }
 
@@ -59,7 +442,7 @@ void AI::AIReadDBTool::GetParameters(NN<Net::OpenAIToolParameters> parameters) c
 				sbParam.AppendC(UTF8STRC(", sql2xlsx"));
 				sbSQL.Append(CSTR(", sql2xlsx"));
 			}
-			if (this->allowChart)
+			if (this->drawEngine.NotNull())
 			{
 				sbParam.AppendC(UTF8STRC(", sql2chart"));
 				sbSQL.Append(CSTR(", sql2chart"));
@@ -75,7 +458,7 @@ void AI::AIReadDBTool::GetParameters(NN<Net::OpenAIToolParameters> parameters) c
 		parameters->AddParameter(CSTR("sql"), sbSQL.ToCString(), Net::OpenAIToolParameterType::String, false);
 		if (this->filePath.NotNull())
 		{
-			if (this->allowXlsx || this->allowChart)
+			if (this->allowXlsx || this->drawEngine.NotNull())
 			{
 				sbParam.ClearStr();
 				sbParam.Append(CSTR("File Name without extension; required for "));
@@ -83,7 +466,7 @@ void AI::AIReadDBTool::GetParameters(NN<Net::OpenAIToolParameters> parameters) c
 				{
 					sbParam.Append(CSTR("sql2xlsx"));
 				}
-				if (this->allowChart)
+				if (this->drawEngine.NotNull())
 				{
 					if (this->allowXlsx)
 					{
@@ -96,6 +479,12 @@ void AI::AIReadDBTool::GetParameters(NN<Net::OpenAIToolParameters> parameters) c
 			if (this->allowXlsx)
 			{
 				parameters->AddParameter(CSTR("sheetName"), CSTR("Sheet Name; required for sql2xlsx"), Net::OpenAIToolParameterType::String, false);
+			}
+			if (this->drawEngine.NotNull())
+			{
+				parameters->AddParameter(CSTR("chartType"), CSTR("line, filledLine or scatter; required for sql2chart. Select a numeric or date/time X column first, followed by numeric Y columns; order rows by X for line charts. Line charts require at least two rows; scatter requires at least one. NULL and non-finite values are not supported. Numeric magnitudes must not exceed 1e100 and axis ranges must be at least 1e-14."), Net::OpenAIToolParameterType::String, false);
+				parameters->AddParameter(CSTR("dateStyle"), CSTR("Date style in format of yMd, default is yyyy-MM-dd; optional for sql2chart"), Net::OpenAIToolParameterType::String, false);
+				parameters->AddParameter(CSTR("timeStyle"), CSTR("Time style in format of Hmsf, default is HH:mm; optional for sql2chart"), Net::OpenAIToolParameterType::String, false);
 			}
 		}
 	}
@@ -178,6 +567,12 @@ Bool AI::AIReadDBTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 
 	if (sqlAction || sql2xlsx || sql2chart)
 	{
+		NN<Media::DrawEngine> drawEngine;
+		if (sql2chart && (!this->drawEngine.SetTo(drawEngine) || this->filePath.IsNull()))
+		{
+			ChartResult(output, CSTR("sql2chart is not enabled"));
+			return true;
+		}
 		if (!this->db->IsFullConn())
 			return false;
 		NN<DB::DBConn> conn = NN<DB::DBConn>::ConvertFrom(this->db);
@@ -360,10 +755,14 @@ Bool AI::AIReadDBTool::Invoke(Text::CStringNN sessionId, NN<Data::VariObject> in
 		}
 		else if (sql2chart)
 		{
-			///////////////////////////////
+			NN<Text::String> chartPath;
+			if (this->filePath.SetTo(chartPath) && this->drawEngine.SetTo(drawEngine))
+				MakeChart(drawEngine, r, sessionId, chartPath->ToCString(), input, output);
+			else
+				ChartResult(output, CSTR("sql2chart is not enabled"));
 			sql->Release();
 			conn->CloseReader(r);
-			return false;
+			return true;
 		}
 		else
 		{

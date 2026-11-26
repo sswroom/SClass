@@ -330,8 +330,8 @@ namespace Data
 		Bool AddLineChart(Text::CStringNN name, NN<ChartData> yData, NN<ChartData> xData, UInt32 lineColor);
 		Bool AddFilledLineChart(NN<Text::String> name, NN<ChartData> yData, NN<ChartData> xData, UInt32 lineColor, UInt32 fillColor);
 		Bool AddFilledLineChart(Text::CStringNN name, NN<ChartData> yData, NN<ChartData> xData, UInt32 lineColor, UInt32 fillColor);
-		Bool AddScatter(Text::CStringNN name, NN<ChartData> xdata, NN<ChartData> ydata, UInt32 lineColor);
-		Bool AddScatter(Text::CStringNN name, NN<ChartData> xdata, NN<ChartData> ydata, UnsafeArrayOpt<Optional<Text::String>> labels, UInt32 lineColor);
+		Bool AddScatter(Text::CStringNN name, NN<ChartData> yData, NN<ChartData> xData, UInt32 lineColor);
+		Bool AddScatter(Text::CStringNN name, NN<ChartData> yData, NN<ChartData> xData, UnsafeArrayOpt<Optional<Text::String>> labels, UInt32 lineColor);
 		Bool AddHistogramCount(Text::CStringNN name, NN<ChartData> data, UIntOS barCount, UInt32 lineColor, UInt32 fillColor);
 
 		void SetXRangeDate(NN<Data::DateTime> xVal);

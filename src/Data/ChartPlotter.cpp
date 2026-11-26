@@ -2081,7 +2081,7 @@ UIntOS Data::ChartPlotter::CalScaleMarkDbl(NN<Data::ArrayListDbl> locations, NN<
 	}
 	else
 	{
-		scale = (((Int32)(min / dScale)) + 1) * dScale;
+		scale = (Math_Fix(min / dScale) + 1) * dScale;
 		while (scale < max)
 		{
 			pos = ((scale - min) * leng / (max - min));
@@ -2094,7 +2094,10 @@ UIntOS Data::ChartPlotter::CalScaleMarkDbl(NN<Data::ArrayListDbl> locations, NN<
 				labels->Add(Text::String::New(sbuff, (UIntOS)(sptr - sbuff)));
 				retCnt++;
 			}
-			scale += dScale;
+			Double nextScale = scale + dScale;
+			if (nextScale <= scale)
+				break;
+			scale = nextScale;
 		}
 	}
 

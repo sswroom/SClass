@@ -62,6 +62,7 @@ console:
 @AIAgent
 @AIAgentTest
 @AICSysToolTest
+@AIReadDBToolTest
 @Adler32Speed
 @Adler32Test
 @AES128GCMTest
@@ -334,6 +335,9 @@ AIAgentTest:
 @ConsoleStartup.o
 AICSysToolTest:
 @AICSysToolTest.o
+@ConsoleStartup.o
+AIReadDBToolTest:
+@AIReadDBToolTest.o
 @ConsoleStartup.o
 
 #CryptoTest
@@ -1326,6 +1330,7 @@ GUITest9:
 AIAgentMain.o: ../../main/AI/AIAgentMain.cpp
 AIAgentTest.o: ../../main/AI/AIAgentTest.cpp
 AICSysToolTest.o: ../../main/AI/AICSysToolTest.cpp
+AIReadDBToolTest.o: ../../main/AI/AIReadDBToolTest.cpp
 Adler32Speed.o: ../../main/CryptoTest/Adler32Speed.cpp
 Adler32Test.o: ../../main/CryptoTest/Adler32Test.cpp
 AES128GCMTest.o: ../../main/CryptoTest/AES128GCMTest.cpp
