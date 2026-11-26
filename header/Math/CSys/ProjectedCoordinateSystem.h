@@ -28,6 +28,7 @@ namespace Math
 			virtual CoordinateSystemType GetCoordSysType() const = 0;
 			virtual Bool IsProjected() const;
 			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+			virtual void ToOGCWKT(NN<Text::StringBuilderUTF8> sb) const;
 			Math::Unit::Distance::DistanceUnit GetDistanceUnit() const;
 			Double GetDistanceRatio() const;
 

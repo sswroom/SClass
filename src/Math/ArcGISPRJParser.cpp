@@ -403,7 +403,7 @@ Optional<Math::CSys::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text:
 				data.scale = scale;
 				data.aunit = Math::Unit::Angle::AU_ARCSECOND;
 			}
-			NEW_CLASSNN(csys, Math::CSys::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, &data, primem, unit));
+			NEW_CLASSNN(csys, Math::CSys::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, data, primem, unit));
 			return csys;
 		}
 		else
@@ -423,7 +423,7 @@ Optional<Math::CSys::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text:
 				data.scale = scale;
 				data.aunit = Math::Unit::Angle::AU_ARCSECOND;
 			}
-			NEW_CLASSNN(csys, Math::CSys::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, &data, primem, unit));
+			NEW_CLASSNN(csys, Math::CSys::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, data, primem, unit));
 			return csys;
 		}
 	}

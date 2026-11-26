@@ -134,6 +134,47 @@ void Math::CSys::ProjectedCoordinateSystem::ToString(NN<Text::StringBuilderUTF8>
 	this->gcs->ToString(sb);
 }
 
+void Math::CSys::ProjectedCoordinateSystem::ToOGCWKT(NN<Text::StringBuilderUTF8> sb) const
+{
+	sb->AppendC(UTF8STRC("PROJCS[\""));
+	sb->Append(this->csysName);
+	sb->AppendC(UTF8STRC("\","));
+	this->gcs->ToOGCWKT(sb);
+	sb->AppendC(UTF8STRC(",PROJECTION[\""));
+	sb->Append(CoordinateSystemTypeGetOGCName(this->GetCoordSysType()));
+	sb->AppendC(UTF8STRC("\"],PARAMETER[\"latitude_of_origin\","));
+	Text::SBAppendF64(sb, this->GetLatitudeOfOriginDegree());
+	sb->AppendC(UTF8STRC("],PARAMETER[\"central_meridian\","));
+	Text::SBAppendF64(sb, this->GetCentralMeridianDegree());
+	sb->AppendC(UTF8STRC("],PARAMETER[\"scale_factor\","));
+	Text::SBAppendF64(sb, this->scaleFactor);
+	sb->AppendC(UTF8STRC("],PARAMETER[\"false_easting\","));
+	Text::SBAppendF64(sb, this->falseEasting);
+	sb->AppendC(UTF8STRC("],PARAMETER[\"false_northing\","));
+	Text::SBAppendF64(sb, this->falseNorthing);
+	sb->AppendC(UTF8STRC("],UNIT[\""));
+	switch (this->unit)
+	{
+		default:
+		case UT_DEGREE:
+			sb->AppendC(UTF8STRC("degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]"));
+			break;
+		case UT_METRE:
+			sb->AppendC(UTF8STRC("metre\",1,AUTHORITY[\"EPSG\",\"9001\"]"));
+			break;
+		case UT_CLARKE_FOOT:
+			sb->AppendC(UTF8STRC("Clarke's foot\",0.3047972654,AUTHORITY[\"EPSG\",\"9005\"]"));
+			break;
+	}
+	sb->AppendC(UTF8STRC("]"));
+	if (this->srid != 0)
+	{
+		sb->AppendC(UTF8STRC(",AUTHORITY[\"EPSG\",\""));
+		sb->AppendU32(this->srid);
+		sb->AppendC(UTF8STRC("\"]"));
+	}
+}
+
 Math::Unit::Distance::DistanceUnit Math::CSys::ProjectedCoordinateSystem::GetDistanceUnit() const
 {
 	switch (this->unit)

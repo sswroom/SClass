@@ -322,3 +322,25 @@ Text::CStringNN Math::CSys::CoordinateSystem::CoordinateSystemTypeGetName(Coordi
 		return CSTR("Unknown");
 	}
 }
+
+Text::CStringNN Math::CSys::CoordinateSystem::CoordinateSystemTypeGetOGCName(CoordinateSystemType csysType)
+{
+	switch (csysType)
+	{
+	case CoordinateSystemType::Geographic:
+		return CSTR("GEOGCS");
+	case CoordinateSystemType::MercatorProjected:
+		return CSTR("Mercator");
+	case CoordinateSystemType::Mercator1SPProjected:
+		return CSTR("Mercator_1SP");
+	case CoordinateSystemType::GausskrugerProjected:
+		return CSTR("Transverse_Mercator");
+	case CoordinateSystemType::CassiniSoldner:
+		return CSTR("Cassini_Soldner");
+	case CoordinateSystemType::PolyconicProjected:
+		return CSTR("Polyconic");
+	default:
+		return CSTR("Unknown");
+	}
+}
+

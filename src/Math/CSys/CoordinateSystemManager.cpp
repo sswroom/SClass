@@ -515,7 +515,7 @@ Optional<Math::CSys::GeographicCoordinateSystem> Math::CSys::CoordinateSystemMan
 	Math::EarthEllipsoid ellipsoid(spheroid->eet);
 	GeographicCoordinateSystem::DatumData1 data;
 	FillDatumData(data, datum, Text::CStringNN(datum->datumName, datum->datumNameLen), ellipsoid, spheroid);
-	NEW_CLASSNN(csys, GeographicCoordinateSystem(CSTRP(sbuff, sptr), epsgId, Text::CStringNN(geogcs->name, geogcs->nameLen), &data, geogcs->primem, geogcs->unit));
+	NEW_CLASSNN(csys, GeographicCoordinateSystem(CSTRP(sbuff, sptr), epsgId, Text::CStringNN(geogcs->name, geogcs->nameLen), data, geogcs->primem, geogcs->unit));
 	return csys;
 }
 
@@ -776,7 +776,7 @@ Optional<Math::CSys::GeographicCoordinateSystem> Math::CSys::CoordinateSystemMan
 	Math::EarthEllipsoid ellipsoid(coord->eet);
 	GeographicCoordinateSystem::DatumData1 data;
 	FillDatumData(data, datum, Text::CStringNN::FromPtr((const UTF8Char*)coord->datumName), ellipsoid, SRGetSpheroid(datum->spheroid));
-	NEW_CLASSNN(csys, GeographicCoordinateSystem(sourceName, coord->srid, Text::CStringNN(coord->geoName, coord->geoNameLen), &data, GeographicCoordinateSystem::PT_GREENWICH, GeographicCoordinateSystem::UT_DEGREE));
+	NEW_CLASSNN(csys, GeographicCoordinateSystem(sourceName, coord->srid, Text::CStringNN(coord->geoName, coord->geoNameLen), data, GeographicCoordinateSystem::PT_GREENWICH, GeographicCoordinateSystem::UT_DEGREE));
 	return csys;
 }
 
@@ -820,7 +820,7 @@ NN<Math::CSys::GeographicCoordinateSystem> Math::CSys::CoordinateSystemManager::
 	Math::EarthEllipsoid ellipsoid(Math::EarthEllipsoid::EET_WGS84);
 	GeographicCoordinateSystem::DatumData1 data;
 	FillDatumData(data, datum, CSTR("WGS_1984"), ellipsoid, SRGetSpheroid(datum->spheroid));
-	NEW_CLASSNN(csys, GeographicCoordinateSystem(CSTR("WGS_1984"), 4326, CSTR("WGS_1984"), &data, GeographicCoordinateSystem::PT_GREENWICH, GeographicCoordinateSystem::UT_DEGREE));
+	NEW_CLASSNN(csys, GeographicCoordinateSystem(CSTR("WGS_1984"), 4326, CSTR("WGS_1984"), data, GeographicCoordinateSystem::PT_GREENWICH, GeographicCoordinateSystem::UT_DEGREE));
 	return csys;
 
 }

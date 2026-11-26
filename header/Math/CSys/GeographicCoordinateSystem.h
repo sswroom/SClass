@@ -17,8 +17,8 @@ namespace Math
 			UnitType unit;
 
 		public:
-			GeographicCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CStringNN csysName, const DatumData1 *datum, PrimemType primem, UnitType unit);
-			GeographicCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CStringNN csysName, const DatumData1 *datum, PrimemType primem, UnitType unit);
+			GeographicCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CStringNN csysName, NN<const DatumData1> datum, PrimemType primem, UnitType unit);
+			GeographicCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CStringNN csysName, NN<const DatumData1> datum, PrimemType primem, UnitType unit);
 			virtual ~GeographicCoordinateSystem();
 
 			virtual Double CalSurfaceDistance(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const;
@@ -27,6 +27,7 @@ namespace Math
 			virtual CoordinateSystemType GetCoordSysType() const;
 			virtual Bool IsProjected() const;
 			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+			virtual void ToOGCWKT(NN<Text::StringBuilderUTF8> sb) const;
 
 			NN<Math::EarthEllipsoid> GetEllipsoid() const { return this->datum.spheroid.ellipsoid; }
 			Text::CString GetDatumName() const { return Text::CString(this->datum.name, this->datum.nameLen); }

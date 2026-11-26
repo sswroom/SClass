@@ -15,7 +15,7 @@ Earth�fs gravitational constant: GM=3.986004418 * 10^14 m^3/s^2
 Angular velocity of the Earth: ��=7.292115 * 10^-5 rad/s
 */
 
-Math::CSys::GeographicCoordinateSystem::GeographicCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CStringNN csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : CoordinateSystem(sourceName, srid, csysName)
+Math::CSys::GeographicCoordinateSystem::GeographicCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CStringNN csysName, NN<const DatumData1> datum, PrimemType primem, UnitType unit) : CoordinateSystem(sourceName, srid, csysName)
 {
 	this->datum.spheroid.srid = datum->spheroid.srid;
 	this->datum.spheroid.ellipsoid = datum->spheroid.ellipsoid->Clone();
@@ -40,7 +40,7 @@ Math::CSys::GeographicCoordinateSystem::GeographicCoordinateSystem(NN<Text::Stri
 	this->unit = unit;
 }
 
-Math::CSys::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CStringNN csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : CoordinateSystem(sourceName, srid, csysName)
+Math::CSys::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CStringNN csysName, NN<const DatumData1> datum, PrimemType primem, UnitType unit) : CoordinateSystem(sourceName, srid, csysName)
 {
 	this->datum.spheroid.srid = datum->spheroid.srid;
 	this->datum.spheroid.ellipsoid = datum->spheroid.ellipsoid->Clone();
@@ -85,7 +85,7 @@ Double Math::CSys::GeographicCoordinateSystem::CalLineStringDistance(NN<Math::Ge
 NN<Math::CSys::CoordinateSystem> Math::CSys::GeographicCoordinateSystem::Clone() const
 {
 	NN<CoordinateSystem> csys;
-	NEW_CLASSNN(csys, GeographicCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), &this->datum, this->primem, this->unit));
+	NEW_CLASSNN(csys, GeographicCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), this->datum, this->primem, this->unit));
 	return csys;
 }
 
@@ -109,6 +109,64 @@ void Math::CSys::GeographicCoordinateSystem::ToString(NN<Text::StringBuilderUTF8
 	sb->Append(this->csysName);
 	sb->AppendC(UTF8STRC("\r\n"));
 	DatumData1ToString(this->datum, sb);
+}
+
+void Math::CSys::GeographicCoordinateSystem::ToOGCWKT(NN<Text::StringBuilderUTF8> sb) const
+{
+	sb->AppendC(UTF8STRC("GEOGCS[\""));
+	sb->Append(this->csysName);
+	sb->AppendC(UTF8STRC("\",DATUM[\""));
+	sb->AppendC(this->datum.name, this->datum.nameLen);
+	sb->AppendC(UTF8STRC("\",SPHEROID[\""));
+	sb->AppendC(this->datum.spheroid.name, this->datum.spheroid.nameLen);
+	sb->AppendC(UTF8STRC("\","));
+	Text::SBAppendF64(sb, this->datum.spheroid.ellipsoid->GetSemiMajorAxis());
+	sb->AppendC(UTF8STRC("]"));
+	if (this->datum.x0 || this->datum.y0 || this->datum.z0 || this->datum.scale || this->datum.xAngle || this->datum.yAngle || this->datum.zAngle)
+	{
+		sb->AppendC(UTF8STRC(",TOWGS84["));
+		Text::SBAppendF64(sb, this->datum.x0);
+		sb->AppendC(UTF8STRC(","));
+		Text::SBAppendF64(sb, this->datum.y0);
+		sb->AppendC(UTF8STRC(","));
+		Text::SBAppendF64(sb, this->datum.z0);
+		sb->AppendC(UTF8STRC(","));
+		Text::SBAppendF64(sb, this->datum.scale);
+		sb->AppendC(UTF8STRC(","));
+		Text::SBAppendF64(sb, this->datum.xAngle);
+		sb->AppendC(UTF8STRC(","));
+		Text::SBAppendF64(sb, this->datum.yAngle);
+		sb->AppendC(UTF8STRC(","));
+		Text::SBAppendF64(sb, this->datum.zAngle);
+		sb->AppendC(UTF8STRC("]"));
+	}
+	sb->AppendC(UTF8STRC("],PRIMEM[\""));
+	switch (this->primem)
+	{
+	case PrimemType::PT_GREENWICH:
+		sb->AppendC(UTF8STRC("Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]"));
+		break;
+	default:
+		sb->AppendC(UTF8STRC("\",0]"));
+		break;
+	}
+	sb->AppendC(UTF8STRC(",UNIT[\""));
+	switch (this->unit)
+	{
+	case UnitType::UT_CLARKE_FOOT:
+	case UnitType::UT_METRE:
+	case UnitType::UT_DEGREE:
+	default:
+		sb->AppendC(UTF8STRC("degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]"));
+		break;
+	}
+	if (this->srid != 0)
+	{
+		sb->AppendC(UTF8STRC(",AUTHORITY[\"EPSG\",\""));
+		sb->AppendU32(this->srid);
+		sb->AppendC(UTF8STRC("\"]"));
+	}
+	sb->AppendC(UTF8STRC("]"));
 }
 
 Math::Vector3D Math::CSys::GeographicCoordinateSystem::ToCartesianCoordRad(Math::Vector3D lonLatH) const

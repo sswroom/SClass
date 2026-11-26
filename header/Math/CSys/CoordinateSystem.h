@@ -89,6 +89,7 @@ namespace Math
 			virtual CoordinateSystemType GetCoordSysType() const = 0;
 			virtual Bool IsProjected() const = 0;
 			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const = 0;
+			virtual void ToOGCWKT(NN<Text::StringBuilderUTF8> sb) const = 0;
 
 			virtual IO::ParserType GetParserType() const;
 
@@ -102,6 +103,7 @@ namespace Math
 			static Math::Vector3D ConvertToCartesianCoord(NN<const CoordinateSystem> srcCoord, Math::Vector3D srcPos);
 			static void DatumData1ToString(NN<const DatumData1> datum, NN<Text::StringBuilderUTF8> sb);
 			static Text::CStringNN CoordinateSystemTypeGetName(CoordinateSystemType csysType);
+			static Text::CStringNN CoordinateSystemTypeGetOGCName(CoordinateSystemType csysType);
 		};
 	}
 }
