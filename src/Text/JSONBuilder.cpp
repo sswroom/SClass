@@ -44,11 +44,6 @@ void Text::JSONBuilder::AppendStr(Text::CStringNN val)
 			sptr[1] = 'n';
 			sptr += 2;
 			break;
-		case '\0':
-			sptr[0] = '\\';
-			sptr[1] = '0';
-			sptr += 2;
-			break;
 		default:
 			if (c < 32)
 			{
@@ -62,7 +57,7 @@ void Text::JSONBuilder::AppendStr(Text::CStringNN val)
 			}
 			break;
 		}
-		if (sptr - sbuff >= 254)
+		if (sptr - sbuff >= 250)
 		{
 			this->sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			sptr = sbuff;
@@ -103,11 +98,6 @@ void Text::JSONBuilder::AppendStrUTF8(UnsafeArray<const UTF8Char> val)
 			sptr[1] = 'n';
 			sptr += 2;
 			break;
-		case '\0':
-			sptr[0] = '\\';
-			sptr[1] = '0';
-			sptr += 2;
-			break;
 		default:
 			if (c < 32)
 			{
@@ -121,7 +111,7 @@ void Text::JSONBuilder::AppendStrUTF8(UnsafeArray<const UTF8Char> val)
 			}
 			break;
 		}
-		if (sptr - sbuff >= 254)
+		if (sptr - sbuff >= 250)
 		{
 			this->sb.AppendC(sbuff, (UIntOS)(sptr - sbuff));
 			sptr = sbuff;
